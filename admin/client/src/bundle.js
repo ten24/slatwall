@@ -29548,6 +29548,9 @@
 	                _this.getProcessObject().data.processContext = "create";
 	                _this.getProcessObject().data['fulfillmentBatch'] = {};
 	                _this.getProcessObject().data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+	                //get the locationID and the assigned account id if they exist.
+	                _this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
+	                _this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
 	                _this.$http.post("/?slataction=api:main.doProcess", _this.getProcessObject().data, {})
 	                    .then(_this.processCreateSuccess, _this.processCreateError);
 	            }

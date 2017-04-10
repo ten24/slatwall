@@ -269,6 +269,11 @@ class SWOrderFulfillmentListController {
             this.getProcessObject().data.processContext = "create";
             this.getProcessObject().data['fulfillmentBatch'] = {};
             this.getProcessObject().data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+
+            //get the locationID and the assigned account id if they exist.
+            this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
+            this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
+
             this.$http.post("/?slataction=api:main.doProcess", this.getProcessObject().data, {})
                 .then(this.processCreateSuccess, this.processCreateError)
         }

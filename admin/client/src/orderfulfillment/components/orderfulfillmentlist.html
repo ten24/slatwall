@@ -30,6 +30,7 @@
 							                                <div class="s-property form-horizontal">
 							                                    
 							                                    <div class="form-group">
+							                                    	
 							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Batch Location <span class="s-label-desc">(optional)</span></label>
 							                                        <div class="col-sm-8">
 																		
@@ -46,7 +47,8 @@
 																						        data-placeholder-rb-key="entity.location"
 																						        data-multiselect-mode="false"
 																						        data-filter-flag="true"
-																						        data-selected-format-string="${locationName}&nbsp;">
+																						        data-selected-format-string="${locationName}&nbsp;"
+																						        data-field-name="locationID">
 																						
 																						    <sw-collection-config
 																						            data-entity-name="Location"
@@ -155,7 +157,8 @@
 																		        data-placeholder-rb-key="entity.account"
 																		        data-multiselect-mode="false"
 																		        data-filter-flag="true"
-																		        data-selected-format-string="${lastName}&nbsp;">
+																		        data-selected-format-string="${lastName}&nbsp;"
+																		        data-field-name="accountID">
 																			<!-- end ngIf: swTypeaheadSearch.placeholderText -->
 																		    <sw-collection-config
 																		            data-entity-name="Account"
@@ -255,8 +258,9 @@
 									        data-placeholder-rb-key="entity.location"
 									        data-multiselect-mode="true"
 									        data-filter-flag="true"
-									        data-selected-format-string="${locationName}&nbsp;">
-									
+									        data-selected-format-string="${locationName}&nbsp;" 
+									        data-field-name="locationIDfilter">
+										
 									    <sw-collection-config
 									            data-entity-name="Location"
 									            data-collection-config-property="typeaheadCollectionConfig"
