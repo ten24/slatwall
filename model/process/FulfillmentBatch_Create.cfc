@@ -128,6 +128,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
 				//Sets the orderFulfillment on the item
 				fulfillmentBatchItem.setOrderItem(orderItem);
+				fulfillmentBatchItem.setOrderFulfillment(orderItem.getOrderFulfillment());
 				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
 			}
 		}

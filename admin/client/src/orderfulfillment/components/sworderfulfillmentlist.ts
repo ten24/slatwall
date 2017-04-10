@@ -28,7 +28,7 @@ class SWOrderFulfillmentListController {
     public processObject:any;
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService){
         
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": true, "available": true };
@@ -58,7 +58,9 @@ class SWOrderFulfillmentListController {
         console.log(this.observerService);
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-        
+        this.typeaheadService.attachTypeaheadSelectionUpdateEvent("orderFulfillment", (data)=>{
+            console.log("Data", data);
+        });
     }
     
     /**
@@ -274,17 +276,19 @@ class SWOrderFulfillmentListController {
      /**
      * Handles a successful post of the processObject
      */
-    public processCreateSuccess = (data) => {
-        console.log("Process Created", data);
+    public processCreateSuccess = (result) => {
+        console.log("Process Created", result);
         //Redirect to the created fulfillmentBatch.
-        this.$window.location.href = "/?slataction:entity.detailfulfillmentbatch&fulfillmentbatchid=" + data.FulfillmentBatch.FulfillmentBatchID;
+        this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['FulfillmentBatch']['FulfillmentBatchID'];
     }
+
     /**
      * Handles a successful post of the processObject
      */
     public processCreateError= (data) => {
         console.log("Process Errors", data);
     }
+
     /**
      * Returns the processObject
      */
@@ -308,6 +312,17 @@ class SWOrderFulfillmentListController {
             case "batchSaveSuccess": break;
             case "batchSaveFail": break;
             case "error": break;
+        }
+    }
+
+    /**
+     * Returns the number of selected fulfillments
+     */
+    public getTotalFulfillmentsSelected = () => {
+        try{
+            return this.getProcessObject().data.orderFulfillmentIDList.split(",").length;
+        } catch (error){
+            return 0;
         }
     }
 }

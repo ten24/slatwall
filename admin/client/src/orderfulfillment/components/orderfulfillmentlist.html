@@ -21,7 +21,7 @@
 								            <div class="modal-content">
 								                <div class="modal-header">
 								                    <a class="close" data-dismiss="modal">×</a>
-								                    <h3>Create Batch <span class="s-title-detail">(10 fulfillments selected)</span></h3>
+								                    <h3>Create Batch <span class="s-title-detail">({{swOrderFulfillmentListController.getTotalFulfillmentsSelected()||0}} fulfillments selected)</span></h3>
 								                </div>
 								                <div class="modal-body s-visable">
 								                    
@@ -37,38 +37,43 @@
 																		<div class="form-group">
 																		   
 																						<sw-typeahead-input-field
-																							data-entity-name="Location"
-																					        data-property-to-save="locationID"
-																					        data-property-to-show="locationName"
-																					        data-properties-to-load="locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
-																					        data-show-add-button="true"
-																					        data-show-view-button="true"
-																					        data-placeholder-text="All Locations"
-																					        data-multiselect-mode="true"
-																					        data-filter-flag="true"
-																					        data-selected-format-string="${locationName}&nbsp;">
-																					
-																					    <sw-collection-config
-																					            data-entity-name="Location"
-																					            data-collection-config-property="typeaheadCollectionConfig"
-																					            data-parent-directive-controller-as-name="swTypeaheadInputField"
-																					            data-all-records="false"
-																					            data-page-show="50">
-																					
-																							<sw-collection-columns>
-																						        <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
-																						        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
-																						        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
-																						        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
-																						        <sw-collection-column data-property-identifier="locationName" data-is-searchable="true"></sw-collection-column>
-																						        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
-																						    </sw-collection-columns>
+																								data-entity-name="Location"
+																						        data-property-to-save="locationID"
+																						        data-property-to-show="locationName"
+																						        data-properties-to-load="locationID,locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+																						        data-show-add-button="true"
+																						        data-show-view-button="true"
+																						        data-placeholder-rb-key="entity.location"
+																						        data-multiselect-mode="false"
+																						        data-filter-flag="true"
+																						        data-selected-format-string="${locationName}&nbsp;">
+																						
+																						    <sw-collection-config
+																						            data-entity-name="Location"
+																						            data-collection-config-property="typeaheadCollectionConfig"
+																						            data-parent-directive-controller-as-name="swTypeaheadInputField"
+																						            data-all-records="false"
+																						            data-page-show="50">
+																						
+																								<sw-collection-columns>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="locationName" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
+																							    </sw-collection-columns>
+																								
+																						    	<sw-collection-order-bys>
+																						        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
+																						    	</sw-collection-order-bys>
+																						
+																						    </sw-collection-config>
 																							
-																					    	<sw-collection-order-bys>
-																					        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
-																					    	</sw-collection-order-bys>
-																					
-																					    </sw-collection-config>
+																							    <i class="fa fa-map-marker icon-left fa-2x"></i>
+																							    <span sw-typeahead-search-line-item data-property-identifier="locationName"></span><br>
+																							    	
+																						</sw-typeahead-input-field>
 																						<!--- VIEW CHANGE: No location selected --->
 																						<!-- <input id="searchinput" type="search" class="form-control" placeholder="All Locations" value="" title="">
 																						<i class="fa fa-search"></i> -->
@@ -144,14 +149,14 @@
 																				data-entity-name="Account"
 																		        data-property-to-save="accountID"
 																		        data-property-to-show="lastName"
-																		        data-properties-to-load="lastName, firstName, primaryEmailAddress.emailAddress"
+																		        data-properties-to-load="accountID,lastName,firstName"
 																		        data-show-add-button="true"
 																		        data-show-view-button="true"
-																		        data-placeholder-text="Accounts"
+																		        data-placeholder-rb-key="entity.account"
 																		        data-multiselect-mode="false"
 																		        data-filter-flag="true"
-																		        data-selected-format-string="${lastName, firstName, primaryEmailAddress.emailAddress}&nbsp;">
-																		
+																		        data-selected-format-string="${lastName}&nbsp;">
+																			<!-- end ngIf: swTypeaheadSearch.placeholderText -->
 																		    <sw-collection-config
 																		            data-entity-name="Account"
 																		            data-collection-config-property="typeaheadCollectionConfig"
@@ -160,9 +165,8 @@
 																		            data-page-show="50">
 																		
 																				<sw-collection-columns>
-																			        <sw-collection-column data-property-identifier="firstName" data-is-searchable="true"></sw-collection-column>
+																					<sw-collection-column data-property-identifier="firstName" data-is-searchable="true"></sw-collection-column>
 																			        <sw-collection-column data-property-identifier="lastName" data-is-searchable="true"></sw-collection-column>
-																			        <sw-collection-column data-property-identifier="primaryEmailAddress.emailAddress" data-is-searchable="true"></sw-collection-column>
 																			        <sw-collection-column data-property-identifier="accountID"></sw-collection-column>
 																			    </sw-collection-columns>
 																				
@@ -171,6 +175,11 @@
 																		    	</sw-collection-order-bys>
 																		
 																		    </sw-collection-config>
+																			
+																			    <i class="fa fa-user icon-left fa-2x"></i>
+																			    <span sw-typeahead-search-line-item data-property-identifier="lastName"></span><br>
+																			    	
+																		</sw-typeahead-input-field>
 																			
 																		</div>
 							                                        </div>
@@ -240,10 +249,10 @@
 											data-entity-name="Location"
 									        data-property-to-save="locationID"
 									        data-property-to-show="locationName"
-									        data-properties-to-load="locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+									        data-properties-to-load="locationID,locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
 									        data-show-add-button="true"
 									        data-show-view-button="true"
-									        data-placeholder-text="Search Locations..."
+									        data-placeholder-rb-key="entity.location"
 									        data-multiselect-mode="true"
 									        data-filter-flag="true"
 									        data-selected-format-string="${locationName}&nbsp;">

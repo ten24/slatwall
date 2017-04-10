@@ -29337,7 +29337,7 @@
 	 */
 	var SWOrderFulfillmentListController = (function () {
 	    // @ngInject
-	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window) {
+	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
@@ -29347,6 +29347,7 @@
 	        this.$location = $location;
 	        this.$http = $http;
 	        this.$window = $window;
+	        this.typeaheadService = typeaheadService;
 	        /**
 	         * Implements a listener for the orderFulfillment selections
 	         */
@@ -29554,10 +29555,10 @@
 	        /**
 	        * Handles a successful post of the processObject
 	        */
-	        this.processCreateSuccess = function (data) {
-	            console.log("Process Created", data);
+	        this.processCreateSuccess = function (result) {
+	            console.log("Process Created", result);
 	            //Redirect to the created fulfillmentBatch.
-	            _this.$window.location.href = "/?slataction:entity.detailfulfillmentbatch&fulfillmentbatchid=" + data.FulfillmentBatch.FulfillmentBatchID;
+	            _this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['FulfillmentBatch']['FulfillmentBatchID'];
 	        };
 	        /**
 	         * Handles a successful post of the processObject
@@ -29588,6 +29589,17 @@
 	                case "error": break;
 	            }
 	        };
+	        /**
+	         * Returns the number of selected fulfillments
+	         */
+	        this.getTotalFulfillmentsSelected = function () {
+	            try {
+	                return _this.getProcessObject().data.orderFulfillmentIDList.split(",").length;
+	            }
+	            catch (error) {
+	                return 0;
+	            }
+	        };
 	        //Set the initial state for the filters.
 	        this.filters = { "unavailable": false, "partial": true, "available": true };
 	        this.collections = [];
@@ -29610,6 +29622,9 @@
 	        console.log(this.observerService);
 	        this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
+	        this.typeaheadService.attachTypeaheadSelectionUpdateEvent("orderFulfillment", function (data) {
+	            console.log("Data", data);
+	        });
 	    }
 	    return SWOrderFulfillmentListController;
 	}());

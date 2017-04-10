@@ -95,6 +95,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if (!isNull(processObject.getOrderFulfillmentIDList()) && len(processObject.getOrderFulfillmentIDList())){
 			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList();
 			for (var fulfillmentBatchItem in batchItems){
+				fulfillmentBatchItem.setQuantityOnBatch(1);
+				fulfillmentBatchItem.setQuantityFulfilled(0);
+				fulfillmentBatchItem.setQuantityPicked(0);
+				this.saveFulfillmentBatchItem(fulfillmentBatchItem);
 				arguments.fulfillmentBatch.addFulfillmentBatchItem(fulfillmentBatchItem);
 			}
 		}
@@ -104,6 +108,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList());
 			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList();
 			for (var fulfillmentBatchItem in batchItems){
+				fulfillmentBatchItem.setQuantityOnBatch(1);
+				fulfillmentBatchItem.setQuantityFulfilled(0);
+				fulfillmentBatchItem.setQuantityPicked(0);
+				this.saveFulfillmentBatchItem(fulfillmentBatchItem);
 				arguments.fulfillmentBatch.addFulfillmentBatchItem(fulfillmentBatchItem);
 			}
 		}
