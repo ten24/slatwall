@@ -70,12 +70,17 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	
 	public any function getLandedCost(){
 		if(!isNull(getVendorOrderItem())){
-			return getCost() + getLandingAmount();	
+			var cost = 0;
+			if(!isNull(getCost())){
+				cost = getCost();
+			}
+			return cost + getLandingAmount();	
 		}
 		return 0;
 	}
 	
 	public any function getLandingAmount(){
+		
 		if(
 			!isNull(getVendorOrderItem()) 
 			&& !isNull(getVendorOrderItem().getVendorOrder())
@@ -208,6 +213,7 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 		}
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
+		
 	}
 	
 	public void function preUpdate(Struct oldData){

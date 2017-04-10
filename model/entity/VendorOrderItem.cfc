@@ -89,7 +89,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		if(!isNull(getVendorOrder()) && !isNull(getQuantity())){
 			var totalQuantity = getVendorOrder().getTotalQuantity();
 			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getQuantity()/totalQuantity);
-			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().shippingAndHandlingCost() * percentageOfTotal);	
+			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
 		}
 		return 0;
 	}
@@ -98,7 +98,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		if(!isNull(getVendorOrder()) && !isNull(getExtendedWeight())){
 			var totalQuantity = getVendorOrder().getTotalWeight();
 			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getExtendedWeight()/totalWeight);
-			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().shippingAndHandlingCost() * percentageOfTotal);	
+			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
 		}
 		return 0;
 	}
@@ -107,7 +107,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		if(!isNull(getVendorOrder()) && !isNull(getExtendedCost())){
 			var totalQuantity = getVendorOrder().getTotalCost();
 			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getExtendedCost()/totalCost);
-			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().shippingAndHandlingCost() * percentageOfTotal);	
+			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
 		}
 		return 0;
 	}

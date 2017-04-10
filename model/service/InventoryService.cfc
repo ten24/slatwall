@@ -72,13 +72,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
 			
 			//vendorOrderItem logic
-			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendororderitem'){
+			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendorOrder'){
 				inventory.setCost(arguments.stockReceiverItem.getCost());
 				inventory.setLandedCost(arguments.stockReceiverItem.getLandedCost());
-				inventory.setLandedAmount(arguments.stockReceiverItem.getLandedAmount());
-				if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+				inventory.setLandedAmount(arguments.stockReceiverItem.getLandingAmount());
+				if(arguments.stockReceiverItem.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 					//set the cogs ledger account 
-					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
+					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuCogsLedgerAccount'));
 					inventory.setCogsLedgerAccount(cogsLedgerAccount);
 				}
 			}
@@ -98,6 +98,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			//calculate Landed Cost
 			getHibachiDAO().save( inventory );
+			
 			
 		}
 	}

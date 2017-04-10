@@ -229,6 +229,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processVendorOrder_receive(required any vendorOrder, required any processObject){
+		
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "vendorOrder" );
 		stockReceiver.setVendorOrder( arguments.vendorOrder );
@@ -259,10 +260,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 			}
 		}
-		
-		
-		getService('stockService').saveStockReceiver( stockReceiver );
-		
 		var closedFlag = true;
 		var partiallyReceivedFlag = false;
 		
