@@ -7,7 +7,9 @@
 <cfoutput>
 	<!--- ledger account inventory listing --->
 	<cfif ListFindNoCase('latAsset,latExpense,latRevenue,latCogs',rc.ledgerAccount.getLedgerAccountType().getSystemCode())>
-		<hb:HibachiListingDisplay smartList="#rc.ledgerAccount.getInventorySmartList()#"
+		<cfset laSmartList = rc.ledgerAccount.getInventorySmartList()/>
+		<cfset laSmartList.addOrder('createdDateTime|DESC')/>
+		<hb:HibachiListingDisplay smartList="#laSmartList#"
 		>
 			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 	        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
