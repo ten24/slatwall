@@ -60,23 +60,12 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.ledgeraccount#">
 			<hb:HibachiEntityDetailItem view="admin:entity/ledgeraccounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-
+			<hb:HibachiEntityDetailItem view="admin:entity/ledgeraccounttabs/inventory" open="true" text="#$.slatwall.rbKey('admin.define.inventory')#" />
+			
 		</hb:HibachiEntityDetailGroup>
 		
 
 	</hb:HibachiEntityDetailForm>
-	<!--- ledger account inventory listing --->
-	<cfif ListFindNoCase('latAsset,latExpense,latRevenue,latCogs',rc.ledgerAccount.getLedgerAccountType().getSystemCode())>
-		<hb:HibachiListingDisplay smartList="#rc.ledgerAccount.getInventorySmartList()#"
-		>
-			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
-	        <hb:HibachiListingColumn propertyIdentifier="quantityOUT" />
-	        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.stockReceiverItemID" />
-	        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
-	        <hb:HibachiListingColumn propertyIdentifier="stockAdjustmentDeliveryItem.stockAdjustmentItem.stockAdjustment.stockAdjustmentID" />
-			
-		</hb:HibachiListingDisplay>
-    </cfif>
+	
 
 </cfoutput>
