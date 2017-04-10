@@ -274,6 +274,7 @@ class SWOrderFulfillmentListController {
             this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
             this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
 
+            //This goes to service.
             this.$http.post("/?slataction=api:main.doProcess", this.getProcessObject().data, {})
                 .then(this.processCreateSuccess, this.processCreateError)
         }

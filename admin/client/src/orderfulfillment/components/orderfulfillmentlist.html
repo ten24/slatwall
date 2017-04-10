@@ -200,7 +200,7 @@
 								                </div>
 								                <div class="modal-footer">
 								                    <a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-								                    <button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()">Add Batch</button> 
+								                    <button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0">Add Batch</button> 
 								                </div>
 								            </div>
 								        </div>
