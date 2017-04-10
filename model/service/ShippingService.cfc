@@ -123,10 +123,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if( !isNull(shippingMethodRate.getSplitShipmentWeight()) && 
 						ratesRequestBean.getTotalWeight() > shippingMethodRate.getSplitShipmentWeight() &&
 						this.getOrderFulfillmentCanBeSplitShipped(arguments.orderFulfillment, shippingMethodRate.getSplitShipmentWeight())
-					){ 
-						var splitShipmentFlag = true; 
-						ArrayAppend(splitShipmentWeights, shippingMethodRate.getSplitShipmentWeight()); 
-						ArrayAppend(splitShippingMethodRates, shippingMethodRate); 
+					){
+						var hasWeight = false;
+						if(splitShipmentFlag){
+								for(var weight in splitShipmentWeights){
+										if(weight == shippingMethodRate.getSplitShipmentWeight()){
+												hasWeight=true;
+										}
+								}
+						} else {
+								splitShipmentFlag = true;
+						}
+						if(!hasWeight){
+								ArrayAppend(splitShipmentWeights, shippingMethodRate.getSplitShipmentWeight());
+								ArrayAppend(splitShippingMethodRates, shippingMethodRate);
+						}
 					} 
 				}		
 			}

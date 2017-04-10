@@ -1,6 +1,6 @@
 /*
 
-    Slatwall - An Open Source eCommerce Platform 
+    Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
@@ -46,62 +46,46 @@
 Notes:
 
 */
-component displayname="Account Phone Number" entityname="SlatwallAccountPhoneNumber" table="SwAccountPhoneNumber" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPhoneNumbers" {
+component displayname="DatabaseCache" entityname="SlatwallDatabaseCache" table="SwDatabaseCache" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_auditable="false" hb_serviceName="HibachiCacheService" {
 	
 	// Persistent Properties
-	property name="accountPhoneNumberID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="phoneNumber" hb_populateEnabled="public" ormtype="string";
+	property name="databaseCacheID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="databaseCacheKey" ormtype="string" unique="true" index="PI_DATACACHEKEY";
+	property name="databaseCacheValue" ormtype="string" length="8000";
 	
-	// Related Object Properties (Many-To-One)
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="accountPhoneType" hb_populateEnabled="public" cfc="Type" fieldtype="many-to-one" fkcolumn="accountPhoneTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=accountPhoneType";
-	// Remote properties
- 	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
-  	
+	// Related Object Properties (many-to-one)
+		
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many)
+	
+	// Remote Properties
+	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	
-	public string function getPhoneType() {
-		return getAccountPhoneType().getTypeName();
-	}
+	// Non-Persistent Properties
 
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Account (many-to-one)    
-	public void function setAccount(required any account) {    
-		variables.account = arguments.account;    
-		if(isNew() or !arguments.account.hasAccountPhoneNumber( this )) {    
-			arrayAppend(arguments.account.getAccountPhoneNumbers(), this);    
-		}    
-	}    
-	public void function removeAccount(any account) {    
-		if(!structKeyExists(arguments, "account")) {    
-			arguments.account = variables.account;    
-		}    
-		var index = arrayFind(arguments.account.getAccountPhoneNumbers(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.account.getAccountPhoneNumbers(), index);    
-		}    
-		structDelete(variables, "account");    
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
-	// ================== START: Overridden Methods ========================
+	// ===============  END: Custom Validation Methods =====================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "phoneNumber";
-	}
+	// =============== START: Custom Formatting Methods ====================
 	
-	// ==================  END:  Overridden Methods ========================
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
 	
@@ -110,5 +94,8 @@ component displayname="Account Phone Number" entityname="SlatwallAccountPhoneNum
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-

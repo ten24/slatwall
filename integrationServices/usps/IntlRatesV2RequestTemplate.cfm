@@ -73,10 +73,10 @@
 		<Country>#arguments.requestBean.getShipToCountry()#</Country>
 		<Container>RECTANGULAR</Container>
 		<Size>LARGE</Size>
-		<Width>20</Width>
-		<Length>20</Length>
-		<Height>20</Height>
-		<Girth>80</Girth> 
+		<Width>#setting('packageWidth')#</Width>
+		<Length>#setting('packageLength')#</Length>
+		<Height>#setting('packageHeight')#</Height>
+		<Girth>#setting('packageGirth')#</Girth> 
 		<OriginZip>#setting('shipFromPostalCode')#</OriginZip>
 	</Package>
 </IntlRateV2Request>

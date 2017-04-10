@@ -53,7 +53,83 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		variables.service = request.slatwallScope.getBean("hibachiCollectionService");
 		variables.defaultCollectionOptions = setUpCollectionOptions({});
+		
+//		variables.superUserSession = request.slatwallScope.getSession();
+//		
+//		variables.adminAccountData = {
+//			accountID="",
+//			firstName="adminUser"
+//		};
+//		variables.adminAccount = createPersistedTestEntity('Account',variables.adminAccountData);
+//		variables.adminAccount.setSuperUserFlag(0);
+//		
+//		
+//		variables.adminSessionData = {
+//			sessionID=""
+//			
+//		};
+//		variables.adminSession = createPersistedTestEntity('Session',variables.adminSessionData);
+//		
+//		variables.adminSession.setAccount(variables.adminAccount);
+//		assert(!isNull(variables.adminSession.getAccount()));
+		
 	}
+	
+	/**
+	* @test
+	*/
+	public void function getAPIResponseForCollectionTest_withpermissiongroupAccessToOrderItem(){
+		//set currentUser to an admin user
+		
+		//request.slatwallScope.setSession(variables.adminSessionData);
+		
+		var permissionGroupData ={
+			permissionGroupID="",
+			permissionGroupName=createUUID()&'testPermgroup'
+		};
+		var permissionGroup = createPersistedTestEntity('PermissionGroup',permissionGroupData);
+		request.slatwallSCope.getAccount().addPermissionGroup(permissionGroup);
+		permissionGroup.addAccount(request.slatwallSCope.getAccount());
+		
+		assert(arrayLen(request.slatwallScope.getAccount().getPermissionGroups()));
+		assert(arrayLen(permissionGroup.getAccounts()));
+		var permissionData = {
+			permissionID="",
+			accessType="entity",
+			entityClassName="Order",
+			allowReadFlag=1
+		};
+		
+		var permission = createPersistedTestEntity('Permission',permissionData);
+		permission.setAccessType('entity');
+		permission.setPermissionGroup(permissionGroup);
+		permissionGroup.addPermission(permission);
+		
+		request.slatwallScope.getService('HibachiAuthenticationService').clearEntityPermissionDetails();
+		
+		assert(!isNull(permission.getPermissionGroup()));
+		
+		var collectionEntity = createPersistedTestEntity('collection',{collectionID=""});
+		collectionEntity.setCollectionObject('Product');
+		
+		assert(collectionEntity.getEnforceAuthorization());
+		request.slatwallSCope.getAccount().setSuperUserFlag(0);
+		assertFalse(request.slatwallSCope.getAccount().getSuperUserFlag());
+		var collectionData = variables.service.getAPIResponseForCollection(collectionEntity,{});
+		//assert we don't have access
+		assert(structIsEmpty(collectionData));
+		
+		
+		orderCollectionEntity = createPersistedTestEntity('collection',{collectionID=""});
+		orderCollectionEntity.setCollectionObject('OrderItem');
+		collectionData = variables.service.getAPIResponseForCollection(orderCollectionEntity,{});
+		//assert we do have access
+		assert(!structIsEmpty(collectionData));
+		//set it back at the end to the superUser
+		request.slatwallSCope.getAccount().setSuperUserFlag(1);
+		request.slatwallSCope.getAccount().setPermissionGroups([]);
+	}
+	
 
 	private struct function setUpCollectionOptions(required struct rc){
 		var currentPage = 1;
@@ -387,6 +463,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var apiResponse = variables.service.getAPIResponseForBasicEntityWithID('account',account.getAccountID(), collectionOptions);
 		assertTrue(isStruct(apiResponse));
 	}*/
+	
 
 	/**
 	* @test
