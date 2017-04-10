@@ -125,7 +125,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getMaxFulfillmentBatchNumber(){
-		return getFulfillmentDAO().getMaxFulfillmentBatchNumber();
+		var maxFulfillmentBatchNumber = ormExecuteQuery("SELECT max(cast(aslatwallfulfillmentbatch.fulfillmentBatchNumber as int)) as maxFulfillmentBatchNumber FROM SlatwallFulfillmentBatch aslatwallfulfillmentbatch");
+		if( arrayIsDefined(maxFulfillmentBatchNumber,1) ){
+			return maxFulfillmentBatchNumber[1] + 1;
+		} else {
+			return 1;
+		}
 	}
 	
 	// Stub: FulfillmentBatch Auto fulfill all fulfillment batch items
