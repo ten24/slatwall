@@ -116,9 +116,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+		//Generate the next fulfillmentBatch number
+		arguments.fulfillmentBatch.setFulfillmentBatchNumber(this.getMaxFulfillmentBatchNumber());
+		
 		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
 		
 		return arguments.fulfillmentBatch;
+	}
+	
+	public any function getMaxFulfillmentBatchNumber(){
+		return getFulfillmentDAO().getMaxFulfillmentBatchNumber();
 	}
 	
 	// Stub: FulfillmentBatch Auto fulfill all fulfillment batch items
