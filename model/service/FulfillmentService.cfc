@@ -73,7 +73,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processFulfillmentBatch_create(required any fulfillmentBatch, required any processObject){
 		
 		//populate the fulfillmentbatch with the process data
-		if (isNull(fulfillmentBatch.getAssignedAccount())){
+		if (isNull(fulfillmentBatch.getAssignedAccount()) && !isNull(processObject.getAssignedAccount())){
 			arguments.fulfillmentBatch.setAssignedAccount(processObject.getAssignedAccount());
 		}
 		
@@ -92,14 +92,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		//If they are trying to pass fulfillments for the fulfillment batch.
-		if (!isNull(processObject.getOrderFulfillmentIDList())){
-			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList());
+		if (!isNull(processObject.getOrderFulfillmentIDList()) && len(processObject.getOrderFulfillmentIDList())){
+			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList();
+			for (var fulfillmentBatchItem in batchItems){
+				arguments.fulfillmentBatch.addFulfillmentBatchItem(fulfillmentBatchItem);
+			}
 		}
 		
 		//If they are trying to pass orderItems for the fulfillment batch.
-		if (!isNull(processObject.getOrderItemIDList())){
+		if (!isNull(processObject.getOrderItemIDList()) && len(processObject.getOrderItemIDList())){
 			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList());
+			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList();
+			for (var fulfillmentBatchItem in batchItems){
+				arguments.fulfillmentBatch.addFulfillmentBatchItem(fulfillmentBatchItem);
+			}
 		}
+		
+		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
 		
 		return arguments.fulfillmentBatch;
 	}

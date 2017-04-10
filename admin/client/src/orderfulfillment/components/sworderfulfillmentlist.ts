@@ -13,7 +13,7 @@ module FulfillmentsList {
 /**
  * Fulfillment List Controller
  */
-class SWOrderFulfillmentListController implements Prototypes.Observable.IObserver {
+class SWOrderFulfillmentListController {
     private orderFulfillmentCollection:any;
     private orderItemCollection:any;
     private orderCollectionConfig:any;
@@ -28,7 +28,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public processObject:any;
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window){
         
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": true, "available": true };
@@ -59,10 +59,6 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
         
-        /**
-         * Attach to the service 
-         * this.orderFulfillmentService.registerObserver(this);
-         */
     }
     
     /**
@@ -261,14 +257,34 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      */
     public addBatch = () => {
         //if we have formData, then pass that formData to the createBatch process.
+        //This needs to go into the service once its created..
         if (this.getProcessObject()) {
             console.log("Hibachi", this.$hibachi);
             console.log("Process Object", this.getProcessObject());
             //this.orderFulfillmentService.addBatch(this.getBatchProcess());
-            this.$hibachi.saveProcess("fulfillmentBatch_Create", "", this.getProcessObject().data, "process");
+            this.getProcessObject().data.entityName = "FulfillmentBatch";
+            this.getProcessObject().data.serviceName = "fulfillment";//service is different then fulfillmentBatchService so must define.
+            this.getProcessObject().data.processContext = "create";
+            this.getProcessObject().data['fulfillmentBatch'] = {};
+            this.getProcessObject().data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+            this.$http.post("/?slataction=api:main.doProcess", this.getProcessObject().data, {})
+                .then(this.processCreateSuccess, this.processCreateError)
         }
     }
-
+     /**
+     * Handles a successful post of the processObject
+     */
+    public processCreateSuccess = (data) => {
+        console.log("Process Created", data);
+        //Redirect to the created fulfillmentBatch.
+        this.$window.location.href = "/?slataction:entity.detailfulfillmentbatch&fulfillmentbatchid=" + data.FulfillmentBatch.FulfillmentBatchID;
+    }
+    /**
+     * Handles a successful post of the processObject
+     */
+    public processCreateError= (data) => {
+        console.log("Process Errors", data);
+    }
     /**
      * Returns the processObject
      */
@@ -284,7 +300,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     }
 
     /**
-     * This will recieve all the notifications from the service events.
+     * This will recieve all the notifications from the observer service.
      */
     public recieveNotification = (message): void => {
         console.log("Message Recieved: ", message);

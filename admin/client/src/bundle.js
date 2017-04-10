@@ -29337,7 +29337,7 @@
 	 */
 	var SWOrderFulfillmentListController = (function () {
 	    // @ngInject
-	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location) {
+	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
@@ -29345,6 +29345,8 @@
 	        this.observerService = observerService;
 	        this.utilityService = utilityService;
 	        this.$location = $location;
+	        this.$http = $http;
+	        this.$window = $window;
 	        /**
 	         * Implements a listener for the orderFulfillment selections
 	         */
@@ -29535,12 +29537,33 @@
 	         */
 	        this.addBatch = function () {
 	            //if we have formData, then pass that formData to the createBatch process.
+	            //This needs to go into the service once its created..
 	            if (_this.getProcessObject()) {
 	                console.log("Hibachi", _this.$hibachi);
 	                console.log("Process Object", _this.getProcessObject());
 	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
-	                _this.$hibachi.saveProcess("fulfillmentBatch_Create", "", _this.getProcessObject().data, "process");
+	                _this.getProcessObject().data.entityName = "FulfillmentBatch";
+	                _this.getProcessObject().data.serviceName = "fulfillment"; //service is different then fulfillmentBatchService so must define.
+	                _this.getProcessObject().data.processContext = "create";
+	                _this.getProcessObject().data['fulfillmentBatch'] = {};
+	                _this.getProcessObject().data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+	                _this.$http.post("/?slataction=api:main.doProcess", _this.getProcessObject().data, {})
+	                    .then(_this.processCreateSuccess, _this.processCreateError);
 	            }
+	        };
+	        /**
+	        * Handles a successful post of the processObject
+	        */
+	        this.processCreateSuccess = function (data) {
+	            console.log("Process Created", data);
+	            //Redirect to the created fulfillmentBatch.
+	            _this.$window.location.href = "/?slataction:entity.detailfulfillmentbatch&fulfillmentbatchid=" + data.FulfillmentBatch.FulfillmentBatchID;
+	        };
+	        /**
+	         * Handles a successful post of the processObject
+	         */
+	        this.processCreateError = function (data) {
+	            console.log("Process Errors", data);
 	        };
 	        /**
 	         * Returns the processObject
@@ -29555,7 +29578,7 @@
 	            _this.processObject = processObject;
 	        };
 	        /**
-	         * This will recieve all the notifications from the service events.
+	         * This will recieve all the notifications from the observer service.
 	         */
 	        this.recieveNotification = function (message) {
 	            console.log("Message Recieved: ", message);
@@ -29587,10 +29610,6 @@
 	        console.log(this.observerService);
 	        this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-	        /**
-	         * Attach to the service
-	         * this.orderFulfillmentService.registerObserver(this);
-	         */
 	    }
 	    return SWOrderFulfillmentListController;
 	}());

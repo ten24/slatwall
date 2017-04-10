@@ -158,11 +158,14 @@ component output="false" accessors="true" extends="HibachiController" {
     }
     
     public void function doProcess (required struct rc) {
-    	 var entity = rc.entityName;
+    	 var entityName = rc.entityName;
+    	 var serviceName = rc.serviceName;
     	 var processContext = rc.processContext;
-    	 var result = getService('#entityName#Service').invokeMethod("process#entityName#", {1=getService('#entityName#Service').invokeMethod("new#entityName#"), 2=rc, 3=processContext});
+    	 var result = getService('#serviceName#Service').invokeMethod("process#entityName#", {1=getService('#serviceName#Service').invokeMethod("new#entityName#"), 2=rc, 3=processContext});
     	 if (result.hasErrors()){
     	 	arguments.rc.apiResponse.content['errors'] = result.getErrors();
+    	 }else{
+    	 	arguments.rc.apiResponse.content['#entityName#']['#entityName#ID'] = result.invokeMethod("get#entityName#ID",{});
     	 }
     }
 
