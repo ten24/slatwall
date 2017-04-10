@@ -62,8 +62,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
 		
+		var productData = {
+			productID="",
+			productType={
+				//merchandise
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
 		var skuData = {
-			skuID=""
+			skuID="",
+			product={
+				productID=product.getProductID()
+			}
 		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		

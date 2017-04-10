@@ -88,7 +88,11 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	public numeric function getLandingAmountByQuantity(){
 		if(!isNull(getVendorOrder()) && !isNull(getQuantity())){
 			var totalQuantity = getVendorOrder().getTotalQuantity();
-			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getQuantity()/totalQuantity);
+			var percentageOfTotal = 0;
+			if(totalQuantity > 0 && getQuantity() > 0){
+				percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getQuantity()/totalQuantity);
+			}
+			
 			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
 		}
 		return 0;
