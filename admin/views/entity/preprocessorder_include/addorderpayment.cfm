@@ -206,7 +206,7 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                           edit="#rc.edit#">
 <hb:HibachiDisplayToggle selector="select[name='accountAddressID']" showvalues=""
                         loadvisable="#!len(rc.addOrderPaymentProcessObject.getAccountAddressID())#">
-<swa:slatwalladminaddressdisplay address="#rc.addOrderPaymentProcessObject.getNewOrderPayment().getBillingAddress()#"
+<swa:SlatwallAdminAddressDisplay address="#rc.addOrderPaymentProcessObject.getNewOrderPayment().getBillingAddress()#"
                                 fieldnameprefix="newOrderPayment.billingAddress."
                                 edit="#rc.edit#"/>
 </hb:HibachiDisplayToggle>

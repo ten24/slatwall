@@ -52,6 +52,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	// Calculated Properties
+	property name="calculatedExtendedPrice" ormtype="big_decimal";
+	property name="calculatedExtendedUnitPrice" ormtype="big_decimal";
+	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal";
+	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal";
+	property name="calculatedTaxAmount" ormtype="big_decimal";
+	property name="calculatedItemTotal" ormtype="big_decimal";
+	property name="calculatedDiscountAmount" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
@@ -98,7 +106,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="activeEventRegistrations" persistent="false";
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
+	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
+	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
@@ -159,7 +169,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
+			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
@@ -173,7 +183,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 				}
 			}
 		}
-
 		return maxQTY;
 	}
 
@@ -408,6 +417,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getExtendedPriceAfterDiscount() {
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount());
+	}
+
+	public numeric function getExtendedUnitPrice() {
+		return val(precisionEvaluate(getExtendedPrice() / getQuantity()));
+	}
+
+	public numeric function getExtendedUnitPriceAfterDiscount() {
+		return val(precisionEvaluate(getExtendedPriceAfterDiscount() / getQuantity()));
 	}
 
 	public any function getActiveEventRegistrations() {
