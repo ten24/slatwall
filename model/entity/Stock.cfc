@@ -110,10 +110,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public any function getQNC() {
 		return getQuantity("QNC");
 	}
-	
-	public boolean function getLocationIsLeafNode(){
-		return getLocation().getChildLocationCount() == 0;
-	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 

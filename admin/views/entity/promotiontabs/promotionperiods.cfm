@@ -56,8 +56,7 @@ Notes:
 	<hb:HibachiListingDisplay smartList="#rc.promotion.getPromotionPeriodsSmartList()#"
 							   recordEditAction="admin:entity.editPromotionPeriod"
 							   recorddetailaction="admin:entity.detailpromotionperiod">
-		<hb:HibachiListingColumn propertyIdentifier="promotionPeriodName" tdclass="primary" />
-		<hb:HibachiListingColumn propertyIdentifier="startDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="startDateTime" tdclass="primary" />
 		<hb:HibachiListingColumn propertyIdentifier="endDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="maximumUseCount" />
 		<hb:HibachiListingColumn propertyIdentifier="maximumAccountUseCount" />
