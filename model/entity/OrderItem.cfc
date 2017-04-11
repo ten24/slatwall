@@ -420,7 +420,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getExtendedUnitPrice() {
-		if(!isNull(getQuantity()) && NumbergetQuantity() > 0){
+		if(!isNull(getQuantity()) && getQuantity() > 0){
 			return val(precisionEvaluate(getExtendedPrice() / getQuantity()));	
 		}else{
 			return 0;
