@@ -84,7 +84,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         entityName:"@",
         allRecords:"=?",
         validateRequired:"=?", 
-        maxRecords:"@",
+        maxRecords:"@?",
         propertiesToLoad:"@?",
         placeholderRbKey:"@?",
         propertyToShow:"@",
