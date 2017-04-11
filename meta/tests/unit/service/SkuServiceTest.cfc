@@ -128,6 +128,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};	
 		var sku = createPersistedTestEntity('Sku',skuData);
+
+		originalProduct.setDefaultSku(sku); 
 		
 		var destinationProductData = {
 			productID="",
