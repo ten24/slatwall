@@ -105,7 +105,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		//If they are trying to pass orderItems for the fulfillment batch.
 		if (!isNull(processObject.getOrderItemIDList()) && len(processObject.getOrderItemIDList())){
-			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList());
 			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList();
 			for (var fulfillmentBatchItem in batchItems){
 				fulfillmentBatchItem.setQuantityOnBatch(1);

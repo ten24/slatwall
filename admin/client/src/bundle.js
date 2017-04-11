@@ -29304,6 +29304,8 @@
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
+	//services
+	var orderfulfillmentservice_1 = __webpack_require__(281);
 	//controllers
 	//directives
 	var sworderfulfillmentlist_1 = __webpack_require__(252);
@@ -29313,6 +29315,7 @@
 	    }]).run([function () {
 	    }])
 	    .constant('orderFulfillmentPartialsPath', 'orderFulfillment/components/')
+	    .service('swOrderFulfillmentService', orderfulfillmentservice_1.SWOrderFulfillmentService)
 	    .directive('swOrderFulfillmentList', sworderfulfillmentlist_1.SWOrderFulfillmentList.Factory());
 	exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
@@ -29337,7 +29340,7 @@
 	 */
 	var SWOrderFulfillmentListController = (function () {
 	    // @ngInject
-	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService) {
+	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, swOrderFulfillmentService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
@@ -29348,6 +29351,7 @@
 	        this.$http = $http;
 	        this.$window = $window;
 	        this.typeaheadService = typeaheadService;
+	        this.swOrderFulfillmentService = swOrderFulfillmentService;
 	        /**
 	         * Implements a listener for the orderFulfillment selections
 	         */
@@ -29540,25 +29544,14 @@
 	            //if we have formData, then pass that formData to the createBatch process.
 	            //This needs to go into the service once its created..
 	            if (_this.getProcessObject()) {
-	                console.log("Hibachi", _this.$hibachi);
-	                console.log("Process Object", _this.getProcessObject());
-	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
-	                _this.getProcessObject().data.entityName = "FulfillmentBatch";
-	                _this.getProcessObject().data.serviceName = "fulfillment"; //service is different then fulfillmentBatchService so must define.
-	                _this.getProcessObject().data.processContext = "create";
-	                _this.getProcessObject().data['fulfillmentBatch'] = {};
-	                _this.getProcessObject().data['fulfillmentBatch']['fulfillmentBatchID'] = "";
-	                //get the locationID and the assigned account id if they exist.
 	                _this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
 	                _this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
-	                //This goes to service.
-	                _this.$http.post("/?slataction=api:main.doProcess", _this.getProcessObject().data, {})
-	                    .then(_this.processCreateSuccess, _this.processCreateError);
+	                _this.swOrderFulfillmentService.addBatch(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
 	            }
 	        };
 	        /**
-	        * Handles a successful post of the processObject
-	        */
+	         * Handles a successful post of the processObject
+	         */
 	        this.processCreateSuccess = function (result) {
 	            console.log("Process Created", result);
 	            //Redirect to the created fulfillmentBatch.
@@ -29597,11 +29590,22 @@
 	         * Returns the number of selected fulfillments
 	         */
 	        this.getTotalFulfillmentsSelected = function () {
-	            try {
-	                return _this.getProcessObject().data.orderFulfillmentIDList.split(",").length;
-	            }
-	            catch (error) {
-	                return 0;
+	            var total = 0;
+	            if (_this.getProcessObject() && _this.getProcessObject().data) {
+	                try {
+	                    if (_this.getProcessObject().data.orderFulfillmentIDList && _this.getProcessObject().data.orderFulfillmentIDList.split(",").length > 0 && _this.getProcessObject().data.orderItemIDList && _this.getProcessObject().data.orderItemIDList.split(",").length > 0) {
+	                        return _this.getProcessObject().data.orderFulfillmentIDList.split(",").length + _this.getProcessObject().data.orderItemIDList.split(",").length;
+	                    }
+	                    else if (_this.getProcessObject().data.orderFulfillmentIDList && _this.getProcessObject().data.orderFulfillmentIDList.split(",").length > 0) {
+	                        return _this.getProcessObject().data.orderFulfillmentIDList.split(",").length;
+	                    }
+	                    else if (_this.getProcessObject().data.orderItemIDList && _this.getProcessObject().data.orderItemIDList.split(",").length > 0) {
+	                        return _this.getProcessObject().data.orderItemIDList.split(",").length;
+	                    }
+	                }
+	                catch (error) {
+	                    return 0; //default
+	                }
 	            }
 	        };
 	        //Set the initial state for the filters.
@@ -29629,6 +29633,7 @@
 	        this.typeaheadService.attachTypeaheadSelectionUpdateEvent("orderFulfillment", function (data) {
 	            console.log("Data", data);
 	        });
+	        this.swOrderFulfillmentService.registerObserver(this);
 	    }
 	    return SWOrderFulfillmentListController;
 	}());
@@ -32780,6 +32785,73 @@
 	    return SWCurrency;
 	}());
 	exports.SWCurrency = SWCurrency;
+
+
+/***/ },
+/* 281 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	/**
+	 * Fulfillment List Controller
+	 */
+	var SWOrderFulfillmentService = (function () {
+	    // @ngInject
+	    function SWOrderFulfillmentService($hibachi, $timeout, collectionConfigService, $http) {
+	        var _this = this;
+	        this.$hibachi = $hibachi;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.$http = $http;
+	        /**
+	         * This manages all the observer events without the need for setting ids etc.
+	         */
+	        this.registerObserver = function (_observer) {
+	            if (!_observer) {
+	                throw new Error('Observer required for registration');
+	            }
+	            _this.observers.push(_observer);
+	        };
+	        /**
+	         * Removes the observer. Just pass in this
+	         */
+	        this.removeObserver = function (_observer) {
+	            if (!_observer) {
+	                throw new Error('Observer required for removal.');
+	            }
+	        };
+	        /**
+	         * Note that message should have a type and a data field
+	         */
+	        this.notifyObservers = function (_message) {
+	            for (var observer in _this.observers) {
+	                _this.observers[observer].recieveNotification(_message);
+	            }
+	        };
+	        /**
+	         * Creates a batch
+	         */
+	        this.addBatch = function (processObject) {
+	            if (processObject) {
+	                console.log("Hibachi", _this.$hibachi);
+	                console.log("Process Object", processObject);
+	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
+	                processObject.data.entityName = "FulfillmentBatch";
+	                processObject.data.serviceName = "fulfillment"; //service is different then fulfillmentBatchService so must define.
+	                processObject.data.processContext = "create";
+	                processObject.data['fulfillmentBatch'] = {};
+	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+	                //This goes to service.
+	                return _this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
+	            }
+	        };
+	        this.observers = new Array();
+	    }
+	    return SWOrderFulfillmentService;
+	}());
+	exports.SWOrderFulfillmentService = SWOrderFulfillmentService;
 
 
 /***/ }

@@ -11,7 +11,7 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
     public observers: Array<Prototypes.Observable.IObserver>
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){
         this.observers = new Array<Prototypes.Observable.IObserver>();
     }
 
@@ -41,4 +41,26 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
             this.observers[observer].recieveNotification(_message);
         }
     }
+
+    /**
+     * Creates a batch
+     */
+    public addBatch = (processObject) => {
+    if (processObject) {
+            console.log("Hibachi", this.$hibachi);
+            console.log("Process Object", processObject);
+            //this.orderFulfillmentService.addBatch(this.getBatchProcess());
+            processObject.data.entityName = "FulfillmentBatch";
+            processObject.data.serviceName = "fulfillment";//service is different then fulfillmentBatchService so must define.
+            processObject.data.processContext = "create";
+            processObject.data['fulfillmentBatch'] = {};
+            processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+
+            //This goes to service.
+            return this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
+        }
+    }
+}
+export {
+    SWOrderFulfillmentService
 }

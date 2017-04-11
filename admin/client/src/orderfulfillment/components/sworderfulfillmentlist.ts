@@ -28,7 +28,7 @@ class SWOrderFulfillmentListController {
     public processObject:any;
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private swOrderFulfillmentService){
         
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": true, "available": true };
@@ -61,6 +61,7 @@ class SWOrderFulfillmentListController {
         this.typeaheadService.attachTypeaheadSelectionUpdateEvent("orderFulfillment", (data)=>{
             console.log("Data", data);
         });
+        this.swOrderFulfillmentService.registerObserver(this);
     }
     
     /**
@@ -261,25 +262,12 @@ class SWOrderFulfillmentListController {
         //if we have formData, then pass that formData to the createBatch process.
         //This needs to go into the service once its created..
         if (this.getProcessObject()) {
-            console.log("Hibachi", this.$hibachi);
-            console.log("Process Object", this.getProcessObject());
-            //this.orderFulfillmentService.addBatch(this.getBatchProcess());
-            this.getProcessObject().data.entityName = "FulfillmentBatch";
-            this.getProcessObject().data.serviceName = "fulfillment";//service is different then fulfillmentBatchService so must define.
-            this.getProcessObject().data.processContext = "create";
-            this.getProcessObject().data['fulfillmentBatch'] = {};
-            this.getProcessObject().data['fulfillmentBatch']['fulfillmentBatchID'] = "";
-
-            //get the locationID and the assigned account id if they exist.
             this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
             this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
-
-            //This goes to service.
-            this.$http.post("/?slataction=api:main.doProcess", this.getProcessObject().data, {})
-                .then(this.processCreateSuccess, this.processCreateError)
+            this.swOrderFulfillmentService.addBatch(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
         }
     }
-     /**
+    /**
      * Handles a successful post of the processObject
      */
     public processCreateSuccess = (result) => {
@@ -325,10 +313,23 @@ class SWOrderFulfillmentListController {
      * Returns the number of selected fulfillments
      */
     public getTotalFulfillmentsSelected = () => {
-        try{
-            return this.getProcessObject().data.orderFulfillmentIDList.split(",").length;
-        } catch (error){
-            return 0;
+        
+        var total = 0;
+        if (this.getProcessObject() && this.getProcessObject().data){
+            try{
+                if (this.getProcessObject().data.orderFulfillmentIDList && this.getProcessObject().data.orderFulfillmentIDList.split(",").length > 0 && this.getProcessObject().data.orderItemIDList && this.getProcessObject().data.orderItemIDList.split(",").length > 0){
+                    return this.getProcessObject().data.orderFulfillmentIDList.split(",").length + this.getProcessObject().data.orderItemIDList.split(",").length;
+                }
+                else if (this.getProcessObject().data.orderFulfillmentIDList && this.getProcessObject().data.orderFulfillmentIDList.split(",").length > 0) {
+                    return this.getProcessObject().data.orderFulfillmentIDList.split(",").length;
+                }
+                else if (this.getProcessObject().data.orderItemIDList && this.getProcessObject().data.orderItemIDList.split(",").length > 0){
+                    return this.getProcessObject().data.orderItemIDList.split(",").length;
+                }
+            
+            } catch (error){
+                return 0; //default
+            }
         }
     }
 }
