@@ -6501,6 +6501,12 @@
 	            _this._propertiesList[key] = value;
 	        };
 	        this.formatPropertiesList = function (propertiesList, propertyIdentifier) {
+	            if (!propertiesList) {
+	                propertiesList = {};
+	            }
+	            if (!propertiesList.data) {
+	                propertiesList.data = [];
+	            }
 	            var simpleGroup = {
 	                $$group: 'simple',
 	            };
@@ -6691,8 +6697,6 @@
 /* 49 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
 	var TypeaheadService = (function () {
 	    //@ngInject
@@ -6703,6 +6707,31 @@
 	        this.typeaheadData = {};
 	        this.typeaheadPromises = {};
 	        this.typeaheadStates = {};
+	        /**
+	         * Note that message should have a type and a data field
+	         */
+	        this.notifyObservers = function (_message) {
+	            for (var observer in _this.observers) {
+	                _this.observers[observer].recieveNotification(_message);
+	            }
+	        };
+	        /**
+	         * This manages all the observer events without the need for setting ids etc.
+	         */
+	        this.registerObserver = function (_observer) {
+	            if (!_observer) {
+	                throw new Error('Observer required for registration');
+	            }
+	            _this.observers.push(_observer);
+	        };
+	        /**
+	         * Removes the observer. Just pass in this
+	         */
+	        this.removeObserver = function (_observer) {
+	            if (!_observer) {
+	                throw new Error('Observer required for removal.');
+	            }
+	        };
 	        this.getTypeaheadSelectionUpdateEvent = function (key) {
 	            return "typeaheadSelectionUpdated" + key;
 	        };
@@ -6886,6 +6915,7 @@
 	            }
 	            return transcludedContent;
 	        };
+	        this.observers = new Array();
 	    }
 	    return TypeaheadService;
 	}());
@@ -9800,14 +9830,19 @@
 	"use strict";
 	var SWTypeaheadInputFieldController = (function () {
 	    // @ngInject
-	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService) {
+	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, typeaheadService) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$transclude = $transclude;
 	        this.collectionConfigService = collectionConfigService;
+	        this.typeaheadService = typeaheadService;
 	        this.columns = [];
 	        this.filters = [];
 	        this.addFunction = function (value) {
+	            _this.typeaheadService.notifyObservers({
+	                name: _this.name || _this.fieldName,
+	                data: value[_this.propertyToSave] || ""
+	            });
 	            _this.modelValue = value[_this.propertyToSave];
 	        };
 	        if (angular.isUndefined(this.typeaheadCollectionConfig)) {
@@ -29334,6 +29369,12 @@
 	        Views[Views["Items"] = 1] = "Items";
 	    })(FulfillmentsList.Views || (FulfillmentsList.Views = {}));
 	    var Views = FulfillmentsList.Views;
+	    (function (ofisStatusType) {
+	        ofisStatusType[ofisStatusType["unavailable"] = 0] = "unavailable";
+	        ofisStatusType[ofisStatusType["partial"] = 1] = "partial";
+	        ofisStatusType[ofisStatusType["available"] = 2] = "available";
+	    })(FulfillmentsList.ofisStatusType || (FulfillmentsList.ofisStatusType = {}));
+	    var ofisStatusType = FulfillmentsList.ofisStatusType;
 	})(FulfillmentsList || (FulfillmentsList = {}));
 	/**
 	 * Fulfillment List Controller
@@ -29352,6 +29393,24 @@
 	        this.$window = $window;
 	        this.typeaheadService = typeaheadService;
 	        this.swOrderFulfillmentService = swOrderFulfillmentService;
+	        /**
+	         * Getter to return this orderFulfillmentCollection
+	         */
+	        this.getOrderFulfillmentCollection = function () {
+	            if (_this.orderFulfillmentCollection == undefined) {
+	                _this.createOrderFulfillmentCollection(_this.collectionConfigService);
+	            }
+	            return _this.orderFulfillmentCollection;
+	        };
+	        /**
+	         * Getter to return this orderFulfillmentCollection
+	         */
+	        this.getOrderItemCollection = function () {
+	            if (_this.orderItemCollection == undefined) {
+	                _this.createOrderItemCollection(_this.collectionConfigService);
+	            }
+	            return _this.orderItemCollection;
+	        };
 	        /**
 	         * Implements a listener for the orderFulfillment selections
 	         */
@@ -29431,6 +29490,11 @@
 	            }
 	            return _this.collections[view];
 	        };
+	        this.updateCollectionsInView = function () {
+	            _this.collections = [];
+	            _this.collections.push(_this.orderFulfillmentCollection);
+	            _this.collections.push(_this.orderItemCollection);
+	        };
 	        /**
 	         * Setup the initial orderFulfillment Collection.
 	         */
@@ -29488,21 +29552,20 @@
 	        this.refreshCollection = function (collection) {
 	            if (collection) {
 	                collection.getEntity().then(function (response) {
-	                    if (!response || response.pageRecords == undefined || response.pageRecords.length == 0) {
+	                    if (!response) {
+	                        //redirect because probably logged out.
 	                        _this.redirect();
 	                    }
-	                    else {
-	                        collection = response.pageRecords;
-	                        _this.total = response.recordsCount;
-	                    }
+	                    _this.total = response.recordsCount;
 	                });
+	                return collection;
 	            }
 	        };
 	        /**
 	         * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
 	         */
 	        this.redirect = function () {
-	            _this.$location.reload();
+	            window.location.reload();
 	        };
 	        /**
 	         * Adds one of the status type filters into the collectionConfigService
@@ -29511,41 +29574,63 @@
 	         */
 	        this.addFilter = function (key, value) {
 	            //Always keep the orderNumber filter.
-	            var currentCollection = _this.getCollectionByView(_this.getView());
-	            if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment") {
-	                console.log(currentCollection);
-	                currentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+	            console.log(value, key, _this.getCollectionByView(_this.getView()).baseEntityName);
+	            if (_this.getCollectionByView(_this.getView()) && _this.getCollectionByView(_this.getView()).baseEntityName == "OrderFulfillment") {
+	                //If there is only one filter group add a second. otherwise add to the second.
+	                var filterGroup = [];
+	                var filter = {};
 	                if (value == true) {
-	                    currentCollection.addFilter("order.orderNumber", null, "!=");
+	                    _this.getCollectionByView(_this.getView()).addFilter("order.orderNumber", null, "!=");
+	                    _this.getCollectionByView(_this.getView()).addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
 	                    if (key == "partial") {
-	                        currentCollection.addFilter("orderFulfillmentInvStatusType.typeName", "Partial", true, "OR", false, true, false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Partial", "=", "OR", false);
 	                    }
 	                    if (key == "available") {
-	                        currentCollection.addFilter("orderFulfillmentInvStatusType.typeName", "Available", true, "OR", false, true, false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Available", "=", "OR", false);
 	                    }
 	                    if (key == "unavailable") {
-	                        currentCollection.addFilter("orderFulfillmentInvStatusType.typeName", "Unavailable", true, "OR", false, true, false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Unavailable", "=", "OR", false);
 	                    }
 	                    if (key == "location") {
-	                        currentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=", "OR", false);
 	                    }
+	                    //add the filter to the group
+	                    filterGroup.push(filter);
+	                    //add the group
+	                    _this.getCollectionByView(_this.getView()).addFilterGroup(filterGroup);
+	                }
+	                if (value = false) {
+	                    console.log("False");
 	                }
 	            }
-	            else if (currentCollection.baseEntityName == "OrderItem") {
-	                console.log("Adding orderItem Filters", currentCollection);
+	            else if (_this.getCollectionByView(_this.getView()).baseEntityName == "OrderItem") {
+	                console.log("Adding orderItem Filters", _this.getCollectionByView(_this.getView()));
 	            }
 	            //Calls to auto refresh the collection since a filter was added.
 	            _this.refreshCollection(_this.getCollectionByView(_this.getView()));
 	        };
 	        /**
-	         * Saved the batch using the data stored in the processObject.
+	         * This applies or removes a location filter from the collection.
+	         */
+	        this.addLocationFilter = function (locationID) {
+	            var currentCollection = _this.getCollectionByView(_this.getView());
+	            if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment") {
+	            }
+	            if (currentCollection && currentCollection.baseEntityName == "OrderItem") {
+	            }
+	            //Calls to auto refresh the collection since a filter was added.
+	            if (currentCollection.entityName = "OrderFulfillment") {
+	                _this.orderFulfillmentCollection = currentCollection;
+	            }
+	            else {
+	                _this.orderItemCollection = currentCollection;
+	            }
+	        };
+	        /**
+	         * Saved the batch using the data stored in the processObject. This delegates to the service method.
 	         */
 	        this.addBatch = function () {
-	            //if we have formData, then pass that formData to the createBatch process.
-	            //This needs to go into the service once its created..
 	            if (_this.getProcessObject()) {
-	                _this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
-	                _this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
 	                _this.swOrderFulfillmentService.addBatch(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
 	            }
 	        };
@@ -29576,14 +29661,28 @@
 	            _this.processObject = processObject;
 	        };
 	        /**
-	         * This will recieve all the notifications from the observer service.
+	         * This will recieve all the notifications from all typeaheads on the page.
+	         * When I revieve a notification, it will be an object that has a name and data.
+	         * The name is the name of the form and the data is the selected id. The three types,
+	         * that I'm currently looking for are:
+	         * "locationIDfilter", "locationID", or "accountID" These are the same as the names of the forms.
 	         */
 	        this.recieveNotification = function (message) {
-	            console.log("Message Recieved: ", message);
-	            switch (message.type) {
-	                case "batchSaveSuccess": break;
-	                case "batchSaveFail": break;
-	                case "error": break;
+	            switch (message.name) {
+	                case "locationIDfilter":
+	                    //If this is called, then the filter needs to be updated based on this id.
+	                    _this.addLocationFilter(message.data);
+	                    break;
+	                case "locationID":
+	                    //If this is called, then a location for the batch has been selected.
+	                    _this.getProcessObject().data['locationID'] = message.data || "";
+	                    break;
+	                case "accountID":
+	                    //If this is called, then an account to assign to the batch has been selected.
+	                    _this.getProcessObject().data['assignedAccountID'] = message.data || "";
+	                    break;
+	                default:
+	                    console.log("Warning: A default case was hit with the data: ", message);
 	            }
 	        };
 	        /**
@@ -29625,15 +29724,18 @@
 	        //adds the two default filters to start.
 	        //this.addFilter('available', true);
 	        //this.addFilter('partial', true);
-	        this.refreshCollection(this.getCollectionByView(this.getView()));
+	        var collection = this.refreshCollection(this.getCollectionByView(this.getView()));
+	        if (collection.entityName = "OrderFulfillment") {
+	            this.orderFulfillmentCollection = collection;
+	        }
+	        else {
+	            this.orderItemCollection = collection;
+	        }
 	        //Attach our listeners for selections on both listing displays.
-	        console.log(this.observerService);
 	        this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-	        this.typeaheadService.attachTypeaheadSelectionUpdateEvent("orderFulfillment", function (data) {
-	            console.log("Data", data);
-	        });
-	        this.swOrderFulfillmentService.registerObserver(this);
+	        //This is all I need to register my observer and it works for all of the typeaheads on the page.
+	        this.typeaheadService.registerObserver(this);
 	    }
 	    return SWOrderFulfillmentListController;
 	}());

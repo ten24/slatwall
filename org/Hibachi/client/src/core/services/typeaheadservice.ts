@@ -1,7 +1,8 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import * as Prototypes from '../prototypes/Observable';
 
-class TypeaheadService{
+class TypeaheadService implements Prototypes.Observable.IObservable {
     
     public typeaheadData = {};
     public typeaheadPromises = {};
@@ -12,9 +13,37 @@ class TypeaheadService{
         public $timeout, 
         public observerService
     ){
-        
+         this.observers = new Array<Prototypes.Observable.IObserver>();
     }
 
+    public observers: Array<Prototypes.Observable.IObserver>
+
+    /**
+     * Note that message should have a type and a data field
+     */
+    public notifyObservers = (_message: any) => {
+        for (var observer in this.observers){
+            this.observers[observer].recieveNotification(_message);
+        }
+    }
+
+    /**
+     * This manages all the observer events without the need for setting ids etc.
+     */
+    public registerObserver = (_observer: Prototypes.Observable.IObserver) => {
+        if (!_observer){
+            throw new Error('Observer required for registration');
+        }
+        this.observers.push(_observer);
+    }
+    /**
+     * Removes the observer. Just pass in this
+     */
+    public removeObserver = (_observer: Prototypes.Observable.IObserver) => {
+         if (!_observer){
+            throw new Error('Observer required for removal.');
+        }
+    }
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{
         return "typeaheadSelectionUpdated" + key; 
     }

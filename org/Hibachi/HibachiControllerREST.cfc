@@ -312,7 +312,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public any function getFilterPropertiesByBaseEntityName( required struct rc){
-        var entityName = rereplace(rc.entityName,'_','');
+    	var entityName = listToArray(rc.entityName, "_")[1];
         var includeNonPersistent = false;
 
 		if(structKeyExists(arguments.rc,'includeNonPersistent') && IsBoolean(arguments.rc.includeNonPersistent)){

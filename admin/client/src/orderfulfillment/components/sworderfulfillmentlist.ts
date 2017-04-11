@@ -1,12 +1,15 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import * as Prototypes from '../prototypes/Observable';
-
 module FulfillmentsList {
     export enum Views {
         Fulfillments,
         Items
+    }
+    export enum ofisStatusType {
+        "unavailable",
+        "partial",
+        "available",
     }
 } 
 
@@ -21,7 +24,7 @@ class SWOrderFulfillmentListController {
     private filters:{};
     private view:number;
     private collections:any;
-    
+    private refreshFlag:boolean;
     public views:any;
     public total:number;
     public formData:{};
@@ -52,18 +55,43 @@ class SWOrderFulfillmentListController {
         //adds the two default filters to start.
         //this.addFilter('available', true);
         //this.addFilter('partial', true);
-        this.refreshCollection(this.getCollectionByView(this.getView()));
+        var collection = this.refreshCollection(this.getCollectionByView(this.getView()));
+        if (collection.entityName = "OrderFulfillment"){
+            this.orderFulfillmentCollection = collection;
+        }else{
+            this.orderItemCollection = collection;
+        }
 
         //Attach our listeners for selections on both listing displays.
-        console.log(this.observerService);
+        
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-        this.typeaheadService.attachTypeaheadSelectionUpdateEvent("orderFulfillment", (data)=>{
-            console.log("Data", data);
-        });
-        this.swOrderFulfillmentService.registerObserver(this);
+        
+        //This is all I need to register my observer and it works for all of the typeaheads on the page.
+        this.typeaheadService.registerObserver(this);
+        
     }
-    
+
+    /**
+     * Getter to return this orderFulfillmentCollection
+     */
+    public getOrderFulfillmentCollection = () => {
+        if (this.orderFulfillmentCollection == undefined){
+            this.createOrderFulfillmentCollection(this.collectionConfigService);
+        }
+        return this.orderFulfillmentCollection;
+    }
+
+    /**
+     * Getter to return this orderFulfillmentCollection
+     */
+    public getOrderItemCollection = () => {
+        if (this.orderItemCollection == undefined){
+            this.createOrderItemCollection(this.collectionConfigService);
+        }
+        return this.orderItemCollection;
+    }
+
     /**
      * Implements a listener for the orderFulfillment selections
      */
@@ -143,6 +171,13 @@ class SWOrderFulfillmentListController {
         return this.collections[view];
      }
 
+     public updateCollectionsInView = () => {
+         this.collections = [];
+         this.collections.push(this.orderFulfillmentCollection);
+         this.collections.push(this.orderItemCollection);
+
+     }
+
     /**
      * Setup the initial orderFulfillment Collection.
      */
@@ -203,15 +238,16 @@ class SWOrderFulfillmentListController {
      * Initialized the collection so that the listingDisplay can you it to display its data.
      */
     public refreshCollection = (collection) => {
+        
         if (collection){
             collection.getEntity().then((response)=>{
-                if (!response || response.pageRecords == undefined || response.pageRecords.length == 0){
-                   this.redirect();
-                }else{
-                    collection = response.pageRecords;
-                    this.total = response.recordsCount;
+                if (!response){
+                    //redirect because probably logged out.
+                    this.redirect(); 
                 }
+                this.total = response.recordsCount;
             });
+            return collection;
         }
     }
 
@@ -219,7 +255,7 @@ class SWOrderFulfillmentListController {
      * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
      */
     public redirect = () => {
-         this.$location.reload();
+         window.location.reload();
     }
 
     /**
@@ -229,41 +265,71 @@ class SWOrderFulfillmentListController {
      */
     public addFilter = (key, value) => {
         //Always keep the orderNumber filter.
-        var currentCollection = this.getCollectionByView(this.getView());
-        if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment"){
-            console.log(currentCollection);
-            currentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+        console.log(value, key,this.getCollectionByView(this.getView()).baseEntityName);
+        if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
+            
+            //If there is only one filter group add a second. otherwise add to the second.
+            var filterGroup = [];
+            var filter = {};
+            
             if (value == true){
-                currentCollection.addFilter("order.orderNumber", null, "!=");
+                this.getCollectionByView(this.getView()).addFilter("order.orderNumber", null, "!=");
+                this.getCollectionByView(this.getView()).addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+                
                 if (key == "partial"){
-                    currentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Partial",true,"OR",false,true,false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Partial","=","OR",false);
                 }
                 if (key == "available"){
-                    currentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Available",true,"OR",false,true,false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Available","=","OR",false);
                 }
                 if (key == "unavailable"){
-                    currentCollection.addFilter("orderFulfillmentInvStatusType.typeName","Unavailable",true,"OR",false,true,false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Unavailable","=","OR",false);
                 }
                 if (key == "location"){
-                    currentCollection.addFilter("orderFulfillmentItems.stock.location.locationName", value);
+                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
                 }
+                //add the filter to the group
+                filterGroup.push(filter);
+                //add the group
+                this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
+
             }
-        }else if (currentCollection.baseEntityName == "OrderItem"){
-            console.log("Adding orderItem Filters", currentCollection);
+            if (value = false){
+                console.log("False");
+            }
+        }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
+            console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
         this.refreshCollection(this.getCollectionByView(this.getView()));
+       
     }
 
     /**
-     * Saved the batch using the data stored in the processObject.
+     * This applies or removes a location filter from the collection.
+     */
+    public addLocationFilter = (locationID) => {
+        let currentCollection = this.getCollectionByView(this.getView());
+        if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment"){
+            //If this is the fulfillment collection, the location is against, orderItems.stock.location
+
+        }
+        if (currentCollection && currentCollection.baseEntityName == "OrderItem"){
+            //If this is the fulfillment collection, the location is against, stock.location
+        }
+        //Calls to auto refresh the collection since a filter was added.
+        if (currentCollection.entityName = "OrderFulfillment"){
+            this.orderFulfillmentCollection = currentCollection;
+        }else{
+            this.orderItemCollection = currentCollection;
+        }
+    }
+
+    /**
+     * Saved the batch using the data stored in the processObject. This delegates to the service method.
      */
     public addBatch = () => {
-        //if we have formData, then pass that formData to the createBatch process.
-        //This needs to go into the service once its created..
         if (this.getProcessObject()) {
-            this.getProcessObject().data['assignedAccountID'] = $("input[name=accountID]").val() || "";
-            this.getProcessObject().data['locationID'] = $("input[name=locationID]").val() || "";
             this.swOrderFulfillmentService.addBatch(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
         }
     }
@@ -298,14 +364,28 @@ class SWOrderFulfillmentListController {
     }
 
     /**
-     * This will recieve all the notifications from the observer service.
+     * This will recieve all the notifications from all typeaheads on the page.
+     * When I revieve a notification, it will be an object that has a name and data. 
+     * The name is the name of the form and the data is the selected id. The three types,
+     * that I'm currently looking for are:
+     * "locationIDfilter", "locationID", or "accountID" These are the same as the names of the forms.
      */
     public recieveNotification = (message): void => {
-        console.log("Message Recieved: ", message);
-        switch (message.type) {
-            case "batchSaveSuccess": break;
-            case "batchSaveFail": break;
-            case "error": break;
+        switch (message.name) {
+            case "locationIDfilter": 
+                //If this is called, then the filter needs to be updated based on this id.
+                this.addLocationFilter(message.data);
+                break;
+            case "locationID":
+                //If this is called, then a location for the batch has been selected.
+                this.getProcessObject().data['locationID'] = message.data || "";
+                break;
+            case "accountID":
+                //If this is called, then an account to assign to the batch has been selected.
+                this.getProcessObject().data['assignedAccountID'] = message.data || "";
+                break;
+            default:
+                console.log("Warning: A default case was hit with the data: ", message);
         }
     }
 

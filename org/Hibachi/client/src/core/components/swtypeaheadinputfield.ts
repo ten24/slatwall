@@ -23,7 +23,8 @@ class SWTypeaheadInputFieldController {
     // @ngInject
 	constructor(private $scope,
                 private $transclude,
-                private collectionConfigService
+                private collectionConfigService,
+                private typeaheadService
     ){
         
         
@@ -64,6 +65,10 @@ class SWTypeaheadInputFieldController {
     }
     
     public addFunction = (value:any) => {
+        this.typeaheadService.notifyObservers({
+            name: this.name || this.fieldName,
+            data: value[this.propertyToSave] || ""
+        });
         this.modelValue = value[this.propertyToSave]; 
     }
 }

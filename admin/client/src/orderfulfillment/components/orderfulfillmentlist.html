@@ -395,7 +395,7 @@
 			            </div>
 			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
 			                <div class="s-title">
-			                    Available <span class="s-number">(10)</span>
+			                    Available <span class="s-number"></span>
 			                </div>
 			            </div>
 			        </div>
@@ -410,7 +410,7 @@
 			            </div>
 			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
 			                <div class="s-title">
-			                    Partial <span class="s-number">(3)</span>
+			                    Partial <span class="s-number"></span>
 			                </div>
 			            </div>
 			        </div>
@@ -425,19 +425,19 @@
 			            </div>
 			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
 			                <div class="s-title">
-			                    Unavailable <span class="s-number">(3)</span>
+			                    Unavailable <span class="s-number"></span>
 			                </div>
 			            </div>
 			        </div>
 			    </div>
 			</div>
 			
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.refreshFlag != true">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						
 						<sw-listing-display
-							data-collection-config="swOrderFulfillmentListController.orderFulfillmentCollection"
+							data-collection-config="swOrderFulfillmentListController.getOrderFulfillmentCollection()"
 							data-edit="true"
 							data-has-search="true"
 							data-record-detail-action="admin:entity.detailorderfulfillment"
@@ -458,12 +458,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items && swOrderFulfillmentListController.refreshFlag != true">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						
 						<sw-listing-display
-							data-collection-config="swOrderFulfillmentListController.orderItemCollection"
+							data-collection-config="swOrderFulfillmentListController.getOrderItemCollection()"
 							data-edit="true"
 							data-has-search="true"
 							data-record-detail-action="admin:entity.detailorderfulfillment"
