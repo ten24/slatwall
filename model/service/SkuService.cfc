@@ -552,19 +552,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_move(required any sku, any processObject){
 		var originalProduct = arguments.sku.getProduct(); 
-		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSKuID(); 	
+		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID(); 	
 		
-
 		arguments.sku.setProduct(processObject.getProduct());
-		
-		if(!originalProduct.getSkusCount()){
-			getProductService().deleteProduct(originalProduct); 
+		arguments.sku = this.saveSku(arguments.sku);		
+	
+		if(originalProduct.getSkusCount() == 1){
+			originalProduct.setSkus([]);
+			var success = getProductService().deleteProduct(originalProduct); 
 		} else if(isDefaultSku){
 			originalProduct.setDefaultSku(originalProduct.getSkus()[1]); 
 			originalProduct = getProductService().saveProduct(originalProduct); 
 		} 
 		
-		return this.saveSku(arguments.sku);		
+		
+		return arguments.sku;
 	} 
 
 	// =====================  END: Process Methods ============================
