@@ -420,17 +420,21 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getExtendedUnitPrice() {
-		if(isNull(getQuantity()) || getQuantity() == 0){
+		if(!isNull(getQuantity()) && NumbergetQuantity() > 0){
+			return val(precisionEvaluate(getExtendedPrice() / getQuantity()));	
+		}else{
 			return 0;
 		}
-		return val(precisionEvaluate(getExtendedPrice() / getQuantity()));
+		
 	}
 
 	public numeric function getExtendedUnitPriceAfterDiscount() {
-		if(isNull(getQuantity()) || getQuantity() == 0){
+		if(!isNull(getQuantity()) && getQuantity() > 0){
+			return val(precisionEvaluate(getExtendedPriceAfterDiscount() / getQuantity()));
+		}else{
 			return 0;
 		}
-		return val(precisionEvaluate(getExtendedPriceAfterDiscount() / getQuantity()));
+		
 	}
 
 	public any function getActiveEventRegistrations() {
