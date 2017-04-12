@@ -44,6 +44,7 @@ class TypeaheadService implements Prototypes.Observable.IObservable {
             throw new Error('Observer required for removal.');
         }
     }
+    
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{
         return "typeaheadSelectionUpdated" + key; 
     }
