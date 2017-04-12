@@ -29627,7 +29627,9 @@
 	            return _this.view;
 	        };
 	        /**
-	         * Initialized the collection so that the listingDisplay can you it to display its data.
+	         * Initialized the collection so that the listingDisplay can you it to display its data. This needs to move to
+	         * to the hibachiIntercenptor and get handled on every request that is logged out.
+	         *
 	         */
 	        this.refreshCollection = function (collection) {
 	            if (collection) {
@@ -29654,7 +29656,6 @@
 	         */
 	        this.addFilter = function (key, value) {
 	            //Always keep the orderNumber filter.
-	            console.log(value, key, _this.getCollectionByView(_this.getView()).baseEntityName);
 	            if (_this.getCollectionByView(_this.getView()) && _this.getCollectionByView(_this.getView()).baseEntityName == "OrderFulfillment") {
 	                //If there is only one filter group add a second. otherwise add to the second.
 	                var filterGroup = [];
@@ -29714,7 +29715,6 @@
 	         * Handles a successful post of the processObject
 	         */
 	        this.processCreateSuccess = function (result) {
-	            console.log("Process Created", result);
 	            //Redirect to the created fulfillmentBatch.
 	            if (result.data && result.data['fulfillmentBatchID']) {
 	                _this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];

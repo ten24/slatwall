@@ -193,7 +193,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Toggle the Status Type filters on and off.
      */
-    toggleFilter = (filterName) => {
+    public toggleFilter = (filterName) => {
         this.filters[filterName] = !this.filters[filterName];
         this.addFilter(filterName, this.filters[filterName]);
     }
@@ -216,7 +216,9 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     }
 
     /**
-     * Initialized the collection so that the listingDisplay can you it to display its data.
+     * Initialized the collection so that the listingDisplay can you it to display its data. This needs to move to
+     * to the hibachiIntercenptor and get handled on every request that is logged out.
+     * 
      */
     public refreshCollection = (collection) => {
         
@@ -246,7 +248,6 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      */
     public addFilter = (key, value) => {
         //Always keep the orderNumber filter.
-        console.log(value, key,this.getCollectionByView(this.getView()).baseEntityName);
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
             
             //If there is only one filter group add a second. otherwise add to the second.
@@ -312,7 +313,6 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * Handles a successful post of the processObject
      */
     public processCreateSuccess = (result) => {
-        console.log("Process Created", result);
         //Redirect to the created fulfillmentBatch.
         if (result.data && result.data['fulfillmentBatchID']){
             this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
