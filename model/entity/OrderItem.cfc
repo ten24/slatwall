@@ -509,7 +509,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getItemTotal() {
-		return getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount());
+		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount()));
 	}
 
 	public any function getSalePrice() {
