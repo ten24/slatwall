@@ -17,11 +17,8 @@
 	
 	<!--- Description --->
 	
-	
 	<!--- Details --->
 	
-	
-    
     <!--- Status --->
 	
 	
