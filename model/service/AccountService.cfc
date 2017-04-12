@@ -131,18 +131,48 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: DAO Passthrough ============================
 
 	// ===================== START: Process Methods ===========================
-
+	
+	public struct function getAccountPaymentTransactionData(required any accountPayment){
+		var transactionData = {
+				amount = arguments.accountPayment.getAmount()
+			};
+			
+			if(arguments.accountPayment.getAccountPaymentType().getSystemCode() != "aptAdjustment") {
+			
+				if(arguments.accountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+					if(arguments.accountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
+						if(!isNull(arguments.accountPayment.getPaymentMethod().getIntegration())) {
+							transactionData.transactionType = 'authorizeAndCharge';	
+						} else {
+							transactionData.transactionType = 'receiveOffline';	
+						}
+					} else {
+						transactionData.transactionType = 'receive';
+					}
+				} else {
+					transactionData.transactionType = 'credit';
+				}
+			}else{
+				if(arguments.accountPayment.getAmount() > 0){
+					transactionData.transactionType = 'receiveOffline';	
+				}else{
+					transactionData.transactionType = 'creditOffline';	
+				}
+			}
+		return transactionData;
+	}
+	
 	// Account
 	public any function processAccount_addAccountPayment(required any account, required any processObject) {
-
+		
 		// Get the populated newAccountPayment out of the processObject
-		var newAccountPayment = processObject.getNewAccountPayment();
-
+		var newAccountPayment = arguments.processObject.getNewAccountPayment();
+		writedump(var=newAccountPayment,top=2);abort;
 		// Make sure that this new accountPayment gets attached to the order
 		if(isNull(newAccountPayment.getAccount())) {
 			newAccountPayment.setAccount( arguments.account );
 		}
-
+		
 		// If this is an existing account payment method, then we can pull the data from there
 		if( len(arguments.processObject.getAccountPaymentMethodID()) ) {
 
@@ -173,7 +203,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
-		
 		
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
@@ -207,25 +236,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
 		// If no errors, then we can process a transaction
 		} else {
-			var transactionData = {
-				amount = newAccountPayment.getAmount()
-			};
-
-			if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
-				if(newAccountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
-					if(!isNull(newAccountPayment.getPaymentMethod().getIntegration())) {
-						transactionData.transactionType = 'authorizeAndCharge';	
-					} else {
-						transactionData.transactionType = 'receiveOffline';	
-					}
-				} else {
-					transactionData.transactionType = 'receive';
-				}
-			} else {
-				transactionData.transactionType = 'credit';
-			}
-
-			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
+			var transactionData = getAccountPaymentTransactionData(newAccountPayment);
+			
+			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');	
+			
+			
+			
 			//Loop over the newaccountpayment.getAppliedPayments
 			if(newAccountPayment.hasErrors()){
 				for(var errorKey in newAccountPayment.getErrors()){
@@ -238,7 +254,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						transactionData = {
 							amount = appliedAccountPayment.getAmount()
 						};
-	
+					if(newAccountPayment.getAccountPaymentType().getSystemCode() != 'aptAdjustment'){
 						if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
 							if(newAccountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
 								if(!isNull(newAccountPayment.getPaymentMethod().getIntegration())) {
@@ -249,16 +265,23 @@ component extends="HibachiService" accessors="true" output="false" {
 							} else {
 								transactionData.transactionType = 'receive';
 							}
-						} else {
+						} else if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCredit"){
 							transactionData.transactionType = 'credit';
 						}
+					} else {
+						if(appliedAccountPayment.getAmount() > 0){
+							transactionData.transactionType = 'receiveOffline';	
+						}else{
+							transactionData.transactionType = 'creditOffline';	
+						}
+					}
 	
 						getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
 					}
 				}
 			}
 		}
-
+		
 		return arguments.account;
 	}
 
