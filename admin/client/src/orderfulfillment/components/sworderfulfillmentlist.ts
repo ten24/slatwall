@@ -26,6 +26,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     private view:number;
     private collections:any;
     private refreshFlag:boolean;
+    
     public views:any;
     public total:number;
     public formData:{};
@@ -118,38 +119,19 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     };
 
     /**
-     * Add Instance Of string to list
+     * Add Instance Of string to list.
      */
-    public listAppend = (str, subStr) => {
-        let isNew = false;
-        if (!str) {
-            str = "";
-            isNew = true;
-        }
-        if (subStr){
-            str = str + ((isNew)? "" : ",") + subStr;
-        }
-        return str;
+    public listAppend = (str:string, subStr:string) => {
+        return this.utilityService.listAppend(str, subStr, ",");
     }
     
     /**
-     * Removes a string from a string.
+     * Removes a substring from a string.
+     * str: The original string.
+     * subStr: The string to remove.
      */
-     public listRemove = (str, subStr) => {
-        if (str.indexOf(subStr) != -1){
-            //remove it cause its no longer selected.
-            str = str.replace(subStr, "");
-            str = str.replace(",,", "");
-            if (str == ","){
-                str = "";
-            }
-            if (str[0] == ","){
-                str[0] = "";
-            }
-            str = str.substring(0, str.length-1);
-        }
-
-        return str;
+     public listRemove = (str:string, subStr:string) => {
+        return this.utilityService.listRemove(str, subStr);
     }
 
     /**

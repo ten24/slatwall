@@ -5657,6 +5657,27 @@
 	                return substring;
 	            }
 	        };
+	        /**
+	         * Removes a substring from a string.
+	         * str: The original string.
+	         * subStr: The string to remove.
+	         * returns the modified string.
+	         */
+	        this.listRemove = function (str, substring) {
+	            if (str.indexOf(substring) != -1) {
+	                //remove it cause its no longer selected.
+	                str = str.replace(substring, "");
+	                str = str.replace(",,", "");
+	                if (str == ",") {
+	                    str = "";
+	                }
+	                if (str.substring(0, 1) == ',') {
+	                    str = str.substring(1);
+	                }
+	                str = str.substring(0, str.length - 1);
+	            }
+	            return str;
+	        };
 	        this.formatValue = function (value, formatType, formatDetails, entityInstance) {
 	            if (angular.isUndefined(formatDetails)) {
 	                formatDetails = {};
@@ -29516,36 +29537,18 @@
 	            }
 	        };
 	        /**
-	         * Add Instance Of string to list
+	         * Add Instance Of string to list.
 	         */
 	        this.listAppend = function (str, subStr) {
-	            var isNew = false;
-	            if (!str) {
-	                str = "";
-	                isNew = true;
-	            }
-	            if (subStr) {
-	                str = str + ((isNew) ? "" : ",") + subStr;
-	            }
-	            return str;
+	            return _this.utilityService.listAppend(str, subStr, ",");
 	        };
 	        /**
-	         * Removes a string from a string.
+	         * Removes a substring from a string.
+	         * str: The original string.
+	         * subStr: The string to remove.
 	         */
 	        this.listRemove = function (str, subStr) {
-	            if (str.indexOf(subStr) != -1) {
-	                //remove it cause its no longer selected.
-	                str = str.replace(subStr, "");
-	                str = str.replace(",,", "");
-	                if (str == ",") {
-	                    str = "";
-	                }
-	                if (str[0] == ",") {
-	                    str[0] = "";
-	                }
-	                str = str.substring(0, str.length - 1);
-	            }
-	            return str;
+	            return _this.utilityService.listRemove(str, subStr);
 	        };
 	        /**
 	         * returns true if the action is selected
