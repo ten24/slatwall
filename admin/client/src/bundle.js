@@ -29434,7 +29434,7 @@
 	            }
 	        };
 	        /**
-	         * Creates a batch
+	         * Creates a batch. This should use api:main.post with a context of process and an entityName instead of doAction.
 	         */
 	        this.addBatch = function (processObject) {
 	            if (processObject) {
@@ -29442,12 +29442,10 @@
 	                console.log("Process Object", processObject);
 	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
 	                processObject.data.entityName = "FulfillmentBatch";
-	                processObject.data.serviceName = "fulfillment"; //service is different then fulfillmentBatchService so must define.
-	                processObject.data.processContext = "create";
 	                processObject.data['fulfillmentBatch'] = {};
 	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
 	                //This goes to service.
-	                return _this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
+	                return _this.$hibachi.saveEntity("fulfillmentBatch", '', processObject.data, "create");
 	            }
 	        };
 	        this.observers = new Array();
@@ -29718,7 +29716,9 @@
 	        this.processCreateSuccess = function (result) {
 	            console.log("Process Created", result);
 	            //Redirect to the created fulfillmentBatch.
-	            _this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['FulfillmentBatch']['FulfillmentBatchID'];
+	            if (result.data && result.data['fulfillmentBatchID']) {
+	                _this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
+	            }
 	        };
 	        /**
 	         * Handles a successful post of the processObject
@@ -29812,7 +29812,7 @@
 	        //Attach our listeners for selections on both listing displays.
 	        this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-	        //This is all I need to register my observer and it works for all of the typeaheads on the page.
+	        //This tells the typeaheadService to send us all of its events to our recieveNotification method.
 	        this.typeaheadService.registerObserver(this);
 	    }
 	    return SWOrderFulfillmentListController;

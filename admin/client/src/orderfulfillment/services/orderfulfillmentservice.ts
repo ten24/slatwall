@@ -50,7 +50,7 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
     }
 
     /**
-     * Creates a batch
+     * Creates a batch. This should use api:main.post with a context of process and an entityName instead of doAction.
      */
     public addBatch = (processObject) => {
     if (processObject) {
@@ -58,13 +58,13 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
             console.log("Process Object", processObject);
             //this.orderFulfillmentService.addBatch(this.getBatchProcess());
             processObject.data.entityName = "FulfillmentBatch";
-            processObject.data.serviceName = "fulfillment";//service is different then fulfillmentBatchService so must define.
-            processObject.data.processContext = "create";
+            
             processObject.data['fulfillmentBatch'] = {};
             processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
 
             //This goes to service.
-            return this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
+            return this.$hibachi.saveEntity("fulfillmentBatch",'',processObject.data, "create");
+           // return this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
         }
     }
 }

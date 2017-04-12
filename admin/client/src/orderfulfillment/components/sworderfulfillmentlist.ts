@@ -65,11 +65,10 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         }
 
         //Attach our listeners for selections on both listing displays.
-        
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
         
-        //This is all I need to register my observer and it works for all of the typeaheads on the page.
+        //This tells the typeaheadService to send us all of its events to our recieveNotification method.
         this.typeaheadService.registerObserver(this);
     }
 
@@ -315,7 +314,9 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public processCreateSuccess = (result) => {
         console.log("Process Created", result);
         //Redirect to the created fulfillmentBatch.
-        this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['FulfillmentBatch']['FulfillmentBatchID'];
+        if (result.data && result.data['fulfillmentBatchID']){
+            this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
+        }
     }
 
     /**
