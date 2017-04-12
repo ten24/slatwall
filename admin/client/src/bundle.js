@@ -29505,9 +29505,10 @@
 	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
 	            _this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
 	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatusType.typeName");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
 	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
-	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
+	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
 	        };
 	        /**
 	         * Setup the initial orderItem Collection.
@@ -29521,8 +29522,7 @@
 	            _this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
 	            _this.orderItemCollection.addDisplayProperty("sku.product.productName");
 	            _this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
-	            _this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentID", null, "!=");
-	            _this.orderItemCollection.addFilter("order.orderNumber", null, "!=");
+	            _this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
 	        };
 	        /**
 	         * Toggle the Status Type filters on and off.
@@ -29580,8 +29580,6 @@
 	                var filterGroup = [];
 	                var filter = {};
 	                if (value == true) {
-	                    _this.getCollectionByView(_this.getView()).addFilter("order.orderNumber", null, "!=");
-	                    _this.getCollectionByView(_this.getView()).addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
 	                    if (key == "partial") {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Partial", "=", "OR", false);
 	                    }
@@ -29615,16 +29613,14 @@
 	        this.addLocationFilter = function (locationID) {
 	            var currentCollection = _this.getCollectionByView(_this.getView());
 	            if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment") {
+	                //If this is the fulfillment collection, the location is against, orderItems.stock.location
+	                currentCollection.addFilter("orderFulfillmentItems.stock.location.locationID", locationID, "=");
 	            }
 	            if (currentCollection && currentCollection.baseEntityName == "OrderItem") {
+	                //If this is the fulfillment collection, the location is against, stock.location
+	                currentCollection.addFilter("stock.location.locationID", locationID, "=");
 	            }
-	            //Calls to auto refresh the collection since a filter was added.
-	            if (currentCollection.entityName = "OrderFulfillment") {
-	                _this.orderFulfillmentCollection = currentCollection;
-	            }
-	            else {
-	                _this.orderItemCollection = currentCollection;
-	            }
+	            _this.refreshCollection(currentCollection);
 	        };
 	        /**
 	         * Saved the batch using the data stored in the processObject. This delegates to the service method.

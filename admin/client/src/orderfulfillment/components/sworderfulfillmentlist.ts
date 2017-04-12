@@ -188,9 +188,10 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatusType.typeName");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
-        this.orderFulfillmentCollection.addFilter("order.orderNumber", null, "!=");
+        this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
      }
     
     /**
@@ -205,8 +206,7 @@ class SWOrderFulfillmentListController {
         this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.orderItemCollection.addDisplayProperty("sku.product.productName");
         this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
-        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentID", null, "!=");
-        this.orderItemCollection.addFilter("order.orderNumber", null, "!=");
+        this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
     }
 
     /**
@@ -273,8 +273,6 @@ class SWOrderFulfillmentListController {
             var filter = {};
             
             if (value == true){
-                this.getCollectionByView(this.getView()).addFilter("order.orderNumber", null, "!=");
-                this.getCollectionByView(this.getView()).addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
                 
                 if (key == "partial"){
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Partial","=","OR",false);
@@ -312,17 +310,13 @@ class SWOrderFulfillmentListController {
         let currentCollection = this.getCollectionByView(this.getView());
         if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment"){
             //If this is the fulfillment collection, the location is against, orderItems.stock.location
-
+            currentCollection.addFilter("orderFulfillmentItems.stock.location.locationID", locationID, "=");
         }
         if (currentCollection && currentCollection.baseEntityName == "OrderItem"){
             //If this is the fulfillment collection, the location is against, stock.location
+            currentCollection.addFilter("stock.location.locationID", locationID, "=");
         }
-        //Calls to auto refresh the collection since a filter was added.
-        if (currentCollection.entityName = "OrderFulfillment"){
-            this.orderFulfillmentCollection = currentCollection;
-        }else{
-            this.orderItemCollection = currentCollection;
-        }
+        this.refreshCollection(currentCollection);
     }
 
     /**
