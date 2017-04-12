@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import * as Prototypes from '../prototypes/Observable';
+import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
 
 /**
  * Fulfillment List Controller
@@ -30,7 +30,14 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
     public removeObserver = (_observer: Prototypes.Observable.IObserver) => {
          if (!_observer){
             throw new Error('Observer required for removal.');
-        }
+         }
+         for (var observer in this.observers){
+            if (this.observers[observer] == (_observer)){
+                if (this.observers.indexOf(_observer) > -1){
+                    this.observers.splice(this.observers.indexOf(_observer), 1);
+                }
+            }
+         }
     }
     
     /**

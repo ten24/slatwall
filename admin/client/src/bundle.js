@@ -6731,6 +6731,13 @@
 	            if (!_observer) {
 	                throw new Error('Observer required for removal.');
 	            }
+	            for (var observer in _this.observers) {
+	                if (_this.observers[observer] == (_observer)) {
+	                    if (_this.observers.indexOf(_observer) > -1) {
+	                        _this.observers.splice(_this.observers.indexOf(_observer), 1);
+	                    }
+	                }
+	            }
 	        };
 	        this.getTypeaheadSelectionUpdateEvent = function (key) {
 	            return "typeaheadSelectionUpdated" + key;
@@ -13321,15 +13328,15 @@
 	var optiongroup_module_1 = __webpack_require__(241);
 	var orderitem_module_1 = __webpack_require__(244);
 	var orderfulfillment_module_1 = __webpack_require__(251);
-	var product_module_1 = __webpack_require__(253);
-	var productbundle_module_1 = __webpack_require__(256);
-	var sku_module_1 = __webpack_require__(263);
+	var product_module_1 = __webpack_require__(254);
+	var productbundle_module_1 = __webpack_require__(257);
+	var sku_module_1 = __webpack_require__(264);
 	//constant
-	var slatwallpathbuilder_1 = __webpack_require__(278);
+	var slatwallpathbuilder_1 = __webpack_require__(279);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(279);
+	var swcurrencyformatter_1 = __webpack_require__(280);
 	//filters
-	var swcurrency_1 = __webpack_require__(280);
+	var swcurrency_1 = __webpack_require__(281);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
@@ -29340,10 +29347,10 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var orderfulfillmentservice_1 = __webpack_require__(281);
+	var orderfulfillmentservice_1 = __webpack_require__(252);
 	//controllers
 	//directives
-	var sworderfulfillmentlist_1 = __webpack_require__(252);
+	var sworderfulfillmentlist_1 = __webpack_require__(253);
 	//models 
 	var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
 	    .config([function () {
@@ -29361,6 +29368,78 @@
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	/**
+	 * Fulfillment List Controller
+	 */
+	var SWOrderFulfillmentService = (function () {
+	    // @ngInject
+	    function SWOrderFulfillmentService($hibachi, $timeout, collectionConfigService, $http) {
+	        var _this = this;
+	        this.$hibachi = $hibachi;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.$http = $http;
+	        /**
+	         * This manages all the observer events without the need for setting ids etc.
+	         */
+	        this.registerObserver = function (_observer) {
+	            if (!_observer) {
+	                throw new Error('Observer required for registration');
+	            }
+	            _this.observers.push(_observer);
+	        };
+	        /**
+	         * Removes the observer. Just pass in this
+	         */
+	        this.removeObserver = function (_observer) {
+	            if (!_observer) {
+	                throw new Error('Observer required for removal.');
+	            }
+	            for (var observer in _this.observers) {
+	                if (_this.observers[observer] == (_observer)) {
+	                    if (_this.observers.indexOf(_observer) > -1) {
+	                        _this.observers.splice(_this.observers.indexOf(_observer), 1);
+	                    }
+	                }
+	            }
+	        };
+	        /**
+	         * Note that message should have a type and a data field
+	         */
+	        this.notifyObservers = function (_message) {
+	            for (var observer in _this.observers) {
+	                _this.observers[observer].recieveNotification(_message);
+	            }
+	        };
+	        /**
+	         * Creates a batch
+	         */
+	        this.addBatch = function (processObject) {
+	            if (processObject) {
+	                console.log("Hibachi", _this.$hibachi);
+	                console.log("Process Object", processObject);
+	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
+	                processObject.data.entityName = "FulfillmentBatch";
+	                processObject.data.serviceName = "fulfillment"; //service is different then fulfillmentBatchService so must define.
+	                processObject.data.processContext = "create";
+	                processObject.data['fulfillmentBatch'] = {};
+	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+	                //This goes to service.
+	                return _this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
+	            }
+	        };
+	        this.observers = new Array();
+	    }
+	    return SWOrderFulfillmentService;
+	}());
+	exports.SWOrderFulfillmentService = SWOrderFulfillmentService;
+
+
+/***/ },
+/* 253 */
+/***/ function(module, exports) {
+
 	"use strict";
 	var FulfillmentsList;
 	(function (FulfillmentsList) {
@@ -29776,7 +29855,7 @@
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -29786,10 +29865,10 @@
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(254);
+	var preprocessproduct_create_1 = __webpack_require__(255);
 	//filters
 	//directives
-	var swproductlistingpages_1 = __webpack_require__(255);
+	var swproductlistingpages_1 = __webpack_require__(256);
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('productPartialsPath', 'product/components/')
@@ -29799,7 +29878,7 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -29901,7 +29980,7 @@
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -29963,7 +30042,7 @@
 
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -29972,14 +30051,14 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(257);
+	var productbundleservice_1 = __webpack_require__(258);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(258);
+	var create_bundle_controller_1 = __webpack_require__(259);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(259);
-	var swproductbundlegroups_1 = __webpack_require__(260);
-	var swproductbundlegroup_1 = __webpack_require__(261);
-	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(262);
+	var swproductbundlegrouptype_1 = __webpack_require__(260);
+	var swproductbundlegroups_1 = __webpack_require__(261);
+	var swproductbundlegroup_1 = __webpack_require__(262);
+	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(263);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -29994,7 +30073,7 @@
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -30078,7 +30157,7 @@
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -30151,7 +30230,7 @@
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -30322,7 +30401,7 @@
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -30396,7 +30475,7 @@
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -30589,7 +30668,7 @@
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -30934,7 +31013,7 @@
 
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -30943,22 +31022,22 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var defaultskuservice_1 = __webpack_require__(264);
-	var skupriceservice_1 = __webpack_require__(265);
+	var defaultskuservice_1 = __webpack_require__(265);
+	var skupriceservice_1 = __webpack_require__(266);
 	//controllers
 	//directives
-	var swpricingmanager_1 = __webpack_require__(266);
-	var swimagedetailmodallauncher_1 = __webpack_require__(267);
-	var swaddskupricemodallauncher_1 = __webpack_require__(268);
-	var swdeleteskupricemodallauncher_1 = __webpack_require__(269);
-	var swskustockadjustmentmodallauncher_1 = __webpack_require__(270);
-	var swdefaultskuradio_1 = __webpack_require__(271);
-	var swskucurrencyselector_1 = __webpack_require__(272);
-	var swskupriceedit_1 = __webpack_require__(273);
-	var swskucodeedit_1 = __webpack_require__(274);
-	var swskupricesedit_1 = __webpack_require__(275);
-	var swskupricequantityedit_1 = __webpack_require__(276);
-	var swskuthumbnail_1 = __webpack_require__(277);
+	var swpricingmanager_1 = __webpack_require__(267);
+	var swimagedetailmodallauncher_1 = __webpack_require__(268);
+	var swaddskupricemodallauncher_1 = __webpack_require__(269);
+	var swdeleteskupricemodallauncher_1 = __webpack_require__(270);
+	var swskustockadjustmentmodallauncher_1 = __webpack_require__(271);
+	var swdefaultskuradio_1 = __webpack_require__(272);
+	var swskucurrencyselector_1 = __webpack_require__(273);
+	var swskupriceedit_1 = __webpack_require__(274);
+	var swskucodeedit_1 = __webpack_require__(275);
+	var swskupricesedit_1 = __webpack_require__(276);
+	var swskupricequantityedit_1 = __webpack_require__(277);
+	var swskuthumbnail_1 = __webpack_require__(278);
 	//filters
 	var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -30981,7 +31060,7 @@
 
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31030,7 +31109,7 @@
 
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31340,7 +31419,7 @@
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31404,7 +31483,7 @@
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31525,7 +31604,7 @@
 
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31716,7 +31795,7 @@
 
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31829,7 +31908,7 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -31968,7 +32047,7 @@
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32047,7 +32126,7 @@
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32123,7 +32202,7 @@
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32309,7 +32388,7 @@
 
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32418,7 +32497,7 @@
 
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32547,7 +32626,7 @@
 
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32684,7 +32763,7 @@
 
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32732,7 +32811,7 @@
 
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32764,7 +32843,7 @@
 
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -32827,7 +32906,7 @@
 
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -32883,73 +32962,6 @@
 	    return SWCurrency;
 	}());
 	exports.SWCurrency = SWCurrency;
-
-
-/***/ },
-/* 281 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	/**
-	 * Fulfillment List Controller
-	 */
-	var SWOrderFulfillmentService = (function () {
-	    // @ngInject
-	    function SWOrderFulfillmentService($hibachi, $timeout, collectionConfigService, $http) {
-	        var _this = this;
-	        this.$hibachi = $hibachi;
-	        this.$timeout = $timeout;
-	        this.collectionConfigService = collectionConfigService;
-	        this.$http = $http;
-	        /**
-	         * This manages all the observer events without the need for setting ids etc.
-	         */
-	        this.registerObserver = function (_observer) {
-	            if (!_observer) {
-	                throw new Error('Observer required for registration');
-	            }
-	            _this.observers.push(_observer);
-	        };
-	        /**
-	         * Removes the observer. Just pass in this
-	         */
-	        this.removeObserver = function (_observer) {
-	            if (!_observer) {
-	                throw new Error('Observer required for removal.');
-	            }
-	        };
-	        /**
-	         * Note that message should have a type and a data field
-	         */
-	        this.notifyObservers = function (_message) {
-	            for (var observer in _this.observers) {
-	                _this.observers[observer].recieveNotification(_message);
-	            }
-	        };
-	        /**
-	         * Creates a batch
-	         */
-	        this.addBatch = function (processObject) {
-	            if (processObject) {
-	                console.log("Hibachi", _this.$hibachi);
-	                console.log("Process Object", processObject);
-	                //this.orderFulfillmentService.addBatch(this.getBatchProcess());
-	                processObject.data.entityName = "FulfillmentBatch";
-	                processObject.data.serviceName = "fulfillment"; //service is different then fulfillmentBatchService so must define.
-	                processObject.data.processContext = "create";
-	                processObject.data['fulfillmentBatch'] = {};
-	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
-	                //This goes to service.
-	                return _this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
-	            }
-	        };
-	        this.observers = new Array();
-	    }
-	    return SWOrderFulfillmentService;
-	}());
-	exports.SWOrderFulfillmentService = SWOrderFulfillmentService;
 
 
 /***/ }

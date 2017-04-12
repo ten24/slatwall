@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
 
 module FulfillmentsList {
     export enum Views {
@@ -16,7 +17,7 @@ module FulfillmentsList {
 /**
  * Fulfillment List Controller
  */
-class SWOrderFulfillmentListController {
+class SWOrderFulfillmentListController implements Prototypes.Observable.IObserver {
     private orderFulfillmentCollection:any;
     private orderItemCollection:any;
     private orderCollectionConfig:any;
@@ -69,7 +70,6 @@ class SWOrderFulfillmentListController {
         
         //This is all I need to register my observer and it works for all of the typeaheads on the page.
         this.typeaheadService.registerObserver(this);
-        
     }
 
     /**
@@ -365,6 +365,7 @@ class SWOrderFulfillmentListController {
      * "locationIDfilter", "locationID", or "accountID" These are the same as the names of the forms.
      */
     public recieveNotification = (message): void => {
+        
         switch (message.name) {
             case "locationIDfilter": 
                 //If this is called, then the filter needs to be updated based on this id.
