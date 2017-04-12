@@ -242,7 +242,7 @@ class PublicService {
     */
     public doAction=(action:string, data?:any, method?:any) => {
         //Prevent sending the same request multiple times in parallel
-        if(this.getRequestByAction(action) && this.getRequestByAction(action).loading) return this.$q.when();
+        if(this.getRequestByAction(action) && this.loadingThisRequest(action, data, false)) return this.$q.when();
 
         if (!action) {throw "Action is required exception";}
 
@@ -267,6 +267,7 @@ class PublicService {
              console.log("Request Data: ", data);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
+
             request.promise.then((result:any)=>{
                 this.processAction(result,request);
             }).catch((response)=>{
@@ -276,10 +277,9 @@ class PublicService {
             return request.promise;
         }else{
             //get
-
             var url = urlBase + "&returnJsonObject=cart,account";
 
-            let request = this.requestService.newPublicRequest(url);
+            let request = this.requestService.newPublicRequest(url,data,method);
             request.promise.then((result:any)=>{
                 this.processAction(result,request);
             }).catch((reason)=>{
@@ -297,10 +297,14 @@ class PublicService {
         this.runCheckoutAdjustments(response);
 
         /** update the account and the cart */
-        this.account.populate(response.account);
-        this.account.request = request;
-        this.cart.populate(response.cart);
-        this.cart.request = request;
+        if(response.account){
+            this.account.populate(response.account);
+            this.account.request = request;
+        }
+        if(response.cart){
+            this.cart.populate(response.cart);
+            this.cart.request = request;
+        }
         this.errors = response.errors;
         //if the action that was called was successful, then success is true.
         if (request.hasSuccessfulAction()){
@@ -622,7 +626,7 @@ class PublicService {
             'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
             'newOrderPayment.requireBillingAddress':true,
             'newOrderPayment.creditCardLastFour': billingAddress.cardNumber ? billingAddress.cardNumber.slice(-4) : '',
-            'accountPaymentMethodID': billingAddress.accountPaymentMethodID,
+            'accountPaymentMethodID': billingAddress.accountPaymentMetgehodID,
             'copyFromType': billingAddress.copyFromType,
             'saveAccountPaymentMethodFlag': this.saveCardInfo
         };
@@ -641,29 +645,21 @@ class PublicService {
         return (paymentMethod.accountPaymentMethodName || paymentMethod.nameOnCreditCard) + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
     }
 
-    public getResizedImageByProfileName = (profileName, skuIDList)=>{
+    public getResizedImageByProfileName = (profileName, skuID)=>{
        this.loading = true;
        
        if (profileName == undefined){
            profileName = "medium";
        }
        
-       this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
+       this.doAction('getResizedImageByProfileName',{profileName:profileName,skuIds:skuID}).then((result:any)=>{
             if(!angular.isDefined(this.imagePath)){
                 this.imagePath = {};
             }
-            this.imagePath[skuIDList] = "";
-            
-            result = angular.fromJson(result);
-            if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
+            if (result.resizedImagePaths && result.resizedImagePaths[skuID]){
+                this.imagePath[skuID] = result.resizedImagePaths[skuID]
+                return this.imagePath[skuID];
                 
-                this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
-                this.loading = false;
-                return this.imagePath[skuIDList];
-                
-            }else{
-                this.loading = false;
-                return "";
             }
             
          });
@@ -1089,6 +1085,22 @@ class PublicService {
 
     public hideEmailSelector = (fulfillmentIndex) =>{
         this.showEmailSelector[fulfillmentIndex] = false;
+    }
+
+    public incrementItemQuantity = (orderItem, amount=1) =>{
+        orderItem.quantity += amount;
+        if(orderItem.quantity < 0){
+            orderItem.quantity = 0;
+        }
+        this.updateOrderItemQuantity(orderItem);
+    }
+
+    public updateOrderItemQuantity = (orderItem) =>{
+        let item = {
+            'orderItem.sku.skuID':orderItem.sku.skuID,
+            'orderItem.qty':orderItem.quantity
+        }
+        this.doAction('updateOrderItemQuantity', item);
     }
 
     public binder = (self, fn, ...args)=>{

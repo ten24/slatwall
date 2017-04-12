@@ -92,8 +92,7 @@ component extends="HibachiService"  accessors="true" output="false"
             imageHeight = 263;
             imageWidth  = 212;
         }
-        arguments.data.ajaxResponse.content['resizedImagePaths'] = {};
-        arguments.data.ajaxResponse.content['resizedImagePaths']['resizedImagePaths'] = [];
+        arguments.data.ajaxResponse['resizedImagePaths'] = {};
         var skus = [];
         
         //smart list to load up sku array
@@ -104,11 +103,10 @@ component extends="HibachiService"  accessors="true" output="false"
             var skus = skuSmartList.getRecords();
             
             for  (var sku in skus){
-                ArrayAppend(arguments.data.ajaxResponse.content['resizedImagePaths']['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+                arguments.data.ajaxResponse['resizedImagePaths'][sku.getSkuID()] = sku.getResizedImagePath(width=imageWidth, height=imageHeight);         
             }
         }
-        data.returnJsonObject = "";
-        data.ajaxResponse['resizedImagePaths'] = arguments.data.ajaxResponse.content['resizedImagePaths'];
+        arguments.data.returnJsonObjects = "";
     }
     
     /**

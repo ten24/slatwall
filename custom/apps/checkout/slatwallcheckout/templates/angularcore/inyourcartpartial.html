@@ -3,8 +3,8 @@
         <td class="text-center">
            
             <div ng-init="slatwall.getResizedImageByProfileName('large', orderItem.sku.skuID)">
-				<a href="#"><img src="{{slatwall.imagePath[orderItem.sku.skuID]}}" class="img-responsive center-block" ng-if="!slatwall.loading"></a>
-				<span ng-if="slatwall.loading">
+				<img ng-src="{{slatwall.imagePath[orderItem.sku.skuID]}}" class="img-responsive center-block" ng-if="!slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
+				<span ng-if="slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
 					<i class="fa fa-refresh fa-spin fa-lg fa-fw"></i>
 				</span>
 			</div>

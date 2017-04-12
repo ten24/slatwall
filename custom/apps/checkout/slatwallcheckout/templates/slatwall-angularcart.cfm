@@ -73,7 +73,7 @@ Notes:
 				<h3>Shopping Cart</h3>
 			</div>
 		</div>
-		<div class="panel panel-default panel-body" ng-if="!slatwall.hasAccount()" ng-cloak>
+		<div class="panel panel-default panel-body" ng-if="!slatwall.hasAccount() && !slatwall.loadingThisRequest('getAccount')" ng-cloak>
             <h3 ng-show="slatwall.isCreatingAccount()">Create An Account</h3>
             <h3 ng-show="slatwall.isSigningIn()">Sign in to your Account</h3>
             <div class="details" ng-show="slatwall.isCreatingAccount()">
@@ -87,140 +87,163 @@ Notes:
 			</div>
         </div>
 		<!--- Verify that there are items in the cart --->
-		<div ng-if="slatwall.hasAccount() && slatwall.cartHasNoItems()">
+		<div ng-if="slatwall.hasAccount() && slatwall.cartHasNoItems()" ng-cloak>
 			<div class="alert alert-warning">There are no items in your cart.</div>
 		</div>
-		<div ng-if="slatwall.hasAccountAndCartItems()">
+		<div ng-if="slatwall.hasAccountAndCartItems()" ng-cloak>
 			<div class="row">
 				<!--- START: CART DETAIL --->
 				<div class="span8">
 					<h5>Shopping Cart Details</h5>
 					
 					<!--- Update Cart Form --->
-					<form action="?s=1" method="post">
-						<!--- This slatAction is what tells the form submit to process an update to the cart --->
-						<input type="hidden" name="slatAction" value="public:cart.update" />
+					
+					<!--- Cart Data --->
+					<table class="table">
 						
-						<!--- Cart Data --->
-						<table class="table">
-							
-							<!--- Header --->
-							<tr>
-								<th></th>
-								<th>Product</th>
-								<th>Details</th>
-								<th>Price</th>
-								<th>QTY</th>
-								<th>Ext. Price</th>
-								<th>Discount</th>
-								<th>Total</th>
-								<th>&nbsp;</th>
-							</tr>
-							
-							<!--- Order Items --->
-							<tr ng-repeat="orderItem in slatwall.cart.orderItems">
-								<!--- Product Image --->
-								<td><img src="{{orderItem.sku.imagePath}}" style="height: 100px;"></td>
-								<!--- Display Product Name --->
-								<td><a href="{{orderItem.sku.product.productURL}}">{{orderItem.sku.product.productName}}</a></td>
-								
-								<!--- This is a list of whatever options are there for this product --->
-								<td>{{orderItem.sku.displayOptions}}</td>
-								
-								<!--- This displays the price of the item in the cart --->
-								<td>{{orderItem.price | currency}}</td>
-								
-								<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
-								<td>
-									<!--- <input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#htmlEditFormat( orderItem.getQuantity() )}}" />
-									<sw:ErrorDisplay object="#orderItem#" errorName="quantity" /> --->
-									{{orderItem.quantity}}
-								</td>
-								
-								<!--- Display the Price X Quantity --->
-								<td>{{orderItem.extendedPrice | currency}}</td>
-								
-								<!--- Show any discounts that have been applied --->
-								<td>{{orderItem.discountAmount | currency}}</td>
-								
-								<!--- Show the Price X Quantity - Discounts, basically this is what the end user is going to be charged for this item --->
-								<td>{{orderItem.extendedPriceAfterDiscount | currency}}</td>
-								
-								<!--- Remove action to clear this line item from the cart ---> <!--- Change this to swActionCaller --->
-								<td><a href="?slatAction=public:cart.removeOrderItem&orderItemID=#orderItem.getOrderItemID()}}" class="btn" title="Remove Item"><i class="icon-remove" /></a></td>
-							</tr>
-							
-						</table>
+						<!--- Header --->
+						<tr>
+							<th></th>
+							<th>Product</th>
+							<th>Details</th>
+							<th>Price</th>
+							<th>QTY</th>
+							<th>Ext. Price</th>
+							<th>Discount</th>
+							<th>Total</th>
+							<th>&nbsp;</th>
+						</tr>
 						
-						<!--- START: Custom "Order" Attribute Sets --->
-						<!--- <cfset orderAttributeSets = slatwall.cart.getAssignedAttributeSetSmartList().getRecords() />
+						<!--- Order Items --->
+						<tr ng-repeat="orderItem in slatwall.cart.orderItems track by $index">
+							<!--- Product Image --->
+							<td>
+								<div ng-init="slatwall.getResizedImageByProfileName('large', orderItem.sku.skuID)">
+									<img ng-src="{{slatwall.imagePath[orderItem.sku.skuID]}}" class="img-responsive center-block" ng-if="!slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
+									<span ng-if="slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
+										<i class="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+									</span>
+								</div>
+							</td>
+							<!--- Display Product Name --->
+							<td><a href="{{orderItem.sku.product.urlTitle}}">{{orderItem.sku.product.productName}}</a></td>
+							
+							<!--- This is a list of whatever options are there for this product --->
+							<td>{{orderItem.sku.displayOptions}}</td>
+							
+							<!--- This displays the price of the item in the cart --->
+							<td>{{orderItem.price | currency}}</td>
+							
+							<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
+							<td class="row">
+							    <div class="col-sm-3">
+							    	<button class="pull-right" ng-click="slatwall.incrementItemQuantity(orderItem, -1)">
+						    			<i class="fa fa-chevron-left"></i>
+						    		</button>
+							    </div>
+							    <div class="col-sm-6">
+									<input type="text" ng-model="orderItem.quantity" ng-model-options="{debounce:500}" ng-change="slatwall.updateOrderItemQuantity(orderItem)" ng-show="!slatwall.loadingThisRequest('updateOrderItemQuantity', {'orderItem.sku.skuID':orderItem.sku.skuID})">
+									<span ng-show="slatwall.loadingThisRequest('updateOrderItemQuantity', {'orderItem.sku.skuID':orderItem.sku.skuID})">
+										<i class="fa fa-spinner fa-pulse fa-fw"></i>
+									</span>
+
+						        </div>
+						        <div class="col-sm-3">
+						        	<button class="pull-left" ng-click="slatwall.incrementItemQuantity(orderItem)">
+						    			<i class="fa fa-chevron-right"></i>
+						    		</button>
+						        </div>
+							</td>
+							
+							<!--- Display the Price X Quantity --->
+							<td>{{orderItem.extendedPrice | currency}}</td>
+							
+							<!--- Show any discounts that have been applied --->
+							<td>{{orderItem.discountAmount | currency}}</td>
+							
+							<!--- Show the Price X Quantity - Discounts, basically this is what the end user is going to be charged for this item --->
+							<td>{{orderItem.extendedPriceAfterDiscount | currency}}</td>
+							
+							<!--- Remove action to clear this line item from the cart ---> <!--- Change this to swActionCaller --->
+							<td><a role="button" ng-click="slatwall.doAction('removeOrderItem',{orderItemID:orderItem.orderItemID})" class="btn" title="Remove Item">
+								<span class="fa-lg" ng-show="!slatwall.loadingThisRequest('removeOrderItem', {orderItemID:orderItem.orderItemID})">
+									<i class="fa fa-trash-o fa-fw"></i>
+								</span>
+								<span class="fa-lg" ng-show="slatwall.loadingThisRequest('removeOrderItem', {orderItemID:orderItem.orderItemID})">
+									<i class="fa fa-spinner fa-pulse fa-fw""></i>
+								</span>
+							</a></td>
+						</tr>
 						
-						<!--- Only display if there are attribute sets assigned --->
-						<cfif arrayLen(orderAttributeSets)>
+					</table>
+					
+					<!--- START: Custom "Order" Attribute Sets --->
+					<!--- <cfset orderAttributeSets = slatwall.cart.getAssignedAttributeSetSmartList().getRecords() />
+					
+					<!--- Only display if there are attribute sets assigned --->
+					<cfif arrayLen(orderAttributeSets)>
+						
+						<hr />
+						
+						<!--- Loop over all of the attribute sets --->
+						<cfloop array="#orderAttributeSets#" index="attributeSet">
+							
+							<!--- display the attribute set name --->
+							<h5>#attributeSet.getAttributeSetName()}}</h5>
+							
+							<!--- Loop over all of the attributes --->
+							<cfloop array="#attributeSet.getAttributes()}}" index="attribute">
+								
+								<!--- Pull this attribute value object out of the order entity ---> 
+								<cfset thisAttributeValueObject = slatwall.cart.getAttributeValue(attribute.getAttributeCode(), true) />
+								
+								<cfif isObject(thisAttributeValueObject)>
+									<!--- Display the attribute value --->
+									<div class="control-group">
+										
+				    					<label class="control-label" for="rating">#attribute.getAttributeName()}}</label>
+				    					<div class="controls">
+				    						
+											<sw:FormField type="#attribute.getFormFieldType()}}" name="#attribute.getAttributeCode()}}" valueObject="#thisAttributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#thisAttributeValueObject.getAttributeValueOptions()}}" class="span4" />
+											<sw:ErrorDisplay object="#thisAttributeValueObject#" errorName="password" />
+											
+				    					</div>
+				  					</div>
+				  				<cfelse>
+				  					<!--- Display the custom property --->
+				  					<div class="control-group">
+										
+				    					<label class="control-label" for="rating">#attribute.getAttributeName()}}</label>
+				    					<div class="controls">
+				    						
+					  						<sw:FormField type="#attribute.getFormFieldType()}}" valueObject="{{slatwall.cart#" valueObjectProperty="#attribute.getAttributeCode()}}" valueOptions="#attribute.getAttributeOptionsOptions()}}" class="span4" />
+											<sw:ErrorDisplay object="{{slatwall.cart#" errorName="#attribute.getAttributeCode()}}" />
+											
+				    					</div>
+				  					</div>
+				  				</cfif>
+								
+							</cfloop>
 							
 							<hr />
 							
-							<!--- Loop over all of the attribute sets --->
-							<cfloop array="#orderAttributeSets#" index="attributeSet">
-								
-								<!--- display the attribute set name --->
-								<h5>#attributeSet.getAttributeSetName()}}</h5>
-								
-								<!--- Loop over all of the attributes --->
-								<cfloop array="#attributeSet.getAttributes()}}" index="attribute">
-									
-									<!--- Pull this attribute value object out of the order entity ---> 
-									<cfset thisAttributeValueObject = slatwall.cart.getAttributeValue(attribute.getAttributeCode(), true) />
-									
-									<cfif isObject(thisAttributeValueObject)>
-										<!--- Display the attribute value --->
-										<div class="control-group">
-											
-					    					<label class="control-label" for="rating">#attribute.getAttributeName()}}</label>
-					    					<div class="controls">
-					    						
-												<sw:FormField type="#attribute.getFormFieldType()}}" name="#attribute.getAttributeCode()}}" valueObject="#thisAttributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#thisAttributeValueObject.getAttributeValueOptions()}}" class="span4" />
-												<sw:ErrorDisplay object="#thisAttributeValueObject#" errorName="password" />
-												
-					    					</div>
-					  					</div>
-					  				<cfelse>
-					  					<!--- Display the custom property --->
-					  					<div class="control-group">
-											
-					    					<label class="control-label" for="rating">#attribute.getAttributeName()}}</label>
-					    					<div class="controls">
-					    						
-						  						<sw:FormField type="#attribute.getFormFieldType()}}" valueObject="{{slatwall.cart#" valueObjectProperty="#attribute.getAttributeCode()}}" valueOptions="#attribute.getAttributeOptionsOptions()}}" class="span4" />
-												<sw:ErrorDisplay object="{{slatwall.cart#" errorName="#attribute.getAttributeCode()}}" />
-												
-					    					</div>
-					  					</div>
-					  				</cfif>
-									
-								</cfloop>
-								
-								<hr />
-								
-							</cfloop>
-						</cfif>	 --->
-						<!--- END: Custom "Order" Attribute Sets --->
-						
-						<!--- Action Buttons --->
-						<div class="control-group pull-right">
-							<div class="controls">
-								<!--- Update Cart Button, just submits the form --->
-								<button type="submit" class="btn">Update Cart</button>
-								
-								<!--- Clear Cart Button, links to a slatAction that clears the cart --->
-								<a href="?slatAction=public:cart.clear" class="btn">Clear Cart</a>
-								
-								<!--- Checkout, is just a simple link to the checkout page --->
-								<a href="checkout.cfm" class="btn">Checkout</a>
-							</div>
+						</cfloop>
+					</cfif>	 --->
+					<!--- END: Custom "Order" Attribute Sets --->
+					
+					<!--- Action Buttons --->
+					<div class="control-group pull-right">
+						<div class="controls">
+							<!--- Update Cart Button, just submits the form --->
+							<button type="submit" class="btn">Update Cart</button>
+							
+							<!--- Clear Cart Button, links to a slatAction that clears the cart --->
+							<a role="button" ng-click="slatwall.doAction('clearOrder',{})" class="btn">Clear Cart</a>
+							
+							<!--- Checkout, is just a simple link to the checkout page --->
+							<a href="checkout.cfm" class="btn">Checkout</a>
 						</div>
-						
-					</form>
+					</div>
 					<!--- End: Update Cart Form --->
 						
 				</div>
