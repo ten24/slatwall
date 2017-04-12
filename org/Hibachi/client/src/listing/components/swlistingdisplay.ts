@@ -105,7 +105,7 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-        this.initializeState();
+
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
@@ -118,9 +118,16 @@ class SWListingDisplayController{
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+             this.$timeout(()=>{
+                this.collection = this.collectionConfig;
+                this.columns = this.collectionConfig.columns;
+            });
             this.multipleCollectionDeffered.reject();
         }
-
+		this.initializeState();
+		
+		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
+		        
         if(angular.isDefined(this.collectionPromise)){
              this.hasCollectionPromise = true;
              this.multipleCollectionDeffered.reject();
@@ -134,7 +141,9 @@ class SWListingDisplayController{
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
-
+        console.log('multislot',this.multiSlot);
+        
+		if(this.multiSlot){
         this.singleCollectionPromise.then(()=>{
             this.multipleCollectionDeffered.reject();
         });
@@ -161,7 +170,24 @@ class SWListingDisplayController{
         		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
             }
         );
+        }else if(this.multiSlot == false){
 
+        	this.setupCollectionPromise();
+        }
+
+    }
+    
+    private setupCollectionPromise=()=>{
+    	if(angular.isUndefined(this.getCollection)){
+            this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+        }
+
+        this.paginator.getCollection = this.getCollection;
+
+        var getCollectionEventID = this.tableID;
+        //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+
+        this.listingService.getCollection(this.tableID);
     }
 
     private getCollectionObserver=(param)=> {
@@ -443,47 +469,47 @@ class SWListingDisplay implements ng.IDirective{
     };
     public bindToController={
 
-            isRadio:"=?",
-            angularLinks:"=?",
-            isAngularRoute:"=?",
+            isRadio:"<?",
+            angularLinks:"<?",
+            isAngularRoute:"<?",
             name:"@?",
 
             /*required*/
-            collection:"=?",
-            collectionConfig:"=?",
+            collection:"<?",
+            collectionConfig:"<?",
             getCollection:"&?",
-            collectionPromise:"=?",
-            edit:"=?",
+            collectionPromise:"<?",
+            edit:"<?",
 
             /*Optional*/
-            title:"@?",
+            title:"<?",
             childPropertyName:"@?",
-            baseEntity:"=?",
+            baseEntity:"<?",
             baseEntityName:"@?",
             baseEntityId:"@?",
 
             /*Admin Actions*/
-            actions:"=?",
+            actions:"<?",
             administrativeCount:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
             recordEditQueryString:"@?",
-            recordEditModal:"=?",
-            recordEditDisabled:"=?",
+            recordEditModal:"<?",
+            recordEditDisabled:"<?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
             recordDetailQueryString:"@?",
-            recordDetailModal:"=?",
+            recordDetailModal:"<?",
             recordDeleteAction:"@?",
             recordDeleteActionProperty:"@?",
             recordDeleteQueryString:"@?",
             recordAddAction:"@?",
             recordAddActionProperty:"@?",
             recordAddQueryString:"@?",
-            recordAddModal:"=?",
-            recordAddDisabled:"=?",
+            recordAddModal:"<?",
+            recordAddDisabled:"<?",
 
-            recordProcessesConfig:"=?",
+            recordProcessesConfig:"<?",
             /* record processes config is an array of actions. Example:
             [
             {
@@ -502,14 +528,14 @@ class SWListingDisplay implements ng.IDirective{
             /*Hierachy Expandable*/
             parentPropertyName:"@?",
             //booleans
-            expandable:"=?",
-            expandableOpenRoot:"=?",
+            expandable:"<?",
+            expandableOpenRoot:"<?",
 
             /*Searching*/
-            searchText:"=?",
+            searchText:"<?",
 
             /*Sorting*/
-            sortable:"=?",
+            sortable:"<?",
             sortableFieldName:"@?",
             sortProperty:"@?",
             sortContextIDColumn:"@?",
@@ -533,23 +559,23 @@ class SWListingDisplay implements ng.IDirective{
             adminattributes:"@?",
 
             /* Settings */
-            showheader:"=?",
-            showOrderBy:"=?",
-            showTopPagination:"=?",
-            showSearch:"=?",
-            showSearchFilters:"=?",
+            showheader:"<?",
+            showOrderBy:"<?",
+            showTopPagination:"<?",
+            showSearch:"<?",
+            showSearchFilters:"<?",
 
             /* Basic Action Caller Overrides*/
-            createModal:"=?",
+            createModal:"<?",
             createAction:"@?",
             createQueryString:"@?",
             exportAction:"@?",
 
-            getChildCount:"=?",
-            hasSearch:"=?",
-            hasActionBar:"=?",
-            multiSlot:"=?",
-            customListingControls:"=?"
+            getChildCount:"<?",
+            hasSearch:"<?",
+            hasActionBar:"<?",
+            multiSlot:"<?",
+            customListingControls:"<?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
