@@ -481,11 +481,18 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 			return rbKey('define.new') & ' ' & rbKey('entity.accountPayment');
 		}
 		
-		if(getPaymentMethodType() == "creditCard") {
-			return getPaymentMethod().getPaymentMethodName() & " - " & getCreditCardType() & " ***" & getCreditCardLastFour() & ' - ' & getFormattedValue('amount');	
+		var paymentMethodName = "";
+		
+		if(!isNull(getPaymentMethod())){
+			paymentMethodName = getPaymentMethod().getPaymentMethodName();
 		}
 		
-		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
+		if(getPaymentMethodType() == "creditCard") {
+			return paymentMethodName & " - " & getCreditCardType() & " ***" & getCreditCardLastFour() & ' - ' & getFormattedValue('amount');	
+		}
+		
+		
+		return paymentMethodName & ' - ' & getFormattedValue('amount');
 	}
 	
 	// ==================  END:  Overridden Methods ========================

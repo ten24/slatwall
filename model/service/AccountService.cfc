@@ -167,7 +167,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Get the populated newAccountPayment out of the processObject
 		var newAccountPayment = arguments.processObject.getNewAccountPayment();
-		writedump(var=newAccountPayment,top=2);abort;
 		// Make sure that this new accountPayment gets attached to the order
 		if(isNull(newAccountPayment.getAccount())) {
 			newAccountPayment.setAccount( arguments.account );
@@ -239,8 +238,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			var transactionData = getAccountPaymentTransactionData(newAccountPayment);
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');	
-			
-			
 			
 			//Loop over the newaccountpayment.getAppliedPayments
 			if(newAccountPayment.hasErrors()){
