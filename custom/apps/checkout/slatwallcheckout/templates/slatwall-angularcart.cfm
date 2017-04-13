@@ -69,7 +69,7 @@ Notes:
 		
 		<!--- START SHOPPING CART EXAMPLE 1 --->
 		<div class="row">
-			<div class="span12">
+			<div class="col-xs-12">
 				<h3>Shopping Cart</h3>
 			</div>
 		</div>
@@ -93,7 +93,7 @@ Notes:
 		<div ng-if="slatwall.hasAccountAndCartItems()" ng-cloak>
 			<div class="row">
 				<!--- START: CART DETAIL --->
-				<div class="span8">
+				<div class="col-sm-12">
 					<h5>Shopping Cart Details</h5>
 					
 					<!--- Update Cart Form --->
@@ -136,14 +136,14 @@ Notes:
 							
 							<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
 							<td class="row">
-							    <div class="col-sm-3">
+							    <!--- <div class="col-sm-3">
 							    	<button class="pull-right" ng-click="slatwall.incrementItemQuantity(orderItem, -1)">
 						    			<i class="fa fa-chevron-left"></i>
 						    		</button>
 							    </div>
 							    <div class="col-sm-6">
-									<input type="text" ng-model="orderItem.quantity" ng-model-options="{debounce:500}" ng-change="slatwall.updateOrderItemQuantity(orderItem)" ng-show="!slatwall.loadingThisRequest('updateOrderItemQuantity', {'orderItem.sku.skuID':orderItem.sku.skuID})">
-									<span ng-show="slatwall.loadingThisRequest('updateOrderItemQuantity', {'orderItem.sku.skuID':orderItem.sku.skuID})">
+									<input type="text" ng-model="orderItem.quantity" ng-model-options="{debounce:500}" ng-change="slatwall.updateOrderItemQuantity(orderItem)" ng-show="!slatwall.loadingThisRequest('updateOrderItemQuantity', {'orderItem.orderItemID':orderItem.orderItemID})">
+									<span ng-show="slatwall.loadingThisRequest('updateOrderItemQuantity', {'orderItem.orderItemID':orderItem.orderItemID})">
 										<i class="fa fa-spinner fa-pulse fa-fw"></i>
 									</span>
 
@@ -152,7 +152,28 @@ Notes:
 						        	<button class="pull-left" ng-click="slatwall.incrementItemQuantity(orderItem)">
 						    			<i class="fa fa-chevron-right"></i>
 						    		</button>
-						        </div>
+						        </div> --->
+						        <sw-form
+						        	data-object="orderItem"
+						        	data-name="orderItemQuantity"
+						        	data-event-announcers="keyup"
+						        	data-action="updateOrderItemQuantity">
+						        	<swf-property-display
+						        		data-name="quantity"
+						        		data-property-identifier="quantity"
+						        		data-label-text=""
+						        		data-field-type="text"
+						        		data-event-listeners="{orderItemQuantitykeyup:slatwall.binder($parent.swForm, $parent.swForm.submit, null)}"
+						        	></swf-property-display>
+						        	<swf-property-display
+						        		data-name="quantity"
+						        		data-property-identifier="orderItemID"
+						        		data-label-text=""
+						        		data-field-type="text"
+						        		data-class="hidden"
+						        	></swf-property-display>
+					        	</sw-form>
+
 							</td>
 							
 							<!--- Display the Price X Quantity --->
@@ -234,14 +255,13 @@ Notes:
 					<!--- Action Buttons --->
 					<div class="control-group pull-right">
 						<div class="controls">
-							<!--- Update Cart Button, just submits the form --->
-							<button type="submit" class="btn">Update Cart</button>
 							
 							<!--- Clear Cart Button, links to a slatAction that clears the cart --->
-							<a role="button" ng-click="slatwall.doAction('clearOrder',{})" class="btn">Clear Cart</a>
+							<a role="button" ng-click="slatwall.doAction('clearOrder',{})" class="btn btn-default">Clear Cart</a>
 							
 							<!--- Checkout, is just a simple link to the checkout page --->
-							<a href="checkout.cfm" class="btn">Checkout</a>
+							<!--- fix somehow --->
+							<a href="/checkout" class="btn btn-default">Checkout</a>
 						</div>
 					</div>
 					<!--- End: Update Cart Form --->
@@ -250,8 +270,14 @@ Notes:
 				<!--- END: CART DETAIL --->
 				
 				<!--- START: ORDER SUMMARY --->
-				<div class="span4">
-					<h5>Order Summary</h5>
+				<div class="col-sm-6">
+					<div class="well">
+						<h4>Promotion Code</h4>
+						<swf-directive partial-name="promopartial"></swf-directive>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<h4>Order Summary</h4>
 					
 					<table class="table table-condensed">
 						<!--- The Subtotal is all of the orderItems before any discounts are applied --->
@@ -309,7 +335,7 @@ Notes:
 						<!--- The total is the finished amount that the customer can expect to pay --->
 						<tr>
 							<td><strong>Total</strong></td>
-							<td><strong>{{slatwall.cart.total | currency}}</strong></td>
+							<td><strong>{{slatwall.cart.calculatedTotal | currency}}</strong></td>
 						</tr>
 					</table>
 				</div>
@@ -319,11 +345,7 @@ Notes:
 			
 			<div class="row">
 				<!--- START: PROMO CODES --->
-				<div class="span4">
-					<div class="well">
-						<swf-directive partial-name="promopartial"></swf-directive>
-					</div>
-				</div>
+				
 				<!--- END: PROMO CODES --->
 			</div>
 		<!--- END SHOPPING CART EXAMPLE 1 --->

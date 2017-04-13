@@ -19,7 +19,7 @@
             <!--- CHECKOUT: ACCOUNT / LOGIN --->
             <div class="col-sm-8">
 	            <!-- Tab heading 1 - Account Login / Create / Edit -->
-	            <div class="panel panel-default panel-body" ng-cloak>
+	            <div class="panel panel-default panel-body"  ng-show="!slatwall.loadingThisRequest('getAccount')" ng-cloak>
 	                <h3 ng-show="slatwall.isCreatingAccount()">Create An Account</h3>
 	                <h3 ng-show="slatwall.isSigningIn()">Sign in to your Account</h3>
 	                <h3 ng-show="slatwall.hasAccount()">Account - {{slatwall.account.firstName}} {{slatwall.account.lastName}}</h3>

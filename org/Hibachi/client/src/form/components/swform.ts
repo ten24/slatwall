@@ -132,6 +132,7 @@ class SWFormController {
     public submit = (actions) =>
     {   
         actions = actions || this.action;
+        console.log('actions!', actions);
         this.clearErrors();
         this.formData = this.getFormData() || "";
         this.doActions(actions);

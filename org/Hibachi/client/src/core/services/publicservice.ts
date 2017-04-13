@@ -1095,12 +1095,8 @@ class PublicService {
         this.updateOrderItemQuantity(orderItem);
     }
 
-    public updateOrderItemQuantity = (orderItem) =>{
-        let item = {
-            'orderItem.sku.skuID':orderItem.sku.skuID,
-            'orderItem.qty':orderItem.quantity
-        }
-        this.doAction('updateOrderItemQuantity', item);
+    public updateOrderItemQuantity = (event) =>{
+        event.swForm.submit();
     }
 
     public binder = (self, fn, ...args)=>{

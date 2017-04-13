@@ -357,7 +357,7 @@ class SWPropertyDisplay implements ng.IDirective{
         placeholderRbKey:"@",
         inputAttributes:"@?",
         optionValues:"=?",
-        eventHandlers:"@?",
+        eventListeners:"=?",
         context:"@?"
     };
     public controller=SWPropertyDisplayController;

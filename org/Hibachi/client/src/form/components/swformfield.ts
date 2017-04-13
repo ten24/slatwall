@@ -38,6 +38,7 @@ class SWFormFieldController {
 	public binaryFileTarget:string;
 	public optionsArguments:any;
 	public valueOptions:any;
+	public eventListeners:any;
 
 	//@ngInject
 	constructor(
@@ -56,6 +57,7 @@ class SWFormFieldController {
 		this.$hibachi = $hibachi;
 		this.observerService = observerService;
 		this.utilityService = utilityService;
+
 	}
 
 	public formFieldChanged = (option)=>{
@@ -117,6 +119,12 @@ class SWFormFieldController {
 
 			this.selectStrategy();
 		}
+
+		if(this.eventListeners){
+            for(var key in this.eventListeners){
+                this.observerService.attach(this.eventListeners[key], key)
+            }
+        }
 
 	}
 
@@ -291,7 +299,7 @@ class SWFormField{
         isDirty:"=?",
         onChange:"=?",
 		editable:"=?",
-		eventHandlers:"@?",
+		eventListeners:"=?",
 		context:"@?",
 		eventAnnouncers:"@"
 	};

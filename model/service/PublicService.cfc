@@ -1049,10 +1049,10 @@ component extends="HibachiService"  accessors="true" output="false"
             cart.setAccount( getHibachiScope().getAccount() );
         }
         
-        if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") && data.orderItem.qty > 0 ){
+        if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "orderItemID") && structKeyExists(data.orderItem, "quantity") && data.orderItem.quantity > 0 ){
             for (var orderItem in cart.getOrderItems()){
-                if (orderItem.getSku().getSkuID() == data.orderItem.sku.skuID){
-                    orderItem.setQuantity(data.orderItem.qty);
+                if (orderItem.getOrderItemID() == data.orderItem.orderItemID){
+                    orderItem.setQuantity(data.orderItem.quantity);
                 }
             }
         }
