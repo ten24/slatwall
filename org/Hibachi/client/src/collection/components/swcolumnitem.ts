@@ -115,6 +115,9 @@ class SWColumnItem{
 									propertyIdentifier:column.propertyIdentifier,
 									direction:column.sorting.sortOrder
 								};
+                                if(column.aggregate && column.aggregate.aggregateFunction){
+                                    orderBy.propertyIdentifier = column.aggregate.aggregateFunction + '('+column.propertyIdentifier+')';
+                                }
 								scope.orderBy.push(orderBy);
 							}
 						});
