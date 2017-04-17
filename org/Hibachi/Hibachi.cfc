@@ -465,7 +465,7 @@ component extends="FW1.framework" {
 			lock scope="Application" timeout="600"  {
 				
 				// Set the request timeout to 600
-				createObject("Slatwall.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
+				createObject("Hibachi.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
 
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
