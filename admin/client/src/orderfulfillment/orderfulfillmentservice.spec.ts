@@ -1,7 +1,7 @@
-import {SWOrderFulfillmentService} from "./services/orderfulfillmentservice";
+import {OrderFulfillmentService} from "./services/orderfulfillmentservice";
 
 describe('fulfillmentService Test',()=>{
-	var fulfillmentService:SWOrderFulfillmentService;
+	var fulfillmentService:OrderFulfillmentService;
     var $httpBackend:ng.IHttpBackendService;
 
     beforeEach(()=>{

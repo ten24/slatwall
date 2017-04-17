@@ -42,8 +42,8 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.collections = [];
         
         //Some setup for the fulfillments collection.
-        this.createOrderFulfillmentCollection(collectionConfigService);
-        this.createOrderItemCollection(collectionConfigService);
+        this.createOrderFulfillmentCollection();
+        this.createOrderItemCollection();
 
         //some view setup.
         this.views = FulfillmentsList.Views;
@@ -79,7 +79,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      */
     public getOrderFulfillmentCollection = () => {
         if (this.orderFulfillmentCollection == undefined){
-            this.createOrderFulfillmentCollection(this.collectionConfigService);
+            this.createOrderFulfillmentCollection();
         }
         return this.orderFulfillmentCollection;
     }
@@ -89,7 +89,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      */
     public getOrderItemCollection = () => {
         if (this.orderItemCollection == undefined){
-            this.createOrderItemCollection(this.collectionConfigService);
+            this.createOrderItemCollection();
         }
         return this.orderItemCollection;
     }
@@ -164,8 +164,8 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createOrderFulfillmentCollection = (collectionConfigService):void => {
-        this.orderFulfillmentCollection = collectionConfigService.newCollectionConfig("OrderFulfillment");
+     private createOrderFulfillmentCollection = ():void => {
+        this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
@@ -180,8 +180,8 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Setup the initial orderItem Collection.
      */
-    private createOrderItemCollection = (collectionConfigService):void => {
-        this.orderItemCollection = collectionConfigService.newCollectionConfig("OrderItem");
+    private createOrderItemCollection = ():void => {
+        this.orderItemCollection = this.collectionConfigService.newCollectionConfig("OrderItem");
         this.orderItemCollection.addDisplayProperty("orderItemID");
         this.orderItemCollection.addDisplayProperty("quantity");
         this.orderItemCollection.addDisplayProperty("order.orderNumber");
@@ -245,8 +245,8 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
 
     /**
      * Adds one of the status type filters into the collectionConfigService
-     * Keys: String['Partial', 'Available', 'Unavailable']
-     * Value: Boolean: {true|false}
+     * @param key: FulfillmentsList.CollectionFilterValues {'partial' | 'available' | 'unavailable' | 'location'}
+     * @param Vvalue: boolean: {true|false}
      */
     
     public addFilter = (key:FulfillmentsList.CollectionFilterValues, value:boolean):void => {

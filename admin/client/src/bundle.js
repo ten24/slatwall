@@ -29494,7 +29494,7 @@
 	         */
 	        this.getOrderFulfillmentCollection = function () {
 	            if (_this.orderFulfillmentCollection == undefined) {
-	                _this.createOrderFulfillmentCollection(_this.collectionConfigService);
+	                _this.createOrderFulfillmentCollection();
 	            }
 	            return _this.orderFulfillmentCollection;
 	        };
@@ -29503,7 +29503,7 @@
 	         */
 	        this.getOrderItemCollection = function () {
 	            if (_this.orderItemCollection == undefined) {
-	                _this.createOrderItemCollection(_this.collectionConfigService);
+	                _this.createOrderItemCollection();
 	            }
 	            return _this.orderItemCollection;
 	        };
@@ -29576,8 +29576,8 @@
 	        /**
 	         * Setup the initial orderFulfillment Collection.
 	         */
-	        this.createOrderFulfillmentCollection = function (collectionConfigService) {
-	            _this.orderFulfillmentCollection = collectionConfigService.newCollectionConfig("OrderFulfillment");
+	        this.createOrderFulfillmentCollection = function () {
+	            _this.orderFulfillmentCollection = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
 	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
 	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
 	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
@@ -29591,8 +29591,8 @@
 	        /**
 	         * Setup the initial orderItem Collection.
 	         */
-	        this.createOrderItemCollection = function (collectionConfigService) {
-	            _this.orderItemCollection = collectionConfigService.newCollectionConfig("OrderItem");
+	        this.createOrderItemCollection = function () {
+	            _this.orderItemCollection = _this.collectionConfigService.newCollectionConfig("OrderItem");
 	            _this.orderItemCollection.addDisplayProperty("orderItemID");
 	            _this.orderItemCollection.addDisplayProperty("quantity");
 	            _this.orderItemCollection.addDisplayProperty("order.orderNumber");
@@ -29649,8 +29649,8 @@
 	        };
 	        /**
 	         * Adds one of the status type filters into the collectionConfigService
-	         * Keys: String['Partial', 'Available', 'Unavailable']
-	         * Value: Boolean: {true|false}
+	         * @param key: FulfillmentsList.CollectionFilterValues {'partial' | 'available' | 'unavailable' | 'location'}
+	         * @param Vvalue: boolean: {true|false}
 	         */
 	        this.addFilter = function (key, value) {
 	            //Always keep the orderNumber filter.
@@ -29787,8 +29787,8 @@
 	        this.filters = { "unavailable": false, "partial": true, "available": true };
 	        this.collections = [];
 	        //Some setup for the fulfillments collection.
-	        this.createOrderFulfillmentCollection(collectionConfigService);
-	        this.createOrderItemCollection(collectionConfigService);
+	        this.createOrderFulfillmentCollection();
+	        this.createOrderItemCollection();
 	        //some view setup.
 	        this.views = FulfillmentsList.Views;
 	        this.setView(this.views.Fulfillments);
