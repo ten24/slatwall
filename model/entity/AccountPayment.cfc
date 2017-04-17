@@ -224,13 +224,30 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public numeric function getAmount() {
+	public numeric function getNetAmount() {
 		var totalAmt = 0;
 		
 		for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
-			totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + getAppliedAccountPayments()[i].getAmount());
+			var appliedAccountPayment = getAppliedAccountPayments()[i];
+			if(!isNull(appliedAccountPayment.getAccountPaymentType())){
+				if(appliedAccountPayment.getAccountPaymentType().getSystemCode() == 'aptCharge'){
+					totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + appliedAccountPayment.getAmount());
+				}else{
+					totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt - appliedAccountPayment.getAmount());
+				}
+			}
 		}
 		
+		return totalAmt;
+	}
+	
+	public numeric function getAmount() {
+		var totalAmt = 0;
+		if(isNull(getAccountPaymentType()) || getAccountPaymentType().getSystemCode() != "aptAdjustment"){
+			for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
+				totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + getAppliedAccountPayments()[i].getAmount());
+			}
+		}
 		return totalAmt;
 	}
 	
@@ -238,7 +255,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var amountReceived = 0;
 		
 		// We only show 'received' for charged payments
-		if( getAccountPaymentType().getSystemCode() == "aptCharge" ) {
+		if( getAccountPaymentType().getSystemCode() == "aptCharge" || getAccountPaymentType().getSystemCode() == "aptAdjustment" ) {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 				amountReceived = getService('HibachiUtilityService').precisionCalculate(amountReceived + getPaymentTransactions()[i].getAmountReceived());
@@ -253,7 +270,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var amountCredited = 0;
 		
 		// We only show 'credited' for credited payments
-		if( getAccountPaymentType().getSystemCode() == "aptCredit" ) {
+		if( getAccountPaymentType().getSystemCode() == "aptCredit" || getAccountPaymentType().getSystemCode() == "aptAdjustment") {
 			
 			for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
 				amountCredited = getService('HibachiUtilityService').precisionCalculate(amountCredited + getPaymentTransactions()[i].getAmountCredited());

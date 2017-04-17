@@ -547,7 +547,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Set the transactionEndTickCount
 					arguments.paymentTransaction.setTransactionEndTickCount( getTickCount() );
-
+					getHibachiDAO().save(arguments.paymentTransaction);
 					// Flush the ORMSession again this transaction gets updated
 					getHibachiDAO().flushORMSession();
 				}
