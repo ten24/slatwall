@@ -140,6 +140,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 	}
 	
+	
+	
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
 			var parentCollectionConfigStruct = arguments.parentCollection.getCollectionConfigStruct();
@@ -2389,6 +2391,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function removeCharacters(required string javaUUIDString){
 		return replace(arguments.javaUUIDString,'-','','all');
+	}
+	
+	public void function setCollectionConfig(required string collectionConfig){
+		variables.collectionConfig = arguments.collectionConfig;
+		//reinflate collectionConfigStruct if the collectionConfig is modified directly
+		variables.collectionConfigStruct = deserializeCollectionConfig();	
 	}
 
 	public any function getCollectionConfigStruct(){
