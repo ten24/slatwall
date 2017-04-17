@@ -397,9 +397,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var column = {
 			"propertyIdentifier"=arguments.displayProperty
 		};
-		if(!structKeyExists(collectionConfig,'columns')){
-			collectionConfig["columns"] = [];
-		}
 
 		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
@@ -425,8 +422,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		
-
-		arrayAppend(collectionConfig.columns,column);
+		addColumn(column);
 		this.setCollectionConfigStruct(collectionConfig);
 		//backend should Automatically Authorize
 		addAuthorizedProperty(convertPropertyIdentifierToAlias(column['propertyIdentifier']));
