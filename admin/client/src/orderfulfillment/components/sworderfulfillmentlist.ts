@@ -31,6 +31,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public total:number;
     public formData:{};
     public processObject:any;
+    
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private swOrderFulfillmentService){
@@ -45,6 +46,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
 
         //some view setup.
         this.views = FulfillmentsList.Views;
+        
         this.setView(this.views.Fulfillments);
         
         //add both collections into the collection object. Removed 0 elements (insert only).
@@ -171,7 +173,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
      }
     
@@ -186,7 +188,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime");
         this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.orderItemCollection.addDisplayProperty("sku.product.productName");
-        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
     }
 
@@ -257,13 +259,13 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             if (value == true){
                 
                 if (key == "partial"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Partial","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofistPartial","=","OR",false);
                 }
                 if (key == "available"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Available","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofistAvailable","=","OR",false);
                 }
                 if (key == "unavailable"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Unavailable","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofistUnavailable","=","OR",false);
                 }
                 if (key == "location"){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
