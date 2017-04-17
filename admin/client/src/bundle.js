@@ -29490,24 +29490,6 @@
 	        this.typeaheadService = typeaheadService;
 	        this.orderFulfillmentService = orderFulfillmentService;
 	        /**
-	         * Getter to return this orderFulfillmentCollection
-	         */
-	        this.getOrderFulfillmentCollection = function () {
-	            if (_this.orderFulfillmentCollection == undefined) {
-	                _this.createOrderFulfillmentCollection();
-	            }
-	            return _this.orderFulfillmentCollection;
-	        };
-	        /**
-	         * Getter to return this orderFulfillmentCollection
-	         */
-	        this.getOrderItemCollection = function () {
-	            if (_this.orderItemCollection == undefined) {
-	                _this.createOrderItemCollection();
-	            }
-	            return _this.orderItemCollection;
-	        };
-	        /**
 	         * Implements a listener for the orderFulfillment selections
 	         */
 	        this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener = function (callBackData) {

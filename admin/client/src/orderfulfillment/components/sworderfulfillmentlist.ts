@@ -75,26 +75,6 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     }
 
     /**
-     * Getter to return this orderFulfillmentCollection
-     */
-    public getOrderFulfillmentCollection = () => {
-        if (this.orderFulfillmentCollection == undefined){
-            this.createOrderFulfillmentCollection();
-        }
-        return this.orderFulfillmentCollection;
-    }
-
-    /**
-     * Getter to return this orderFulfillmentCollection
-     */
-    public getOrderItemCollection = () => {
-        if (this.orderItemCollection == undefined){
-            this.createOrderItemCollection();
-        }
-        return this.orderItemCollection;
-    }
-
-    /**
      * Implements a listener for the orderFulfillment selections
      */
     public swSelectionToggleSelectionorderFulfillmentCollectionTableListener = (callBackData) => {
