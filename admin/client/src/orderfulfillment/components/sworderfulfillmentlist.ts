@@ -35,7 +35,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public processObject:any;
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private swOrderFulfillmentService){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
         
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": true, "available": true };
@@ -309,7 +309,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      */
     public addBatch = ():void => {
         if (this.getProcessObject()) {
-            this.swOrderFulfillmentService.addBatch(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
+            this.orderFulfillmentService.addBatch(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
         }
     }
     /**

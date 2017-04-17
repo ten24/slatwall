@@ -22,7 +22,7 @@ var orderfulfillmentmodule = angular.module('orderFulfillment',[coremodule.name]
 //constants
 .constant('orderFulfillmentPartialsPath','orderfulfillment/components/')
 //services
-.service('swOrderFulfillmentService', OrderFulfillmentService)
+.service('orderFulfillmentService', OrderFulfillmentService)
 //controllers
 //directives
 .directive('swOrderFulfillmentList', SWOrderFulfillmentList.Factory());

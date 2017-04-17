@@ -29378,7 +29378,7 @@
 	    }]).run([function () {
 	    }])
 	    .constant('orderFulfillmentPartialsPath', 'orderfulfillment/components/')
-	    .service('swOrderFulfillmentService', orderfulfillmentservice_1.OrderFulfillmentService)
+	    .service('orderFulfillmentService', orderfulfillmentservice_1.OrderFulfillmentService)
 	    .directive('swOrderFulfillmentList', sworderfulfillmentlist_1.SWOrderFulfillmentList.Factory());
 	exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
@@ -29477,7 +29477,7 @@
 	 */
 	var SWOrderFulfillmentListController = (function () {
 	    // @ngInject
-	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, swOrderFulfillmentService) {
+	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, orderFulfillmentService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
@@ -29488,7 +29488,7 @@
 	        this.$http = $http;
 	        this.$window = $window;
 	        this.typeaheadService = typeaheadService;
-	        this.swOrderFulfillmentService = swOrderFulfillmentService;
+	        this.orderFulfillmentService = orderFulfillmentService;
 	        /**
 	         * Getter to return this orderFulfillmentCollection
 	         */
@@ -29706,7 +29706,7 @@
 	         */
 	        this.addBatch = function () {
 	            if (_this.getProcessObject()) {
-	                _this.swOrderFulfillmentService.addBatch(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
+	                _this.orderFulfillmentService.addBatch(_this.getProcessObject()).then(_this.processCreateSuccess, _this.processCreateError);
 	            }
 	        };
 	        /**
