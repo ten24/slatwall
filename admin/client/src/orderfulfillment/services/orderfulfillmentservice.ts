@@ -11,9 +11,7 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
     public observers: Array<Prototypes.Observable.IObserver>
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){
-        this.observers = new Array<Prototypes.Observable.IObserver>();
-    }
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){}
 
     /**
      * This manages all the observer events without the need for setting ids etc.
@@ -21,6 +19,9 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
     public registerObserver = (_observer: Prototypes.Observable.IObserver) => {
         if (!_observer){
             throw new Error('Observer required for registration');
+        }
+        if (this.observers == undefined){
+            this.observers = new Array<Prototypes.Observable.IObserver>();
         }
         this.observers.push(_observer);
     }
@@ -32,7 +33,7 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
             throw new Error('Observer required for removal.');
          }
          for (var observer in this.observers){
-            if (this.observers[observer] == (_observer)){
+            if (this.observers[observer] === (_observer)){
                 if (this.observers.indexOf(_observer) > -1){
                     this.observers.splice(this.observers.indexOf(_observer), 1);
                 }
