@@ -132,8 +132,12 @@ export class BaseBootStrapper{
 
         return this.$http.get(urlString+'custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
+        	var appConfig = resp.data.data;
+            if(hibachiConfig.baseURL.length){
+                appConfig.baseURL=urlString;    
+            }
             coremodule.constant('appConfig',resp.data.data);
-            this.appConfig = resp.data.data;
+            this.appConfig = appConfig;
             return this.getResourceBundles();
 
         },(response:any) => {
