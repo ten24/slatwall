@@ -12,7 +12,9 @@ module FulfillmentsList {
         "partial",
         "available",
     }
+    export type CollectionFilterValues =  "partial"|"available"|"unavailable"|"location";
 } 
+
 
 /**
  * Fulfillment List Controller
@@ -120,7 +122,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Add Instance Of string to list.
      */
-    public listAppend = (str:string, subStr:string) => {
+    public listAppend = (str:string, subStr:string):string => {
         return this.utilityService.listAppend(str, subStr, ",");
     }
     
@@ -129,14 +131,14 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * str: The original string.
      * subStr: The string to remove.
      */
-     public listRemove = (str:string, subStr:string) => {
+     public listRemove = (str:string, subStr:string):string => {
         return this.utilityService.listRemove(str, subStr);
     }
 
     /**
      * returns true if the action is selected
      */
-    public isSelected = (test) => {
+    public isSelected = (test):boolean => {
         if (test == "check") { return true; } else { return false };
     }
 
@@ -144,7 +146,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * Each collection has a view. The view is maintained by the enum. This Returns
      * the collection for that view.
      */
-     public getCollectionByView = (view:number) => {
+     public getCollectionByView = (view:number):any => {
         if (view == undefined || this.collections == undefined){
             return;
         }
@@ -152,7 +154,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         return this.collections[view];
      }
 
-     public updateCollectionsInView = () => {
+     public updateCollectionsInView = ():void => {
          this.collections = [];
          this.collections.push(this.orderFulfillmentCollection);
          this.collections.push(this.orderItemCollection);
@@ -162,7 +164,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createOrderFulfillmentCollection = (collectionConfigService) => {
+     private createOrderFulfillmentCollection = (collectionConfigService):void => {
         this.orderFulfillmentCollection = collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
@@ -178,7 +180,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Setup the initial orderItem Collection.
      */
-    private createOrderItemCollection = (collectionConfigService) => {
+    private createOrderItemCollection = (collectionConfigService):void => {
         this.orderItemCollection = collectionConfigService.newCollectionConfig("OrderItem");
         this.orderItemCollection.addDisplayProperty("orderItemID");
         this.orderItemCollection.addDisplayProperty("quantity");
@@ -193,7 +195,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Toggle the Status Type filters on and off.
      */
-    public toggleFilter = (filterName) => {
+    public toggleFilter = (filterName):void => {
         this.filters[filterName] = !this.filters[filterName];
         this.addFilter(filterName, this.filters[filterName]);
     }
@@ -201,7 +203,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Toggle between views. We refresh the collection everytime we set the view.
      */
-    public setView = (view:number) => {
+    public setView = (view:number):void => {
         this.view = view;
         if (this.getCollectionByView(this.getView())){
             this.refreshCollection(this.getCollectionByView(this.getView()));
@@ -211,7 +213,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Returns the current view.
      */
-    public getView = () => {
+    public getView = ():number => {
         return this.view;
     }
 
@@ -220,7 +222,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * to the hibachiIntercenptor and get handled on every request that is logged out.
      * 
      */
-    public refreshCollection = (collection) => {
+    public refreshCollection = (collection):any => {
         
         if (collection){
             collection.getEntity().then((response)=>{
@@ -237,7 +239,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
      */
-    public redirect = () => {
+    public redirect = ():void => {
          window.location.reload();
     }
 
@@ -246,7 +248,8 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * Keys: String['Partial', 'Available', 'Unavailable']
      * Value: Boolean: {true|false}
      */
-    public addFilter = (key, value) => {
+    
+    public addFilter = (key:FulfillmentsList.CollectionFilterValues, value:boolean):void => {
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
             
@@ -288,7 +291,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * This applies or removes a location filter from the collection.
      */
-    public addLocationFilter = (locationID) => {
+    public addLocationFilter = (locationID):void => {
         let currentCollection = this.getCollectionByView(this.getView());
         if (currentCollection && currentCollection.baseEntityName == "OrderFulfillment"){
             //If this is the fulfillment collection, the location is against, orderItems.stock.location
@@ -304,7 +307,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Saved the batch using the data stored in the processObject. This delegates to the service method.
      */
-    public addBatch = () => {
+    public addBatch = ():void => {
         if (this.getProcessObject()) {
             this.swOrderFulfillmentService.addBatch(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
         }
@@ -312,7 +315,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Handles a successful post of the processObject
      */
-    public processCreateSuccess = (result) => {
+    public processCreateSuccess = (result):void => {
         //Redirect to the created fulfillmentBatch.
         if (result.data && result.data['fulfillmentBatchID']){
             this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
@@ -322,21 +325,21 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Handles a successful post of the processObject
      */
-    public processCreateError= (data) => {
+    public processCreateError= (data):void => {
         console.log("Process Errors", data);
     }
 
     /**
      * Returns the processObject
      */
-    public getProcessObject = () => {
+    public getProcessObject = ():any => {
         return this.processObject;
     }
 
     /**
      * Sets the processObject
      */
-    public setProcessObject = (processObject) => {
+    public setProcessObject = (processObject):void => {
         this.processObject = processObject;
     }
 
@@ -370,7 +373,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * Returns the number of selected fulfillments
      */
-    public getTotalFulfillmentsSelected = () => {
+    public getTotalFulfillmentsSelected = ():number => {
         
         var total = 0;
         if (this.getProcessObject() && this.getProcessObject().data){
