@@ -5911,6 +5911,25 @@
 	        this.minutesOfDay = function (m) {
 	            return m.getMinutes() + m.getHours() * 60;
 	        };
+	        /**
+	         * Returns true if the current page is running in single page mode.
+	         */
+	        this.isSinglePageMode = function () {
+	            var vars = {};
+	            var parts = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, function (m, key, value) {
+	                vars[key] = value;
+	            });
+	            if (vars.ng) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /**
+	         * Returns true if the current page is running in multi-page mode.
+	         */
+	        this.isMultiPageMode = function () {
+	            return !_this.isSinglePageMode();
+	        };
 	    }
 	    return UtilityService;
 	}(baseservice_1.BaseService));
@@ -29597,7 +29616,7 @@
 	        this.setView = function (view) {
 	            _this.view = view;
 	            if (_this.getCollectionByView(_this.getView())) {
-	                _this.refreshCollection(_this.getCollectionByView(_this.getView()));
+	                _this.refreshCollectionTotal(_this.getCollectionByView(_this.getView()));
 	            }
 	        };
 	        /**
@@ -29607,27 +29626,26 @@
 	            return _this.view;
 	        };
 	        /**
+	         * Refreshes the view
+	         */
+	        this.refreshPage = function () {
+	            if (_this.utilityService.isMultiPageMode()) {
+	                console.log("MultiPageMode");
+	                window.location.reload();
+	            }
+	        };
+	        /**
 	         * Initialized the collection so that the listingDisplay can you it to display its data. This needs to move to
 	         * to the hibachiIntercenptor and get handled on every request that is logged out.
 	         *
 	         */
-	        this.refreshCollection = function (collection) {
+	        this.refreshCollectionTotal = function (collection) {
 	            if (collection) {
 	                collection.getEntity().then(function (response) {
-	                    if (!response) {
-	                        //redirect because probably logged out.
-	                        _this.redirect();
-	                    }
 	                    _this.total = response.recordsCount;
 	                });
 	                return collection;
 	            }
-	        };
-	        /**
-	         * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
-	         */
-	        this.redirect = function () {
-	            window.location.reload();
 	        };
 	        /**
 	         * Adds one of the status type filters into the collectionConfigService
@@ -29666,7 +29684,7 @@
 	                console.log("Adding orderItem Filters", _this.getCollectionByView(_this.getView()));
 	            }
 	            //Calls to auto refresh the collection since a filter was added.
-	            _this.refreshCollection(_this.getCollectionByView(_this.getView()));
+	            _this.refreshCollectionTotal(_this.getCollectionByView(_this.getView()));
 	        };
 	        /**
 	         * This applies or removes a location filter from the collection.
@@ -29681,7 +29699,7 @@
 	                //If this is the fulfillment collection, the location is against, stock.location
 	                currentCollection.addFilter("stock.location.locationID", locationID, "=");
 	            }
-	            _this.refreshCollection(currentCollection);
+	            _this.refreshCollectionTotal(currentCollection);
 	        };
 	        /**
 	         * Saved the batch using the data stored in the processObject. This delegates to the service method.
@@ -29782,7 +29800,7 @@
 	        //adds the two default filters to start.
 	        //this.addFilter('available', true);
 	        //this.addFilter('partial', true);
-	        var collection = this.refreshCollection(this.getCollectionByView(this.getView()));
+	        var collection = this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
 	        if (collection.entityName = "OrderFulfillment") {
 	            this.orderFulfillmentCollection = collection;
 	        }

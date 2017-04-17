@@ -59,7 +59,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         //adds the two default filters to start.
         //this.addFilter('available', true);
         //this.addFilter('partial', true);
-        var collection = this.refreshCollection(this.getCollectionByView(this.getView()));
+        var collection = this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
         if (collection.entityName = "OrderFulfillment"){
             this.orderFulfillmentCollection = collection;
         }else{
@@ -186,7 +186,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public setView = (view:number):void => {
         this.view = view;
         if (this.getCollectionByView(this.getView())){
-            this.refreshCollection(this.getCollectionByView(this.getView()));
+            this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
         }
     }
 
@@ -198,29 +198,28 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     }
 
     /**
+     * Refreshes the view
+     */
+    public refreshPage = () => {
+        if (this.utilityService.isMultiPageMode()){
+            console.log("MultiPageMode");
+            window.location.reload();
+        }
+    }
+    /**
      * Initialized the collection so that the listingDisplay can you it to display its data. This needs to move to
      * to the hibachiIntercenptor and get handled on every request that is logged out.
      * 
      */
-    public refreshCollection = (collection):any => {
+    public refreshCollectionTotal = (collection):any => {
         
         if (collection){
             collection.getEntity().then((response)=>{
-                if (!response){
-                    //redirect because probably logged out.
-                    this.redirect(); 
-                }
                 this.total = response.recordsCount;
             });
             return collection;
         }
-    }
 
-    /**
-     * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
-     */
-    public redirect = ():void => {
-         window.location.reload();
     }
 
     /**
@@ -264,7 +263,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
-        this.refreshCollection(this.getCollectionByView(this.getView()));
+        this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
        
     }
 
@@ -281,7 +280,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             //If this is the fulfillment collection, the location is against, stock.location
             currentCollection.addFilter("stock.location.locationID", locationID, "=");
         }
-        this.refreshCollection(currentCollection);
+        this.refreshCollectionTotal(currentCollection);
     }
 
     /**
