@@ -9868,7 +9868,7 @@
 	        this.filters = [];
 	        this.addFunction = function (value) {
 	            _this.typeaheadService.notifyObservers({
-	                name: _this.name || _this.fieldName,
+	                name: _this.fieldName || "",
 	                data: value[_this.propertyToSave] || ""
 	            });
 	            _this.modelValue = value[_this.propertyToSave];

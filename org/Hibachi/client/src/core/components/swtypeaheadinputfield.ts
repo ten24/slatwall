@@ -4,7 +4,7 @@
 
 
 class SWTypeaheadInputFieldController {
-    public name:string;
+    
     public fieldName:string; 
     public entityName:string;
     public typeaheadCollectionConfig; 
@@ -66,7 +66,7 @@ class SWTypeaheadInputFieldController {
     
     public addFunction = (value:any) => {
         this.typeaheadService.notifyObservers({
-            name: this.name || this.fieldName,
+            name: this.fieldName || "",
             data: value[this.propertyToSave] || ""
         });
         this.modelValue = value[this.propertyToSave]; 
