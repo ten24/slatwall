@@ -149,6 +149,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.saveAccountPaymentMethodFlag;
 	}
+	
+	public boolean function getSaveGiftCardToAccountFlag() {
+        if(!structKeyExists(variables, "saveGiftCardToAccountFlag"){
+            variables.saveGiftCardToAccountFlag = 0; 
+        }
+        return variables.saveGiftCardToAccountFlag; 
+	}
 
 
 	// ========================  END: Defaults =============================
