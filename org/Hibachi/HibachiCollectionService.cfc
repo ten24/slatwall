@@ -909,33 +909,45 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public void function collectionsExport(required struct data) {
-			param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
-			param name="data.collectionExportID" default="" type="string"; 											//<--The collection to export ID
-			var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
-			
-			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
-				var propertyIdentifier = '_' & getService('hibachiCollectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
-				var filterGroup = {
-					propertyIdentifier = propertyIdentifier,
-					comparisonOperator = 'IN',
-					value = arguments.data.ids
-				};
-				collectionEntity.getCollectionConfigStruct().filterGroups = [
-					{
-						'filterGroup'=[
+		param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; //<--The fileName of the report to export.
+		param name="data.collectionExportID" default="" type="string";      //<--The collection to export ID
 
-						]
-					}
-				];
-				arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+		var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");
 
+		if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined' && arguments.data.ids != ''){
+			var propertyIdentifier = '_' & getService('hibachiCollectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
+			var filterGroup = {
+				propertyIdentifier = propertyIdentifier,
+				comparisonOperator = 'IN',
+				value = arguments.data.ids
+			};
+			collectionEntity.getCollectionConfigStruct().filterGroups = [
+				{
+					'filterGroup'=[
+
+					]
+				}
+			];
+			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+		}else if(!isnull(collectionEntity.getParentCollection())){
+			var filterGroupArray = [];
+			if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
+				filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
 			}
-			var exportCollectionConfigData = {};
-			exportCollectionConfigData['collectionConfig']=serializeJson(collectionEntity.getCollectionConfigStruct());
-			if(structKeyExists(arguments.data,'keywords')){
-				exportCollectionConfigData['keywords']=arguments.data.keywords;
+			var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
+			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
+				collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+				if(structKeyExists(parentCollectionStruct, 'joins')){
+					collectionEntity.mergeJoins(parentCollectionStruct.joins);
+				}
 			}
-			this.collectionConfigExport(exportCollectionConfigData);
+		}
+		var exportCollectionConfigData = {};
+		exportCollectionConfigData['collectionConfig']=serializeJson(collectionEntity.getCollectionConfigStruct());
+		if(structKeyExists(arguments.data,'keywords')){
+			exportCollectionConfigData['keywords']=arguments.data.keywords;
+		}
+		this.collectionConfigExport(exportCollectionConfigData);
 	}//<--end function
 	
 	public void function collectionConfigExport(required struct data) {
