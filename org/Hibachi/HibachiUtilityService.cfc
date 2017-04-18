@@ -562,7 +562,14 @@
 			}
 		}
 
-		public string function hibachiHTMLEditFormat(required string html){
+		public string function hibachiHTMLEditFormat(required any html=""){
+			//If its something that can be turned into a string, make sure its a string.
+			if (isSimpleValue(arguments.html)){
+				arguments.html = "#arguments.html#";
+			//Otherwise, it can't be passed into htmlEditFormat
+			}else{
+				return "";
+			}
 			var sanitizedString = htmlEditFormat(arguments.html);
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
