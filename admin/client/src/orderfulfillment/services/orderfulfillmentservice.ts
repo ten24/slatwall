@@ -52,6 +52,8 @@ class OrderFulfillmentService implements  Prototypes.Observable.IObservable {
 
     /**
      * Creates a batch. This should use api:main.post with a context of process and an entityName instead of doAction.
+     * The process object should have orderItemIdList or orderFulfillmentIDList defined and should have
+     * optionally an accountID, and or locationID (or locationIDList).
      */
     public addBatch = (processObject) => {
         if (processObject) {
