@@ -354,6 +354,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     public boolean function canCancel(){
           return !hasGiftCardOrderItems();
     }
+    
+    public boolean function hasQATS(){
+		return getOrderService().orderHasQATS(this);    	
+    }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
