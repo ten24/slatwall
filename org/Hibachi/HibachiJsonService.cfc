@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		config[ 'modelConfig' ] = getModel();
 		json['data'] = config;
 		json = serializeJson(json);
-		var filePath = expandPath('/Slatwall') & '/custom/config/config.json';
+		var filePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/config.json';
 		fileWrite(filePath,json);
     }
 
