@@ -12,9 +12,8 @@ module FulfillmentsList {
         "partial",
         "available",
     }
-    export type CollectionFilterValues =  "partial"|"available"|"unavailable"|"location";
+    export type CollectionFilterValue =  "partial"|"available"|"unavailable"|"location";
 } 
-
 
 /**
  * Fulfillment List Controller
@@ -97,12 +96,13 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         }else{
              processObject['data']['orderItemIDList'] = this.listRemove(processObject['data']['orderItemIDList'], callBackData.selection);
         }
+        
     };
 
     /**
-     * Add Instance Of string to list.
+     * Adds a string to a list.
      */
-    public listAppend = (str:string, subStr:string):string => {
+    listAppend (str:string, subStr:string):string {
         return this.utilityService.listAppend(str, subStr, ",");
     }
     
@@ -111,9 +111,9 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * str: The original string.
      * subStr: The string to remove.
      */
-     public listRemove = (str:string, subStr:string):string => {
+     listRemove (str:string, subStr:string):string {
         return this.utilityService.listRemove(str, subStr);
-    }
+     }
 
     /**
      * returns true if the action is selected
@@ -153,7 +153,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
      }
     
@@ -168,7 +168,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime");
         this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.orderItemCollection.addDisplayProperty("sku.product.productName");
-        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
     }
 
@@ -207,9 +207,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         }
     }
     /**
-     * Initialized the collection so that the listingDisplay can you it to display its data. This needs to move to
-     * to the hibachiIntercenptor and get handled on every request that is logged out.
-     * 
+     * Initialized the collection so that the listingDisplay can you it to display its data. 
      */
     public refreshCollectionTotal = (collection):any => {
         
@@ -228,7 +226,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      * @param Vvalue: boolean: {true|false}
      */
     
-    public addFilter = (key:FulfillmentsList.CollectionFilterValues, value:boolean):void => {
+    public addFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
             
@@ -239,13 +237,13 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             if (value == true){
                 
                 if (key == "partial"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Partial","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisPartial","=","OR",false);
                 }
                 if (key == "available"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Available","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisAvailable","=","OR",false);
                 }
                 if (key == "unavailable"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.typeName","Unavailable","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisUnavailable","=","OR",false);
                 }
                 if (key == "location"){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
