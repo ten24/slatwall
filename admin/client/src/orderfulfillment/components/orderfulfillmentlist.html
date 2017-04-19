@@ -357,12 +357,12 @@
 							<a href="##" class="dropdown-toggle" id="changeThisLabel1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="fa fa-ellipsis-h" title="actions"></i>
 							</a>
-							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Items)">
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Items)">
 								<li>
 									<a href="##">Items View</a> 
 								</li>
 							</ul>
-							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Fulfillments)">
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Fulfillments)">
 								<li>
 									<a href="##">Fulfillments View</a>
 								</li>
@@ -373,10 +373,10 @@
 			                <i class="fa fa-dropbox"></i>
 			            </div>
 			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
-			                <div class="s-title" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments">
+			                <div class="s-title" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">
 			                    Fulfillments <span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>
 			                </div>
-			                <div class="s-title" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items">
+			                <div class="s-title" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items">
 			                    Fulfillment Items <span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>
 			                </div>
 			            </div>
@@ -402,7 +402,7 @@
 			    </div>
 				
 				<!--- PARTIAL MODULE --->
-			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('partial');" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments">		
+			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('partial');" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">		
 					<!--Small content block-->
 			        <div ng-class="{ 's-sm-content-block s-status s-yellow s-selected': swOrderFulfillmentListController.filters['partial'], 's-sm-content-block s-status s-yellow': !swOrderFulfillmentListController.filters['partial'] }">
 			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
@@ -432,7 +432,7 @@
 			    </div>
 			</div>
 			
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.refreshFlag != true">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.refreshFlag != true">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						
@@ -458,7 +458,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.getView() == swOrderFulfillmentListController.views.Items && swOrderFulfillmentListController.refreshFlag != true">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items && swOrderFulfillmentListController.refreshFlag != true">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						
