@@ -103,7 +103,7 @@ component output="false" accessors="true" extends="HibachiController" {
     	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
     	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
     		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
-    	}else{
+    	}else if (hasService('attributeService')){
     		var attributeMetaData = getService('attributeService').getAttributeModel();
     		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
     		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
