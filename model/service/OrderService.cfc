@@ -1390,6 +1390,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
 						for(var orderitem in arguments.order.getOrderItems()) {
+							var errors = orderItem.validate('save').getErrors();
+							if(StructCount(errors)){
+								for(var errorKey in errors){
+									for(var message in errors[errorKey]){
+										arguments.order.addError('orderItem',message);	
+									}
+								}
+								
+							}
 							if(orderitem.getSku().getBaseProductType() == "event") {
 								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
 									arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
