@@ -131,7 +131,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderRequirementsList;
 	}
 
-
 	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
 
 		var data = {
