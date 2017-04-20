@@ -101,6 +101,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="useElasticSearch" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
+	property name="getFilterGroupAliasMap" type="struct" persistent="false";
 	
 	property name="groupBys" type="string" persistent="false";
 
@@ -139,6 +140,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 		
 	}
+	
+	
 	
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
@@ -1494,7 +1497,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return arguments.propertyIdentifier;
 	}
-		
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
@@ -2389,6 +2391,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function removeCharacters(required string javaUUIDString){
 		return replace(arguments.javaUUIDString,'-','','all');
+	}
+	
+	public void function setCollectionConfig(required string collectionConfig){
+		variables.collectionConfig = trim(arguments.collectionConfig);
+		//reinflate collectionConfigStruct if the collectionConfig is modified directly
+		variables.collectionConfigStruct = deserializeCollectionConfig();	
+	}
+	
+	public string function getCollectionConfig(){
+		return variables.collectionConfig;
 	}
 
 	public any function getCollectionConfigStruct(){
