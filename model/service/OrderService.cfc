@@ -1397,7 +1397,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										arguments.order.addError('orderItem',message);	
 									}
 								}
-								
 							}
 							if(orderitem.getSku().getBaseProductType() == "event") {
 								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
@@ -1475,9 +1474,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								//don't auto fulfill if the deposit has been paid but not the full amount.
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
+							for(var orderItem in order.getOrderItems()){
+								//run calculated props if success on product, sku and order item
+								//product must run before sku because sku depends on product info to calculate correctly
+								orderItem.getSku().getProduct().updateCalculatedProperties(true);
+								orderItem.getSku().updateCalculatedProperties(true);
+								orderItem.updateCalculatedProperties(true);
+							}
 						}
 					}
-
 				}
 
 			} else {
