@@ -556,13 +556,13 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public any function getCollectionOptionsFromData(required struct data){
 		//get entity service by entity name
-		var currentPage = 1;
+		var currentPage = "";
 		if(structKeyExists(arguments.data,'P:Current')){
 			currentPage = arguments.data['P:Current'];
 		}else if(structKeyExists(arguments.data, 'currentPage')){
 			currentPage = arguments.data['currentPage'];
 		}
-		var pageShow = 10;
+		var pageShow = "";
 		
 		if(structKeyExists(arguments.data,'P:Show')){
 			pageShow = arguments.data['P:Show'];
@@ -650,7 +650,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public any function getAPIResponseForEntityName(required string entityName, required struct data, boolean enforceAuthorization=true, string whiteList){
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data); 
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
-		collectionEntity.applyData();
+		
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 		
 		if (!isNull(whiteList)){
@@ -729,13 +729,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 		
 		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.collectionEntity.getEnforceAuthorization()){
-			if(structkeyExists(collectionOptions,'currentPage')){
+			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
 				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
-			if(structKeyExists(collectionOptions,'pageShow')){
+			if(structKeyExists(collectionOptions,'pageShow') && len(collectionOptions.pageShow)){
 				collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
 			}
-			if(structKeyExists(collectionOptions,'keywords')){
+			if(structKeyExists(collectionOptions,'keywords') && len(collectionOptions.keywords)){
 				collectionEntity.setKeywords(collectionOptions.keywords);
 			}
 
