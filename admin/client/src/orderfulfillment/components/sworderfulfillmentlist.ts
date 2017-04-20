@@ -1,6 +1,7 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
+import "reflect-metadata";
 
 module FulfillmentsList {
     export enum Views {
@@ -35,7 +36,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
-        
+
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": true, "available": true };
         this.collections = [];
@@ -118,9 +119,9 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     /**
      * returns true if the action is selected
      */
-    public isSelected = (test):boolean => {
+     public isSelected = (test):boolean => {
         if (test == "check") { return true; } else { return false };
-    }
+     }
 
     /**
      * Each collection has a view. The view is maintained by the enum. This Returns

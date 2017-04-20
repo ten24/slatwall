@@ -48,16 +48,37 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-
-
 <cftry>
-
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - ">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
-
-
+  <!--- Get All Existing Location --->
+	<cfquery name="local.locations">
+		SELECT locationID, locationIDPath FROM SwLocation WHERE calculatedLocationPathName is null
+	</cfquery>
+	<!--- Loop over the locations --->
+	<cfloop array="local.locations" index="location">
+		<cfset nameList="">
+		
+		<!--- Get all the locationIDPaths --->
+		<cfquery name="local.names">
+			SELECT locationName FROM SwLocation WHERE calculatedLocationPathName is in (#location.locationIDPath#)
+		</cfquery>
+		
+		<!--- Create the name list --->
+		<cfloop name="local.names" index="name">
+			<cfset nameList = listAppend(nameList, name, "/")>
+		</cfloop>
+		
+		<!--- Update the calculatedLocationPathName --->
+		<cfif len(nameList)>
+			<cflog file="Slatwall" text="UPDATING (#location.locationID#) Setting calculatedLocationPathName to be #nameList#">
+			<cfquery name="local.update">
+				UPDATE SwLocation SET calculatedLocationPathName = '#nameList#' where locationID = '#location.locationID#'
+			</cfquery>
+		</cfif>
+	</cfloop>
+<cfcatch>
+	<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update calculatedLocationPathName has an issue.">
+	<cfset local.scriptHasErrors = true />
+</cfcatch>
 </cftry>
 
 <cfif local.scriptHasErrors>
