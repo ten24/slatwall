@@ -521,7 +521,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			direction = listLast(arguments.orderByString,'|');	
 		}
 
-		if(left(propertyIdentifier, 1) == '_'){
+		if(left(propertyIdentifier, 1) == '_' || refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier)){
 			_propertyIdentifier = propertyIdentifier;
 		} else {
 
@@ -1407,7 +1407,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
 				for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
-					if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0) continue;
+					if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || refindNoCase('^(count|sum|avg|min|max)\(', collectionConfig.orderBy[j].propertyIdentifier)) continue;
 					groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
 				}
 			}else{
@@ -1707,7 +1707,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-						}	
+						}
 						var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
@@ -2036,7 +2036,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return listLast(column.propertyIdentifier,'.');
 		}else{
 			if(structKeyExists(column,'aggregate')){
-				return arguments.aggregate.aggregateAlias;
+				return column.aggregate.aggregateAlias;
 			}else{
 				var currentAlias = '';
 				var currentAliasStepped = '';
