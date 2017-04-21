@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,42 +45,48 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="promotionPeriod";
 
-<cfparam name="rc.promotionperiod" type="any">
-<cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
-<cfparam name="rc.edit" type="boolean">
+	// New Properties
+	property name="newPromotionPeriod" type="any";
 
-<!--- prevent editing promotion period if it has expired --->
-<cfif rc.edit and rc.promotionperiod.isExpired()>
-	<cfset rc.edit = false />
-	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.editdisabled_info') />
-</cfif>
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.promotionperiod#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
-						   	   
-		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionPeriod#" edit="#rc.edit#"
-							backAction="admin:entity.detailpromotion"
-							backQueryString="promotionID=#rc.promotion.getPromotionID()#"
-							cancelAction="admin:entity.detailpromotion"
-							cancelQueryString="promotionID=#rc.promotion.getPromotionID()#"								   
-							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion">
-			<!--- Duplicate --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessPromotionPeriod" entity="#rc.promotionperiod#" processContext="duplicatePromotionPeriod" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-							    			  	  
-		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
-		
-		<hb:HibachiEntityDetailGroup object="#rc.promotionperiod#">
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionrewards" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionqualifiers" />
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
+	// Data Properties
+	property name="promotionPeriodName" hb_rbKey="entity.promotionPeriod.promotionPeriodName";
+	property name="startDateTime" hb_formFieldType="datetime"  hb_rbKey="entity.promotionPeriod.startDateTime" hb_nullRBKey="define.forever";
+	property name="endDateTime" hb_formFieldType="datetime" hb_rbKey="entity.promotionPeriod.endDateTime" hb_nullRBKey="define.forever";
+	property name="maximumUseCount" hb_rbKey="entity.promotionPeriod.maximumUseCount";
 	
-</cfoutput>
-
+	public function getPromotionPeriodName() {
+		if(!structKeyExists(variables, "promotionPeriodName")) {
+			if(len(getPromotionPeriod().getPromotionPeriodName())) {
+				variables.promotionPeriodName = getPromotionPeriod().getPromotionPeriodName() & ' ( copy )';
+			} else {
+				variables.promotionPeriodName = '';
+			}
+		}
+		return variables.promotionPeriodName;
+	}
+	public function getStartDateTime() {
+		if(!structKeyExists(variables, "startDateTime")) {
+			variables.startDateTime = getPromotionPeriod().getStartDateTime();
+		}
+		return variables.startDateTime;
+	}
+	public function getEndDateTime() {
+		if(!structKeyExists(variables, "endDateTime")) {
+			variables.endDateTime = getPromotionPeriod().getEndDateTime();
+		}
+		return variables.endDateTime;
+	}
+	public function getMaximumUseCount() {
+		if(!structKeyExists(variables, "maximumUseCount")) {
+			variables.maximumUseCount = getPromotionPeriod().getMaximumUseCount();
+		}
+		return variables.maximumUseCount;
+	}
+		
+}
