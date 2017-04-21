@@ -741,7 +741,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var myCollection = variables.entityService.getProductCollectionList();
 		myCollection.setDisplayProperties('productName');
-		myCollection.setOrderBy('productName|asc');
+		myCollection.setOrderBy('_product.productName|asc');
 
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
 		

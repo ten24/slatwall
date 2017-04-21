@@ -228,8 +228,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		this.setCollectionConfigStruct(collectionConfig);
  		return ArrayLen(collectionConfig.filterGroups);
  	}
+ 	
+ 	
 
  	public string function getPropertyIdentifierAlias(required string propertyIdentifier){
+ 		//check if the propertyIdentifier has base alias aready and strip it
+ 		arguments.propertyIdentifier = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);
+ 		
  		var _propertyIdentifier = '';
 		var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 		var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
@@ -1404,6 +1409,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return variables.nonPersistentColumn;
 	}
+	
+	public string function convertAliasToPropertyIdentifier(required string propertyIdentifierWithAlias){
+ 		if(left(arguments.propertyIdentifierWithAlias,1) == '_'){
+ 			arguments.propertyIdentifierWithAlias = rereplace(arguments.propertyIdentifierWithAlias,'_','.','all');
+ 			arguments.propertyIdentifierWithAlias = listRest(right(arguments.propertyIdentifierWithAlias,len(arguments.propertyIdentifierWithAlias)-1),'.');
+ 		}
+ 		return arguments.propertyIdentifierWithAlias;
+ 	}
 
 	public string function convertPropertyIdentifierToAlias(required string propertyIdentifier){
 		arguments.propertyIdentifier = Replace(arguments.propertyIdentifier,'.','_','all');
