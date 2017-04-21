@@ -97,14 +97,37 @@
 	    public void function flushORMSession() {
 	    	// Initate the first flush
 	    	ormFlush();
+			
+			if(getService('hibachiUtilityService').isInThread()){
+				// Loop over the modifiedEntities to call updateCalculatedProperties
+		    	for(var entity in getHibachiScope().getModifiedEntities()){
+		    		entity.updateCalculatedProperties();
+		    	}
 
-	    	// Loop over the modifiedEntities to call updateCalculatedProperties
-	    	for(var entity in getHibachiScope().getModifiedEntities()){
-	    		entity.updateCalculatedProperties();
-	    	}
-
-	    	// flush again to persist any changes done during ORM Event handler
-			ormFlush();
+		    	// flush again to persist any changes done during ORM Event handler
+				ormFlush();
+			}else{
+				var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
+				var entityDataArray = [];
+				for(var entity in getHibachiScope().getModifiedEntities()){
+					var entityData = {
+						entityName=entity.getClassName(),
+						entityID=entity.getPrimaryIDValue()
+					};
+					arrayAppend(entityDataArray,entityData);
+				}
+				thread name="#threadName#" entityDataArray="#entityDataArray#" {
+		    		// Loop over the modifiedEntities to call updateCalculatedProperties
+			    	for(var entityData in attributes.entityDataArray){
+						var entityService = getService('hibachiService').getServiceByEntityName(entityData.entityName);
+						var threadEntity = entityService.invokeMethod('get#entityData.entityName#',{1=entityData.entityID});
+						threadEntity.updateCalculatedProperties();
+	
+		    		}
+					// flush again to persist any changes done during ORM Event handler
+					ormFlush();
+		    	}
+			}
 	    }
 
 	    public void function clearORMSession() {
