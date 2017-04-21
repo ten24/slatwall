@@ -1477,9 +1477,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							for(var orderItem in order.getOrderItems()){
 								//run calculated props if success on product, sku and order item
 								//product must run before sku because sku depends on product info to calculate correctly
-								getHibachiScope().addModifiedEntity(orderItem.getSku().getProduct());
-								getHibachiScope().addModifiedEntity(orderItem.getSku());
 								getHibachiScope().addModifiedEntity(orderItem);
+								getHibachiScope().addModifiedEntity(orderItem.getSku());
+								getHibachiScope().addModifiedEntity(orderItem.getSku().getProduct());
 							}
 						}
 					}
