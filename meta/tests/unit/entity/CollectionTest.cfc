@@ -1281,6 +1281,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function getPropertyIdentifierAliasTest(){
+		var propertyIdentifier = 'productName';
+		
+		var collectionData = {
+			collectionID="",
+			collectionObject='Product'
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionData);
+		assertEquals(collectionEntity.getPropertyIdentifierAlias(propertyIdentifier),'_product.productName');
+		assertEquals(collectionEntity.getPropertyIdentifierAlias('brand.brandName'),'_product_brand.brandName');
+		assertEquals(collectionEntity.getPropertyIdentifierAlias('skus'),'_product_skus');
+	}
+
+	/**
+	* @test
+	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
 		var propertyIdentifier = "Account.firstName";

@@ -233,7 +233,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// check to make sure that this rate applies to the current orderFulfillment
 		if(
 			isShippingMethodRateUsable(
-				shippingMethodRate, 
+				arguments.shippingMethodRate, 
 				arguments.orderFulfillment.getShippingAddress(), 
 				arguments.orderFulfillment.getTotalShippingWeight(), 
 				arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
@@ -241,7 +241,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				priceGroups
 			)
 		) {
-			return shippingMethodRate.getShippingIntegration();
+			return arguments.shippingMethodRate.getShippingIntegration();
 		}
 	}	
 	
