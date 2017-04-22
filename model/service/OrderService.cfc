@@ -2417,7 +2417,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var accountContentAccesses = accountContentAccessSmartList.getRecords();
 				for (var accountContentAccess in accountContentAccesses){
 
-				getAccountService().deleteAccountContentAccess( accountContentAccess );
+    				getAccountService().deleteAccountContentAccess( accountContentAccess );
 
 				}
 			}

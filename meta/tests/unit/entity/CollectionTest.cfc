@@ -303,7 +303,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = "?fr:price:eq=1";
 		collectionEntity.applyData(queryString);
 		//make sure filter was removed
-		
 		assertFalse(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
 	}
 	/**
@@ -374,7 +373,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var product = createPersistedTestEntity('product', productNotActiveData);
 
 		var myProductCollection = variables.entityService.getProductCollectionList();
-		
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		var pageRecords = myProductCollection.getPageRecords();
@@ -732,7 +730,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setOrderBy('productName|asc');
 
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
-		debug(collectionConfigStruct.orderBy[1]['propertyIdentifier']);
+
 		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product.productName', "Wrong Order by Alias! Expecting '_product.productName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
 	}
 
@@ -744,7 +742,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setOrderBy('_product.productName|asc');
 
 		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
-		
+
 		assertTrue(collectionConfigStruct.orderBy[1]['propertyIdentifier'] == '_product.productName', "Wrong Order by Alias! Expecting '_product.productName' but returned #collectionConfigStruct.orderBy[1]['propertyIdentifier']#");
 	}
 
@@ -1279,7 +1277,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest2');
 	}
-	
+
 	/**
 	* @test
 	*/

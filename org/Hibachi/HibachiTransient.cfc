@@ -533,7 +533,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			&& !isSimpleValue(object)
 			&& structKeyExists(object.getPropertyMetaData( propertyName ),'ormtype')
 		) {
-			return object.getPropertyMetaData( propertyName ).ormtype;	
+			return object.getPropertyMetaData( propertyName ).ormtype;
 		}
 		return "";
 	}

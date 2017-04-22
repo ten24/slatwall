@@ -53,7 +53,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getBean("accountService");
 	}
-	
+		
 	/**
 	* @test
 	*/
