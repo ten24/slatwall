@@ -107,7 +107,7 @@ class SWTypeaheadInputField implements ng.IDirective{
 		);
 		directive.$inject = ["corePartialsPath",'hibachiPathBuilder'];
 		return directive;
-	}
+	} 
 }
 export{
 	SWTypeaheadInputField,
