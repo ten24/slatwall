@@ -233,7 +233,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// check to make sure that this rate applies to the current orderFulfillment
 		if(
 			isShippingMethodRateUsable(
-				arguments.shippingMethodRate, 
+				shippingMethodRate, 
 				arguments.orderFulfillment.getShippingAddress(), 
 				arguments.orderFulfillment.getTotalShippingWeight(), 
 				arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
@@ -241,7 +241,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				priceGroups
 			)
 		) {
-			return arguments.shippingMethodRate.getShippingIntegration();
+			return shippingMethodRate.getShippingIntegration();
 		}
 	}	
 	
@@ -298,9 +298,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		required struct shippingMethodRatesResponseBeans
 	){
 		var qualifiedRateOptions = [];
-		var shippingMethodRatesCount = arraylen(arguments.shippingMethodRates);
+		var shippingMethodRatesCount = arraylen(shippingMethodRates);
 		for(var r=1; r<=shippingMethodRatesCount; r++) {
-			var shippingMethodRate = arguments.shippingMethodRates[r];
+			var shippingMethodRate = shippingMethodRates[r];
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
 				

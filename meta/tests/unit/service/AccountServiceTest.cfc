@@ -53,50 +53,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getBean("accountService");
 	}
-	
-	/**
-	* @test
-	*/
-	public void function ableToDeleteAccountPaymentMethodWithoutDeletingOrderPayments(){
-		var accountData = {
-			accountID=""
-		};
-		var account = createPersistedTestEntity('account',accountData);
-		
-		var accountPaymentMethodData = {
-			accountPaymentMethodID="",
-			account={
-				accountID=account.getAccountID()
-			}
-		};
-		var accountPaymentMethod = createPersistedTestEntity('accountPaymentMEthod',accountPaymentMethodData);
-		
-		
-		var orderPaymentData = {
-			orderPaymentID=""
-		};
-		var orderPayment = createPersistedTestEntity('orderPayment',orderPaymentData);
-		
-		accountPaymentMethod.addOrderPayment(orderPayment);
-		orderPayment.setAccountPaymentMethod(accountPaymentMethod);
-		
-		assert(!isNull(orderPayment.getAccountPaymentMethod()),'need accountPayment');
-		assertEquals(arraylen(accountPaymentMethod.getOrderPayments()),1,'need orderPayments');
-		
-		
-		var orderPaymentID = orderPayment.getOrderPaymentID();
-		
-		var deleteOK = variables.service.deleteAccountPaymentMethod(accountPaymentMethod);
-		
-		assert(deleteOK);
-		
-		request.slatwallScope.flushOrmSesssion();
-		
-		var oldorderPayment = request.slatwallScope.getService('orderService').getOrderPaymentByOrderPaymentID(orderPaymentID);
-		assert(!isNull(oldorderPayment));
-		
-		
-	}
 		
 	/**
 	* @test

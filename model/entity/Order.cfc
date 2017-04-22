@@ -1110,7 +1110,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	}
 
 	public numeric function getTotal() {
-		return val(getService('HibachiUtilityService').precisionCalculate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal()));
+		return getService('HibachiUtilityService').precisionCalculate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal());
 	}
 
 	public numeric function getTotalItems() {
