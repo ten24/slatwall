@@ -32,6 +32,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public total:number;
     public formData:{};
     public processObject:any;
+    
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
@@ -46,6 +47,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
 
         //some view setup.
         this.views = FulfillmentsList.Views;
+        
         this.setView(this.views.Fulfillments);
         
         //add both collections into the collection object. Removed 0 elements (insert only).
