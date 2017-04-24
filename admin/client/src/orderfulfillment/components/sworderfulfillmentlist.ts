@@ -32,6 +32,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public total:number;
     public formData:{};
     public processObject:any;
+    
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
@@ -46,6 +47,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
 
         //some view setup.
         this.views = FulfillmentsList.Views;
+        
         this.setView(this.views.Fulfillments);
         
         //add both collections into the collection object. Removed 0 elements (insert only).
@@ -237,13 +239,19 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             if (value == true){
                 
                 if (key == "partial"){
+
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisPartial","=","OR",false);
+
                 }
                 if (key == "available"){
+
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisAvailable","=","OR",false);
+
                 }
                 if (key == "unavailable"){
+
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisUnavailable","=","OR",false);
+
                 }
                 if (key == "location"){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
