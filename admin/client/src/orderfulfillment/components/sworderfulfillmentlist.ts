@@ -1,7 +1,6 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
-import "reflect-metadata";
 
 module FulfillmentsList {
     export enum Views {
