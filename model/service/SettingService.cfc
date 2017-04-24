@@ -358,7 +358,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		structAppend(allSettingMetaData, integrationSettingMetaData, false);
 		
 		//need to persist globalClientSecret
-		var globalClientSecretSetting = this.getSettingBySettingName('globalClientSecret');
+		
 		if(isNull(globalClientSecretSetting)){
 			getDao('settingDao').insertSetting('globalClientSecret',allSettingMetaData.globalClientSecret.defaultValue);
 		}
