@@ -240,12 +240,17 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
                 
                 if (key == "partial"){
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisPartial","=","OR",false);
+
                 }
                 if (key == "available"){
+
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisAvailable","=","OR",false);
+
                 }
                 if (key == "unavailable"){
+
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisUnavailable","=","OR",false);
+
                 }
                 if (key == "location"){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
