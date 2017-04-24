@@ -49,7 +49,6 @@ Notes:
 <cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
 	<cfproperty name="hibachiCacheService" type="any" />
-	<cfproperty name="settingService" type="any"/>
 	
 	<cffunction name="insertSetting" output="false" returntype="void">
 		<cfargument name="settingName" type="string" required="true" />
@@ -65,7 +64,7 @@ Notes:
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#">
 			)
 		</cfquery>
-		<cfset getSettingService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress())/>
+		<cfset getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress())/>
 		
 	</cffunction>
 	
