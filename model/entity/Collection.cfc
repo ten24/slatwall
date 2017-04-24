@@ -833,7 +833,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function addJoin(required any join){
 		if(!structKeyExists(getCollectionConfigStruct(),'joins')){
-				getCollectionConfigStruct()["joins"] = [];
+			getCollectionConfigStruct()["joins"] = [];
 		}
 		var joinFound = false;
 		for(var configJoin in getCollectionConfigStruct().joins){
@@ -1222,7 +1222,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return filterHQL;
 	}
 
-	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias, required any joins){
+	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias){
 		var hibachiBaseEntityName = '';
 		if(find(getDao('HibachiDao').getApplicationKey(),arguments.baseEntityName)){
 			hibachiBaseEntityName = arguments.baseEntityName;
@@ -1232,11 +1232,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var fromHQL = ' FROM #hibachiBaseEntityName# as #arguments.baseEntityAlias#';
 		addHQLAlias(arguments.baseEntityName,arguments.baseEntityAlias);
-		for(var join in arguments.joins){
-			fromHQL &= addJoinHQL(arguments.baseEntityAlias,join);
-		}
+		
+		fromHQL &= getJoinHQL();
 
 		return fromHQL;
+	}
+	
+	public string function getJoinHQL(){
+		var joinHQL = '';
+		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+			for(var join in getCollectionConfigStruct()["joins"]){
+				joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
+			}	
+		}
+		return joinHQL;
 	}
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false, excludeGroupBy=false){
@@ -1807,16 +1816,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var toValue = ranges[1];
 						var toParamID = getParamID();
 						addHQLParam(toParamID,toValue);
-						var minString = "(SELECT min(#arguments.filter.propertyIdentifier#) FROM #getDao('hibachiDAO').getApplicationKey()##getCollectionConfigStruct().baseEntityName# _minTable)";
-						//var minString = -1000000;
-						predicate = "#minString# AND :#toParamID#";
+						var minValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
+						
+						minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
+						
+						minValueCollection.setPageRecordsShow(1);
+						var minValue = 0;
+						var minValuePageRecords = minValueCollection.getPageRecords();
+						if(arraylen(minValuePageRecords)){
+							minValue = minValuePageRecords[1]['minValue'];
+						}
+						predicate = "#minValue# AND :#toParamID#";
 					}else{
 						var fromValue = ranges[1];
 						var fromParamID = getParamID();
 						addHQLParam(fromParamID,fromValue);
-						var maxString = "(SELECT max(#arguments.filter.propertyIdentifier#) FROM #getDao('hibachiDAO').getApplicationKey()##getCollectionConfigStruct().baseEntityName# _maxTable)";
-						//var maxString = 1000000;
-						predicate = ":#fromParamID# AND #maxString#";
+						var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
+						maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
+						maxValueCollection.setPageRecordsShow(1);
+						var maxValue = 0;
+						var maxValuePageRecords = maxValueCollection.getPageRecords();
+						if(arraylen(maxValuePageRecords)){
+							maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
+						}
+						
+						predicate = ":#fromParamID# AND #maxValue#";
 					}
 				}
 			}
@@ -2126,21 +2150,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 
-
-
 			//build FROM last because we have aquired joins implicitly
 			var joins = [];
 			if(!isnull(collectionConfig.joins)){
-				joins = collectionConfig.joins;
+				getCollectionConfigStruct()["joins"] = collectionConfig.joins;
 			}
 
 			if(structKeyExists(collectionConfig,'groupBys')  && !arguments.excludeGroupBy){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 
-
-
-			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
+			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
 		}
