@@ -239,7 +239,6 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             if (value == true){
                 
                 if (key == "partial"){
-
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisPartial","=","OR",false);
 
                 }
