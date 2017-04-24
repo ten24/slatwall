@@ -16,8 +16,10 @@
 	</hb:HibachiPropertyRow>
 	
 	<!--- Description --->
+	<sw-text-card-view name="'Description'" value="'#rc.fulfillmentBatch.getDescription()#'"></sw-text-card-view>
 	
 	<!--- Details --->
+	
 	
     <!--- Status --->
 	
