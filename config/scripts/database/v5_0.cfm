@@ -48,38 +48,38 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-<cftry>
+<cflog file="Slatwall" text="General Log - Running update script v5_0 ">
+<!---<cftry>--->
   <!--- Get All Existing Location --->
-	<cfquery name="local.locations">
+	<cfquery name="locations">
 		SELECT locationID, locationIDPath FROM SwLocation WHERE calculatedLocationPathName is null
 	</cfquery>
-	<!--- Loop over the locations --->
-	<cfloop array="local.locations" index="location">
+	<cfloop query="locations">
 		<cfset nameList="">
 		
 		<!--- Get all the locationIDPaths --->
-		<cfquery name="local.names">
-			SELECT locationName FROM SwLocation WHERE calculatedLocationPathName is in (#location.locationIDPath#)
+		<cfquery name="names">
+			SELECT locationName FROM SwLocation WHERE locationID IN (<cfqueryparam value="#locationIDPath#" list="yes" />)
 		</cfquery>
 		
 		<!--- Create the name list --->
-		<cfloop name="local.names" index="name">
-			<cfset nameList = listAppend(nameList, name, "/")>
+		<cfloop query="names">
+			<cfset nameList = listAppend(nameList, locationName, "/")>
 		</cfloop>
 		
 		<!--- Update the calculatedLocationPathName --->
-		<cfif len(nameList)>
-			<cflog file="Slatwall" text="UPDATING (#location.locationID#) Setting calculatedLocationPathName to be #nameList#">
-			<cfquery name="local.update">
-				UPDATE SwLocation SET calculatedLocationPathName = '#nameList#' where locationID = '#location.locationID#'
+		<cfif !isNull(nameList) AND len(nameList)>
+			<cflog file="Slatwall" text="UPDATING Setting calculatedLocationPathName = #nameList#">
+			<cfquery name="update">
+				UPDATE SwLocation SET calculatedLocationPathName = '#nameList#' where locationID = '#locationID#'
 			</cfquery>
 		</cfif>
 	</cfloop>
-<cfcatch>
+<!---<cfcatch>
 	<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update calculatedLocationPathName has an issue.">
 	<cfset local.scriptHasErrors = true />
 </cfcatch>
-</cftry>
+</cftry>--->
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v5_0 had errors when running">
