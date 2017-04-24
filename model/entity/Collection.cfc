@@ -1821,7 +1821,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						minValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'min','minValue');
 						
 						minValueCollection.setPageRecordsShow(1);
-						var minValue = minValueCollection.getPageRecords()[1]['minValue'];
+						var minValue = 0;
+						var minValuePageRecords = minValueCollection.getPageRecords();
+						if(arraylen(minValuePageRecords)){
+							minValue = minValuePageRecords[1]['minValue'];
+						}
 						predicate = "#minValue# AND :#toParamID#";
 					}else{
 						var fromValue = ranges[1];
@@ -1830,7 +1834,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var maxValueCollection = getService('hibachiCollectionService').invokeMethod('get#getCollectionConfigStruct().baseEntityName#CollectionList');
 						maxValueCollection.addDisplayAggregate(convertAliasToPropertyIdentifier(arguments.filter.propertyIdentifier),'max','maxValue');
 						maxValueCollection.setPageRecordsShow(1);
-						var maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
+						var maxValue = 0;
+						var maxValuePageRecords = maxValueCollection.getPageRecords();
+						if(arraylen(maxValuePageRecords)){
+							maxValue = maxValueCollection.getPageRecords()[1]['maxValue'];
+						}
+						
 						predicate = ":#fromParamID# AND #maxValue#";
 					}
 				}
