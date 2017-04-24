@@ -1281,6 +1281,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function getPropertyIdentifierAliasTest(){
+		var propertyIdentifier = 'productName';
+		
+		var collectionData = {
+			collectionID="",
+			collectionObject='Product'
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionData);
+		assertEquals(collectionEntity.getPropertyIdentifierAlias(propertyIdentifier),'_product.productName');
+		assertEquals(collectionEntity.getPropertyIdentifierAlias('brand.brandName'),'_product_brand.brandName');
+		assertEquals(collectionEntity.getPropertyIdentifierAlias('skus'),'_product_skus');
+	}
+
+	/**
+	* @test
+	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
 		var propertyIdentifier = "Account.firstName";
@@ -2297,7 +2313,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					"baseEntityName":"SlatwallAccount",
 					"baseEntityAlias":"Account",
-					"columns":[{"propertyIdentifier":"Account.accountID"},{"propertyIdentifier":"Account.superUserFlag"},{"propertyIdentifier":"Account.firstName"},{"propertyIdentifier":"Account.lastName"},{"propertyIdentifier":"Account.company"},{"propertyIdentifier":"Account.cmsAccountID"},{"propertyIdentifier":"Account.remoteEmployeeID"},{"propertyIdentifier":"Account.remoteCustomerID"},{"propertyIdentifier":"Account.remoteContactID"},{"propertyIdentifier":"Account.createdByAccountID"},{"propertyIdentifier":"Account.modifiedByAccountID"}]
+					"columns":[{"propertyIdentifier":"Account.accountID"},{"propertyIdentifier":"Account.superUserFlag"},{"propertyIdentifier":"Account.firstName"},{"propertyIdentifier":"Account.lastName"},{"propertyIdentifier":"Account.company"},{"propertyIdentifier":"Account.cmsAccountID"},{"propertyIdentifier":"Account.remoteEmployeeID"},{"propertyIdentifier":"Account.remoteCustomerID"},{"propertyIdentifier":"Account.remoteContactID"},{"propertyIdentifier":"Account.createdByAccountID"},{"propertyIdentifier":"Account.modifiedByAccountID"}],
 
 					"filterGroups":[
 						{

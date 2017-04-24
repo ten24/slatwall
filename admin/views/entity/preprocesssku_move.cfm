@@ -50,37 +50,35 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.promotionperiod" type="any">
-<cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
-<cfparam name="rc.edit" type="boolean">
-
-<!--- prevent editing promotion period if it has expired --->
-<cfif rc.edit and rc.promotionperiod.isExpired()>
-	<cfset rc.edit = false />
-	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.editdisabled_info') />
-</cfif>
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.promotionperiod#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
-						   	   
-		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionPeriod#" edit="#rc.edit#"
-							backAction="admin:entity.detailpromotion"
-							backQueryString="promotionID=#rc.promotion.getPromotionID()#"
-							cancelAction="admin:entity.detailpromotion"
-							cancelQueryString="promotionID=#rc.promotion.getPromotionID()#"								   
-							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion">
-			<!--- Duplicate --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessPromotionPeriod" entity="#rc.promotionperiod#" processContext="duplicatePromotionPeriod" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-							    			  	  
-		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
+	<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#" sRedirectAction="admin:entity.editsku">
 		
-		<hb:HibachiEntityDetailGroup object="#rc.promotionperiod#">
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionrewards" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionperiodtabs/promotionqualifiers" />
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		</hb:HibachiEntityActionBar>
+		
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<div class="alert alert-info" role="alert">	
+						<span data-sw-rbkey="'entity.sku.process.move.warning'"></span>
+					</div>
+					<sw-typeahead-input-field data-field-name="productID"
+											  data-entity-name="Product"
+											  data-validate-required="true"
+											  data-properties-to-load="productID,productName,productCode"
+											  data-placeholder-rb-key="entity.Sku.process.move.placeholder"
+											  data-property-to-show="productName"
+											  data-property-to-save="productID">
+						<sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
+					</sw-typeahead-input-field>
+
+							
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
+			
+	</hb:HibachiEntityProcessForm>
 	
 </cfoutput>
-

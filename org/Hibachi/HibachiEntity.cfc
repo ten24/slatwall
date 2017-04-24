@@ -61,8 +61,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
                 // Look for any that start with the calculatedXXX naming convention
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
-
-                    var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
+					//prior to invoking we should remove any first level caching that would cause a stale calculation
+					var nonPersistentProperty = right(property.name, len(property.name)-10);
+					if(listFindNoCase('Product,Sku,Stock',this.getClassName())){
+						var inventoryProperties = listToArray('QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QC,QE,QNC,QATS,QIATS');
+						for(var inventoryProperty in inventoryProperties){
+							if(structKeyExists(variables,inventoryProperty)){
+								structDelete(variables,inventoryProperty);
+							}
+						}
+					}
+					
+                    var value = this.invokeMethod("get#nonPersistentProperty#");
+                    
                     if(!isNull(value)) {
                         variables[ property.name ] = value;
                     }
