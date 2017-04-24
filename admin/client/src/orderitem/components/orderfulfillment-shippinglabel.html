@@ -1,5 +1,5 @@
-<ul ng-switch="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodType">
-	<li class="s-header"> <span ng-bind="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodName"></span>: <a ng-href="{{'?slatAction=entity.editorderfulfillment&orderFulfillmentID='+orderFulfillment.data.orderFulfillmentID}}" class="s-edit-link">edit</a></li>
+<ul ng-switch="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodType" ng-if="orderFulfillment.data">
+	<li class="s-header" ng-if="!orderFulfillment.data.primaryAddress"> <span ng-bind="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodName"></span>: <a ng-href="{{'?slatAction=entity.editorderfulfillment&orderFulfillmentID='+orderFulfillment.data.orderFulfillmentID}}" class="s-edit-link">edit</a></li>
 	
 	<span ng-switch-when="shipping">
 		<li ng-bind="orderFulfillment.data.shippingAddress.data.streetAddress"></li>
@@ -36,5 +36,15 @@
 	</span>
 	<span ng-switch-default>
 		<ul></ul>
+	</span>
+	<span ng-if="orderFulfillment.data.primaryAddress.data.address.data.streetAddress">
+		<!-- Need to add a pickup address here.-->
+		<b>Return Location:</b> <br>
+		<li ng-bind="orderFulfillment.data.primaryAddress.data.address.data.streetAddress"></li>
+		<li ng-bind="orderFulfillment.data.primaryAddress.data.address.data.street2Address"></li>
+		<li>
+			<span ng-bind="orderFulfillment.data.primaryAddress.data.address.data.city"> &nbsp</span> 
+			<span ng-bind="orderFulfillment.data.primaryAddress.data.address.data.stateCode"> &nbsp</span>
+		</li><br>
 	</span>
 </ul>

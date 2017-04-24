@@ -39,7 +39,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
-.constant('slatwallPathBuilder', new SlatwallPathBuilder()).config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
+.constant('slatwallPathBuilder', new SlatwallPathBuilder())
+.config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
      ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,slatwallPathBuilder,appConfig) =>
   {
       //configure partials path properties
@@ -77,7 +78,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //controllers
-.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope:any, $compile) {
+.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope, $compile) {
     //Define the different payment types used here
     var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
     
@@ -139,11 +140,12 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         $scope.accountBalanceChange = parseFloat($scope.amount);
         
         //Switch the account balance display amount to a negative if you are doing a charge
-        if($scope.paymentType==paymentType.aptCharge)
-            $scope.accountBalanceChange = parseFloat(($scope.accountBalanceChange * -1).toString()); //If charge, change to neg since we are lowering account balance
-        else if($scope.paymentType==paymentType.aptAdjustment)
+        if($scope.paymentType==paymentType.aptCharge){
+            $scope.accountBalanceChange = parseFloat($scope.accountBalanceChange) * -1; //If charge, change to neg since we are lowering account balance
+        } else if($scope.paymentType==paymentType.aptAdjustment){
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
-    }
+        }
+     }
 }])
 //filters
 

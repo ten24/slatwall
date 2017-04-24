@@ -125,11 +125,16 @@
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle Fulfillment Items -->
-	<td rowspan="1000" class="s-fullfilment">
+	<td rowspan="1000" class="s-fullfilment" style="background-color:#FFEEEE">
 		<ul>
-			<li>
+			<li ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
 				<swoishippinglabelstamp
 					data-order-fulfillment="orderItem.data.orderFulfillment">
+				</swoishippinglabelstamp>
+			</li>
+			<li ng-if="orderItem.data.orderItemType.data.systemCode === 'oitReturn'">
+				<swoishippinglabelstamp
+					data-order-fulfillment="orderItem.data.orderReturn.returnLocation">
 				</swoishippinglabelstamp>
 			</li>
 		</ul>
