@@ -107,10 +107,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	if(DirectoryExists(rbpath)){
     		directorylisting = directorylist(rbpath,false,"name","*.properties");
     	}
+    	
+    	var customrbpath = expandPath('/Slatwall') & "/custom/config/resourceBundles";
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
-    	var customrbpath = expandPath('/Slatwall') & "/custom/config/resourceBundles";
     	if(DirectoryExists(customrbpath)){
     		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
     		for(var item in customDirectoryListing){
