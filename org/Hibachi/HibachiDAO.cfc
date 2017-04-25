@@ -327,9 +327,11 @@
 							#arguments.tableName#
 						SET
 							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
- 								<cfif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND arguments.updateData[ listGetAt(keyList, i)].value eq true>
+ 								<cfif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
+									  arguments.updateData[ listGetAt(keyList, i)].value eq true>
  									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="1">
- 								<cfelseif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND arguments.updateData[ listGetAt(keyList, i)].value eq false>
+ 								<cfelseif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
+										  arguments.updateData[ listGetAt(keyList, i)].value eq false>
  									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="0">
  								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
