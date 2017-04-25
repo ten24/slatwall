@@ -482,7 +482,10 @@ component {
                 // more useful than the former
                 var except = "Problem with metadata for #beanName# (#dottedPath#) because: " &
                     e.message & ( len( e.detail ) ? " (#e.detail#)" : "" );
-            }
+				
+				//throw bean not found errors
+				throw(except);
+			}
         }
     }
 
