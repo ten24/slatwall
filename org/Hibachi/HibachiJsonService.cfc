@@ -103,6 +103,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	if(DirectoryExists(rbpath)){
     		directorylisting = directorylist(rbpath,false,"name","*.properties");
     	}
+    	if(!directoryExists(customrbpath)){
+        	directoryCreate(customrbpath);
+        }
     	var customrbpath = expandPath('/Slatwall') & "/custom/config/resourceBundles";
     	if(DirectoryExists(customrbpath)){
     		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
@@ -123,7 +126,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            data[lcase(key)] = resourceBundle[key];
 	        }
 	        var json = serializeJson(data);
-			var filePath = expandPath('/Slatwall') & '/custom/config/resourceBundles/#locale#.json';	        
+			var filePath = customrbpath & '#locale#.json';	        
 	        fileWrite(filePath,json);
     	}
         
