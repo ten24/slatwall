@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
+component extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO" persistent="false" accessors="true" output="false" {
 	
 	
 	// ===================== START: Logical Methods ===========================
