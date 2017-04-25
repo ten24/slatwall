@@ -18,7 +18,6 @@ class SWTextCardView implements ng.IComponentOptions {
     };
     
     public template:string = `
-        <div class="row s-detail-modules-wrapper">
             <div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
                 <div class="s-md-content-block-inner">
                     <div class="s-title">{{SwTextCardViewController.name}}</div>
@@ -26,8 +25,7 @@ class SWTextCardView implements ng.IComponentOptions {
                         {{SwTextCardViewController.value}}
                     </div>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
 
     constructor() {}
     /**

@@ -52,14 +52,25 @@ Notes:
 
 <cfparam name="rc.fulfillmentBatch" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
-
+<cfoutput>
 <hb:HibachiEntityDetailForm object="#rc.fulfillmentBatch#" edit="#rc.edit#">
-	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#">
-		
-	</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 	
-	<hb:HibachiEntityDetailGroup object="#rc.fulfillmentBatch#">
-		<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-	</hb:HibachiEntityDetailGroup>
-
+	<section class="s-pick-pack-detail container">
+		<div class="row s-detail-modules-wrapper">
+			<!--- Batch ## This need rbKeys --->
+			<sw-text-card-view name="'Batch Number'" value="'#rc.fulfillmentBatch.getFulfillmentBatchNumber()#'"></sw-text-card-view>
+			<!--- Batch Name --->
+			<sw-text-card-view name="'Batch Name'" value="'#rc.fulfillmentBatch.getFulfillmentBatchName()#'"></sw-text-card-view>
+			<!--- Description --->
+			<sw-text-card-view name="'Description'" value="'#rc.fulfillmentBatch.getDescription()#'"></sw-text-card-view>
+		</div>
+	</section>
+	
+	<section>
+		<hb:HibachiEntityDetailGroup object="#rc.fulfillmentBatch#">
+			<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
+	</section>
 </hb:HibachiEntityDetailForm>
+</cfoutput>

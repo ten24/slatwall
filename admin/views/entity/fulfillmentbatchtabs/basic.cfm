@@ -6,24 +6,6 @@
 
 <cfoutput>
 	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="fulfillmentBatchNumber" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="fulfillmentBatchName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="assignedAccount" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="description" edit="#rc.edit#">
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-	<!--- Description --->
-	<sw-text-card-view name="'Description'" value="'#rc.fulfillmentBatch.getDescription()#'"></sw-text-card-view>
-	
-	<!--- Details --->
-	
-	
-    <!--- Status --->
-	
-	
 	<sw-listing-display
 		data-collection="'FulfillmentBatchItem'"
 		data-edit="true"

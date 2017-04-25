@@ -13670,7 +13670,7 @@
 	            name: '<',
 	            value: '<'
 	        };
-	        this.template = "\n        <div class=\"row s-detail-modules-wrapper\">\n            <div class=\"col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block\">\n                <div class=\"s-md-content-block-inner\">\n                    <div class=\"s-title\">{{SwTextCardViewController.name}}</div>\n                    <div class=\"s-body\">\n                        {{SwTextCardViewController.value}}\n                    </div>\n                </div>\n            </div>\n        </div>";
+	        this.template = "\n            <div class=\"col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block\">\n                <div class=\"s-md-content-block-inner\">\n                    <div class=\"s-title\">{{SwTextCardViewController.name}}</div>\n                    <div class=\"s-body\">\n                        {{SwTextCardViewController.value}}\n                    </div>\n                </div>\n            </div>";
 	    }
 	    /**
 	     * Handles injecting the partials path into this class
