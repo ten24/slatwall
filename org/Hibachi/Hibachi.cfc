@@ -212,7 +212,16 @@ component extends="FW1.framework" {
 			
 			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
+			}else{
+				//RELOAD JUST THE SETTINGS
+				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getServerInstanceIPAddress())){
+					getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
+					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
+					serverInstance.setSettingsExpired(false);
+					getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+				}	
 			}
+			
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 
@@ -448,12 +457,16 @@ component extends="FW1.framework" {
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestStart");
 	}
 	
+	public boolean function hasReloadKey(){
+		return structKeyExists(url, variables.framework.reload) 
+		&& url[variables.framework.reload] == variables.framework.password;
+	}
+	
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
 		
 		if(
 			(
-				structKeyExists(url, variables.framework.reload) 
-				&& url[variables.framework.reload] == variables.framework.password
+				hasReloadKey()
 			) || reloadByServerInstance
 		) {
 			getHibachiScope().setApplicationValue("initialized", false);
@@ -465,7 +478,7 @@ component extends="FW1.framework" {
 			lock scope="Application" timeout="600"  {
 				
 				// Set the request timeout to 600
-				createObject("Slatwall.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
+				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
 
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
@@ -858,6 +871,7 @@ component extends="FW1.framework" {
 
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
+		
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
