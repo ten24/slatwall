@@ -55,7 +55,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		config[ 'modelConfig' ] = getModel();
 		json['data'] = config;
 		json = serializeJson(json);
-		var filePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/config.json';
+		var configDirectoryPath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/';
+		if(!directoryExists(configDirectoryPath)){
+			directoryCreate(configDirectoryPath);
+		}
+		var filePath = configDirectoryPath & 'config.json';
 		fileWrite(filePath,json);
     }
 
