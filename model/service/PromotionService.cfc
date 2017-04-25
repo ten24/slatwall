@@ -1148,6 +1148,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+	public any function processPromotionPeriod_duplicatePromotionPeriod(required any promotionPeriod, required any processObject){
+
+		// Duplicate promotion period and set new values from process object
+		arguments.processObject.setNewPromotionPeriod(arguments.promotionPeriod.duplicate(onlyPersistent=true));
+		var data = {};
+		data['promotionPeriodName']=arguments.processObject.getPromotionPeriodName();
+		data['startDateTime']=arguments.processObject.getStartDateTime();
+		data['endDateTime']=arguments.processObject.getEndDateTime();
+		data['maximumUseCount']=arguments.processObject.getMaximumUseCount();
+		var newPromotionPeriod = this.savePromotionPeriod(arguments.processObject.getNewPromotionPeriod(),data);
+
+		// Duplicate promotionRewards
+		for(var promotionReward in arguments.promotionPeriod.getPromotionRewards()){
+			newPromotionReward = duplicate(promotionReward);
+			newPromotionReward.setPromotionRewardID('');
+			newPromotionPeriod.addPromotionReward(newPromotionReward);
+		}
+		// Duplicate promotionQualifiers
+		for(var promotionQualifier in arguments.promotionPeriod.getPromotionQualifiers()){
+			newpromotionQualifier = duplicate(promotionQualifier);
+			newpromotionQualifier.setPromotionQualifierID('');
+			newPromotionPeriod.addPromotionQualifier(newpromotionQualifier);
+		}
+
+		return newPromotionPeriod;
+	}
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================

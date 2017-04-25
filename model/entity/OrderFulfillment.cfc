@@ -66,7 +66,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
-	property name="orderFulfillmentInvStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentInvStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentInvStatusType";
+	property name="orderFulfillmentInvStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentInvStatTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentInvStatusType";
 
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";

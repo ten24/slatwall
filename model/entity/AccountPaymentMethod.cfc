@@ -75,7 +75,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	// Related Object Properties (one-to-many)
 	property name="subscriptionUsages" singularname="subscriptionUsage" hb_populateEnabled="public" cfc="SubscriptionUsage" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all";
-	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true" lazy="extra";
+	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" inverse="true" lazy="extra";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true";
 
 	// Related Object Properties (many-to-many)
