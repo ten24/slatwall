@@ -59,11 +59,22 @@ Notes:
 	<section class="s-pick-pack-detail container">
 		<div class="row s-detail-modules-wrapper">
 			<!--- Batch ## This need rbKeys --->
-			<sw-text-card-view name="'Batch Number'" value="'#rc.fulfillmentBatch.getFulfillmentBatchNumber()#'"></sw-text-card-view>
+			<sw-card-view id="batchNumber">
+				<sw-card-header>Batch Number</sw-card-header>
+				<sw-card-body>#rc.fulfillmentBatch.getFulfillmentBatchNumber()#</sw-card-body>
+			</sw-card-view>
+			
 			<!--- Batch Name --->
-			<sw-text-card-view name="'Batch Name'" value="'#rc.fulfillmentBatch.getFulfillmentBatchName()#'"></sw-text-card-view>
+			<sw-card-view id="batchName">
+				<sw-card-header>Batch Name</sw-card-header>
+				<sw-card-body>#rc.fulfillmentBatch.getFulfillmentBatchName()#</sw-card-body>
+			</sw-card-view>
+			
 			<!--- Description --->
-			<sw-text-card-view name="'Description'" value="'#rc.fulfillmentBatch.getDescription()#'"></sw-text-card-view>
+			<sw-card-view id="description">
+				<sw-card-header>Description</sw-card-header>
+				<sw-card-body>#rc.fulfillmentBatch.getDescription()#</sw-card-body>
+			</sw-card-view>
 		</div>
 	</section>
 	

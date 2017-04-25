@@ -13639,51 +13639,20 @@
 	//modules
 	//services
 	//components
-	var swtextcardview_1 = __webpack_require__(121);
+	var swcardview_1 = __webpack_require__(284);
+	var swcardheader_1 = __webpack_require__(286);
+	var swcardbody_1 = __webpack_require__(285);
 	var cardmodule = angular.module('hibachi.card', [])
 	    .run([function () {
 	    }])
-	    .component('swTextCardView', swtextcardview_1.SWTextCardView.Factory());
+	    .component('swTextCardView', swcardview_1.SWCardView.Factory())
+	    .component('swCardBody', swcardbody_1.SWCardBody.Factory())
+	    .component('swCardHeader', swcardheader_1.SWCardHeader.Factory());
 	exports.cardmodule = cardmodule;
 
 
 /***/ }),
-/* 121 */
-/***/ (function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var SWTextCardViewController = (function () {
-	    //@ngInject
-	    function SWTextCardViewController($log) {
-	        this.$log = $log;
-	    }
-	    return SWTextCardViewController;
-	}());
-	exports.SWTextCardViewController = SWTextCardViewController;
-	var SWTextCardView = (function () {
-	    function SWTextCardView() {
-	        this.controller = SWTextCardViewController;
-	        this.controllerAs = 'SwTextCardViewController';
-	        this.bindings = {
-	            name: '<',
-	            value: '<'
-	        };
-	        this.template = "\n            <div class=\"col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block\">\n                <div class=\"s-md-content-block-inner\">\n                    <div class=\"s-title\">{{SwTextCardViewController.name}}</div>\n                    <div class=\"s-body\">\n                        {{SwTextCardViewController.value}}\n                    </div>\n                </div>\n            </div>";
-	    }
-	    /**
-	     * Handles injecting the partials path into this class
-	     */
-	    SWTextCardView.Factory = function () {
-	        return new SWTextCardView();
-	    };
-	    return SWTextCardView;
-	}());
-	exports.SWTextCardView = SWTextCardView;
-
-
-/***/ }),
+/* 121 */,
 /* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33061,6 +33030,121 @@
 	    return SWCurrency;
 	}());
 	exports.SWCurrency = SWCurrency;
+
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWCardViewController = (function () {
+	    //@ngInject
+	    function SWCardViewController($log) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.$onInit = function () {
+	            console.log("card onInit", _this);
+	        };
+	    }
+	    return SWCardViewController;
+	}());
+	exports.SWCardViewController = SWCardViewController;
+	var SWCardView = (function () {
+	    function SWCardView() {
+	        this.controller = SWCardViewController;
+	        this.controllerAs = 'SwCardViewController';
+	        this.bindings = {};
+	        this.transclude = {
+	            'swCardHeader': 'div',
+	            'swCardBody': 'div'
+	        };
+	        this.template = "\n            <div class=\"col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block\">\n                <div class=\"s-md-content-block-inner\">\n                    <div class=\"s-title\">\n                        <div ng-transclude=\"swCardHeader\">\n                            <!---TITLE --->\n                        </div>\n                    </div>\n                    <div class=\"s-body\">\n                        <div ng-transclude=\"swCardBody\">\n                            <!---BODY --->\n                        </div>\n                    </div>\n                </div>\n            </div>";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardView.Factory = function () {
+	        return new SWCardView();
+	    };
+	    return SWCardView;
+	}());
+	exports.SWCardView = SWCardView;
+
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWCardBodyController = (function () {
+	    //@ngInject
+	    function SWCardBodyController($log) {
+	        this.$log = $log;
+	        this.$onInit = function () {
+	        };
+	    }
+	    return SWCardBodyController;
+	}());
+	exports.SWCardBodyController = SWCardBodyController;
+	var SWCardBody = (function () {
+	    function SWCardBody() {
+	        this.controller = SWCardBodyController;
+	        this.controllerAs = 'SwCardBodyController';
+	        this.bindings = {};
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n                    <div class=\"s-body\" ng-transclude></div>\n            ";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardBody.Factory = function () {
+	        return new SWCardBody();
+	    };
+	    return SWCardBody;
+	}());
+	exports.SWCardBody = SWCardBody;
+
+
+/***/ }),
+/* 286 */
+/***/ (function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWCardHeaderController = (function () {
+	    //@ngInject
+	    function SWCardHeaderController($log) {
+	        this.$log = $log;
+	        this.$onInit = function () {
+	        };
+	    }
+	    return SWCardHeaderController;
+	}());
+	exports.SWCardHeaderController = SWCardHeaderController;
+	var SWCardHeader = (function () {
+	    function SWCardHeader() {
+	        this.controller = SWCardHeaderController;
+	        this.controllerAs = 'SwCardHeaderController';
+	        this.bindings = {};
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n                <div class=\"s-title\" ng-transclude></div>";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardHeader.Factory = function () {
+	        return new SWCardHeader();
+	    };
+	    return SWCardHeader;
+	}());
+	exports.SWCardHeader = SWCardHeader;
 
 
 /***/ })

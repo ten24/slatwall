@@ -6,15 +6,18 @@
 //services
 
 //components
-import {SWTextCardView} from "./components/swtextcardview";
+import {SWCardView} from "./components/swcardview";
+import {SWCardHeader} from "./components/swcardheader";
+import {SWCardBody} from "./components/swcardbody";
 
 var cardmodule = angular.module('hibachi.card',[])
 .run([function() {
 }])
 
-//directives
-.component('swTextCardView', SWTextCardView.Factory());
-
+//components
+.component('swTextCardView', SWCardView.Factory())
+.component('swCardBody', SWCardBody.Factory())
+.component('swCardHeader', SWCardHeader.Factory());
 export{
 	cardmodule
 }
