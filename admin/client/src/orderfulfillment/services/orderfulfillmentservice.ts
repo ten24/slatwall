@@ -6,14 +6,12 @@ import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototyp
 /**
  * Fulfillment List Controller
  */
-class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
+class OrderFulfillmentService implements  Prototypes.Observable.IObservable {
 
     public observers: Array<Prototypes.Observable.IObserver>
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){
-        this.observers = new Array<Prototypes.Observable.IObserver>();
-    }
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){}
 
     /**
      * This manages all the observer events without the need for setting ids etc.
@@ -21,6 +19,9 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
     public registerObserver = (_observer: Prototypes.Observable.IObserver) => {
         if (!_observer){
             throw new Error('Observer required for registration');
+        }
+        if (this.observers == undefined){
+            this.observers = new Array<Prototypes.Observable.IObserver>();
         }
         this.observers.push(_observer);
     }
@@ -32,7 +33,7 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
             throw new Error('Observer required for removal.');
          }
          for (var observer in this.observers){
-            if (this.observers[observer] == (_observer)){
+            if (this.observers[observer] === (_observer)){
                 if (this.observers.indexOf(_observer) > -1){
                     this.observers.splice(this.observers.indexOf(_observer), 1);
                 }
@@ -51,23 +52,20 @@ class SWOrderFulfillmentService implements  Prototypes.Observable.IObservable {
 
     /**
      * Creates a batch. This should use api:main.post with a context of process and an entityName instead of doAction.
+     * The process object should have orderItemIdList or orderFulfillmentIDList defined and should have
+     * optionally an accountID, and or locationID (or locationIDList).
      */
     public addBatch = (processObject) => {
-    if (processObject) {
-            console.log("Hibachi", this.$hibachi);
-            console.log("Process Object", processObject);
-            //this.orderFulfillmentService.addBatch(this.getBatchProcess());
+        if (processObject) {
+
             processObject.data.entityName = "FulfillmentBatch";
-            
             processObject.data['fulfillmentBatch'] = {};
             processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
 
-            //This goes to service.
             return this.$hibachi.saveEntity("fulfillmentBatch",'',processObject.data, "create");
-           // return this.$http.post("/?slataction=api:main.doProcess", processObject.data, {});
         }
     }
 }
 export {
-    SWOrderFulfillmentService
+    OrderFulfillmentService
 }

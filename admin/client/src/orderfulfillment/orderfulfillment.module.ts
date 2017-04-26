@@ -4,7 +4,7 @@
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 
 //services
-import {SWOrderFulfillmentService} from "./services/orderfulfillmentservice";
+import {OrderFulfillmentService} from "./services/orderfulfillmentservice";
 
 //controllers
 
@@ -20,9 +20,9 @@ var orderfulfillmentmodule = angular.module('orderFulfillment',[coremodule.name]
 
 }])
 //constants
-.constant('orderFulfillmentPartialsPath','orderFulfillment/components/')
+.constant('orderFulfillmentPartialsPath','orderfulfillment/components/')
 //services
-.service('swOrderFulfillmentService', SWOrderFulfillmentService)
+.service('orderFulfillmentService', OrderFulfillmentService)
 //controllers
 //directives
 .directive('swOrderFulfillmentList', SWOrderFulfillmentList.Factory());
