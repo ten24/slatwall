@@ -11764,6 +11764,10 @@
 	 *
 	 * `npm install is-buffer`
 	 */
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> develop-team-pick-pack-ship-ih-client
 
 	module.exports = function (obj) {
 	  return !!(obj != null &&
