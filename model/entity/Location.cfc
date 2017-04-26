@@ -220,7 +220,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
-		return getCalculatedLocationPathName();
+		return getLocationPathName();
 	}
 	
 	
