@@ -28,6 +28,5 @@
 		<sw-listing-column data-property-identifier="orderFulfillment.shippingAddress.stateCode" data-title="State"></sw-listing-column>
 		<sw-listing-column data-property-identifier="orderFulfillment.orderFulfillmentStatusType.typeName" data-title="Status"></sw-listing-column>
 
-		
 	</sw-listing-display>
 </cfoutput>

@@ -2,44 +2,65 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWCardViewController {
-
+    public cardTitle:string;
+    public cardBody:string;
+    public cardSize:string='md';
 	//@ngInject
-    constructor(private $log) {
-
-    }
-
-    public $onInit = () => {
-        console.log("card onInit", this);
-    }
+    constructor(private $log) {}
 
 } 
 
 class SWCardView implements ng.IComponentOptions {
     public controller:any=SWCardViewController;
     public controllerAs:string = 'SwCardViewController';
-    public bindings:{[key: string]:string} = {};
-    public transclude:any = {
-        'swCardHeader': 'div',
-        'swCardBody': 'div'
+    public bindings = {
+        cardTitle: "@?",
+        cardBody: "@?",
+        cardSize: "@?" //sm, md, lg
     };
+    
+    public transclude:any = {
+        cardIcon: '?swCardIcon',
+        cardHeader: '?swCardHeader',
+        cardBody: '?swCardBody',
+        listItem: '?swCardListItem',
+        progressBar: '?swCardProgressBar'
+    }
 
     public template:string = `
-            <div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
-                <div class="s-md-content-block-inner">
-                    <div class="s-title">
-                        <div ng-transclude="swCardHeader">
-                            <!---TITLE --->
-                        </div>
-                    </div>
-                    <div class="s-body">
-                        <div ng-transclude="swCardBody">
-                            <!---BODY --->
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+                
+                <div class="s-{{(SwCardViewController.cardSize)}}-content-block{{(SwCardViewController.cardSize=='md'?'-inner':'')}}" style="margin-bottom:7px">
+                    <!--- ICON --->
+                    <ng-transclude ng-transclude-slot="cardIcon"></ng-transclude>
+                    
+                    <!-- TITLE -->
+                    <!-- This when using attributes -->
+                    <div class="s-title" ng-bind="SwCardViewController.cardTitle" ng-if="SwCardViewController.cardTitle"></div>
+                    
+                    <!-- This when transcluding the content in -->
+                    <ng-transclude class="s-title" ng-transclude-slot="cardHeader"></ng-transclude>
+                    
+                    <!--- CONTENT --->
+                    <!-- This when using attributes -->
+                    <div class="s-body" ng-bind="SwCardViewController.cardBody" ng-if="SwCardViewController.cardBody"></div>
+                    <!-- This when transcluding the content in -->
+                    <ng-transclude ng-transclude-slot="cardBody"></ng-transclude>
 
-    constructor() {}
+                    <!--- LIST ITEMS --->
+                    <ul class="list-unstyled">
+                        <ng-transclude ng-transclude-slot="listItem"></ng-transclude>
+                    </ul>
+
+                    <!--- PROGRESS --->
+                    <!-- This when transcluding the content in -->
+                    <ng-transclude ng-transclude-slot="progressBar"></ng-transclude>
+
+
+                </div>
+           `;
+
+    constructor() {  }
+    
     /**
      * Handles injecting the partials path into this class
      */
