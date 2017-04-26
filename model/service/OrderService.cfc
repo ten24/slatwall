@@ -1390,6 +1390,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
 						for(var orderitem in arguments.order.getOrderItems()) {
+							var errors = orderItem.validate('save').getErrors();
+							if(StructCount(errors)){
+								for(var errorKey in errors){
+									for(var message in errors[errorKey]){
+										arguments.order.addError('orderItem',message);	
+									}
+								}
+							}
 							if(orderitem.getSku().getBaseProductType() == "event") {
 								if(!orderItem.getSku().getAvailableForPurchaseFlag() OR !orderItem.getSku().allowWaitlistedRegistrations() ){
 									arguments.order.addError('payment','Event: #orderItem.getSku().getProduct().getProductName()# is unavailable for registration. The registration period has closed.');
@@ -1466,9 +1474,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								//don't auto fulfill if the deposit has been paid but not the full amount.
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
+							for(var orderItem in order.getOrderItems()){
+								//run calculated props if success on product, sku and order item
+								//product must run before sku because sku depends on product info to calculate correctly
+								orderItem.getSku().getProduct().updateCalculatedProperties(true);
+								orderItem.getSku().updateCalculatedProperties(true);
+								orderItem.updateCalculatedProperties(true);
+							}
 						}
 					}
-
 				}
 
 			} else {
@@ -2397,13 +2411,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// If there was one or more accountContentAccess associated with the referenced orderItem then we need to remove them.
-			var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
-			accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
-			var accountContentAccesses = accountContentAccessSmartList.getRecords();
-			for (var accountContentAccess in accountContentAccesses){
+			if(!isnull(stockReceiverItem.getOrderItem().getReferencedOrderItem())){
+				var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
+				accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
+				var accountContentAccesses = accountContentAccessSmartList.getRecords();
+				for (var accountContentAccess in accountContentAccesses){
 
-    			getAccountService().deleteAccountContentAccess( accountContentAccess );
+    				getAccountService().deleteAccountContentAccess( accountContentAccess );
 
+				}
 			}
 		}
 
