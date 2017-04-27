@@ -294,21 +294,32 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		return termAccountAvailableCredit;
 	}
+	
+	public numeric function getAmountUnassigned(){
+		var amountUnreceived = 0;
+		for(var accountPayment in getAccountPayments()) {
+			amountUnreceived = getService('HibachiUtilityService').precisionCalculate(amountUnreceived + accountPayment.getAmountUnassigned());
+		}
+		return amountUnreceived;
+	}
+	
+	public numeric function getAmountUnreceived(){
+		var amountUnreceived = 0;
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			if(!termAccountOrderPayment.getNewFlag()){
+				amountUnreceived = getService('HibachiUtilityService').precisionCalculate(amountUnreceived + termAccountOrderPayment.getAmountUnreceived());
+			}
+		}
+		return amountUnreceived;
+	}
 
 	public numeric function getTermAccountBalance() {
 		var termAccountBalance = 0;
-
 		// First look at all the unreceived open order payment
-		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
-			if(!termAccountOrderPayment.getNewFlag()){
-				termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
-			}
-		}
-
+		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance + getAmountUnreceived());
+		
 		// Now look for the unassigned payment amount
-		for(var accountPayment in getAccountPayments()) {
-			termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - accountPayment.getAmountUnassigned());
-		}
+		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - getAmountUnassigned());
 
 		return termAccountBalance;
 	}

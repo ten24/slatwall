@@ -84,7 +84,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     $scope.paymentTypeName = $.slatwall.rbKey('define.charge'); //Default payment type
     $scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
     $scope.amount = 0;
-    
+        
     $scope.updatePaymentType = function() {
         //Change all order payment types here
         angular.forEach($scope.appliedOrderPayment, function(obj, key) {
@@ -132,9 +132,9 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
                 }
             }
         });
-
+        console.log('here',$scope.amountUnassigned);
         //The amount not applied to an order
-        $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
+        $scope.amountUnapplied = $scope.amountUnassigned - (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
         $scope.accountBalanceChange = parseFloat($scope.amount);
         
         //Switch the account balance display amount to a negative if you are doing a charge
@@ -143,6 +143,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         else if($scope.paymentType==paymentType.aptAdjustment)
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
     }
+    
+    
 }])
 //filters
 
