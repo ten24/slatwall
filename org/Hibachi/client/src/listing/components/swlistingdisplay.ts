@@ -175,6 +175,10 @@ class SWListingDisplayController{
         	this.setupCollectionPromise();
         }
 
+        if (this.collectionObject){
+             this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
+        }
+
     }
     
     private setupCollectionPromise=()=>{
