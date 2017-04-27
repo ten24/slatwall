@@ -240,21 +240,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Print
-	public array function getPrintQueue() {
-		if(!hasSessionValue('printQueue')) {
-			setSessionValue('printQueue', []);
+	public string function getPrintQueue() {
+		if(!structKeyExists(cookie,'printQueue')){
+			getService('HibachiTagService').cfCookie('printQueue','');
 		}
-		return getSessionValue('printQueue');
+		return cookie.printQueue;
 	}
 	
 	// Clear Email & Print
 	public void function clearPrintQueue() {
-		setSessionValue('printQueue', []);
+		getService('HibachiTagService').cfCookie('printQueue','');
 	}
 	
 	public void function clearEmailAndPrintQueue() {
 		variables.emailQueue = [];
-		setSessionValue('printQueue', []);
+		clearPrintQueue();
 	}
 	
 	// =================== JS helper methods  ===========================

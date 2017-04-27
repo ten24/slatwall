@@ -113,6 +113,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public struct function getAllSettingMetaData() {
+		
 		var allSettingMetaData = {
 
 			// Account
@@ -352,10 +353,16 @@ component extends="HibachiService" output="false" accessors="true" {
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
-
+		
 		var integrationSettingMetaData = getIntegrationService().getAllSettingMetaData();
 
 		structAppend(allSettingMetaData, integrationSettingMetaData, false);
+
+		//need to persist globalClientSecret
+		var globalClientSecretSetting = this.getSettingBySettingName('globalClientSecret');
+		if(isNull(globalClientSecretSetting)){
+			getDao('settingDao').insertSetting('globalClientSecret',allSettingMetaData.globalClientSecret.defaultValue);
+		}
 
 		return allSettingMetaData;
 	}
@@ -633,8 +640,10 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingMetaData(required string settingName) {
+		
 		var allSettingMetaData = getHibachiCacheService().getOrCacheFunctionValue("settingService_allSettingMetaData", this, "getAllSettingMetaData");
 
+		
 		if(structKeyExists(allSettingMetaData, arguments.settingName)) {
 			return allSettingMetaData[ arguments.settingName ];
 		}
@@ -964,7 +973,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-
+			getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress());
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
