@@ -15,6 +15,7 @@ class CollectionCreateController {
         this.$scope.entity_createcollectionCtrl.baseCollections = [];
 
         this.collection = this.collectionConfigService.newCollectionConfig('Collection');
+        this.collection.setDisplayProperties('collectionID,collectionName')
         this.getBaseCollections('Access');
 
 
@@ -30,8 +31,9 @@ class CollectionCreateController {
     public getBaseCollections(baseCollectionObject){
         this.collection.clearFilters();
         this.collection.addFilter('collectionObject', baseCollectionObject);
+        this.collection.setAllRecords(true);
         this.collection.getEntity().then((res)=>{
-            this.$scope.entity_createcollectionCtrl.baseCollections = res.pageRecords;
+            this.$scope.entity_createcollectionCtrl.baseCollections = res.records;
         })
     }
 
