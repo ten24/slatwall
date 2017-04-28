@@ -138,7 +138,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			};
 			
 			if(arguments.accountPayment.getAccountPaymentType().getSystemCode() != "aptAdjustment") {
-			
 				if(arguments.accountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
 					if(arguments.accountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
 						if(!isNull(arguments.accountPayment.getPaymentMethod().getIntegration())) {
@@ -153,6 +152,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					transactionData.transactionType = 'credit';
 				}
 			}else{
+				
 				transactionData.amount = 0;
 				if(arguments.accountPayment.getNetAmount() > 0){
 					transactionData.transactionType = 'receiveOffline';	
@@ -1059,7 +1059,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccountPayment_createTransaction(required any accountPayment, required any processObject) {
 
 		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.accountPayment );
-
+	
 		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
 		if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations) gt 1 && arguments.processObject.getAmount() gt uncapturedAuthorizations[1].chargeableAmount) {
 			var totalAmountCharged = 0;
@@ -1067,7 +1067,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 
 				var thisToCharge = getService('HibachiUtilityService').precisionCalculate(arguments.processObject.getAmount() - totalAmountCharged);
-
+				
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
 				}
@@ -1103,7 +1103,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			// Setup the accountPayment in the transaction to be used by the 'runTransaction'
 			paymentTransaction.setAccountPayment( arguments.accountPayment );
-
+			
 			// Setup the transaction data
 			transactionData = {
 				transactionType = arguments.processObject.getTransactionType(),

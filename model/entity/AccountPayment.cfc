@@ -245,8 +245,11 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var totalAmt = 0;
 		if(isNull(getAccountPaymentType()) || getAccountPaymentType().getSystemCode() != "aptAdjustment"){
 			for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
-				totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + getAppliedAccountPayments()[i].getAmount());
+				if(!isNull(getAppliedAccountPayments()[i].getOrderPayment())){
+					totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + getAppliedAccountPayments()[i].getAmount());	
+				}
 			}
+			
 		}
 		return totalAmt;
 	}
@@ -341,6 +344,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		
 		for(var accountPaymentApplied in getAppliedAccountPayments()) {
 			if(isNull(accountPaymentApplied.getOrderPayment())) {
+				
 				if(accountPaymentApplied.getAccountPaymentType().getSystemCode() == "aptCharge") {
 					if(getAmountReceived()>0){
 						amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + accountPaymentApplied.getAmount());

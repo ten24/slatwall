@@ -296,11 +296,15 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	
 	public numeric function getAmountUnassigned(){
-		var amountUnreceived = 0;
+		var amountUnassigned = 0;
 		for(var accountPayment in getAccountPayments()) {
-			amountUnreceived = getService('HibachiUtilityService').precisionCalculate(amountUnreceived + accountPayment.getAmountUnassigned());
+			if(accountPayment.getAccountPaymentType().getSystemCode() == 'aptCharge'){
+				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + (accountPayment.getAmount()-accountPayment.getAmountReceived()));
+			}else if(accountPayment.getAccountPaymentType().getSystemCode() == 'aptCredit'){
+				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + (accountPayment.getAmountCredited()));
+			}
 		}
-		return amountUnreceived;
+		return amountUnassigned;
 	}
 	
 	public numeric function getAmountUnreceived(){
@@ -311,6 +315,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			}
 		}
 		return amountUnreceived;
+	}
+	
+	public numeric function getAmountCredited(){
+		var amountCredited = 0;
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			if(!termAccountOrderPayment.getNewFlag()){
+				amountCredited = getService('HibachiUtilityService').precisionCalculate(amountCredited + termAccountOrderPayment.getAmountCredited());
+			}
+		}
+		return amountCredited;
 	}
 
 	public numeric function getTermAccountBalance() {
