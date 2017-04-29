@@ -1,19 +1,63 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
 import * as Prototypes from '../prototypes/Observable';
+import {Observable, Subject} from 'rxjs';
+
+type Action = any;
 
 class TypeaheadService implements Prototypes.Observable.IObservable {
     
     public typeaheadData = {};
     public typeaheadPromises = {};
     public typeaheadStates = {}; 
-    
+    public state:any;
+
+    public typeaheadStore:Observable<any>;
+    /**
+     * This will contain the stream of actions which I'm defining as an object
+     */
+    public actionStream:any;
+
+    /**
+     * The reducer handles changes from one state to the next. Every state transition is defined as an action.
+     * @param Reducer 
+     * @param observerService 
+     */
+     public reducer:any;
+
+
     //@ngInject
     constructor(
         public $timeout, 
         public observerService
     ){
          this.observers = new Array<Prototypes.Observable.IObserver>();
+         
+         //Setup the action stream
+         this.actionStream = new Subject();
+         this.state = {};
+
+         //Setup the basic reducer. This only handles adding a selection right now. ...state means any number of properties.
+         this.reducer = (state, action:Action) => {  
+            switch(action.type) {
+                case 'ADD_SELECTION':
+                    console.log("ADD_SELECTION CALLED", state, action);
+                    this.addSelection(action.payload.id, action.payload.data );
+                    return {
+                        state: this.state,
+                        name: action.payload.name
+                    };
+                default:
+                    return state;
+            }
+        }
+
+        //Setup the store that will handle all state.
+        this.actionStream.startWith(this.state).scan(this.reducer);
+        console.log("Action Stream: ", this.actionStream);
+        console.log("Store", this.typeaheadStore);
+
     }
 
     public observers: Array<Prototypes.Observable.IObserver>
@@ -92,8 +136,10 @@ class TypeaheadService implements Prototypes.Observable.IObservable {
     public addSelection = (key:string, data:any) => {
         if(angular.isUndefined(this.typeaheadData[key])){
             this.typeaheadData[key] = [];
+            this.state['typeaheadData'][key] = [];
         }
         this.typeaheadData[key].push(data); 
+        this.state['typeaheadData'][key].push(data);
         this.notifyTypeaheadSelectionUpdateEvent(key); 
     } 
 
