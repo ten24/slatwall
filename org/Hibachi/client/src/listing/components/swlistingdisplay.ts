@@ -180,7 +180,6 @@ class SWListingDisplayController{
     
     public getCollectionByPagination = (state) =>{
         if(state.type){
-            
             switch(state.type){
                 case 'setCurrentPage':
                     this.collectionConfig.currentPage = state.payload;
@@ -190,13 +189,9 @@ class SWListingDisplayController{
                     this.collectionConfig.currentPage = state.payload;
                     
             }
-            console.log('collectionConfig',this.collectionConfig);
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
             });
-    //        this.collectionConfig.setCurrentPage()
-    //        console.log('test',this.collectionConfig);
-    //        console.log('notified!',payload);
         }
         
     }
