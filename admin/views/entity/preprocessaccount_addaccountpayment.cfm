@@ -244,6 +244,9 @@ Notes:
 						#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotalAmount')#
 					</th>
 					<th>
+						#$.slatwall.rbKey('entity.AccountPayment.termOffsetCredited')#
+					</th>
+					<th>
 						#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#
 					</th>
 					<th>
@@ -282,6 +285,9 @@ Notes:
 						</td>
 						<td>
 							#orderPayment.getOrder().getFormattedValue('paymentAmountReceivedTotal')#
+						</td>
+						<td>
+							#orderPayment.getOrder().getFormattedValue('paymentAmountCreditedTotal')#
 						</td>
 						<cfset disabledAttribute = ""/>
 						<cfif orderPayment.getOrder().getPaymentAmountDue() eq 0>
