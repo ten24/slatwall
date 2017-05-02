@@ -76,31 +76,6 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         
         //This tells the typeaheadService to send us all of its events to our recieveNotification method.
         this.typeaheadService.registerObserver(this);
-
-        // Higher order function to send actions to the action stream
-        const actionDispatcher = (func) => (...args) =>  this.typeaheadService.actionStream.next(func(...args));
-
-        // Example action function for adding a selection.
-        this.addSelection = actionDispatcher((payload) => ({  
-            type: 'ADD_SELECTION',
-                payload
-            }
-        ));
-
-        //Won't get notified of this one because we have not subscribed to the stream yet.
-        this.addSelection({"id" : "123456", "data" : "This is my data"});
-
-        //Subscribe to the stores events and just print out the next emitted item.
-        let storeListener = this.typeaheadService.typeaheadStore.subscribe( (nextState) => {console.log("Next State: ", nextState)}, (errorState)=>{console.log("Error State", errorState)} );
-        
-        //Will get notified of this one.
-        this.addSelection({"id" : "123457", "data" : "This is my data"});
-        this.addSelection({"id" : "123458", "data" : "This is my data"});
-
-        //Testing some rxjs operators.
-        var test:any = [{id: 1,name:"ian"},{id:2, name:"casey"},{id:3,name:"john"},{id:4, name:"dan"}];
-        var testObservable = rxjs.Observable.from<any>(test);
-        testObservable.map(o => (o.id + '_' + o.name) ).take(2).map((result) => { console.log(result) }).subscribe();
         
     }
 

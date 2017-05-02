@@ -3353,11 +3353,16 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
 	/// <reference path='../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../typings/tsd.d.ts' />
 	/*jshint browser:true */
@@ -3367,8 +3372,10 @@
 	var bootstrapper = (function (_super) {
 	    __extends(bootstrapper, _super);
 	    function bootstrapper() {
-	        var angular = _super.call(this, slatwalladmin_module_1.slatwalladminmodule.name);
+	        var _this = this;
+	        var angular = _this = _super.call(this, slatwalladmin_module_1.slatwalladminmodule.name) || this;
 	        angular.bootstrap();
+	        return _this;
 	    }
 	    return bootstrapper;
 	}(basebootstrap_1.BaseBootStrapper));
@@ -3380,6 +3387,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../typings/tsd.d.ts' />
 	var core_module_1 = __webpack_require__(16);
@@ -3442,8 +3450,12 @@
 	            }
 	            return _this.$http.get(urlString + 'custom/config/config.json?instantiationKey=' + _this.instantiationKey)
 	                .then(function (resp) {
+	                var appConfig = resp.data.data;
+	                if (hibachiConfig.baseURL.length) {
+	                    appConfig.baseURL = urlString;
+	                }
 	                core_module_1.coremodule.constant('appConfig', resp.data.data);
-	                _this.appConfig = resp.data.data;
+	                _this.appConfig = appConfig;
 	                return _this.getResourceBundles();
 	            }, function (response) {
 	            });
@@ -3545,9 +3557,10 @@
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var hibachiinterceptor_1 = __webpack_require__(17);
 	//constant
 	var hibachipathbuilder_1 = __webpack_require__(18);
@@ -3706,6 +3719,8 @@
 	        hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 	        // $provide.decorator('$hibachi',
 	        $httpProvider.interceptors.push('hibachiInterceptor');
+	        //Pulls seperate http requests into a single digest cycle.
+	        $httpProvider.useApplyAsync(true);
 	    }])
 	    .run(['$rootScope', '$hibachi', '$route', '$location', function ($rootScope, $hibachi, $route, $location) {
 	        $rootScope.buildUrl = $hibachi.buildUrl;
@@ -3803,6 +3818,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var HibachiInterceptor = (function () {
@@ -3920,9 +3936,7 @@
 	        this.localStorageService = localStorageService;
 	    }
 	    HibachiInterceptor.Factory = function () {
-	        var eventHandler = function ($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
-	            return new HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder);
-	        };
+	        var eventHandler = function ($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) { return new HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder); };
 	        eventHandler.$inject = [
 	            '$location',
 	            '$q',
@@ -3947,6 +3961,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
@@ -3982,6 +3997,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var CacheService = (function () {
@@ -4065,9 +4081,10 @@
 /* 20 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var PublicService = (function () {
 	    ///index.cfm/api/scope/
 	    //@ngInject
@@ -4264,6 +4281,7 @@
 	                }
 	            }
 	            if (!request.hasSuccessfulAction()) {
+	                //this.hasErrors = true;
 	            }
 	        };
 	        this.getRequestByAction = function (action) {
@@ -4443,6 +4461,8 @@
 	                newOrderPaymentErrors['securityCode'] = 'Required *';
 	            }
 	            if (Object.keys(newOrderPaymentErrors).length) {
+	                //this.cart.orderPayments.hasErrors = true;
+	                //this.cart.orderPayments.errors = newOrderPaymentErrors;
 	            }
 	        };
 	        /** Allows an easy way to calling the service addOrderPayment.
@@ -4612,6 +4632,7 @@
 	                if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")) {
 	                    if (serverData.failureActions.length) {
 	                        for (var action in serverData.failureActions) {
+	                            //
 	                        }
 	                    }
 	                    this.edit = '';
@@ -4833,20 +4854,27 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
 	var AccountService = (function (_super) {
 	    __extends(AccountService, _super);
 	    //@ngInject
 	    function AccountService($injector, $hibachi, utilityService) {
-	        _super.call(this, $injector, $hibachi, utilityService, 'Account');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'Account') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        return _this;
 	    }
 	    return AccountService;
 	}(baseentityservice_1.BaseEntityService));
@@ -4858,11 +4886,17 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var baseobject_1 = __webpack_require__(23);
@@ -4872,26 +4906,25 @@
 	    __extends(BaseEntityService, _super);
 	    //@ngInject
 	    function BaseEntityService($injector, $hibachi, utilityService, baseObjectName, objectName) {
-	        var _this = this;
-	        _super.call(this, $injector);
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
-	        this.baseObjectName = baseObjectName;
-	        this.objectName = objectName;
-	        this.newEntity = function (baseObjectName, objectName) {
+	        var _this = _super.call(this, $injector) || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        _this.baseObjectName = baseObjectName;
+	        _this.objectName = objectName;
+	        _this.newEntity = function (baseObjectName, objectName) {
 	            if (!objectName) {
 	                objectName = baseObjectName;
 	            }
 	            return _this.newObject('Entity', baseObjectName, objectName);
 	        };
-	        this.newProcessObject = function (baseObjectName, objectName) {
+	        _this.newProcessObject = function (baseObjectName, objectName) {
 	            if (!objectName) {
 	                objectName = baseObjectName;
 	            }
 	            return _this.newObject('Process', baseObjectName, objectName);
 	        };
-	        this.newObject = function (type, baseObjectName, objectName) {
+	        _this.newObject = function (type, baseObjectName, objectName) {
 	            if (!objectName) {
 	                objectName = baseObjectName;
 	            }
@@ -4909,18 +4942,20 @@
 	            }
 	            else {
 	                var entity = new baseObject();
+	                //throw('need to add '+ objectName+' class');
 	            }
 	            return entity;
 	        };
-	        this.utilityService = utilityService;
-	        this.$hibachi = $hibachi;
-	        this.$injector = $injector;
-	        if (!this.objectName) {
-	            this.objectName = this.baseObjectName;
+	        _this.utilityService = utilityService;
+	        _this.$hibachi = $hibachi;
+	        _this.$injector = $injector;
+	        if (!_this.objectName) {
+	            _this.objectName = _this.baseObjectName;
 	        }
-	        this['new' + this.objectName] = function () {
+	        _this['new' + _this.objectName] = function () {
 	            return _this.newEntity(_this.baseObjectName, _this.objectName);
 	        };
+	        return _this;
 	    }
 	    return BaseEntityService;
 	}(baseobject_1.BaseObject));
@@ -4932,6 +4967,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	__webpack_require__(2);
@@ -4965,9 +5001,10 @@
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var account_1 = __webpack_require__(25);
 	exports.Account = account_1.Account;
 	var address_1 = __webpack_require__(28);
@@ -4986,27 +5023,33 @@
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
 	var Account = (function (_super) {
 	    __extends(Account, _super);
 	    function Account($injector) {
-	        var _this = this;
-	        _super.call(this, $injector);
-	        this.giftCards = [];
-	        this.userIsLoggedIn = function () {
+	        var _this = _super.call(this, $injector) || this;
+	        _this.giftCards = [];
+	        _this.userIsLoggedIn = function () {
 	            if (_this.accountID !== '') {
 	                return true;
 	            }
 	            return false;
 	        };
+	        return _this;
 	    }
 	    return Account;
 	}(baseentity_1.BaseEntity));
@@ -5017,19 +5060,25 @@
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var basetransient_1 = __webpack_require__(27);
 	var BaseEntity = (function (_super) {
 	    __extends(BaseEntity, _super);
 	    function BaseEntity($injector) {
-	        _super.call(this, $injector);
+	        return _super.call(this, $injector) || this;
 	    }
 	    return BaseEntity;
 	}(basetransient_1.BaseTransient));
@@ -5040,29 +5089,34 @@
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseobject_1 = __webpack_require__(23);
 	var BaseTransient = (function (_super) {
 	    __extends(BaseTransient, _super);
 	    function BaseTransient($injector) {
-	        var _this = this;
-	        _super.call(this, $injector);
-	        this.errors = {};
-	        this.messages = {};
-	        this.populate = function (response) {
+	        var _this = _super.call(this, $injector) || this;
+	        _this.errors = {};
+	        _this.messages = {};
+	        _this.populate = function (response) {
 	            var data = response;
 	            if (response.data) {
 	                data = response.data;
 	            }
 	            data = _this.utilityService.nvpToObject(data);
-	            var _loop_1 = function() {
+	            var _loop_1 = function () {
 	                var propertyIdentifier = key.replace(_this.className.toLowerCase() + '.', '');
 	                var propertyIdentifierArray = propertyIdentifier.split('.');
 	                var propertyIdentifierKey = propertyIdentifier.replace(/\./g, '_');
@@ -5112,6 +5166,7 @@
 	                            else {
 	                                currentEntity[property] = data[key];
 	                            }
+	                            //}
 	                        }
 	                        else {
 	                            var propertyMetaData = currentEntity.metaData[property];
@@ -5143,7 +5198,7 @@
 	                _this.messages = response.messages;
 	            }
 	        };
-	        this.addError = function (errorName, errorMessage) {
+	        _this.addError = function (errorName, errorMessage) {
 	            if (!_this.errors[errorName]) {
 	                _this.errors[errorName] = [];
 	            }
@@ -5157,13 +5212,13 @@
 	                _this.errors[errorName].push(errorMessage);
 	            }
 	        };
-	        this.addErrorsByArray = function (errorName, errorMessages) {
+	        _this.addErrorsByArray = function (errorName, errorMessages) {
 	            for (var i = 0; i < errorMessages.length; i++) {
 	                var message = errorMessages[i];
 	                _this.errors[errorName].push(message);
 	            }
 	        };
-	        this.addErrorsByObject = function (errorName, errorMessage) {
+	        _this.addErrorsByObject = function (errorName, errorMessage) {
 	            if (!_this.errors[errorName]) {
 	                _this.errors[errorName] = [];
 	            }
@@ -5174,7 +5229,7 @@
 	                }
 	            }
 	        };
-	        this.addErrors = function (errors) {
+	        _this.addErrors = function (errors) {
 	            for (var key in errors) {
 	                if (!_this.errors[key]) {
 	                    _this.errors[key] = [];
@@ -5184,28 +5239,29 @@
 	                }
 	            }
 	        };
-	        this.getError = function (errorName) {
+	        _this.getError = function (errorName) {
 	            return _this.getErrorByErrorName(errorName);
 	        };
-	        this.getErrorByErrorName = function (errorName) {
+	        _this.getErrorByErrorName = function (errorName) {
 	            return _this.errors[errorName];
 	        };
-	        this.hasError = function (errorName) {
+	        _this.hasError = function (errorName) {
 	            return _this.hasErrorByErrorName(errorName);
 	        };
-	        this.hasErrorByErrorName = function (errorName) {
+	        _this.hasErrorByErrorName = function (errorName) {
 	            return angular.isDefined(_this.errors[errorName]);
 	        };
-	        this.hasErrors = function () {
+	        _this.hasErrors = function () {
 	            return Object.keys(_this.errors).length;
 	        };
-	        this.hasSuccessfulAction = function (action) {
+	        _this.hasSuccessfulAction = function (action) {
 	            return;
 	        };
-	        this.$hibachi = this.getService('$hibachi');
-	        this.hibachiValidationService = this.getService('hibachiValidationService');
-	        this.utilityService = this.getService('utilityService');
-	        this.entityService = this.getService('entityService');
+	        _this.$hibachi = _this.getService('$hibachi');
+	        _this.hibachiValidationService = _this.getService('hibachiValidationService');
+	        _this.utilityService = _this.getService('utilityService');
+	        _this.entityService = _this.getService('entityService');
+	        return _this;
 	    }
 	    return BaseTransient;
 	}(baseobject_1.BaseObject));
@@ -5216,19 +5272,25 @@
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
 	var Address = (function (_super) {
 	    __extends(Address, _super);
 	    function Address($injector) {
-	        _super.call(this, $injector);
+	        return _super.call(this, $injector) || this;
 	    }
 	    return Address;
 	}(baseentity_1.BaseEntity));
@@ -5239,42 +5301,47 @@
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
 	var Cart = (function (_super) {
 	    __extends(Cart, _super);
 	    //deprecated
 	    function Cart($injector) {
-	        var _this = this;
-	        _super.call(this, $injector);
-	        this.requiresFulfillment = false;
-	        this.orderRequirementsList = "";
-	        this.orderPayments = [];
-	        this.orderItems = [];
-	        this.orderFulfillments = [];
-	        this.hasShippingAddressAndMethod = function () {
+	        var _this = _super.call(this, $injector) || this;
+	        _this.requiresFulfillment = false;
+	        _this.orderRequirementsList = "";
+	        _this.orderPayments = [];
+	        _this.orderItems = [];
+	        _this.orderFulfillments = [];
+	        _this.hasShippingAddressAndMethod = function () {
 	            if (_this.orderRequirementsList.indexOf('fulfillment') == -1) {
 	                return true;
 	            }
 	            return false;
 	        };
-	        this.orderRequiresAccount = function () {
+	        _this.orderRequiresAccount = function () {
 	            if (_this.orderRequirementsList.indexOf('account') != -1 || !_this.account.accountID) {
 	                return true;
 	            }
 	            return false;
 	        };
-	        this.orderRequiresFulfillment = function () {
+	        _this.orderRequiresFulfillment = function () {
 	            return _this.requiresFulfillment;
 	        };
-	        this.getOrderItemQuantitySum = function () {
+	        _this.getOrderItemQuantitySum = function () {
 	            var totalQuantity = 0;
 	            if (angular.isDefined(_this.orderItems)) {
 	                for (var orderItem in _this.orderItems) {
@@ -5284,6 +5351,7 @@
 	            }
 	            return totalQuantity;
 	        };
+	        return _this;
 	    }
 	    return Cart;
 	}(baseentity_1.BaseEntity));
@@ -5295,18 +5363,24 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var baseentity_1 = __webpack_require__(26);
 	var OrderItem = (function (_super) {
 	    __extends(OrderItem, _super);
 	    function OrderItem($injector) {
-	        _super.call(this, $injector);
+	        return _super.call(this, $injector) || this;
 	    }
 	    return OrderItem;
 	}(baseentity_1.BaseEntity));
@@ -5317,9 +5391,10 @@
 /* 31 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var OrderPayment = (function () {
 	    function OrderPayment() {
 	    }
@@ -5332,26 +5407,32 @@
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
 	var Sku = (function (_super) {
 	    __extends(Sku, _super);
 	    function Sku($injector) {
-	        var _this = this;
-	        _super.call(this, $injector);
-	        this.setNewQOH = function (value) {
+	        var _this = _super.call(this, $injector) || this;
+	        _this.setNewQOH = function (value) {
 	            _this.newQOH = value;
 	        };
-	        this.getNewQOH = function () {
+	        _this.getNewQOH = function () {
 	            return _this.newQOH;
 	        };
+	        return _this;
 	    }
 	    return Sku;
 	}(baseentity_1.BaseEntity));
@@ -5362,9 +5443,10 @@
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var order_addorderpayment_1 = __webpack_require__(34);
 	exports.Order_AddOrderPayment = order_addorderpayment_1.Order_AddOrderPayment;
 
@@ -5373,20 +5455,27 @@
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseprocess_1 = __webpack_require__(35);
 	var Order_AddOrderPayment = (function (_super) {
 	    __extends(Order_AddOrderPayment, _super);
 	    function Order_AddOrderPayment($injector) {
-	        _super.call(this, $injector);
-	        this.$injector = $injector;
+	        var _this = _super.call(this, $injector) || this;
+	        _this.$injector = $injector;
+	        return _this;
 	    }
 	    return Order_AddOrderPayment;
 	}(baseprocess_1.BaseProcess));
@@ -5397,19 +5486,25 @@
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var basetransient_1 = __webpack_require__(27);
 	var BaseProcess = (function (_super) {
 	    __extends(BaseProcess, _super);
 	    function BaseProcess($injector) {
-	        _super.call(this, $injector);
+	        return _super.call(this, $injector) || this;
 	    }
 	    return BaseProcess;
 	}(basetransient_1.BaseTransient));
@@ -5421,21 +5516,28 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
 	var CartService = (function (_super) {
 	    __extends(CartService, _super);
 	    //@ngInject
 	    //@ngInject
 	    function CartService($injector, $hibachi, utilityService) {
-	        _super.call(this, $injector, $hibachi, utilityService, 'Order', 'Cart');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'Order', 'Cart') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        return _this;
 	    }
 	    return CartService;
 	}(baseentityservice_1.BaseEntityService));
@@ -5446,9 +5548,10 @@
 /* 37 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var DraggableService = (function () {
 	    //ngInject
 	    function DraggableService() {
@@ -5475,11 +5578,17 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
@@ -5488,13 +5597,12 @@
 	    __extends(UtilityService, _super);
 	    //@ngInject
 	    function UtilityService($parse) {
-	        var _this = this;
-	        _super.call(this);
-	        this.$parse = $parse;
-	        this.structKeyExists = function (struct, key) {
+	        var _this = _super.call(this) || this;
+	        _this.$parse = $parse;
+	        _this.structKeyExists = function (struct, key) {
 	            return key in struct;
 	        };
-	        this.keyToAttributeString = function (key) {
+	        _this.keyToAttributeString = function (key) {
 	            var attributeString = "data-";
 	            for (var i = 0; i < key.length; i++) {
 	                if (key.charAt(i) == "_") {
@@ -5526,19 +5634,19 @@
 	            }
 	            return attributeString;
 	        };
-	        this.isUpperCase = function (character) {
+	        _this.isUpperCase = function (character) {
 	            return character == character.toUpperCase();
 	        };
-	        this.isLowerCase = function (character) {
+	        _this.isLowerCase = function (character) {
 	            return character == character.toLowerCase();
 	        };
-	        this.snakeToCapitalCase = function (s) {
+	        _this.snakeToCapitalCase = function (s) {
 	            return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function (m) { return m[1].toUpperCase(); }).slice(1);
 	        };
-	        this.camelCaseToSnakeCase = function (s) {
+	        _this.camelCaseToSnakeCase = function (s) {
 	            return s.replace(/([A-Z])/g, function ($1) { return "-" + $1.toLowerCase(); });
 	        };
-	        this.replaceStringWithProperties = function (stringItem, context) {
+	        _this.replaceStringWithProperties = function (stringItem, context) {
 	            var properties = _this.getPropertiesFromString(stringItem);
 	            if (!properties)
 	                return;
@@ -5553,11 +5661,11 @@
 	            return _this.replacePropertiesWithData(stringItem, data);
 	        };
 	        //used to do inheritance at runtime
-	        this.extend = function (ChildClass, ParentClass) {
+	        _this.extend = function (ChildClass, ParentClass) {
 	            ChildClass.prototype = new ParentClass();
 	            ChildClass.prototype.constructor = ChildClass;
 	        };
-	        this.getQueryParamsFromUrl = function (url) {
+	        _this.getQueryParamsFromUrl = function (url) {
 	            // This function is anonymous, is executed immediately and
 	            // the return value is assigned to QueryString!
 	            var query_string = {};
@@ -5573,10 +5681,12 @@
 	                                // If first entry with this name
 	                                if (typeof query_string[pair[0]] === "undefined") {
 	                                    query_string[pair[0]] = pair[1];
+	                                    // If second entry with this name
 	                                }
 	                                else if (typeof query_string[pair[0]] === "string") {
 	                                    var arr = [query_string[pair[0]], pair[1]];
 	                                    query_string[pair[0]] = arr;
+	                                    // If third or later entry with this name
 	                                }
 	                                else {
 	                                    query_string[pair[0]].push(pair[1]);
@@ -5588,10 +5698,10 @@
 	            }
 	            return query_string;
 	        };
-	        this.isAngularRoute = function () {
+	        _this.isAngularRoute = function () {
 	            return /[\?&]ng#!/.test(window.location.href);
 	        };
-	        this.ArrayFindByPropertyValue = function (arr, property, value) {
+	        _this.ArrayFindByPropertyValue = function (arr, property, value) {
 	            var currentIndex = -1;
 	            arr.forEach(function (arrItem, index) {
 	                if (arrItem[property] && arrItem[property] === value) {
@@ -5600,13 +5710,13 @@
 	            });
 	            return currentIndex;
 	        };
-	        this.listLast = function (list, delimiter) {
+	        _this.listLast = function (list, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
 	            var listArray = list.split(delimiter);
 	            return listArray[listArray.length - 1];
 	        };
-	        this.listRest = function (list, delimiter) {
+	        _this.listRest = function (list, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (delimiter === void 0) { delimiter = ","; }
 	            var listArray = list.split(delimiter);
@@ -5615,13 +5725,13 @@
 	            }
 	            return listArray.join(delimiter);
 	        };
-	        this.listFirst = function (list, delimiter) {
+	        _this.listFirst = function (list, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
 	            var listArray = list.split(delimiter);
 	            return listArray[0];
 	        };
-	        this.listPrepend = function (list, substring, delimiter) {
+	        _this.listPrepend = function (list, substring, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (substring === void 0) { substring = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
@@ -5633,7 +5743,7 @@
 	                return substring;
 	            }
 	        };
-	        this.listAppend = function (list, substring, delimiter) {
+	        _this.listAppend = function (list, substring, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (substring === void 0) { substring = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
@@ -5645,7 +5755,7 @@
 	                return substring;
 	            }
 	        };
-	        this.listAppendUnique = function (list, substring, delimiter) {
+	        _this.listAppendUnique = function (list, substring, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (substring === void 0) { substring = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
@@ -5663,7 +5773,7 @@
 	         * subStr: The string to remove.
 	         * returns the modified string.
 	         */
-	        this.listRemove = function (str, substring) {
+	        _this.listRemove = function (str, substring) {
 	            if (str.indexOf(substring) != -1) {
 	                //remove it cause its no longer selected.
 	                str = str.replace(substring, "");
@@ -5678,7 +5788,7 @@
 	            }
 	            return str;
 	        };
-	        this.formatValue = function (value, formatType, formatDetails, entityInstance) {
+	        _this.formatValue = function (value, formatType, formatDetails, entityInstance) {
 	            if (angular.isUndefined(formatDetails)) {
 	                formatDetails = {};
 	            }
@@ -5688,27 +5798,27 @@
 	            }
 	            return value;
 	        };
-	        this.format_currency = function (value, formatDetails, entityInstance) {
+	        _this.format_currency = function (value, formatDetails, entityInstance) {
 	            if (angular.isUndefined) {
 	                formatDetails = {};
 	            }
 	        };
-	        this.format_date = function (value, formatDetails, entityInstance) {
+	        _this.format_date = function (value, formatDetails, entityInstance) {
 	            if (angular.isUndefined) {
 	                formatDetails = {};
 	            }
 	        };
-	        this.format_datetime = function (value, formatDetails, entityInstance) {
+	        _this.format_datetime = function (value, formatDetails, entityInstance) {
 	            if (angular.isUndefined) {
 	                formatDetails = {};
 	            }
 	        };
-	        this.format_pixels = function (value, formatDetails, entityInstance) {
+	        _this.format_pixels = function (value, formatDetails, entityInstance) {
 	            if (angular.isUndefined) {
 	                formatDetails = {};
 	            }
 	        };
-	        this.format_yesno = function (value, formatDetails, entityInstance) {
+	        _this.format_yesno = function (value, formatDetails, entityInstance) {
 	            if (angular.isUndefined) {
 	                formatDetails = {};
 	            }
@@ -5719,18 +5829,18 @@
 	                return entityInstance.metaData.$$getRBKey("define.no");
 	            }
 	        };
-	        this.left = function (stringItem, count) {
+	        _this.left = function (stringItem, count) {
 	            return stringItem.substring(0, count);
 	        };
-	        this.right = function (stringItem, count) {
+	        _this.right = function (stringItem, count) {
 	            return stringItem.substring(stringItem.length - count, stringItem.length);
 	        };
 	        //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
-	        this.mid = function (stringItem, start, count) {
+	        _this.mid = function (stringItem, start, count) {
 	            var end = start + count;
 	            return stringItem.substring(start, end);
 	        };
-	        this.getPropertiesFromString = function (stringItem) {
+	        _this.getPropertiesFromString = function (stringItem) {
 	            if (!stringItem)
 	                return;
 	            var capture = false;
@@ -5752,20 +5862,20 @@
 	            }
 	            return results;
 	        };
-	        this.replacePropertiesWithData = function (stringItem, data) {
+	        _this.replacePropertiesWithData = function (stringItem, data) {
 	            var results = _this.getPropertiesFromString(stringItem);
 	            for (var i = 0; i < results.length; i++) {
 	                stringItem = stringItem.replace('${' + results[i] + '}', data[i]);
 	            }
 	            return stringItem;
 	        };
-	        this.replaceAll = function (stringItem, find, replace) {
+	        _this.replaceAll = function (stringItem, find, replace) {
 	            return stringItem.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
 	        };
-	        this.escapeRegExp = function (stringItem) {
+	        _this.escapeRegExp = function (stringItem) {
 	            return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 	        };
-	        this.createID = function (count) {
+	        _this.createID = function (count) {
 	            var count = count || 26;
 	            var text = "";
 	            var firstPossibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -5783,7 +5893,7 @@
 	            return text;
 	        };
 	        //list functions
-	        this.arrayToList = function (array, delimiter) {
+	        _this.arrayToList = function (array, delimiter) {
 	            if (delimiter != null) {
 	                return array.join(delimiter);
 	            }
@@ -5791,14 +5901,14 @@
 	                return array.join();
 	            }
 	        };
-	        this.getPropertyValue = function (object, propertyIdentifier) {
+	        _this.getPropertyValue = function (object, propertyIdentifier) {
 	            var keys = propertyIdentifier.split('.'), obj = object, keyPart;
 	            while ((keyPart = keys.shift()) && keys.length) {
 	                obj = obj[keyPart];
 	            }
 	            return obj[keyPart];
 	        };
-	        this.setPropertyValue = function (object, propertyIdentifier, value) {
+	        _this.setPropertyValue = function (object, propertyIdentifier, value) {
 	            var keys = propertyIdentifier.split('.'), obj = object, keyPart;
 	            while ((keyPart = keys.shift()) && keys.length) {
 	                if (!obj[keyPart]) {
@@ -5808,7 +5918,7 @@
 	            }
 	            obj[keyPart] = value;
 	        };
-	        this.nvpToObject = function (NVPData) {
+	        _this.nvpToObject = function (NVPData) {
 	            var object = {};
 	            for (var key in NVPData) {
 	                var value = NVPData[key];
@@ -5817,7 +5927,7 @@
 	            }
 	            return object;
 	        };
-	        this.isDescendantElement = function (parent, child) {
+	        _this.isDescendantElement = function (parent, child) {
 	            var node = child.parentNode;
 	            while (node != null) {
 	                if (node == parent) {
@@ -5828,7 +5938,7 @@
 	            return false;
 	        };
 	        //utility service toJson avoids circular references
-	        this.toJson = function (obj) {
+	        _this.toJson = function (obj) {
 	            var seen = [];
 	            return JSON.stringify(obj, function (key, val) {
 	                if (val != null && typeof val == "object") {
@@ -5840,7 +5950,7 @@
 	                return val;
 	            });
 	        };
-	        this.listFind = function (list, value, delimiter) {
+	        _this.listFind = function (list, value, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (value === void 0) { value = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
@@ -5854,14 +5964,14 @@
 	            }
 	            return stringFound;
 	        };
-	        this.listLen = function (list, delimiter) {
+	        _this.listLen = function (list, delimiter) {
 	            if (list === void 0) { list = ''; }
 	            if (delimiter === void 0) { delimiter = ','; }
 	            var splitString = list.split(delimiter);
 	            return splitString.length;
 	        };
 	        //This will enable you to sort by two separate keys in the order they are passed in
-	        this.arraySorter = function (array, keysToSortBy) {
+	        _this.arraySorter = function (array, keysToSortBy) {
 	            var arrayOfTypes = [], returnArray = [], firstKey = keysToSortBy[0];
 	            if (angular.isDefined(keysToSortBy[1])) {
 	                var secondKey = keysToSortBy[1];
@@ -5908,9 +6018,29 @@
 	            }
 	            return returnArray;
 	        };
-	        this.minutesOfDay = function (m) {
+	        _this.minutesOfDay = function (m) {
 	            return m.getMinutes() + m.getHours() * 60;
 	        };
+	        /**
+	         * Returns true if the current page is running in single page mode.
+	         */
+	        _this.isSinglePageMode = function () {
+	            var vars = {};
+	            var parts = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, function (m, key, value) {
+	                vars[key] = value;
+	            });
+	            if (vars.ng) {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /**
+	         * Returns true if the current page is running in multi-page mode.
+	         */
+	        _this.isMultiPageMode = function () {
+	            return !_this.isSinglePageMode();
+	        };
+	        return _this;
 	    }
 	    return UtilityService;
 	}(baseservice_1.BaseService));
@@ -5921,9 +6051,10 @@
 /* 39 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var BaseService = (function () {
 	    function BaseService() {
 	    }
@@ -5936,37 +6067,42 @@
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseservice_1 = __webpack_require__(39);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
 	    //@ngInject
 	    function SelectionService(observerService) {
-	        var _this = this;
-	        _super.call(this);
-	        this.observerService = observerService;
-	        this._selection = {};
+	        var _this = _super.call(this) || this;
+	        _this.observerService = observerService;
+	        _this._selection = {};
 	        /* add current selectionid to main selection object*/
-	        this.createSelections = function (selectionid) {
+	        _this.createSelections = function (selectionid) {
 	            _this._selection[selectionid] = {
 	                allSelected: false,
 	                ids: []
 	            };
 	        };
-	        this.radioSelection = function (selectionid, selection) {
+	        _this.radioSelection = function (selectionid, selection) {
 	            _this.createSelections(selectionid);
 	            _this._selection[selectionid].ids.push(selection);
 	            _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
 	        };
-	        this.addSelection = function (selectionid, selection) {
+	        _this.addSelection = function (selectionid, selection) {
 	            /*if allSelected flag is true addSelection will remove selection*/
 	            if (_this.isAllSelected(selectionid)) {
 	                var index = _this._selection[selectionid].ids.indexOf(selection);
@@ -5981,13 +6117,13 @@
 	            }
 	            console.info(_this._selection[selectionid]);
 	        };
-	        this.setSelection = function (selectionid, selections) {
+	        _this.setSelection = function (selectionid, selections) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                _this.createSelections(selectionid);
 	            }
 	            _this._selection[selectionid].ids = selections;
 	        };
-	        this.removeSelection = function (selectionid, selection) {
+	        _this.removeSelection = function (selectionid, selection) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                return;
 	            }
@@ -5997,6 +6133,7 @@
 	                    _this._selection[selectionid].ids.splice(index, 1);
 	                    _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'uncheck', selectionid: selectionid, selection: selection });
 	                }
+	                /*if allSelected flag is true removeSelection will add selection*/
 	            }
 	            else if (!_this.hasSelection(selectionid, selection)) {
 	                _this._selection[selectionid].ids.push(selection);
@@ -6004,30 +6141,30 @@
 	            }
 	            console.info(_this._selection[selectionid]);
 	        };
-	        this.hasSelection = function (selectionid, selection) {
+	        _this.hasSelection = function (selectionid, selection) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                return false;
 	            }
 	            return _this._selection[selectionid].ids.indexOf(selection) > -1;
 	        };
-	        this.getSelections = function (selectionid) {
+	        _this.getSelections = function (selectionid) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                _this.createSelections(selectionid);
 	            }
 	            return _this._selection[selectionid].ids;
 	        };
-	        this.getSelectionCount = function (selectionid) {
+	        _this.getSelectionCount = function (selectionid) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                _this.createSelections(selectionid);
 	            }
 	            return _this._selection[selectionid].ids.length;
 	        };
-	        this.clearSelection = function (selectionid) {
+	        _this.clearSelection = function (selectionid) {
 	            _this.createSelections(selectionid);
 	            _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'clear' });
 	            console.info(_this._selection[selectionid]);
 	        };
-	        this.selectAll = function (selectionid) {
+	        _this.selectAll = function (selectionid) {
 	            _this._selection[selectionid] = {
 	                allSelected: true,
 	                ids: []
@@ -6035,12 +6172,13 @@
 	            _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'selectAll' });
 	            console.info(_this._selection[selectionid]);
 	        };
-	        this.isAllSelected = function (selectionid) {
+	        _this.isAllSelected = function (selectionid) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                _this.createSelections(selectionid);
 	            }
 	            return _this._selection[selectionid].allSelected;
 	        };
+	        return _this;
 	    }
 	    return SelectionService;
 	}(baseservice_1.BaseService));
@@ -6051,6 +6189,7 @@
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
@@ -6061,18 +6200,23 @@
 	 * Manages all events inside the application
 	 *
 	 */
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseservice_1 = __webpack_require__(39);
 	var ObserverService = (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
 	    function ObserverService($timeout, historyService, utilityService) {
-	        var _this = this;
+	        var _this = 
 	        /**
 	         * @ngdoc property
 	         * @name ObserverService#observers
@@ -6080,10 +6224,10 @@
 	         * @description object to store all observers in
 	         * @returns {object} object
 	         */
-	        _super.call(this);
-	        this.$timeout = $timeout;
-	        this.historyService = historyService;
-	        this.utilityService = utilityService;
+	        _super.call(this) || this;
+	        _this.$timeout = $timeout;
+	        _this.historyService = historyService;
+	        _this.utilityService = utilityService;
 	        /* Declare methods */
 	        /**
 	         * @ngdoc method
@@ -6094,7 +6238,7 @@
 	         * @param {string} id unique id for the object that is listening i.e. namespace
 	         * @description adds events listeners
 	         */
-	        this.attach = function (callback, event, id) {
+	        _this.attach = function (callback, event, id) {
 	            if (!id) {
 	                id = _this.utilityService.createID();
 	            }
@@ -6114,7 +6258,7 @@
 	         * @param {string} id unique id for the object that is listening i.e. namespace
 	         * @description removes all events for a specific id from the observers object
 	         */
-	        this.detachById = function (id) {
+	        _this.detachById = function (id) {
 	            id = id.toLowerCase();
 	            for (var event in _this.observers) {
 	                _this.detachByEventAndId(event, id);
@@ -6127,7 +6271,7 @@
 	         * @param {string} event name of the event
 	         * @description removes removes all the event from the observer object
 	         */
-	        this.detachByEvent = function (event) {
+	        _this.detachByEvent = function (event) {
 	            event = event.toLowerCase();
 	            if (event in _this.observers) {
 	                delete _this.observers[event];
@@ -6141,7 +6285,7 @@
 	         * @param {string} id unique id for the object that is listening i.e. namespace
 	         * @description removes removes all callbacks for an id in a specific event from the observer object
 	         */
-	        this.detachByEventAndId = function (event, id) {
+	        _this.detachByEventAndId = function (event, id) {
 	            event = event.toLowerCase();
 	            id = id.toLowerCase();
 	            if (event in _this.observers) {
@@ -6158,7 +6302,7 @@
 	         * @param {string|object|Array|number} parameters pass whatever your listener is expecting
 	         * @description notifies all observers of a specific event
 	         */
-	        this.notify = function (event, parameters) {
+	        _this.notify = function (event, parameters) {
 	            console.warn(event);
 	            event = event.toLowerCase();
 	            return _this.$timeout(function () {
@@ -6179,7 +6323,7 @@
 	         * @param {string|object|Array|number} parameters pass whatever your listener is expecting
 	         * @description notifies observers of a specific event by id
 	         */
-	        this.notifyById = function (event, eventId, parameters) {
+	        _this.notifyById = function (event, eventId, parameters) {
 	            event = event.toLowerCase();
 	            eventId = eventId.toLowerCase();
 	            return _this.$timeout(function () {
@@ -6192,12 +6336,13 @@
 	                }
 	            });
 	        };
-	        this.notifyAndRecord = function (event, parameters) {
+	        _this.notifyAndRecord = function (event, parameters) {
 	            return _this.notify(event, parameters).then(function () {
 	                _this.historyService.recordHistory(event, parameters, true);
 	            });
 	        };
-	        this.observers = {};
+	        _this.observers = {};
+	        return _this;
 	    }
 	    return ObserverService;
 	}(baseservice_1.BaseService));
@@ -6208,27 +6353,33 @@
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
 	var OrderService = (function (_super) {
 	    __extends(OrderService, _super);
 	    //@ngInject
 	    function OrderService($injector, $hibachi, utilityService) {
-	        var _this = this;
-	        _super.call(this, $injector, $hibachi, utilityService, 'Order');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
-	        this.newOrder_AddOrderPayment = function () {
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'Order') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        _this.newOrder_AddOrderPayment = function () {
 	            return _this.newProcessObject('Order_AddOrderPayment');
 	        };
+	        return _this;
 	    }
 	    return OrderService;
 	}(baseentityservice_1.BaseEntityService));
@@ -6239,23 +6390,30 @@
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
 	var OrderPaymentService = (function (_super) {
 	    __extends(OrderPaymentService, _super);
 	    //@ngInject
 	    function OrderPaymentService($injector, $hibachi, utilityService) {
-	        _super.call(this, $injector, $hibachi, utilityService, 'OrderPayment');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'OrderPayment') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        return _this;
 	    }
 	    return OrderPaymentService;
 	}(baseentityservice_1.BaseEntityService));
@@ -6266,9 +6424,10 @@
 /* 44 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var Form = (function () {
 	    //@ngInject
 	    function Form(name, object, editing) {
@@ -6347,9 +6506,9 @@
 	        this._forms = {};
 	        this._pristinePropertyValue = {};
 	    }
-	    FormService.$inject = ['$log'];
 	    return FormService;
 	}());
+	FormService.$inject = ['$log'];
 	exports.FormService = FormService;
 
 
@@ -6358,6 +6517,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var FilterService = (function () {
 	    //ngInject
 	    function FilterService() {
@@ -6417,9 +6577,10 @@
 /* 46 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ExpandableService = (function () {
 	    //ngInject
 	    function ExpandableService() {
@@ -6462,6 +6623,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var MetaDataService = (function () {
@@ -6597,12 +6759,12 @@
 	        this._propertiesList = {};
 	        this._orderBy = $filter('orderBy');
 	    }
-	    MetaDataService.$inject = [
-	        '$filter',
-	        '$log'
-	    ];
 	    return MetaDataService;
 	}());
+	MetaDataService.$inject = [
+	    '$filter',
+	    '$log'
+	];
 	exports.MetaDataService = MetaDataService;
 
 
@@ -6610,9 +6772,10 @@
 /* 48 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var RbKeyService = (function () {
 	    //@ngInject
 	    function RbKeyService($http, $q, appConfig, resourceBundles) {
@@ -6719,6 +6882,9 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var TypeaheadService = (function () {
 	    //@ngInject
 	    function TypeaheadService($timeout, observerService) {
@@ -6954,9 +7120,10 @@
 /* 50 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	// interface ISlatwallRootScopeService extends ng.IRootScopeService{
 	//     loadedResourceBundle:boolean;
 	// 	loadingResourceBundle:boolean;
@@ -7419,6 +7586,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var HistoryService = (function () {
 	    //ngInject
 	    function HistoryService() {
@@ -7452,9 +7620,10 @@
 /* 52 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var LocalStorageService = (function () {
 	    //@ngInject
 	    function LocalStorageService($window) {
@@ -7500,9 +7669,10 @@
 /* 53 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var HibachiServiceDecorator = (function () {
 	    //@ngInject
 	    function HibachiServiceDecorator($delegate, $http, $timeout, $log, $rootScope, $location, $anchorScroll, $q, utilityService, formService, rbkeyService, appConfig, observerService, hibachiValidationService, attributeMetaData) {
@@ -7963,6 +8133,7 @@
 	                            return this.data[property.name];
 	                        };
 	                    }
+	                    //}
 	                }
 	            });
 	        });
@@ -8076,6 +8247,8 @@
 	                formatType = entityInstance.metaData.$$getPropertyFormatType(propertyName);
 	            }
 	            if (formatType === "custom") {
+	                //to be implemented
+	                //return entityInstance['$$get'+propertyName+Formatted]();
 	            }
 	            else if (formatType === "rbkey") {
 	                if (angular.isDefined(value)) {
@@ -8275,9 +8448,10 @@
 /* 54 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var HibachiScope = (function () {
 	    //@ngInject
 	    function HibachiScope(appConfig) {
@@ -8306,9 +8480,10 @@
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var adminrequest_1 = __webpack_require__(56);
 	var publicrequest_1 = __webpack_require__(58);
 	var RequestService = (function () {
@@ -8344,24 +8519,29 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var request_1 = __webpack_require__(57);
 	var AdminRequest = (function (_super) {
 	    __extends(AdminRequest, _super);
 	    function AdminRequest(url, data, method, headers, $injector, observerService) {
-	        var _this = this;
 	        if (method === void 0) { method = "post"; }
 	        if (headers === void 0) { headers = { 'Content-Type': "application/json" }; }
-	        _super.call(this, url, data, method, headers, $injector);
-	        this.observerService = observerService;
-	        this.observerService = observerService;
-	        this.promise.then(function (result) {
+	        var _this = _super.call(this, url, data, method, headers, $injector) || this;
+	        _this.observerService = observerService;
+	        _this.observerService = observerService;
+	        _this.promise.then(function (result) {
 	            //identify that it is an object save
 	            if (url.indexOf('api:main.post') != -1 && data.entityName) {
 	                var eventNameBase = data.entityName + data.context.charAt(0).toUpperCase() + data.context.slice(0);
@@ -8375,6 +8555,7 @@
 	            _this.messages = result.messages;
 	        }).catch(function (response) {
 	        });
+	        return _this;
 	    }
 	    return AdminRequest;
 	}(request_1.Request));
@@ -8386,22 +8567,27 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var basetransient_1 = __webpack_require__(27);
 	var Request = (function (_super) {
 	    __extends(Request, _super);
 	    function Request(url, data, method, headers, $injector) {
-	        var _this = this;
-	        _super.call(this, $injector);
-	        this.loading = true;
-	        this.errors = {};
-	        this.processResponse = function (response) {
+	        var _this = _super.call(this, $injector) || this;
+	        _this.loading = true;
+	        _this.errors = {};
+	        _this.processResponse = function (response) {
 	            _this.loading = false;
 	            if (response.errors) {
 	                _this.errors = response.errors;
@@ -8411,7 +8597,7 @@
 	            }
 	        };
 	        //returns hibachiAction value from url and data;
-	        this.getAction = function () {
+	        _this.getAction = function () {
 	            var config = _this.getAppConfig();
 	            //typically hibachiAction
 	            var actionName = config.action;
@@ -8426,20 +8612,20 @@
 	                return _this.extractPublicAction(_this.url);
 	            }
 	        };
-	        this.extractPublicAction = function (url) {
+	        _this.extractPublicAction = function (url) {
 	            //get in between api/scope and / or ? or end of word
 	            var regex = /\api\/scope\/(.*?)(?=\/|\?|$)/;
 	            var arr = regex.exec(url);
 	            return arr[1];
 	        };
-	        this.processSuccess = function (response) {
+	        _this.processSuccess = function (response) {
 	            _this.processResponse(response);
 	        };
-	        this.processError = function (response) {
+	        _this.processError = function (response) {
 	            _this.processResponse(response);
 	        };
 	        /** used to turn data into a correct format for the post */
-	        this.toFormParams = function (data) {
+	        _this.toFormParams = function (data) {
 	            if (data) {
 	                return $.param(data);
 	            }
@@ -8448,7 +8634,7 @@
 	            }
 	            //return data = this.serializeData(data) || "";
 	        };
-	        this.serializeData = function (data) {
+	        _this.serializeData = function (data) {
 	            // If this is not an object, defer to native stringification.
 	            if (!angular.isObject(data)) {
 	                return ((data == null) ? "" : data.toString());
@@ -8466,14 +8652,14 @@
 	            var source = buffer.join("&").replace(/%20/g, "+");
 	            return (source);
 	        };
-	        this.headers = headers;
-	        this.$q = this.getService('$q');
-	        this.$http = this.getService('$http');
-	        this.$window = this.getService('$window');
-	        this.url = url;
-	        this.data = data;
-	        this.method = method;
-	        this.utilityService = this.getService('utilityService');
+	        _this.headers = headers;
+	        _this.$q = _this.getService('$q');
+	        _this.$http = _this.getService('$http');
+	        _this.$window = _this.getService('$window');
+	        _this.url = url;
+	        _this.data = data;
+	        _this.method = method;
+	        _this.utilityService = _this.getService('utilityService');
 	        if (!method) {
 	            if (data == undefined) {
 	                method = "get";
@@ -8482,14 +8668,14 @@
 	                method = "post";
 	            }
 	        }
-	        var deferred = this.$q.defer();
+	        var deferred = _this.$q.defer();
 	        if (method == "post") {
-	            if (this.headers['Content-Type'] !== "application/json") {
-	                data = this.toFormParams(data);
+	            if (_this.headers['Content-Type'] !== "application/json") {
+	                data = _this.toFormParams(data);
 	            }
 	            //post
-	            var promise = this.$http({
-	                url: url, data: data, headers: this.headers, method: 'post'
+	            var promise = _this.$http({
+	                url: url, data: data, headers: _this.headers, method: 'post'
 	            })
 	                .success(function (result) {
 	                _this.processSuccess(result);
@@ -8498,11 +8684,11 @@
 	                _this.processError(response);
 	                deferred.reject(response);
 	            });
-	            this.promise = deferred.promise;
+	            _this.promise = deferred.promise;
 	        }
 	        else {
 	            //get
-	            this.$http({ url: url, method: 'get' })
+	            _this.$http({ url: url, method: 'get' })
 	                .success(function (result) {
 	                _this.processSuccess(result);
 	                deferred.resolve(result);
@@ -8510,9 +8696,9 @@
 	                _this.processError(reason);
 	                deferred.reject(reason);
 	            });
-	            this.promise = deferred.promise;
+	            _this.promise = deferred.promise;
 	        }
-	        return this;
+	        return _this;
 	    }
 	    return Request;
 	}(basetransient_1.BaseTransient));
@@ -8524,32 +8710,37 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var request_1 = __webpack_require__(57);
 	var PublicRequest = (function (_super) {
 	    __extends(PublicRequest, _super);
 	    function PublicRequest(url, data, method, headers, $injector, observerService) {
-	        var _this = this;
 	        if (headers === void 0) { headers = { 'Content-Type': "application/x-www-form-urlencoded" }; }
-	        _super.call(this, url, data, method, headers, $injector);
-	        this.observerService = observerService;
-	        this.failureActions = [];
-	        this.successfulActions = [];
-	        this.messages = [];
-	        this.hasSuccessfulAction = function () {
+	        var _this = _super.call(this, url, data, method, headers, $injector) || this;
+	        _this.observerService = observerService;
+	        _this.failureActions = [];
+	        _this.successfulActions = [];
+	        _this.messages = [];
+	        _this.hasSuccessfulAction = function () {
 	            return _this.successfulActions.length > 0;
 	        };
-	        this.hasFailureAction = function () {
+	        _this.hasFailureAction = function () {
 	            return _this.failureActions.length > 0;
 	        };
-	        this.observerService = observerService;
-	        this.promise.then(function (result) {
+	        _this.observerService = observerService;
+	        _this.promise.then(function (result) {
 	            _this.successfulActions = result.successfulActions;
 	            for (var i in _this.successfulActions) {
 	                var successfulAction = _this.successfulActions[i];
@@ -8563,7 +8754,7 @@
 	            _this.messages = result.messages;
 	        }).catch(function (response) {
 	        });
-	        return this;
+	        return _this;
 	    }
 	    return PublicRequest;
 	}(request_1.Request));
@@ -8575,6 +8766,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ScopeService = (function () {
 	    //ngInject
 	    function ScopeService() {
@@ -8609,23 +8801,30 @@
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
 	var SkuService = (function (_super) {
 	    __extends(SkuService, _super);
 	    //@ngInject
 	    function SkuService($injector, $hibachi, utilityService) {
-	        _super.call(this, $injector, $hibachi, utilityService, 'Sku');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'Sku') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        return _this;
 	    }
 	    return SkuService;
 	}(baseentityservice_1.BaseEntityService));
@@ -8636,9 +8835,10 @@
 /* 61 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var HibachiValidationService = (function () {
 	    //@ngInject
 	    function HibachiValidationService($log) {
@@ -8924,11 +9124,17 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var baseentityservice_1 = __webpack_require__(22);
@@ -8936,10 +9142,11 @@
 	    __extends(EntityService, _super);
 	    //@ngInject
 	    function EntityService($injector, $hibachi, utilityService) {
-	        _super.call(this, $injector, $hibachi, utilityService);
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
+	        var _this = _super.call(this, $injector, $hibachi, utilityService) || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        return _this;
 	    }
 	    return EntityService;
 	}(baseentityservice_1.BaseEntityService));
@@ -8951,6 +9158,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var GlobalSearchController = (function () {
@@ -9025,6 +9233,7 @@
 	                // If no keywords, then set everything back to their defaults
 	                if ($scope.keywords === '') {
 	                    $scope.hideResults();
+	                    // Otherwise performe the search
 	                }
 	                else {
 	                    $scope.showResults();
@@ -9097,9 +9306,10 @@
 /* 64 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var PercentageFilter = (function () {
 	    function PercentageFilter() {
 	    }
@@ -9122,9 +9332,10 @@
 /* 65 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var EntityRBKey = (function () {
 	    function EntityRBKey() {
 	    }
@@ -9147,9 +9358,10 @@
 /* 66 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWTrim = (function () {
 	    function SWTrim() {
 	    }
@@ -9188,6 +9400,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWUnique = (function () {
@@ -9236,6 +9449,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var DateFilter = (function () {
@@ -9244,7 +9458,7 @@
 	    //@ngInject
 	    DateFilter.Factory = function ($filter) {
 	        return function (date, dateString) {
-	            return $filter('date')(Date.parse(date), dateString);
+	            return $filter('date')(new Date(date), dateString);
 	        };
 	    };
 	    return DateFilter;
@@ -9256,9 +9470,10 @@
 /* 69 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWActionCallerController = (function () {
 	    //@ngInject
 	    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, $hibachi, rbkeyService, hibachiPathBuilder) {
@@ -9460,6 +9675,9 @@
 	                if (angular.isUndefined(_this.confirmtext) && _this.confirmtext.length) {
 	                    var confirmrbkey = _this.utilityService.replaceAll(_this.action, ':', '.') + '_confirm';
 	                    _this.confirmtext = _this.rbkeyService.getRBKey(confirmrbkey);
+	                    /*<cfif right(attributes.confirmtext, "8") eq "_missing">
+	                        <cfset attributes.confirmtext = replace(attributes.hibachiScope.rbKey("admin.define.delete_confirm"),'${itemEntityName}', attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+	                    </cfif>*/
 	                }
 	                _this.class += " alert-confirm";
 	                return _this.confirm;
@@ -9523,9 +9741,7 @@
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
-	        var directive = function (partialsPath, utiltiyService, $hibachi) {
-	            return new SWActionCaller(partialsPath, utiltiyService, $hibachi);
-	        };
+	        var directive = function (partialsPath, utiltiyService, $hibachi) { return new SWActionCaller(partialsPath, utiltiyService, $hibachi); };
 	        directive.$inject = [
 	            'partialsPath',
 	            'utilityService',
@@ -9542,9 +9758,10 @@
 /* 70 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWTypeaheadSearchController = (function () {
 	    // @ngInject
 	    function SWTypeaheadSearchController($scope, $q, $transclude, $hibachi, $timeout, utilityService, observerService, rbkeyService, collectionConfigService, typeaheadService) {
@@ -9837,9 +10054,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	    }
 	    SWTypeaheadSearch.Factory = function () {
-	        var directive = function ($compile, typeaheadService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWTypeaheadSearch($compile, typeaheadService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, typeaheadService, corePartialsPath, hibachiPathBuilder) { return new SWTypeaheadSearch($compile, typeaheadService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile", "typeaheadService", "corePartialsPath",
 	            'hibachiPathBuilder'];
 	        return directive;
@@ -9853,9 +10068,10 @@
 /* 71 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWTypeaheadInputFieldController = (function () {
 	    // @ngInject
 	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, typeaheadService) {
@@ -9868,7 +10084,7 @@
 	        this.filters = [];
 	        this.addFunction = function (value) {
 	            _this.typeaheadService.notifyObservers({
-	                name: _this.name || _this.fieldName,
+	                name: _this.fieldName || "",
 	                data: value[_this.propertyToSave] || ""
 	            });
 	            _this.modelValue = value[_this.propertyToSave];
@@ -9931,9 +10147,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
 	    }
 	    SWTypeaheadInputField.Factory = function () {
-	        var directive = function (corePartialsPath, hibachiPathBuilder) {
-	            return new SWTypeaheadInputField(corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWTypeaheadInputField(corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["corePartialsPath", 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -9946,9 +10160,10 @@
 /* 72 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWTypeaheadMultiselectController = (function () {
 	    // @ngInject
 	    function SWTypeaheadMultiselectController($scope, $transclude, $hibachi, listingService, typeaheadService, utilityService, collectionConfigService) {
@@ -10074,9 +10289,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadmultiselect.html";
 	    }
 	    SWTypeaheadMultiselect.Factory = function () {
-	        var directive = function ($compile, scopeService, typeaheadService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWTypeaheadMultiselect($compile, scopeService, typeaheadService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, scopeService, typeaheadService, corePartialsPath, hibachiPathBuilder) { return new SWTypeaheadMultiselect($compile, scopeService, typeaheadService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile", "scopeService", "typeaheadService", "corePartialsPath", 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -10089,9 +10302,10 @@
 /* 73 */
 /***/ (function(module, exports) {
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWTypeaheadSearchLineItemController = (function () {
 	    function SWTypeaheadSearchLineItemController() {
 	    }
@@ -10121,9 +10335,7 @@
 	        };
 	    }
 	    SWTypeaheadSearchLineItem.Factory = function () {
-	        var directive = function ($compile) {
-	            return new SWTypeaheadSearchLineItem($compile);
-	        };
+	        var directive = function ($compile) { return new SWTypeaheadSearchLineItem($compile); };
 	        directive.$inject = [
 	            '$compile'
 	        ];
@@ -10138,9 +10350,10 @@
 /* 74 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWTypeaheadRemoveSelectionController = (function () {
 	    function SWTypeaheadRemoveSelectionController($scope, listingService, scopeService, typeaheadService, utilityService) {
 	        var _this = this;
@@ -10199,9 +10412,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadremoveselection.html";
 	    }
 	    SWTypeaheadRemoveSelection.Factory = function () {
-	        var directive = function (scopeService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWTypeaheadRemoveSelection(scopeService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (scopeService, corePartialsPath, hibachiPathBuilder) { return new SWTypeaheadRemoveSelection(scopeService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["scopeService", "corePartialsPath", 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -10214,8 +10425,9 @@
 /* 75 */
 /***/ (function(module, exports) {
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWCollectionConfigController = (function () {
 	    //@ngInject
 	    function SWCollectionConfigController($transclude, $q, collectionConfigService) {
@@ -10353,6 +10565,7 @@
 	                        parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
 	                    }
 	                    else {
+	                        //throw("SWCollectionConfig cannot resolve rule");
 	                    }
 	                }
 	            }, function (reason) {
@@ -10361,9 +10574,7 @@
 	        };
 	    }
 	    SWCollectionConfig.Factory = function () {
-	        var directive = function (collectionConfigService, listingService, scopeService, $q) {
-	            return new SWCollectionConfig(collectionConfigService, listingService, scopeService, $q);
-	        };
+	        var directive = function (collectionConfigService, listingService, scopeService, $q) { return new SWCollectionConfig(collectionConfigService, listingService, scopeService, $q); };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'listingService',
@@ -10381,8 +10592,9 @@
 /* 76 */
 /***/ (function(module, exports) {
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWCollectionFilterController = (function () {
 	    function SWCollectionFilterController() {
 	    }
@@ -10426,9 +10638,7 @@
 	        };
 	    }
 	    SWCollectionFilter.Factory = function () {
-	        var directive = function (scopeService, utilityService) {
-	            return new SWCollectionFilter(scopeService, utilityService);
-	        };
+	        var directive = function (scopeService, utilityService) { return new SWCollectionFilter(scopeService, utilityService); };
 	        directive.$inject = [
 	            'scopeService',
 	            'utilityService'
@@ -10444,8 +10654,9 @@
 /* 77 */
 /***/ (function(module, exports) {
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWCollectionOrderByController = (function () {
 	    function SWCollectionOrderByController() {
 	    }
@@ -10478,9 +10689,7 @@
 	        };
 	    }
 	    SWCollectionOrderBy.Factory = function () {
-	        var directive = function (scopeService) {
-	            return new SWCollectionOrderBy(scopeService);
-	        };
+	        var directive = function (scopeService) { return new SWCollectionOrderBy(scopeService); };
 	        directive.$inject = [
 	            'scopeService'
 	        ];
@@ -10495,8 +10704,9 @@
 /* 78 */
 /***/ (function(module, exports) {
 
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWCollectionColumnController = (function () {
 	    function SWCollectionColumnController() {
 	    }
@@ -10570,9 +10780,7 @@
 	        };
 	    }
 	    SWCollectionColumn.Factory = function () {
-	        var directive = function (scopeService, utilityService) {
-	            return new SWCollectionColumn(scopeService, utilityService);
-	        };
+	        var directive = function (scopeService, utilityService) { return new SWCollectionColumn(scopeService, utilityService); };
 	        directive.$inject = [
 	            'scopeService',
 	            'utilityService'
@@ -10588,9 +10796,10 @@
 /* 79 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWActionCallerDropdownController = (function () {
 	    function SWActionCallerDropdownController() {
 	        this.title = this.title || '';
@@ -10638,6 +10847,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWColumnSorter = (function () {
@@ -10665,9 +10875,7 @@
 	        };
 	    }
 	    SWColumnSorter.Factory = function () {
-	        var directive = function ($log, observerService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWColumnSorter($log, observerService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, observerService, corePartialsPath, hibachiPathBuilder) { return new SWColumnSorter($log, observerService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'observerService',
@@ -10685,6 +10893,7 @@
 /* 81 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
@@ -10718,7 +10927,7 @@
 	 *   Note: Your callback function on-confirm should return true;
 	 *<------------------------------------------------------------------------------------------------------------------------------------->
 	 */
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWConfirm = (function () {
 	    //@ngInject
 	    function SWConfirm($hibachi, $log, $compile, $modal, partialsPath) {
@@ -10823,9 +11032,7 @@
 	        };
 	    }
 	    SWConfirm.Factory = function () {
-	        var directive = function ($hibachi, $log, $compile, $modal, partialsPath) {
-	            return new SWConfirm($hibachi, $log, $compile, $modal, partialsPath);
-	        };
+	        var directive = function ($hibachi, $log, $compile, $modal, partialsPath) { return new SWConfirm($hibachi, $log, $compile, $modal, partialsPath); };
 	        directive.$inject = ['$hibachi', '$log', '$compile', '$modal', 'partialsPath'];
 	        return directive;
 	    };
@@ -10838,9 +11045,10 @@
 /* 82 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWDraggableController = (function () {
 	    //@ngInject
 	    function SWDraggableController() {
@@ -10912,9 +11120,7 @@
 	        };
 	    }
 	    SWDraggable.Factory = function () {
-	        var directive = function (corePartialsPath, utilityService, draggableService, hibachiPathBuilder) {
-	            return new SWDraggable(corePartialsPath, utilityService, draggableService, hibachiPathBuilder);
-	        };
+	        var directive = function (corePartialsPath, utilityService, draggableService, hibachiPathBuilder) { return new SWDraggable(corePartialsPath, utilityService, draggableService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'corePartialsPath',
 	            'utilityService',
@@ -10932,9 +11138,10 @@
 /* 83 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWDraggableContainerController = (function () {
 	    //@ngInject
 	    function SWDraggableContainerController(draggableService) {
@@ -11040,9 +11247,7 @@
 	        };
 	    }
 	    SWDraggableContainer.Factory = function () {
-	        var directive = function ($timeout, corePartialsPath, utilityService, listingService, observerService, draggableService, hibachiPathBuilder) {
-	            return new SWDraggableContainer($timeout, corePartialsPath, utilityService, listingService, observerService, draggableService, hibachiPathBuilder);
-	        };
+	        var directive = function ($timeout, corePartialsPath, utilityService, listingService, observerService, draggableService, hibachiPathBuilder) { return new SWDraggableContainer($timeout, corePartialsPath, utilityService, listingService, observerService, draggableService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$timeout',
 	            'corePartialsPath',
@@ -11063,9 +11268,10 @@
 /* 84 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWEntityActionBarController = (function () {
 	    //@ngInject
 	    function SWEntityActionBarController(rbkeyService) {
@@ -11120,9 +11326,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'entityactionbar.html';
 	    }
 	    SWEntityActionBar.Factory = function () {
-	        var directive = function (corePartialsPath, hibachiPathBuilder) {
-	            return new SWEntityActionBar(corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWEntityActionBar(corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -11137,6 +11341,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEntityActionBarButtonGroupController = (function () {
@@ -11159,9 +11364,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'entityactionbarbuttongroup.html';
 	    }
 	    SWEntityActionBarButtonGroup.Factory = function () {
-	        var directive = function (corePartialsPath, hibachiPathBuilder) {
-	            return new SWEntityActionBarButtonGroup(corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWEntityActionBarButtonGroup(corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['corePartialsPath',
 	            'hibachiPathBuilder'];
 	        return directive;
@@ -11175,9 +11378,10 @@
 /* 86 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWExpandableRecordController = (function () {
 	    //@ngInject
 	    function SWExpandableRecordController($timeout, $hibachi, utilityService, collectionConfigService, expandableService, listingService, observerService) {
@@ -11360,9 +11564,7 @@
 	        this.hibachiPathBuilder = hibachiPathBuilder;
 	    }
 	    SWExpandableRecord.Factory = function () {
-	        var directive = function ($compile, $templateRequest, $timeout, corePartialsPath, utilityService, expandableService, hibachiPathBuilder) {
-	            return new SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, expandableService, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, $templateRequest, $timeout, corePartialsPath, utilityService, expandableService, hibachiPathBuilder) { return new SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, expandableService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$compile',
 	            '$templateRequest',
@@ -11383,9 +11585,10 @@
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var md5 = __webpack_require__(88);
 	var SWGravatarController = (function () {
 	    // @ngInject
@@ -11414,10 +11617,10 @@
 	        directive.$inject = [];
 	        return directive;
 	    };
-	    SWGravatar.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-	        'hibachiPathBuilder'];
 	    return SWGravatar;
 	}());
+	SWGravatar.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
+	    'hibachiPathBuilder'];
 	exports.SWGravatar = SWGravatar;
 
 
@@ -11575,8 +11778,8 @@
 	  md5._digestsize = 16;
 
 	  module.exports = function (message, options) {
-	    if(typeof message == 'undefined')
-	      return;
+	    if (message === undefined || message === null)
+	      throw new Error('Illegal argument ' + message);
 
 	    var digestbytes = crypt.wordsToBytes(md5(message, options));
 	    return options && options.asBytes ? digestbytes :
@@ -11732,22 +11935,26 @@
 /* 91 */
 /***/ (function(module, exports) {
 
-	/**
-	 * Determine if an object is Buffer
+	/*!
+	 * Determine if an object is a Buffer
 	 *
-	 * Author:   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
-	 * License:  MIT
-	 *
-	 * `npm install is-buffer`
+	 * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+	 * @license  MIT
 	 */
 
+	// The _isBuffer check is for Safari 5-7 support, because it's missing
+	// Object.prototype.constructor. Remove this eventually
 	module.exports = function (obj) {
-	  return !!(obj != null &&
-	    (obj._isBuffer || // For Safari 5-7 (missing Object.prototype.constructor)
-	      (obj.constructor &&
-	      typeof obj.constructor.isBuffer === 'function' &&
-	      obj.constructor.isBuffer(obj))
-	    ))
+	  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+	}
+
+	function isBuffer (obj) {
+	  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+	}
+
+	// For Node v0.10 support. Remove this eventually.
+	function isSlowBuffer (obj) {
+	  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 	}
 
 
@@ -11755,9 +11962,10 @@
 /* 92 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWLoginController = (function () {
 	    //@ngInject
 	    function SWLoginController($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiScope) {
@@ -11808,9 +12016,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath + '/login.html');
 	    }
 	    SWLogin.Factory = function () {
-	        var directive = function ($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
-	            return new SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder);
-	        };
+	        var directive = function ($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) { return new SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$route',
 	            '$log',
@@ -11832,6 +12038,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWModalLauncherController = (function () {
@@ -11923,9 +12130,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modallauncher.html";
 	    }
 	    SWModalLauncher.Factory = function () {
-	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) {
-	            return new SWModalLauncher($compile, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) { return new SWModalLauncher($compile, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile", "corePartialsPath",
 	            'hibachiPathBuilder'];
 	        return directive;
@@ -11940,6 +12145,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWModalWindowController = (function () {
@@ -11986,9 +12192,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modalwindow.html";
 	    }
 	    SWModalWindow.Factory = function () {
-	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) {
-	            return new SWModalWindow($compile, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) { return new SWModalWindow($compile, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile", "corePartialsPath",
 	            'hibachiPathBuilder'];
 	        return directive;
@@ -12002,9 +12206,10 @@
 /* 95 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWNumbersOnly = (function () {
 	    function SWNumbersOnly() {
 	        this.restrict = "A";
@@ -12060,6 +12265,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWLoading = (function () {
@@ -12076,9 +12282,7 @@
 	        };
 	    }
 	    SWLoading.Factory = function () {
-	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) {
-	            return new SWLoading($log, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) { return new SWLoading($log, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'corePartialsPath',
@@ -12096,6 +12300,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWScrollTrigger = (function () {
@@ -12168,9 +12373,7 @@
 	        };
 	    }
 	    SWScrollTrigger.Factory = function () {
-	        var directive = function ($rootScope, $window, $timeout) {
-	            return new SWScrollTrigger($rootScope, $window, $timeout);
-	        };
+	        var directive = function ($rootScope, $window, $timeout) { return new SWScrollTrigger($rootScope, $window, $timeout); };
 	        directive.$inject = [
 	            '$rootScope',
 	            '$window',
@@ -12188,6 +12391,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWTabGroupController = (function () {
@@ -12259,9 +12463,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabgroup.html";
 	    }
 	    SWTabGroup.Factory = function () {
-	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) {
-	            return new SWTabGroup($compile, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, corePartialsPath, hibachiPathBuilder) { return new SWTabGroup($compile, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile", "corePartialsPath",
 	            'hibachiPathBuilder'];
 	        return directive;
@@ -12276,6 +12478,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWTabContentController = (function () {
@@ -12344,9 +12547,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tabcontent.html";
 	    }
 	    SWTabContent.Factory = function () {
-	        var directive = function ($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) { return new SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile",
 	            "scopeService",
 	            "observerService",
@@ -12364,6 +12565,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWTooltipController = (function () {
@@ -12446,6 +12648,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWRbKey = (function () {
@@ -12467,9 +12670,7 @@
 	        };
 	    }
 	    SWRbKey.Factory = function () {
-	        var directive = function ($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) {
-	            return new SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService);
-	        };
+	        var directive = function ($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) { return new SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'observerService',
@@ -12490,6 +12691,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOptions = (function () {
@@ -12539,9 +12741,7 @@
 	        };
 	    }
 	    SWOptions.Factory = function () {
-	        var directive = function ($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) { return new SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -12560,9 +12760,10 @@
 /* 103 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWSelectionController = (function () {
 	    //@ngInject
 	    function SWSelectionController(selectionService, observerService) {
@@ -12635,15 +12836,13 @@
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "selection.html";
 	    }
 	    SWSelection.Factory = function () {
-	        var directive = function (corePartialsPath, hibachiPathBuilder) {
-	            return new SWSelection(corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWSelection(corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
-	    SWSelection.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	    return SWSelection;
 	}());
+	SWSelection.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	exports.SWSelection = SWSelection;
 
 
@@ -12652,6 +12851,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWClickOutside = (function () {
@@ -12685,9 +12885,7 @@
 	        this.utilityService = utilityService;
 	    }
 	    SWClickOutside.Factory = function () {
-	        var directive = function ($document, $timeout, utilityService) {
-	            return new SWClickOutside($document, $timeout, utilityService);
-	        };
+	        var directive = function ($document, $timeout, utilityService) { return new SWClickOutside($document, $timeout, utilityService); };
 	        directive.$inject = [
 	            '$document', '$timeout', 'utilityService'
 	        ];
@@ -12703,6 +12901,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDirective = (function () {
@@ -12743,9 +12942,7 @@
 	        };
 	    }
 	    SWDirective.Factory = function () {
-	        var directive = function ($compile, utilityService) {
-	            return new SWDirective($compile, utilityService);
-	        };
+	        var directive = function ($compile, utilityService) { return new SWDirective($compile, utilityService); };
 	        directive.$inject = [
 	            '$compile',
 	            'utilityService'
@@ -12762,6 +12959,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWExportAction = (function () {
@@ -12776,9 +12974,7 @@
 	        };
 	    }
 	    SWExportAction.Factory = function () {
-	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) {
-	            return new SWExportAction($log, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) { return new SWExportAction($log, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'corePartialsPath',
@@ -12796,6 +12992,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWHref = (function () {
@@ -12814,9 +13011,7 @@
 	        };
 	    }
 	    SWHref.Factory = function () {
-	        var directive = function () {
-	            return new SWHref();
-	        };
+	        var directive = function () { return new SWHref(); };
 	        directive.$inject = [];
 	        return directive;
 	    };
@@ -12829,9 +13024,10 @@
 /* 108 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWProcessCallerController = (function () {
 	    //@ngInject
 	    function SWProcessCallerController(rbkeyService, $templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, hibachiPathBuilder) {
@@ -12899,17 +13095,15 @@
 	        this.utilityService = utilityService;
 	    }
 	    SWProcessCaller.Factory = function () {
-	        var directive = function (corePartialsPath, utilityService) {
-	            return new SWProcessCaller(corePartialsPath, utilityService);
-	        };
+	        var directive = function (corePartialsPath, utilityService) { return new SWProcessCaller(corePartialsPath, utilityService); };
 	        directive.$inject = [
 	            'corePartialsPath', 'utilityService'
 	        ];
 	        return directive;
 	    };
-	    SWProcessCaller.$inject = ['corePartialsPath', 'utilityService'];
 	    return SWProcessCaller;
 	}());
+	SWProcessCaller.$inject = ['corePartialsPath', 'utilityService'];
 	exports.SWProcessCaller = SWProcessCaller;
 
 
@@ -12917,9 +13111,10 @@
 /* 109 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWSortable = (function () {
 	    function SWSortable(expression, compiledElement) {
 	        return function (linkElement) {
@@ -12972,9 +13167,10 @@
 /* 110 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWOrderByControlsController = (function () {
 	    // @ngInject
 	    function SWOrderByControlsController(listingService, observerService, utilityService) {
@@ -13106,9 +13302,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "orderbycontrols.html";
 	    }
 	    SWOrderByControls.Factory = function () {
-	        var directive = function ($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) {
-	            return new SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) { return new SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["$compile", "scopeService", "listingService", "corePartialsPath",
 	            "hibachiPathBuilder"];
 	        return directive;
@@ -13123,6 +13317,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//controllers
@@ -13140,6 +13335,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var AlertController = (function () {
@@ -13157,9 +13353,10 @@
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//import Alert = require('../model/alert');
 	var alert_1 = __webpack_require__(114);
 	var AlertService = (function () {
@@ -13218,11 +13415,11 @@
 	        };
 	        this.alerts = [];
 	    }
-	    AlertService.$inject = [
-	        '$timeout'
-	    ];
 	    return AlertService;
 	}());
+	AlertService.$inject = [
+	    '$timeout'
+	];
 	exports.AlertService = AlertService;
 
 
@@ -13230,9 +13427,10 @@
 /* 114 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//model
 	var Alert = (function () {
 	    function Alert(msg, type, fade, dismissable) {
@@ -13252,9 +13450,10 @@
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//services
 	var dialogservice_1 = __webpack_require__(116);
 	//controllers
@@ -13272,6 +13471,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var DialogService = (function () {
 	    function DialogService(hibachiPathBuilder) {
 	        var _this = this;
@@ -13301,11 +13501,11 @@
 	        this._pageDialogs = [];
 	        this.hibachiPathBuilder = hibachiPathBuilder;
 	    }
-	    DialogService.$inject = [
-	        'hibachiPathBuilder'
-	    ];
 	    return DialogService;
 	}());
+	DialogService.$inject = [
+	    'hibachiPathBuilder'
+	];
 	exports.DialogService = DialogService;
 
 
@@ -13314,6 +13514,7 @@
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var PageDialogController = (function () {
@@ -13338,26 +13539,27 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(119);
-	var workflow_module_1 = __webpack_require__(205);
-	var entity_module_1 = __webpack_require__(164);
-	var content_module_1 = __webpack_require__(221);
-	var formbuilder_module_1 = __webpack_require__(228);
-	var giftcard_module_1 = __webpack_require__(230);
-	var optiongroup_module_1 = __webpack_require__(241);
-	var orderitem_module_1 = __webpack_require__(244);
-	var orderfulfillment_module_1 = __webpack_require__(251);
-	var product_module_1 = __webpack_require__(254);
-	var productbundle_module_1 = __webpack_require__(257);
-	var sku_module_1 = __webpack_require__(264);
+	var workflow_module_1 = __webpack_require__(212);
+	var entity_module_1 = __webpack_require__(171);
+	var content_module_1 = __webpack_require__(228);
+	var formbuilder_module_1 = __webpack_require__(235);
+	var giftcard_module_1 = __webpack_require__(237);
+	var optiongroup_module_1 = __webpack_require__(248);
+	var orderitem_module_1 = __webpack_require__(251);
+	var orderfulfillment_module_1 = __webpack_require__(258);
+	var product_module_1 = __webpack_require__(261);
+	var productbundle_module_1 = __webpack_require__(264);
+	var sku_module_1 = __webpack_require__(271);
 	//constant
-	var slatwallpathbuilder_1 = __webpack_require__(279);
+	var slatwallpathbuilder_1 = __webpack_require__(286);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(280);
+	var swcurrencyformatter_1 = __webpack_require__(287);
 	//filters
-	var swcurrency_1 = __webpack_require__(281);
+	var swcurrency_1 = __webpack_require__(288);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
@@ -13439,6 +13641,7 @@
 	                            $scope.totalAmountToApply += parseFloat(obj.amount);
 	                        else if (obj.paymentType == paymentType.aptCredit)
 	                            $scope.totalAmountToApply -= parseFloat(obj.amount);
+	                        //Credit condition for subtotal
 	                    }
 	                    else if ($scope.paymentType == paymentType.aptCredit) {
 	                        if (obj.paymentType == paymentType.aptCharge)
@@ -13565,22 +13768,25 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(111);
-	var collection_module_1 = __webpack_require__(120);
-	var listing_module_1 = __webpack_require__(148);
+	var card_module_1 = __webpack_require__(120);
+	var collection_module_1 = __webpack_require__(127);
+	var listing_module_1 = __webpack_require__(155);
 	var dialog_module_1 = __webpack_require__(115);
-	var entity_module_1 = __webpack_require__(164);
-	var pagination_module_1 = __webpack_require__(170);
-	var form_module_1 = __webpack_require__(173);
-	var validation_module_1 = __webpack_require__(188);
-	var workflow_module_1 = __webpack_require__(205);
+	var entity_module_1 = __webpack_require__(171);
+	var pagination_module_1 = __webpack_require__(177);
+	var form_module_1 = __webpack_require__(180);
+	var validation_module_1 = __webpack_require__(195);
+	var workflow_module_1 = __webpack_require__(212);
 	//directives
-	var swsaveandfinish_1 = __webpack_require__(220);
+	var swsaveandfinish_1 = __webpack_require__(227);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
+	    card_module_1.cardmodule.name,
 	    collection_module_1.collectionmodule.name,
 	    entity_module_1.entitymodule.name,
 	    dialog_module_1.dialogmodule.name,
@@ -13609,40 +13815,324 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/hibachiTypescript.d.ts" />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	//modules
+	//services
+	//components
+	var swcardview_1 = __webpack_require__(121);
+	var swcardheader_1 = __webpack_require__(122);
+	var swcardbody_1 = __webpack_require__(123);
+	var swcardicon_1 = __webpack_require__(124);
+	var swcardprogressbar_1 = __webpack_require__(125);
+	var swcardlistitem_1 = __webpack_require__(126);
+	var cardmodule = angular.module('hibachi.card', [])
+	    .run([function () {
+	    }])
+	    .component('swCardView', swcardview_1.SWCardView.Factory())
+	    .component('swCardHeader', swcardheader_1.SWCardHeader.Factory())
+	    .component('swCardBody', swcardbody_1.SWCardBody.Factory())
+	    .component('swCardIcon', swcardicon_1.SWCardIcon.Factory())
+	    .component('swCardProgressBar', swcardprogressbar_1.SWCardProgressBar.Factory())
+	    .component('swCardListItem', swcardlistitem_1.SWCardListItem.Factory());
+	exports.cardmodule = cardmodule;
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var SWCardViewController = (function () {
+	    //@ngInject
+	    function SWCardViewController($log) {
+	        this.$log = $log;
+	        this.cardSize = 'md';
+	    }
+	    return SWCardViewController;
+	}());
+	exports.SWCardViewController = SWCardViewController;
+	var SWCardView = (function () {
+	    function SWCardView() {
+	        this.controller = SWCardViewController;
+	        this.controllerAs = 'SwCardViewController';
+	        this.bindings = {
+	            cardTitle: "@?",
+	            cardBody: "@?",
+	            cardSize: "@?" //sm, md, lg
+	        };
+	        this.transclude = {
+	            cardIcon: '?swCardIcon',
+	            cardHeader: '?swCardHeader',
+	            cardBody: '?swCardBody',
+	            listItem: '?swCardListItem',
+	            progressBar: '?swCardProgressBar'
+	        };
+	        this.template = "\n                \n                <div class=\"s-{{(SwCardViewController.cardSize)}}-content-block{{(SwCardViewController.cardSize=='md'?'-inner':'')}}\" style=\"margin-bottom:7px\">\n                    <!--- ICON --->\n                    <ng-transclude ng-transclude-slot=\"cardIcon\"></ng-transclude>\n                    \n                    <!-- TITLE -->\n                    <!-- This when using attributes -->\n                    <div class=\"s-title\" ng-bind=\"SwCardViewController.cardTitle\" ng-if=\"SwCardViewController.cardTitle\"></div>\n                    \n                    <!-- This when transcluding the content in -->\n                    <ng-transclude class=\"s-title\" ng-transclude-slot=\"cardHeader\"></ng-transclude>\n                    \n                    <!--- CONTENT --->\n                    <!-- This when using attributes -->\n                    <div class=\"s-body\" ng-bind=\"SwCardViewController.cardBody\" ng-if=\"SwCardViewController.cardBody\"></div>\n                    <!-- This when transcluding the content in -->\n                    <ng-transclude ng-transclude-slot=\"cardBody\"></ng-transclude>\n\n                    <!--- LIST ITEMS --->\n                    <ul class=\"list-unstyled\">\n                        <ng-transclude ng-transclude-slot=\"listItem\"></ng-transclude>\n                    </ul>\n\n                    <!--- PROGRESS --->\n                    <!-- This when transcluding the content in -->\n                    <ng-transclude ng-transclude-slot=\"progressBar\"></ng-transclude>\n\n\n                </div>\n           ";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardView.Factory = function () {
+	        return new SWCardView();
+	    };
+	    return SWCardView;
+	}());
+	exports.SWCardView = SWCardView;
+
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var SWCardHeaderController = (function () {
+	    //@ngInject
+	    function SWCardHeaderController($log) {
+	        this.$log = $log;
+	        this.$onInit = function () {
+	        };
+	    }
+	    return SWCardHeaderController;
+	}());
+	exports.SWCardHeaderController = SWCardHeaderController;
+	var SWCardHeader = (function () {
+	    function SWCardHeader() {
+	        this.controller = SWCardHeaderController;
+	        this.controllerAs = 'SwCardHeaderController';
+	        this.bindings = {
+	            style: '@?'
+	        };
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n                <div class=\"s-title\" style=\"{{(SwCardHeaderController.style||'border-bottom:2px solid #eee')}}\" ng-transclude></div>";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardHeader.Factory = function () {
+	        return new SWCardHeader();
+	    };
+	    return SWCardHeader;
+	}());
+	exports.SWCardHeader = SWCardHeader;
+
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var SWCardBodyController = (function () {
+	    //@ngInject
+	    function SWCardBodyController($log) {
+	        this.$log = $log;
+	        this.$onInit = function () {
+	        };
+	    }
+	    return SWCardBodyController;
+	}());
+	exports.SWCardBodyController = SWCardBodyController;
+	var SWCardBody = (function () {
+	    function SWCardBody() {
+	        this.controller = SWCardBodyController;
+	        this.controllerAs = 'SwCardBodyController';
+	        this.bindings = {};
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n                    <div class=\"s-body\" ng-transclude></div>\n            ";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardBody.Factory = function () {
+	        return new SWCardBody();
+	    };
+	    return SWCardBody;
+	}());
+	exports.SWCardBody = SWCardBody;
+
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var SWCardIconController = (function () {
+	    //@ngInject
+	    function SWCardIconController($log) {
+	        this.$log = $log;
+	        this.iconMultiplier = "1x";
+	        this.$onInit = function () {
+	        };
+	    }
+	    return SWCardIconController;
+	}());
+	exports.SWCardIconController = SWCardIconController;
+	var SWCardIcon = (function () {
+	    function SWCardIcon() {
+	        this.controller = SWCardIconController;
+	        this.controllerAs = 'SwCardIconController';
+	        this.bindings = {
+	            iconName: "@?",
+	            iconMultiplier: "@?"
+	        };
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n    <div class=\"col-xs-1 col-sm-1 col-md-2 col-lg-2 s-icon\" ng-transclude>\n        <i ng-class=\"{'fa fa-shopping-cart fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'shopping-cart'}\"></i>\n        <i ng-class=\"{'fa fa-user fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'user'}\"></i>\n        <i ng-class=\"{'fa fa-calendar fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'calendar'}\"></i>\n        <i ng-class=\"{'fa fa-building fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'building'}\"></i>\n    </div>\n            ";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardIcon.Factory = function () {
+	        return new SWCardIcon();
+	    };
+	    return SWCardIcon;
+	}());
+	exports.SWCardIcon = SWCardIcon;
+
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var SWCardProgressBarController = (function () {
+	    //@ngInject
+	    function SWCardProgressBarController($log) {
+	        this.$log = $log;
+	        this.valueMin = 0;
+	        this.valueMax = 100;
+	        this.valueNow = 0;
+	        this.$onInit = function () { };
+	    }
+	    return SWCardProgressBarController;
+	}());
+	exports.SWCardProgressBarController = SWCardProgressBarController;
+	var SWCardProgressBar = (function () {
+	    function SWCardProgressBar() {
+	        this.controller = SWCardProgressBarController;
+	        this.controllerAs = 'SwCardProgressBarController';
+	        this.bindings = {
+	            valueMin: "@?",
+	            valueMax: "@?",
+	            valueNow: "@?"
+	        };
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n        <div class=\"row s-line-item\" ng-transclude>\n            <div class=\"col-xs-12\">\n                <div class=\"progress\">\n                    <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{SwCardProgressBarController.valueNow}}\" aria-valuemin=\"{{SwCardProgressBarController.valueMin}}\" aria-valuemax=\"{{SwCardProgressBarController.valueMax}}\" style=\"width:50%;\">\n                        50% \n                    </div>\n                </div>\n            </div>\n        </div>\n            ";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardProgressBar.Factory = function () {
+	        return new SWCardProgressBar();
+	    };
+	    return SWCardProgressBar;
+	}());
+	exports.SWCardProgressBar = SWCardProgressBar;
+
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports) {
+
+	"use strict";
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var SWCardListItemController = (function () {
+	    //@ngInject
+	    function SWCardListItemController($log) {
+	        this.$log = $log;
+	        this.strong = 'false';
+	        this.style = 'padding-top:5px;padding-bottom:5px';
+	        this.$onInit = function () { };
+	    }
+	    return SWCardListItemController;
+	}());
+	exports.SWCardListItemController = SWCardListItemController;
+	var SWCardListItem = (function () {
+	    function SWCardListItem() {
+	        this.controller = SWCardListItemController;
+	        this.controllerAs = 'SwCardListItemController';
+	        this.bindings = {
+	            title: "@?",
+	            value: "@?",
+	            strong: "@?",
+	            style: "@?"
+	        };
+	        this.transclude = true;
+	        this.require = "^SWCardView";
+	        this.template = "\n        <li ng-transclude style=\"border-bottom:1px solid #eee;\">\n            <div class=\"row s-line-item {{(SwCardListItemController.strong == 'true')?'s-strong':''}}\" style=\"{{(SwCardListItemController.style)}}\">\n                <div class=\"col-xs-6 s-title\">{{SwCardListItemController.title}}:</div>\n                <div class=\"col-xs-6 s-value\">{{SwCardListItemController.value}}</div>\n            </div>\n        </li>\n            ";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWCardListItem.Factory = function () {
+	        return new SWCardListItem();
+	    };
+	    return SWCardListItem;
+	}());
+	exports.SWCardListItem = SWCardListItem;
+
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(121);
-	var collectionservice_1 = __webpack_require__(122);
+	var collectionconfigservice_1 = __webpack_require__(128);
+	var collectionservice_1 = __webpack_require__(129);
 	//controllers
-	var collections_1 = __webpack_require__(123);
-	var createcollection_1 = __webpack_require__(124);
-	var confirmationcontroller_1 = __webpack_require__(125);
-	var entity_createcollection_1 = __webpack_require__(126);
+	var collections_1 = __webpack_require__(130);
+	var createcollection_1 = __webpack_require__(131);
+	var confirmationcontroller_1 = __webpack_require__(132);
+	var entity_createcollection_1 = __webpack_require__(133);
 	//directives
-	var swcollection_1 = __webpack_require__(127);
-	var swaddfilterbuttons_1 = __webpack_require__(128);
-	var swdisplayoptions_1 = __webpack_require__(129);
-	var swdisplayitem_1 = __webpack_require__(130);
-	var swdisplayitemaggregate_1 = __webpack_require__(131);
-	var swcollectiontable_1 = __webpack_require__(132);
-	var swcolumnitem_1 = __webpack_require__(133);
-	var swconditioncriteria_1 = __webpack_require__(134);
-	var swcriteria_1 = __webpack_require__(135);
-	var swcriteriaboolean_1 = __webpack_require__(136);
-	var swcriteriadate_1 = __webpack_require__(137);
-	var swcriteriamanytomany_1 = __webpack_require__(138);
-	var swcriteriamanytoone_1 = __webpack_require__(139);
-	var swcriterianumber_1 = __webpack_require__(140);
-	var swcriteriaonetomany_1 = __webpack_require__(141);
-	var swcriteriarelatedobject_1 = __webpack_require__(142);
-	var swcriteriastring_1 = __webpack_require__(143);
-	var sweditfilteritem_1 = __webpack_require__(144);
-	var swfiltergroups_1 = __webpack_require__(145);
-	var swfilteritem_1 = __webpack_require__(146);
-	var swfiltergroupitem_1 = __webpack_require__(147);
+	var swcollection_1 = __webpack_require__(134);
+	var swaddfilterbuttons_1 = __webpack_require__(135);
+	var swdisplayoptions_1 = __webpack_require__(136);
+	var swdisplayitem_1 = __webpack_require__(137);
+	var swdisplayitemaggregate_1 = __webpack_require__(138);
+	var swcollectiontable_1 = __webpack_require__(139);
+	var swcolumnitem_1 = __webpack_require__(140);
+	var swconditioncriteria_1 = __webpack_require__(141);
+	var swcriteria_1 = __webpack_require__(142);
+	var swcriteriaboolean_1 = __webpack_require__(143);
+	var swcriteriadate_1 = __webpack_require__(144);
+	var swcriteriamanytomany_1 = __webpack_require__(145);
+	var swcriteriamanytoone_1 = __webpack_require__(146);
+	var swcriterianumber_1 = __webpack_require__(147);
+	var swcriteriaonetomany_1 = __webpack_require__(148);
+	var swcriteriarelatedobject_1 = __webpack_require__(149);
+	var swcriteriastring_1 = __webpack_require__(150);
+	var sweditfilteritem_1 = __webpack_require__(151);
+	var swfiltergroups_1 = __webpack_require__(152);
+	var swfilteritem_1 = __webpack_require__(153);
+	var swfiltergroupitem_1 = __webpack_require__(154);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -13679,10 +14169,11 @@
 
 
 /***/ }),
-/* 121 */
+/* 128 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var Column = (function () {
@@ -13753,7 +14244,6 @@
 	var CollectionConfig = (function () {
 	    // @ngInject
 	    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
-	        var _this = this;
 	        if (keywordColumns === void 0) { keywordColumns = []; }
 	        if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
 	        if (keywordFilterGroups === void 0) { keywordFilterGroups = [{ filterGroup: [] }]; }
@@ -13763,6 +14253,7 @@
 	        if (allRecords === void 0) { allRecords = false; }
 	        if (dirtyRead === void 0) { dirtyRead = false; }
 	        if (isDistinct === void 0) { isDistinct = false; }
+	        var _this = this;
 	        this.rbkeyService = rbkeyService;
 	        this.$hibachi = $hibachi;
 	        this.utilityService = utilityService;
@@ -14337,60 +14828,65 @@
 
 
 /***/ }),
-/* 122 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
 	var CollectionService = (function (_super) {
 	    __extends(CollectionService, _super);
 	    //@ngInject
 	    function CollectionService($injector, $hibachi, utilityService, $filter, $log) {
-	        var _this = this;
-	        _super.call(this, $injector, $hibachi, utilityService, 'Collection');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
-	        this.$filter = $filter;
-	        this.$log = $log;
-	        this.get = function () {
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'Collection') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        _this.$filter = $filter;
+	        _this.$log = $log;
+	        _this.get = function () {
 	            return _this._pageDialogs || [];
 	        };
 	        //test
-	        this.setFilterCount = function (count) {
+	        _this.setFilterCount = function (count) {
 	            _this.$log.debug('incrementFilterCount');
 	            _this._filterCount = count;
 	        };
-	        this.getFilterCount = function () {
+	        _this.getFilterCount = function () {
 	            return _this._filterCount;
 	        };
-	        this.getColumns = function () {
+	        _this.getColumns = function () {
 	            return _this._collection.collectionConfig.columns;
 	        };
-	        this.getFilterPropertiesList = function () {
+	        _this.getFilterPropertiesList = function () {
 	            return _this._filterPropertiesList;
 	        };
-	        this.getFilterPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
+	        _this.getFilterPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
 	            return _this._filterPropertiesList[baseEntityAlias];
 	        };
-	        this.setFilterPropertiesList = function (value, key) {
+	        _this.setFilterPropertiesList = function (value, key) {
 	            if (angular.isUndefined(_this._filterPropertiesList[key])) {
 	                _this._filterPropertiesList[key] = value;
 	            }
 	        };
-	        this.stringifyJSON = function (jsonObject) {
+	        _this.stringifyJSON = function (jsonObject) {
 	            var jsonString = angular.toJson(jsonObject);
 	            return jsonString;
 	        };
-	        this.removeFilterItem = function (filterItem, filterGroup) {
+	        _this.removeFilterItem = function (filterItem, filterGroup) {
 	            filterGroup.pop(filterGroup.indexOf(filterItem));
 	        };
-	        this.selectFilterItem = function (filterItem) {
+	        _this.selectFilterItem = function (filterItem) {
 	            if (filterItem.$$isClosed) {
 	                for (var i in filterItem.$$siblingItems) {
 	                    filterItem.$$siblingItems[i].$$isClosed = true;
@@ -14408,7 +14904,7 @@
 	                filterItem.setItemInUse(false);
 	            }
 	        };
-	        this.selectFilterGroupItem = function (filterGroupItem) {
+	        _this.selectFilterGroupItem = function (filterGroupItem) {
 	            if (filterGroupItem.$$isClosed) {
 	                for (var i in filterGroupItem.$$siblingItems) {
 	                    filterGroupItem.$$siblingItems[i].$$disabled = true;
@@ -14424,7 +14920,7 @@
 	            }
 	            filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
 	        };
-	        this.newFilterItem = function (filterItemGroup, setItemInUse, prepareForFilterGroup) {
+	        _this.newFilterItem = function (filterItemGroup, setItemInUse, prepareForFilterGroup) {
 	            if (angular.isUndefined(prepareForFilterGroup)) {
 	                prepareForFilterGroup = false;
 	            }
@@ -14449,7 +14945,7 @@
 	            _this.selectFilterItem(filterItem);
 	            return (filterItemGroup.length - 1);
 	        };
-	        this.newFilterGroupItem = function (filterItemGroup, setItemInUse) {
+	        _this.newFilterGroupItem = function (filterItemGroup, setItemInUse) {
 	            var filterGroupItem = {
 	                filterGroup: [],
 	                $$disabled: "false",
@@ -14465,7 +14961,7 @@
 	            _this.selectFilterGroupItem(filterGroupItem);
 	            _this.newFilterItem(filterGroupItem.filterGroup, setItemInUse, undefined);
 	        };
-	        this.transplantFilterItemIntoFilterGroup = function (filterGroup, filterItem) {
+	        _this.transplantFilterItemIntoFilterGroup = function (filterGroup, filterItem) {
 	            var filterGroupItem = {
 	                filterGroup: [],
 	                $$disabled: "false",
@@ -14484,7 +14980,7 @@
 	            filterGroupItem.filterGroup.push(filterItem);
 	            filterGroup.push(filterGroupItem);
 	        };
-	        this.formatFilterPropertiesList = function (filterPropertiesList, propertyIdentifier) {
+	        _this.formatFilterPropertiesList = function (filterPropertiesList, propertyIdentifier) {
 	            _this.$log.debug('format Filter Properties List arguments 2');
 	            _this.$log.debug(filterPropertiesList);
 	            _this.$log.debug(propertyIdentifier);
@@ -14532,16 +15028,17 @@
 	            }
 	            filterPropertiesList.data = _this._orderBy(filterPropertiesList.data, ['-$$group', 'propertyIdentifier'], false);
 	        };
-	        this.orderBy = function (propertiesList, predicate, reverse) {
+	        _this.orderBy = function (propertiesList, predicate, reverse) {
 	            return _this._orderBy(propertiesList, predicate, reverse);
 	        };
-	        this.$filter = $filter;
-	        this.$log = $log;
-	        this._collection = null;
-	        this._collectionConfig = null;
-	        this._filterPropertiesList = {};
-	        this._filterCount = 0;
-	        this._orderBy = $filter('orderBy');
+	        _this.$filter = $filter;
+	        _this.$log = $log;
+	        _this._collection = null;
+	        _this._collectionConfig = null;
+	        _this._filterPropertiesList = {};
+	        _this._filterCount = 0;
+	        _this._orderBy = $filter('orderBy');
+	        return _this;
 	    }
 	    return CollectionService;
 	}(baseentityservice_1.BaseEntityService));
@@ -14549,12 +15046,13 @@
 
 
 /***/ }),
-/* 123 */
+/* 130 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var CollectionController = (function () {
 	    //@ngInject
 	    function CollectionController($scope, $location, $log, $timeout, $hibachi, collectionService, metadataService, selectionService, paginationService, collectionConfigService, appConfig) {
@@ -14573,10 +15071,12 @@
 	                // If first entry with this name
 	                if (typeof query_string[pair[0]] === "undefined") {
 	                    query_string[pair[0]] = pair[1];
+	                    // If second entry with this name
 	                }
 	                else if (typeof query_string[pair[0]] === "string") {
 	                    var arr = [query_string[pair[0]], pair[1]];
 	                    query_string[pair[0]] = arr;
+	                    // If third or later entry with this name
 	                }
 	                else {
 	                    query_string[pair[0]].push(pair[1]);
@@ -14684,10 +15184,12 @@
 	                if (!filterGroupArray[index].$$isNew
 	                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
 	                    filterItemCount++;
+	                    // If there are nested filter groups run introspectively
 	                }
 	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
 	                    //Call function recursively
 	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                    //Otherwise make like the foo fighters and "Break Out!"
 	                }
 	                else {
 	                    break;
@@ -14825,12 +15327,13 @@
 
 
 /***/ }),
-/* 124 */
+/* 131 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var CreateCollection = (function () {
 	    //@ngInject
 	    function CreateCollection($scope, $log, $timeout, $hibachi, collectionService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService, rbkeyService, $window) {
@@ -14952,10 +15455,12 @@
 	                //If filter isn't new then increment the count
 	                if (!filterGroupArray[index].$$isNew && !angular.isDefined(filterGroupArray[index].filterGroup)) {
 	                    filterItemCount++;
+	                    // If there are nested filter groups run introspectively
 	                }
 	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
 	                    //Call function recursively
 	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                    //Otherwise make like the foo fighters and "Break Out!"
 	                }
 	                else {
 	                    break;
@@ -15030,10 +15535,11 @@
 
 
 /***/ }),
-/* 125 */
+/* 132 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var ConfirmationController = (function () {
@@ -15067,12 +15573,13 @@
 
 
 /***/ }),
-/* 126 */
+/* 133 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var CollectionCreateController = (function () {
 	    //@ngInject
 	    function CollectionCreateController($scope, collectionConfigService) {
@@ -15102,10 +15609,11 @@
 
 
 /***/ }),
-/* 127 */
+/* 134 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCollection = (function () {
@@ -15130,9 +15638,7 @@
 	        };
 	    }
 	    SWCollection.Factory = function () {
-	        var directive = function ($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService) {
-	            return new SWCollection($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService);
-	        };
+	        var directive = function ($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService) { return new SWCollection($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService); };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
@@ -15149,10 +15655,11 @@
 
 
 /***/ }),
-/* 128 */
+/* 135 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddFilterButtons = (function () {
@@ -15178,9 +15685,7 @@
 	        };
 	    }
 	    SWAddFilterButtons.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder) {
-	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder) { return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
@@ -15197,10 +15702,11 @@
 
 
 /***/ }),
-/* 129 */
+/* 136 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayOptions = (function () {
@@ -15421,9 +15927,7 @@
 	        };
 	    }
 	    SWDisplayOptions.Factory = function () {
-	        var directive = function ($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) {
-	            return new SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService);
-	        };
+	        var directive = function ($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) { return new SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -15439,10 +15943,11 @@
 
 
 /***/ }),
-/* 130 */
+/* 137 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayItem = (function () {
@@ -15486,9 +15991,7 @@
 	        };
 	    }
 	    SWDisplayItem.Factory = function () {
-	        var directive = function ($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
-	            return new SWDisplayItem($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) { return new SWDisplayItem($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'collectionPartialsPath',
@@ -15503,10 +16006,11 @@
 
 
 /***/ }),
-/* 131 */
+/* 138 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayItemAggregate = (function () {
@@ -15563,9 +16067,7 @@
 	        };
 	    }
 	    SWDisplayItemAggregate.Factory = function () {
-	        var directive = function ($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
-	            return new SWDisplayItemAggregate($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) { return new SWDisplayItemAggregate($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'collectionPartialsPath',
@@ -15580,10 +16082,11 @@
 
 
 /***/ }),
-/* 132 */
+/* 139 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCollectionTable = (function () {
@@ -15624,9 +16127,7 @@
 	        };
 	    }
 	    SWCollectionTable.Factory = function () {
-	        var directive = function ($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi) {
-	            return new SWCollectionTable($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi);
-	        };
+	        var directive = function ($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi) { return new SWCollectionTable($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi); };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
@@ -15645,10 +16146,11 @@
 
 
 /***/ }),
-/* 133 */
+/* 140 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWColumnItem = (function () {
@@ -15736,6 +16238,13 @@
 	                                    propertyIdentifier: column.propertyIdentifier,
 	                                    direction: column.sorting.sortOrder
 	                                };
+	                                if (column.aggregate && column.aggregate.aggregateFunction) {
+	                                    var aggregateFunction = column.aggregate.aggregateFunction.toUpperCase();
+	                                    if (aggregateFunction == 'AVERAGE') {
+	                                        aggregateFunction = 'AVG';
+	                                    }
+	                                    orderBy.propertyIdentifier = aggregateFunction + '(' + column.propertyIdentifier + ')';
+	                                }
 	                                scope.orderBy.push(orderBy);
 	                            }
 	                        });
@@ -15823,9 +16332,7 @@
 	        };
 	    }
 	    SWColumnItem.Factory = function () {
-	        var directive = function ($log, hibachiPathBuilder, collectionPartialsPath) {
-	            return new SWColumnItem($log, hibachiPathBuilder, collectionPartialsPath);
-	        };
+	        var directive = function ($log, hibachiPathBuilder, collectionPartialsPath) { return new SWColumnItem($log, hibachiPathBuilder, collectionPartialsPath); };
 	        directive.$inject = [
 	            '$log',
 	            'hibachiPathBuilder',
@@ -15839,10 +16346,11 @@
 
 
 /***/ }),
-/* 134 */
+/* 141 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWConditionCriteria = (function () {
@@ -16436,7 +16944,8 @@
 	                                    'dd-MMMM-yyyy',
 	                                    'yyyy/MM/dd',
 	                                    'dd.MM.yyyy',
-	                                    'shortDate'];
+	                                    'shortDate'
+	                                ];
 	                                scope.format = scope.formats[1];
 	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
 	                                    $log.debug('selectedConditionChanged Begin');
@@ -16713,9 +17222,7 @@
 	        };
 	    }
 	    SWConditionCriteria.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
-	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) { return new SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
@@ -16737,12 +17244,13 @@
 
 
 /***/ }),
-/* 135 */
+/* 142 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWCriteria = (function () {
 	    function SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
@@ -16761,9 +17269,7 @@
 	        };
 	    }
 	    SWCriteria.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
-	            return new SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) { return new SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -16781,10 +17287,11 @@
 
 
 /***/ }),
-/* 136 */
+/* 143 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaBoolean = (function () {
@@ -16862,9 +17369,7 @@
 	        };
 	    }
 	    SWCriteriaBoolean.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
-	            return new SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) { return new SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -16882,10 +17387,11 @@
 
 
 /***/ }),
-/* 137 */
+/* 144 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaDate = (function () {
@@ -17147,7 +17653,8 @@
 	                    'dd-MMMM-yyyy',
 	                    'yyyy/MM/dd',
 	                    'dd.MM.yyyy',
-	                    'shortDate'];
+	                    'shortDate'
+	                ];
 	                scope.format = scope.formats[1];
 	                scope.selectedConditionChanged = function (selectedFilterProperty) {
 	                    $log.debug('selectedConditionChanged Begin');
@@ -17334,9 +17841,7 @@
 	        };
 	    }
 	    SWCriteriaDate.Factory = function () {
-	        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) {
-	            return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'collectionPartialsPath',
@@ -17350,10 +17855,11 @@
 
 
 /***/ }),
-/* 138 */
+/* 145 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaManyToMany = (function () {
@@ -17471,9 +17977,7 @@
 	        };
 	    }
 	    SWCriteriaManyToMany.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
-	            return new SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) { return new SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -17494,10 +17998,11 @@
 
 
 /***/ }),
-/* 139 */
+/* 146 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaManyToOne = (function () {
@@ -17561,9 +18066,7 @@
 	        };
 	    }
 	    SWCriteriaManyToOne.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
-	            return new SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) { return new SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -17658,10 +18161,11 @@
 
 
 /***/ }),
-/* 140 */
+/* 147 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaNumber = (function () {
@@ -17820,9 +18324,7 @@
 	        };
 	    }
 	    SWCriteriaNumber.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
-	            return new SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) { return new SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -17840,10 +18342,11 @@
 
 
 /***/ }),
-/* 141 */
+/* 148 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaOneToMany = (function () {
@@ -17886,6 +18389,17 @@
 	                                display: "Some Exist In Collection",
 	                                comparisonOperator: "One"
 	                            }
+	                            /*,
+	                             {
+	                             display:"Empty",
+	                             comparisonOperator:"is",
+	                             value:"null"
+	                             },
+	                             {
+	                             display:"Not Empty",
+	                             comparisonOperator:"is not",
+	                             value:"null"
+	                             }*/
 	                        ];
 	                    }
 	                    else if (type === 'condition') {
@@ -17957,9 +18471,7 @@
 	        };
 	    }
 	    SWCriteriaOneToMany.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
-	            return new SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) { return new SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -17980,10 +18492,11 @@
 
 
 /***/ }),
-/* 142 */
+/* 149 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaRelatedObject = (function () {
@@ -18056,9 +18569,7 @@
 	        };
 	    }
 	    SWCriteriaRelatedObject.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
-	            return new SWCriteriaRelatedObject($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) { return new SWCriteriaRelatedObject($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -18077,10 +18588,11 @@
 
 
 /***/ }),
-/* 143 */
+/* 150 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaString = (function () {
@@ -18240,9 +18752,7 @@
 	        };
 	    }
 	    SWCriteriaString.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
-	            return new SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) { return new SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -18260,10 +18770,11 @@
 
 
 /***/ }),
-/* 144 */
+/* 151 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEditFilterItem = (function () {
@@ -18483,6 +18994,7 @@
 	                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
 	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
 	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                    //if has a pattern then we need to evaluate where to add % for like statement
 	                                }
 	                                else if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)) {
 	                                    filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
@@ -18613,9 +19125,7 @@
 	        };
 	    }
 	    SWEditFilterItem.Factory = function () {
-	        var directive = function ($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService) {
-	            return new SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService);
-	        };
+	        var directive = function ($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService) { return new SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService); };
 	        directive.$inject = [
 	            '$log',
 	            '$filter',
@@ -18636,10 +19146,11 @@
 
 
 /***/ }),
-/* 145 */
+/* 152 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterGroups = (function () {
@@ -18719,9 +19230,7 @@
 	        };
 	    }
 	    SWFilterGroups.Factory = function () {
-	        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) {
-	            return new SWFilterGroups($log, collectionPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) { return new SWFilterGroups($log, collectionPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'collectionPartialsPath',
@@ -18735,10 +19244,11 @@
 
 
 /***/ }),
-/* 146 */
+/* 153 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterItem = (function () {
@@ -18786,9 +19296,7 @@
 	        };
 	    }
 	    SWFilterItem.Factory = function () {
-	        var directive = function ($log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
-	            return new SWFilterItem($log, collectionService, collectionPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, collectionService, collectionPartialsPath, hibachiPathBuilder) { return new SWFilterItem($log, collectionService, collectionPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'collectionService',
@@ -18803,10 +19311,11 @@
 
 
 /***/ }),
-/* 147 */
+/* 154 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterGroupItem = (function () {
@@ -18856,9 +19365,7 @@
 	        };
 	    }
 	    SWFilterGroupItem.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
-	            return new SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder) { return new SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
@@ -18876,31 +19383,32 @@
 
 
 /***/ }),
-/* 148 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//modules
-	var collection_module_1 = __webpack_require__(120);
+	var collection_module_1 = __webpack_require__(127);
 	//services
-	var listingservice_1 = __webpack_require__(149);
+	var listingservice_1 = __webpack_require__(156);
 	//directives
-	var swlistingdisplay_1 = __webpack_require__(150);
-	var swlistingdisplaycell_1 = __webpack_require__(151);
-	var swlistingcontrols_1 = __webpack_require__(152);
-	var swlistingaggregate_1 = __webpack_require__(153);
-	var swlistingcolorfilter_1 = __webpack_require__(154);
-	var swlistingcolumn_1 = __webpack_require__(155);
-	var swlistingdisablerule_1 = __webpack_require__(156);
-	var swlistingexpandablerule_1 = __webpack_require__(157);
-	var swlistingfilter_1 = __webpack_require__(158);
-	var swlistingfiltergroup_1 = __webpack_require__(159);
-	var swlistingorderby_1 = __webpack_require__(160);
-	var swlistingrowsave_1 = __webpack_require__(161);
-	var swlistingsearch_1 = __webpack_require__(162);
-	var swlistingglobalsearch_1 = __webpack_require__(163);
+	var swlistingdisplay_1 = __webpack_require__(157);
+	var swlistingdisplaycell_1 = __webpack_require__(158);
+	var swlistingcontrols_1 = __webpack_require__(159);
+	var swlistingaggregate_1 = __webpack_require__(160);
+	var swlistingcolorfilter_1 = __webpack_require__(161);
+	var swlistingcolumn_1 = __webpack_require__(162);
+	var swlistingdisablerule_1 = __webpack_require__(163);
+	var swlistingexpandablerule_1 = __webpack_require__(164);
+	var swlistingfilter_1 = __webpack_require__(165);
+	var swlistingfiltergroup_1 = __webpack_require__(166);
+	var swlistingorderby_1 = __webpack_require__(167);
+	var swlistingrowsave_1 = __webpack_require__(168);
+	var swlistingsearch_1 = __webpack_require__(169);
+	var swlistingglobalsearch_1 = __webpack_require__(170);
 	var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
 	    .run([function () {
 	    }])
@@ -18924,10 +19432,11 @@
 
 
 /***/ }),
-/* 149 */
+/* 156 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var ListingService = (function () {
@@ -19242,6 +19751,12 @@
 	                _this.getListing(listingID).collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.getListing(listingID).collectionObject);
 	                _this.getListing(listingID).collectionConfig.loadJson(_this.getListing(listingID).collection.collectionConfig);
 	            }
+	            if (_this.getListing(listingID).multiSlot == false) {
+	                _this.$timeout(function () {
+	                    _this.getListing(listingID).collectionConfig.loadJson(_this.getListing(listingID).collectionData.collectionConfig);
+	                    _this.getListing(listingID).columns = _this.getListing(listingID).collectionConfig.columns;
+	                });
+	            }
 	            if (_this.getListing(listingID).paginator != null
 	                && _this.getListing(listingID).collectionConfig != null) {
 	                _this.getListing(listingID).collectionConfig.setPageShow(_this.getListing(listingID).paginator.getPageShow());
@@ -19495,14 +20010,26 @@
 	                return function () {
 	                    _this.getListing(listingID).collectionConfig.setCurrentPage(_this.getListing(listingID).paginator.getCurrentPage());
 	                    _this.getListing(listingID).collectionConfig.setPageShow(_this.getListing(listingID).paginator.getPageShow());
-	                    _this.getListing(listingID).collectionConfig.getEntity().then(function (data) {
-	                        _this.getListing(listingID).collectionData = data;
-	                        _this.setupDefaultCollectionInfo(listingID);
-	                        _this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
-	                        _this.getListing(listingID).paginator.setPageRecordsInfo(_this.getListing(listingID).collectionData);
-	                    }, function (reason) {
-	                        throw ("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
-	                    });
+	                    if (_this.getListing(listingID).multiSlot) {
+	                        _this.getListing(listingID).getEntity().then(function (data) {
+	                            _this.getListing(listingID).collectionData = data;
+	                            _this.setupDefaultCollectionInfo(listingID);
+	                            _this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
+	                            _this.getListing(listingID).paginator.setPageRecordsInfo(_this.getListing(listingID).collectionData);
+	                        }, function (reason) {
+	                            throw ("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
+	                        });
+	                    }
+	                    else {
+	                        _this.getListing(listingID).collectionPromise.then(function (data) {
+	                            _this.getListing(listingID).collectionData = data;
+	                            _this.setupDefaultCollectionInfo(listingID);
+	                            _this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
+	                            _this.getListing(listingID).paginator.setPageRecordsInfo(_this.getListing(listingID).collectionData);
+	                        }, function (reason) {
+	                            throw ("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
+	                        });
+	                    }
 	                };
 	            }
 	            else {
@@ -19720,12 +20247,13 @@
 
 
 /***/ }),
-/* 150 */
+/* 157 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingDisplayController = (function () {
 	    //@ngInject
 	    function SWListingDisplayController($scope, $transclude, $timeout, $q, $hibachi, utilityService, collectionConfigService, listingService, paginationService, selectionService, observerService, rbkeyService) {
@@ -19768,6 +20296,15 @@
 	        this.selectable = false;
 	        this.showSearchFilters = false;
 	        this.sortable = false;
+	        this.setupCollectionPromise = function () {
+	            if (angular.isUndefined(_this.getCollection)) {
+	                _this.getCollection = _this.listingService.setupDefaultGetCollection(_this.tableID);
+	            }
+	            _this.paginator.getCollection = _this.getCollection;
+	            var getCollectionEventID = _this.tableID;
+	            //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+	            _this.listingService.getCollection(_this.tableID);
+	        };
 	        this.getCollectionObserver = function (param) {
 	            console.warn("getCollectionObserver", param);
 	            _this.collectionConfig.loadJson(param.collectionConfig);
@@ -19979,6 +20516,7 @@
 	                }
 	            }
 	            else {
+	                //multiCollectionConfig logic
 	            }
 	            $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionConfigExport" method="post" id="formExport"></form>');
 	            $('#formExport')
@@ -19999,7 +20537,6 @@
 	        this.selectAll = function () {
 	            _this.selectionService.selectAll(_this.tableID);
 	        };
-	        this.initializeState();
 	        //promises to determine which set of logic will run
 	        this.multipleCollectionDeffered = $q.defer();
 	        this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -20010,8 +20547,14 @@
 	            this.baseEntityName = this.collection;
 	            this.collectionObject = this.collection;
 	            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+	            this.$timeout(function () {
+	                _this.collection = _this.collectionConfig;
+	                _this.columns = _this.collectionConfig.columns;
+	            });
 	            this.multipleCollectionDeffered.reject();
 	        }
+	        this.initializeState();
+	        this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
 	        if (angular.isDefined(this.collectionPromise)) {
 	            this.hasCollectionPromise = true;
 	            this.multipleCollectionDeffered.reject();
@@ -20022,23 +20565,29 @@
 	        this.listingService.setListingState(this.tableID, this);
 	        //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
 	        this.$transclude(this.$scope, function () { });
-	        this.singleCollectionPromise.then(function () {
-	            _this.multipleCollectionDeffered.reject();
-	        });
-	        this.multipleCollectionPromise.then(function () {
-	            //now do the intial setup
-	            _this.listingService.setupInMultiCollectionConfigMode(_this.tableID);
-	        }).catch(function () {
-	            //do the initial setup for single collection mode
-	            _this.listingService.setupInSingleCollectionConfigMode(_this.tableID, _this.$scope);
-	        }).finally(function () {
-	            if (angular.isUndefined(_this.getCollection)) {
-	                _this.getCollection = _this.listingService.setupDefaultGetCollection(_this.tableID);
-	            }
-	            _this.paginator.getCollection = _this.getCollection;
-	            var getCollectionEventID = _this.tableID;
-	            _this.observerService.attach(_this.getCollectionObserver, 'getCollection', getCollectionEventID);
-	        });
+	        console.log('multislot', this.multiSlot);
+	        if (this.multiSlot) {
+	            this.singleCollectionPromise.then(function () {
+	                _this.multipleCollectionDeffered.reject();
+	            });
+	            this.multipleCollectionPromise.then(function () {
+	                //now do the intial setup
+	                _this.listingService.setupInMultiCollectionConfigMode(_this.tableID);
+	            }).catch(function () {
+	                //do the initial setup for single collection mode
+	                _this.listingService.setupInSingleCollectionConfigMode(_this.tableID, _this.$scope);
+	            }).finally(function () {
+	                if (angular.isUndefined(_this.getCollection)) {
+	                    _this.getCollection = _this.listingService.setupDefaultGetCollection(_this.tableID);
+	                }
+	                _this.paginator.getCollection = _this.getCollection;
+	                var getCollectionEventID = _this.tableID;
+	                _this.observerService.attach(_this.getCollectionObserver, 'getCollection', getCollectionEventID);
+	            });
+	        }
+	        else if (this.multiSlot == false) {
+	            this.setupCollectionPromise();
+	        }
 	    }
 	    return SWListingDisplayController;
 	}());
@@ -20062,43 +20611,43 @@
 	            customListingControls: "?swCustomListingControls"
 	        };
 	        this.bindToController = {
-	            isRadio: "=?",
-	            angularLinks: "=?",
-	            isAngularRoute: "=?",
+	            isRadio: "<?",
+	            angularLinks: "<?",
+	            isAngularRoute: "<?",
 	            name: "@?",
 	            /*required*/
-	            collection: "=?",
-	            collectionConfig: "=?",
+	            collection: "<?",
+	            collectionConfig: "<?",
 	            getCollection: "&?",
-	            collectionPromise: "=?",
-	            edit: "=?",
+	            collectionPromise: "<?",
+	            edit: "<?",
 	            /*Optional*/
-	            title: "@?",
+	            title: "<?",
 	            childPropertyName: "@?",
-	            baseEntity: "=?",
+	            baseEntity: "<?",
 	            baseEntityName: "@?",
 	            baseEntityId: "@?",
 	            /*Admin Actions*/
-	            actions: "=?",
+	            actions: "<?",
 	            administrativeCount: "@?",
 	            recordEditAction: "@?",
 	            recordEditActionProperty: "@?",
 	            recordEditQueryString: "@?",
-	            recordEditModal: "=?",
-	            recordEditDisabled: "=?",
+	            recordEditModal: "<?",
+	            recordEditDisabled: "<?",
 	            recordDetailAction: "@?",
 	            recordDetailActionProperty: "@?",
 	            recordDetailQueryString: "@?",
-	            recordDetailModal: "=?",
+	            recordDetailModal: "<?",
 	            recordDeleteAction: "@?",
 	            recordDeleteActionProperty: "@?",
 	            recordDeleteQueryString: "@?",
 	            recordAddAction: "@?",
 	            recordAddActionProperty: "@?",
 	            recordAddQueryString: "@?",
-	            recordAddModal: "=?",
-	            recordAddDisabled: "=?",
-	            recordProcessesConfig: "=?",
+	            recordAddModal: "<?",
+	            recordAddDisabled: "<?",
+	            recordProcessesConfig: "<?",
 	            /* record processes config is an array of actions. Example:
 	            [
 	            {
@@ -20116,12 +20665,12 @@
 	            /*Hierachy Expandable*/
 	            parentPropertyName: "@?",
 	            //booleans
-	            expandable: "=?",
-	            expandableOpenRoot: "=?",
+	            expandable: "<?",
+	            expandableOpenRoot: "<?",
 	            /*Searching*/
-	            searchText: "=?",
+	            searchText: "<?",
 	            /*Sorting*/
-	            sortable: "=?",
+	            sortable: "<?",
 	            sortableFieldName: "@?",
 	            sortProperty: "@?",
 	            sortContextIDColumn: "@?",
@@ -20141,21 +20690,21 @@
 	            typeaheadDataKey: "@?",
 	            adminattributes: "@?",
 	            /* Settings */
-	            showheader: "=?",
-	            showOrderBy: "=?",
-	            showTopPagination: "=?",
-	            showSearch: "=?",
-	            showSearchFilters: "=?",
+	            showheader: "<?",
+	            showOrderBy: "<?",
+	            showTopPagination: "<?",
+	            showSearch: "<?",
+	            showSearchFilters: "<?",
 	            /* Basic Action Caller Overrides*/
-	            createModal: "=?",
+	            createModal: "<?",
 	            createAction: "@?",
 	            createQueryString: "@?",
 	            exportAction: "@?",
-	            getChildCount: "=?",
-	            hasSearch: "=?",
-	            hasActionBar: "=?",
-	            multiSlot: "=?",
-	            customListingControls: "=?"
+	            getChildCount: "<?",
+	            hasSearch: "<?",
+	            hasActionBar: "<?",
+	            multiSlot: "<?",
+	            customListingControls: "<?"
 	        };
 	        this.controller = SWListingDisplayController;
 	        this.controllerAs = "swListingDisplay";
@@ -20171,9 +20720,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath) + 'listingdisplay.html';
 	    }
 	    SWListingDisplay.Factory = function () {
-	        var directive = function (listingPartialPath, hibachiPathBuilder) {
-	            return new SWListingDisplay(listingPartialPath, hibachiPathBuilder);
-	        };
+	        var directive = function (listingPartialPath, hibachiPathBuilder) { return new SWListingDisplay(listingPartialPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'listingPartialPath',
 	            'hibachiPathBuilder'
@@ -20186,12 +20733,13 @@
 
 
 /***/ }),
-/* 151 */
+/* 158 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingDisplayCellController = (function () {
 	    //@ngInject
 	    function SWListingDisplayCellController(listingPartialPath, hibachiPathBuilder, listingService, utilityService, $scope) {
@@ -20276,9 +20824,7 @@
 	        this.template = "\n        <div ng-if=\"swListingDisplayCell.template\" sw-directive data-variables=\"swListingDisplayCell.templateVariables\" data-directive-template=\"swListingDisplayCell.template\"></div>\n        <div ng-if=\"swListingDisplayCell.templateUrl\" ng-include src=\"swListingDisplayCell.templateUrl\"></div>\n        <sw-action-caller ng-if=\"swListingDisplayCell.hasActionCaller\"\n                    data-action=\"{{swListingDisplayCell.actionCaller.action}}\"\n                    data-query-string=\"{{swListingDisplayCell.actionCaller.action.queryString}}\"\n                    data-text=\"{{swListingDisplayCell.value}}\"\n                    data-tooltip-text=\"{{swListingDisplayCell.popover}}\"\n\n        >\n        </sw-action-caller>\n    ";
 	    }
 	    SWListingDisplayCell.Factory = function () {
-	        var directive = function () {
-	            return new SWListingDisplayCell();
-	        };
+	        var directive = function () { return new SWListingDisplayCell(); };
 	        directive.$inject = [];
 	        return directive;
 	    };
@@ -20288,12 +20834,13 @@
 
 
 /***/ }),
-/* 152 */
+/* 159 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingControlsController = (function () {
 	    //@ngInject
 	    function SWListingControlsController($hibachi, metadataService, collectionService, listingService, observerService) {
@@ -20415,25 +20962,24 @@
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingcontrols.html";
 	    }
 	    SWListingControls.Factory = function () {
-	        var directive = function (listingPartialPath, hibachiPathBuilder) {
-	            return new SWListingControls(listingPartialPath, hibachiPathBuilder);
-	        };
+	        var directive = function (listingPartialPath, hibachiPathBuilder) { return new SWListingControls(listingPartialPath, hibachiPathBuilder); };
 	        directive.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
-	    SWListingControls.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
 	    return SWListingControls;
 	}());
+	SWListingControls.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
 	exports.SWListingControls = SWListingControls;
 
 
 /***/ }),
-/* 153 */
+/* 160 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingAggregateController = (function () {
 	    function SWListingAggregateController() {
 	        var _this = this;
@@ -20465,9 +21011,7 @@
 	        };
 	    }
 	    SWListingAggregate.Factory = function () {
-	        var directive = function () {
-	            return new SWListingAggregate();
-	        };
+	        var directive = function () { return new SWListingAggregate(); };
 	        directive.$inject = [];
 	        return directive;
 	    };
@@ -20477,12 +21021,13 @@
 
 
 /***/ }),
-/* 154 */
+/* 161 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingColorFilterController = (function () {
 	    function SWListingColorFilterController() {
 	        this.init = function () {
@@ -20522,9 +21067,7 @@
 	        };
 	    }
 	    SWListingColorFilter.Factory = function () {
-	        var directive = function (utilityService) {
-	            return new SWListingColorFilter(utilityService);
-	        };
+	        var directive = function (utilityService) { return new SWListingColorFilter(utilityService); };
 	        directive.$inject = [
 	            'utilityService'
 	        ];
@@ -20536,12 +21079,13 @@
 
 
 /***/ }),
-/* 155 */
+/* 162 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingColumnController = (function () {
 	    //@ngInject
 	    function SWListingColumnController($injector) {
@@ -20645,9 +21189,7 @@
 	        };
 	    }
 	    SWListingColumn.Factory = function () {
-	        var directive = function (listingService, scopeService, utilityService) {
-	            return new SWListingColumn(listingService, scopeService, utilityService);
-	        };
+	        var directive = function (listingService, scopeService, utilityService) { return new SWListingColumn(listingService, scopeService, utilityService); };
 	        directive.$inject = [
 	            'listingService',
 	            'scopeService',
@@ -20655,19 +21197,20 @@
 	        ];
 	        return directive;
 	    };
-	    SWListingColumn.$inject = ['utilityService'];
 	    return SWListingColumn;
 	}());
+	SWListingColumn.$inject = ['utilityService'];
 	exports.SWListingColumn = SWListingColumn;
 
 
 /***/ }),
-/* 156 */
+/* 163 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/* SwListingDisableRule
 	 * defines a filter, by which to determine what rows will be disabled
 	 */
@@ -20710,9 +21253,7 @@
 	        };
 	    }
 	    SWListingDisableRule.Factory = function () {
-	        var directive = function (scopeService, $q) {
-	            return new SWListingDisableRule(scopeService, $q);
-	        };
+	        var directive = function (scopeService, $q) { return new SWListingDisableRule(scopeService, $q); };
 	        directive.$inject = [
 	            'scopeService',
 	            '$q'
@@ -20725,12 +21266,13 @@
 
 
 /***/ }),
-/* 157 */
+/* 164 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/* SWListingExpandableRule
 	 * defines a filter, by which to determine what will be expanded
 	 * supplies the collection config and any other necessary rules for what will be loaded and displayed
@@ -20787,9 +21329,7 @@
 	        };
 	    }
 	    SWListingExpandableRule.Factory = function () {
-	        var directive = function (scopeService, $q) {
-	            return new SWListingExpandableRule(scopeService, $q);
-	        };
+	        var directive = function (scopeService, $q) { return new SWListingExpandableRule(scopeService, $q); };
 	        directive.$inject = [
 	            'scopeService',
 	            '$q'
@@ -20802,12 +21342,13 @@
 
 
 /***/ }),
-/* 158 */
+/* 165 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingFilterController = (function () {
 	    function SWListingFilterController() {
 	        this.init = function () {
@@ -20849,9 +21390,7 @@
 	        };
 	    }
 	    SWListingFilter.Factory = function () {
-	        var directive = function () {
-	            return new SWListingFilter();
-	        };
+	        var directive = function () { return new SWListingFilter(); };
 	        directive.$inject = [];
 	        return directive;
 	    };
@@ -20861,12 +21400,13 @@
 
 
 /***/ }),
-/* 159 */
+/* 166 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingFilterGroupController = (function () {
 	    function SWListingFilterGroupController($scope, $transclude) {
 	        this.$scope = $scope;
@@ -20891,19 +21431,20 @@
 	        directive.$inject = [];
 	        return directive;
 	    };
-	    SWListingFilterGroup.$inject = [];
 	    return SWListingFilterGroup;
 	}());
+	SWListingFilterGroup.$inject = [];
 	exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
 /***/ }),
-/* 160 */
+/* 167 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingOrderByController = (function () {
 	    //@ngInject
 	    function SWListingOrderByController() {
@@ -20932,9 +21473,7 @@
 	        };
 	    }
 	    SWListingOrderBy.Factory = function () {
-	        var directive = function (utilityService) {
-	            return new SWListingOrderBy(utilityService);
-	        };
+	        var directive = function (utilityService) { return new SWListingOrderBy(utilityService); };
 	        directive.$inject = [
 	            'utilityService'
 	        ];
@@ -20946,12 +21485,13 @@
 
 
 /***/ }),
-/* 161 */
+/* 168 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingRowSaveController = (function () {
 	    //@ngInject
 	    function SWListingRowSaveController(listingService) {
@@ -20992,9 +21532,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.listingPartialPath) + 'listingrowsave.html';
 	    }
 	    SWListingRowSave.Factory = function () {
-	        var directive = function (hibachiPathBuilder, listingPartialPath, utilityService, scopeService) {
-	            return new SWListingRowSave(hibachiPathBuilder, listingPartialPath, utilityService, scopeService);
-	        };
+	        var directive = function (hibachiPathBuilder, listingPartialPath, utilityService, scopeService) { return new SWListingRowSave(hibachiPathBuilder, listingPartialPath, utilityService, scopeService); };
 	        directive.$inject = [
 	            'hibachiPathBuilder',
 	            'listingPartialPath',
@@ -21003,19 +21541,20 @@
 	        ];
 	        return directive;
 	    };
-	    SWListingRowSave.$inject = ['utilityService'];
 	    return SWListingRowSave;
 	}());
+	SWListingRowSave.$inject = ['utilityService'];
 	exports.SWListingRowSave = SWListingRowSave;
 
 
 /***/ }),
-/* 162 */
+/* 169 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingSearchController = (function () {
 	    //@ngInject
 	    function SWListingSearchController($hibachi, metadataService, listingService, collectionService, observerService) {
@@ -21117,9 +21656,7 @@
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingsearch.html";
 	    }
 	    SWListingSearch.Factory = function () {
-	        var directive = function (scopeService, listingPartialPath, hibachiPathBuilder) {
-	            return new SWListingSearch(scopeService, listingPartialPath, hibachiPathBuilder);
-	        };
+	        var directive = function (scopeService, listingPartialPath, hibachiPathBuilder) { return new SWListingSearch(scopeService, listingPartialPath, hibachiPathBuilder); };
 	        directive.$inject = ['scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -21129,12 +21666,13 @@
 
 
 /***/ }),
-/* 163 */
+/* 170 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWListingGlobalSearchController = (function () {
 	    //@ngInject
 	    function SWListingGlobalSearchController($timeout) {
@@ -21184,10 +21722,11 @@
 
 
 /***/ }),
-/* 164 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
@@ -21199,12 +21738,12 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(165);
-	var routercontroller_1 = __webpack_require__(166);
+	var otherwisecontroller_1 = __webpack_require__(172);
+	var routercontroller_1 = __webpack_require__(173);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(167);
-	var swdetail_1 = __webpack_require__(168);
-	var swlist_1 = __webpack_require__(169);
+	var swdetailtabs_1 = __webpack_require__(174);
+	var swdetail_1 = __webpack_require__(175);
+	var swlist_1 = __webpack_require__(176);
 	var core_module_1 = __webpack_require__(16);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
 	    .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -21258,10 +21797,11 @@
 
 
 /***/ }),
-/* 165 */
+/* 172 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var OtherWiseController = (function () {
@@ -21275,10 +21815,11 @@
 
 
 /***/ }),
-/* 166 */
+/* 173 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var RouterController = (function () {
@@ -21305,10 +21846,11 @@
 
 
 /***/ }),
-/* 167 */
+/* 174 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDetailTabs = (function () {
@@ -21321,9 +21863,7 @@
 	        };
 	    }
 	    SWDetailTabs.Factory = function () {
-	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
-	            return new SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) { return new SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$location',
 	            '$log',
@@ -21339,10 +21879,11 @@
 
 
 /***/ }),
-/* 168 */
+/* 175 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDetail = (function () {
@@ -21396,9 +21937,7 @@
 	        };
 	    }
 	    SWDetail.Factory = function () {
-	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
-	            return new SWDetail($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) { return new SWDetail($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$location',
 	            '$log',
@@ -21414,10 +21953,11 @@
 
 
 /***/ }),
-/* 169 */
+/* 176 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWList = (function () {
@@ -21445,9 +21985,7 @@
 	        };
 	    }
 	    SWList.Factory = function () {
-	        var directive = function ($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
-	            return new SWList($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) { return new SWList($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -21462,15 +22000,16 @@
 
 
 /***/ }),
-/* 170 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(171);
-	var swpaginationbar_1 = __webpack_require__(172);
+	var paginationservice_1 = __webpack_require__(178);
+	var swpaginationbar_1 = __webpack_require__(179);
 	var core_module_1 = __webpack_require__(16);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -21482,13 +22021,14 @@
 
 
 /***/ }),
-/* 171 */
+/* 178 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/hibachiTypescript.d.ts" />
 	/*collection service is used to maintain the state of the ui*/
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var Pagination = (function () {
 	    //@ngInject
 	    function Pagination(observerService, uuid) {
@@ -21662,12 +22202,13 @@
 
 
 /***/ }),
-/* 172 */
+/* 179 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//import pagination = require('../services/paginationservice');
 	//var PaginationService = pagination.PaginationService;
 	//'use strict';
@@ -21706,32 +22247,33 @@
 
 
 /***/ }),
-/* 173 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//module
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var fileservice_1 = __webpack_require__(174);
+	var fileservice_1 = __webpack_require__(181);
 	//directives
 	//  components
 	//form
-	var swinput_1 = __webpack_require__(175);
-	var swfformfield_1 = __webpack_require__(176);
-	var swform_1 = __webpack_require__(177);
-	var swformfield_1 = __webpack_require__(178);
-	var swformfieldfile_1 = __webpack_require__(179);
-	var swformfieldjson_1 = __webpack_require__(180);
-	var swformfieldsearchselect_1 = __webpack_require__(181);
-	var swformregistrar_1 = __webpack_require__(182);
-	var swerrordisplay_1 = __webpack_require__(183);
-	var swaddressform_1 = __webpack_require__(184);
-	var swpropertydisplay_1 = __webpack_require__(185);
-	var swfpropertydisplay_1 = __webpack_require__(186);
-	var swformsubscriber_1 = __webpack_require__(187);
+	var swinput_1 = __webpack_require__(182);
+	var swfformfield_1 = __webpack_require__(183);
+	var swform_1 = __webpack_require__(184);
+	var swformfield_1 = __webpack_require__(185);
+	var swformfieldfile_1 = __webpack_require__(186);
+	var swformfieldjson_1 = __webpack_require__(187);
+	var swformfieldsearchselect_1 = __webpack_require__(188);
+	var swformregistrar_1 = __webpack_require__(189);
+	var swerrordisplay_1 = __webpack_require__(190);
+	var swaddressform_1 = __webpack_require__(191);
+	var swpropertydisplay_1 = __webpack_require__(192);
+	var swfpropertydisplay_1 = __webpack_require__(193);
+	var swformsubscriber_1 = __webpack_require__(194);
 	var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('coreFormPartialsPath', 'form/components/')
@@ -21753,10 +22295,11 @@
 
 
 /***/ }),
-/* 174 */
+/* 181 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var FileService = (function () {
 	    //@ngInject
 	    function FileService($q, observerService) {
@@ -21798,10 +22341,11 @@
 
 
 /***/ }),
-/* 175 */
+/* 182 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWInputController = (function () {
 	    //@ngInject
 	    function SWInputController($timeout, $scope, $log, $compile, $hibachi, $injector, listingService, utilityService, rbkeyService, observerService, metadataService) {
@@ -22155,9 +22699,7 @@
 	        };
 	    }
 	    SWInput.Factory = function () {
-	        var directive = function ($compile, $timeout, $parse, fileService) {
-	            return new SWInput($compile, $timeout, $parse, fileService);
-	        };
+	        var directive = function ($compile, $timeout, $parse, fileService) { return new SWInput($compile, $timeout, $parse, fileService); };
 	        directive.$inject = [
 	            '$compile',
 	            '$timeout',
@@ -22172,9 +22714,10 @@
 
 
 /***/ }),
-/* 176 */
+/* 183 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/**********************************************************************************************
 	 **********************************************************************************************
 	 **********************************************************************************************
@@ -22211,7 +22754,7 @@
 	 */
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/**
 	    * Property Display Controller handles the logic for this directive.
 	    */
@@ -22227,12 +22770,12 @@
 	        this.$element = $element;
 	        this.$compile = $compile;
 	    }
-	    /**
-	        * Handles the logic for the frontend version of the property display.
-	        */
-	    SWFFormFieldController.$inject = ['$scope', '$element', '$compile', 'utilityService'];
 	    return SWFFormFieldController;
 	}());
+	/**
+	    * Handles the logic for the frontend version of the property display.
+	    */
+	SWFFormFieldController.$inject = ['$scope', '$element', '$compile', 'utilityService'];
 	/**
 	    * This class handles configuring formFields for use in process forms on the front end.
 	    */
@@ -22259,9 +22802,7 @@
 	        * Handles injecting the partials path into this class
 	        */
 	    SWFFormField.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFFormField(coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWFFormField(coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
 	            'hibachiPathBuilder'
@@ -22274,12 +22815,13 @@
 
 
 /***/ }),
-/* 177 */
+/* 184 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/**
 	* Form Controller handles the logic for this directive.
 	*/
@@ -22567,9 +23109,7 @@
 	     * Handles injecting the partials path into this class
 	     */
 	    SWForm.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWForm(coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWForm(coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -22579,12 +23119,13 @@
 
 
 /***/ }),
-/* 178 */
+/* 185 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWFormFieldController = (function () {
 	    //@ngInject
 	    function SWFormFieldController($injector, $scope, $timeout, $log, $hibachi, observerService, utilityService) {
@@ -22825,9 +23366,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'formfield.html';
 	    }
 	    SWFormField.Factory = function () {
-	        var directive = function ($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) { return new SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$templateCache',
@@ -22845,10 +23384,11 @@
 
 
 /***/ }),
-/* 179 */
+/* 186 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormFieldFileController = (function () {
@@ -22878,9 +23418,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "file.html";
 	    }
 	    SWFormFieldFile.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldFile(coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWFormFieldFile(coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
 	            'hibachiPathBuilder'
@@ -22893,12 +23431,13 @@
 
 
 /***/ }),
-/* 180 */
+/* 187 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWFormFieldJsonController = (function () {
 	    //@ngInject
 	    function SWFormFieldJsonController(formService) {
@@ -22921,9 +23460,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "json.html";
 	    }
 	    SWFormFieldJson.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldJson(coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWFormFieldJson(coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
 	            'hibachiPathBuilder'
@@ -22936,12 +23473,13 @@
 
 
 /***/ }),
-/* 181 */
+/* 188 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWFormFieldSearchSelect = (function () {
 	    function SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
@@ -23039,9 +23577,7 @@
 	        };
 	    }
 	    SWFormFieldSearchSelect.Factory = function () {
-	        var directive = function ($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) { return new SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$log',
@@ -23058,12 +23594,13 @@
 
 
 /***/ }),
-/* 182 */
+/* 189 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWFormRegistrar = (function () {
 	    //@ngInject
 	    function SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder) {
@@ -23110,9 +23647,7 @@
 	        };
 	    }
 	    SWFormRegistrar.Factory = function () {
-	        var directive = function (formService, coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (formService, coreFormPartialsPath, hibachiPathBuilder) { return new SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'formService',
 	            'coreFormPartialsPath',
@@ -23128,12 +23663,13 @@
 
 
 /***/ }),
-/* 183 */
+/* 190 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWErrorDisplayController = (function () {
 	    //@ngInject
 	    function SWErrorDisplayController($injector) {
@@ -23189,9 +23725,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "errordisplay.html";
 	    }
 	    SWErrorDisplay.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWErrorDisplay(coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWErrorDisplay(coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
 	            'hibachiPathBuilder'
@@ -23204,10 +23738,11 @@
 
 
 /***/ }),
-/* 184 */
+/* 191 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddressFormController = (function () {
@@ -23284,9 +23819,7 @@
 	     * Handles injecting the partials path into this class
 	     */
 	    SWAddressForm.Factory = function () {
-	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
-	            return new SWAddressForm(coreFormPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) { return new SWAddressForm(coreFormPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
@@ -23296,10 +23829,11 @@
 
 
 /***/ }),
-/* 185 */
+/* 192 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWPropertyDisplayController = (function () {
 	    //@ngInject
 	    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, listingService) {
@@ -23594,44 +24128,49 @@
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + swpropertyPartialPath;
 	    }
 	    SWPropertyDisplay.Factory = function (swpropertyClass, swpropertyPartialPath) {
-	        var directive = function ($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder) {
-	            return new swpropertyClass($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, 
-	            //not an inejctable don't add to $inject. This is in the form.module Factory implementation
-	            swpropertyPartialPath);
-	        };
+	        var directive = function ($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder) { return new swpropertyClass($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, 
+	        //not an inejctable don't add to $inject. This is in the form.module Factory implementation
+	        swpropertyPartialPath); };
 	        directive.$inject = ['$compile', 'scopeService', 'coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
-	    SWPropertyDisplay.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	    return SWPropertyDisplay;
 	}());
+	SWPropertyDisplay.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	exports.SWPropertyDisplay = SWPropertyDisplay;
 
 
 /***/ }),
-/* 186 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var swpropertydisplay_1 = __webpack_require__(185);
+	var swpropertydisplay_1 = __webpack_require__(192);
 	var SWFPropertyDisplayController = (function (_super) {
 	    __extends(SWFPropertyDisplayController, _super);
 	    //@ngInject
 	    function SWFPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService) {
-	        _super.call(this, $filter, utilityService, $injector, metadataService, observerService);
-	        this.$filter = $filter;
-	        this.utilityService = utilityService;
-	        this.$injector = $injector;
-	        this.metadataService = metadataService;
-	        this.observerService = observerService;
-	        this.editing = true;
+	        var _this = _super.call(this, $filter, utilityService, $injector, metadataService, observerService) || this;
+	        _this.$filter = $filter;
+	        _this.utilityService = utilityService;
+	        _this.$injector = $injector;
+	        _this.metadataService = metadataService;
+	        _this.observerService = observerService;
+	        _this.editing = true;
+	        return _this;
 	    }
 	    return SWFPropertyDisplayController;
 	}(swpropertydisplay_1.SWPropertyDisplayController));
@@ -23640,16 +24179,17 @@
 	    __extends(SWFPropertyDisplay, _super);
 	    //@ngInject
 	    function SWFPropertyDisplay($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath) {
-	        _super.call(this, $compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath);
-	        this.$compile = $compile;
-	        this.scopeService = scopeService;
-	        this.coreFormPartialsPath = coreFormPartialsPath;
-	        this.hibachiPathBuilder = hibachiPathBuilder;
-	        this.swpropertyPartialPath = swpropertyPartialPath;
-	        this.controller = SWFPropertyDisplayController;
-	        this.controllerAs = "swfPropertyDisplay";
-	        this.link = function (scope, element, attrs) {
+	        var _this = _super.call(this, $compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath) || this;
+	        _this.$compile = $compile;
+	        _this.scopeService = scopeService;
+	        _this.coreFormPartialsPath = coreFormPartialsPath;
+	        _this.hibachiPathBuilder = hibachiPathBuilder;
+	        _this.swpropertyPartialPath = swpropertyPartialPath;
+	        _this.controller = SWFPropertyDisplayController;
+	        _this.controllerAs = "swfPropertyDisplay";
+	        _this.link = function (scope, element, attrs) {
 	        };
+	        return _this;
 	    }
 	    return SWFPropertyDisplay;
 	}(swpropertydisplay_1.SWPropertyDisplay));
@@ -23657,10 +24197,11 @@
 
 
 /***/ }),
-/* 187 */
+/* 194 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWFormSubscriberController = (function () {
 	    //@ngInject
 	    function SWFormSubscriberController($log, $compile, $hibachi, utilityService, rbkeyService, $injector) {
@@ -23735,9 +24276,7 @@
 	        };
 	    }
 	    SWFormSubscriber.Factory = function () {
-	        var directive = function () {
-	            return new SWFormSubscriber();
-	        };
+	        var directive = function () { return new SWFormSubscriber(); };
 	        directive.$inject = [];
 	        return directive;
 	    };
@@ -23747,30 +24286,31 @@
 
 
 /***/ }),
-/* 188 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//components
-	var swvalidate_1 = __webpack_require__(189);
-	var swvalidationminlength_1 = __webpack_require__(190);
-	var swvalidationdatatype_1 = __webpack_require__(191);
-	var swvalidationeq_1 = __webpack_require__(192);
-	var swvalidationgte_1 = __webpack_require__(193);
-	var swvalidationlte_1 = __webpack_require__(194);
-	var swvalidationmaxlength_1 = __webpack_require__(195);
-	var swvalidationmaxvalue_1 = __webpack_require__(196);
-	var swvalidationminvalue_1 = __webpack_require__(197);
-	var swvalidationneq_1 = __webpack_require__(198);
-	var swvalidationnumeric_1 = __webpack_require__(199);
-	var swvalidationregex_1 = __webpack_require__(200);
-	var swvalidationrequired_1 = __webpack_require__(201);
-	var swvalidationunique_1 = __webpack_require__(202);
-	var swvalidationuniqueornull_1 = __webpack_require__(203);
+	var swvalidate_1 = __webpack_require__(196);
+	var swvalidationminlength_1 = __webpack_require__(197);
+	var swvalidationdatatype_1 = __webpack_require__(198);
+	var swvalidationeq_1 = __webpack_require__(199);
+	var swvalidationgte_1 = __webpack_require__(200);
+	var swvalidationlte_1 = __webpack_require__(201);
+	var swvalidationmaxlength_1 = __webpack_require__(202);
+	var swvalidationmaxvalue_1 = __webpack_require__(203);
+	var swvalidationminvalue_1 = __webpack_require__(204);
+	var swvalidationneq_1 = __webpack_require__(205);
+	var swvalidationnumeric_1 = __webpack_require__(206);
+	var swvalidationregex_1 = __webpack_require__(207);
+	var swvalidationrequired_1 = __webpack_require__(208);
+	var swvalidationunique_1 = __webpack_require__(209);
+	var swvalidationuniqueornull_1 = __webpack_require__(210);
 	//services
-	var validationservice_1 = __webpack_require__(204);
+	var validationservice_1 = __webpack_require__(211);
 	var core_module_1 = __webpack_require__(16);
 	var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -23795,9 +24335,10 @@
 
 
 /***/ }),
-/* 189 */
+/* 196 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
@@ -23806,7 +24347,7 @@
 	 */
 	// 'use strict';
 	// angular.module('slatwalladmin').directive('swValidate',
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	// [ '$log','$hibachi', function($log, $hibachi) {
 	var SWValidate = (function () {
 	    function SWValidate($log, $hibachi) {
@@ -24182,10 +24723,11 @@
 
 
 /***/ }),
-/* 190 */
+/* 197 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationMinLength = (function () {
 	    function SWValidationMinLength($log, validationService) {
 	        return {
@@ -24214,10 +24756,11 @@
 
 
 /***/ }),
-/* 191 */
+/* 198 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationDataType = (function () {
 	    //@ngInject
 	    function SWValidationDataType(validationService) {
@@ -24234,9 +24777,7 @@
 	        };
 	    }
 	    SWValidationDataType.Factory = function () {
-	        var directive = function (validationService) {
-	            return new SWValidationDataType(validationService);
-	        };
+	        var directive = function (validationService) { return new SWValidationDataType(validationService); };
 	        directive.$inject = ['validationService'];
 	        return directive;
 	    };
@@ -24246,10 +24787,11 @@
 
 
 /***/ }),
-/* 192 */
+/* 199 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationEq = (function () {
 	    //@ngInject
 	    function SWValidationEq(validationService) {
@@ -24265,9 +24807,7 @@
 	        };
 	    }
 	    SWValidationEq.Factory = function () {
-	        var directive = function (validationService) {
-	            return new SWValidationEq(validationService);
-	        };
+	        var directive = function (validationService) { return new SWValidationEq(validationService); };
 	        directive.$inject = [
 	            'validationService'
 	        ];
@@ -24279,10 +24819,11 @@
 
 
 /***/ }),
-/* 193 */
+/* 200 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationGte = (function () {
 	    function SWValidationGte(validationService) {
 	        return {
@@ -24307,10 +24848,11 @@
 
 
 /***/ }),
-/* 194 */
+/* 201 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationLte = (function () {
 	    function SWValidationLte(validationService) {
 	        return {
@@ -24335,10 +24877,11 @@
 
 
 /***/ }),
-/* 195 */
+/* 202 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationMaxLength = (function () {
 	    function SWValidationMaxLength(validationService) {
 	        return {
@@ -24367,10 +24910,11 @@
 
 
 /***/ }),
-/* 196 */
+/* 203 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationMaxValue = (function () {
 	    function SWValidationMaxValue(validationService) {
 	        return {
@@ -24398,10 +24942,11 @@
 
 
 /***/ }),
-/* 197 */
+/* 204 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationMinValue = (function () {
 	    function SWValidationMinValue(validationService) {
 	        return {
@@ -24429,10 +24974,11 @@
 
 
 /***/ }),
-/* 198 */
+/* 205 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationNeq = (function () {
 	    function SWValidationNeq(validationService) {
 	        return {
@@ -24457,10 +25003,11 @@
 
 
 /***/ }),
-/* 199 */
+/* 206 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationNumeric = (function () {
 	    function SWValidationNumeric(validationService) {
 	        return {
@@ -24485,10 +25032,11 @@
 
 
 /***/ }),
-/* 200 */
+/* 207 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationRegex = (function () {
 	    function SWValidationRegex(validationService) {
 	        return {
@@ -24514,10 +25062,11 @@
 
 
 /***/ }),
-/* 201 */
+/* 208 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationRequired = (function () {
 	    //@ngInject
 	    function SWValidationRequired(validationService) {
@@ -24549,10 +25098,11 @@
 
 
 /***/ }),
-/* 202 */
+/* 209 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationUnique = (function () {
 	    //@ngInject
 	    function SWValidationUnique($http, $q, $hibachi, $log, validationService) {
@@ -24580,10 +25130,11 @@
 
 
 /***/ }),
-/* 203 */
+/* 210 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWValidationUniqueOrNull = (function () {
 	    //@ngInject
 	    function SWValidationUniqueOrNull($http, $q, $hibachi, $log, validationService) {
@@ -24610,13 +25161,14 @@
 
 
 /***/ }),
-/* 204 */
+/* 211 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ValidationService = (function () {
 	    //@ngInject
 	    function ValidationService($hibachi, $q) {
@@ -24762,28 +25314,29 @@
 
 
 /***/ }),
-/* 205 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(206);
-	var scheduleservice_1 = __webpack_require__(207);
+	var workflowconditionservice_1 = __webpack_require__(213);
+	var scheduleservice_1 = __webpack_require__(214);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(208);
-	var swworkflowbasic_1 = __webpack_require__(209);
-	var swworkflowcondition_1 = __webpack_require__(210);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(211);
-	var swworkflowconditiongroups_1 = __webpack_require__(212);
-	var swworkflowtask_1 = __webpack_require__(213);
-	var swworkflowtaskactions_1 = __webpack_require__(214);
-	var swworkflowtasks_1 = __webpack_require__(215);
-	var swworkflowtrigger_1 = __webpack_require__(216);
-	var swworkflowtriggers_1 = __webpack_require__(217);
-	var swworkflowtriggerhistory_1 = __webpack_require__(218);
-	var swschedulepreview_1 = __webpack_require__(219);
+	var swadmincreatesuperuser_1 = __webpack_require__(215);
+	var swworkflowbasic_1 = __webpack_require__(216);
+	var swworkflowcondition_1 = __webpack_require__(217);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(218);
+	var swworkflowconditiongroups_1 = __webpack_require__(219);
+	var swworkflowtask_1 = __webpack_require__(220);
+	var swworkflowtaskactions_1 = __webpack_require__(221);
+	var swworkflowtasks_1 = __webpack_require__(222);
+	var swworkflowtrigger_1 = __webpack_require__(223);
+	var swworkflowtriggers_1 = __webpack_require__(224);
+	var swworkflowtriggerhistory_1 = __webpack_require__(225);
+	var swschedulepreview_1 = __webpack_require__(226);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
@@ -24806,12 +25359,13 @@
 
 
 /***/ }),
-/* 206 */
+/* 213 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var WorkflowCondition = (function () {
 	    function WorkflowCondition() {
 	        this.propertyIdentifer = "";
@@ -24855,22 +25409,28 @@
 	            group.push(groupItem);
 	        };
 	    }
-	    WorkflowConditionService.$inject = ["$log", "$hibachi", "alertService"];
 	    return WorkflowConditionService;
 	}());
+	WorkflowConditionService.$inject = ["$log", "$hibachi", "alertService"];
 	exports.WorkflowConditionService = WorkflowConditionService;
 
 
 /***/ }),
-/* 207 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
+	var __extends = (this && this.__extends) || (function () {
+	    var extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return function (d, b) {
+	        extendStatics(d, b);
+	        function __() { this.constructor = d; }
+	        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	    };
+	})();
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var baseentityservice_1 = __webpack_require__(22);
@@ -24878,16 +25438,15 @@
 	    __extends(ScheduleService, _super);
 	    //@ngInject
 	    function ScheduleService($injector, $hibachi, utilityService) {
-	        var _this = this;
-	        _super.call(this, $injector, $hibachi, utilityService, 'Schedule');
-	        this.$injector = $injector;
-	        this.$hibachi = $hibachi;
-	        this.utilityService = utilityService;
-	        this.schedulePreview = {};
-	        this.clearSchedulePreview = function () {
+	        var _this = _super.call(this, $injector, $hibachi, utilityService, 'Schedule') || this;
+	        _this.$injector = $injector;
+	        _this.$hibachi = $hibachi;
+	        _this.utilityService = utilityService;
+	        _this.schedulePreview = {};
+	        _this.clearSchedulePreview = function () {
 	            _this.schedulePreview = {};
 	        };
-	        this.addSchedulePreviewItem = function (cdate, longMonthName) {
+	        _this.addSchedulePreviewItem = function (cdate, longMonthName) {
 	            if (longMonthName === void 0) { longMonthName = true; }
 	            var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	            var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -24904,7 +25463,7 @@
 	            }
 	            _this.schedulePreview[currentDate].times.push(cdate.toLocaleTimeString());
 	        };
-	        this.buildSchedulePreview = function (scheduleObject, totalOfPreviews) {
+	        _this.buildSchedulePreview = function (scheduleObject, totalOfPreviews) {
 	            if (totalOfPreviews === void 0) { totalOfPreviews = 10; }
 	            _this.clearSchedulePreview();
 	            var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
@@ -24957,6 +25516,7 @@
 	            }
 	            return _this.schedulePreview;
 	        };
+	        return _this;
 	    }
 	    return ScheduleService;
 	}(baseentityservice_1.BaseEntityService));
@@ -24964,10 +25524,11 @@
 
 
 /***/ }),
-/* 208 */
+/* 215 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAdminCreateSuperUser = (function () {
@@ -24982,9 +25543,7 @@
 	        };
 	    }
 	    SWAdminCreateSuperUser.Factory = function () {
-	        var directive = function ($log, $hibachi, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, workflowPartialsPath, hibachiPathBuilder) { return new SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -24999,10 +25558,11 @@
 
 
 /***/ }),
-/* 209 */
+/* 216 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowBasic = (function () {
@@ -25018,9 +25578,7 @@
 	        };
 	    }
 	    SWWorkflowBasic.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
@@ -25037,10 +25595,11 @@
 
 
 /***/ }),
-/* 210 */
+/* 217 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowCondition = (function () {
@@ -25140,9 +25699,7 @@
 	        };
 	    }
 	    SWWorkflowCondition.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
@@ -25160,10 +25717,11 @@
 
 
 /***/ }),
-/* 211 */
+/* 218 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowConditionGroupItem = (function () {
@@ -25176,9 +25734,7 @@
 	        };
 	    }
 	    SWWorkflowConditionGroupItem.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowConditionGroupItem($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowConditionGroupItem($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
@@ -25195,10 +25751,11 @@
 
 
 /***/ }),
-/* 212 */
+/* 219 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowConditionGroups = (function () {
@@ -25228,9 +25785,7 @@
 	        };
 	    }
 	    SWWorkflowConditionGroups.Factory = function () {
-	        var directive = function ($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'workflowConditionService',
@@ -25245,10 +25800,11 @@
 
 
 /***/ }),
-/* 213 */
+/* 220 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTask = (function () {
@@ -25277,9 +25833,7 @@
 	        };
 	    }
 	    SWWorkflowTask.Factory = function () {
-	        var directive = function ($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
@@ -25298,12 +25852,13 @@
 
 
 /***/ }),
-/* 214 */
+/* 221 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWWorkflowTaskActionsController = (function () {
 	    //@ngInject
 	    function SWWorkflowTaskActionsController($scope, $log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, observerService) {
@@ -25558,23 +26113,22 @@
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "workflowtaskactions.html";
 	    }
 	    SWWorkflowTaskActions.Factory = function () {
-	        var directive = function (workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowTaskActions(workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowTaskActions(workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
-	    SWWorkflowTaskActions.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	    return SWWorkflowTaskActions;
 	}());
+	SWWorkflowTaskActions.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ }),
-/* 215 */
+/* 222 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
@@ -25746,9 +26300,7 @@
 	        };
 	    }
 	    SWWorkflowTasks.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowTasks($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) { return new SWWorkflowTasks($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -25764,10 +26316,11 @@
 
 
 /***/ }),
-/* 216 */
+/* 223 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTrigger = (function () {
@@ -25843,9 +26396,7 @@
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService) {
-	            return new SWWorkflowTrigger($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService);
-	        };
+	        var directive = function ($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService) { return new SWWorkflowTrigger($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService); };
 	        directive.$inject = [
 	            '$http',
 	            '$hibachi',
@@ -25863,10 +26414,11 @@
 
 
 /***/ }),
-/* 217 */
+/* 224 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTriggers = (function () {
@@ -26120,9 +26672,7 @@
 	        };
 	    }
 	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout) {
-	            return new SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout);
-	        };
+	        var directive = function ($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout) { return new SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'workflowPartialsPath',
@@ -26142,10 +26692,11 @@
 
 
 /***/ }),
-/* 218 */
+/* 225 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTriggerHistory = (function () {
@@ -26162,9 +26713,7 @@
 	        };
 	    }
 	    SWWorkflowTriggerHistory.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) {
-	            return new SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope);
-	        };
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) { return new SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope); };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
@@ -26182,10 +26731,11 @@
 
 
 /***/ }),
-/* 219 */
+/* 226 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSchedulePreviewController = (function () {
@@ -26207,25 +26757,24 @@
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "schedulepreview.html";
 	    }
 	    SWSchedulePreview.Factory = function () {
-	        var directive = function (workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWSchedulePreview(workflowPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (workflowPartialsPath, hibachiPathBuilder) { return new SWSchedulePreview(workflowPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
-	    SWSchedulePreview.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	    return SWSchedulePreview;
 	}());
+	SWSchedulePreview.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	exports.SWSchedulePreview = SWSchedulePreview;
 
 
 /***/ }),
-/* 220 */
+/* 227 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWSaveAndFinishController = (function () {
 	    //@ngInject
 	    function SWSaveAndFinishController($hibachi, dialogService, alertService, rbkeyService, $log) {
@@ -26318,9 +26867,7 @@
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
 	    }
 	    SWSaveAndFinish.Factory = function () {
-	        var directive = function (hibachiPartialsPath, hibachiPathBuilder) {
-	            return new SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder);
-	        };
+	        var directive = function (hibachiPartialsPath, hibachiPathBuilder) { return new SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder); };
 	        directive.$inject = ["hibachiPartialsPath", "hibachiPathBuilder"];
 	        return directive;
 	    };
@@ -26330,10 +26877,11 @@
 
 
 /***/ }),
-/* 221 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
@@ -26341,12 +26889,12 @@
 	//services
 	//filters
 	//directives
-	var swcontentbasic_1 = __webpack_require__(222);
-	var swcontenteditor_1 = __webpack_require__(223);
-	var swcontentlist_1 = __webpack_require__(224);
-	var swcontentnode_1 = __webpack_require__(225);
-	var swassignedproducts_1 = __webpack_require__(226);
-	var swsiteselector_1 = __webpack_require__(227);
+	var swcontentbasic_1 = __webpack_require__(229);
+	var swcontenteditor_1 = __webpack_require__(230);
+	var swcontentlist_1 = __webpack_require__(231);
+	var swcontentnode_1 = __webpack_require__(232);
+	var swassignedproducts_1 = __webpack_require__(233);
+	var swsiteselector_1 = __webpack_require__(234);
 	var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
@@ -26360,12 +26908,13 @@
 
 
 /***/ }),
-/* 222 */
+/* 229 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWContentBasic = (function () {
 	    function SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) {
 	        return {
@@ -26418,9 +26967,7 @@
 	        };
 	    }
 	    SWContentBasic.Factory = function () {
-	        var directive = function ($log, $routeParams, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) {
-	            return new SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $routeParams, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) { return new SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$routeParams',
@@ -26437,10 +26984,11 @@
 
 
 /***/ }),
-/* 223 */
+/* 230 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWContentEditor = (function () {
@@ -26478,9 +27026,7 @@
 	        };
 	    }
 	    SWContentEditor.Factory = function () {
-	        var directive = function ($log, $location, $http, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) {
-	            return new SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $location, $http, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) { return new SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
@@ -26498,10 +27044,11 @@
 
 
 /***/ }),
-/* 224 */
+/* 231 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWContentListController = (function () {
@@ -26722,9 +27269,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + 'contentlist.html';
 	    }
 	    SWContentList.Factory = function () {
-	        var directive = function (contentPartialsPath, observerService, slatwallPathBuilder) {
-	            return new SWContentList(contentPartialsPath, observerService, slatwallPathBuilder);
-	        };
+	        var directive = function (contentPartialsPath, observerService, slatwallPathBuilder) { return new SWContentList(contentPartialsPath, observerService, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'contentPartialsPath',
 	            'observerService',
@@ -26738,12 +27283,13 @@
 
 
 /***/ }),
-/* 225 */
+/* 232 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWContentNode = (function () {
 	    function SWContentNode($log, $compile, $hibachi, contentPartialsPath, slatwallPathBuilder) {
 	        return {
@@ -26863,9 +27409,7 @@
 	        };
 	    }
 	    SWContentNode.Factory = function () {
-	        var directive = function ($log, $compile, $hibachi, contentPartialsPath, slatwallPathBuilder) {
-	            return new SWContentNode($log, $compile, $hibachi, contentPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $compile, $hibachi, contentPartialsPath, slatwallPathBuilder) { return new SWContentNode($log, $compile, $hibachi, contentPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$compile',
@@ -26881,12 +27425,13 @@
 
 
 /***/ }),
-/* 226 */
+/* 233 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWAssignedProductsController = (function () {
 	    //@ngInject
 	    function SWAssignedProductsController(collectionConfigService, utilityService) {
@@ -26925,9 +27470,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + "/assignedproducts.html";
 	    }
 	    SWAssignedProducts.Factory = function () {
-	        var directive = function ($http, $hibachi, paginationService, contentPartialsPath, slatwallPathBuilder) {
-	            return new SWAssignedProducts($http, $hibachi, paginationService, contentPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $hibachi, paginationService, contentPartialsPath, slatwallPathBuilder) { return new SWAssignedProducts($http, $hibachi, paginationService, contentPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$hibachi',
@@ -26943,12 +27486,13 @@
 
 
 /***/ }),
-/* 227 */
+/* 234 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWSiteSelectorController = (function () {
 	    //@ngInject
 	    function SWSiteSelectorController(collectionConfigService, listingService, localStorageService, typeaheadService, utilityService) {
@@ -27066,9 +27610,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + "/siteselector.html";
 	    }
 	    SWSiteSelector.Factory = function () {
-	        var directive = function ($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder) {
-	            return new SWSiteSelector($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder) { return new SWSiteSelector($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$hibachi',
@@ -27085,17 +27627,18 @@
 
 
 /***/ }),
-/* 228 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//controllers
 	//directives
-	var swformresponselisting_1 = __webpack_require__(229);
+	var swformresponselisting_1 = __webpack_require__(236);
 	//models
 	var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
 	    .config([function () {
@@ -27107,12 +27650,13 @@
 
 
 /***/ }),
-/* 229 */
+/* 236 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWFormResponseListingController = (function () {
 	    //@ngInject
 	    function SWFormResponseListingController($filter, $http, $hibachi, paginationService, requestService) {
@@ -27193,9 +27737,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(formBuilderPartialsPath) + "/formresponselisting.html";
 	    }
 	    SWFormResponseListing.Factory = function () {
-	        var directive = function ($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder) {
-	            return new SWFormResponseListing($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder) { return new SWFormResponseListing($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$hibachi',
@@ -27211,25 +27753,26 @@
 
 
 /***/ }),
-/* 230 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//controllers
-	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(231);
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(238);
 	//directives
-	var swaddorderitemgiftrecipient_1 = __webpack_require__(232);
-	var swgiftcardbalance_1 = __webpack_require__(234);
-	var swgiftcarddetail_1 = __webpack_require__(235);
-	var swgiftcardhistory_1 = __webpack_require__(236);
-	var swgiftcardoverview_1 = __webpack_require__(237);
-	var swgiftcardorderinfo_1 = __webpack_require__(238);
-	var swgiftcardrecipientinfo_1 = __webpack_require__(239);
-	var sworderitemgiftrecipientrow_1 = __webpack_require__(240);
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(239);
+	var swgiftcardbalance_1 = __webpack_require__(241);
+	var swgiftcarddetail_1 = __webpack_require__(242);
+	var swgiftcardhistory_1 = __webpack_require__(243);
+	var swgiftcardoverview_1 = __webpack_require__(244);
+	var swgiftcardorderinfo_1 = __webpack_require__(245);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(246);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(247);
 	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -27248,10 +27791,11 @@
 
 
 /***/ }),
-/* 231 */
+/* 238 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var OrderItemGiftRecipientControl = (function () {
 	    //@ngInject
 	    function OrderItemGiftRecipientControl($scope, $hibachi) {
@@ -27285,20 +27829,21 @@
 	        this.searchText = "";
 	        var count = 1;
 	    }
-	    OrderItemGiftRecipientControl.$inject = ["$scope", "$hibachi"];
 	    return OrderItemGiftRecipientControl;
 	}());
+	OrderItemGiftRecipientControl.$inject = ["$scope", "$hibachi"];
 	exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
 /***/ }),
-/* 232 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(233);
+	var giftrecipient_1 = __webpack_require__(240);
 	var SWAddOrderItemRecipientController = (function () {
 	    //@ngInject
 	    function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
@@ -27442,9 +27987,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
 	    }
 	    SWAddOrderItemGiftRecipient.Factory = function () {
-	        var directive = function ($hibachi, giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, giftCardPartialsPath, slatwallPathBuilder) { return new SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'giftCardPartialsPath',
@@ -27452,17 +27995,18 @@
 	        ];
 	        return directive;
 	    };
-	    SWAddOrderItemGiftRecipient.$inject = ["$hibachi"];
 	    return SWAddOrderItemGiftRecipient;
 	}());
+	SWAddOrderItemGiftRecipient.$inject = ["$hibachi"];
 	exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
 /***/ }),
-/* 233 */
+/* 240 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var GiftRecipient = (function () {
@@ -27486,10 +28030,11 @@
 
 
 /***/ }),
-/* 234 */
+/* 241 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWGiftCardBalanceController = (function () {
@@ -27524,9 +28069,9 @@
 	        };
 	        this.init();
 	    }
-	    SWGiftCardBalanceController.$inject = ["collectionConfigService"];
 	    return SWGiftCardBalanceController;
 	}());
+	SWGiftCardBalanceController.$inject = ["collectionConfigService"];
 	exports.SWGiftCardBalanceController = SWGiftCardBalanceController;
 	var SWGiftCardBalance = (function () {
 	    function SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
@@ -27549,9 +28094,7 @@
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardBalance.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) { return new SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
@@ -27565,10 +28108,11 @@
 
 
 /***/ }),
-/* 235 */
+/* 242 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWGiftCardDetailController = (function () {
@@ -27586,9 +28130,9 @@
 	        };
 	        this.init();
 	    }
-	    SWGiftCardDetailController.$inject = ["collectionConfigService"];
 	    return SWGiftCardDetailController;
 	}());
+	SWGiftCardDetailController.$inject = ["collectionConfigService"];
 	exports.SWGiftCardDetailController = SWGiftCardDetailController;
 	var SWGiftCardDetail = (function () {
 	    function SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
@@ -27608,9 +28152,7 @@
 	        this.restrict = "E";
 	    }
 	    SWGiftCardDetail.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) { return new SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
@@ -27624,10 +28166,11 @@
 
 
 /***/ }),
-/* 236 */
+/* 243 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWGiftCardHistoryController = (function () {
@@ -27738,9 +28281,7 @@
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardHistory.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) { return new SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
@@ -27754,10 +28295,11 @@
 
 
 /***/ }),
-/* 237 */
+/* 244 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWGiftCardOverviewController = (function () {
@@ -27780,9 +28322,7 @@
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardOverview.Factory = function () {
-	        var directive = function (giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWGiftCardOverview(giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (giftCardPartialsPath, slatwallPathBuilder) { return new SWGiftCardOverview(giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'giftCardPartialsPath',
 	            'slatwallPathBuilder'
@@ -27795,10 +28335,11 @@
 
 
 /***/ }),
-/* 238 */
+/* 245 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWGiftCardOrderInfoController = (function () {
@@ -27816,9 +28357,9 @@
 	        };
 	        this.init();
 	    }
-	    SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
 	    return SWGiftCardOrderInfoController;
 	}());
+	SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
 	exports.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
 	var SWGiftCardOrderInfo = (function () {
 	    function SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
@@ -27838,9 +28379,7 @@
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardOrderInfo.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) { return new SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
@@ -27848,17 +28387,18 @@
 	        ];
 	        return directive;
 	    };
-	    SWGiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
 	    return SWGiftCardOrderInfo;
 	}());
+	SWGiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
 	exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
 /***/ }),
-/* 239 */
+/* 246 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWGiftCardRecipientInfoController = (function () {
@@ -27886,9 +28426,7 @@
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardRecipientInfo.Factory = function () {
-	        var directive = function (giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWGiftCardRecipientInfo(giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (giftCardPartialsPath, slatwallPathBuilder) { return new SWGiftCardRecipientInfo(giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'giftCardPartialsPath',
 	            'slatwallPathBuilder'
@@ -27901,10 +28439,11 @@
 
 
 /***/ }),
-/* 240 */
+/* 247 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItemGiftRecipientRowController = (function () {
@@ -27994,9 +28533,7 @@
 	        this.init();
 	    }
 	    SWOrderItemGiftRecipientRow.Factory = function () {
-	        var directive = function (giftCardPartialsPath, slatwallPathBuilder) {
-	            return new SWOrderItemGiftRecipientRow(giftCardPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (giftCardPartialsPath, slatwallPathBuilder) { return new SWOrderItemGiftRecipientRow(giftCardPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'giftCardPartialsPath',
 	            'slatwallPathBuilder'
@@ -28009,18 +28546,19 @@
 
 
 /***/ }),
-/* 241 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//controllers
 	//directives
-	var swaddoptiongroup_1 = __webpack_require__(242);
-	var swoptionsforoptiongroup_1 = __webpack_require__(243);
+	var swaddoptiongroup_1 = __webpack_require__(249);
+	var swoptionsforoptiongroup_1 = __webpack_require__(250);
 	var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -28032,12 +28570,13 @@
 
 
 /***/ }),
-/* 242 */
+/* 249 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var optionWithGroup = (function () {
 	    function optionWithGroup(optionID, optionGroupID, match) {
 	        var _this = this;
@@ -28182,9 +28721,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";
 	    }
 	    SWAddOptionGroup.Factory = function () {
-	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder) {
-	            return new SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder) { return new SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            '$timeout',
@@ -28201,10 +28738,11 @@
 
 
 /***/ }),
-/* 243 */
+/* 250 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOptionsForOptionGroupController = (function () {
@@ -28255,9 +28793,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "optionsforoptiongroup.html";
 	    }
 	    SWOptionsForOptionGroup.Factory = function () {
-	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder) {
-	            return new SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder) { return new SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            '$timeout',
@@ -28274,20 +28810,21 @@
 
 
 /***/ }),
-/* 244 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
 	var core_module_1 = __webpack_require__(16);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(245);
-	var sworderitem_1 = __webpack_require__(246);
-	var swoishippinglabelstamp_1 = __webpack_require__(247);
-	var sworderitemdetailstamp_1 = __webpack_require__(248);
-	var sworderitems_1 = __webpack_require__(249);
-	var swresizedimage_1 = __webpack_require__(250);
+	var swchildorderitem_1 = __webpack_require__(252);
+	var sworderitem_1 = __webpack_require__(253);
+	var swoishippinglabelstamp_1 = __webpack_require__(254);
+	var sworderitemdetailstamp_1 = __webpack_require__(255);
+	var sworderitems_1 = __webpack_require__(256);
+	var swresizedimage_1 = __webpack_require__(257);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -28302,10 +28839,11 @@
 
 
 /***/ }),
-/* 245 */
+/* 252 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWChildOrderItem = (function () {
@@ -28573,9 +29111,7 @@
 	        };
 	    }
 	    SWChildOrderItem.Factory = function () {
-	        var directive = function ($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
-	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) { return new SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$http',
@@ -28593,10 +29129,11 @@
 
 
 /***/ }),
-/* 246 */
+/* 253 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItem = (function () {
@@ -28669,7 +29206,8 @@
 	                            "isVisible": true,
 	                            "persistent": false,
 	                            "title": "Event Registrations"
-	                        }];
+	                        }
+	                    ];
 	                    var queueGroupsConfig = [
 	                        {
 	                            "filterGroup": [
@@ -28996,9 +29534,7 @@
 	        };
 	    }
 	    SWOrderItem.Factory = function () {
-	        var directive = function ($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
-	            return new SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) { return new SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$compile',
@@ -29016,10 +29552,11 @@
 
 
 /***/ }),
-/* 247 */
+/* 254 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
@@ -29044,9 +29581,7 @@
 	        };
 	    }
 	    SWOiShippingLabelStamp.Factory = function () {
-	        var directive = function ($log, orderItemPartialsPath, slatwallPathBuilder) {
-	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, orderItemPartialsPath, slatwallPathBuilder) { return new SWOiShippingLabelStamp($log, orderItemPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            'orderItemPartialsPath',
@@ -29060,10 +29595,11 @@
 
 
 /***/ }),
-/* 248 */
+/* 255 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
@@ -29156,9 +29692,7 @@
 	        };
 	    }
 	    SWOrderItemDetailStamp.Factory = function () {
-	        var directive = function ($log, $hibachi, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder) {
-	            return new SWOrderItemDetailStamp($log, $hibachi, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $hibachi, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder) { return new SWOrderItemDetailStamp($log, $hibachi, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
@@ -29174,10 +29708,11 @@
 
 
 /***/ }),
-/* 249 */
+/* 256 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItems = (function () {
@@ -29238,6 +29773,7 @@
 	                        for (var orderItem in scope.orderItems) {
 	                            $log.debug("OrderItem Product Type");
 	                            $log.debug(scope.orderItems);
+	                            //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
 	                        }
 	                        scope.paginator.setPageRecordsInfo(scope.collection);
 	                        scope.loadingCollection = false;
@@ -29294,9 +29830,7 @@
 	        };
 	    }
 	    SWOrderItems.Factory = function () {
-	        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService) {
-	            return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService);
-	        };
+	        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService) { return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService); };
 	        directive.$inject = [
 	            '$log',
 	            '$timeout',
@@ -29316,10 +29850,11 @@
 
 
 /***/ }),
-/* 250 */
+/* 257 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWResizedImage = (function () {
@@ -29344,9 +29879,7 @@
 	        };
 	    }
 	    SWResizedImage.Factory = function () {
-	        var directive = function ($http, $log, $q, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
-	            return new SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $log, $q, $hibachi, orderItemPartialsPath, slatwallPathBuilder) { return new SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http', '$log', '$q', '$hibachi', 'orderItemPartialsPath',
 	            'slatwallPathBuilder'
@@ -29359,19 +29892,20 @@
 
 
 /***/ }),
-/* 251 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var orderfulfillmentservice_1 = __webpack_require__(252);
+	var orderfulfillmentservice_1 = __webpack_require__(259);
 	//controllers
 	//directives
-	var sworderfulfillmentlist_1 = __webpack_require__(253);
+	var sworderfulfillmentlist_1 = __webpack_require__(260);
 	//models 
 	var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
 	    .config([function () {
@@ -29384,12 +29918,13 @@
 
 
 /***/ }),
-/* 252 */
+/* 259 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/**
 	 * Fulfillment List Controller
 	 */
@@ -29438,6 +29973,8 @@
 	        };
 	        /**
 	         * Creates a batch. This should use api:main.post with a context of process and an entityName instead of doAction.
+	         * The process object should have orderItemIdList or orderFulfillmentIDList defined and should have
+	         * optionally an accountID, and or locationID (or locationIDList).
 	         */
 	        this.addBatch = function (processObject) {
 	            if (processObject) {
@@ -29454,23 +29991,26 @@
 
 
 /***/ }),
-/* 253 */
+/* 260 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var FulfillmentsList;
 	(function (FulfillmentsList) {
+	    var Views;
 	    (function (Views) {
 	        Views[Views["Fulfillments"] = 0] = "Fulfillments";
 	        Views[Views["Items"] = 1] = "Items";
-	    })(FulfillmentsList.Views || (FulfillmentsList.Views = {}));
-	    var Views = FulfillmentsList.Views;
+	    })(Views = FulfillmentsList.Views || (FulfillmentsList.Views = {}));
+	    var ofisStatusType;
 	    (function (ofisStatusType) {
 	        ofisStatusType[ofisStatusType["unavailable"] = 0] = "unavailable";
 	        ofisStatusType[ofisStatusType["partial"] = 1] = "partial";
 	        ofisStatusType[ofisStatusType["available"] = 2] = "available";
-	    })(FulfillmentsList.ofisStatusType || (FulfillmentsList.ofisStatusType = {}));
-	    var ofisStatusType = FulfillmentsList.ofisStatusType;
+	    })(ofisStatusType = FulfillmentsList.ofisStatusType || (FulfillmentsList.ofisStatusType = {}));
 	})(FulfillmentsList || (FulfillmentsList = {}));
 	/**
 	 * Fulfillment List Controller
@@ -29515,20 +30055,6 @@
 	            }
 	        };
 	        /**
-	         * Add Instance Of string to list.
-	         */
-	        this.listAppend = function (str, subStr) {
-	            return _this.utilityService.listAppend(str, subStr, ",");
-	        };
-	        /**
-	         * Removes a substring from a string.
-	         * str: The original string.
-	         * subStr: The string to remove.
-	         */
-	        this.listRemove = function (str, subStr) {
-	            return _this.utilityService.listRemove(str, subStr);
-	        };
-	        /**
 	         * returns true if the action is selected
 	         */
 	        this.isSelected = function (test) {
@@ -29567,7 +30093,7 @@
 	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
 	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
 	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
-	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
 	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
 	        };
 	        /**
@@ -29581,7 +30107,7 @@
 	            _this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime");
 	            _this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
 	            _this.orderItemCollection.addDisplayProperty("sku.product.productName");
-	            _this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.typeName", "Fulfilled", "!=");
+	            _this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
 	            _this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
 	        };
 	        /**
@@ -29597,7 +30123,7 @@
 	        this.setView = function (view) {
 	            _this.view = view;
 	            if (_this.getCollectionByView(_this.getView())) {
-	                _this.refreshCollection(_this.getCollectionByView(_this.getView()));
+	                _this.refreshCollectionTotal(_this.getCollectionByView(_this.getView()));
 	            }
 	        };
 	        /**
@@ -29607,27 +30133,24 @@
 	            return _this.view;
 	        };
 	        /**
-	         * Initialized the collection so that the listingDisplay can you it to display its data. This needs to move to
-	         * to the hibachiIntercenptor and get handled on every request that is logged out.
-	         *
+	         * Refreshes the view
 	         */
-	        this.refreshCollection = function (collection) {
+	        this.refreshPage = function () {
+	            if (_this.utilityService.isMultiPageMode()) {
+	                console.log("MultiPageMode");
+	                window.location.reload();
+	            }
+	        };
+	        /**
+	         * Initialized the collection so that the listingDisplay can you it to display its data.
+	         */
+	        this.refreshCollectionTotal = function (collection) {
 	            if (collection) {
 	                collection.getEntity().then(function (response) {
-	                    if (!response) {
-	                        //redirect because probably logged out.
-	                        _this.redirect();
-	                    }
 	                    _this.total = response.recordsCount;
 	                });
 	                return collection;
 	            }
-	        };
-	        /**
-	         * Redirects the current page (to go to login) if the user tries to interacts with the view while not logged in.
-	         */
-	        this.redirect = function () {
-	            window.location.reload();
 	        };
 	        /**
 	         * Adds one of the status type filters into the collectionConfigService
@@ -29642,13 +30165,13 @@
 	                var filter = {};
 	                if (value == true) {
 	                    if (key == "partial") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Partial", "=", "OR", false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode", "ofisPartial", "=", "OR", false);
 	                    }
 	                    if (key == "available") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Available", "=", "OR", false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode", "ofisAvailable", "=", "OR", false);
 	                    }
 	                    if (key == "unavailable") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.typeName", "Unavailable", "=", "OR", false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode", "ofisUnavailable", "=", "OR", false);
 	                    }
 	                    if (key == "location") {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=", "OR", false);
@@ -29666,7 +30189,7 @@
 	                console.log("Adding orderItem Filters", _this.getCollectionByView(_this.getView()));
 	            }
 	            //Calls to auto refresh the collection since a filter was added.
-	            _this.refreshCollection(_this.getCollectionByView(_this.getView()));
+	            _this.refreshCollectionTotal(_this.getCollectionByView(_this.getView()));
 	        };
 	        /**
 	         * This applies or removes a location filter from the collection.
@@ -29681,7 +30204,7 @@
 	                //If this is the fulfillment collection, the location is against, stock.location
 	                currentCollection.addFilter("stock.location.locationID", locationID, "=");
 	            }
-	            _this.refreshCollection(currentCollection);
+	            _this.refreshCollectionTotal(currentCollection);
 	        };
 	        /**
 	         * Saved the batch using the data stored in the processObject. This delegates to the service method.
@@ -29782,7 +30305,7 @@
 	        //adds the two default filters to start.
 	        //this.addFilter('available', true);
 	        //this.addFilter('partial', true);
-	        var collection = this.refreshCollection(this.getCollectionByView(this.getView()));
+	        var collection = this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
 	        if (collection.entityName = "OrderFulfillment") {
 	            this.orderFulfillmentCollection = collection;
 	        }
@@ -29795,6 +30318,20 @@
 	        //This tells the typeaheadService to send us all of its events to our recieveNotification method.
 	        this.typeaheadService.registerObserver(this);
 	    }
+	    /**
+	     * Adds a string to a list.
+	     */
+	    SWOrderFulfillmentListController.prototype.listAppend = function (str, subStr) {
+	        return this.utilityService.listAppend(str, subStr, ",");
+	    };
+	    /**
+	     * Removes a substring from a string.
+	     * str: The original string.
+	     * subStr: The string to remove.
+	     */
+	    SWOrderFulfillmentListController.prototype.listRemove = function (str, subStr) {
+	        return this.utilityService.listRemove(str, subStr);
+	    };
 	    return SWOrderFulfillmentListController;
 	}());
 	exports.SWOrderFulfillmentListController = SWOrderFulfillmentListController;
@@ -29819,9 +30356,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderFulfillmentPartialsPath) + "orderfulfillmentlist.html";
 	    }
 	    SWOrderFulfillmentList.Factory = function () {
-	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, orderFulfillmentPartialsPath, slatwallPathBuilder) {
-	            return new SWOrderFulfillmentList($hibachi, $timeout, collectionConfigService, observerService, orderFulfillmentPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, orderFulfillmentPartialsPath, slatwallPathBuilder) { return new SWOrderFulfillmentList($hibachi, $timeout, collectionConfigService, observerService, orderFulfillmentPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            '$timeout',
@@ -29838,20 +30373,21 @@
 
 
 /***/ }),
-/* 254 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(255);
+	var preprocessproduct_create_1 = __webpack_require__(262);
 	//filters
 	//directives
-	var swproductlistingpages_1 = __webpack_require__(256);
+	var swproductlistingpages_1 = __webpack_require__(263);
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('productPartialsPath', 'product/components/')
@@ -29861,12 +30397,13 @@
 
 
 /***/ }),
-/* 255 */
+/* 262 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ProductCreateController = (function () {
 	    //@ngInject
 	    function ProductCreateController($q, $scope, $element, $log, $hibachi, collectionConfigService, selectionService, rbkeyService) {
@@ -29963,12 +30500,13 @@
 
 
 /***/ }),
-/* 256 */
+/* 263 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWProductListingPagesController = (function () {
 	    //@ngInject
 	    function SWProductListingPagesController(collectionConfigService, listingService, utilityService) {
@@ -30007,9 +30545,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productPartialsPath) + "/productlistingpages.html";
 	    }
 	    SWProductListingPages.Factory = function () {
-	        var directive = function ($http, $hibachi, paginationService, productPartialsPath, slatwallPathBuilder) {
-	            return new SWProductListingPages($http, $hibachi, paginationService, productPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $hibachi, paginationService, productPartialsPath, slatwallPathBuilder) { return new SWProductListingPages($http, $hibachi, paginationService, productPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$hibachi',
@@ -30025,23 +30561,24 @@
 
 
 /***/ }),
-/* 257 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(258);
+	var productbundleservice_1 = __webpack_require__(265);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(259);
+	var create_bundle_controller_1 = __webpack_require__(266);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(260);
-	var swproductbundlegroups_1 = __webpack_require__(261);
-	var swproductbundlegroup_1 = __webpack_require__(262);
-	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(263);
+	var swproductbundlegrouptype_1 = __webpack_require__(267);
+	var swproductbundlegroups_1 = __webpack_require__(268);
+	var swproductbundlegroup_1 = __webpack_require__(269);
+	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(270);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -30056,12 +30593,13 @@
 
 
 /***/ }),
-/* 258 */
+/* 265 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var ProductBundleService = (function () {
 	    //ngInject
 	    function ProductBundleService($log, $hibachi, utilityService) {
@@ -30140,10 +30678,11 @@
 
 
 /***/ }),
-/* 259 */
+/* 266 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var CreateBundleController = (function () {
@@ -30213,12 +30752,13 @@
 
 
 /***/ }),
-/* 260 */
+/* 267 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWProductBundleGroupType = (function () {
 	    function SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
 	        return {
@@ -30258,6 +30798,7 @@
 	                            productBundleGroupType.data.typeDescription = '';
 	                            productBundleGroupType.data.typeNameCode = '';
 	                            angular.extend($scope.productBundleGroup.data.productBundleGroupType, productBundleGroupType);
+	                            //formService.getForm('form.addProductBundleGroupType').$setDirty();
 	                        }
 	                    };
 	                    $scope.showAddProductBundleGroupTypeBtn = false;
@@ -30363,9 +30904,7 @@
 	        };
 	    }
 	    SWProductBundleGroupType.Factory = function () {
-	        var directive = function ($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
-	            return new SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) { return new SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$log',
@@ -30384,10 +30923,11 @@
 
 
 /***/ }),
-/* 261 */
+/* 268 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWProductBundleGroupsController = (function () {
@@ -30438,9 +30978,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html";
 	    }
 	    SWProductBundleGroups.Factory = function () {
-	        var directive = function ($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
-	            return new SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder);
-	        };
+	        var directive = function ($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) { return new SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$http',
 	            '$log',
@@ -30458,12 +30996,13 @@
 
 
 /***/ }),
-/* 262 */
+/* 269 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var CollectionFilterItem = (function () {
 	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
 	        this.name = name;
@@ -30636,9 +31175,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	    }
 	    SWProductBundleGroup.Factory = function () {
-	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
-	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) { return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
 	            "slatwallPathBuilder"
@@ -30651,12 +31188,13 @@
 
 
 /***/ }),
-/* 263 */
+/* 270 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var CollectionFilterItem = (function () {
 	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
 	        this.name = name;
@@ -30981,9 +31519,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlecollectionfilteritemtypeahead.html";
 	    }
 	    SWProductBundleCollectionFilterItemTypeahead.Factory = function () {
-	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
-	            return new SWProductBundleCollectionFilterItemTypeahead($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) { return new SWProductBundleCollectionFilterItemTypeahead($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
 	            "slatwallPathBuilder"
@@ -30996,31 +31532,32 @@
 
 
 /***/ }),
-/* 264 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var defaultskuservice_1 = __webpack_require__(265);
-	var skupriceservice_1 = __webpack_require__(266);
+	var defaultskuservice_1 = __webpack_require__(272);
+	var skupriceservice_1 = __webpack_require__(273);
 	//controllers
 	//directives
-	var swpricingmanager_1 = __webpack_require__(267);
-	var swimagedetailmodallauncher_1 = __webpack_require__(268);
-	var swaddskupricemodallauncher_1 = __webpack_require__(269);
-	var swdeleteskupricemodallauncher_1 = __webpack_require__(270);
-	var swskustockadjustmentmodallauncher_1 = __webpack_require__(271);
-	var swdefaultskuradio_1 = __webpack_require__(272);
-	var swskucurrencyselector_1 = __webpack_require__(273);
-	var swskupriceedit_1 = __webpack_require__(274);
-	var swskucodeedit_1 = __webpack_require__(275);
-	var swskupricesedit_1 = __webpack_require__(276);
-	var swskupricequantityedit_1 = __webpack_require__(277);
-	var swskuthumbnail_1 = __webpack_require__(278);
+	var swpricingmanager_1 = __webpack_require__(274);
+	var swimagedetailmodallauncher_1 = __webpack_require__(275);
+	var swaddskupricemodallauncher_1 = __webpack_require__(276);
+	var swdeleteskupricemodallauncher_1 = __webpack_require__(277);
+	var swskustockadjustmentmodallauncher_1 = __webpack_require__(278);
+	var swdefaultskuradio_1 = __webpack_require__(279);
+	var swskucurrencyselector_1 = __webpack_require__(280);
+	var swskupriceedit_1 = __webpack_require__(281);
+	var swskucodeedit_1 = __webpack_require__(282);
+	var swskupricesedit_1 = __webpack_require__(283);
+	var swskupricequantityedit_1 = __webpack_require__(284);
+	var swskuthumbnail_1 = __webpack_require__(285);
 	//filters
 	var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -31043,10 +31580,11 @@
 
 
 /***/ }),
-/* 265 */
+/* 272 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var DefaultSkuService = (function () {
@@ -31092,10 +31630,11 @@
 
 
 /***/ }),
-/* 266 */
+/* 273 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SkuPriceService = (function () {
@@ -31402,10 +31941,11 @@
 
 
 /***/ }),
-/* 267 */
+/* 274 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWPricingManagerController = (function () {
@@ -31450,9 +31990,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "pricingmanager.html";
 	    }
 	    SWPricingManager.Factory = function () {
-	        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, skuPartialsPath, slatwallPathBuilder) { return new SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'skuPartialsPath',
@@ -31466,10 +32004,11 @@
 
 
 /***/ }),
-/* 268 */
+/* 275 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWImageDetailModalLauncherController = (function () {
@@ -31572,9 +32111,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "imagedetailmodallauncher.html";
 	    }
 	    SWImageDetailModalLauncher.Factory = function () {
-	        var directive = function (skuPartialsPath, slatwallPathBuilder) {
-	            return new SWImageDetailModalLauncher(skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (skuPartialsPath, slatwallPathBuilder) { return new SWImageDetailModalLauncher(skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'skuPartialsPath',
 	            'slatwallPathBuilder'
@@ -31587,10 +32124,11 @@
 
 
 /***/ }),
-/* 269 */
+/* 276 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddSkuPriceModalLauncherController = (function () {
@@ -31759,9 +32297,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "addskupricemodallauncher.html";
 	    }
 	    SWAddSkuPriceModalLauncher.Factory = function () {
-	        var directive = function ($hibachi, entityService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWAddSkuPriceModalLauncher($hibachi, entityService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, entityService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) { return new SWAddSkuPriceModalLauncher($hibachi, entityService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'entityService',
@@ -31778,10 +32314,11 @@
 
 
 /***/ }),
-/* 270 */
+/* 277 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDeleteSkuPriceModalLauncherController = (function () {
@@ -31874,9 +32411,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "deleteskupricemodallauncher.html";
 	    }
 	    SWDeleteSkuPriceModalLauncher.Factory = function () {
-	        var directive = function ($hibachi, scopeService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWDeleteSkuPriceModalLauncher($hibachi, scopeService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function ($hibachi, scopeService, skuPartialsPath, slatwallPathBuilder) { return new SWDeleteSkuPriceModalLauncher($hibachi, scopeService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            '$hibachi',
 	            'scopeService',
@@ -31891,10 +32426,11 @@
 
 
 /***/ }),
-/* 271 */
+/* 278 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuStockAdjustmentModalLauncherController = (function () {
@@ -32015,9 +32551,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skustockadjustmentmodallauncher.html";
 	    }
 	    SWSkuStockAdjustmentModalLauncher.Factory = function () {
-	        var directive = function (skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuStockAdjustmentModalLauncher(skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (skuPartialsPath, slatwallPathBuilder) { return new SWSkuStockAdjustmentModalLauncher(skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'skuPartialsPath',
 	            'slatwallPathBuilder'
@@ -32030,10 +32564,11 @@
 
 
 /***/ }),
-/* 272 */
+/* 279 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDefaultSkuRadioController = (function () {
@@ -32094,9 +32629,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "defaultskuradio.html";
 	    }
 	    SWDefaultSkuRadio.Factory = function () {
-	        var directive = function (skuPartialsPath, slatwallPathBuilder) {
-	            return new SWDefaultSkuRadio(skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (skuPartialsPath, slatwallPathBuilder) { return new SWDefaultSkuRadio(skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'skuPartialsPath',
 	            'slatwallPathBuilder'
@@ -32109,10 +32642,11 @@
 
 
 /***/ }),
-/* 273 */
+/* 280 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuCurrencySelectorController = (function () {
@@ -32169,9 +32703,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skucurrencyselector.html";
 	    }
 	    SWSkuCurrencySelector.Factory = function () {
-	        var directive = function (scopeService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuCurrencySelector(scopeService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (scopeService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuCurrencySelector(scopeService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'scopeService',
 	            'skuPartialsPath',
@@ -32185,10 +32717,11 @@
 
 
 /***/ }),
-/* 274 */
+/* 281 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuPriceEditController = (function () {
@@ -32353,9 +32886,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skupriceedit.html";
 	    }
 	    SWSkuPriceEdit.Factory = function () {
-	        var directive = function (observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuPriceEdit(observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuPriceEdit(observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'observerService',
 	            'historyService',
@@ -32371,10 +32902,11 @@
 
 
 /***/ }),
-/* 275 */
+/* 282 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuCodeEditController = (function () {
@@ -32462,9 +32994,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skucodeedit.html";
 	    }
 	    SWSkuCodeEdit.Factory = function () {
-	        var directive = function (observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuCodeEdit(observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuCodeEdit(observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'observerService',
 	            'historyService',
@@ -32480,10 +33010,11 @@
 
 
 /***/ }),
-/* 276 */
+/* 283 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuPricesEditController = (function () {
@@ -32593,9 +33124,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skupricesedit.html";
 	    }
 	    SWSkuPricesEdit.Factory = function () {
-	        var directive = function (scopeService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuPricesEdit(scopeService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (scopeService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuPricesEdit(scopeService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'scopeService',
 	            'skuPartialsPath',
@@ -32609,10 +33138,11 @@
 
 
 /***/ }),
-/* 277 */
+/* 284 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuPriceQuantityEditController = (function () {
@@ -32730,9 +33260,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skupricequantityedit.html";
 	    }
 	    SWSkuPriceQuantityEdit.Factory = function () {
-	        var directive = function (scopeService, skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuPriceQuantityEdit(scopeService, skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (scopeService, skuPartialsPath, slatwallPathBuilder) { return new SWSkuPriceQuantityEdit(scopeService, skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'scopeService',
 	            'skuPartialsPath',
@@ -32746,10 +33274,11 @@
 
 
 /***/ }),
-/* 278 */
+/* 285 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSkuThumbnailController = (function () {
@@ -32779,9 +33308,7 @@
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath) + "skuthumbnail.html";
 	    }
 	    SWSkuThumbnail.Factory = function () {
-	        var directive = function (skuPartialsPath, slatwallPathBuilder) {
-	            return new SWSkuThumbnail(skuPartialsPath, slatwallPathBuilder);
-	        };
+	        var directive = function (skuPartialsPath, slatwallPathBuilder) { return new SWSkuThumbnail(skuPartialsPath, slatwallPathBuilder); };
 	        directive.$inject = [
 	            'skuPartialsPath',
 	            'slatwallPathBuilder'
@@ -32794,10 +33321,11 @@
 
 
 /***/ }),
-/* 279 */
+/* 286 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
@@ -32826,10 +33354,11 @@
 
 
 /***/ }),
-/* 280 */
+/* 287 */
 /***/ (function(module, exports) {
 
 	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCurrencyFormatter = (function () {
@@ -32874,9 +33403,7 @@
 	        };
 	    }
 	    SWCurrencyFormatter.Factory = function () {
-	        var directive = function ($filter, $timeout) {
-	            return new SWCurrencyFormatter($filter, $timeout);
-	        };
+	        var directive = function ($filter, $timeout) { return new SWCurrencyFormatter($filter, $timeout); };
 	        directive.$inject = [
 	            '$filter',
 	            '$timeout'
@@ -32889,12 +33416,13 @@
 
 
 /***/ }),
-/* 281 */
+/* 288 */
 /***/ (function(module, exports) {
 
+	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWCurrency = (function () {
 	    function SWCurrency() {
 	    }
