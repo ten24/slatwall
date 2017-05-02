@@ -11,8 +11,7 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService,
-                $timeout
+            dialogService
 		)=> new SWWorkflowTriggers(
 			$hibachi,
 			workflowPartialsPath,
@@ -21,8 +20,7 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService,
-            $timeout
+            dialogService
 		);
 		directive.$inject = [
 			'$hibachi',
@@ -32,8 +30,7 @@ class SWWorkflowTriggers{
 			'hibachiPathBuilder',
             'collectionConfigService',
             'scheduleService',
-            'dialogService',
-            '$timeout'
+            'dialogService'
 		];
 		return directive;
 	}
@@ -45,8 +42,7 @@ class SWWorkflowTriggers{
         hibachiPathBuilder,
         collectionConfigService,
         scheduleService,
-        dialogService,
-        $timeout
+        dialogService
 	){
 		return {
 			restrict: 'E',
