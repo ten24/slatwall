@@ -577,10 +577,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Make sure that the rate is active
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
-		}
-
-		if(!isNull(shippingMethodRate.getSplitShipmentWeight())){
-			return true; 
 		} 
 
 		// Make sure that the orderFulfillment Item Price is within the min and max of rate
@@ -650,6 +646,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
+		
+		//This check must happen after the address check.
+ 		if(!isNull(shippingMethodRate.getSplitShipmentWeight())){
+ 			return true; 
+ 		} 
+ 		
 		
 		// If we have not returned false by now, then return true
 		return true;
