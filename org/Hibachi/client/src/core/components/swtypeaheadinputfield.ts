@@ -81,7 +81,6 @@ class SWTypeaheadInputField implements ng.IDirective{
 	public scope = {};
 
 	public bindToController = {
-        name:"@",
         fieldName:"@",
         entityName:"@",
         typeaheadCollectionConfig:"=?",
