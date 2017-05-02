@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
 import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
 
 module FulfillmentsList {
@@ -32,7 +33,8 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public total:number;
     public formData:{};
     public processObject:any;
-    
+    public addSelection:Function;
+
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
@@ -73,6 +75,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         
         //This tells the typeaheadService to send us all of its events to our recieveNotification method.
         this.typeaheadService.registerObserver(this);
+        
     }
 
     /**

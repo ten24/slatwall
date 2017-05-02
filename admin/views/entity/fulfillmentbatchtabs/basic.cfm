@@ -6,22 +6,6 @@
 
 <cfoutput>
 	
-	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="fulfillmentBatchNumber" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="fulfillmentBatchName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="assignedAccount" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.fulfillmentBatch#" property="description" edit="#rc.edit#">
-		</hb:HibachiPropertyList>
-	</hb:HibachiPropertyRow>
-	
-	<!--- Description --->
-	
-	<!--- Details --->
-	
-    <!--- Status --->
-	
-	
 	<sw-listing-display
 		data-collection="'FulfillmentBatchItem'"
 		data-edit="true"
@@ -44,6 +28,5 @@
 		<sw-listing-column data-property-identifier="orderFulfillment.shippingAddress.stateCode" data-title="State"></sw-listing-column>
 		<sw-listing-column data-property-identifier="orderFulfillment.orderFulfillmentStatusType.typeName" data-title="Status"></sw-listing-column>
 
-		
 	</sw-listing-display>
 </cfoutput>

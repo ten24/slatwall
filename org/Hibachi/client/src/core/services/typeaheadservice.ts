@@ -1,19 +1,23 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
 import * as Prototypes from '../prototypes/Observable';
+
+type Action = any;
 
 class TypeaheadService implements Prototypes.Observable.IObservable {
     
     public typeaheadData = {};
     public typeaheadPromises = {};
-    public typeaheadStates = {}; 
-    
+    public typeaheadStates = {};
+
     //@ngInject
     constructor(
         public $timeout, 
         public observerService
     ){
          this.observers = new Array<Prototypes.Observable.IObserver>();
+
     }
 
     public observers: Array<Prototypes.Observable.IObserver>
