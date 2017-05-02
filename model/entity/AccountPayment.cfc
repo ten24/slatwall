@@ -245,7 +245,9 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		var totalAmt = 0;
 		if(isNull(getAccountPaymentType()) || getAccountPaymentType().getSystemCode() != "aptAdjustment"){
 			for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
+				
 				if(!isNull(getAppliedAccountPayments()[i].getOrderPayment())){
+					
 					totalAmt = getService('HibachiUtilityService').precisionCalculate(totalAmt + getAppliedAccountPayments()[i].getAmount());	
 				}
 			}

@@ -295,15 +295,39 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return termAccountAvailableCredit;
 	}
 	
+	public numeric function getOrderPaymentAmount(){
+		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		var orderPaymentAmount = 0;
+		for(var orderPayment in orderPayments){
+			orderPaymentAmount += orderPayment.getOrder().getPaymentAmountTotal();
+		}
+		return orderPaymentAmount;
+	}
+	
+	public numeric function getOrderPaymentUnRecieved(){
+		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		var orderPaymentUnReceived=0;
+		for(var orderPayment in orderPayments){
+			orderPaymentUnReceived += orderPayment.getOrder().getPaymentAmountDue();
+		}
+		return orderPaymentUnReceived;
+	}
+	
+	public numeric function getOrderPaymentRecieved(){
+		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		var orderPaymentAmount=0;
+		for(var orderPayment in orderPayments){
+			orderPaymentRecieved += orderPayment.getOrder().getPaymentAmountReceivedTotal();
+		}
+		return orderPaymentAmount;
+	}
+	
 	public numeric function getAmountUnassigned(){
 		var amountUnassigned = 0;
-		for(var accountPayment in getAccountPayments()) {
-			if(accountPayment.getAccountPaymentType().getSystemCode() == 'aptCharge'){
-				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + (accountPayment.getAmount()-accountPayment.getAmountReceived()));
-			}else if(accountPayment.getAccountPaymentType().getSystemCode() == 'aptCredit'){
-				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + (accountPayment.getAmountCredited()));
-			}
-		}
+		amountUnassigned -= getOrderPaymentAmount();
+		
+		amountUnassigned += getOrderPaymentRecieved();
+		
 		return amountUnassigned;
 	}
 	
@@ -330,9 +354,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public numeric function getTermAccountBalance() {
 		var termAccountBalance = 0;
 		// First look at all the unreceived open order payment
-		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance + getAmountUnreceived());
 		
 		// Now look for the unassigned payment amount
+		
 		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - getAmountUnassigned());
 
 		return termAccountBalance;
