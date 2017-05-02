@@ -138,6 +138,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			};
 			
 			if(arguments.accountPayment.getAccountPaymentType().getSystemCode() != "aptAdjustment") {
+				
 				if(arguments.accountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
 					if(arguments.accountPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard") {
 						if(!isNull(arguments.accountPayment.getPaymentMethod().getIntegration())) {
@@ -207,9 +208,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-				if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+				if(structKeyExists(appliedOrderPayment,'amount') && IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
 					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
-	
+					
 					var newAccountPaymentApplied = this.newAccountPaymentApplied();
 					newAccountPaymentApplied.setAccountPayment( newAccountPayment );
 					
@@ -250,10 +251,13 @@ component extends="HibachiService" accessors="true" output="false" {
 			}else{
 				
 				for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
-					if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+					
+					if(!IsNull(appliedAccountPayment.getOrderPayment()) && appliedAccountPayment.getAmount != 0) {
+						
 						transactionData = {
 							amount = appliedAccountPayment.getAmount()
 						};
+						
 						if(newAccountPayment.getAccountPaymentType().getSystemCode() != 'aptAdjustment'){
 							if(appliedAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
 								if(appliedAccountPayment.getAccountPaymentType().getSystemCode() eq "creditCard") {
@@ -266,6 +270,7 @@ component extends="HibachiService" accessors="true" output="false" {
 									transactionData.transactionType = 'receive';
 								}
 							} else if(appliedAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCredit"){
+								
 								transactionData.transactionType = 'credit';
 							}
 						} else {
@@ -276,8 +281,7 @@ component extends="HibachiService" accessors="true" output="false" {
 								transactionData.transactionType = 'creditOffline';	
 							}
 						}
-						
-						getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
+						appliedAccountPayment = getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
 					}
 				}
 			}

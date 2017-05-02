@@ -283,7 +283,11 @@ Notes:
 						<td>
 							#orderPayment.getOrder().getFormattedValue('paymentAmountReceivedTotal')#
 						</td>
-						<td>
+						<cfset disabledAttribute = ""/>
+						<cfif orderPayment.getOrder().getPaymentAmountDue() eq 0>
+							<cfset disabledAttribute = 'disabled="disabled"'/>
+						</cfif>
+						<td <cfif len(disabledAttribute)>bgcolor="##EEEEEE"</cfif>>
 							#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#
 						</td>
 						
@@ -295,8 +299,13 @@ Notes:
 								{{paymentTypeName}}
 							</div>
 						</td>
-						<td>
-							<input type="number" name="appliedOrderPayments[#i#].amount" class="span1" 
+						<cfset disabledAttribute = ""/>
+						<cfif orderPayment.getOrder().getPaymentAmountDue() eq 0>
+							<cfset disabledAttribute = 'disabled="disabled"'/>
+						</cfif>
+						<td <cfif len(disabledAttribute)>bgcolor="##EEEEEE"</cfif>>
+							
+							<input type="number" name="appliedOrderPayments[#i#].amount" #disabledAttribute# class="span1" 
 							       ng-model="appliedOrderPayment.input#i#.amount" placeholder="0" min="0" step="0.01"
 							       ng-change="updateSubTotal()"/>
 							<input type="hidden" name="appliedOrderPayments[#i#].orderPaymentID" 
@@ -347,7 +356,8 @@ Notes:
 						</div>
 					</td>
 					<td>
-						<input type="text" name="appliedOrderPayments[#i+1#].amount" class="uneditable-input span1" 
+						
+						<input  type="text" name="appliedOrderPayments[#i+1#].amount" class="uneditable-input span1" 
 						       placeholder="0" readonly ng-model="amountUnapplied"/>
 						<input type="hidden" name="appliedOrderPayments[#i+1#].orderPaymentID" value=""/>
 					</td>
