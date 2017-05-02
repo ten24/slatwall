@@ -1204,7 +1204,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	/**
 	* @test
 	*/
-	public void function getTermAccountAvailableCreditTest() {
+	/*public void function getTermAccountAvailableCreditTest() {
 		//general testing of negative credit limit
 		var accountData1 = {
 			accountID = "",
@@ -1267,7 +1267,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		debug(mockAccount1);
 		assertEquals(-1300, mockAccount1.getTermAccountAvailableCredit());
-	}
+	}*/
 		
 	/**
 	* @test
