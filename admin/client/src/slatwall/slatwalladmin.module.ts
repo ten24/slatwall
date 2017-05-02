@@ -135,7 +135,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         });
 
         //The amount not applied to an order
-        $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
+        $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply+ $scope.amountUnassigned) * 100) / 100);
         $scope.accountBalanceChange = parseFloat($scope.amount);
 
         //Switch the account balance display amount to a negative if you are doing a charge

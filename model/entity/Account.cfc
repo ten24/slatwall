@@ -322,13 +322,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return orderPaymentReceived;
 	}
 	
+	
 	public numeric function getAmountUnassigned(){
-		var amountUnassigned = 0;
-		amountUnassigned -= getOrderPaymentAmount();
-		
-		amountUnassigned += getOrderPaymentRecieved();
-		
-		return amountUnassigned;
+		var amountUnreceived = 0;
+		for(var accountPayment in getAccountPayments()) {
+			amountUnreceived = getService('HibachiUtilityService').precisionCalculate(amountUnreceived + accountPayment.getAmountUnassigned());
+		}
+		return amountUnreceived;
 	}
 	
 	public numeric function getAmountUnreceived(){
@@ -356,8 +356,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		// First look at all the unreceived open order payment
 		
 		// Now look for the unassigned payment amount
-		
-		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - getAmountUnassigned());
+		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - getAmountUnassigned() + getAmountUnreceived());
 
 		return termAccountBalance;
 	}
