@@ -1338,8 +1338,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
 					}
 
-					if (structKeyExists(column, 'aggregate')
-						|| structKeyExists(column, 'attributeID')
+					if ( structKeyExists(column, 'attributeID')
 						|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
 						|| !getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					) continue;
