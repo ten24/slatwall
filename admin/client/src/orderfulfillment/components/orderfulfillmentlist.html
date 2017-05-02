@@ -40,14 +40,14 @@
 																						<sw-typeahead-input-field
 																								data-entity-name="Location"
 																						        data-property-to-save="locationID"
-																						        data-property-to-show="locationName"
-																						        data-properties-to-load="locationID,locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+																						        data-property-to-show="calculatedLocationPathName"
+																						        data-properties-to-load="locationID,calculatedLocationPathName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
 																						        data-show-add-button="true"
 																						        data-show-view-button="true"
 																						        data-placeholder-rb-key="entity.location"
 																						        data-multiselect-mode="false"
 																						        data-filter-flag="true"
-																						        data-selected-format-string="${locationName}&nbsp;"
+																						        data-selected-format-string="${calculatedLocationPathName}&nbsp;"
 																						        data-field-name="locationID">
 																						
 																						    <sw-collection-config
@@ -62,18 +62,18 @@
 																							        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
 																							        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
 																							        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
-																							        <sw-collection-column data-property-identifier="locationName" data-is-searchable="true"></sw-collection-column>
+																							        <sw-collection-column data-property-identifier="calculatedLocationPathName" data-is-searchable="true"></sw-collection-column>
 																							        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
 																							    </sw-collection-columns>
 																								
 																						    	<sw-collection-order-bys>
-																						        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
+																						        	<sw-collection-order-by data-order-by="calculatedLocationPathName|ASC"></sw-collection-order-by>
 																						    	</sw-collection-order-bys>
 																						
 																						    </sw-collection-config>
 																							
 																							    <i class="fa fa-map-marker icon-left fa-2x"></i>
-																							    <span sw-typeahead-search-line-item data-property-identifier="locationName"></span><br>
+																							    <span sw-typeahead-search-line-item data-property-identifier="calculatedLocationPathName"></span><br>
 																							    	
 																						</sw-typeahead-input-field>
 																						<!--- VIEW CHANGE: No location selected --->
@@ -251,14 +251,14 @@
 										<sw-typeahead-input-field
 											data-entity-name="Location"
 									        data-property-to-save="locationID"
-									        data-property-to-show="locationName"
-									        data-properties-to-load="locationID,locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+									        data-property-to-show="calculatedLocationPathName"
+									        data-properties-to-load="locationID,calculatedLocationPathName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
 									        data-show-add-button="true"
 									        data-show-view-button="true"
 									        data-placeholder-rb-key="entity.location"
 									        data-multiselect-mode="true"
 									        data-filter-flag="true"
-									        data-selected-format-string="${locationName}&nbsp;" 
+									        data-selected-format-string="${calculatedLocationPathName}&nbsp;" 
 									        data-field-name="locationIDfilter">
 										
 									    <sw-collection-config
@@ -273,18 +273,18 @@
 										        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
 										        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
 										        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
-										        <sw-collection-column data-property-identifier="locationName" data-is-searchable="true"></sw-collection-column>
+										        <sw-collection-column data-property-identifier="calculatedLocationPathName" data-is-searchable="true"></sw-collection-column>
 										        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
 										    </sw-collection-columns>
 											
 									    	<sw-collection-order-bys>
-									        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
+									        	<sw-collection-order-by data-order-by="calculatedLocationPathName|ASC"></sw-collection-order-by>
 									    	</sw-collection-order-bys>
 									
 									    </sw-collection-config>
 										
 										    <i class="fa fa-map-marker icon-left fa-2x"></i>
-										    <span sw-typeahead-search-line-item data-property-identifier="locationName"></span><br>
+										    <span sw-typeahead-search-line-item data-property-identifier="calculatedLocationPathName"></span><br>
 										    	
 									</sw-typeahead-input-field>
 							        </div>
