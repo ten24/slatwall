@@ -52,14 +52,62 @@ Notes:
 
 <cfparam name="rc.fulfillmentBatch" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
-
+<cfoutput>
 <hb:HibachiEntityDetailForm object="#rc.fulfillmentBatch#" edit="#rc.edit#">
-	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#">
-		
-	</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 	
-	<hb:HibachiEntityDetailGroup object="#rc.fulfillmentBatch#">
-		<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-	</hb:HibachiEntityDetailGroup>
+	<section class="s-pick-pack-detail container">
+		<div class="row s-detail-modules-wrapper">
+			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
+				<!--- Icon Properties --->
+				<sw-card-view id="batchNumber" card-size="sm">
+					<sw-card-icon icon-name="shopping-cart"></sw-card-icon>
+					<sw-card-header style="border-bottom:none">Batch ID</sw-card-header>
+					<sw-card-body>#rc.fulfillmentBatch.getFulfillmentBatchNumber()#</sw-card-body>
+				</sw-card-view>
+				
+				<sw-card-view id="assignedAccount" card-size="sm">
+					<sw-card-icon icon-name="user"></sw-card-icon>
+					<sw-card-header style="border-bottom:none">User</sw-card-header>
+					<sw-card-body>#rc.fulfillmentBatch.getAssignedAccount().getFirstName()# #rc.fulfillmentBatch.getAssignedAccount().getLastName()#</sw-card-body>
+				</sw-card-view>
 
+				<sw-card-view id="location" card-size="sm">
+					<sw-card-icon icon-name="building"></sw-card-icon>
+					<sw-card-header style="border-bottom:none">Location</sw-card-header>
+					<sw-card-body>New York</sw-card-body>
+				</sw-card-view>
+				
+			</div>
+			
+			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
+				<!--- Description --->
+				<sw-card-view id="description" card-title="Description" card-body="#rc.fulfillmentBatch.getDescription()#"></sw-card-view>
+			</div>
+			
+			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
+				<!--- Status --->
+				<sw-card-view id="status">
+					<sw-card-header>Status</sw-card-header>
+					
+					<!--- Number of fulfillments total --->
+					<sw-card-list-item title="Fulfillments" value="#arrayLen(rc.fulfillmentBatch.getFulfillmentBatchItems())#" strong="true"></sw-card-list-item>
+					
+					<!--- Number of fulfillments fulfilled --->
+					<sw-card-list-item title="Completed" value="2"></sw-card-list-item>
+					
+					<!--- Progress Bar --->
+					<sw-card-progress-bar value-min="0" value-max="100" value-now="50"></sw-card-progress-bar>
+					
+				</sw-card-view>
+			</div>
+		</div>
+	</section>
+	
+	<section>
+		<hb:HibachiEntityDetailGroup object="#rc.fulfillmentBatch#">
+			<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
+	</section>
 </hb:HibachiEntityDetailForm>
+</cfoutput>

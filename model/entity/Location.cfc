@@ -74,6 +74,9 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
+	//Calculated Properties
+	property name="calculatedLocationPathName" ormtype="string";
+	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
@@ -117,12 +120,19 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	public any function getLocationPathName() {
 		if(!structKeyExists(variables, "locationPathName")) {
+			
 			variables.locationPathName = "";
-			var	locationOptions = getService("locationService").getLocationOptions(this.getLocationID());
-			if(arrayLen(locationOptions)) {
-				variables.locationPathName = locationOptions[1].name;
+			
+			//Add each of the parents in the chain to the string.
+			var	parentLocation = this.getParentLocation();
+			while (!isNull(parentLocation)){
+				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "/");
+				parentLocation = parentLocation.getParentLocation();
 			}
+			//Add this location name to the end.
+			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "/");
 		}
+		
 		return variables.locationPathName;
 	}
 	
@@ -210,15 +220,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
-		
-		if(!isNull(getParentLocation())) {
-			return getParentLocation().getSimpleRepresentation() & " » " & getLocationName();
-		}
-		
-		if(!isNull(getLocationName())){
-			return getLocationName();	
-		}
-		return '';
+		return getLocationPathName();
 	}
 	
 	
