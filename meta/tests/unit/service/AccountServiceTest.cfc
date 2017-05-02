@@ -244,7 +244,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		
 		account = variables.service.process(account,data,'addAccountPayment');
-		debug(account.getProcessObject('addAccountPayment'));
 		//assert(arraylen(account.getAccountPayments()));
 		//assert(arraylen(account.getAccountPayments()[1].getAppliedAccountPayments()));
 		//assert(arraylen(account.getAccountPayments()[1].getPaymentTransactions()));

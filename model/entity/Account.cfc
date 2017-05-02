@@ -315,11 +315,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	public numeric function getOrderPaymentRecieved(){
 		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
-		var orderPaymentAmount=0;
+		var orderPaymentReceived=0;
 		for(var orderPayment in orderPayments){
-			orderPaymentRecieved += orderPayment.getOrder().getPaymentAmountReceivedTotal();
+			orderPaymentReceived += orderPayment.getOrder().getPaymentAmountReceivedTotal();
 		}
-		return orderPaymentAmount;
+		return orderPaymentReceived;
 	}
 	
 	public numeric function getAmountUnassigned(){
