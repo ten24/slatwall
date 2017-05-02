@@ -208,6 +208,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+				
 				if(structKeyExists(appliedOrderPayment,'amount') && IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
 					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
 					
@@ -227,6 +228,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied );
 				}
 			}
+			
 		}
 		
 		// Save the newAccountPayment
@@ -238,6 +240,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
 		// If no errors, then we can process a transaction
 		} else {
+			
 			var transactionData = getAccountPaymentTransactionData(newAccountPayment);
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');	
@@ -252,7 +255,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				
 				for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
 					
-					if(!IsNull(appliedAccountPayment.getOrderPayment()) && appliedAccountPayment.getAmount != 0) {
+					if(!IsNull(appliedAccountPayment.getOrderPayment()) && appliedAccountPayment.getAmount() != 0) {
 						
 						transactionData = {
 							amount = appliedAccountPayment.getAmount()
