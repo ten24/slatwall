@@ -324,11 +324,19 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	
 	public numeric function getAmountUnassigned(){
-		var amountUnreceived = 0;
+		var amountUnassigned = 0;
+		amountUnassigned -= getOrderPaymentRecieved();
 		for(var accountPayment in getAccountPayments()) {
-			amountUnreceived = getService('HibachiUtilityService').precisionCalculate(amountUnreceived + accountPayment.getAmountUnassigned());
+			
+				
+			for(var paymentTransaction in accountPayment.getPaymentTransactions()){
+				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + paymentTransaction.getAmountReceived());
+				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + paymentTransaction.getAmountCredited());	
+			}
+			
+			
 		}
-		return amountUnreceived;
+		return amountUnassigned;
 	}
 	
 	public numeric function getAmountUnreceived(){

@@ -263,6 +263,7 @@ Notes:
 				<cfset orderPaymentAmount = 0/>
 				<cfset orderPaymentRecieved = 0/>
 				<cfset orderPaymentUnrecieved = 0/>
+				<cfset orderPaymentCredited = 0/>
 			
 				<cfloop array="#orderPaymentList.getRecords()#" index="orderPayment">
 					<cfset i++/>
@@ -322,6 +323,7 @@ Notes:
 					<cfset orderPaymentAmount = orderPaymentAmount + orderPayment.getOrder().getPaymentAmountTotal()/>
 					<cfset orderPaymentRecieved = orderPaymentRecieved + orderPayment.getOrder().getPaymentAmountReceivedTotal()/>
 					<cfset orderPaymentUnrecieved = orderPaymentUnrecieved + orderPayment.getOrder().getPaymentAmountDue()/>
+					<cfset orderPaymentCredited = orderPaymentCredited + orderPayment.getOrder().getPaymentAMountCreditedTotal()/>
 				</cfloop>
 			
 				<tr>
@@ -340,6 +342,11 @@ Notes:
 					<td>
 						<strong>
 							#NumberFormat(orderPaymentRecieved, '0.00')#
+						</strong>
+					</td>
+					<td>
+						<strong>
+							#NumberFormat(orderPaymentCredited, '0.00')#
 						</strong>
 					</td>
 					<td>
