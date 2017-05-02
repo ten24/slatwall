@@ -174,7 +174,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.attributeValuesForEntity;
 	}
 
-	public any function getAttributeValue(required string attribute, returnEntity=false){
+	public any function getAttributeValue(required string attribute, returnEntity=false, usePropertyIfExists=true){
 		
 		//If custom property exists for this attribute, return the property value instead
 		if(len(arguments.attribute) eq 32) {
@@ -191,7 +191,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			}
 		}else{
 			//Check if a custom property exists
-			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute) && arguments.usePropertyIfExists){
 				if (!isNull(invokeMethod("get#arguments.attribute#"))){
 					return invokeMethod("get#arguments.attribute#");
 				}else{
@@ -321,6 +321,21 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			// Update the cache for this attribute value
 			getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
 			getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+
+			
+			if(attributeValueEntity.hasErrors()){
+				for(var errorKey in attributeValueEntity.getErrors()){
+					for(var error in attributeValueEntity.getErrors()[errorKey] ){
+						var message = "";
+						if(findNoCase('regex',error) && !isNull(attributeValueEntity.getAttribute()) && !isNull(attributeValueEntity.getAttribute().getValidationMessage())){
+	             			message = attributeValueEntity.getAttribute().getValidationMessage();
+						}else{
+							message = attributeValueEntity.getAttribute().getAttributeName() & ': ' & error;
+						}
+						this.addError(errorKey,hibachiHTMLeditFormat(message));
+					}
+				}
+			}
 		}
 	}
 
