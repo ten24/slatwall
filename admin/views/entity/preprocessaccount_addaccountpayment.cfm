@@ -244,10 +244,10 @@ Notes:
 						#$.slatwall.rbKey('entity.AccountPayment.termOffsetTotalAmount')#
 					</th>
 					<th>
-						#$.slatwall.rbKey('entity.AccountPayment.termOffsetCredited')#
+						#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#
 					</th>
 					<th>
-						#$.slatwall.rbKey('entity.AccountPayment.termOffsetReceived')#
+						#$.slatwall.rbKey('entity.AccountPayment.termOffsetCredited')#
 					</th>
 					<th>
 						#$.slatwall.rbKey('entity.AccountPayment.termOffsetUnReceived')#
