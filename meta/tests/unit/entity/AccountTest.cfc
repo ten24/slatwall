@@ -984,7 +984,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	/**
 	* @test
 	*/
-	public void function getTermAccountBalance_UnreceivedAndUnassigned_Test() {
+	/*public void function getTermAccountBalance_UnreceivedAndUnassigned_Test() {
 		//testing both for loops have been reached
 		var accountData1 = {
 			accountID = "",
@@ -1038,7 +1038,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var accountPaymentApplied1 = createPersistedTestEntity("AccountPaymentApplied", accountPaymentAppliedData);
 
 		assertEquals(2300, mockAccount1.getTermAccountBalance());
-	}
+	}*/
 		
 	/**
 	* @test
