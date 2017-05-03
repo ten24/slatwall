@@ -392,26 +392,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.resizedImagePaths = [];
 				var resizeSizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizeSizesCount; s++) {
-					
-					//Use the size if it was defined.
-					if (structKeyExists(arguments.resizeSizes[s], "size")){
-						
-						var resizeImageData={
-							imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
-							size=arguments.resizeSizes[s].size
-						};
-					
-					//Use the height if that was defined.
-					}else if(structKeyExists(arguments.resizeSizes[s], "width") && structKeyExists(arguments.resizeSizes[s], "height")){
-						
-						var resizeImageData={
-							imagePath=getService('imageService').getProductImagePathByImageFile(skuData['imageFile']),
-							width=arguments.resizeSizes[s].width,
-							height=arguments.resizeSizes[s].height
-						};
-					}
-					
-					//Send the data 
+
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
+
 					arrayAppend(
 						thisImage.resizedImagePaths, 
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
@@ -450,12 +434,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
-					var resizeImageData={
-						alt=imageAltString,
-						missingImagePath=missingImagePath,
-						imagePath=getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']),
-						size=arguments.resizeSizes[s].size
-					};
+
+					var resizeImageData = arguments.resizeSizes[s];
+					resizeImageData.alt = imageAltString;
+					resizeImageData.missingImagePath = missingImagePath;
+					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
+
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
@@ -872,8 +856,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			smartList.addSelect("brandName", "name");
 
 			variables.brandOptions = smartList.getRecords();
-
-			arrayPrepend(variables.brandOptions, {name=rbKey('define.none'),value=""});
+			var noneOption = {};
+			noneOption['name']=rbKey('define.none');
+			noneOption['value']="";
+			arrayPrepend(variables.brandOptions, noneOption);
 
 		}
 

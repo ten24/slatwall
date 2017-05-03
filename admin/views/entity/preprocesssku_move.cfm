@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,38 +45,40 @@
 
 Notes:
 
-*/
-component extends="HibachiDao" persistent="false" accessors="true" output="false" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, required any integration, required string entityQueueData){
-		return ORMExecuteQuery('SELECT eq FROM SlatwallEntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration AND entityQueueData=:entityQueueData',
-			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration,entityQueueData=arguments.entityQueueData}
+
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#" sRedirectAction="admin:entity.editsku">
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		</hb:HibachiEntityActionBar>
+		
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<div class="alert alert-info" role="alert">	
+						<span data-sw-rbkey="'entity.sku.process.move.warning'"></span>
+					</div>
+					<sw-typeahead-input-field data-field-name="productID"
+											  data-entity-name="Product"
+											  data-validate-required="true"
+											  data-properties-to-load="productID,productName,productCode"
+											  data-placeholder-rb-key="entity.Sku.process.move.placeholder"
+											  data-property-to-show="productName"
+											  data-property-to-save="productID">
+						<sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
+					</sw-typeahead-input-field>
+
+							
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 			
-		);
-	}
+	</hb:HibachiEntityProcessForm>
 	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+</cfoutput>

@@ -111,7 +111,7 @@ class SWListingColumn implements ng.IDirective{
             buttonGroup:scope.swListingColumn.buttonGroup,
             hasCellView:scope.swListingColumn.hasCellView,
             hasHeaderView:scope.swListingColumn.hasHeaderView, 
-            isVisible:scope.swListingColumn.isVisible,
+            isVisible:scope.swListingColumn.isVisible || true,
             action:scope.swListingColumn.action, 
             queryString:scope.swListingColumn.queryString
         };

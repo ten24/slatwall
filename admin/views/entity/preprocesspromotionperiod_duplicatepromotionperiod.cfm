@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,47 +45,29 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="accountEmailAddress";
 
-	// Lazy / Injected Objects
-	
-	// New Properties
+<cfparam name="rc.promotionPeriod" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// Data Properties (ID's)
-	
-	// Data Properties (Inputs)
-	property name="emailAddress";
-	property name="verificationCode";
-	
-	// Data Properties (Related Entity Populate)
-	
-	// Data Properties (Object / Array Populate)
-	
-	// Option Properties
-	
-	// Helper Properties
-	
-	// ======================== START: Defaults ============================
-	
-	// ========================  END: Defaults =============================
-
-	// =================== START: Lazy Object Helpers ======================
-	
-	// ===================  END: Lazy Object Helpers =======================
-	
-	// ================== START: New Property Helpers ======================
-	
-	// ==================  END: New Property Helpers =======================
-	
-	// ====================== START: Data Options ==========================
-	
-	// ======================  END: Data Options ===========================
-	
-	// ===================== START: Helper Methods =========================
-	
-	// =====================  END: Helper Methods ==========================
-}
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.promotionPeriod#" edit="#rc.edit#" sRedirectAction="admin:entity.editpromotionperiod">
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.promotionPeriod#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="promotionPeriodName" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
+</cfoutput>

@@ -550,6 +550,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return sku;
 	}
 
+	public any function processSku_move(required any sku, any processObject){
+		var originalProduct = arguments.sku.getProduct(); 
+		var isDefaultSku = originalProduct.getDefaultSku().getSkuID() == arguments.sku.getSkuID(); 	
+		
+		arguments.sku.setProduct(processObject.getProduct());
+		arguments.sku = this.saveSku(arguments.sku);		
+	
+		if(originalProduct.getSkusCount() == 1){
+			originalProduct.setSkus([]);
+			var success = getProductService().deleteProduct(originalProduct); 
+		} else if(isDefaultSku){
+			originalProduct.setDefaultSku(originalProduct.getSkus()[1]); 
+			originalProduct = getProductService().saveProduct(originalProduct); 
+		} 
+		
+		
+		return arguments.sku;
+	} 
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
@@ -770,6 +789,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var key in optionGroups) {
 						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);
 					}
+
+					newSku.setImageFile(newSku.generateImageFileName());
+
 					if(i < totalCombos) {
 						var indexesUpdated = false;
 						var changeKeyIndex = 1;

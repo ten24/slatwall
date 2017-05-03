@@ -46,31 +46,56 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
+component displayname="DatabaseCache" entityname="SlatwallDatabaseCache" table="SwDatabaseCache" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_auditable="false" hb_serviceName="HibachiCacheService" {
 	
+	// Persistent Properties
+	property name="databaseCacheID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="databaseCacheKey" ormtype="string" unique="true" index="PI_DATACACHEKEY";
+	property name="databaseCacheValue" ormtype="string" length="8000";
 	
-	// ===================== START: Logical Methods ===========================
+	// Related Object Properties (many-to-one)
+		
+	// Related Object Properties (one-to-many)
 	
-	// =====================  END: Logical Methods ============================
+	// Related Object Properties (many-to-many)
 	
-	// ===================== START: DAO Passthrough ===========================
+	// Remote Properties
 	
-	// ===================== START: DAO Passthrough ===========================
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
-	// ===================== START: Process Methods ===========================
+	// Non-Persistent Properties
+
+	// ============ START: Non-Persistent Property Methods =================
 	
-	// =====================  END: Process Methods ============================
+	// ============  END:  Non-Persistent Property Methods =================
+		
+	// ============= START: Bidirectional Helper Methods ===================
 	
-	// ====================== START: Save Overrides ===========================
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
-	// ======================  END: Save Overrides ============================
+	// ===============  END: Custom Validation Methods =====================
 	
-	// ==================== START: Smart List Overrides =======================
+	// =============== START: Custom Formatting Methods ====================
 	
-	// ====================  END: Smart List Overrides ========================
+	// ===============  END: Custom Formatting Methods =====================
 	
-	// ====================== START: Get Overrides ============================
+	// ============== START: Overridden Implicet Getters ===================
 	
-	// ======================  END: Get Overrides =============================
+	// ==============  END: Overridden Implicet Getters ====================
+
+	// ================== START: Overridden Methods ========================
 	
+	// ==================  END:  Overridden Methods ========================
+	
+	// =================== START: ORM Event Hooks  =========================
+	
+	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }

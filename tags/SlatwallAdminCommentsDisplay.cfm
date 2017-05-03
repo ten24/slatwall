@@ -94,7 +94,7 @@
 							<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getPublicFlag(), "yesno")#</td>
 							<td><cfif !isNull(commentRelationship['comment'].getCreatedByAccount())>#commentRelationship['comment'].getCreatedByAccount().getFullName()#</cfif></td>
 							<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getCreatedDateTime(), "datetime")#</td>
-							<cfif attributes.adminComments><td class="admin1"><hb:HibachiActionCaller action="admin:entity.editcomment" queryString="commentID=#commentRelationship['comment'].getCommentID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&sRenderItem=detail#attributes.object.getClassName()#&fRenderItem=detail#attributes.object.getClassName()#" modal="true" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" /></td></cfif>
+							<cfif attributes.adminComments><td class="admin1"><hb:HibachiActionCaller action="admin:entity.editcomment" queryString="commentID=#commentRelationship['comment'].getCommentID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&sRenderItem=detail#lcase(attributes.object.getClassName())#&fRenderItem=detail#lcase(attributes.object.getClassName())#" modal="true" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" /></td></cfif>
 						</cfif>
 					</tr>
 				</cfloop>
