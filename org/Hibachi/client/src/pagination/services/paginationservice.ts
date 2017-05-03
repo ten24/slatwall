@@ -85,6 +85,7 @@ class Pagination{
         this.currentPage = currentPage;
         this.getCollection();
         this.observerService.notify('swPaginationAction',{action:'pageChange', currentPage});
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:this.getCurrentPage()});
     };
     public previousPage=():void =>{
         if(this.getCurrentPage() == 1) return;
@@ -93,6 +94,7 @@ class Pagination{
     public nextPage=():void =>{
         if(this.getCurrentPage() < this.getTotalPages()){
             this.setCurrentPage(this.getCurrentPage() + 1);
+            this.observerService.notify('swPaginationAction',{type:'nextPage', payload:this.getCurrentPage()});
         }
     };
     public hasPrevious=():boolean =>{

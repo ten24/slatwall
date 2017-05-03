@@ -24,7 +24,7 @@
 			{"conditions":"transactionTypeAuthorize,transactionTypeAuthorizeAndCharge,transactionTypeCredit,transactionTypeChargePreAuthorization", "minValue":0},
 			{"conditions":"transactionTypeAuthorize","lteProperty":"orderPayment.amountUnAuthorized"},
 			{"conditions":"transactionTypeAuthorizeAndCharge","lteProperty":"orderPayment.amountUnreceived"},
-			{"conditions":"transactionTypeCredit","lteProperty":"orderPayment.amountUncredited"},
+
 			{"conditions":"transactionTypeChargePreAuthorization","lteProperty":"orderPayment.amountUncaptured"}
 		],
 		"transactionType":		[{"required":true}]

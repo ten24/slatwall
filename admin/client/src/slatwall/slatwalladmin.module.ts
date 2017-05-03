@@ -39,7 +39,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
-.constant('slatwallPathBuilder', new SlatwallPathBuilder()).config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
+.constant('slatwallPathBuilder', new SlatwallPathBuilder())
+.config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
      ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,slatwallPathBuilder,appConfig) =>
   {
       //configure partials path properties
@@ -135,7 +136,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         });
 
         //The amount not applied to an order
-        $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply) * 100) / 100);
+        $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply+ $scope.amountUnassigned) * 100) / 100);
         $scope.accountBalanceChange = parseFloat($scope.amount);
         
         //Switch the account balance display amount to a negative if you are doing a charge
@@ -143,7 +144,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             $scope.accountBalanceChange = parseFloat(($scope.accountBalanceChange * -1).toString()); //If charge, change to neg since we are lowering account balance
         else if($scope.paymentType==paymentType.aptAdjustment)
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
-    }
+        }
+     }
 }])
 //filters
 
