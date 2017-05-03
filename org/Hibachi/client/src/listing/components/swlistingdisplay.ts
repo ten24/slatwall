@@ -175,11 +175,11 @@ class SWListingDisplayController{
         	this.setupCollectionPromise();
             
         }
-
+        
         if (this.collectionObject){
              this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
-
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
     }
     
     public getCollectionByPagination = (state) =>{
@@ -187,15 +187,23 @@ class SWListingDisplayController{
             switch(state.type){
                 case 'setCurrentPage':
                     this.collectionConfig.currentPage = state.payload;
+                    break;
                 case 'nextPage':
                     this.collectionConfig.currentPage = state.payload;
+                    break;
                 case 'prevPage':
                     this.collectionConfig.currentPage = state.payload;
-                    
+                    break;
+                case 'setPageShow':
+                    this.collectionConfig.currentPage = 1;
+                    this.collectionConfig.setPageShow(state.payload);
+                    break;
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
+                this.observerService.notify('swPaginationUpdate',data);
             });
+            
         }
         
     }
@@ -203,7 +211,7 @@ class SWListingDisplayController{
     private setupCollectionPromise=()=>{
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
-            this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+            
             
         }
 
