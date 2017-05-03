@@ -58,7 +58,7 @@ Notes:
 		<cfset nameList="">
 		
 		<!--- Get all the locationIDPaths --->
-		<cfquery name="names">
+		<cfquery name="local.names">
 			SELECT locationName FROM SwLocation WHERE locationID IN (<cfqueryparam value="#locationIDPath#" list="yes" />)
 		</cfquery>
 		
