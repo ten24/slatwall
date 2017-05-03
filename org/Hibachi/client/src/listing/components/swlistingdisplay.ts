@@ -35,6 +35,8 @@ class SWListingDisplayController{
     public expandableRules = [];
     public exampleEntity:any = "";
     public exportAction;
+    public emailAction;
+    public printAction;
     public filters = [];
     public filterGroups = [];
     public isAngularRoute:boolean;
@@ -141,7 +143,7 @@ class SWListingDisplayController{
         }
         
         this.listingService.setListingState(this.tableID, this);
-        
+
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
         console.log('multislot',this.multiSlot);
@@ -277,6 +279,14 @@ class SWListingDisplayController{
         if(angular.isDefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
+        //setup print action
+        if(angular.isDefined(this.printAction)){
+            this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
+        }
+        //setup email action
+        if(angular.isDefined(this.emailAction)){
+            this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
+        }
         this.paginator = this.paginationService.createPagination();
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
@@ -406,6 +416,14 @@ class SWListingDisplayController{
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
+    };
+
+    public getPrintAction = ():string =>{
+        return this.printAction + this.collectionID;
+    };
+
+    public getEmailAction = ():string =>{
+        return this.emailAction + this.collectionID;
     };
 
     public exportCurrentList =(selection:boolean=false)=>{

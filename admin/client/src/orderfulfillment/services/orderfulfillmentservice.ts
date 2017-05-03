@@ -2,16 +2,33 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
+import * as rx from 'rxjs';
+
 
 /**
  * Fulfillment List Controller
  */
 class OrderFulfillmentService implements  Prototypes.Observable.IObservable {
+    
+    // Observable string sources
+    public storeSource: rx.Subject<any>;
+   
+    // Observable string streams
+    public actionStream$:rx.Observable<any>;
 
     public observers: Array<Prototypes.Observable.IObserver>
 
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){}
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){
+        this.storeSource = new rx.Subject<any>();
+        this.actionStream$ = this.storeSource.asObservable();
+    }
+
+    // Service announce that a new card is being added.
+    public dispatch(action: {}) {
+        console.log("Action: ", action);
+        this.storeSource.next(action);
+    }
 
     /**
      * This manages all the observer events without the need for setting ids etc.
