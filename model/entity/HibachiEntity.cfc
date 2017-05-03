@@ -174,7 +174,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.attributeValuesForEntity;
 	}
 
-	public any function getAttributeValue(required string attribute, returnEntity=false, usePropertyIfExists=true){
+	public any function getAttributeValue(required string attribute, returnEntity=false){
 		
 		//If custom property exists for this attribute, return the property value instead
 		if(len(arguments.attribute) eq 32) {
@@ -191,7 +191,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			}
 		}else{
 			//Check if a custom property exists
-			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute) && arguments.usePropertyIfExists){
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
 				if (!isNull(invokeMethod("get#arguments.attribute#"))){
 					return invokeMethod("get#arguments.attribute#");
 				}else{
