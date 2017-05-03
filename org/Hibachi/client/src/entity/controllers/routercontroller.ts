@@ -7,8 +7,6 @@ class RouterController{
 		$routeParams,
 		$location,
 		$log,
-		partialsPath,
-		baseURL,
         utilityService
 	){
 		$scope.$id="routerController";

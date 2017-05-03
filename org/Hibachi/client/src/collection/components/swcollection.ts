@@ -3,40 +3,22 @@
 class SWCollection{
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-			$http,
-			$compile,
-			$log,
 			hibachiPathBuilder,
-			collectionPartialsPath,
-			collectionService
+			collectionPartialsPath
 			) => new SWCollection(
-
-				$http,
-				$compile,
-				$log,
 				hibachiPathBuilder,
-				collectionPartialsPath,
-				collectionService
+				collectionPartialsPath
 			);
         directive.$inject = [
-
-            '$http',
-			'$compile',
-			'$log',
 			'hibachiPathBuilder',
-			'collectionPartialsPath',
-			'collectionService'
+			'collectionPartialsPath'
         ];
         return directive;
     }
 	//@ngInject
 	constructor(
-			$http,
-			$compile,
-			$log,
 			hibachiPathBuilder,
-			collectionPartialsPath,
-			collectionService){
+			collectionPartialsPath){
 		return {
 			restrict: 'A',
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"collection.html",
