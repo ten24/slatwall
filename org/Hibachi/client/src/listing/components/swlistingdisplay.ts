@@ -176,6 +176,10 @@ class SWListingDisplayController{
             
         }
 
+        if (this.collectionObject){
+             this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
+        }
+
     }
     
     public getCollectionByPagination = (state) =>{
