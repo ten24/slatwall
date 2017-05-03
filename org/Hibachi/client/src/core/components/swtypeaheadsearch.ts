@@ -39,6 +39,7 @@ class SWTypeaheadSearchController {
     public placeholderRbKey:string;
     public initialEntityId:string;
     public initialEntityCollectionConfig:any; 
+    public dropdownOpen:boolean;
 
 	private _timeoutPromise;
     
@@ -54,6 +55,9 @@ class SWTypeaheadSearchController {
                 private collectionConfigService,
                 private typeaheadService
      ){
+        
+        this.dropdownOpen = false;
+        
        
         //populates all needed variables
         this.$transclude($scope,()=>{});
@@ -170,6 +174,10 @@ class SWTypeaheadSearchController {
             this.addFunction()(undefined);
         }
     };
+    
+    public toggleDropdown = ()=>{
+        this.dropdownOpen = !this.dropdownOpen;    
+    }
 
     public toggleOptions = () =>{
         if(this.hideSearch && !this.searchText.length){
