@@ -49735,6 +49735,9 @@
 	                console.log("Adding orderItem Filters", _this.getCollectionByView(_this.getView()));
 	            }
 	            //Calls to auto refresh the collection since a filter was added.
+	            var refreshedCollection = _this.orderFulfillmentCollection;
+	            _this.orderFulfillmentCollection = undefined;
+	            _this.orderFulfillmentCollection = refreshedCollection;
 	            _this.refreshCollectionTotal(_this.getCollectionByView(_this.getView()));
 	        };
 	        /**
@@ -49982,7 +49985,7 @@
 	        }, function (error) {
 	            console.log("Error", error);
 	        });
-	        console.log("" + this.fulfillmentBatchID);
+	        console.log("FulfillmentBatchId, " + this.fulfillmentBatchId);
 	    }
 	    return SWFulfillmentBatchDetailController;
 	}());
@@ -50001,7 +50004,7 @@
 	        this.restrict = "EA";
 	        this.scope = {};
 	        this.bindToController = {
-	            fulfillmentBatchID: "@?"
+	            fulfillmentBatchId: "@?"
 	        };
 	        this.controller = SWFulfillmentBatchDetailController;
 	        this.controllerAs = "swFulfillmentBatchDetailController";

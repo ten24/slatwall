@@ -271,6 +271,9 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
             console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
+        let refreshedCollection = this.orderFulfillmentCollection;
+        this.orderFulfillmentCollection = undefined;
+        this.orderFulfillmentCollection = refreshedCollection; 
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
        
     }

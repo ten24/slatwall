@@ -9,9 +9,9 @@ type ActionName = "toggle" | "refresh";
  * Fulfillment Batch Detail Controller
  */
 class SWFulfillmentBatchDetailController  {
-    expanded:boolean = false;
-    public fulfillmentBatchID:string;
+    public expanded:boolean = false;
     public TOGGLE_ACTION:ActionName = "toggle";
+    public fulfillmentBatchId: string;
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
@@ -23,7 +23,7 @@ class SWFulfillmentBatchDetailController  {
                 console.log("Error", error);
             }
         );
-        console.log(`${this.fulfillmentBatchID}`);
+        console.log(`FulfillmentBatchId, ${this.fulfillmentBatchId}`);
     }
 
     public toggleListing = () => {
@@ -46,7 +46,7 @@ class SWFulfillmentBatchDetail implements ng.IDirective{
     public scope = {}	
     
     public bindToController = {
-        fulfillmentBatchID: "@?"
+        fulfillmentBatchId: "@?"
     }
 
     public controller=SWFulfillmentBatchDetailController;
