@@ -2,6 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingColumnController{
+    public propertyIdentifier:string; 
     public editable:boolean;
     public cellView:string;
     public hasCellView:boolean=false;
@@ -9,6 +10,7 @@ class SWListingColumnController{
     public hasHeaderView:boolean=false;
     public action:string; 
     public queryString:string; 
+    public isVisible:boolean; 
     //@ngInject
     constructor(
         public $injector
@@ -18,6 +20,10 @@ class SWListingColumnController{
     }
 
     public init = () =>{
+        if(angular.isUndefined(this.isVisible)){
+             this.isVisible = true;
+        }
+        
         this.editable = this.editable || false;
         //did a cellView get suggested, if so does it exist
         if(this.cellView){
