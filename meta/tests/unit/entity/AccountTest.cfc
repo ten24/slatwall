@@ -74,14 +74,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		account = accountService.processAccount(account, accountData, 'create');
 		var accountHasErrors = account.hasErrors();
-
-		ormFlush();
+		
 
 		var deleteOK = accountService.deleteAccount(account);
 
 		assert(deleteOk);
 
-		ormFlush();
 	}
 
 	/**
