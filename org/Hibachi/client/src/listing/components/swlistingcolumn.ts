@@ -16,6 +16,7 @@ class SWListingColumnController{
     }
 
     public init = () =>{
+        
         this.editable = this.editable || false;
         //did a cellView get suggested, if so does it exist
         if(this.cellView){

@@ -10129,7 +10129,6 @@
 	        this.restrict = "EA";
 	        this.scope = {};
 	        this.bindToController = {
-	            name: "@",
 	            fieldName: "@",
 	            entityName: "@",
 	            typeaheadCollectionConfig: "=?",
@@ -20011,7 +20010,7 @@
 	                    _this.getListing(listingID).collectionConfig.setCurrentPage(_this.getListing(listingID).paginator.getCurrentPage());
 	                    _this.getListing(listingID).collectionConfig.setPageShow(_this.getListing(listingID).paginator.getPageShow());
 	                    if (_this.getListing(listingID).multiSlot) {
-	                        _this.getListing(listingID).getEntity().then(function (data) {
+	                        _this.getListing(listingID).collection.getEntity().then(function (data) {
 	                            _this.getListing(listingID).collectionData = data;
 	                            _this.setupDefaultCollectionInfo(listingID);
 	                            _this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
@@ -32054,8 +32053,8 @@
 	            data.append('slatAction', "admin:entity.processProduct");
 	            data.append('processContext', "uploadDefaultImage");
 	            data.append('sRedirectAction', "admin:entity.detailProduct");
-	            data.append('preprocessDisplayedFlag', 1);
-	            data.append('ajaxRequest', 1);
+	            data.append('preprocessDisplayedFlag', 'true');
+	            data.append('ajaxRequest', 'true');
 	            data.append('productID', _this.sku.data.product_productID);
 	            if (_this.customImageNameFlag) {
 	                data.append('imageFile', _this.imageFileName);

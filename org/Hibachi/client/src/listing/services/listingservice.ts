@@ -696,7 +696,7 @@ class ListingService{
                 this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
                 if(this.getListing(listingID).multiSlot){
-                	this.getListing(listingID).getEntity().then(
+                	this.getListing(listingID).collection.getEntity().then(
                     (data)=>{
                         this.getListing(listingID).collectionData = data;
                         this.setupDefaultCollectionInfo(listingID);
