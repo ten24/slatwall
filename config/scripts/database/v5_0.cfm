@@ -64,7 +64,7 @@ Notes:
 		
 		<!--- Create the name list --->
 		<cfloop query="names">
-			<cfset nameList = listAppend(nameList, locationName, "/")>
+			<cfset nameList = listAppend(nameList, locationName, " » ")>
 		</cfloop>
 		
 		<!--- Update the calculatedLocationPathName --->
