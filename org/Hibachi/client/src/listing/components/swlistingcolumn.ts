@@ -7,6 +7,8 @@ class SWListingColumnController{
     public hasCellView:boolean=false;
     public headerView:string; 
     public hasHeaderView:boolean=false;
+    public action:string; 
+    public queryString:string; 
     //@ngInject
     constructor(
         public $injector
@@ -54,7 +56,9 @@ class SWListingColumn implements ng.IDirective{
         buttonGroup:"=?",
         cellView:"@?",
         headerView:"@?",
-        fallbackPropertyIdentifiers:"@?"
+        fallbackPropertyIdentifiers:"@?",
+        action:"@?",
+        queryString:"@?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
@@ -101,7 +105,9 @@ class SWListingColumn implements ng.IDirective{
             buttonGroup:scope.swListingColumn.buttonGroup,
             hasCellView:scope.swListingColumn.hasCellView,
             hasHeaderView:scope.swListingColumn.hasHeaderView, 
-            isVisible:scope.swListingColumn.isVisible || true
+            isVisible:scope.swListingColumn.isVisible || true,
+            action:scope.swListingColumn.action, 
+            queryString:scope.swListingColumn.queryString
         };
 
         if(scope.swListingColumn.hasCellView){

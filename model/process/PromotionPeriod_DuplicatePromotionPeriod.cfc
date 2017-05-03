@@ -46,31 +46,47 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="promotionPeriod";
+
+	// New Properties
+	property name="newPromotionPeriod" type="any";
+
+	// Data Properties
+	property name="promotionPeriodName" hb_rbKey="entity.promotionPeriod.promotionPeriodName";
+	property name="startDateTime" hb_formFieldType="datetime"  hb_rbKey="entity.promotionPeriod.startDateTime" hb_nullRBKey="define.forever";
+	property name="endDateTime" hb_formFieldType="datetime" hb_rbKey="entity.promotionPeriod.endDateTime" hb_nullRBKey="define.forever";
+	property name="maximumUseCount" hb_rbKey="entity.promotionPeriod.maximumUseCount";
 	
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
+	public function getPromotionPeriodName() {
+		if(!structKeyExists(variables, "promotionPeriodName")) {
+			if(len(getPromotionPeriod().getPromotionPeriodName())) {
+				variables.promotionPeriodName = getPromotionPeriod().getPromotionPeriodName() & ' ( copy )';
+			} else {
+				variables.promotionPeriodName = '';
+			}
+		}
+		return variables.promotionPeriodName;
+	}
+	public function getStartDateTime() {
+		if(!structKeyExists(variables, "startDateTime")) {
+			variables.startDateTime = getPromotionPeriod().getStartDateTime();
+		}
+		return variables.startDateTime;
+	}
+	public function getEndDateTime() {
+		if(!structKeyExists(variables, "endDateTime")) {
+			variables.endDateTime = getPromotionPeriod().getEndDateTime();
+		}
+		return variables.endDateTime;
+	}
+	public function getMaximumUseCount() {
+		if(!structKeyExists(variables, "maximumUseCount")) {
+			variables.maximumUseCount = getPromotionPeriod().getMaximumUseCount();
+		}
+		return variables.maximumUseCount;
+	}
+		
 }

@@ -48,43 +48,26 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-<html>
-<head>
-	<cfoutput><script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script></cfoutput>
-	<script type="text/javascript">
-		jQuery(document).ready(function(){
-			window.print();
-			setTimeout(function(){
-				onmousemove = function() {
-					close();
-				}	
-			}, 10);
-		});
-	</script>
-	
-</head>
-<body>
-<cfif listLen($.slatwall.getPrintQueue())>
-	<cfloop list="#listLen($.slatwall.getPrintQueue())#" index="i">
-		<cfset printEntity = $.slatwall.getService('printService').getPrint(listgetAT($.slatwall.getPrintQueue(),i))/>
-		<cfif !isNull(printEntity)>
-			<div style="<cfif i gt 1>page-break-before: always;</cfif>">
-				<cfoutput>#printEntity.getPrintContent()#</cfoutput>
-			</div>
-			<cfsilent>
-				<cfif printEntity.getLogPrintFlag()>
-					<cfset entityMerge(printEntity) />
-					<cfset entitySave(printEntity) />
-				<cfelse>
-					<cfset entityDelete(printEntity)/>
-				</cfif>
-			</cfsilent>
-		</cfif>
-	</cfloop>
-<cfset $.slatwall.clearPrintQueue() />
-<cfelse>
-	<p class="error">There are no documents in the queue to print</p>
-</cfif>
-</body>
-</html>
 
+
+<cfparam name="rc.promotionPeriod" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.promotionPeriod#" edit="#rc.edit#" sRedirectAction="admin:entity.editpromotionperiod">
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.promotionPeriod#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="promotionPeriodName" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
+</cfoutput>

@@ -6,9 +6,25 @@
             data-custom-listing-controls="true"
             data-has-action-bar="false"
             data-administrative-count="1"
+            data-base-entity-name="ProductListingPage"
         >   
+            <sw-listing-columns>
+                <sw-listing-column data-property-identifier="content.title" 
+                                   data-action="admin:entity.detailcontent"
+                                   data-query-string="contentID=${content.contentID}">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="content.titlePath">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="content.site.siteName">
+                </sw-listing-column>
+                <sw-listing-column data-property-identifier="content.activeFlag">
+                </sw-listing-column>
+            </sw-listing-columns>
+
             <sw-collection-configs>
-                <sw-collection-config data-entity-name="ProductListingPage" data-in-listing-display="true" data-all-records="false">
+                <sw-collection-config data-entity-name="ProductListingPage" 
+                                      data-in-listing-display="true" 
+                                      data-all-records="false">
                     <sw-collection-columns>
                         <sw-collection-column data-property-identifier="productListingPageID" 
                                               data-is-visible="false"
@@ -84,6 +100,7 @@
             data-is-angular-route="false"
             data-get-child-count="true"
             data-multi-slot="true"
+            data-base-entity-name="ProductListingPage"
         >
             <sw-collection-configs>
                 <sw-collection-config data-entity-name="Content" 

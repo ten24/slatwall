@@ -49,7 +49,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 		var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
 		var ampm = true;
-		if(convertedTimeFormat.slice(-2) != 'TT') {
+		if(convertedTimeFormat != null && typeof convertedTimeFormat.slice == 'function' && convertedTimeFormat.slice(-2) != 'TT') {
 			ampm = false;
 		}
 	
@@ -1808,13 +1808,17 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function convertCFMLDateFormat( dateFormat ) {
-		dateFormat = dateFormat.replace('mmm', 'M');
-		dateFormat = dateFormat.replace('yyyy', 'yy');
+		if(dateFormat != null && typeof dateFormat.replace == 'function'){
+			dateFormat = dateFormat.replace('mmm', 'M');
+			dateFormat = dateFormat.replace('yyyy', 'yy');
+		}
 		return dateFormat;
 	}
 	
 	function convertCFMLTimeFormat( timeFormat ) {
-		timeFormat = timeFormat.replace('tt', 'TT');
+		if(timeFormat != null && typeof timeFormat.replace == 'function'){	
+			timeFormat = timeFormat.replace('tt', 'TT');
+		}
 		return timeFormat;
 	}
 	

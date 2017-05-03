@@ -1,6 +1,6 @@
 /*
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) ten24, LLC
+    Copyright (C) ten24, LLC 
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -175,8 +175,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
-				} else if(getSku().getQuantity('QATS') <= maxQTY) {
-					maxQTY = getSku().getQuantity('QATS');
+				} else if(getSku().getQATS() <= maxQTY) {
+					
+					maxQTY = getSku().getQATS();
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
@@ -519,7 +520,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getItemTotal() {
-		return getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount());
+		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount()));
 	}
 
 	public any function getSalePrice() {

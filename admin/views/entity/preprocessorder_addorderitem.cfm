@@ -162,54 +162,8 @@ Notes:
 
 									<!--- Pickup Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
-										<label for="pickupLocationID" class="control-label col-sm-4" style="padding-left: 0px;">
-											<span class="s-title">Pickup Location</span>
-										</label>
-										<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
-											<!--- Pickup Location --->
-											<sw-typeahead-input-field
-													data-entity-name="Location"
-											        data-property-to-save="locationID"
-											        data-property-to-show="locationName"
-											        data-properties-to-load="locationID,locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
-											        data-show-add-button="true"
-											        data-show-view-button="true"
-											        data-placeholder-rb-key="entity.location"
-											        data-multiselect-mode="false"
-											        data-filter-flag="true"
-											        data-selected-format-string="Store Locations >> ${locationName}"
-											        data-field-name="pickupLocationID">
-											
-											    <sw-collection-config
-											            data-entity-name="Location"
-											            data-collection-config-property="typeaheadCollectionConfig"
-											            data-parent-directive-controller-as-name="swTypeaheadInputField"
-											            data-all-records="true">
-											
-													<sw-collection-columns>
-												        <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
-												        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
-												        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
-												        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
-												        <sw-collection-column data-property-identifier="locationName" data-is-searchable="true"></sw-collection-column>
-												        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
-												    </sw-collection-columns>
-													<!--- Order By --->
-											    	<sw-collection-order-bys>
-											        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
-											    	</sw-collection-order-bys>
-											    	<!--- Filters --->
-											    	<sw-collection-filters>
-						                                <sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
-						                            </sw-collection-filters>
-											    	
-											    </sw-collection-config>
-												
-												<i class="fa fa-map-marker icon-left fa-2x"></i>&nbsp;
-												<span sw-typeahead-search-line-item data-property-identifier="locationName"></span><br>
-												    	
-											</sw-typeahead-input-field>
-										</div>
+										<swa:SlatwallLocationTypeahead locationPropertyName="pickupLocationID" locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+										
 										
 									</hb:HibachiDisplayToggle>
 

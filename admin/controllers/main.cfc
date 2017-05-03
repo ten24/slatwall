@@ -287,7 +287,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(!rc.$.slatwall.getAccount().hasErrors()) {
 			rc.$.slatwall.showMessageKey("entity.Account.process.updatePassword_success");
-			getFW().redirect(action="admin:main.default", preserve="messages");
 		}
 
 		login(rc);

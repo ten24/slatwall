@@ -1,4 +1,3 @@
-<cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
