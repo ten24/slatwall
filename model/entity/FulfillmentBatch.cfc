@@ -58,7 +58,6 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (one-to-many)
-	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	property name="pickWaves" singularname="pickWave" cfc="PickWave" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	
@@ -99,14 +98,6 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 			arrayDeleteAt(arguments.account.getFulfillmentBatches(), index);
 		}
 		structDelete(variables, "OrderDeliveryItem");
-	}
-	
-	// Comments (one-to-many)
-	public void function addComment(required any comment) {
-		arguments.comment.setFulfillmentBatch( this );
-	}
-	public void function removeComment(required any comment) {
-		arguments.comment.removeFulfillmentBatch( this );
 	}
 	
 	// Fulfillment Batch Items (one-to-many)

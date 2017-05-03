@@ -73,7 +73,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processFulfillmentBatch_create(required any fulfillmentBatch, required any processObject){
 		
 		//populate the fulfillmentbatch with the process data
-		if (isNull(fulfillmentBatch.getAssignedAccount())){
+		if (isNull(fulfillmentBatch.getAssignedAccount()) && !isNull(processObject.getAssignedAccount())){
 			arguments.fulfillmentBatch.setAssignedAccount(processObject.getAssignedAccount());
 		}
 		
@@ -92,16 +92,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		//If they are trying to pass fulfillments for the fulfillment batch.
-		if (!isNull(processObject.getOrderFulfillmentIDList())){
-			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList());
+		if (!isNull(processObject.getOrderFulfillmentIDList()) && len(processObject.getOrderFulfillmentIDList())){
+			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderFulfillmentIDList();
+			for (var fulfillmentBatchItem in batchItems){
+				fulfillmentBatchItem.setQuantityOnBatch(1);
+				fulfillmentBatchItem.setQuantityFulfilled(0);
+				fulfillmentBatchItem.setQuantityPicked(0);
+				this.saveFulfillmentBatchItem(fulfillmentBatchItem);
+				arguments.fulfillmentBatch.addFulfillmentBatchItem(fulfillmentBatchItem);
+			}
 		}
 		
 		//If they are trying to pass orderItems for the fulfillment batch.
-		if (!isNull(processObject.getOrderItemIDList())){
-			arguments.fulfillmentBatch.setFulfillmentBatchItems(arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList());
+		if (!isNull(processObject.getOrderItemIDList()) && len(processObject.getOrderItemIDList())){
+			var batchItems = arguments.processObject.getFulfillmentBatchItemsByOrderItemIDList();
+			for (var fulfillmentBatchItem in batchItems){
+				fulfillmentBatchItem.setQuantityOnBatch(1);
+				fulfillmentBatchItem.setQuantityFulfilled(0);
+				fulfillmentBatchItem.setQuantityPicked(0);
+				this.saveFulfillmentBatchItem(fulfillmentBatchItem);
+				arguments.fulfillmentBatch.addFulfillmentBatchItem(fulfillmentBatchItem);
+			}
 		}
 		
+		//Generate the next fulfillmentBatch number
+		arguments.fulfillmentBatch.setFulfillmentBatchNumber(this.getMaxFulfillmentBatchNumber());
+		
+		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
+		
 		return arguments.fulfillmentBatch;
+	}
+	
+	public any function getMaxFulfillmentBatchNumber(){
+		var maxFulfillmentBatchNumber = ormExecuteQuery("SELECT max(cast(aslatwallfulfillmentbatch.fulfillmentBatchNumber as int)) as maxFulfillmentBatchNumber FROM SlatwallFulfillmentBatch aslatwallfulfillmentbatch");
+		if( arrayIsDefined(maxFulfillmentBatchNumber,1) ){
+			return maxFulfillmentBatchNumber[1] + 1;
+		} else {
+			return 1;
+		}
 	}
 	
 	// Stub: FulfillmentBatch Auto fulfill all fulfillment batch items

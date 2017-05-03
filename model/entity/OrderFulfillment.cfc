@@ -66,6 +66,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
+	property name="orderFulfillmentInvStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentInvStatTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentInvStatusType";
 
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
@@ -113,7 +114,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
     property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
     property name="shipmentItemMultiplier" type="numeric" persistent="false";
-
+    
 	// Deprecated
 	property name="discountTotal" persistent="false";
 	property name="shippingCharge" persistent="false";
@@ -144,6 +145,29 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 
 		return true;
+	}
+	/**
+	 * Returns Available if all orderFulfillmentItems have available inventory.
+	 * Returns Partials if some of the items have inventory.
+	 * Returns Unavailable if none of the items have inventory.
+	 */
+	public any function getOrderFulfillmentInvStatusType() {
+		variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisAvailable');
+		
+		var canNotFulfillCount = 0;
+		if(!isNull(getOrderFulfillmentItems())) {
+			for(var orderItem in getOrderFulfillmentItems()) {
+				if(!orderItem.hasQuantityWithinMaxOrderQuantity()) {
+					variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisPartial');
+					canNotFulfillCount++;
+				}
+			}
+		}
+		if (canNotFulfillCount == arrayLen(getOrderFulfillmentItems())){
+			variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
+		}
+		
+		return variables.orderFulfillmentInvStatusType;
 	}
 
     public void function checkNewAccountAddressSave() {

@@ -511,7 +511,7 @@ class CollectionConfig {
         );
         return filter;
     };
-
+    
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         var group = {
             filterGroup:[]

@@ -99,7 +99,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				}
 				var fulfillmentBatchItem = getService("FulfillmentService").newFulfillmentBatchItem();
 				//Sets the batch on the item
-				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+				if (!isNull(getFulfillmentBatch())){
+					fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
+				}
 				//Sets the orderFulfillment on the item
 				fulfillmentBatchItem.setOrderFulfillment(orderFulfillment);
 				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
@@ -126,6 +128,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				fulfillmentBatchItem.setFulfillmentBatch(getFulfillmentBatch());
 				//Sets the orderFulfillment on the item
 				fulfillmentBatchItem.setOrderItem(orderItem);
+				fulfillmentBatchItem.setOrderFulfillment(orderItem.getOrderFulfillment());
 				arrayAppend(fulfillmentBatchItems, fulfillmentBatchItem);
 			}
 		}

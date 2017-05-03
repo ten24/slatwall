@@ -171,6 +171,10 @@ var coremodule = angular.module('hibachi.core',[
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
    // $provide.decorator('$hibachi',
    $httpProvider.interceptors.push('hibachiInterceptor');
+   
+   //Pulls seperate http requests into a single digest cycle.
+   $httpProvider.useApplyAsync(true);
+
 }])
 .run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;

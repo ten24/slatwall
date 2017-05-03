@@ -54,7 +54,7 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 	property name="publicFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
-	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
+	property name="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="many-to-one" fkcolumn="fulfillmentBatchItemID";
 	
 	// Related Object Properties (one-to-many)
 	property name="commentRelationships" singularname="commentRelationship" cfc="CommentRelationship" type="array" fieldtype="one-to-many" fkcolumn="commentID" inverse="true" cascade="all-delete-orphan";
@@ -104,22 +104,22 @@ component displayname="Comment" entityname="SlatwallComment" table="SwComment" p
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Fulfillment Batch (many-to-one)
-	public void function setFulfillmentBatch(required any fulfillmentBatch) {
-		variables.fulfillmentBatch = arguments.fulfillmentBatch;
-		if(isNew() or !arguments.fulfillmentBatch.hasComment( this )) {
-			arrayAppend(arguments.fulfillmentBatch.getComments(), this);
+	public void function setFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		variables.fulfillmentBatchItem = arguments.fulfillmentBatchItem;
+		if(isNew() or !arguments.fulfillmentBatchItem.hasComment( this )) {
+			arrayAppend(arguments.fulfillmentBatchItem.getComments(), this);
 		}
 	}
 	
-	public void function removeFulfillmentBatch(any fulfillmentBatch) {
-		if(!structKeyExists(arguments, "fulfillmentBatch")) {
-			arguments.fulfillmentBatch = variables.fulfillmentBatch;
+	public void function removeFulfillmentBatchItem(any fulfillmentBatchItem) {
+		if(!structKeyExists(arguments, "fulfillmentBatchItem")) {
+			arguments.fulfillmentBatchItem = variables.fulfillmentBatchItem;
 		}
-		var index = arrayFind(arguments.fulfillmentBatch.getComments(), this);
+		var index = arrayFind(arguments.fulfillmentBatchItem.getComments(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.fulfillmentBatch.getComments(), index);
+			arrayDeleteAt(arguments.fulfillmentBatchItem.getComments(), index);
 		}
-		structDelete(variables, "fulfillmentBatch");
+		structDelete(variables, "fulfillmentBatchItem");
 	}
 	
 	// Comment Relationships (one-to-many)

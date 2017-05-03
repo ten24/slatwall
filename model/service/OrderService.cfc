@@ -295,7 +295,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 					}
-
+					
+					//Sets the status type
+					orderFulfillment.setOrderFulfillmentInvStatusType(orderFulfillment.getOrderFulfillmentInvStatusType());
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
@@ -1729,7 +1731,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
-
+		
+		//Update the inventory Status Type
+		orderFulfillment.setOrderFulfillmentInvStatusType(orderFulfillment.getOrderFulfillmentInvStatusType());
+		
 		if(!orderFulfillment.hasErrors()) {
 			arguments.order = this.saveOrder(arguments.order);
 		} else {
