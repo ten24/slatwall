@@ -224,7 +224,11 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
-		return getCalculatedLocationPathName();
+		if(!isNull(getCalculatedLocationPathName())){
+			return getCalculatedLocationPathName();
+		}else{
+			return getLocationPathName();
+		}
 	}
 	
 	
