@@ -51,7 +51,7 @@ Notes:
 <cflog file="Slatwall" text="General Log - Running update script v5_0 ">
 <cftry>
   <!--- Get All Existing Location --->
-	<cfquery name="locations">
+	<cfquery name="local.locations">
 		SELECT locationID, locationIDPath FROM SwLocation WHERE calculatedLocationPathName is null
 	</cfquery>
 	<cfloop query="locations">
@@ -70,15 +70,15 @@ Notes:
 		<!--- Update the calculatedLocationPathName --->
 		<cfif !isNull(nameList) AND len(nameList)>
 			<cflog file="Slatwall" text="UPDATING Setting calculatedLocationPathName = #nameList#">
-			<cfquery name="update">
+			<cfquery name="local.update">
 				UPDATE SwLocation SET calculatedLocationPathName = '#nameList#' where locationID = '#locationID#'
 			</cfquery>
 		</cfif>
 	</cfloop>
-<cfcatch>
-	<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update calculatedLocationPathName has an issue.">
-	<cfset local.scriptHasErrors = true />
-</cfcatch>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update calculatedLocationPathName has an issue.">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
 </cftry>
 
 <cfif local.scriptHasErrors>
