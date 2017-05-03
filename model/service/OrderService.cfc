@@ -2592,8 +2592,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
 			if (arguments.orderPayment.getOrder().hasDepositItemsOnOrder()){
 				
-				//if this is authorize.
-				if (arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorize'){
+				//if this is authorize and there is a deposit amount needed.
+				/*if (arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorize'){
+					//Only authorize for the deposit amount instead of the full amount.
+					//processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
+					
 					//call the method below if getPlaceOrderChargeTransactionType = "Authorize"
 					arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					
@@ -2606,27 +2609,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					}
 				// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
-				}else if(arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorizeAndCharge'){
+				}else */
+				if(arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorizeAndCharge'){
 					
 					//auth the full amount.
-						arguments.orderPayment.clearProcessObject( 'createTransaction' );
+					/*	arguments.orderPayment.clearProcessObject( 'createTransaction' );
 						processData.transactionType = "authorize";
 						processData.amount = arguments.orderPayment.getOrder().getTotal();
 						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
-					
+					*/
 					// then do another call for create transaction with transactionType = auth and amount = payment amount due.
 					//charge the partial amount.
-					if (!arguments.orderPayment.hasErrors()){
-						arguments.orderPayment.clearProcessObject( 'createTransaction' );
+					//if (!arguments.orderPayment.hasErrors()){
+						//arguments.orderPayment.clearProcessObject( 'createTransaction' );
 						//just set the deposit amount
 						processData.transactionType = "authorizeAndCharge";
 						processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
 						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 					
-					}
+					//}
 					
 				}
-				
+
 			}else{
 				arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
 			}
@@ -2635,35 +2639,38 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function createTransactionAndCheckErrors(required any orderPayment, required any processData){
-		// Call the processing method
-		arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
-
-		// If there was expected authorize, receive, or credit
-		if(arguments.orderPayment.hasErrors()
-				||
-			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
-				||
-			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
-				||
-			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
-				||
-			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
-				||
-			(listFindNoCase("credit", processData.transactionType) && arguments.orderPayment.getAmountCredited() lt arguments.orderPayment.getAmount())
-		) {
-
-			// Add a generic payment processing error and make it persistable
-			arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', rbKey('entity.order.process.placeOrder.paymentProcessingError'), true);
-
-			// Add the actual message
-			if(arguments.orderPayment.hasError('createTransaction')) {
-				arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', arguments.orderPayment.getError('createTransaction'), true);
-			}
-
-		}
-		
-		return arguments.orderPayment;
-	}
+  		// Call the processing method
+  		arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
+  
+  		// If there was expected authorize, receive, or credit
+  		/*
+  		(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
+  				||
+  		*/
+  		if(arguments.orderPayment.hasErrors()
+  				||
+  			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getAmount())
+  				||
+  			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == false && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getAmount())
+  				||
+  			(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorizeAndCharge,receive", processData.transactionType) && arguments.orderPayment.getAmountReceived() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
+  				||
+  			(listFindNoCase("credit", processData.transactionType) && arguments.orderPayment.getAmountCredited() lt arguments.orderPayment.getAmount())
+  		) {
+  			
+  			// Add a generic payment processing error and make it persistable
+  			arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', rbKey('entity.order.process.placeOrder.paymentProcessingError'), true);
+  
+  			// Add the actual message
+  			if(arguments.orderPayment.hasError('createTransaction')) {
+  				arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', arguments.orderPayment.getError('createTransaction'), true);
+  			}
+  
+  		}
+  
+  		
+  		return arguments.orderPayment;
+  	}
 
 	// =====================  END: Process Methods ============================
 
