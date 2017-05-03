@@ -55,7 +55,7 @@ Notes:
 		SELECT locationID, locationIDPath FROM SwLocation WHERE calculatedLocationPathName is null
 	</cfquery>
 	<cfloop query="locations">
-		<cfset nameList="">
+		<cfset local.nameList="">
 		
 		<!--- Get all the locationIDPaths --->
 		<cfquery name="local.names">
