@@ -46,7 +46,7 @@
 Notes:
 
 --->
-<!---
+
 <cfset local.scriptHasErrors = false />
 <cflog file="Slatwall" text="General Log - Running update script v5_0 ">
 <cftry>
@@ -86,4 +86,4 @@ Notes:
 	<cfthrow detail="Part of Script v5_0 had errors when running">
 <cfelse>
 	<cflog file="Slatwall" text="General Log - Script v5_0 has run with no errors">
-</cfif>--->
+</cfif>
