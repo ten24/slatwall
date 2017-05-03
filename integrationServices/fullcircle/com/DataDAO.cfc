@@ -142,7 +142,7 @@
 			
 			<cfloop query="productData">
 				
-				<cfquery name="rs" result="rsResult">
+				<cfquery name="rs" result="local.rsResult">
 					UPDATE
 						SwSku
 					SET

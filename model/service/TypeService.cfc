@@ -67,8 +67,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	/**
 	* @Suppress
 	*/
-	public any function getTypeBySystemCode( required string systemCode ) {
+	public any function getTypeBySystemCode( required string systemCode, string typeCode ) {
 		return getTypeDAO().getTypeBySystemCode(argumentCollection=arguments);
+	}
+	
+	public any function getTypeOptionsBySystemCode( required string systemCode ) {
+		return getTypeDAO().getTypeOptionsBySystemCode(argumentCollection=arguments);
 	}
 	
 	// ===================== START: DAO Passthrough ===========================

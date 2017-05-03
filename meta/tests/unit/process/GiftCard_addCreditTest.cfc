@@ -48,12 +48,15 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_adding_credit(){
 
 		var giftCardData = {

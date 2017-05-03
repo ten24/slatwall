@@ -146,7 +146,7 @@
 		<cfargument name="entity" type="any" required="true" />
 		
 		<cfif !isNull(arguments.entity.getCMSAccountID()) and len(arguments.entity.getCMSAccountID()) >
-			<cfquery name="rs">
+			<cfquery name="local.rs">
 				UPDATE
 					tusers
 				SET

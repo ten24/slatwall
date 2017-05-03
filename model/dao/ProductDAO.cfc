@@ -56,9 +56,9 @@ Notes:
 		public void function setSkusAsInactiveByProductID(required string productID){
 			var updateQuery = new Query();
 			var sql = '
-				UPDATE SwSku s
-				SET s.activeFlag=0,publishedFlag=0
-				WHERE s.productID = :productID
+				UPDATE SwSku
+				SET activeFlag=0, publishedFlag=0
+				WHERE productID = :productID
 			';
 			updateQuery.addParam(name="productID",value=arguments.productID,cfsqltype="cf_sql_varchar");
 			updateQuery.execute(sql=sql);
@@ -66,9 +66,10 @@ Notes:
 		
 		public numeric function getProductRating(required any product){
 			return OrmExecuteQuery('
-				SELECT avg(pr.rating) 
+				SELECT COALESCE(avg(pr.rating), 0)
 				FROM SlatwallProductReview pr 
-				where pr.product = :product
+				WHERE pr.product = :product
+				AND pr.activeFlag = 1
 				',{product=arguments.product},true
 			);
 		}
@@ -458,7 +459,7 @@ Notes:
 	<cffunction name="updateProductProductType" hint="Moves all products from one product type to another">
 		<cfargument name="fromProductTypeID" type="string" required="true" >
 		<cfargument name="toProductTypeID" type="string" required="true" >
-		<cfquery name="updateProduct" >
+		<cfquery name="local.updateProduct" >
 			UPDATE SwProduct 
 			SET productTypeID = <cfqueryparam value="#arguments.toProductTypeID#" cfsqltype="cf_sql_varchar" >
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >

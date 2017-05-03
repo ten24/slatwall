@@ -48,12 +48,15 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_debiting_card(){
 		var giftCardData = {
 			giftCardID=""
@@ -63,7 +66,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processGiftCard = giftCard.getProcessObject( 'addDebit' );
 		processGiftCard.setDebitAmount("10.50");
 
-		addToDebug(processGiftCard);
 
 		var orderItemData = {
 			orderItemID=""

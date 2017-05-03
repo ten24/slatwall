@@ -314,7 +314,7 @@
 				FROM
 					#arguments.tableName#
 				WHERE
-					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="i">
+					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
 						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
 				<cfif listLen(arguments.idColumns) gt i>#arguments.compositeKeyOperator# </cfif>
 					</cfloop>
@@ -326,7 +326,7 @@
 						UPDATE
 							#arguments.tableName#
 						SET
-							<cfloop from="1" to="#listLen(keyList)#" index="i">
+							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
 								<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 								<cfelse>
@@ -348,7 +348,7 @@
 				UPDATE
 					#arguments.tableName#
 				SET
-					<cfloop from="1" to="#listLen(keyList)#" index="i">
+					<cfloop from="1" to="#listLen(keyList)#" index="local.i">
 						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
 							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 						<cfelse>
@@ -357,7 +357,7 @@
 						<cfif listLen(keyList) gt i>, </cfif>
 					</cfloop>
 				WHERE
-					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="i">
+					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
 						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
 						<cfif listLen(arguments.idColumns) gt i>AND </cfif>
 					</cfloop>
@@ -382,7 +382,7 @@
 			INSERT INTO	#arguments.tableName# (
 				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
 			) VALUES (
-				<cfloop from="1" to="#listLen(keyList)#" index="i">
+				<cfloop from="1" to="#listLen(keyList)#" index="local.i">
 					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 					<cfelse>

@@ -255,7 +255,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	                }
 	                break;
 	            case "percentage":
-	                amount = precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100);
+	                amount = getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(amount * variables.redemptionAmount)/100);
 	                break;
 	        }
 	    }else{
@@ -403,11 +403,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// END: Image Methods
 
 	public boolean function getEventConflictExistsFlag() {
-		var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
+		if(this.setting('skuEventEnforceConflicts')){
+			var eventConflictsSmartList = getService("skuService").getEventConflictsSmartList(sku=this);
 		
-		if(eventConflictsSmartList.getRecordsCount() GT 0) {
-			return true;
+			if(eventConflictsSmartList.getRecordsCount() GT 0) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 
@@ -1067,6 +1070,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
 			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
+
+			if(variables.skuDefinition == "" && !isNull(getSkuName())){
+				variables.skuDefinition = getSkuName();
+			}
 		}
 		return trim(variables.skuDefinition);
 	}

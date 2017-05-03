@@ -67,7 +67,7 @@ Notes:
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
 			<!--- If the logged in user is a super user, or they own this account then allow api token generation. --->
-			<cfif getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() eq arguments.account.getAccountID()>
+			<cfif getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() eq rc.account.getAccountID()>
 				<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAPIAccessKey"  type="list" modal="true" />
 			</cfif>
 			<li class="divider"></li>

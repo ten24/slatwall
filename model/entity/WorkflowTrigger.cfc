@@ -77,6 +77,16 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	
 	// Non-Persistent Properties
 	
+	property name="workflowTriggerException" persistent="false";
+	
+	public void function setWorkflowTriggerException(required any e){
+		variables.workflowTriggerException = arguments.e;
+	}
+	
+	public any function getWorkflowTriggerException(){
+		return variables.workflowTriggerException;
+	}
+	
 	
 	// Workflow (many-to-one)
 	public void function setWorkflow(required any workflow) {

@@ -47,19 +47,25 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("settingService");
 	}
 	
-	// getSettingRecordCount()
+	// getSettingRecordCount()	
+	/**
+	* @test
+	*/
 	public void function getSettingRecordExistsFlag_returns_boolean() {
 		var count = variables.service.getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag");
 		assert(isBoolean(count));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSettingPrefixTest(){
 		var settingName = 'emailFromEmailAddress';
 		var settingPrefix = variables.service.getSettingPrefix(settingName);

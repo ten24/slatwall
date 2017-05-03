@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.newEntity('integration');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function active_flag_set_to_no_by_default() {
 		assertFalse(variables.entity.getActiveFlag(), "Active flag not set to 'No' by default on integrations");
 	}

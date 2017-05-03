@@ -94,8 +94,7 @@ component displayname="Gateway Response"  accessors="true" output="false" extend
 		}
 	}
 	
-	// Private methods
-	private struct function getAVSCodes(){
+	public struct function getAVSCodes(){
 		var allowedAVSCodes = {
 			A = "Street address matches, but 5-digit and 9-digit postal code do not match.",	
 			B = "Street address matches, but postal code not verified."	,

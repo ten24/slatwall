@@ -160,6 +160,13 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
+	//must use any as return type to handle persistent null situations
+	public any function getTitle(){
+		if(structKeyExists(variables,'title')){
+			return hibachiHtmlEditFormat(variables.title);
+		}
+	}
+	
 	// ==============  END: Overridden Implicit Getters ====================
 	
 	// ============= START: Overridden Smart List Getters ==================

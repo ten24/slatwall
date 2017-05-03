@@ -65,13 +65,17 @@
 				<cfoutput>
 					<div class="form-group">
 						<label class="control-label col-sm-4 title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)><span sw-tooltip class="j-tool-tip-item" data-text="#attributes.hint#" data-position="right"><i class="fa fa-question-circle"></i></span></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label>
-
 						<div class="col-sm-8">
 							<cfif attributes.fieldType eq "listingMultiselect">
 								<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></p>
 							<cfelse>
 								<cfif attributes.valueLink neq "">
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></p>
+									<cfif IsImageFile(expandPath(attributes.valueLink))>
+										<div class="s-image">
+											<img src="#attributes.valueLink#" height="250" width="250" /> 
+										</div>
+									</cfif>										
 								<cfelse>
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
 								</cfif>

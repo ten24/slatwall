@@ -85,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"product",
 			"content",
 			"account",
+			"address",
 			"image",
 			"brand",
 			"email",
@@ -123,10 +124,20 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
 			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
 			accountLockMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true, minValue=30}},
-
+			accountDisplayTemplate = {fieldType="select"},
+			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
+			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
-
+			
+			// Address
+			addressDisplayTemplate = {fieldType="select"},
+			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
+			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
+			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
+			
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -193,6 +204,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
+			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
+			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
@@ -270,6 +283,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuEmailFulfillmentTemplate = {fieldType="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
+			skuEventEnforceConflicts = {fieldType="yesno", defaultValue=1},
 			skuGiftCardEmailFulfillmentTemplate = {fieldtype="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
@@ -289,6 +303,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
+			
 
 			// Subscription Term
 			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
@@ -349,6 +364,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "addressDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "address" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -361,6 +381,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "ProductType", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "productType" );
+			case "accountDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "Account", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "account" );
 			case "contentRestrictedContentDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "BarrierPage", arguments.settingObject.getContent().getSite().getSiteID() );
@@ -486,9 +511,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName=arguments.entity.getPrimaryIDPropertyName(), columnID=arguments.entity.getPrimaryIDValue());
 
-		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmetnMethodID" ) {
+		} else if ( arguments.entity.getPrimaryIDPropertyName() == "fulfillmentMethodID" ) {
 
-			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmetnMethodID", columnID=arguments.entity.getFulfillmentMethodID());
+			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName="fulfillmentMethodID", columnID=arguments.entity.getFulfillmentMethodID());
 
 			for(var a=1; a<=arrayLen(arguments.entity.getShippingMethods()); a++) {
 				settingsRemoved += getSettingDAO().removeAllRelatedSettings(columnName="shippingMethodID", columnID=arguments.entity.getShippingMethods()[a].getShippingMethodID());
@@ -864,6 +889,8 @@ component extends="HibachiService" output="false" accessors="true" {
 
 	public boolean function deleteSetting(required any entity) {
 
+		getHibachiScope().addModifiedEntity(arguments.entity); 
+
 		// Check to see if we are going to need to update the
 		var calculateStockNeeded = false;
 		if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
@@ -876,9 +903,9 @@ component extends="HibachiService" output="false" accessors="true" {
 		// If there aren't any errors then flush, and clear cache
 		if(deleteResult && !getHibachiScope().getORMHasErrors()) {
 
-			getHibachiDAO().flushORMSession();
-
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#settingName#',true);
+			
+			getHibachiDAO().flushORMSession();
 
 			// If calculation is needed, then we should do it
 			if(calculateStockNeeded) {
@@ -897,13 +924,15 @@ component extends="HibachiService" output="false" accessors="true" {
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
 
+		getHibachiScope().addModifiedEntity(arguments.entity); 
+
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
 
-			getHibachiDAO().flushORMSession();
-
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
+			
+			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
@@ -915,9 +944,13 @@ component extends="HibachiService" output="false" accessors="true" {
 					globalURLKeyBrand,
 					globalURLKeyProduct,
 					globalURLKeyProductType,
+					globalURLKeyAccount,
+					globalURLKeyAddress,
 					productDisplayTemplate,
 					productTypeDisplayTemplate,
-					brandDisplayTemplate", 
+					brandDisplayTemplate,
+					accountDisplayTemplate
+					addressDisplayTemplate", 
 					arguments.entity.getSettingName()
 				) || 
 				left(arguments.entity.getSettingName(),7) == 'content'

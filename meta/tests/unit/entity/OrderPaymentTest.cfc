@@ -48,23 +48,32 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.getService("orderService").newOrderPayment();
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function defaults_are_correct() {
 		super.defaults_are_correct();
 		assertEquals(variables.entity.getPaymentTransactions(), []);
 		assertEquals(variables.entity.getReferencingOrderPayments(), []);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSucessfulPaymentTransactionExistsFlag_returns_false_by_default() {
 		assertFalse(variables.entity.getSucessfulPaymentTransactionExistsFlag());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSucessfulPaymentTransactionExistsFlag_returns_true_when_should() {
 		var paymentTransaction = request.slatwallScope.newEntity('paymentTransaction');
 		paymentTransaction.setTransactionSuccessFlag(true);
@@ -72,7 +81,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assert(variables.entity.getSucessfulPaymentTransactionExistsFlag());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getPeerOrderPaymentNullAmountExistsFlag_returns_true_when_should(){ 
 		var orderTrueData = { 
 			orderID = '',
@@ -111,7 +123,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(order1.getOrderPayments()[1].getPeerOrderPaymentNullAmountExistsFlag()); 
 		assertFalse(order2.getOrderPayments()[1].getPeerOrderPaymentNullAmountExistsFlag()); 
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setBillingAccountAddress_updates_billingAddress() {
 		
 		var accountAddressDataOne = {
@@ -138,7 +153,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( accountAddressDataTwo.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
 
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setBillingAccountAddress_updates_billingAddress_without_creating_a_new_one() {
 		addressDataOne = {
 			streetAddress = '123 Main Street'
@@ -162,7 +180,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( accountAddressDataOne.address.streetAddress, variables.entity.getBillingAddress().getStreetAddress() );
 		assertEquals( billingAddress.getAddressID(), variables.entity.getBillingAddress().getAddressID() );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function setBillingAccountAddress_doesnt_updates_billingAddress_when_same_aa_as_before() {
 		var accountAddressDataOne = {
 			address = {
@@ -184,7 +205,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getBillingAddress().getStreetAddress() );
 		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function test_gift_card_transaction_relation(){ 
 		var orderPaymentData = { 
 			orderPaymentID="",
@@ -227,7 +251,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	}
 	 	return createPersistedTestEntity('OrderPayment', orderPaymentData);
 	 }
-	 
+	 	
+	/**
+	* @test
+	*/
 	public void function getDynamicAmountFlagTest() {
 		//Testing the true
 		var mockOrderPayment = createMockOrderPayment(amount = 100);

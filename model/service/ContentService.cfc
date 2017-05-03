@@ -253,13 +253,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Check delete validation
 		if(arguments.category.isDeletable()) {
-
-			getContentDAO().removeCategoryFromContentAssociation( categoryID=arguments.category.getCategoryID() );
-
+			getContentDAO().removeCategoryFromAssociation( categoryIDPath=arguments.category.getCategoryIDPath() );
 			return delete(arguments.category);
 		}
 
 		return false;
+	}
+
+	public void function deleteCategoryByCMSCategoryID(required string cmsCategoryID){
+		getContentDao().deleteCategoryByCMSCategoryID(argumentCollection=arguments);
 	}
 
 	// =====================  END: Delete Overrides ===========================

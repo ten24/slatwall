@@ -10,7 +10,7 @@
 	
 	<cfset id = createUUID() />
 	
-	<cfoutput><div id="#id#" class="hibachi-display-toggle#iif(attributes.loadVisable, de(''), de(' hide'))#" data-hibachi-selector="#attributes.selector#" data-hibachi-show-values="#attributes.showValues#" data-hibachi-value-attribute="#attributes.valueAttribute#"></cfoutput>
+	<cfoutput><div id="#id#" class="hibachi-display-toggle#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(attributes.loadVisable, '', ' hide')#" data-hibachi-selector="#attributes.selector#" data-hibachi-show-values="#attributes.showValues#" data-hibachi-value-attribute="#attributes.valueAttribute#"></cfoutput>
 <cfelse>
 	</div>
 </cfif>

@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"vendorName":				[{"contexts":"save","required":true}],
+		"accountNumber":			[{"contexts":"save","required":true}],
 		"vendorWebsite":			[{"contexts":"save","dataType":"url"}],
 		"vendororders":				[{"contexts":"delete","maxCollection":0}]
 	}

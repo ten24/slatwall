@@ -47,7 +47,6 @@ Notes:
 
 */
 component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiService" {
-
 	public any function getSlatwallScope() {
 		return getHibachiScope();
 	} 
@@ -106,7 +105,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		arguments.entity = super.save(argumentcollection=arguments);
 		
 		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
-		if(!arguments.entity.hasErrors() && arguments.entity.hasProperty('activeFlag')) {
+		if(!arguments.entity.hasErrors() && arguments.entity.hasProperty('activeFlag') && !isNull(arguments.entity.getActiveFlag())) {
 			
 			var settingsRemoved = 0;
 			if(!arguments.entity.getActiveFlag()) {

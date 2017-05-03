@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
-	public void function SetUp() {
+	// @hint put things in here that you want to run befor EACH test	
+	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.getService("skuService").newSkuCurrency();
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSimpleRepresentation_exists_and_is_simple() {
 		
 		var sku = request.slatwallScope.newEntity('Sku');
@@ -67,7 +70,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function skuCurrency_should_not_save_with_negative_price() {
 		//issue 1335
 		var skuCurrency = entityNew("SlatwallSkuCurrency");

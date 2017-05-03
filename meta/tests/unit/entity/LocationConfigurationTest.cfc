@@ -48,7 +48,10 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	
+		
+	/**
+	* @test
+	*/
 	public void function setUp() 
 	{
 		super.setup();
@@ -56,8 +59,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
     }
     
-    
-    public any function getLocationPathNameTest() 
+    /**
+	* @test
+	*/
+    public void function getLocationPathNameTest() 
     
     {
     	
@@ -76,7 +81,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
     	assertEquals("sunny", result);
     
     }
-     public any function getLocationPathNameTest2() {
+    /**
+	* @test
+	*/
+     public void function getLocationPathNameTest2() {
     	
     	var locationConfigurationData={
     		
@@ -91,7 +99,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
     	assertEquals("I am the path name", result);
     
     }
-    public any function getLocationTreeTest(){
+    /**
+	* @test
+	*/
+    public void function getLocationTreeTest(){
 	
 	var parentLocationData={
 		locationID="",
@@ -130,8 +141,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    	
    	
    } 
-   
-    public any function getLocationPathNameTest3(){
+   /**
+	* @test
+	*/
+    public void function getLocationPathNameTest3(){
 	
 	var parentLocationData={
 		locationID="",

@@ -47,14 +47,17 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("paymentService");
 	}
 	
-	// getUncapturedPreAuthorizations()
+	// getUncapturedPreAuthorizations()	
+	/**
+	* @test
+	*/
 	public void function getUncapturedPreAuthorizations_returns_empty_array_with_no_history() {
 		var payment = entityNew('SlatwallOrderPayment');
 		
@@ -63,7 +66,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(arrayLen(result) eq 0); 
 	}
 	
-	// getUncapturedPreAuthorizations()
+	// getUncapturedPreAuthorizations()	
+	/**
+	* @test
+	*/
 	public void function getUncapturedPreAuthorizations_returns_correctly_sorted_auth_amounts() {
 		var payment = entityNew('SlatwallOrderPayment');
 		

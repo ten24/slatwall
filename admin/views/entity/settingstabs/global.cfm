@@ -66,6 +66,8 @@ Notes:
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
 		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
 		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
+		<swa:SlatwallSetting settingName="globalURLKeyAddress" />
+		<swa:SlatwallSetting settingName="globalURLKeyAccount" />
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />

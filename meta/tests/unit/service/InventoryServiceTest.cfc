@@ -47,13 +47,16 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getBean("inventoryService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQIATSTest() {
 		//Testing when the function is called w/ stock argument
 		var skuData = {
@@ -77,7 +80,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQATSTest_Arguments() {
 		//Testing when argument is stock entity
 		var skuData = {
@@ -105,7 +111,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var resultProductQATS = variables.service.getQATS(mockProduct);
 		assertEquals(1000, resultProductQATS, 'The result should be orderMaximumQuantity because of trackInventory and backorder values');
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getQATSTest_ifLogics() {
 		var productData = {
 			productID = ''

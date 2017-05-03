@@ -59,7 +59,7 @@ Notes:
 		<cfargument required="false" name="currentPage" />
 		<cfargument required="false" name="pageShow" />
 
-		<cfset HQL = "
+		<cfset var HQL = "
 			SELECT DISTINCT
 				new map(
 						av.attributeValue as response,

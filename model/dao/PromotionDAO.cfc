@@ -425,9 +425,9 @@ Notes:
 			<cfif orderItemDiscountsQuery.salePriceDiscountType EQ "amount">
 				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )  >
 			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "amountOff">
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", precisionEvaluate(orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount), orderItemDiscountsQuery.currentRow )>
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", getService('HibachiUtilityService').precisionCalculate(orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount), orderItemDiscountsQuery.currentRow )>
 			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "percentageOff" >
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", precisionEvaluate(orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (round(orderItemDiscountsQuery.amount / 100)*100)/100)), orderItemDiscountsQuery.currentRow )>
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", getService('HibachiUtilityService').precisionCalculate(orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (round(orderItemDiscountsQuery.amount / 100)*100)/100)), orderItemDiscountsQuery.currentRow )>
 			</cfif>
 		</cfloop>
 

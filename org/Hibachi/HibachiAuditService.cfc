@@ -532,7 +532,12 @@ component extends="HibachiService" accessors="true" {
 						}
 					}
 					
-					changeDetail[column] = columnValue;
+					if(structKeyExists(currentProperty,'hb_formFieldType') && currentProperty.hb_formFieldType == 'wysiwyg'){
+						changeDetail[column] = columnValue;
+					}else{
+						changeDetail[column] = hibachiHTMLEditFormat(columnValue);
+					}
+					
 				}
 			}
 			

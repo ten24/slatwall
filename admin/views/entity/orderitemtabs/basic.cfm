@@ -19,7 +19,7 @@
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="price" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
-			
+			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="currencyCode" edit="false" />
 			
 		</hb:HibachiPropertyList>
 		

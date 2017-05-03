@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run before EACH test
-	public void function SetUp() {
+	// @hint put things in here that you want to run before EACH test	
+	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.newEntity( 'Term' );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function test_gift_card_relation(){ 
 		var termData = {
 			termID=""

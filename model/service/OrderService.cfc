@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only do this check if no payment has been added yet.
 		if (!listFindNoCase(orderRequirementsList, "payment")){
 			//Check if there is subscription with autopay flag without order payment with account payment method.
-			if (arguments.order.hasSubscriptionWithAutoPay() && !arguments.order.hasSavedAccountPaymentMethod()){
+			if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
 			}
 		}
@@ -825,7 +825,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
 
            if(orderPayment.getStatusCode() eq "opstActive") {
-				var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
+				var totalReceived = getService('HibachiUtilityService').precisionCalculate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = totalReceived,
@@ -899,7 +899,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// As long as there is no payment transactions, then we can delete the order
-		if( !hasPaymentTransaction ) {
+		if( !hasPaymentTransaction  && !arguments.order.isNew()) {
 			this.deleteOrder( arguments.order );
 
 		// Otherwise we can just remove the account so that it isn't remember as an open cart for this account
@@ -1034,7 +1034,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrderPayment.setOrder( returnOrder );
 				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
 				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
-				returnOrderPayment.setAmount( precisionEvaluate(returnOrder.getTotal() * -1) );
+				returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
 			}
 
 		}
@@ -1320,9 +1320,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 
-					if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
+					//set an error
+					if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
+					
 
 					// Generate the order requirements list, to see if we still need action to be taken
 					var orderRequirementsList = getOrderRequirementsList( arguments.order );
@@ -1355,13 +1357,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(orderPayment.getStatusCode() == 'opstActive') {
 								// Call the placeOrderTransactionType for the order payment
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
+								amountAuthorizeCreditReceive = getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
-							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
-						}
+						
 						
 						// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
 						for(var orderitem in arguments.order.getOrderItems()) {
@@ -1411,7 +1411,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
-
+							// if order had error but payment was captured, clear error and log to hibachi
+							if(arguments.order.hasErrors()) {
+								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+								for(var errorName in arguments.order.getErrors()) {
+									for(var i=1; i<=arrayLen(arguments.order.getErrors()[errorName]); i++) {
+										logHibachi(message="Order was placed but it had an error with an errorName: #errorName# and errorMessage: #arguments.order.getErrors()[errorName][i]#", generalLog=true);	
+									}
+								}
+								arguments.order.getHibachiErrors().setErrors(structnew());
+							}
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
@@ -1431,7 +1440,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.order;
 	}
-
+	
+	public any function validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(order){
+		if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
+			return true;
+		}
+		return false;
+	}
+	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 
 		var order = arguments.orderFulfillment.getOrder();
@@ -1490,7 +1506,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var n = ArrayLen(orderItemsToRemove); n >=1; n--)	{
 				var orderItem = this.getOrderItem(orderItemsToRemove[n]);
 				// Check to see if this item is the same ID as the one passed in to remove
-				if(arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
+				if(!isNull(orderItem) && arrayFindNoCase(orderItemsToRemove, orderItem.getOrderItemID())) {
 
 					var okToRemove = true;
 
@@ -1607,7 +1623,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			if(getService('HibachiUtilityService').precisionCalculate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostClosed") );
 			// The default case is just to set it to processing
 			} else {
@@ -1748,7 +1764,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 
 				if(!orderPayment.hasErrors()) {
-					amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
+					amountToBeCaptured = getService('HibachiUtilityService').precisionCalculate(amountToBeCaptured - transactionData.amount);
 				}
 			}
 		}
@@ -2340,13 +2356,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// If there was one or more accountContentAccess associated with the referenced orderItem then we need to remove them.
-			var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
-			accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
-			var accountContentAccesses = accountContentAccessSmartList.getRecords();
-			for (var accountContentAccess in accountContentAccesses){
+			if(!isnull(stockReceiverItem.getOrderItem().getReferencedOrderItem())){
+				var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
+				accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
+				var accountContentAccesses = accountContentAccessSmartList.getRecords();
+				for (var accountContentAccess in accountContentAccesses){
 
-    			getAccountService().deleteAccountContentAccess( accountContentAccess );
+				getAccountService().deleteAccountContentAccess( accountContentAccess );
 
+				}
 			}
 		}
 
@@ -2383,7 +2401,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			for(var a=1; a<=arrayLen(uncapturedAuthorizations); a++) {
 
-				var thisToCharge = precisionEvaluate(arguments.processObject.getAmount() - totalAmountCharged);
+				var thisToCharge = getService('HibachiUtilityService').precisionCalculate(arguments.processObject.getAmount() - totalAmountCharged);
 
 				if(thisToCharge gt uncapturedAuthorizations[a].chargeableAmount) {
 					thisToCharge = uncapturedAuthorizations[a].chargeableAmount;
@@ -2410,7 +2428,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					precisionEvaluate(totalAmountCharged + paymentTransaction.getAmountReceived());
+					getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived());
 				}
 
 			}
@@ -2649,10 +2667,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save") {
-
+		//if we have a new account address then override shippingaddress data. This must happen before populate
+		if(
+			(
+				structKeyExists(arguments.data,'accountAddress.accountAddressID')
+				&& len(arguments.data['accountAddress.accountAddressID']) 
+			)
+			&& (
+				isNull(arguments.orderFulfillment.getShippingAddress())
+				|| arguments.data['accountAddress.accountAddressID'] != arguments.orderFulfillment.getShippingAddress().getAddressID()
+			)
+		) {
+			var keyPrefix = 'shippingAddress';
+			for(var key in arguments.data){
+				if((left(key,len(keyPrefix)) == keyPrefix)){
+					structDelete(arguments.data,key);
+				}
+			}
+		}
+		
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-
+		
+		
+		
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced") {
 

@@ -1,0 +1,21 @@
+<application>
+	<name>varScoper</name>
+	<author>Mike Schierberl</author>
+	<version>1.0</version>
+	<email>mike@schierberl.com</email>	
+	<description>intro.html</description>	
+	<version>1.30</version>
+	<license>license.html</license>
+    <menucontributions >
+		<contribution target="projectview">
+			<menu name="varScoper">
+	    		<action name="Run varScoper" handlerid="varscoper" showResponse="true">
+	    			<dialog height="600" width="800" />
+				</action>
+			</menu>
+		</contribution>
+    </menucontributions>	
+	<handlers>		
+		<handler id="varscoper" type="CFM" filename="cfbuilder.cfm" />
+	</handlers>
+</application>

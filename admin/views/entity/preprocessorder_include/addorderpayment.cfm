@@ -94,13 +94,11 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                           fieldname="newOrderPayment.paymentMethod.paymentMethodID"
                           valueoptions="#rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()#"
                           edit="#rc.edit#">
-
-	<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod())>
+	<cfset loadPaymentMethodType = ""/>
+	<cfif !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment()) && !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod()) && !isNull(rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getPaymentMethodType())>
 		<cfset loadPaymentMethodType = rc.addOrderPaymentProcessObject.getNewOrderPayment().getPaymentMethod().getPaymentMethodType()/>
 	<cfelseif ArrayLen( rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions() ) AND !isNull(rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['paymentmethodtype']) >
 		<cfset loadPaymentMethodType = rc.addOrderPaymentProcessObject.getPaymentMethodIDOptions()[1]['paymentmethodtype']/>
-	<cfelse>
-		<cfset loadPaymentMethodType = ""/>
 	</cfif>
 
 <!--- Credit Card Payment Details --->
@@ -208,7 +206,7 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
                           edit="#rc.edit#">
 <hb:HibachiDisplayToggle selector="select[name='accountAddressID']" showvalues=""
                         loadvisable="#!len(rc.addOrderPaymentProcessObject.getAccountAddressID())#">
-<swa:slatwalladminaddressdisplay address="#rc.addOrderPaymentProcessObject.getNewOrderPayment().getBillingAddress()#"
+<swa:SlatwallAdminAddressDisplay address="#rc.addOrderPaymentProcessObject.getNewOrderPayment().getBillingAddress()#"
                                 fieldnameprefix="newOrderPayment.billingAddress."
                                 edit="#rc.edit#"/>
 </hb:HibachiDisplayToggle>

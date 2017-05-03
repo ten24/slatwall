@@ -74,7 +74,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentTerm" hb_populateEnabled="public" cfc="PaymentTerm" fieldtype="many-to-one" fkcolumn="paymentTermID" fetch="join";
 
 	// Related Object Properties (one-to-many)
-	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true" lazy="extra";
+	property name="orderPayments" singularname="orderPayment" cfc="OrderPayment" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" inverse="true" lazy="extra";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentMethodID" cascade="all" inverse="true";
 
 	// Related Object Properties (many-to-many)
@@ -100,6 +100,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="paymentMethodOptionsSmartList" persistent="false";
 
 	public string function getPaymentMethodType() {
+		if(isNull(getPaymentMethod())){
+			return "";
+		}
 		return getPaymentMethod().getPaymentMethodType();
 	}
 
@@ -418,7 +421,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
 			}
 		}
-		if(isExpired()){
+		if(getPaymentMethodType() == "creditCard" && isExpired()){
 			rep = rep & ' (' & rbkey('define.expired') & ')';
 		}
 		return rep;

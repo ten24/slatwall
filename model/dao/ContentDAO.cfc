@@ -75,6 +75,48 @@ Notes:
 			}
 		)>
 	</cffunction>
+	<!--- when deleting content make top level children attach to this categories parent and then delete the category --->
+	<cffunction name="deleteCategoryByCmsCategoryID" access="public">
+		<cfargument name="cmsCategoryID" type="string"/>
+		<cfquery name="local.getSlatwallCategoryID" result="local.getSlatwallCategoryIDResult">
+			SELECT categoryID, parentCategoryID FROM SwCategory where cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.cmsCategoryID#" /> 
+		</cfquery>		
+		
+		<cfif local.getSlatwallCategoryIDResult.recordCount>
+			
+			<cfquery name="local.getTopLevelChildCategories" result="local.getTopLevelChildCategoriesResult">
+				SELECT categoryID FROM SwCategory where parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
+			</cfquery>
+			
+			<cfif local.getTopLevelChildCategoriesResult.recordCount>
+				<cfloop query="local.getTopLevelChildCategories">
+					<cfif len(local.getSlatwallCategoryID.parentCategoryID)>
+						<cfquery name="local.updateTopLevelChildCategories">
+							Update SwCategory 
+							Set parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.parentCategoryID#" />
+							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
+						</cfquery>
+					<cfelse>
+						<cfquery name="local.updateTopLevelChildCategories">
+							Update SwCategory 
+							Set parentCategoryID = null
+							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
+						</cfquery>
+					</cfif>
+				</cfloop>
+			</cfif>
+		</cfif>
+		<cfquery name="local.removeCategoryFromContentAssociation">
+			DELETE FROM SwContentCategory WHERE categoryID =<cfqueryparam  cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
+		</cfquery>
+		<cfquery name="local.rs">
+			DELETE FROM SwProductCategory WHERE categoryID = <cfqueryparam  cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
+		</cfquery>
+		<cfquery name="local.deleteCategory">
+			DELETE FROM SwCategory where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
+		</cfquery>
+		
+	</cffunction>
 	
 	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
@@ -103,14 +145,47 @@ Notes:
 		<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"], false, {ignoreCase=true}) />
 	</cffunction>
 	
-	<cffunction name="removeCategoryFromContentAssociation" access="public">
-		<cfargument name="categoryID" type="string" required="true" >
+	<cffunction name="removeCategoryFromAssociation" access="public">
+		<cfargument name="categoryIDPath" type="string" required="true" >
 		
 		<cfset var rs = "" />
 		
-		<cfquery name="rs">
-			DELETE FROM SwContentCategory WHERE categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryID#" /> 
+		<cfquery name="local.getChildCategory">
+			SELECT categoryID FROM SwCategory WHERE categoryIDPath like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryIDPath#/%" /> order by LENGTH(categoryIDPath) desc 
 		</cfquery>
+		
+		<cfloop query="local.getChildCategory">
+			<cfquery name="local.removeCategoryFromContentAssociation">
+				DELETE FROM SwContentCategory WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" />
+			</cfquery>
+			<cfquery name="rs">
+				DELETE FROM SwProductCategory WHERE categoryID = <cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
+			</cfquery>
+			
+			<cfquery name="local.deleteparentcats">
+				UPDATE SwCategory set parentCategoryID=NULL, siteID=NULL WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
+			</cfquery>
+			<cfquery name="local.deletecat">
+				DELETE FROM SwCategory WHERE categoryID = <cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
+			</cfquery>
+		</cfloop>
+		
+		<cfquery name="local.getCategory">
+			SELECT categoryID FROM SwCategory WHERE categoryIDPath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryIDPath#" /> 
+		</cfquery>
+		
+		<cfquery name="local.removeCategoryFromContentAssociation">
+			DELETE FROM SwContentCategory WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getCategory.categoryID#" />
+		</cfquery>
+		<cfquery name="rs">
+			DELETE FROM SwProductCategory WHERE categoryID = <cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getCategory.categoryID#" /> 
+		</cfquery>
+		
+		<cfquery name="local.deleteparentcats">
+			UPDATE SwCategory set parentCategoryID=NULL, siteID=NULL WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getCategory.categoryID#" /> 
+		</cfquery>
+		
+		
 	</cffunction>
 	
 	<cffunction name="getDefaultContentBySite" access="public">

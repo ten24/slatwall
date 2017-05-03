@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.entity = request.slatwallScope.getService("brandService").newBrand();
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function defaults_are_correct() {
 		assertEquals(variables.entity.getProducts(), []);
 	}

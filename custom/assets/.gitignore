@@ -1,4 +1,7 @@
 # ignore everything
 *
-# except ckeditor_config.js
+# except .gitignore, ckeditor_config.js, ckeditor_config.js.example, readme.md
+!.gitignore
 !ckeditor_config.js
+!ckeditor_config.js.example
+!readme.md

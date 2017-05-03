@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
@@ -56,7 +56,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}		
 		
 		
-		
+			
+	/**
+	* @test
+	*/
 	public void function test_order_payment_relation(){ 
 		var orderPaymentData = { 
 			orderPaymentID="",
@@ -79,7 +82,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertFalse(giftCardTransaction.hasOrderPayment());
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function test_gift_card_transaction(){ 
 		
 		var giftCardData = { 

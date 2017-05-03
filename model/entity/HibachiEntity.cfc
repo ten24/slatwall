@@ -149,10 +149,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	// @hint helper function to return the details of a setting
 	public any function getSettingValueFormatted(any settingName, array filterEntities=[]) {
-		if(!structKeyExists(variables,'settingValueFormatted')){
-			variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+		if(structKeyExists(arguments,'settingName') && !isNull(arguments.settingName)){
+			if(!structKeyExists(variables,'settingValueFormatted')){
+				variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+			}
+			return variables.settingValueFormatted;
 		}
-		return variables.settingValueFormatted;
 	}
 
 	// Attribute Value
@@ -249,14 +251,14 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
-		
 		//If custom property exists for this attribute, return the property value instead
 		if(len(arguments.attribute) eq 32) {
 			//If the id is passed in, need to load the attribute in order to get the attribute code
 			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
 			
 			//Check if a custom property exists
-			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode()) && attributeEntity.getAttributeInputType() != 'file'){
+				
 				if(arguments.value != "") {
 					invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
 				} else {
@@ -267,43 +269,59 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			}
 		}else{
 			//Check if a custom property exists
-			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				if(arguments.value != "") {
-					invokeMethod("set#arguments.attribute#", {1=arguments.value});
-				} else {
-					var thisMethod = this["set" & arguments.attribute];
-					thisMethod(javacast('null',''));
+			
+			if (
+				getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute) 
+			){
+				var propertyStruct = getService("hibachiService").getPropertiesStructByEntityName(getClassName(),arguments.attribute);
+				if(structkeyExists(propertyStruct,'hb_formFieldType')
+					|| (
+						structkeyExists(propertyStruct,'hb_formFieldType')
+						&& propertyStruct['hb_formFieldType'] != 'file'
+					)
+				){
+					if(arguments.value != "") {
+						invokeMethod("set#arguments.attribute#", {1=arguments.value});
+					} else {
+						var thisMethod = this["set" & arguments.attribute];
+						thisMethod(javacast('null',''));
+					}
+					return '';
 				}
-				return '';
+				
 			}
 		}
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		
 		// Value is already encrypted, if attributeValueEntity.setAttributeValue called instead of attributeValueEntity.setAttributeValueEncrypted the encrypted value would be encrypted again
-		if (arguments.valueHasBeenEncryptedFlag) {
-			attributeValueEntity.setAttributeValueEncrypted( arguments.value );
-		} else {
-			attributeValueEntity.setAttributeValue( arguments.value );
-		}
-		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+		if(isObject(attributeValueEntity)){
+			
 		
-		// If this attribute value is new, then we can add it to the array
-		if(attributeValueEntity.isNew()) {
-			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
-		}
-		
-		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
-		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeInputType())) {
-			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
-			if(!isNull(attributeOption)) {
-				attributeValueEntity.setAttributeValueOption( attributeOption );
+			if (arguments.valueHasBeenEncryptedFlag) {
+				attributeValueEntity.setAttributeValueEncrypted( arguments.value );
+			} else {
+				attributeValueEntity.setAttributeValue( arguments.value );	
 			}
-		}
+			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+			
+			// If this attribute value is new, then we can add it to the array
+			if(attributeValueEntity.isNew()) {
+				attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
+			}
+			
+			// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
+			if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeInputType())) {
+				var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
+				if(!isNull(attributeOption)) {
+					attributeValueEntity.setAttributeValueOption( attributeOption );
+				}
+			}
 		
-		// Update the cache for this attribute value
-		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
-		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+			// Update the cache for this attribute value
+			getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
+			getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+		}
 	}
 
 	public any function getAssignedAttributeSetSmartList(){

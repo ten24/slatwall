@@ -195,14 +195,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					if(thisQuantity > orderItem.getQuantityUndelivered()) {
 						thisQuantity = orderItem.getQuantityUndelivered();
 					}
-					variables.capturableAmount = precisionEvaluate(variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity ));
+					variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity ));
 				}
 			}
 
 			if(getOrder().getPaymentAmountReceivedTotal() eq 0) {
-				variables.capturableAmount = precisionEvaluate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount());
+				variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount());
 			} else {
-				variables.capturableAmount = precisionEvaluate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
+				variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
 			}
 
 			if(variables.capturableAmount < 0) {
@@ -218,7 +218,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public boolean function getCaptureAuthorizedPaymentsFlag() {
 		if(!structKeyExists(variables, "captureAuthorizedPaymentsFlag")) {
 			variables.captureAuthorizedPaymentsFlag = 0;
-			if(getCapturableAmount()) {
+			if(getCapturableAmount() && getOrder().hasCreditCardPaymentMethod()) {
 				variables.captureAuthorizedPaymentsFlag = 1;
 			}
 		}

@@ -275,7 +275,11 @@ class CollectionController{
         $scope.exportCollection = function(){
 
             var url = '/?'+appConfig.action+'=main.collectionExport&collectionExportID='+$scope.collectionID+'&downloadReport=1';
-            var data = {"ids":selectionService.getSelections('collectionSelection')};
+            var data = {
+                "ids":selectionService.getSelections('collectionSelection'),
+                "keywords":$scope.keywords
+               };
+            console.log('exportData',data);
             var target="downloadCollection";
             $('body').append('<form action="'+url+'" method="post" target="'+target+'" id="postToIframe"></form>');
             $.each(data,function(n,v){

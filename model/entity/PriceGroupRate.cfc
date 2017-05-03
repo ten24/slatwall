@@ -114,13 +114,13 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
     	
     	// --------- Including --------- 
     	if(arrayLen(getProducts())) {
-    		productsList = "#arrayLen(getProducts())# Product" & IIF(arrayLen(getProducts()) GT 1, DE('s'), DE(''));
+    		productsList = "#arrayLen(getProducts())# Product" & getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arrayLen(getProducts()) GT 1,'s','');
     	}
     	if(arrayLen(getProductTypes())) {
-    		productTypesList = "#arrayLen(getProductTypes())# Product Type" & IIF(arrayLen(getProductTypes()) GT 1, DE('s'), DE(''));
+    		productTypesList = "#arrayLen(getProductTypes())# Product Type" & getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arrayLen(getProductTypes()) GT 1,'s','');
     	}
     	if(arrayLen(getSkus())) {
-    		SkusList = "#arrayLen(getSkus())# SKU" & IIF(arrayLen(getSkus()) GT 1, DE('s'), DE(''));
+    		SkusList = "#arrayLen(getSkus())# SKU" & getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arrayLen(getSkus()) GT 1,'s','');
     	}
     	if(ListLen(productsList)) {
     		including = ListAppend(including, productsList);
@@ -139,13 +139,13 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
     		
     	// --------- Excluding --------- 	
    		if(arrayLen(getExcludedProducts())) {
-    		excludedProductsList = "#arrayLen(getExcludedProducts())# Product" & IIF(arrayLen(getExcludedProducts()) GT 1, DE('s'), DE(''));
+    		excludedProductsList = "#arrayLen(getExcludedProducts())# Product" & getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arrayLen(getExcludedProducts()) GT 1,'s','');
     	}
     	if(arrayLen(getExcludedProductTypes())) {
-    		excludedProductTypesList = "#arrayLen(getExcludedProductTypes())# Product Type" & IIF(arrayLen(getExcludedProductTypes()) GT 1, DE('s'), DE(''));
+    		excludedProductTypesList = "#arrayLen(getExcludedProductTypes())# Product Type" & getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arrayLen(getExcludedProductTypes()) GT 1,'s','');
     	}
     	if(arrayLen(getExcludedSkus())) {
-    		excludedSkusList = "#arrayLen(getExcludedSkus())# SKU" & IIF(arrayLen(getExcludedSkus()) GT 1, DE('s'), DE(''));
+    		excludedSkusList = "#arrayLen(getExcludedSkus())# SKU" & getHibachiScope().getService('hibachiUtilityService').hibachiTernary(arrayLen(getExcludedSkus()) GT 1,'s','');
     	}
     	
     	if(ListLen(excludedProductsList)) { 
@@ -204,7 +204,7 @@ component displayname="Price Group Rate" entityname="SlatwallPriceGroupRate" tab
 			//Check for defined conversion rate 
 			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
 			if(!isNull(currencyRate)) {
-				return precisionEvaluate(currencyRate.getConversionRate()*getAmount());
+				return getService('HibachiUtilityService').precisionCalculate(currencyRate.getConversionRate()*getAmount());
 			}
 		
 		}

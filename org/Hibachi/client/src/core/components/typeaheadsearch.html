@@ -10,8 +10,8 @@
                         type="search"
                         class="form-control"
                         autocomplete="off"
-                        data-ng-required="swTypeaheadSearch.validateRequired"
-                        data-ng-disabled="swTypeaheadSearch.disabled"/>
+                        data-ng-required="{{swTypeaheadSearch.validateRequired}}"
+                        data-ng-disabled="{{swTypeaheadSearch.disabled}}"/>
                 <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length && !swTypeaheadSearch.disabled" ng-click="swTypeaheadSearch.clearSearch()"></span>
                 <span class="fa fa-eye" ng-if="swTypeaheadSearch.searchText.length && swTypeaheadSearch.showViewButton" ng-click="swTypeaheadSearch.viewButtonClick()" style="right: 28px"></span>
             </div>

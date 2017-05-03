@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.dao = request.slatwallScope.getDAO("currencyDAO");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
 		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
 		

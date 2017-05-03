@@ -47,41 +47,56 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
 		variables.service = request.slatwallScope.getService("hibachiValidationService");
 	}
 	
-	// validate_dataType()
+	// validate_dataType()	
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_true_when_null() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		
 		assert( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_true_when_valid_card() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		orderPayment.setCreditCardNumber("4111111111111111");
 		
 		assert( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_false_when_empty_string() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		orderPayment.setCreditCardNumber(" ");
 		
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function validate_dataType_creditCardNumber_returns_false_when_non_numeric() {
 		var orderPayment = request.slatwallScope.newEntity('OrderPayment');
 		orderPayment.setCreditCardNumber("9849579HELLO29874052");
 		
 		assertFalse( variables.service.validate_dataType(orderPayment, 'creditCardNumber', 'creditCardNumber') );
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getValidationStructTest(){
 		var order = request.slatwallScope.newEntity('Order');
 		var validation = variables.service.getValidationStruct(order);

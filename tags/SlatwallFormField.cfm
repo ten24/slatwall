@@ -180,14 +180,14 @@ Notes:
 		</cfcase>
 		<cfcase value="text">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="##request.context.fw.getHibachiScope()#(attributes.value)#" class="#attributes.fieldClass#" #attributes.fieldAttributes# />
+				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass#" #attributes.fieldAttributes# />
 			</cfoutput>
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
 				<cfset suggestionsID = createUUID() />
 				<div class="autoselect-container">
-					<input type="hidden" name="#attributes.fieldName#" value="##request.context.fw.getHibachiScope()#(attributes.value)#" />
+					<input type="hidden" name="#attributes.fieldName#" value="#attributes.value#" />
 					<input type="text" name="#attributes.fieldName#-autocompletesearch" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
 					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="icon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
 					<div class="autocomplete-options" style="display:none;overflow:scroll;">
@@ -218,7 +218,7 @@ Notes:
 		</cfcase>
 		<cfcase value="textarea">
 			<cfoutput>
-				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass#" #attributes.fieldAttributes#>##request.context.fw.getHibachiScope()#(attributes.value)#</textarea>
+				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass#" #attributes.fieldAttributes#>#attributes.value#</textarea>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="time">

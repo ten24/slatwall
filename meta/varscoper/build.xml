@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="http://localhost/ant2html.xsl"?>
+<project name="varscoper" default="runVarScoper" basedir=".">
+	
+	<target name="init">
+		<property name="varScoperBaseUrl" value="http://localhost/varscoper/varScoper.cfm"/>
+		<property name="filePathToUse" value="varScoper.cfc"/>
+		<property name="recursiveDirectory" value="true" />
+	</target>
+	
+	<target name="runVarScoper" depends="init">
+		<!-- note: this target should fail when running as default (test case has var scope violations-->
+		<tstamp/>
+		
+		<!-- save the results of the call to varscoper.cfm as a csv file that we will delete later -->
+		<get dest="./${DSTAMP}${TSTAMP}.csv" 
+			 src="${varScoperBaseUrl}?displayformat=csv&amp;filePath=${filePathToUse}&amp;recursiveDirectory=${recursiveDirectory}" />
+		
+		<loadfile srcfile="./${DSTAMP}${TSTAMP}.csv" property="varScoper.csv">  
+			<filterchain>
+				<headfilter skip="1"/>
+				<trim/>
+			</filterchain>
+		</loadfile>
+		  
+		<echo>${varScoper.csv}</echo>
+		
+		<delete file="./${DSTAMP}${TSTAMP}.csv"/>
+		
+		<fail message="var scope violation is found.">
+			<condition>
+				<isset property="varScoper.csv"/>
+			</condition>
+		</fail>
+	</target>
+	
+	<target name="build-distro">
+		<input message="zip filename (don't include .zip)"
+			addproperty="zipFileName" />
+		<zip destfile="${zipFileName}.zip">
+			<zipfileset dir="." includes="**/*.*" excludes=".project,*.zip" />
+		</zip>
+	</target>
+	
+</project>
+

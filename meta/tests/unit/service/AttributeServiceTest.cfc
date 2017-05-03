@@ -47,12 +47,15 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getBean("attributeService");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function saveAttributeTest_cacheClearedOnAttributeSave(){
 		var attributeSetData = {
 			attributeSetID="",
@@ -97,7 +100,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(request.slatwallScope.getService('hibachiCacheService').hasCachedValue('attributeService_getAttributeModel_#attributeSet.getAttributeSetObject()#'));
 		assertFalse(request.slatwallScope.getService('hibachiCacheService').hasCachedValue('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#') == true);
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getAttributeModelTest(){
 		
 		var attributeSetData = {

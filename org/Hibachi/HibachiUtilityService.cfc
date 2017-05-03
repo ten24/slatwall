@@ -17,7 +17,12 @@
 		};
 		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
 		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
-
+		
+		public any function precisionCalculate(required numeric value, numeric scale=2){
+			var roundingmode = createObject('java','java.math.RoundingMode');
+			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
+		}
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -216,6 +221,10 @@
   			}
 
 			return result.toString().toUppercase();
+  		}
+
+  		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
+  			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
@@ -1152,7 +1161,7 @@
     	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")>
     	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
     	<cfset imageWrite(myImage,tempDirectory)>
-		<cfdocument name="newpdf" format="pdf" localUrl="yes">
+		<cfdocument name="local.newpdf" format="pdf" localUrl="yes">
 			<cfoutput>
 				<img src="file:///#tempDirectory#" />
 			</cfoutput>

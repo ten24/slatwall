@@ -59,7 +59,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="nextReminderEmailDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="expirationDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
-
+	property name="fulfillmentCharge" ormtype="big_decimal" hb_formatType="currency";
+	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="accountPaymentMethodID";
@@ -140,9 +141,17 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public void function copyOrderItemInfo(required any orderItem) {
 
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
-		setRenewalPrice( renewalPrice );
 		setCurrencyCode( arguments.orderItem.getCurrencyCode() );
+		
+		//if we have a renewal sku, then use that to get the renewal price (still by currency code)
+		if (!isNull(arguments.orderItem.getSku().getRenewalSku())){
+			setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
+			setRenewalPrice(arguments.orderItem.getSku().getRenewalSku().getRenewalPriceByCurrencyCode( currencyCode ));
+		//otherwise, if we have a renewal price on the sku, then use the renewal price from the sku.
+		}else{
+			var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
+			setRenewalPrice( renewalPrice );
+		}
 
 		// Copy all the info from subscription term
 		var subscriptionTerm = orderItem.getSku().getSubscriptionTerm();
@@ -157,6 +166,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		//Copy the shipping information from order fulfillment.
 		var orderFulfillment = orderItem.getOrderFulfillment();
 		if (!isNull(orderFulfillment)){
+			if (!isNull(orderFulfillment.getFulfillmentCharge())){
+ 				setFulfillmentCharge( orderFulfillment.getFulfillmentCharge() );
+ 			}
 			setEmailAddress( orderFulfillment.getEmailAddress() );
 			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
 			setShippingMethod( orderFulfillment.getShippingMethod() );
@@ -180,8 +192,13 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public numeric function getRenewalPrice(){
-		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
+		//if we have a renewal price, then use it.
+		if (structKeyExists(variables, "renewalPrice")){
+			return variables.renewalPrice;
+		//otherwise check if we have a renewal sku.
+		}else if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
 			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
+		//else just use 0.
 		}else{
 			variables.renewalPrice = 0;
 		}

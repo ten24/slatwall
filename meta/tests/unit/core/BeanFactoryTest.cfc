@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	
 	public void function setUp() {
 		super.setup();
 		
@@ -56,7 +56,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			transientPattern="Bean$"
 		});
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function inst_factory() {
 		assertTrue(isObject(variables.factory));
 	}

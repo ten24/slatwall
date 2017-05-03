@@ -4,8 +4,8 @@
 import {BaseObject} from "../baseobject";
 import {HibachiService} from "../../services/hibachiservice";
 import {HibachiValidationService} from "../../services/hibachivalidationservice";
-import {EntityService} from "../../services/entityService";
-import {UtilityService} from "../../services/utilityService";
+import {EntityService} from "../../services/entityservice";
+import {UtilityService} from "../../services/utilityservice";
 
 abstract class BaseTransient extends BaseObject{
 
@@ -57,16 +57,29 @@ abstract class BaseTransient extends BaseObject{
                                 var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
                                 if(relatedEntity.populate){
                                     relatedEntity.populate(data[key]);
+                                    currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
                                 }else{
                                     relatedEntity.$$init(data[key]);
                                     currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
                                 }
                             }else if(angular.isArray(data[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
-
+                                currentEntity[property] = [];
                                 angular.forEach(data[key],(arrayItem,propertyKey)=>{
                                     var relatedEntity = this.entityService.newEntity(currentEntity.metaData[property].cfc);
                                     if(relatedEntity.populate){
-                                        relatedEntity.populate(arrayItem)
+                                        
+                                        relatedEntity.populate(arrayItem);
+                                        var hasItem = false;
+                                        for(var item in currentEntity[property]){
+                                            console.log('test',item);
+                                            if(currentEntity[property][item].$$getID().length > 0 && currentEntity[property][item].$$getID() === relatedEntity.$$getID()){
+                                                hasItem = true;
+                                                break;    
+                                            }    
+                                        }
+                                        if(!hasItem){
+                                            currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);    
+                                        }
                                     }else{
                                         relatedEntity.$$init(arrayItem);
                                         currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);

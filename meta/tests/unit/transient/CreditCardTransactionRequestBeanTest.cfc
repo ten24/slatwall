@@ -48,13 +48,16 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 		
 		variables.object = request.slatwallScope.getTransient("CreditCardTransactionRequestBean");
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function defaults_are_correct() {
 		assert(isNull(variables.object.getTransactionID()));
 	}

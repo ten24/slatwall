@@ -51,7 +51,7 @@ Notes:
 	<cffunction name="rejectedEmailExists" access="public" returntype="boolean" output="false">
 		<cfargument name="email" type="string" required="true" />
 
-		<cfquery name="getGiftCardEmailBounce">
+		<cfquery name="local.getGiftCardEmailBounce">
 			SELECT * FROM swEmailBounce
 			WHERE relatedObject='giftCard'
 			 AND rejectedEmailTo Like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.email#%">

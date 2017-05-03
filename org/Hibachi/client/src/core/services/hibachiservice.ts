@@ -111,26 +111,33 @@ class HibachiService{
 		if(!entityName){
 			throw('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
 		}
-		//strip alias if it exists
+		//strip alias if it exists and convert everything to be periods
 		if(propertyIdentifier.charAt(0) === '_'){
-			propertyIdentifier = this.utilityService.listRest(propertyIdentifier,'.');
+			propertyIdentifier = this.utilityService.listRest(propertyIdentifier.replace(/_/g,'.'),'.'); 
 		}
-		if(propertyIdentifier.split('.').length > 1){
+		
+		var propertyIdentifierArray = propertyIdentifier.split('.');
+		
+		if(propertyIdentifierArray[0] === entityName.toLowerCase()){
+			propertyIdentifierArray.shift();
+		}
+
+		if(propertyIdentifierArray.length > 1){
 			var propertiesStruct = this.getEntityMetaData(entityName);
+			var currentProperty = propertyIdentifierArray.shift(); 
 			if(
-				!propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')]
-				|| !propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc
+				!propertiesStruct[currentProperty] ||
+				!propertiesStruct[currentProperty].cfc
 			){
-				throw("The Property Identifier "+propertyIdentifier+" is invalid for the entity "+entityName);
+				throw("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
 			}
-			var currentEntityName = this.utilityService.listLast(propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc,'.');
-			var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier,propertyIdentifier.length-(this.utilityService.listFirst(propertyIdentifier,'.').length+1));
+			var currentEntityName = propertiesStruct[currentProperty].cfc;
+			var currentPropertyIdentifier = propertyIdentifierArray.join('.');
 			return this.getLastEntityNameInPropertyIdentifier(currentEntityName,currentPropertyIdentifier);
 		}
 		return entityName;
-
 	};
-
+	
 	//service method used to transform collection data to collection objects based on a collectionconfig
 	populateCollection = (collectionData,collectionConfig) =>{
 		//create array to hold objects
@@ -277,8 +284,8 @@ class HibachiService{
 
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
-		var urlString = this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
-		let request = this.requestService.newAdminRequest(urlString);
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&context=getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs;
+		let request = this.requestService.newPublicRequest(urlString);
 
 		return request.promise;
 	}

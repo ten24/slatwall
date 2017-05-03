@@ -46,27 +46,53 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase"  {
+	
+	/**
+	* @test
+	*/
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
-		variables.entity.validate(context="save");
-		assert(variables.entity.hasErrors());
+		if(structKeyExists(variables,'entity')){
+			variables.entity.validate(context="save");
+			assert(variables.entity.hasErrors());	
+		}
+		
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function has_primary_id_property_name() {
-		assert(len(variables.entity.getPrimaryIDPropertyName()));
+		if(structKeyExists(variables,'entity')){
+			assert(len(variables.entity.getPrimaryIDPropertyName()));
+		}
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function defaults_are_correct() {
-		assert(variables.entity.getNewFlag());
+		if(structKeyExists(variables,'entity')){
+			assert(variables.entity.getNewFlag());
+		}
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getSimpleRepresentation_exists_and_is_simple() {
-		assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
+		if(structKeyExists(variables,'entity')){
+			assert(isSimpleValue(variables.entity.getSimpleRepresentation()));
+		}
 	}
-	
+		
+	/**
+	* @test
+	*/
 	public void function getShortRefernceID_returns_blank_by_default() {
-		assert(variables.entity.getShortReferenceID() eq "");
+		if(structKeyExists(variables,'entity')){
+			assert(variables.entity.getShortReferenceID() eq "");
+		}
 	}
 	
 }

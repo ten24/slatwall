@@ -65,7 +65,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
 	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
 	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
-
+	property name="calculatedProductRating" ormtype="big_decimal" description="Stores the latest calculation of the products Rating which is generated based on the average rating of productReviews.";
+	
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
@@ -130,6 +131,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="unusedProductOptions" type="array" persistent="false";
 	property name="unusedProductOptionGroups" type="array" persistent="false";
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
+	property name="productRating" type="numeric" persistent="false";
 
 	// Non-Persistent Properties - Delegated to default sku
 	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
@@ -438,7 +440,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
-					
+
 					var resizeImageData = arguments.resizeSizes[s];
 					resizeImageData.alt = imageAltString;
 					resizeImageData.missingImagePath = missingImagePath;
@@ -1088,7 +1090,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	*/
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeIDPath(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}
@@ -1199,6 +1201,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(thatIndex > 0) {
 			arrayDeleteAt(arguments.listingPage.getListingProducts(), thatIndex);
 		}
+	}
+
+	//  (many-to-many - owner)
+ 	public void function addCategory(required any category) {
+ 		if(isNew() or !hasCategory(arguments.category)) {
+ 			arrayAppend(variables.categories, arguments.category);
+ 		}
+ 		if(arguments.category.isNew() or !arguments.category.hasProduct( this )) {
+ 			arrayAppend(arguments.category.getProducts(), this);
+ 		}
+ 	}
+ 	public void function removeCategory(required any category) {
+ 		var thisIndex = arrayFind(variables.categories, arguments.category);
+ 		if(thisIndex > 0) {
+ 			arrayDeleteAt(variables.categories, thisIndex);
+ 		}
+ 		var thatIndex = arrayFind(arguments.category.getProducts(), this);
+ 		if(thatIndex > 0) {
+ 			arrayDeleteAt(arguments.category.getProducts(), thatIndex);
+ 		}
 	}
 
 	// Promotion Rewards (many-to-many - inverse)

@@ -48,7 +48,7 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test
+	// @hint put things in here that you want to run befor EACH test	
 	public void function setUp() {
 		super.setup();
 
@@ -56,7 +56,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 
-
+	
+	/**
+	* @test
+	*/
 	public void function test_order_item_relation(){
 
 		var orderItemData = {
@@ -79,7 +82,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertFalse(orderItem.hasGiftCard(giftCard));
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_gift_card_transaction(){
 
 		var giftCardData = {
@@ -104,7 +110,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(giftCard.hasGiftCardTransaction(giftCardTransaction));
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_term_relation(){
 		var termData = {
 			termID=""
@@ -126,7 +135,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(giftCard.hasGiftCardExpirationTerm(term));
 
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_owner_account_relation(){
 		var giftCardData = {
 			giftCardID=""
@@ -145,7 +157,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertFalse(giftCard.hasOwnerAccount());
 	}
-
+	
+	/**
+	* @test
+	*/
 	public void function test_balance(){
 		var giftCardData = {
 			giftCardID=""
