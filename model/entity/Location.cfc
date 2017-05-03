@@ -134,7 +134,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			}
 			//Add this location name to the end.
 			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
-			rereplace(variables.locationPathName,'»',' » ','all');
+			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
 		}
 		
 		return variables.locationPathName;
