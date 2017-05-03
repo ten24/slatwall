@@ -5,7 +5,6 @@ class CollectionController{
 	//@ngInject
 	constructor(
 		$scope,
-		$location,
 		$log,
 		$timeout,
 		$hibachi,
