@@ -31,6 +31,7 @@ class Pagination{
     ){
         this.uuid = uuid;
         this.selectedPageShowOption = this.pageShowOptions[0];
+        this.observerService.attach(this.setPageRecordsInfo,'swPaginationUpdate');
     }
 
     public getSelectedPageShowOption = () =>{
@@ -39,7 +40,8 @@ class Pagination{
 
     public pageShowOptionChanged = (pageShowOption) => {
         this.setPageShow(pageShowOption.value);
-        this.setCurrentPage(1);
+        this.currentPage = 1;
+        this.observerService.notify('swPaginationAction',{type:'setPageShow', payload:this.getPageShow()});
     };
 
     public getTotalPages=():number =>{
@@ -83,7 +85,6 @@ class Pagination{
     };
     public setCurrentPage=(currentPage:number):void =>{
         this.currentPage = currentPage;
-        this.getCollection();
         this.observerService.notify('swPaginationAction',{action:'pageChange', currentPage});
         this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:this.getCurrentPage()});
     };
@@ -135,6 +136,9 @@ class Pagination{
         }
         return false;
     };
+    
+    
+    
     public setPageRecordsInfo = (collection):void =>{
         this.setRecordsCount(collection.recordsCount);
         if(this.getRecordsCount() === 0 ){
