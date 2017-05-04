@@ -975,6 +975,9 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public query function getMergedCollectionData(required any collection1){
 		var collection2 = arguments.collection1.getMergeCollection();
+		if(structKeyExists(arguments.data,'keywords')){
+			collection1.setKeywords(arguments.data.keywords);
+		}
 		var collection1Headers = getHeadersListByCollection(collection1);
 		var collection2Headers = getHeadersListByCollection(collection2);
 		var collection1Data = this.transformArrayOfStructsToQuery(collection1.getRecords(), ListToArray(collection1Headers));
