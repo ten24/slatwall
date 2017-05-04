@@ -1043,18 +1043,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return collection2UniqueColumns;
 	}
-
-	private string function getMergedColumnListWithNulls(required string collection1Headers, required string collection2Headers){
-		var mergedColumnList = getMergedColumnList(arguments.collection1Headers,arguments.collection2Headers);
-		var newList = '';
-		for(var column in mergedColumnList){
-			if(ListFirst(column, '.') == 'collection2Data'){
-				column = "'' as #column#";
-			}
-			newList = listAppend(newList, column);
-		}
-		return newList;
-	}
 	
 	public string function getHeadersListByCollection(required any collectionEntity){
 		var headersList = '';
