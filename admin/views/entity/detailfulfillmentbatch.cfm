@@ -124,6 +124,7 @@ Notes:
 					data-angular-links="true"
 					data-has-action-bar="true" 
 					data-persisted-collection-config="true" 
+					data-multiselectable="true"
 					data-multiselect-field-name="fulfillmentBatchItemID" 
 					data-name="fulfillmentBatchItemTable1" 
 					data-multi-slot="true">
@@ -155,12 +156,13 @@ Notes:
 		        <sw-listing-display
 					data-collection="'FulfillmentBatchItem'"
 					data-edit="true"
-					data-has-search="true"
+					data-has-search="false"
 					data-record-detail-action="admin:entity.detailfulfillmentBatchItem"
 					data-is-angular-route="false"
 					data-angular-links="true"
 					data-has-action-bar="true" 
 					data-persisted-collection-config="true" 
+					data-multiselectable="true"
 					data-multiselect-field-name="fulfillmentBatchItemID" 
 					data-name="fulfillmentBatchItemTable2" 
 					data-multi-slot="true">
@@ -169,7 +171,9 @@ Notes:
 					
 					<sw-listing-column data-property-identifier="orderFulfillment.order.orderNumber" data-title="Order Number"></sw-listing-column>
 					<sw-listing-column data-property-identifier="orderFulfillment.order.orderOpenDateTime" data-title="Date"></sw-listing-column>
+					<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
 					
+					<sw-listing-column data-property-identifier="fulfillmentBatchItemID"></sw-listing-column>
 				</sw-listing-display>
 		    	</div>
 			</div>
