@@ -51,6 +51,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// Related Object Properties (many-to-one)
 	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
+	property name="mergeCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="mergeCollectionID";
 
 	// Related Object Properties (one-to-many)
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="collectionID" inverse="true" cascade="all-delete-orphan";
@@ -2399,6 +2400,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// ===============  END: Custom Validation Methods =====================
 
 	// =============== START: Custom Formatting Methods ====================
+
+	public array function getOptionsByPropertyNames(required any nameProperty, required any valueProperty, includeBlankOption=false){
+		var optionsArray = ArrayMap(this.getRecords(), function(item){
+			return {'name'=item[nameProperty], 'value'=item[valueProperty]};
+		});
+		if(includeBlankOption){
+			arrayPrepend(optionsArray, {'name'='','value'=''});
+		}
+		return optionsArray;
+	}
 
 	// ===============  END: Custom Formatting Methods =====================
 
