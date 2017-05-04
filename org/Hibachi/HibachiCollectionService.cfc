@@ -1048,7 +1048,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		var headersList = '';
 		var columns = arguments.collectionEntity.getCollectionConfigStruct().columns;
 		for(var column in columns){
-			headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
+				headersList = listAppend(headersList,arguments.collectionEntity.getColumnAlias(column));
+			}
 		}
 		return headersList;
 	}
