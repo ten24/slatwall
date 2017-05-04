@@ -595,14 +595,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Make sure that the orderFulfillment Total Weight is within the min and max of rate
 		var lowerWeight = 0;
 		var higherWeight = 100000000;
-		if(!isNull(arguments.shippingMethodRate.getMinimumShipmentWeight())) {
-			lowerWeight = arguments.shippingMethodRate.getMinimumShipmentWeight();
-		}
-		if(!isNull(arguments.shippingMethodRate.getMaximumShipmentWeight())) {
-			higherWeight = arguments.shippingMethodRate.getMaximumShipmentWeight();
-		}
-		if(shipmentWeight lt lowerWeight || shipmentWeight gt higherWeight) {
-			return false;
+		if(isNull(shippingMethodRate.getSplitShipmentWeight())){
+			if(!isNull(arguments.shippingMethodRate.getMinimumShipmentWeight())) {
+				lowerWeight = arguments.shippingMethodRate.getMinimumShipmentWeight();
+			}
+			if(!isNull(arguments.shippingMethodRate.getMaximumShipmentWeight())) {
+				higherWeight = arguments.shippingMethodRate.getMaximumShipmentWeight();
+			}
+			if(shipmentWeight lt lowerWeight || shipmentWeight gt higherWeight) {
+				return false;
+			}
 		}
 
         // Make sure that the orderFulfillment Total Quantity is within the min and max of rate
@@ -646,12 +648,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
-		
-		//This check must happen after the address check.
- 		if(!isNull(shippingMethodRate.getSplitShipmentWeight())){
- 			return true; 
- 		} 
- 		
 		
 		// If we have not returned false by now, then return true
 		return true;
