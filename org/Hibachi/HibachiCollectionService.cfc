@@ -942,7 +942,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 		}else if(!isNull(collectionEntity.getMergeCollection())){
-			var collectionData = getMergedCollectionData(collectionEntity);
+			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers = getHeadersListByCollection(collectionEntity);
 			getHibachiService().export( collectionData, headers, headers, collectionEntity.getCollectionObject(), "csv" );
 			return;
@@ -973,7 +973,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		getHibachiService().export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
 	}
 
-	public query function getMergedCollectionData(required any collection1){
+	public query function getMergedCollectionData(required any collection1, any data){
 		var collection2 = arguments.collection1.getMergeCollection();
 		if(structKeyExists(arguments.data,'keywords')){
 			collection1.setKeywords(arguments.data.keywords);
