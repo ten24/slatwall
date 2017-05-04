@@ -382,6 +382,112 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.account;
 	}
 
+	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
+
+		var newAccount = this.newAccount();
+		var accountData = {};
+		accountData['firstName']=arguments.processObject.getFirstName();
+		accountData['lastName']=arguments.processObject.getLastName();
+		accountData['company']=arguments.processObject.getCompany();
+		accountData['superUserFlag']=arguments.account.getSuperUserFlag();
+		accountData['taxExemptFlag']=arguments.account.getTaxExemptFlag();
+		accountData['organizationFlag']=arguments.account.getOrganizationFlag();
+		accountData['testAccountFlag']=arguments.account.getTestAccountFlag();
+
+		// If phone number was passed in the add a primary phone number
+		if(!isNull(processObject.getPhoneNumber())) {
+			var accountPhoneNumber = this.newAccountPhoneNumber();
+			accountPhoneNumber.setAccount( newAccount );
+			accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
+			newAccount.setPrimaryPhoneNumber( accountPhoneNumber );
+		}
+	
+		// If email address was passed in then add a primary email address
+		if(!isNull(processObject.getEmailAddress())) {
+			var accountEmailAddress = this.newAccountEmailAddress();
+			accountEmailAddress.setAccount( newAccount );
+			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+			newAccount.setPrimaryEmailAddress( accountEmailAddress );
+		}
+		newAccount = this.saveAccount(newAccount,accountData);
+
+		// If new account saved with no errors
+		if(!newAccount.hasErrors()) {
+			// If the createAuthenticationFlag was set to true, the add the authentication
+			if(processObject.getCreateAuthenticationFlag()) {
+				var accountAuthentication = this.newAccountAuthentication();
+				accountAuthentication.setAccount( newAccount );
+	
+				// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+				getHibachiDAO().save(accountAuthentication);
+	
+				// Set the password
+				accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+			}
+
+			// Clone account addresses
+			if(!isNull(processObject.getCloneAccountAddressesFlag())) {
+				for(var accountAddress in arguments.account.getAccountAddresses()){
+					var newAccountAddress = duplicate(accountAddress);
+					newAccountAddress.setAccountAddressID('');
+					var newAddress = duplicate(accountAddress.getAddress());
+					newAddress.setAddressID('');
+					newAccountAddress.setAddress(newAddress);
+					newAccount.addAccountAddress(newAccountAddress);
+				}
+			}
+			// Clone account email addresses if not already set as primary email address
+			if(!isNull(processObject.getCloneAccountEmailAddressesFlag())) {
+				for(var accountEmailAddress in arguments.account.getAccountEmailAddresses()){
+					if(accountEmailAddress.getEmailAddress() != processObject.getEmailAddress()) {
+						var newAccountEmailAddress = duplicate(accountEmailAddress);
+						newAccountEmailAddress.setAccountEmailAddressID('');
+						newAccount.addAccountEmailAddress(newAccountEmailAddress);
+					}
+				}
+			}
+			// Clone account phone nunbers if not already set as primary phone number
+			if(!isNull(processObject.getCloneAccountPhoneNumbersFlag())) {
+				for(var accountPhoneNumber in arguments.account.getAccountPhoneNumbers()){
+					if(accountPhoneNumber.getPhoneNumber() != processObject.getPhoneNumber()) {
+						var newAccountPhoneNumber = duplicate(accountPhoneNumber);
+						newAccountPhoneNumber.setAccountPhoneNumberID('');
+						newAccount.addAccountPhoneNumber(newAccountPhoneNumber);
+					}
+				}
+			}
+			// Clone account price groups
+			if(!isNull(processObject.getClonePriceGroupsFlag())) {
+				for(var priceGroup in arguments.account.getPriceGroups()){
+					newAccount.addPriceGroup(priceGroup);
+				}
+			}
+			// Clone account promotion groups
+			if(!isNull(processObject.getClonePromotionCodesFlag())) {
+				for(var promotionCode in arguments.account.getPromotionCodes()){
+					newAccount.addPromotionCode(promotionCode);
+				}
+			}
+			// Clone account permission groups
+			if(!isNull(processObject.getClonePermissionGroupsFlag())) {
+				for(var permissionGroup in arguments.account.getPermissionGroups()){
+					newAccount.addPermissionGroup(permissionGroup);
+				}
+			}
+			// Clone account custom attributes
+			if(!isNull(processObject.getCloneCustomAttributesFlag())) {
+				for(var attributeValue in arguments.account.getAttributeValues()){
+					var newAttributeValue = duplicate(attributeValue);
+					newAttributeValue.setAttributeValueID('');
+					newAccount.addAttributeValue(newAttributeValue);
+				}
+			}
+		}
+
+		return newAccount;
+	}
+
+
 	public any function processAccount_createPassword(required any account, required any processObject) {
 		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
 		//For now they are just calling this function that handles the actual work.
