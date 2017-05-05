@@ -1036,7 +1036,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			collection1Columns = listAppend(collection1Columns, 'collection1Data.#header#', ',');
 		};
 
-		return listAppend(arguments.collection1Headers, collection2Columns);
+		return listAppend(collection1Columns, collection2Columns);
 	}
 
 	private string function getCollection2UniqueColumns(required string collection1Headers, required string collection2Headers){
