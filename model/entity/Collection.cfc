@@ -2402,12 +2402,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// =============== START: Custom Formatting Methods ====================
 
 	public array function getOptionsByPropertyNames(required any nameProperty, required any valueProperty, includeBlankOption=false){
-		var optionsArray = ArrayMap(this.getRecords(), function(item){
-			return {'name'=item[nameProperty], 'value'=item[valueProperty]};
-		});
+		var optionsArray = [];
 		if(includeBlankOption){
-			arrayPrepend(optionsArray, {'name'='','value'=''});
+			arrayAppend(optionsArray, {'name'='','value'=''});
 		}
+		for(var item in this.getRecords()){
+			arrayAppend(optionsArray,{'name'=item[nameProperty], 'value'=item[valueProperty]});
+		};
 		return optionsArray;
 	}
 

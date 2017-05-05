@@ -1027,14 +1027,16 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	private string function getMergedColumnList(required string collection1Headers, required string collection2Headers){
-		arguments.collection2Headers = ListMap(getCollection2UniqueColumns(arguments.collection1Headers, arguments.collection2Headers), function(column){
-			return 'collection2Data.#column#';
-			});
-		arguments.collection1Headers = listMap(arguments.collection1Headers,function(column){
-				return 'collection1Data.#column#';
-		});
+		var collection2Columns = '';
+		for(var column in getCollection2UniqueColumns(arguments.collection1Headers, arguments.collection2Headers)){
+			collection2Columns = listAppend(collection2Columns, 'collection2Data.#column#',',');
+		};
+		var collection1Columns = '';
+		for(var header in arguments.collection1Headers){
+			collection1Columns = listAppend(collection1Columns, 'collection1Data.#header#', ',');
+		};
 
-		return listAppend(arguments.collection1Headers, arguments.collection2Headers);
+		return listAppend(arguments.collection1Headers, collection2Columns);
 	}
 
 	private string function getCollection2UniqueColumns(required string collection1Headers, required string collection2Headers){
