@@ -180,7 +180,7 @@ Notes:
 			<!--- Stuff on this size here --->
 			<div class="col-xs-8 ">
 				
-				<!--- Need to make this into lg size card --->
+				<!--- Need to make this into lg size card and create event connection between listing and directive.  --->
                 <div class="s-detail-body s-arrow">
                     <div class="s-content-header">
                         <h2>Order ##66</h2>
