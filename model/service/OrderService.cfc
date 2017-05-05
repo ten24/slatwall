@@ -965,6 +965,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Save the order
 			arguments.order = this.saveOrder(arguments.order);
 
+			// Generate Short Reference for Quote Number
+			arguments.order.getShortReferenceID(true);
+
 		}
 
 
