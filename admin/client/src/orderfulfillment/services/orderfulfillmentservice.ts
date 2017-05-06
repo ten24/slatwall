@@ -1,3 +1,4 @@
+/// <reference path="../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
@@ -5,29 +6,63 @@ import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototyp
 import * as rx from 'rxjs';
 
 
+export type Action = {
+    actionType: string,
+    payload:any
+}
+
 /**
  * Fulfillment List Controller
  */
 class OrderFulfillmentService implements  Prototypes.Observable.IObservable {
     
-    // Observable string sources
-    public storeSource: rx.Subject<any>;
-   
-    // Observable string streams
-    public actionStream$:rx.Observable<any>;
+    //Observable store 
+    public store: rx.Subject<any>;
 
+    //Observable string streams
+    public actionStream$:rx.Observable<Action>; //a stream of actions. 
+
+    //Will remove the observable
     public observers: Array<Prototypes.Observable.IObserver>
 
-    // @ngInject
+    //Stores all of the state
+    private state: any = {value : 1};
+
+    //@ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){
-        this.storeSource = new rx.Subject<any>();
-        this.actionStream$ = this.storeSource.asObservable();
+        this.store = new rx.Subject<any>();
+        this.actionStream$ = this.store.asObservable(); //actionstream from the store.
+        
+        //we listen to our own action stream because we handle the state changes that come form dispatch
+        this.actionStream$.subscribe(
+            (action) => {
+                //switch to handle all of the actions.
+                switch (action.actionType) {
+                    case ('INCREASE_NUMBER'):
+                        //reduce to a new state.
+                        this.state.value++;
+                        this.dispatch({actionType: "STORE_UPDATE", payload: {storeName: "orderFulfillmentStore", state: this.state}});        
+                        break;
+                    case ('ADD_BATCH'):
+                        this.addBatch(action.payload.processObject);
+                        break;
+                    default:
+                        //nothing
+                };
+                
+            },
+            (error) => {
+                console.log(`${error}`);
+            }
+        );
     }
 
-    // Service announce that a new card is being added.
+    /** 
+     * Service announce that a new action is happening.
+     */
     public dispatch(action: {}) {
         console.log("Action: ", action);
-        this.storeSource.next(action);
+        this.store.next(action);
     }
 
     /**
@@ -74,7 +109,6 @@ class OrderFulfillmentService implements  Prototypes.Observable.IObservable {
      */
     public addBatch = (processObject) => {
         if (processObject) {
-
             processObject.data.entityName = "FulfillmentBatch";
             processObject.data['fulfillmentBatch'] = {};
             processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";

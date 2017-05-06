@@ -9,12 +9,15 @@ type ActionName = "toggle" | "refresh";
  * Fulfillment Batch Detail Controller
  */
 class SWFulfillmentBatchDetailController  {
-    public expanded:boolean = false;
+    public expanded:boolean = true;
     public TOGGLE_ACTION:ActionName = "toggle";
     public fulfillmentBatchId: string;
-
+    public lgFulfillmentBatchItemCollection:any;
+    public smFulfillmentBatchItemCollection:any;
+    
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
+        
         this.orderFulfillmentService.actionStream$.subscribe(
             (next) => {
                 console.log("Next Action", next);
@@ -24,7 +27,36 @@ class SWFulfillmentBatchDetailController  {
             }
         );
         console.log(`FulfillmentBatchId, ${this.fulfillmentBatchId}`);
+
+        //Create the fulfillmentBatchItemCollection
+        this.createExpandedOrderFulfillmentBatchItemCollection();
+        this.createShunkOrderFulfillmentBatchItemCollection();
     }
+
+     /**
+     * Setup the initial orderFulfillment Collection.
+     */
+     private createExpandedOrderFulfillmentBatchItemCollection = ():void => {
+        this.lgFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
+        this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
+        this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
+        this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingAddress.stateCode");
+        this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
+        this.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+        this.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.fulfillmentBatchId, "=");
+       
+     }
+     /**
+     * Setup the initial orderFulfillment Collection.
+     */
+     private createShunkOrderFulfillmentBatchItemCollection = ():void => {
+        this.smFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
+        this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
+        this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
+        this.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+        this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.fulfillmentBatchId, "=");
+        
+     }
 
     public toggleListing = () => {
         this.orderFulfillmentService.dispatchAction({

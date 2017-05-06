@@ -94,7 +94,7 @@ Notes:
 					<sw-card-list-item title="Fulfillments" value="#arrayLen(rc.fulfillmentBatch.getFulfillmentBatchItems())#" strong="true"></sw-card-list-item>
 					
 					<!--- Number of fulfillments fulfilled --->
-					<sw-card-list-item title="Completed" value="2"></sw-card-list-item>
+					<sw-card-list-item title="Completed" value="1"></sw-card-list-item>
 					
 					<!--- Progress Bar --->
 					<sw-card-progress-bar value-min="0" value-max="100" value-now="50"></sw-card-progress-bar>
@@ -103,9 +103,10 @@ Notes:
 			</div>
 		</div>
 		
-		<!---<sw-fulfillment-batch-detail fulfillment-batch-id="#rc.fulfillmentBatch.getFulfillmentBatchID()#">Loading</sw-fulfillment-batch-detail>--->
+		<sw-fulfillment-batch-detail fulfillment-batch-id="#rc.fulfillmentBatch.getFulfillmentBatchID()#">Loading</sw-fulfillment-batch-detail>
+		
 		<!--- Expand View --->
-		<div class="row s-detail-content-wrapper" ng-show="expanded"   ng-cloak>
+		<!---<div class="row s-detail-content-wrapper" ng-show="expanded"   ng-cloak>
 			<div class="col-xs-12">
 				<div class="s-content-header">
 					<h2>Fulfillments</h2>
@@ -131,14 +132,14 @@ Notes:
 					
 					<!--- Filters --->
 					<sw-listing-filter data-property-identifier="fulfillmentBatch.fulfillmentBatchID" data-comparison-operator="=" data-comparison-value="#rc.fulfillmentBatch.getFulfillmentBatchID()#"></sw-listing-column>
-					
-					<!--- Columns --->
-					<sw-listing-column data-property-identifier="orderFulfillment.order.orderNumber" data-title="Fulfillments"></sw-listing-column>
-					<sw-listing-column data-property-identifier="orderFulfillment.order.orderOpenDateTime" data-title="Date"></sw-listing-column>
-					<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
-					<sw-listing-column data-property-identifier="orderFulfillment.shippingAddress.stateCode" data-title="State"></sw-listing-column>
-					<sw-listing-column data-property-identifier="orderFulfillment.orderFulfillmentStatusType.typeName" data-title="Status"></sw-listing-column>
-					
+					<sw-listing-columns>
+						<!--- Columns --->
+						<sw-listing-column data-property-identifier="orderFulfillment.order.orderNumber" data-title="Fulfillments"></sw-listing-column>
+						<sw-listing-column data-property-identifier="orderFulfillment.order.orderOpenDateTime" data-title="Date"></sw-listing-column>
+						<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
+						<sw-listing-column data-property-identifier="orderFulfillment.shippingAddress.stateCode" data-title="State"></sw-listing-column>
+						<sw-listing-column data-property-identifier="orderFulfillment.orderFulfillmentStatusType.typeName" data-title="Status"></sw-listing-column>
+					</sw-listing-columns>
 				</sw-listing-display>
 		        </div> 
 			</div>
@@ -168,19 +169,21 @@ Notes:
 					data-multi-slot="true">
 					
 					<sw-listing-filter data-property-identifier="fulfillmentBatch.fulfillmentBatchID" data-comparison-operator="=" data-comparison-value="#rc.fulfillmentBatch.getFulfillmentBatchID()#"></sw-listing-column>
-					
-					<sw-listing-column data-property-identifier="orderFulfillment.order.orderNumber" data-title="Order Number"></sw-listing-column>
-					<sw-listing-column data-property-identifier="orderFulfillment.order.orderOpenDateTime" data-title="Date"></sw-listing-column>
-					<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
-					
-					<sw-listing-column data-property-identifier="fulfillmentBatchItemID"></sw-listing-column>
+					<sw-listing-columns>
+						<sw-listing-column data-property-identifier="orderFulfillment.order.orderNumber" data-title="Order Number"></sw-listing-column>
+						<sw-listing-column data-property-identifier="orderFulfillment.order.orderOpenDateTime" data-title="Date"></sw-listing-column>
+						<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
+						<sw-listing-column data-property-identifier="fulfillmentBatchItemID"></sw-listing-column>
+					</sw-listing-columns>
 				</sw-listing-display>
 		    	</div>
 			</div>
+			
 			<!--- Stuff on this size here --->
 			<div class="col-xs-8 ">
 				
 				<!--- Need to make this into lg size card and create event connection between listing and directive.  --->
+                
                 <div class="s-detail-body s-arrow">
                     <div class="s-content-header">
                         <h2>Order ##66</h2>
@@ -337,10 +340,10 @@ Notes:
                         <!--- //Item Header --->
                         
                     </div>
-                    
                 </div>
-</div>
+			</div>
+		</div>
 	</section>
-	
+	--->
 </hb:HibachiEntityDetailForm>
 </cfoutput>

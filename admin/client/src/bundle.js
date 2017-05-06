@@ -29937,6 +29937,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
+	/// <reference path="../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -29945,13 +29946,15 @@
 	 * Fulfillment List Controller
 	 */
 	var OrderFulfillmentService = (function () {
-	    // @ngInject
+	    //@ngInject
 	    function OrderFulfillmentService($hibachi, $timeout, collectionConfigService, $http) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
 	        this.$http = $http;
+	        //Stores all of the state
+	        this.state = { value: 1 };
 	        /**
 	         * This manages all the observer events without the need for setting ids etc.
 	         */
@@ -30000,13 +30003,33 @@
 	                return _this.$hibachi.saveEntity("fulfillmentBatch", '', processObject.data, "create");
 	            }
 	        };
-	        this.storeSource = new rx.Subject();
-	        this.actionStream$ = this.storeSource.asObservable();
+	        this.store = new rx.Subject();
+	        this.actionStream$ = this.store.asObservable(); //actionstream from the store.
+	        //we listen to our own action stream because we handle the state changes that come form dispatch
+	        this.actionStream$.subscribe(function (action) {
+	            //switch to handle all of the actions.
+	            switch (action.actionType) {
+	                case ('INCREASE_NUMBER'):
+	                    //reduce to a new state.
+	                    _this.state.value++;
+	                    _this.dispatch({ actionType: "STORE_UPDATE", payload: { storeName: "orderFulfillmentStore", state: _this.state } });
+	                    break;
+	                case ('ADD_BATCH'):
+	                    _this.addBatch(action.payload.processObject);
+	                    break;
+	                default:
+	            }
+	            ;
+	        }, function (error) {
+	            console.log("" + error);
+	        });
 	    }
-	    // Service announce that a new card is being added.
+	    /**
+	     * Service announce that a new action is happening.
+	     */
 	    OrderFulfillmentService.prototype.dispatch = function (action) {
 	        console.log("Action: ", action);
-	        this.storeSource.next(action);
+	        this.store.next(action);
 	    };
 	    return OrderFulfillmentService;
 	}());
@@ -49972,8 +49995,30 @@
 	        this.$window = $window;
 	        this.typeaheadService = typeaheadService;
 	        this.orderFulfillmentService = orderFulfillmentService;
-	        this.expanded = false;
+	        this.expanded = true;
 	        this.TOGGLE_ACTION = "toggle";
+	        /**
+	        * Setup the initial orderFulfillment Collection.
+	        */
+	        this.createExpandedOrderFulfillmentBatchItemCollection = function () {
+	            _this.lgFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
+	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
+	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
+	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingAddress.stateCode");
+	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
+	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+	            _this.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.fulfillmentBatchId, "=");
+	        };
+	        /**
+	        * Setup the initial orderFulfillment Collection.
+	        */
+	        this.createShunkOrderFulfillmentBatchItemCollection = function () {
+	            _this.smFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
+	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
+	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
+	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+	            _this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.fulfillmentBatchId, "=");
+	        };
 	        this.toggleListing = function () {
 	            _this.orderFulfillmentService.dispatchAction({
 	                "name": _this.TOGGLE_ACTION,
@@ -49986,6 +50031,9 @@
 	            console.log("Error", error);
 	        });
 	        console.log("FulfillmentBatchId, " + this.fulfillmentBatchId);
+	        //Create the fulfillmentBatchItemCollection
+	        this.createExpandedOrderFulfillmentBatchItemCollection();
+	        this.createShunkOrderFulfillmentBatchItemCollection();
 	    }
 	    return SWFulfillmentBatchDetailController;
 	}());
