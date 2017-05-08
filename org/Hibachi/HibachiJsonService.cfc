@@ -102,13 +102,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     }
     
     public void function createRBJson(){
-    	var rbpath = expandPath('/Slatwall') & "/config/resourceBundles";
+    	var rbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/config/resourceBundles";
     	var directorylisting = [];
     	if(DirectoryExists(rbpath)){
     		directorylisting = directorylist(rbpath,false,"name","*.properties");
     	}
     	
-    	var customrbpath = expandPath('/Slatwall') & "/custom/config/resourceBundles";
+    	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/config/resourceBundles";
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
