@@ -2070,7 +2070,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getHQLTest_date_in_range_epoch(){
 		var collectionData = {
 			collectionid = '',
-			collectionName='dateInRange',
+			collectionName='dateInRangeEpoch',
 			collectionObject = 'SlatwallAccount',
 			collectionConfig = '
 				{
@@ -2307,7 +2307,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getHQLTest_date_in_range_gregorian(){
 		var collectionData = {
 			collectionid = '',
-			collectionName='dateInRange',
+			collectionName='dateInRangeGregorian',
 			collectionObject = 'SlatwallAccount',
 			collectionConfig = '
 				{
@@ -2536,6 +2536,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
+		//addToDebug("HQL: #collectionEntity.getHQL()#");
 	}
 	
 	/**
