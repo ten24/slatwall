@@ -357,12 +357,12 @@
 							<a href="##" class="dropdown-toggle" id="changeThisLabel1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="fa fa-ellipsis-h" title="actions"></i>
 							</a>
-							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Items)">
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.state.showFulfillmentListing == true" ng-click="swOrderFulfillmentListController.toggleOrderFulfillmentListing()">
 								<li>
 									<a href="##">Items View</a> 
 								</li>
 							</ul>
-							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items" ng-click="swOrderFulfillmentListController.setView(swOrderFulfillmentListController.views.Fulfillments)">
+							<ul class="dropdown-menu pull-right" aria-labelledby="switchesView" ng-if="swOrderFulfillmentListController.state.showFulfillmentListing == false" ng-click="swOrderFulfillmentListController.toggleOrderFulfillmentListing()">
 								<li>
 									<a href="##">Fulfillments View</a>
 								</li>

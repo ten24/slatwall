@@ -2,104 +2,60 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
-import * as rx from 'rxjs';
-
-
-export type Action = {
-    actionType: string,
-    payload:any
-}
+import {Subject, Observable} from 'rxjs';
+import * as rdx from '../../../../../org/hibachi/client/src/core/prototypes/Store';
 
 /**
  * Fulfillment List Controller
  */
-class OrderFulfillmentService implements  Prototypes.Observable.IObservable {
+class OrderFulfillmentService {
     
-    //Observable store 
-    public store: rx.Subject<any>;
+    private state = {
+        showFulfillmentListing: true
+    };
 
-    //Observable string streams
-    public actionStream$:rx.Observable<Action>; //a stream of actions. 
+    // Middleware - Logger
+    public loggerEpic = (...args) => {
+        console.log("Action: ", args);
+        return args;
+    }
 
-    //Will remove the observable
-    public observers: Array<Prototypes.Observable.IObserver>
+    /**
+     * The reducer is responsible for modifying the state of the state object into a new state.
+     */
+    public orderFulfillmentStateReducer:rdx.Reducer = (state:any, action:rdx.Action<number>):Object => {
+        switch(action.type) {
+            case 'TOGGLE_FULFILLMENT_LISTING':
+                //modify the state and return it.
+                state.showFulfillmentListing = !state.showFulfillmentListing;
+                console.log("New Listing Value: ", state.showFulfillmentListing);
+                return {
+                    ...state, action
+                };
+            case 'ADD_BATCH':
+                //passthrough - no state change. anyone subscribed can handle this.
+                return {
+                    ...state, action
+                };
+            default:
+                return state;
+        }
+    }
 
-    //Stores all of the state
-    private state: any = {value : 1};
+    /**
+     *  Store stream. Set the initial state of the typeahead using startsWith and then scan. 
+     *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
+     *  it with the newest result. 
+     */
+    public orderFulfillmentStore:rdx.Store;
+
 
     //@ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private $http){
-        this.store = new rx.Subject<any>();
-        this.actionStream$ = this.store.asObservable(); //actionstream from the store.
-        
-        //we listen to our own action stream because we handle the state changes that come form dispatch
-        this.actionStream$.subscribe(
-            (action) => {
-                //switch to handle all of the actions.
-                switch (action.actionType) {
-                    case ('INCREASE_NUMBER'):
-                        //reduce to a new state.
-                        this.state.value++;
-                        this.dispatch({actionType: "STORE_UPDATE", payload: {storeName: "orderFulfillmentStore", state: this.state}});        
-                        break;
-                    case ('ADD_BATCH'):
-                        this.addBatch(action.payload.processObject);
-                        break;
-                    default:
-                        //nothing
-                };
-                
-            },
-            (error) => {
-                console.log(`${error}`);
-            }
-        );
-    }
+    constructor(public $timeout, public observerService, public $hibachi){
+        //To create a store, we instantiate it using the object that holds the state variables,
+        //and the reducer. We can also add a middleware to the end if you need.
+        this.orderFulfillmentStore = new rdx.Store( this.state, this.orderFulfillmentStateReducer );
 
-    /** 
-     * Service announce that a new action is happening.
-     */
-    public dispatch(action: {}) {
-        console.log("Action: ", action);
-        this.store.next(action);
-    }
-
-    /**
-     * This manages all the observer events without the need for setting ids etc.
-     */
-    public registerObserver = (_observer: Prototypes.Observable.IObserver) => {
-        if (!_observer){
-            throw new Error('Observer required for registration');
-        }
-        if (this.observers == undefined){
-            this.observers = new Array<Prototypes.Observable.IObserver>();
-        }
-        this.observers.push(_observer);
-    }
-    /**
-     * Removes the observer. Just pass in this
-     */
-    public removeObserver = (_observer: Prototypes.Observable.IObserver) => {
-         if (!_observer){
-            throw new Error('Observer required for removal.');
-         }
-         for (var observer in this.observers){
-            if (this.observers[observer] === (_observer)){
-                if (this.observers.indexOf(_observer) > -1){
-                    this.observers.splice(this.observers.indexOf(_observer), 1);
-                }
-            }
-         }
-    }
-    
-    /**
-     * Note that message should have a type and a data field
-     */
-    public notifyObservers = (_message: any) => {
-        for (var observer in this.observers){
-            this.observers[observer].recieveNotification(_message);
-        }
     }
 
     /**

@@ -1,59 +1,77 @@
+/// <reference path="../../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import * as Prototypes from '../prototypes/Observable';
+import {Observable, Subject} from 'rxjs';
 
-type Action = any;
+export type Action<T> = {
+    type:string|number|T
+    payload:{
+        [key:string] : { value:any } //a key of type string references any value
+    }
+};
 
-class TypeaheadService implements Prototypes.Observable.IObservable {
+class TypeaheadService {
     
     public typeaheadData = {};
+    
     public typeaheadPromises = {};
-    public typeaheadStates = {};
+    
+    //The state of the store
+    private typeaheadStates = {};
+    
+    private state:Object = {
+        typeaheadInstances: this.typeaheadStates
+    };
+
+    //Observable action stream
+    public actionStream$:Subject<Action<string>>; //a stream of actions. 
+
+
+    // Middleware - Logger
+    public loggerEpic = (...args) => {
+        console.log("Action: ", args);
+        return args;
+    }
+
+    /**
+     * The reducer is responsible for modifying the state of the state object into a new state.
+     */
+    public typeaheadStateReducer = (state, action:Action<string>):Object => {
+        switch(action.type) {
+            case 'TYPEAHEAD_QUERY':
+                //modify the state.
+                return {
+                    ...state, action
+                };
+            case 'TYPEAHEAD_USER_SELECTION':
+                //passthrough - no state change. anyone subscribed can handle this.
+                return {
+                    ...state, action
+                };
+            default:
+                return state;
+        }
+    }
+
+    /**
+     * The controllers will use this to *dispatch* all actions through the store.
+     */
+    public dispatch:Function = (action:Action<string>):any => this.actionStream$.next((action));
+
+    /**
+     *  Store stream. Set the initial state of the typeahead using startsWith and then scan. 
+     *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
+     * it with the newest result. 
+     */
+    public typeaheadStore$:Observable<Action<string>>;
+
 
     //@ngInject
-    constructor(
-        public $timeout, 
-        public observerService
-    ){
-         this.observers = new Array<Prototypes.Observable.IObserver>();
-
-    }
-
-    public observers: Array<Prototypes.Observable.IObserver>
-
-    /**
-     * Note that message should have a type and a data field
-     */
-    public notifyObservers = (_message: any) => {
-        for (var observer in this.observers){
-            this.observers[observer].recieveNotification(_message);
-        }
-    }
-
-    /**
-     * This manages all the observer events without the need for setting ids etc.
-     */
-    public registerObserver = (_observer: Prototypes.Observable.IObserver) => {
-        if (!_observer){
-            throw new Error('Observer required for registration');
-        }
-        this.observers.push(_observer);
-    }
-    /**
-     * Removes the observer. Just pass in this
-     */
-    public removeObserver = (_observer: Prototypes.Observable.IObserver) => {
-         if (!_observer){
-            throw new Error('Observer required for removal.');
-         }
-         for (var observer in this.observers){
-            if (this.observers[observer] == (_observer)){
-                if (this.observers.indexOf(_observer) > -1){
-                    this.observers.splice(this.observers.indexOf(_observer), 1);
-                }
-            }
-         }
+    constructor(public $timeout, public observerService){
+        this.actionStream$ = new Subject<Action<string>>();
+        this.typeaheadStore$ = this.actionStream$.startWith(this.state).scan(this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
     }
     
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{

@@ -19,7 +19,7 @@ module FulfillmentsList {
 /**
  * Fulfillment List Controller
  */
-class SWOrderFulfillmentListController implements Prototypes.Observable.IObserver {
+class SWOrderFulfillmentListController {
     private orderFulfillmentCollection:any;
     private orderItemCollection:any;
     private orderCollectionConfig:any;
@@ -34,7 +34,7 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
     public formData:{};
     public processObject:any;
     public addSelection:Function;
-
+    private state:any;
 
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
@@ -73,9 +73,12 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
         
-        //This tells the typeaheadService to send us all of its events to our recieveNotification method.
-        this.typeaheadService.registerObserver(this);
         
+        //Subscribe to state changes in orderFulfillmentService
+        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((state)=>{
+            console.log("State of store has changed: ", state);
+            this.state = state; //This overrides the current state any time any action takes place.
+        });
     }
 
     /**
@@ -193,6 +196,12 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
         if (this.getCollectionByView(this.getView())){
             this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
         }
+    }
+
+    //ACTION CREATOR: This will toggle the listing between its 2 states (orderfulfillments and orderitems)
+    public toggleOrderFulfillmentListing = () => {
+        console.log("Dispatching");
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({type: "TOGGLE_FULFILLMENT_LISTING", payload: {}});
     }
 
     /**
@@ -342,18 +351,18 @@ class SWOrderFulfillmentListController implements Prototypes.Observable.IObserve
      */
     public recieveNotification = (message): void => {
         
-        switch (message.name) {
-            case "locationIDfilter": 
+        switch (message.payload.name) {
+            case "locationIDfilter":
                 //If this is called, then the filter needs to be updated based on this id.
-                this.addLocationFilter(message.data);
+                this.addLocationFilter(message.payload.data);
                 break;
             case "locationID":
                 //If this is called, then a location for the batch has been selected.
-                this.getProcessObject().data['locationID'] = message.data || "";
+                this.getProcessObject().data['locationID'] = message.payload.data || "";
                 break;
             case "accountID":
                 //If this is called, then an account to assign to the batch has been selected.
-                this.getProcessObject().data['assignedAccountID'] = message.data || "";
+                this.getProcessObject().data['assignedAccountID'] = message.payload.data || "";
                 break;
             default:
                 console.log("Warning: A default case was hit with the data: ", message);
