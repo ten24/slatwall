@@ -931,7 +931,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
 		}else if(!isnull(collectionEntity.getParentCollection())){
 			joinParentCollection(collectionEntity);
-		}else if(!isNull(collectionEntity.getMergeCollection())){
+		}
+		if(!isNull(collectionEntity.getMergeCollection())){
 			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers = getHeadersListByCollection(collectionEntity);
 			getHibachiService().export( collectionData, headers, headers, collectionEntity.getCollectionObject(), "csv" );
