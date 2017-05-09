@@ -503,7 +503,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			if(order.property == aliasedProperty && orderDirection == order.direction){
 
 				arrayDeleteAt(this.getOrders(),i);
-				
+
 
 				break;
 			}
@@ -810,15 +810,19 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 
 			var baseEntityObject = getService('hibachiService').getEntityObject( getBaseEntityName() );
 
+			var direction = "ASC";
+
 			if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
 				var obProperty = getAliasedProperty( baseEntityObject.getThisMetaData().hb_defaultOrderProperty );
 			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
 				var obProperty = getAliasedProperty( "createdDateTime" );
+				direction = "DESC";
 			} else {
 				var obProperty = getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
 			}
+			
+			hqlOrder &= " ORDER BY #obProperty# #direction#";
 
-			hqlOrder &= " ORDER BY #obProperty# ASC";
 		}
 
 		return hqlOrder;
