@@ -499,28 +499,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
 		for(var i=1; i <= arraylen(this.getOrders());i++){
 			var order = this.getOrders()[i];
-
 			if(order.property == aliasedProperty && orderDirection == order.direction){
-
 				arrayDeleteAt(this.getOrders(),i);
-
-
 				break;
 			}
-
 		}
-		// if(len(aliasedProperty)) {
-		// 	var found = false;
-		// 	for(var existingOrder in variables.orders) {
-		// 		if(existingOrder.property == aliasedProperty) {
-		// 			found = true;
-		// 		}
-		// 	}
-		// 	if(found){
-		//
-		// 	}
-		// }
-
 	}
 
 	public void function addKeywordProperty(required string propertyIdentifier, required numeric weight) {
@@ -820,7 +803,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			} else {
 				var obProperty = getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
 			}
-			
+
 			hqlOrder &= " ORDER BY #obProperty# #direction#";
 
 		}
