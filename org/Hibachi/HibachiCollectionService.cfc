@@ -930,17 +930,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			];
 			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
 		}else if(!isnull(collectionEntity.getParentCollection())){
-			var filterGroupArray = [];
-			if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
-				filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
-			}
-			var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
-			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
-				collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
-				if(structKeyExists(parentCollectionStruct, 'joins')){
-					collectionEntity.mergeJoins(parentCollectionStruct.joins);
-				}
-			}
+			joinParentCollection(collectionEntity);
 		}else if(!isNull(collectionEntity.getMergeCollection())){
 			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers = getHeadersListByCollection(collectionEntity);
@@ -975,6 +965,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public query function getMergedCollectionData(required any collection1, any data){
 		var collection2 = arguments.collection1.getMergeCollection();
+		joinParentCollection(collection2);
+
 		if(structKeyExists(arguments.data,'keywords')){
 			collection1.setKeywords(arguments.data.keywords);
 		}
@@ -1007,7 +999,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
 
 		for(var column in getCollection2UniqueColumns(collection1Headers, collection2Headers)){
-			QueryAddColumn(collection1Data, column, 'varchar',[]);
+			QueryAddColumn(collection1Data, column, guessDataType(collection2Data,column),[]);
 		};
 
 		var joinQuery = new Query();
@@ -1020,9 +1012,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	public string function guessDataType(required any collectionData, required string columnName){
-		if(isDate(collectionData[columnName][1])){
-			return 'date';
-		}
 		return isNumeric(collectionData[columnName][1]) ? 'integer' : 'varchar';
 	}
 
@@ -1048,6 +1037,20 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return collection2UniqueColumns;
 	}
+
+	private void function joinParentCollection(required any collectionEntity){
+  		var filterGroupArray = [];
+ 		if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
+ 			filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
+ 		}
+ 		var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
+ 		if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
+ 			collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+ 			if(structKeyExists(parentCollectionStruct, 'joins')){
+ 				collectionEntity.mergeJoins(parentCollectionStruct.joins);
+ 			}
+ 		}
+  	}
 	
 	public string function getHeadersListByCollection(required any collectionEntity){
 		var headersList = '';

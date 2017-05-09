@@ -4,13 +4,11 @@
 <cfparam name="rc.collection" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cfscript>
-	mergeCollectionCollection = request.slatwallScope.getService('hibachiService').getCollectionCollectionList();
-	mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
-	mergeCollectionCollection.addFilter('collectionID', rc.collection.getCollectionID(), '!=');
-	mergeCollectionCollection.addFilter('collectionObject', rc.collection.getCollectionObject());
-	mergeCollectionCollection.addOrderBy('collectionName');
-</cfscript>
+<cfset mergeCollectionCollection = request.slatwallScope.getService('hibachiService').getCollectionCollectionList() />
+<cfset mergeCollectionCollection.setDisplayProperties('collectionID,collectionName') />
+<cfset mergeCollectionCollection.addFilter('collectionID', rc.collection.getCollectionID(), '!=') />
+<cfset mergeCollectionCollection.addFilter('collectionObject', rc.collection.getCollectionObject()) />
+<cfset mergeCollectionCollection.addOrderBy('collectionName') />
 
 <cfoutput>
 	<div class="col-md-6">
