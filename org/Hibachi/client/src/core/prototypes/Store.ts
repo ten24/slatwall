@@ -25,7 +25,7 @@ export class Store {
         
         this.store$ = this.actionStream$.startWith(initialState).scan(reducer);
         if (middleware){
-            this.store$.combineLatest(middleware);
+            this.store$;
         }
         return this;
     }

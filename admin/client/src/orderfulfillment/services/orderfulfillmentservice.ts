@@ -41,7 +41,6 @@ class OrderFulfillmentService {
                 return state;
         }
     }
-
     /**
      *  Store stream. Set the initial state of the typeahead using startsWith and then scan. 
      *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
