@@ -715,7 +715,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	        } else if (arguments.rc.context eq 'delete') {
 	            getService('HibachiValidationService').validate(entity, 'delete');
                 if(!entity.hasErrors()){
-                  var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+                  entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
                 }
 	        // PROCESS
 	        } else {
@@ -752,7 +752,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	            }
 	        }
 
-	        if(entity.hasErrors() || (!isNull(deleteOK) && deleteOK == false)){
+	        if(entity.hasErrors()){
 	            arguments.rc.apiResponse.content.success = false;
 	            var context = getPageContext();
 	            context.getOut().clearBuffer();
