@@ -6894,7 +6894,7 @@
 	    return t;
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var rxjs_1 = __webpack_require__(50);
+	var TypeaheadStore = __webpack_require__(637);
 	var TypeaheadService = (function () {
 	    //@ngInject
 	    function TypeaheadService($timeout, observerService) {
@@ -6907,15 +6907,6 @@
 	        this.typeaheadStates = {};
 	        this.state = {
 	            typeaheadInstances: this.typeaheadStates
-	        };
-	        // Middleware - Logger
-	        this.loggerEpic = function () {
-	            var args = [];
-	            for (var _i = 0; _i < arguments.length; _i++) {
-	                args[_i] = arguments[_i];
-	            }
-	            console.log("Action: ", args);
-	            return args;
 	        };
 	        /**
 	         * The reducer is responsible for modifying the state of the state object into a new state.
@@ -6932,10 +6923,6 @@
 	                    return state;
 	            }
 	        };
-	        /**
-	         * The controllers will use this to *dispatch* all actions through the store.
-	         */
-	        this.dispatch = function (action) { return _this.actionStream$.next((action)); };
 	        this.getTypeaheadSelectionUpdateEvent = function (key) {
 	            return "typeaheadSelectionUpdated" + key;
 	        };
@@ -7119,8 +7106,7 @@
 	            }
 	            return transcludedContent;
 	        };
-	        this.actionStream$ = new rxjs_1.Subject();
-	        this.typeaheadStore$ = this.actionStream$.startWith(this.state).scan(this.typeaheadStateReducer); //.combineLatest(this.loggerEpic)
+	        this.typeaheadStore = new TypeaheadStore.Store(this.state, this.typeaheadStateReducer); //.combineLatest(this.loggerEpic)
 	    }
 	    return TypeaheadService;
 	}());
@@ -29334,13 +29320,12 @@
 	         * The actionCreator function for searching.
 	         */
 	        this.rSearch = function (search) {
-	            console.log("Dispatching: ", search);
 	            /**
 	             * Fire off an action that a search is happening.
 	             * Example action function. The dispatch takes a function, that sends data in a payload
 	             * to the reducer.
 	             */
-	            _this.typeaheadService.dispatch({
+	            _this.typeaheadService.typeaheadStore.dispatch({
 	                "type": "TYPEAHEAD_QUERY",
 	                "payload": {
 	                    "searchText": search
@@ -29520,8 +29505,6 @@
 	        angular.copy(this.searchableColumns, this.initialSearchableColumnsState);
 	        this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
 	        this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
-	        //Subscribe to the store to get the new state.
-	        this.typeaheadService.typeaheadStore$.subscribe(function (state) { return console.log("New state: ", state); });
 	    }
 	    return SWTypeaheadSearchController;
 	}());
@@ -29637,7 +29620,7 @@
 	        this.columns = [];
 	        this.filters = [];
 	        this.addFunction = function (value) {
-	            _this.typeaheadService.dispatch({
+	            _this.typeaheadService.typeaheadStore.dispatch({
 	                "type": "TYPEAHEAD_USER_SELECTION",
 	                "payload": {
 	                    name: _this.fieldName || "",
@@ -33107,16 +33090,16 @@
 	var optiongroup_module_1 = __webpack_require__(592);
 	var orderitem_module_1 = __webpack_require__(595);
 	var orderfulfillment_module_1 = __webpack_require__(602);
-	var fulfillmentbatchdetail_module_1 = __webpack_require__(605);
-	var product_module_1 = __webpack_require__(607);
-	var productbundle_module_1 = __webpack_require__(610);
-	var sku_module_1 = __webpack_require__(617);
+	var fulfillmentbatchdetail_module_1 = __webpack_require__(606);
+	var product_module_1 = __webpack_require__(608);
+	var productbundle_module_1 = __webpack_require__(611);
+	var sku_module_1 = __webpack_require__(618);
 	//constant
-	var slatwallpathbuilder_1 = __webpack_require__(632);
+	var slatwallpathbuilder_1 = __webpack_require__(633);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(633);
+	var swcurrencyformatter_1 = __webpack_require__(634);
 	//filters
-	var swcurrency_1 = __webpack_require__(634);
+	var swcurrency_1 = __webpack_require__(635);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
@@ -39563,6 +39546,7 @@
 	            }
 	        };
 	        this.setupDefaultGetCollection = function (listingID) {
+	            console.log("Listing ID", listingID, _this.getListing(listingID));
 	            if (_this.getListing(listingID).collectionConfigs.length == 0) {
 	                _this.getListing(listingID).collectionPromise = _this.getListing(listingID).collectionConfig.getEntity();
 	                return function () {
@@ -40137,7 +40121,6 @@
 	        this.listingService.setListingState(this.tableID, this);
 	        //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
 	        this.$transclude(this.$scope, function () { });
-	        console.log('multislot', this.multiSlot);
 	        if (this.multiSlot) {
 	            this.singleCollectionPromise.then(function () {
 	                _this.multipleCollectionDeffered.reject();
@@ -49477,7 +49460,7 @@
 	var orderfulfillmentservice_1 = __webpack_require__(603);
 	//controllers
 	//directives
-	var sworderfulfillmentlist_1 = __webpack_require__(604);
+	var sworderfulfillmentlist_1 = __webpack_require__(605);
 	//models 
 	var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.coremodule.name])
 	    .config([function () {
@@ -49506,7 +49489,7 @@
 	    return t;
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var rdx = __webpack_require__(635);
+	var rdx = __webpack_require__(604);
 	/**
 	 * Fulfillment List Controller
 	 */
@@ -49526,7 +49509,6 @@
 	            for (var _i = 0; _i < arguments.length; _i++) {
 	                args[_i] = arguments[_i];
 	            }
-	            console.log("Action: ", args);
 	            return args;
 	        };
 	        /**
@@ -49537,7 +49519,6 @@
 	                case 'TOGGLE_FULFILLMENT_LISTING':
 	                    //modify the state and return it.
 	                    state.showFulfillmentListing = !state.showFulfillmentListing;
-	                    console.log("New Listing Value: ", state.showFulfillmentListing);
 	                    return __assign({}, state, { action: action });
 	                case 'ADD_BATCH':
 	                    //passthrough - no state change. anyone subscribed can handle this.
@@ -49570,6 +49551,35 @@
 
 /***/ }),
 /* 604 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var rxjs_1 = __webpack_require__(50);
+	var Store = (function () {
+	    function Store(initialState, reducer, middleware) {
+	        var _this = this;
+	        this.initialState = initialState;
+	        this.reducer = reducer;
+	        this.middleware = middleware;
+	        this.dispatch = function (action) { return _this.actionStream$.next((action)); };
+	        this.getInstance = function () {
+	            return _this.store$;
+	        };
+	        this.actionStream$ = new rxjs_1.Subject();
+	        this.store$ = this.actionStream$.startWith(initialState).scan(reducer);
+	        if (middleware) {
+	            this.store$;
+	        }
+	        return this;
+	    }
+	    return Store;
+	}());
+	exports.Store = Store;
+
+
+/***/ }),
+/* 605 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -49887,6 +49897,7 @@
 	        this.collections.push(this.orderFulfillmentCollection);
 	        this.collections.push(this.orderItemCollection);
 	        //Setup the processObject
+	        console.log(this.$hibachi);
 	        this.setProcessObject(this.$hibachi.newFulfillmentBatch_Create());
 	        //adds the two default filters to start.
 	        //this.addFilter('available', true);
@@ -49903,8 +49914,15 @@
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
 	        //Subscribe to state changes in orderFulfillmentService
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (state) {
-	            console.log("State of store has changed: ", state);
+	            console.log("State Change: (OrderFulfillmentStore) ", state);
 	            _this.state = state; //This overrides the current state any time any action takes place.
+	        });
+	        //Subscribe for state changes to the typeahead.
+	        this.typeaheadService.typeaheadStore.store$.subscribe(function (update) {
+	            console.log("State Change (TypeaheadStore)", update);
+	            if (update.action && update.action.payload) {
+	                _this.recieveNotification(update.action);
+	            }
 	        });
 	    }
 	    /**
@@ -49962,7 +49980,7 @@
 
 
 /***/ }),
-/* 605 */
+/* 606 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -49975,7 +49993,7 @@
 	var orderfulfillmentservice_1 = __webpack_require__(603);
 	//controllers
 	//directives
-	var swfulfillmentbatchdetail_1 = __webpack_require__(606);
+	var swfulfillmentbatchdetail_1 = __webpack_require__(607);
 	//models 
 	var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [core_module_1.coremodule.name])
 	    .config([function () {
@@ -49988,7 +50006,7 @@
 
 
 /***/ }),
-/* 606 */
+/* 607 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50017,7 +50035,7 @@
 	        /**
 	        * Setup the initial orderFulfillment Collection.
 	        */
-	        this.createExpandedOrderFulfillmentBatchItemCollection = function () {
+	        this.createLgOrderFulfillmentBatchItemCollection = function () {
 	            _this.lgFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
 	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
 	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
@@ -50029,28 +50047,17 @@
 	        /**
 	        * Setup the initial orderFulfillment Collection.
 	        */
-	        this.createShunkOrderFulfillmentBatchItemCollection = function () {
+	        this.createSmOrderFulfillmentBatchItemCollection = function () {
 	            _this.smFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
 	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
 	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
 	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
 	            _this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.fulfillmentBatchId, "=");
 	        };
-	        this.toggleListing = function () {
-	            _this.orderFulfillmentService.dispatchAction({
-	                "name": _this.TOGGLE_ACTION,
-	                "payload": {}
-	            });
-	        };
-	        this.orderFulfillmentService.actionStream$.subscribe(function (next) {
-	            console.log("Next Action", next);
-	        }, function (error) {
-	            console.log("Error", error);
-	        });
 	        console.log("FulfillmentBatchId, " + this.fulfillmentBatchId);
 	        //Create the fulfillmentBatchItemCollection
-	        this.createExpandedOrderFulfillmentBatchItemCollection();
-	        this.createShunkOrderFulfillmentBatchItemCollection();
+	        this.createLgOrderFulfillmentBatchItemCollection();
+	        this.createSmOrderFulfillmentBatchItemCollection();
 	    }
 	    return SWFulfillmentBatchDetailController;
 	}());
@@ -50095,7 +50102,7 @@
 
 
 /***/ }),
-/* 607 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -50106,10 +50113,10 @@
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(608);
+	var preprocessproduct_create_1 = __webpack_require__(609);
 	//filters
 	//directives
-	var swproductlistingpages_1 = __webpack_require__(609);
+	var swproductlistingpages_1 = __webpack_require__(610);
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('productPartialsPath', 'product/components/')
@@ -50119,7 +50126,7 @@
 
 
 /***/ }),
-/* 608 */
+/* 609 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50222,7 +50229,7 @@
 
 
 /***/ }),
-/* 609 */
+/* 610 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50283,7 +50290,7 @@
 
 
 /***/ }),
-/* 610 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -50293,14 +50300,14 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(611);
+	var productbundleservice_1 = __webpack_require__(612);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(612);
+	var create_bundle_controller_1 = __webpack_require__(613);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(613);
-	var swproductbundlegroups_1 = __webpack_require__(614);
-	var swproductbundlegroup_1 = __webpack_require__(615);
-	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(616);
+	var swproductbundlegrouptype_1 = __webpack_require__(614);
+	var swproductbundlegroups_1 = __webpack_require__(615);
+	var swproductbundlegroup_1 = __webpack_require__(616);
+	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(617);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -50315,7 +50322,7 @@
 
 
 /***/ }),
-/* 611 */
+/* 612 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50400,7 +50407,7 @@
 
 
 /***/ }),
-/* 612 */
+/* 613 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50474,7 +50481,7 @@
 
 
 /***/ }),
-/* 613 */
+/* 614 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50645,7 +50652,7 @@
 
 
 /***/ }),
-/* 614 */
+/* 615 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50718,7 +50725,7 @@
 
 
 /***/ }),
-/* 615 */
+/* 616 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -50910,7 +50917,7 @@
 
 
 /***/ }),
-/* 616 */
+/* 617 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -51254,7 +51261,7 @@
 
 
 /***/ }),
-/* 617 */
+/* 618 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -51264,22 +51271,22 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var defaultskuservice_1 = __webpack_require__(618);
-	var skupriceservice_1 = __webpack_require__(619);
+	var defaultskuservice_1 = __webpack_require__(619);
+	var skupriceservice_1 = __webpack_require__(620);
 	//controllers
 	//directives
-	var swpricingmanager_1 = __webpack_require__(620);
-	var swimagedetailmodallauncher_1 = __webpack_require__(621);
-	var swaddskupricemodallauncher_1 = __webpack_require__(622);
-	var swdeleteskupricemodallauncher_1 = __webpack_require__(623);
-	var swskustockadjustmentmodallauncher_1 = __webpack_require__(624);
-	var swdefaultskuradio_1 = __webpack_require__(625);
-	var swskucurrencyselector_1 = __webpack_require__(626);
-	var swskupriceedit_1 = __webpack_require__(627);
-	var swskucodeedit_1 = __webpack_require__(628);
-	var swskupricesedit_1 = __webpack_require__(629);
-	var swskupricequantityedit_1 = __webpack_require__(630);
-	var swskuthumbnail_1 = __webpack_require__(631);
+	var swpricingmanager_1 = __webpack_require__(621);
+	var swimagedetailmodallauncher_1 = __webpack_require__(622);
+	var swaddskupricemodallauncher_1 = __webpack_require__(623);
+	var swdeleteskupricemodallauncher_1 = __webpack_require__(624);
+	var swskustockadjustmentmodallauncher_1 = __webpack_require__(625);
+	var swdefaultskuradio_1 = __webpack_require__(626);
+	var swskucurrencyselector_1 = __webpack_require__(627);
+	var swskupriceedit_1 = __webpack_require__(628);
+	var swskucodeedit_1 = __webpack_require__(629);
+	var swskupricesedit_1 = __webpack_require__(630);
+	var swskupricequantityedit_1 = __webpack_require__(631);
+	var swskuthumbnail_1 = __webpack_require__(632);
 	//filters
 	var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -51302,7 +51309,7 @@
 
 
 /***/ }),
-/* 618 */
+/* 619 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -51352,7 +51359,7 @@
 
 
 /***/ }),
-/* 619 */
+/* 620 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -51663,7 +51670,7 @@
 
 
 /***/ }),
-/* 620 */
+/* 621 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -51726,7 +51733,7 @@
 
 
 /***/ }),
-/* 621 */
+/* 622 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -51846,7 +51853,7 @@
 
 
 /***/ }),
-/* 622 */
+/* 623 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52036,7 +52043,7 @@
 
 
 /***/ }),
-/* 623 */
+/* 624 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52148,7 +52155,7 @@
 
 
 /***/ }),
-/* 624 */
+/* 625 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52286,7 +52293,7 @@
 
 
 /***/ }),
-/* 625 */
+/* 626 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52364,7 +52371,7 @@
 
 
 /***/ }),
-/* 626 */
+/* 627 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52439,7 +52446,7 @@
 
 
 /***/ }),
-/* 627 */
+/* 628 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52624,7 +52631,7 @@
 
 
 /***/ }),
-/* 628 */
+/* 629 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52732,7 +52739,7 @@
 
 
 /***/ }),
-/* 629 */
+/* 630 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52860,7 +52867,7 @@
 
 
 /***/ }),
-/* 630 */
+/* 631 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -52996,7 +53003,7 @@
 
 
 /***/ }),
-/* 631 */
+/* 632 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -53043,7 +53050,7 @@
 
 
 /***/ }),
-/* 632 */
+/* 633 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -53076,7 +53083,7 @@
 
 
 /***/ }),
-/* 633 */
+/* 634 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -53138,7 +53145,7 @@
 
 
 /***/ }),
-/* 634 */
+/* 635 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -53198,7 +53205,8 @@
 
 
 /***/ }),
-/* 635 */
+/* 636 */,
+/* 637 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -53217,7 +53225,7 @@
 	        this.actionStream$ = new rxjs_1.Subject();
 	        this.store$ = this.actionStream$.startWith(initialState).scan(reducer);
 	        if (middleware) {
-	            this.store$.combineLatest(middleware);
+	            this.store$;
 	        }
 	        return this;
 	    }

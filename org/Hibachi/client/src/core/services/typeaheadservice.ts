@@ -3,14 +3,9 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import * as Prototypes from '../prototypes/Observable';
+import * as TypeaheadStore from '../prototypes/Store';
 import {Observable, Subject} from 'rxjs';
 
-export type Action<T> = {
-    type:string|number|T
-    payload:{
-        [key:string] : { value:any } //a key of type string references any value
-    }
-};
 
 class TypeaheadService {
     
@@ -25,20 +20,10 @@ class TypeaheadService {
         typeaheadInstances: this.typeaheadStates
     };
 
-    //Observable action stream
-    public actionStream$:Subject<Action<string>>; //a stream of actions. 
-
-
-    // Middleware - Logger
-    public loggerEpic = (...args) => {
-        console.log("Action: ", args);
-        return args;
-    }
-
     /**
      * The reducer is responsible for modifying the state of the state object into a new state.
      */
-    public typeaheadStateReducer = (state, action:Action<string>):Object => {
+    public typeaheadStateReducer = (state, action:TypeaheadStore.Action<string>):Object => {
         switch(action.type) {
             case 'TYPEAHEAD_QUERY':
                 //modify the state.
@@ -56,22 +41,16 @@ class TypeaheadService {
     }
 
     /**
-     * The controllers will use this to *dispatch* all actions through the store.
-     */
-    public dispatch:Function = (action:Action<string>):any => this.actionStream$.next((action));
-
-    /**
      *  Store stream. Set the initial state of the typeahead using startsWith and then scan. 
      *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
      * it with the newest result. 
      */
-    public typeaheadStore$:Observable<Action<string>>;
+    public typeaheadStore:any;
 
 
     //@ngInject
     constructor(public $timeout, public observerService){
-        this.actionStream$ = new Subject<Action<string>>();
-        this.typeaheadStore$ = this.actionStream$.startWith(this.state).scan(this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
+        this.typeaheadStore = new TypeaheadStore.Store(this.state, this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
     }
     
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{

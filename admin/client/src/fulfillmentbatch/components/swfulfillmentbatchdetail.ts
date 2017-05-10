@@ -18,25 +18,17 @@ class SWFulfillmentBatchDetailController  {
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
         
-        this.orderFulfillmentService.actionStream$.subscribe(
-            (next) => {
-                console.log("Next Action", next);
-            },
-            (error) => {
-                console.log("Error", error);
-            }
-        );
         console.log(`FulfillmentBatchId, ${this.fulfillmentBatchId}`);
 
         //Create the fulfillmentBatchItemCollection
-        this.createExpandedOrderFulfillmentBatchItemCollection();
-        this.createShunkOrderFulfillmentBatchItemCollection();
+        this.createLgOrderFulfillmentBatchItemCollection();
+        this.createSmOrderFulfillmentBatchItemCollection();
     }
 
      /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createExpandedOrderFulfillmentBatchItemCollection = ():void => {
+     private createLgOrderFulfillmentBatchItemCollection = ():void => {
         this.lgFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
@@ -44,12 +36,13 @@ class SWFulfillmentBatchDetailController  {
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
         this.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.fulfillmentBatchId, "=");
+        
        
      }
      /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createShunkOrderFulfillmentBatchItemCollection = ():void => {
+     private createSmOrderFulfillmentBatchItemCollection = ():void => {
         this.smFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
         this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
         this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
@@ -57,13 +50,6 @@ class SWFulfillmentBatchDetailController  {
         this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.fulfillmentBatchId, "=");
         
      }
-
-    public toggleListing = () => {
-        this.orderFulfillmentService.dispatchAction({
-            "name": this.TOGGLE_ACTION,
-            "payload": {}
-        });
-    }
 
 
 }

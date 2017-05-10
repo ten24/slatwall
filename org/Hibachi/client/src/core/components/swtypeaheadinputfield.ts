@@ -65,7 +65,7 @@ class SWTypeaheadInputFieldController {
     }
     
     public addFunction = (value:any) => {
-        this.typeaheadService.dispatch({
+        this.typeaheadService.typeaheadStore.dispatch({
             "type": "TYPEAHEAD_USER_SELECTION",
             "payload":{
                 name: this.fieldName || "",

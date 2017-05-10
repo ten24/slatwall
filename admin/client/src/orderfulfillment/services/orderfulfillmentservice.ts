@@ -16,7 +16,6 @@ class OrderFulfillmentService {
 
     // Middleware - Logger
     public loggerEpic = (...args) => {
-        console.log("Action: ", args);
         return args;
     }
 
@@ -28,7 +27,6 @@ class OrderFulfillmentService {
             case 'TOGGLE_FULFILLMENT_LISTING':
                 //modify the state and return it.
                 state.showFulfillmentListing = !state.showFulfillmentListing;
-                console.log("New Listing Value: ", state.showFulfillmentListing);
                 return {
                     ...state, action
                 };
