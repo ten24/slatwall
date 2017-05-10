@@ -285,7 +285,7 @@ class PublicService {
     }
 
     public getActivePaymentMethods = ()=>{
-        let urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
+        let urlString = "/?"+this.appConfig.action+"=admin:ajax.getActivePaymentMethods";
         let request = this.requestService.newPublicRequest(urlString)
         .then((result:any)=>{
             if (angular.isDefined(result.data.paymentMethods)){
