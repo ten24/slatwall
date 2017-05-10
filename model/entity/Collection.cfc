@@ -1792,7 +1792,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
 							break;
 					}
-
+				//regular date format mm/dd/yyyy
+				}else if(listLen(arguments.filter.value,'-') > 1 && listLen(arguments.filter.value,'/') > 1){
+					//convert unix timestamp
+					
+					var tempRangeArr = listToArray(arguments.filter.value, "-");
+					var fromTemp = listToArray(tempRangeArr[1], "/");
+					var toTemp   = listToArray(tempRangeArr[2], "/");
+					 
+					var tempDateFrom = CreateDate(fromTemp[3], fromTemp[1], fromTemp[2]);
+					var tempDateTo   = CreateDate(toTemp[3], toTemp[1], toTemp[2]);
+					
+					var fromValue = dateFormat(tempDateFrom,"yyyy-mm-dd");
+					var toValue = dateFormat(tempDateTo,"yyyy-mm-dd");
+				//Epoch date format	
 				}else if(listLen(arguments.filter.value,'-') > 1){
 					//convert unix timestamp
 					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
