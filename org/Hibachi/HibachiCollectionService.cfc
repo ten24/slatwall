@@ -929,9 +929,8 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			];
 			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
-		}else if(!isnull(collectionEntity.getParentCollection())){
-			joinParentCollection(collectionEntity);
 		}
+
 		if(!isNull(collectionEntity.getMergeCollection())){
 			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers = getHeadersListByCollection(collectionEntity);
@@ -945,7 +944,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		this.collectionConfigExport(exportCollectionConfigData);
 	}//<--end function
-	
+
 	public void function collectionConfigExport(required struct data) {
 		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
 
@@ -966,15 +965,16 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public query function getMergedCollectionData(required any collection1, any data){
 		var collection2 = arguments.collection1.getMergeCollection();
-		joinParentCollection(collection2);
+
 
 		if(structKeyExists(arguments.data,'keywords')){
 			collection1.setKeywords(arguments.data.keywords);
 		}
 		var collection1Headers = getHeadersListByCollection(collection1);
 		var collection2Headers = getHeadersListByCollection(collection2);
-		var collection1Data = this.transformArrayOfStructsToQuery(collection1.getRecords(), ListToArray(collection1Headers));
-		var collection2Data = this.transformArrayOfStructsToQuery(collection2.getRecords(), ListToArray(collection2Headers));
+		var collection1Data = this.transformArrayOfStructsToQuery(collection1.getRecords(forExport=true,formatRecords=false), ListToArray(collection1Headers));
+		var collection2Data = this.transformArrayOfStructsToQuery(collection2.getRecords(forExport=true,formatRecords=false), ListToArray(collection2Headers));
+
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 
 		var rightIDQuery = new Query();
@@ -1025,8 +1025,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var header in arguments.collection1Headers){
 			collection1Columns = listAppend(collection1Columns, 'collection1Data.#header#', ',');
 		};
-
-		return listAppend(collection1Columns, collection2Columns);
+ 		return listAppend(collection1Columns, collection2Columns);
 	}
 
 	private string function getCollection2UniqueColumns(required string collection1Headers, required string collection2Headers){
@@ -1038,20 +1037,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return collection2UniqueColumns;
 	}
-
-	private void function joinParentCollection(required any collectionEntity){
-  		var filterGroupArray = [];
- 		if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
- 			filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
- 		}
- 		var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
- 		if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
- 			collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
- 			if(structKeyExists(parentCollectionStruct, 'joins')){
- 				collectionEntity.mergeJoins(parentCollectionStruct.joins);
- 			}
- 		}
-  	}
 	
 	public string function getHeadersListByCollection(required any collectionEntity){
 		var headersList = '';

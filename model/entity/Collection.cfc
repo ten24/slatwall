@@ -104,6 +104,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="getFilterGroupAliasMap" type="struct" persistent="false";
 
+	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
@@ -144,9 +145,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
-			var parentCollectionConfigStruct = arguments.parentCollection.getCollectionConfigStruct();
+			var parentCollectionConfigStruct = Duplicate(arguments.parentCollection.getCollectionConfigStruct());
 			parentCollectionConfigStruct.filterGroups = [{}];
-			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [{}];
+			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [];
 			setCollectionConfig(serializeJson(parentCollectionConfigStruct));
 		}
 
@@ -1031,19 +1032,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
 	}
 
-	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
-		var totalFilterGroups = arrayLen(currentCollection);
-		for(var i =1; i <= totalFilterGroups; i++){
-			if(!ArrayIsDefined(baseCollection, i)){
-				baseCollection[i] = { "filterGroup" = []};
-			}
-			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
-				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
-			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
-		}
-		return baseCollection;
-	}
 
 	public void function mergeJoins(required any baseJoins){
 		var currentCollection = getCollectionConfigStruct();
@@ -1065,21 +1053,44 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+	private void function mergeParentCollectionFilters(){
+		if(variables.parentFilterMerged){
+			return;
+		}
+		var parentCollectionStruct = this.getParentCollection().getCollectionConfigStruct();
+		if(isnull(parentCollectionStruct.filterGroups) || !arraylen(parentCollectionStruct.filterGroups)){
+			return;
+		}
+
+		var finalFilterGroups = [];
+		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+
+		if(arraylen(parentCollectionStruct.filterGroups) == 1){
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups[1].filterGroup});
+		}else{
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups});
+		}
+
+		if(arraylen(filterGroupArray)){
+			if(arraylen(filterGroupArray) == 1){
+				arrayAppend(finalFilterGroups, { "filterGroup" =  filterGroupArray[1].filterGroup , "logicalOperator" = "AND"});
+			}else{
+				arrayAppend(finalFilterGroups, { "filterGroup" =  filterGroupArray, "logicalOperator" = "AND"});
+			}
+		}
+
+		this.getCollectionConfigStruct().filterGroups = finalFilterGroups;
+		if(structKeyExists(parentCollectionStruct, 'joins')){
+			this.mergeJoins(parentCollectionStruct.joins);
+		}
+		variables.parentFilterMerged = true;
+	}
+
 	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
 		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
 		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
 			filterGroupArray = collectionConfig.filterGroups;
-		}
-
-		if(!isnull(arguments.collectionEntity.getParentCollection())){
-			var parentCollectionStruct = arguments.collectionEntity.getParentCollection().getCollectionConfigStruct();
-			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
-				filterGroupArray = mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
-				if(structKeyExists(parentCollectionStruct, 'joins')){
-					mergeJoins(parentCollectionStruct.joins);
-				}
-			}
 		}
 		return filterGroupArray;
 	}
@@ -2061,6 +2072,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var postFilterHQL = "";
 			var orderByHQL = "";
 			var groupByHQL = "";
+
+			if(!isnull(this.getParentCollection())){
+				mergeParentCollectionFilters();
+			}
 
 
 			//build select

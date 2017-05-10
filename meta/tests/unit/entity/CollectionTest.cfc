@@ -1456,6 +1456,79 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+
+	public void function mergeParentCollectionFiltersTest(){
+
+
+		var uniqueSkuName = createUUID();
+
+		//Active product with 4 active skuls
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			skus = [
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = true
+				},
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = true
+				},
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = true
+				},
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = false
+				},
+				{
+					skuID = '',
+					skuName = 'Other Name',
+					skuCode = createUUID(),
+					activeFlag = false
+				}
+			]
+		};
+
+		var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+		//Create Parent Colleciton
+
+		var mySkuParentCollection = variables.entityService.getSkuCollectionList();
+		mySkuParentCollection.setDisplayProperties('skuID,skuName,skuCode,activeFlag');
+		mySkuParentCollection.addFilter('skuName',uniqueSkuName);
+		var pageRecords = mySkuParentCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+		persistTestEntity(mySkuParentCollection, {});
+
+
+
+		//Create New collection
+		var mySkuCollection = variables.entityService.getSkuCollectionList();
+
+		mySkuCollection.setParentCollection(mySkuParentCollection);
+		mySkuCollection.setDisplayProperties('skuID,skuName,skuCode,activeFlag');
+		mySkuCollection.addFilter('activeFlag',false);
+		var pageRecords = mySkuCollection.getPageRecords();
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+
+	}
+
+	/**
+	* @test
+	*/
 	public void function addHQLParamsFromNestedCollectionTest(){
 
 		var collectionEntityData = {
