@@ -394,6 +394,10 @@ class HibachiServiceDecorator{
                                     }
 
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
+
+                                    if(!property.singularname){
+                                        throw('need to define a singularname for ' +property.fieldtype);
+                                    }
                                     _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
                                         if(angular.isUndefined(entityInstance)){
