@@ -498,9 +498,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[2]['productName'] == 'bProduct', "'bProduct' was expected in the 2nd record");
 		assertTrue(pageRecords[3]['productName'] == 'cProduct', "'cProduct' was expected in the 3rd record");
 		assertTrue(pageRecords[4]['productName'] == 'dProduct', "'dProduct' was expected in the 4rt record");
-
 	}
 
+	/**
+	* @test
+	*/
 	public void function removeOrderByTest(){
 		var productCollectionList = variables.entityService.getCollectionList('Product');
     if (!isNull(productCollectionList.getCollectionConfigStruct())){
@@ -508,10 +510,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	  }
 
 		productCollectionList.addOrderBy('productName|asc');
+		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==1);
 		productCollectionList.addOrderBy('productDesc|DESC');
 		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==2);
 		productCollectionList.removeOrderBy('productName|asc');
 		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==1);
+	}
+
+	/**
+	* @test
+	*/
+	public void function addOrderBy_defaultDirection_Test(){
+		var productCollectionList = variables.entityService.getCollectionList('Product');
+		if (!isNull(productCollectionList.getCollectionConfigStruct())){
+			var orderByExists = structKeyExists(productCollectionList.getCollectionConfigStruct(),'orderBy');
+		}
+
+		productCollectionList.addOrderBy('productName|');
+		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==1);
+		assertEquals('YES', productCollectionList.getCollectionConfigStruct().orderBy[1].direction == "asc");
 	}
 
 	/**
