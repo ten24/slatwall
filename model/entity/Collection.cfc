@@ -2397,6 +2397,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// ============= START: Bidirectional Helper Methods ===================
 
+	public any function getMergeCollectionCollectionList(){
+		var mergeCollectionCollection = getHibachiCollectionService().getCollectionCollectionList();
+		mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
+		mergeCollectionCollection.addFilter('collectionID', getCollectionID(), '!=');
+		mergeCollectionCollection.addFilter('collectionObject', getCollectionObject());
+		mergeCollectionCollection.addOrderBy('collectionName');
+		return mergeCollectionCollection;
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -2416,13 +2425,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// =============== START: Custom Formatting Methods ====================
 
-	public array function getOptionsByPropertyNames(required any nameProperty, required any valueProperty, includeBlankOption=false){
+	public array function getRecordOptions(includeBlankOption=true){
 		var optionsArray = [];
 		if(includeBlankOption){
 			arrayAppend(optionsArray, {'name'='','value'=''});
 		}
 		for(var item in this.getRecords()){
-			arrayAppend(optionsArray,{'name'=item[nameProperty], 'value'=item[valueProperty]});
+			arrayAppend(optionsArray,{'name'=item['collectionName'], 'value'=item['collectionID']});
 		};
 		return optionsArray;
 	}

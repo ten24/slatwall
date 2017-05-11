@@ -4,12 +4,6 @@
 <cfparam name="rc.collection" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cfset mergeCollectionCollection = request.slatwallScope.getService('hibachiService').getCollectionCollectionList() />
-<cfset mergeCollectionCollection.setDisplayProperties('collectionID,collectionName') />
-<cfset mergeCollectionCollection.addFilter('collectionID', rc.collection.getCollectionID(), '!=') />
-<cfset mergeCollectionCollection.addFilter('collectionObject', rc.collection.getCollectionObject()) />
-<cfset mergeCollectionCollection.addOrderBy('collectionName') />
-
 <cfoutput>
 	<div class="col-md-6">
 		<hb:HibachiPropertyRow>
@@ -21,7 +15,7 @@
 				<cfif !isNull(rc.collection.getParentCollection())>
 					<hb:HibachiPropertyDisplay object="#rc.collection#" property="parentCollection" edit="false" valueLink="/?slatAction=entity.detailcollection&collectionID=#rc.collection.getParentCollection().getCollectionID()#" >
 				</cfif>
-				<hb:HibachiPropertyDisplay title="Merge Collection" object="#rc.collection#" property="mergeCollection" fieldType="select" valueOptions="#mergeCollectionCollection.getOptionsByPropertyNames('collectionName','collectionID', true)#" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay title="Merge Collection" object="#rc.collection#" property="mergeCollection" fieldType="select" valueOptions="#rc.collection.getMergeCollectionCollectionList().getRecordOptions()#" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 	</div>
