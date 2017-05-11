@@ -553,6 +553,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		 var aliasedPropertyIdentifier = convertPropertyIdentifierToAlias(propertyIdentifier);
 			if(aliasedPropertyIdentifier == calculatedPropertyIdentifier){
 			 arrayDeleteAt(orderByArray, i);
+			 getCollectionConfigStruct().orderBy = orderByArray;
 			 break;
 			}
 		i++;
