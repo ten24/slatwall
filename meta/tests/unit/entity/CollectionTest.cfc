@@ -3483,8 +3483,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject="Account",
 			collectionConfig = '
 				{
-					"baseEntityName":"SlatwallAccountEmailAddress",
-					"baseEntityAlias":"_accountemailaddress"
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"_account"
 
 				}
 			'
@@ -3501,7 +3501,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 			assert(record.value != variables.entity.getCollectionID());
 		}
-		assert(foundAccountCollection);
+		assert(foundAccountCollection == true);
 
 	};
 
