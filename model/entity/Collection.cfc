@@ -2430,8 +2430,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(includeBlankOption){
 			arrayAppend(optionsArray, {'name'='','value'=''});
 		}
+		var exampleEntity = getHibachiCollectionService().invokeMethod("new#getCollectionObject()#");
+		var nameProperty = exampleEntity.getSimpleRepresentationPropertyName();
+		var idProperty = exampleEntity.getPrimaryIDPropertyName();
+
 		for(var item in this.getRecords()){
-			arrayAppend(optionsArray,{'name'=item['collectionName'], 'value'=item['collectionID']});
+			arrayAppend(optionsArray,{'name'=item[nameProperty], 'value'=item[idProperty]});
 		};
 		return optionsArray;
 	}
