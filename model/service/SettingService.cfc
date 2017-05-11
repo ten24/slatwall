@@ -67,6 +67,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="taskService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="skuService" type="any";
 
 	// ====================== START: META DATA SETUP ============================
 
@@ -318,6 +319,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
+			skuInventoryTrackBy = {fieldType="select", defaultValue="Quantity"},
+			skuInventoryMeasurementUnit = {fieldType="select"},
 			
 
 			// Subscription Term
@@ -494,6 +497,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
+			case "skuInventoryTrackBy":
+				return getSkuService().getSkuInventoryTrackByOptions();
+			case "skuInventoryMeasurementUnit":
+				return getSkuService().getSkuInventoryMeasurementUnitOptions();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );
 			case "taskFailureEmailTemplate":

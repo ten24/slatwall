@@ -57,6 +57,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="settingService" type="any";
 	property name="typeService" type="any";
+	property name="measurementService" type="any";
 	
 	public string function getSkuDefinitionBySkuIDAndBaseProductTypeID(required string skuID, required string baseProductTypeID){
 		var skuDefinition = "";
@@ -524,6 +525,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	public any function processSku_createBOM(required any sku, required any processObject){
+		var childSkuList = arguments.processObject.getSkus();
+		arguments.sku.setBundleFlag(1);
+		for(var childSku in childSkuList){
+			var skuBundle = this.newSkuBundle();
+			skuBundle.setSku(arguments.sku);
+			skuBundle.setBundledSku(this.getSku(childSku));
+			skuBundle.setBundledQuantity(1);
+			this.saveSkuBundle(skuBundle);
+		}
+		getHibachiScope().flushOrmSession();
+		return sku;
+	}
+
 
 	// @help Move event registrations from 'waitlisted' to 'pending confirmation' if seats are available
 	public any function processSku_notifyWaitlistOpenings(required any sku, processObject={}) {
@@ -733,6 +748,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================  END: Smart List Overrides ========================
 
 	// ====================== START: Get Overrides ============================
+
+	public array function getSkuInventoryTrackByOptions(){
+		return ['Quantity', 'Measurement'];
+	}
+
+	public array function getSkuInventoryMeasurementUnitOptions(){
+		var measurementUnitSmartList = getMeasurementService().getMeasurementUnitSmartList();
+		measurementUnitSmartList.addSelect('unitName', 'name');
+		measurementUnitSmartList.addSelect('unitCode', 'value');
+		return measurementUnitSmartList.getRecords();
+	}
 
 	// ======================  END: Get Overrides =============================
 
