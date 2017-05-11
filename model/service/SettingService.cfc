@@ -132,6 +132,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
+			accountTwoFactorAuthenticationImplementation = {fieldType="select", defaultValue=""},
 
 			// Address
 			addressDisplayTemplate = {fieldType="select"},
@@ -398,6 +399,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('paymentTermName', 'name');
 				optionSL.addSelect('paymentTermID', 'value');
 				return optionSL.getRecords();
+			case "accountTwoFactorAuthenticationImplementation" :
+				// TODO derive options using IntegrationService to provide integrations that implement two factor authentication
+				return [{name="Disabled", value=""}, {name="Google Authenticator", value="googleauthenticator"}];
 			case "brandDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );
