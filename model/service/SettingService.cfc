@@ -133,6 +133,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
 			accountTwoFactorAuthenticationImplementation = {fieldType="select", defaultValue=""},
+			accountTwoFactorAuthenticationConfigPromptLoginFlag = {fieldType="yesno",defaultValue=1},
 
 			// Address
 			addressDisplayTemplate = {fieldType="select"},
