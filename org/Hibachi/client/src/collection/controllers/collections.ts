@@ -13,7 +13,8 @@ class CollectionController{
 		selectionService,
 		paginationService,
 		collectionConfigService,
-        appConfig
+        appConfig,
+        observerService
 	){
 		//init values
 		//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
@@ -79,14 +80,12 @@ class CollectionController{
 				$scope.loadingCollection = true;
 			}, 500);
 		};
+        
+        
 
-		$scope.getCollection = function(){
-			var pageShow = 50;
-			if($scope.paginator.getPageShow() !== 'Auto'){
-				pageShow = $scope.paginator.getPageShow();
-			}
+		$scope.getCollection = function(action){
 //			$scope.currentPage = $scope.pagination.getCurrentPage();
-			var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
+			var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:$scope.paginator.getPageShow(), keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 				$scope.paginator.setPageRecordsInfo($scope.collection);
@@ -116,6 +115,8 @@ class CollectionController{
 		};
 		$scope.paginator.getCollection = $scope.getCollection;
 		$scope.getCollection();
+        
+        observerService.attach($scope.getCollection,'swPaginationAction');
 
 		var unbindCollectionObserver = $scope.$watch('collection',function(newValue,oldValue){
 			if(newValue !== oldValue){
@@ -180,10 +181,8 @@ class CollectionController{
 
 		$scope.saveCollection = function(){
 			$timeout(function(){
-				$log.debug('saving Collection');
 				var entityName = 'collection';
 				var collection = $scope.collection;
-				$log.debug($scope.collectionConfig);
 				if(isFormValid($scope.collectionForm)){
                     if(angular.isDefined($scope.collectionConfig)
                         && angular.isDefined($scope.collectionConfig.groupBys)
