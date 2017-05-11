@@ -3,18 +3,15 @@
 class SWColumnSorter{
 	public static Factory(){
 		var directive = (
-			$log,
 			observerService,
 			corePartialsPath,
 			hibachiPathBuilder
 		)=> new SWColumnSorter(
-			$log,
 			observerService,
 			corePartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
 			'observerService',
 			'corePartialsPath',
 			'hibachiPathBuilder'
@@ -23,7 +20,6 @@ class SWColumnSorter{
 	}
     //@ngInject
 	public constructor(
-		$log,
 		observerService,
 		corePartialsPath,
 		hibachiPathBuilder

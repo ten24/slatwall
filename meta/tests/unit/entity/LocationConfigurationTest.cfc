@@ -117,7 +117,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			
 			 parentLocation={
 				locationID=parentLocation.getLocationID()
-			               }
+             }
 		};
 		
 		var mockLocation=createPersistedTestEntity('location',locationData);
@@ -130,7 +130,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	   		         }
 	   	};
 	   	
-		
+		mockLocation.getLocationName();
 	   	var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
 	
 		var valueAfterAppendIsDone= "parentLocation » locationName"; //valuse after append operation done

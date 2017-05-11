@@ -28,11 +28,9 @@ class SWWorkflowTaskActionsController {
     private printTemplateCollectionConfig;
     //@ngInject
     constructor(
-        public $scope,
         public $log,
         public $hibachi,
         public metadataService,
-        public collectionService,
         public workflowPartialsPath,
         public hibachiPathBuilder,
         public collectionConfigService,
