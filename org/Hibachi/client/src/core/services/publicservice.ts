@@ -42,7 +42,7 @@ class PublicService {
     public edit:String;
     public editPayment:boolean;
     public imagePath:{[key:string]:any}={};
-    
+
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -167,7 +167,7 @@ class PublicService {
                 if (result['cart']){delete result['cart'];}
             }
 
-            if(setter == 'cart'||setter=='account'){
+            if(setter == 'cart'||setter=='account' && this[setter] && this[setter].populate){
                 //cart and account return cart and account info flat
                 this[setter].populate(result);
 
@@ -204,7 +204,7 @@ class PublicService {
         if (!action) {throw "Action is required exception";}
 
         var urlBase = "";
-		
+
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
             urlBase = action; //any path
@@ -761,7 +761,7 @@ class PublicService {
         });
     }
 
-    
+
     /** Returns the state from the list of states by stateCode */
     public getStateByStateCode = (stateCode) => {
      	for (var state in this.states.stateCodeOptions){
@@ -770,16 +770,16 @@ class PublicService {
      		}
      	}
     }
-     
+
     /** Returns the state from the list of states by stateCode */
     public resetRequests = (request) => {
      	delete this.requests[request];
     }
-    
+
     /** Returns true if the addresses match. */
     public addressesMatch = (address1, address2) => {
     	if (angular.isDefined(address1) && angular.isDefined(address2)){
-        	if ( (address1.streetAddress == address2.streetAddress && 
+        	if ( (address1.streetAddress == address2.streetAddress &&
 	            address1.street2Address == address2.street2Address &&
 	            address1.city == address2.city &&
 	            address1.postalcode == address2.postalcode &&
@@ -789,31 +789,31 @@ class PublicService {
         }
         return false;
     }
-    
+
     /** Should be pushed down into core. Returns the profile image by name. */
    	public getResizedImageByProfileName = (profileName, skuIDList) => {
    		this.imagePath = {};
-   		
+
    		if (profileName == undefined){
    			profileName = "medium";
    		}
-   		
+
    		this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
-   		 	
+
    		 	this.imagePath[skuIDList] = "";
-   		 	
+
    		 	result = <any>angular.fromJson(result);
    		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
-   		 		
+
    		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
    		 		this.loading = false;
    		 		return this.imagePath[skuIDList];
-   		 		
+
    		 	}else{
    		 		return "";
    		 	}
-   		 	
-   		}); 
+
+   		});
    	}
 
       /**
@@ -836,7 +836,7 @@ class PublicService {
      *  we have a payment but are editting the payment AND nothing else is being edited
      *
      */
-   
+
     public showPaymentTabBody = ()=> {
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
@@ -882,9 +882,9 @@ class PublicService {
         }
         return false;
     };
-    
-    
- 
+
+
+
 
 }
 export {PublicService};

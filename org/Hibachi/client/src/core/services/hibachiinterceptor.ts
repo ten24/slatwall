@@ -91,17 +91,18 @@ class HibachiInterceptor implements IInterceptor{
         public utilityService,
         public hibachiPathBuilder
 	) {
+
         this.$location = $location;
 		this.$q = $q;
 		this.$log = $log;
 		this.$injector = $injector;
+		this.localStorageService = localStorageService;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
-        this.baseUrl = appConfig.baseURL;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
-		this.localStorageService = localStorageService;
+        this.baseUrl = appConfig.baseURL;
     }
 
 	public request = (config): ng.IPromise<any> => {
