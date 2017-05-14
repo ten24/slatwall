@@ -18,11 +18,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public string function getFileContent(){
 		if(!structKeyExists(variables,'fileContent')){
-			try {
-				variables.fileContent =fileRead( "#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath());
-			}catch(any e){
-				writeLog(file="Slatwall", text="Error reading this file: #e#");
-			}
+			variables.fileContent =fileRead( "#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath());
 		}
 		return variables.fileContent;
 	}
