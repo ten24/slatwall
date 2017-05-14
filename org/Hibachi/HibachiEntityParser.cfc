@@ -4,7 +4,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	property name="componentFilePath" type="string";
 	property name="lineBreak" type="string"; 
 	property name="metaData" type="any";
-	property name="fileContent" type="string" default="";
+	property name="fileContent" type="string";
 	
 	public void function init(){
 		//declared custom strings
