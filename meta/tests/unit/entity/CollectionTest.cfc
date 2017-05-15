@@ -526,7 +526,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			var orderByExists = structKeyExists(productCollectionList.getCollectionConfigStruct(),'orderBy');
 		}
 
-		productCollectionList.addOrderBy('productName|');
+		productCollectionList.addOrderBy('productName');
 		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==1);
 		assertEquals('YES', productCollectionList.getCollectionConfigStruct().orderBy[1].direction == "asc");
 	}
