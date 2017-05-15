@@ -544,7 +544,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function removeOrderBy(string orderByString){
 		var propertyIdentifierArray = ListToArray(orderByString, "|");
 		var calculatedPropertyIdentifier = propertyIdentifierArray[1];
-		var direction = propertyIdentifierArray[2];
 		var orderByArray = getCollectionConfigStruct().orderBy;
 		var i = 1;
 
