@@ -1253,13 +1253,55 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public string function getJoinHQL(){
 		var joinHQL = '';
+        var allAliases = getAllAliases();
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
 			for(var join in getCollectionConfigStruct()["joins"]){
-				joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
-			}	
+                if(listFind(allAliases, join.alias)){
+                    joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
+                }
+			}
 		}
 		return joinHQL;
 	}
+
+    public any function getAllAliases(){
+        var aliases = '';
+
+        var collectionConfigStruct = getCollectionConfigStruct();
+        aliases = listAppend(aliases, collectionConfigStruct.baseEntityAlias);
+
+        if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
+            for(var i = 1; i <= arraylen(collectionConfigStruct.columns); i++){
+                aliases = listAppend(aliases, listFirst(collectionConfigStruct.columns[i].propertyIdentifier, '.'));
+            }
+        }
+
+        if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
+            for(var i = 1; i <= arraylen(collectionConfigStruct.orderBy); i++){
+                aliases = listAppend(aliases, listFirst(collectionConfigStruct.orderBy[i].propertyIdentifier, '.'));
+            }
+        }
+
+
+        if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct.filterGroups)){
+            aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct.filterGroups));
+
+        }
+
+        return listremoveduplicates(aliases);
+    }
+
+    public any function getFilterAliases(filterGroup){
+        var aliasList = '';
+        for(var fgIndex = 1; fgIndex <= arrayLen(filterGroup); fgIndex++){
+            if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
+                aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
+            }else if(listFind(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.')) == 0){
+                aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+            }
+        }
+        return aliasList;
+    }
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false, excludeGroupBy=false){
 		variables.HQLParams = {};

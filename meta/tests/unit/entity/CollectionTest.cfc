@@ -1493,6 +1493,114 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(4,structCount(collectionEntity2.getHQLParams()));
 	}
 
+    /**
+    * @test
+    **/
+
+    public void function removeJoinsNotInUseTest(){
+        var collectionEntityData2 = {
+            collectionid = '',
+            collectionCode = 'AccountOrders',
+            baseEntityName = 'SlatwallAccount',
+            collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"_account",
+					"columns":[
+						{
+							"propertyIdentifier":"_account.firstName"
+						},
+						{
+							"propertyIdentifier":"_account.lastName"
+						},
+						{
+							"propertyIdentifier":"_account_primaryEmailAddress.emailAddress"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"orders",
+							"alias":"_account_orders"
+						},
+						{
+							"associationName":"primaryEmailAddress",
+							"alias":"_account_primaryEmailAddress"
+						}
+					],
+					"orderBy":[
+						{
+							"propertyIdentifier":"_account.lastName",
+							"direction":"DESC"
+						},
+						{
+							"propertyIdentifier":"_account.firstName",
+							"direction":"DESC"
+						}
+					],
+					"groupBy":[
+						{
+							"propertyIdentifier":"accountID"
+						}
+					],
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"propertyIdentifier":"_account.firstName",
+									"comparisonOperator":"=",
+									"value":"Miguel"
+								},
+								{
+									"logicalOperator":"AND",
+									"propertyIdentifier":"_account.LastName",
+									"comparisonOperator":"=",
+									"value":"Targa"
+								},
+								{
+									"logicalOperator":"AND",
+									"filterGroup":[
+										{
+											"propertyIdentifier":"_account.superUserFlag",
+											"comparisonOperator":"=",
+											"value":"true"
+										},
+										{
+											"logicalOperator":"OR",
+											"propertyIdentifier":"_account.superUserFlag",
+											"comparisonOperator":"=",
+											"value":"false"
+										},
+										{
+											"logicalOperator":"AND",
+											"filterGroup":[
+												{
+													"propertyIdentifier":"_account_primaryEmailAddress.emailAddress",
+													"comparisonOperator":"=",
+													"value":"miguel.targa@ten24web.com"
+												},
+												{
+													"logicalOperator":"OR",
+													"propertyIdentifier":"_account_primaryEmailAddress.emailAddress",
+													"comparisonOperator":"=",
+													"value":"miguel@targa.me"
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+
+				}
+			'
+        };
+        var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
+        var joinsHQL = trim(collectionEntity2.getJoinHQL());
+
+        assert(joinsHQL == "left join _account.primaryEmailAddress as _account_primaryEmailAddress", 'Bad Join HQL: "#joinsHQL#", expected: "left join _account.primaryEmailAddress as _account_primaryEmailAddress"');
+    }
+
 	/**
 	* @test
 	*/
