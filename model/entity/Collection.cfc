@@ -1253,8 +1253,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public string function getJoinHQL(){
 		var joinHQL = '';
-        var allAliases = getAllAliases();
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+            var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
                 if(listFind(allAliases, join.alias)){
                     joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
@@ -1282,21 +1282,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
             }
         }
 
-
         if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct.filterGroups)){
             aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct.filterGroups));
+        }
 
+        if(structKeyExists(collectionConfigStruct,'joins')) {
+            var joinAliasList = [];
+            for(var i = arraylen(collectionConfigStruct.joins); i >= 1; i--){
+                for(var o = 1; o <= arraylen(joinAliasList); o++){
+                    if(refindNoCase("^#collectionConfigStruct.joins[i].alias#", joinAliasList[o])){
+                        aliases = listAppend(aliases, collectionConfigStruct.joins[i].alias);
+                        break;
+                    }
+                }
+                arrayAppend(joinAliasList, collectionConfigStruct.joins[i].alias);
+            }
         }
 
         return listremoveduplicates(aliases);
     }
+
+
 
     public any function getFilterAliases(filterGroup){
         var aliasList = '';
         for(var fgIndex = 1; fgIndex <= arrayLen(filterGroup); fgIndex++){
             if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
                 aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
-            }else if(listFind(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.')) == 0){
+            }else{
                 aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
             }
         }
