@@ -349,7 +349,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		collectionEntity.getCollectionConfigStruct().columns = columns;
 		
-		assertEquals(variables.service.getHeadersListByCollection(collectionEntity),'accountID,superUserFlag,firstName,lastName,failedLoginAttemptCount,taxExemptFlag,urlTitle,company,loginLockExpiresDateTime');
+		assertEquals(variables.service.getHeadersListByCollection(collectionEntity),'accountID,superUserFlag,firstName,lastName,failedLoginAttemptCount,taxExemptFlag,urlTitle');
 	}
 	
 	/**
