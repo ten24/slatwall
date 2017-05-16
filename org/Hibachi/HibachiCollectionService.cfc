@@ -269,9 +269,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
 			formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 			formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
-			if(arrayLen(arguments.collectionEntity.getProcessObjects())){
-				var processObject = arguments.collectionEntity.getProcessObjects()[1];
-				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjects(),this.getProcessObjectProperties(processObject,arguments.collectionEntity),arguments.collectionEntity);
+			if(arrayLen(arguments.collectionEntity.getProcessObjectArray())){
+				var processObject = arguments.collectionEntity.getProcessObjectArray()[1];
+				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjectArray(),this.getProcessObjectProperties(processObject,arguments.collectionEntity),arguments.collectionEntity);
 			}
 
 		}
@@ -712,7 +712,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions);
 		var response = {};
 
-		if(arrayLen(collectionEntity.getProcessObjects())){
+		if(arrayLen(collectionEntity.getProcessObjectArray())){
 			response = {};
 			response['data'] = collectionResponse.pageRecords[1];
 			response['processData'] = collectionResponse.processObjects[1];
