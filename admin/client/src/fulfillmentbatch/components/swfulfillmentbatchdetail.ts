@@ -14,15 +14,69 @@ class SWFulfillmentBatchDetailController  {
     public fulfillmentBatchId: string;
     public lgFulfillmentBatchItemCollection:any;
     public smFulfillmentBatchItemCollection:any;
-    
-    // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
-        
-        console.log(`FulfillmentBatchId, ${this.fulfillmentBatchId}`);
+    public currentRecordOrderDetail:any;
+    private currentSelectedFulfillmentBatchItemID:any;
 
+    // @ngInject
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService){
+        
         //Create the fulfillmentBatchItemCollection
         this.createLgOrderFulfillmentBatchItemCollection();
         this.createSmOrderFulfillmentBatchItemCollection();
+        
+        //get the listingDisplay store and listen for changes to the listing display state.
+        listingService.listingDisplayStore.store$.subscribe((update)=>{
+            console.log("State => ", update);
+            if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED"){
+                //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
+                //Outer table, will need to toggle and set the floating cards to this data.
+                if (angular.isDefined(update.action.payload)){
+                    
+                    if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
+                        //outer listing updated. We need to shrink the view and set the current record to the selected record.
+                        console.log("Outer Listing Updated");
+                        //on the first one being selected, go to the shrink view.
+                        if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1){
+                            if (this.expanded){
+                                this.expanded = !this.expanded;
+                            }
+                            this.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
+                            //use this id to get the record and set it to currentRecordOrderDetail.
+                            console.log("Collection Data", this.smFulfillmentBatchItemCollection);
+                            //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
+                            for (var batchItem in this.smFulfillmentBatchItemCollection){
+                                console.log("Item", batchItem, this.smFulfillmentBatchItemCollection[batchItem], this.currentSelectedFulfillmentBatchItemID);
+                                if (this.smFulfillmentBatchItemCollection[batchItem]['orderFulfillment.orderFulfillmentID'] == this.currentSelectedFulfillmentBatchItemID){
+                                    //get a new collection using the orderFulfillment.
+                                    this.currentRecordOrderDetail = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+                                    this.currentRecordOrderDetail.addFilter("orderFulfillmentID", this.smFulfillmentBatchItemCollection[batchItem]['orderFulfillmentID'], "=");
+                                    this.currentRecordOrderDetail.getEntity().then(function(entityResult){
+                                        console.log("Got entity", entityResult);
+                                    });
+                                }
+                            }
+                            
+                            //console.log("Batch Item Data", batchItemDetail);
+                            //now get the orderFulfillment.
+
+                        }
+                        //set the inner selection to this selection.
+                    }
+                    if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2"){
+                        //inner listing updated.
+                        console.log("Inner Listing Updated");
+                        //if nothing is selected, go back to the outer view.
+                        if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0){
+                            if (this.expanded == false){
+                                this.expanded = !this.expanded;
+                            }
+                        }
+                        //set the outer selection to this selection.
+                        this.currentSelectedFulfillmentBatchItemID = "";
+                    }
+                }
+            }
+        }); 
     }
 
      /**

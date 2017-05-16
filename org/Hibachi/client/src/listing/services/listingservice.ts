@@ -1,8 +1,14 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
+import {Subject, Observable} from 'rxjs';
+import * as Store from '../../../../../../org/hibachi/client/src/core/prototypes/Store';
+
 class ListingService{
     
     private listingDisplays = {};
+    private state = {};
+    public listingDisplayStore: Store.Store;
 
     //@ngInject
     constructor(private $timeout,
@@ -14,10 +20,35 @@ class ListingService{
                 private rbkeyService, 
                 private selectionService,
                 private utilityService, 
-                private $hibachi
-    ){
-
+                private $hibachi){
+        //Setup a store so that controllers can listing for state changes and fire action requests.
+        //To create a store, we instantiate it using the object that holds the state variables,
+        //and the reducer. We can also add a middleware to the end if you need.
+        this.listingDisplayStore = new Store.Store( this.state, this.listingDisplayStateReducer );
+        
     }
+
+    /**
+     * The reducer is responsible for modifying the state of the state object into a new state for listeners.
+     */
+    public listingDisplayStateReducer:Store.Reducer = (state:any, action:Store.Action<number>):Object => {
+        switch(action.type) {
+            case 'LISTING_PAGE_RECORDS_UPDATE':
+                return {
+                    ...state, action
+                };
+            case 'CURRENT_PAGE_RECORDS_SELECTED':
+                return {
+                    ...state, action
+                };
+            case 'ADD_SELECTION':
+                return {
+                    ...state, action
+                };
+            default:
+                return state;
+        }
+    } 
 
     //Event Functions
     public getListingPageRecordsUpdateEventString = (listingID:string) => {
@@ -33,6 +64,12 @@ class ListingService{
     }
 
     public notifyListingPageRecordsUpdate = (listingID:string) =>{
+        //This is how we would dispatch so that controllers can get the updated state.
+        this.listingDisplayStore.dispatch({
+            type: "LISTING_PAGE_RECORDS_UPDATE",
+            payload: {listingID: listingID, listingPageRecordsUpdateEventString: this.getListingPageRecordsUpdateEventString(listingID) }
+        });
+
         this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID), listingID);
     }
 

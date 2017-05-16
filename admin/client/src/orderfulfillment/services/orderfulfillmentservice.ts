@@ -3,7 +3,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as rdx from '../../../../../org/hibachi/client/src/core/prototypes/Store';
+import * as Store from '../../../../../org/hibachi/client/src/core/prototypes/Store';
 
 /**
  * Fulfillment List Controller
@@ -22,7 +22,7 @@ class OrderFulfillmentService {
     /**
      * The reducer is responsible for modifying the state of the state object into a new state.
      */
-    public orderFulfillmentStateReducer:rdx.Reducer = (state:any, action:rdx.Action<number>):Object => {
+    public orderFulfillmentStateReducer:Store.Reducer = (state:any, action:Store.Action<number>):Object => {
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
                 //modify the state and return it.
@@ -31,7 +31,6 @@ class OrderFulfillmentService {
                     ...state, action
                 };
             case 'ADD_BATCH':
-                //passthrough - no state change. anyone subscribed can handle this.
                 return {
                     ...state, action
                 };
@@ -44,14 +43,14 @@ class OrderFulfillmentService {
      *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
      *  it with the newest result. 
      */
-    public orderFulfillmentStore:rdx.Store;
+    public orderFulfillmentStore:Store.Store;
 
 
     //@ngInject
     constructor(public $timeout, public observerService, public $hibachi){
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
-        this.orderFulfillmentStore = new rdx.Store( this.state, this.orderFulfillmentStateReducer );
+        this.orderFulfillmentStore = new Store.Store( this.state, this.orderFulfillmentStateReducer );
 
     }
 

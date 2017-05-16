@@ -19,8 +19,12 @@
 			data-has-action-bar="true" 
 			data-persisted-collection-config="true" 
 			data-multiselectable="true"
+			data-multi-slot="true"
 			data-multiselect-field-name="fulfillmentBatchItemID" 
 			data-name="fulfillmentBatchItemTable1">
+			<sw-listing-columns>
+				
+			</sw-listing-columns>
 		</sw-listing-display>
         </div> 
 	</div>
@@ -45,18 +49,23 @@
 			data-has-action-bar="true" 
 			data-persisted-collection-config="true" 
 			data-multiselectable="true"
+			data-multi-slot="true"
 			data-multiselect-field-name="fulfillmentBatchItemID" 
 			data-name="fulfillmentBatchItemTable2">	
+			<sw-listing-columns>
+				
+			</sw-listing-columns>
 		<sw-listing-display>
-    	</div>
+        </div>
 	</div>
 	
 	<!--- Stuff on this size here --->
 	<div class="col-xs-8 ">
 		<!--- Need to make this into lg size card and create event connection between listing and directive.  --->
-        <div class="s-detail-body s-arrow">
+		<div class="s-detail-body s-arrow" ng-show="!swFulfillmentBatchDetailController.currentRecordOrderDetail">Loading Record . . .</div>
+        <div class="s-detail-body s-arrow" ng-show="swFulfillmentBatchDetailController.currentRecordOrderDetail">
             <div class="s-content-header">
-                <h2>Order ##72</h2>
+                <h2>Order #72</h2>
                 <span class="pull-right">
                     
                     <div class="btn-toolbar" role="toolbar"> 

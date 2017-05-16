@@ -393,6 +393,12 @@ class SWListingDisplayController{
                 this.isCurrentPageRecordsSelected = false;
                 break;
         }
+        
+        //dispatch the update to the store.
+        this.listingService.listingDisplayStore.dispatch({
+            type: "CURRENT_PAGE_RECORDS_SELECTED",
+            payload: {listingID: this.tableID, selectionCount: this.multiselectCount, values: this.multiselectValues }
+        });
     };
 
 
