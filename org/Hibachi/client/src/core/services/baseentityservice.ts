@@ -47,24 +47,29 @@ abstract class BaseEntityService extends BaseObject{
         if(!objectName){
             objectName = baseObjectName;
         }
+
         var baseObject = this.$hibachi.getEntityDefinition(baseObjectName);
-        var Barrell = {};
-        if(type === 'Entity'){
-            Barrell = Entities;
-        }else if(type === 'Process'){
-            Barrell = Processes;
-        }
-        if(Barrell[objectName]){
-            this.utilityService.extend(Barrell[objectName],baseObject);
-            var entity = new Barrell[objectName](this.$injector);
+
+        if(baseObject){
+            var Barrell = {};
+            if(type === 'Entity'){
+                Barrell = Entities;
+            }else if(type === 'Process'){
+                Barrell = Processes;
+            }
+            if(Barrell[objectName]){
+                this.utilityService.extend(Barrell[objectName],baseObject);
+                var entity = new Barrell[objectName](this.$injector);
+            }else{
+                var entity = new baseObject();
+                //throw('need to add '+ objectName+' class');
+            }
+
+            return entity;
         }else{
-            var entity = new baseObject();
-            //throw('need to add '+ objectName+' class');
+            return {};
         }
-
-        return entity;
     }
-
 }
 export{BaseEntityService};
 
