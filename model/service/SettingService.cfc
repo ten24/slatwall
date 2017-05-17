@@ -319,8 +319,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
-			skuInventoryTrackBy = {fieldType="select", defaultValue="Quantity"},
-			skuInventoryMeasurementUnit = {fieldType="select"},
 			
 
 			// Subscription Term
