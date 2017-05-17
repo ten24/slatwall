@@ -49,29 +49,15 @@ Notes:
 	entity
 	action
 */
-component entityname="SlatwallPermission" table="SwPermission" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="permissionGroup.permissions" {
+component entityname="SlatwallPermissionRecordRestriction" table="SwPermissionRecordRestriction" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="permission.permissionGroup.permissions" {
 	
 	// Persistent Properties
-	property name="permissionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="accessType" ormtype="string";
-	property name="subsystem" ormtype="string";
-	property name="section" ormtype="string";
-	property name="item" ormtype="string";
-	property name="allowActionFlag" ormtype="boolean";
-	property name="allowCreateFlag" ormtype="boolean";
-	property name="allowReadFlag" ormtype="boolean";
-	property name="allowUpdateFlag" ormtype="boolean";
-	property name="allowDeleteFlag" ormtype="boolean";
-	property name="allowProcessFlag" ormtype="boolean";
-	property name="entityClassName" ormtype="string";
-	property name="propertyName" ormtype="string";
-	property name="processContext" ormtype="string";
-	
+	property name="permissionRecordRestrictionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="restrictionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	// Related Object Properties (many-to-one)
-	property name="permissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="permissionGroupID";
+	property name="permission" cfc="Permission" fieldtype="many-to-one" fkcolumn="permissionID";
 	
 	// Related Object Properties (one-to-many)
-	property name="permissionRecordRestrictions" singularname="permissionRecordRestriction" type="array" cfc="PermissionRecordRestriction" fieldtype="one-to-many" fkcolumn="permissionID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -88,11 +74,6 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 	
 	// Non-Persistent Properties
 
-	public any function init() {
-		
-		return super.init();
-	}
-
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -100,35 +81,26 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Permission Group (many-to-one)    
-	public void function setPermissionGroup(required any permissionGroup) {    
-		variables.permissionGroup = arguments.permissionGroup;    
-		if(isNew() or !arguments.permissionGroup.hasPermission( this )) {    
-			arrayAppend(arguments.permissionGroup.getPermissions(), this);    
-		}    
-	}    
-	public void function removePermissionGroup(any permissionGroup) {    
-		if(!structKeyExists(arguments, "permissionGroup")) {    
-			arguments.permissionGroup = variables.permissionGroup;    
-		}    
-		var index = arrayFind(arguments.permissionGroup.getPermissions(), this);    
-		if(index > 0) {    
-			arrayDeleteAt(arguments.permissionGroup.getPermissions(), index);    
-		}    
-		structDelete(variables, "permissionGroup");    
+	// Permission (many-to-one)
+	public void function setPermission(required any permission){
+		variables.permission = arguments.permission;
+		if(!arguments.permission.hasPermissionRecordRestriction(this)){
+			arrayAppend(arguments.permission.getPermissionRecordRestrictions(),this);
+		}
 	}
 	
-	// Permission Record Restriction (one-to-many)    
-	public void function addPermissionRecordRestriction(required any permissionRecordRestriction) {    
-		arguments.permissionPermissionRecordRestriction.setPermission( this );    
+	public void function removePermission(any permission){
+		if(!structKeyExists(arguments, 'permission')){
+			arguments.permission = variables.permission;
+		}
+		var index = arrayFind(arguments.permission.getPermissionRecordRestrictions(),this);
+		if(index > 0){
+			arrayDeleteAt(arguments.permission.getPermissionRecordRestrictions(),index);
+		}
+		structDelete(variables,'permission');
 	}    
-	public void function removePermissionRecordRestriction(required any permissionRecordRestriction) {    
-		arguments.permissionRecordRestriction.removePermission( this );    
-	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
-	
-	
 
 	// =============== START: Custom Validation Methods ====================
 	
