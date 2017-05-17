@@ -3819,7 +3819,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(structKeyExists(recordOptions[1],'name') && structKeyExists(recordOptions[1],'value'));
 	}
 
-	public void function getMergeCollectionCollectionListTest(){
+	public void function getMergeCollectionOptionsTest(){
 		variables.entity.setCollectionID(createUUID());
 
 		var accountCollectionData = {
@@ -3838,7 +3838,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var accountCollection = createPersistedTestEntity('collection',accountCollectionData);
 
-		var mergeCollectionRecords = variables.entity.getMergeCollectionCollectionList().getRecordOptions();
+		var mergeCollectionRecords = variables.entity.getMergeCollectionOptions();
 		assert(arrayLen(mergeCollectionRecords));
 		var foundAccountCollection = false;
 		for(var record in mergeCollectionRecords){

@@ -51,7 +51,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// Related Object Properties (many-to-one)
 	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
-	property name="mergeCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="mergeCollectionID";
+	property name="mergeCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="mergeCollectionID" hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="collectionID" inverse="true" cascade="all-delete-orphan";
@@ -106,6 +106,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
+
+	property name="mergeCollectionOptions" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -2466,12 +2468,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// ============= START: Bidirectional Helper Methods ===================
 
 	public any function getMergeCollectionOptions(){
-		var mergeCollectionCollection = getHibachiCollectionService().getCollectionCollectionList();
-		mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
-		mergeCollectionCollection.addFilter('collectionID', getCollectionID(), '!=');
-		mergeCollectionCollection.addFilter('collectionObject', getCollectionObject());
-		mergeCollectionCollection.addOrderBy('collectionName');
-		return mergeCollectionCollection.getRecordOptions();
+		if(!structKeyExists(variables, 'mergeCollectionOptions')){
+			var mergeCollectionCollection = getHibachiCollectionService().getCollectionCollectionList();
+			mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
+			mergeCollectionCollection.addFilter('collectionID', getCollectionID(), '!=');
+			mergeCollectionCollection.addFilter('collectionObject', getCollectionObject());
+			mergeCollectionCollection.addOrderBy('collectionName');
+			variables.mergeCollectionOptions = mergeCollectionCollection.getRecordOptions();
+		}
+		return variables.mergeCollectionOptions;
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
