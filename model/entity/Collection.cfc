@@ -1266,12 +1266,67 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public string function getJoinHQL(){
 		var joinHQL = '';
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+            var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
-				joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
-			}	
+                if(listFind(allAliases, join.alias)){
+                    joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
+                }
+			}
 		}
 		return joinHQL;
 	}
+
+    public any function getAllAliases(){
+        var aliases = '';
+
+        var collectionConfigStruct = getCollectionConfigStruct();
+        aliases = listAppend(aliases, collectionConfigStruct.baseEntityAlias);
+
+        if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
+            for(var i = 1; i <= arraylen(collectionConfigStruct.columns); i++){
+                aliases = listAppend(aliases, listFirst(collectionConfigStruct.columns[i].propertyIdentifier, '.'));
+            }
+        }
+
+        if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
+            for(var i = 1; i <= arraylen(collectionConfigStruct.orderBy); i++){
+                aliases = listAppend(aliases, listFirst(collectionConfigStruct.orderBy[i].propertyIdentifier, '.'));
+            }
+        }
+
+        if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct.filterGroups)){
+            aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct.filterGroups));
+        }
+
+        if(structKeyExists(collectionConfigStruct,'joins')) {
+            var joinAliasList = [];
+            for(var i = arraylen(collectionConfigStruct.joins); i >= 1; i--){
+                for(var o = 1; o <= arraylen(joinAliasList); o++){
+                    if(refindNoCase("^#collectionConfigStruct.joins[i].alias#", joinAliasList[o])){
+                        aliases = listAppend(aliases, collectionConfigStruct.joins[i].alias);
+                        break;
+                    }
+                }
+                arrayAppend(joinAliasList, collectionConfigStruct.joins[i].alias);
+            }
+        }
+
+        return listremoveduplicates(aliases);
+    }
+
+
+
+    public any function getFilterAliases(filterGroup){
+        var aliasList = '';
+        for(var fgIndex = 1; fgIndex <= arrayLen(filterGroup); fgIndex++){
+            if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
+                aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
+            }else{
+                aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+            }
+        }
+        return aliasList;
+    }
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false, excludeGroupBy=false){
 		variables.HQLParams = {};
@@ -1804,7 +1859,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
 							break;
 					}
-
+				//regular date format mm/dd/yyyy
+				}else if(listLen(arguments.filter.value,'-') > 1 && listLen(arguments.filter.value,'/') > 1){
+					//convert unix timestamp
+					
+					var tempRangeArr = listToArray(arguments.filter.value, "-");
+					var fromTemp = listToArray(tempRangeArr[1], "/");
+					var toTemp   = listToArray(tempRangeArr[2], "/");
+					 
+					var tempDateFrom = CreateDate(fromTemp[3], fromTemp[1], fromTemp[2]);
+					var tempDateTo   = CreateDate(toTemp[3], toTemp[1], toTemp[2]);
+					
+					var fromValue = dateFormat(tempDateFrom,"yyyy-mm-dd");
+					var toValue = dateFormat(tempDateTo,"yyyy-mm-dd");
+				//Epoch date format	
 				}else if(listLen(arguments.filter.value,'-') > 1){
 					//convert unix timestamp
 					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");

@@ -477,8 +477,15 @@ class SWCriteriaDate{
 								&& scope.filterItem.value.length
 								){
 									var dateRangeArray = scope.filterItem.value.split("-");
-									scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
-									scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
+
+                                    var rangeStart = new Date(parseInt(dateRangeArray[0])).toUTCString();
+                                    rangeStart = rangeStart.split(' ').slice(0, 4).join(' ');
+
+                                    var rangeEnd = new Date(parseInt(dateRangeArray[1])).toUTCString();
+                                    rangeEnd = rangeEnd.split(' ').slice(0, 4).join(' ');
+
+									scope.selectedFilterProperty.criteriaRangeStart = rangeStart;
+									scope.selectedFilterProperty.criteriaRangeEnd = rangeEnd;
 								}
 
 								if(angular.isDefined(scope.selectedConditionChanged)){
