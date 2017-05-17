@@ -74,7 +74,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
 	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
-	property name="inventoryTrackBy" ormtype="string";
+	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
+	property name="inventoryMeasurementType" ormtype="string" hb_formFieldType="select";
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -88,7 +89,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
-	property name="inventoryMeasurementUnit" cfc="MeasurementUnit" fieldType="many-to-one" fkcolumn="measurementUnitID" hint="Unit used if inventory is tracked by measurement.";
+	property name="inventoryMeasurementUnit" cfc="MeasurementUnit" fieldType="many-to-one" fkcolumn="measurementUnitID" hint="Unit used if inventory is tracked by measurement." hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
@@ -180,6 +181,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
+	property name="inventoryTrackByOptions" persistent="false";
+	property name="inventoryMeasurementTypeOptions" persistent="false";
+	property name="inventoryMeasurementUnitOptions" persistent="false";
 	// Deprecated Properties
 
 
@@ -221,6 +225,40 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 
 		return variables.redemptionAmountTypeOptions;
+	}
+
+	public array function getInventoryTrackByOptions(){
+		if(!structKeyExists(variables, 'inventoryTrackByOptions')){
+			variables.inventoryTrackByOptions = ['Quantity','Measurement'];
+		}
+		return variables.inventoryTrackByOptions;
+	}
+
+	public array function getInventoryMeasurementTypeOptions(){
+		if(!structKeyExists(variables,'inventoryMeasurementTypeOptions')){
+			var measurementUnit = getService('hibachiService').newMeasurementUnit();
+			variables.inventoryMeasurementTypeOptions = measurementUnit.getMeasurementTypeOptions();
+		}
+		return variables.inventoryMeasurementTypeOptions;
+	}
+
+	public array function getInventoryMeasurementUnitOptions(){
+		if(!structKeyExists(variables,'inventoryMeasurementUnitOptions') || !arrayLen(variables.inventoryMeasurementUnitOptions) || variables.inventoryMeasurementUnitOptions[1].measurementType != this.getInventoryMeasurementType()){
+			if(isNull(this.getInventoryMeasurementType())){
+				variables.inventoryMeasurementUnitOptions = [];
+			}else{
+				var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
+				measurementUnitCollection.addFilter('measurementType', this.getInventoryMeasurementType());
+				measurementUnitCollection.setDisplayProperties('unitCode,unitName,measurementType');
+				var records = measurementUnitCollection.getRecords();
+				var recordOptions = [];
+				for(var record in records){
+					arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode,'measurementType'=record.measurementType});
+				}
+				variables.inventoryMeasurementUnitOptions = recordOptions;
+			}
+		}
+		return variables.inventoryMeasurementUnitOptions;
 	}
 
 	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.

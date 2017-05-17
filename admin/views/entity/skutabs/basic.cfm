@@ -24,6 +24,9 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryTrackBy" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryMeasurementType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryMeasurementUnit" edit="#rc.edit#">
 
 			<cfif rc.product.getBaseProductType() EQ 'gift-card'>
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="giftCardExpirationTerm" edit="#rc.edit#">
