@@ -155,6 +155,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
+			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
