@@ -2397,13 +2397,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	public any function getMergeCollectionCollectionList(){
+	public any function getMergeCollectionOptions(){
 		var mergeCollectionCollection = getHibachiCollectionService().getCollectionCollectionList();
 		mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
 		mergeCollectionCollection.addFilter('collectionID', getCollectionID(), '!=');
 		mergeCollectionCollection.addFilter('collectionObject', getCollectionObject());
 		mergeCollectionCollection.addOrderBy('collectionName');
-		return mergeCollectionCollection;
+		return mergeCollectionCollection.getRecordOptions();
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

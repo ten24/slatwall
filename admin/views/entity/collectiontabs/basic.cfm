@@ -15,7 +15,7 @@
 				<cfif !isNull(rc.collection.getParentCollection())>
 					<hb:HibachiPropertyDisplay object="#rc.collection#" property="parentCollection" edit="false" valueLink="/?slatAction=entity.detailcollection&collectionID=#rc.collection.getParentCollection().getCollectionID()#" >
 				</cfif>
-				<hb:HibachiPropertyDisplay title="Merge Collection" object="#rc.collection#" property="mergeCollection" fieldType="select" valueOptions="#rc.collection.getMergeCollectionCollectionList().getRecordOptions()#" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay title="Merge Collection" object="#rc.collection#" property="mergeCollection" fieldType="select" valueOptions="#rc.collection.getMergeCollectionOptions()#" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 	</div>
