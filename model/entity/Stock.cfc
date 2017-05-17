@@ -60,9 +60,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
 
 	//Calculated Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
-	property name="calculatedQNC" ormtype="integer";
+	property name="calculatedQATS" ormtype="float";
+	property name="calculatedQOH" ormtype="float";
+	property name="calculatedQNC" ormtype="float";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";

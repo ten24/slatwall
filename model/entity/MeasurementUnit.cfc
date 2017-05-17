@@ -84,7 +84,7 @@ component displayname="Measurement Unit" entityname="SlatwallMeasurementUnit" ta
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getMeasurementTypeOptions() {
-		return [{name=rbKey('define.length'), value='length'},{name=rbKey('define.weight'), value='weight'}];
+		return [{name=rbKey('define.length'), value='length'},{name=rbKey('define.volume'), value='volume'},{name=rbKey('define.weight'), value='weight'}];
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

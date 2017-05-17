@@ -495,10 +495,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				optionSL.addSelect('taxCategoryName', 'name');
 				optionSL.addSelect('taxCategoryID', 'value');
 				return optionSL.getRecords();
-			case "skuInventoryTrackBy":
-				return getSkuService().getSkuInventoryTrackByOptions();
-			case "skuInventoryMeasurementUnit":
-				return getSkuService().getSkuInventoryMeasurementUnitOptions();
 			case "subscriptionUsageRenewalReminderEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "SubscriptionUsage" );
 			case "taskFailureEmailTemplate":

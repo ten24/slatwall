@@ -61,6 +61,7 @@ Notes:
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledSku" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledQuantity" edit="#rc.edit#">
+                <hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="measurementUnit" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

@@ -78,8 +78,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="inventoryMeasurementType" ormtype="string" hb_formFieldType="select";
 
 	// Calculated Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
+	property name="calculatedQATS" ormtype="float";
+	property name="calculatedQOH" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
 
 	// Related Object Properties (many-to-one)
@@ -235,6 +235,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	public array function getInventoryMeasurementTypeOptions(){
+		if(getInventoryTrackBy() == 'Quantity'){
+			return [];
+		}
 		if(!structKeyExists(variables,'inventoryMeasurementTypeOptions')){
 			var measurementUnit = getService('hibachiService').newMeasurementUnit();
 			variables.inventoryMeasurementTypeOptions = measurementUnit.getMeasurementTypeOptions();
@@ -243,6 +246,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	public array function getInventoryMeasurementUnitOptions(){
+		if(getInventoryTrackBy() == 'Quantity') {
+			return [];
+		}
 		if(!structKeyExists(variables,'inventoryMeasurementUnitOptions') || !arrayLen(variables.inventoryMeasurementUnitOptions) || variables.inventoryMeasurementUnitOptions[1].measurementType != this.getInventoryMeasurementType()){
 			if(isNull(this.getInventoryMeasurementType())){
 				variables.inventoryMeasurementUnitOptions = [];

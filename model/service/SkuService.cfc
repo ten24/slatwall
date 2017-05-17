@@ -749,17 +749,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ====================== START: Get Overrides ============================
 
-	public array function getSkuInventoryTrackByOptions(){
-		return ['Quantity', 'Measurement'];
-	}
-
-	public array function getSkuInventoryMeasurementUnitOptions(){
-		var measurementUnitSmartList = getMeasurementService().getMeasurementUnitSmartList();
-		measurementUnitSmartList.addSelect('unitName', 'name');
-		measurementUnitSmartList.addSelect('unitCode', 'value');
-		return measurementUnitSmartList.getRecords();
-	}
-
 	// ======================  END: Get Overrides =============================
 
 	// =================== START: Deprecated Functions ========================

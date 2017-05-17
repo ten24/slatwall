@@ -50,8 +50,8 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	
 	// Persistent Properties
 	property name="inventoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantityIn" ormtype="integer";
-	property name="quantityOut" ormtype="integer";
+	property name="quantityIn" ormtype="float";
+	property name="quantityOut" ormtype="float";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -79,6 +79,36 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	
 	// ================== START: Overridden Methods ========================
 	
+	public numeric function getQuantityIn(){
+		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+			return int(variables.quantityIn);
+		}
+		return variables.quantityIn;
+	}
+
+	public numeric function getQuantityOut(){
+		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+			return int(variables.quantityOut);
+		}
+		return variables.quantityOut;
+	}
+
+	public void function setQuantityIn(required numeric quantity){
+		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+			variables.quantityIn = int(arguments.quantity);
+		}else{
+			variables.quantityIn = arguments.quantity;
+		}
+	}
+
+	public void function setQuantityOut(required numeric quantity){
+		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+			variables.quantityOut = int(arguments.quantity);
+		}else{
+			variables.quantityOut = arguments.quantity;
+		}
+	}
+
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================

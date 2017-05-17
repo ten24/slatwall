@@ -47,6 +47,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Related Object Properties (many-to-one)
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="bundledSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="bundledSkuID";
+	property name="measurementUnit" cfc="measurementUnit" fieldType="many-to-one" fkcolumn="measurementUnitID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -94,6 +95,12 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 		structDelete(variables, "sku");    
 	}
 
+	public void function setMeasurementUnit(required any measurementUnit){
+		if(isNull(getBundledSku()) || getBundledSku().getInventoryTrackBy() == 'Quantity'){
+			return;
+		}
+		variables.measurementUnit = measurementUnit;
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -106,6 +113,17 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ============== START: Overridden Implicet Getters ===================
+
+	public any function getMeasurementUnit(){
+		if(!StructKeyExists(variables, 'measurementUnit') || isNull(variables.measurementUnit)){
+			if(!isNull(getBundledSku()) && getBundledSku().getinventoryTrackBy() == 'Measurement'){
+				variables.measurementUnit = getBundledSku().getInventoryMeasurementUnit();
+			}else{
+				return;
+			}
+		}
+		return variables.measurementUnit;
+	}
 	
 	// ==============  END: Overridden Implicet Getters ====================
 
