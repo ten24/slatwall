@@ -1314,6 +1314,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.accountPaymentMethod;
 	}
+	
+	public any function processPermission_addPermissionRecordRestriction(required any permission, required any processObject){
+		
+		arguments.processObject.getPermissionRecordRestriction().setPermissionRecordRestrictionName(arguments.processObject.getPermissionRecordRestrictionName());
+		arguments.permission.addPermissionRecordRestriction(arguments.processObject.getPermissionRecordRestriction());
+		arguments.permission = this.savePermission(arguments.permission);
+		
+		return arguments.permission;
+	}
 
 	// =====================  END: Process Methods ============================
 

@@ -120,7 +120,7 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 	
 	// Permission Record Restriction (one-to-many)    
 	public void function addPermissionRecordRestriction(required any permissionRecordRestriction) {    
-		arguments.permissionPermissionRecordRestriction.setPermission( this );    
+		arguments.permissionRecordRestriction.setPermission( this );    
 	}    
 	public void function removePermissionRecordRestriction(required any permissionRecordRestriction) {    
 		arguments.permissionRecordRestriction.removePermission( this );    
@@ -139,6 +139,17 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 	// ===============  END: Custom Formatting Methods =====================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentation(){
+		var simpleRep = "";
+		if(!isNull(getPermissionGroup())){
+			simpleRep &= getPermissionGroup().getPermissionGroupName() & ' - ';
+		}
+		if(getAccessType()=='entity'){
+			simpleRep &= getEntityClassName();
+		}
+		return simpleRep;
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
