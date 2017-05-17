@@ -56,6 +56,7 @@ Notes:
 	<hb:HibachiListingDisplay smartList="#rc.permission.getPermissionRecordRestrictionsSmartList()#"
 		recordDetailAction="admin:entity.detailpermissionrecordrestriction"
 		recordEditAction="admin:entity.editpermissionrecordrestriction"
+		recordDeleteAction="admin:entity.deletepermissionrecordrestriction"
 	>
 		<hb:HibachiListingColumn propertyIdentifier="permissionRecordRestrictionName" tdclass="primary"/>
 	</hb:HibachiListingDisplay>
