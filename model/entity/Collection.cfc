@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" hb_processContexts="clone" {
 
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -91,7 +91,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="nonPersistentColumn" type="boolean" persistent="false";
 	property name="processContext" type="string" persistent="false";
-	property name="processObjects" type="array" persistent="false";
+	property name="processObjectArray" type="array" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
@@ -129,7 +129,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 		variables.aggregateFilters = [];
 		variables.collectionConfig = '{}';
-		variables.processObjects = [];
+		variables.processObjectArray = [];
 		variables.hasDisplayAggregate = false;
 		variables.hasManyRelationFilter = false;
 		variables.filterAliasMaps = {};
@@ -1480,7 +1480,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
-							variables.processObjects = [];
+							variables.processObjectArray = [];
 							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL = 'SELECT #entityAlias# ' & getHQL(excludeGroupBy=true) & ' GROUP BY #entityAlias#';
 							HQLParams = getHQLParams();
@@ -1506,7 +1506,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 								if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
 									var processObject = entity.getProcessObject(this.getProcessContext());
-									arrayAppend(variables.processObjects,processObject);
+									arrayAppend(variables.processObjectArray,processObject);
 								}
 							}
 						}else{
