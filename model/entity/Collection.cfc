@@ -82,7 +82,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="aggregateFilters" type="array" persistent="false";
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
-	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/overried the default collectionConfig order bys";
+	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/override the default collectionConfig order bys";
 
 	property name="pageRecordsStart" persistent="false" type="numeric" hint="This represents the first record to display and it is used in paging.";
 	property name="pageRecordsShow" persistent="false" type="numeric" hint="This is the total number of entities to display";
@@ -526,6 +526,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		arrayAppend(collectionConfig.orderBy,orderBy);
 		this.setCollectionConfigStruct(collectionConfig);
+	}
+
+	public void function removeOrderBy(string orderByString){
+		var propertyIdentifierArray = ListToArray(orderByString, "|");
+		var calculatedPropertyIdentifier = propertyIdentifierArray[1];
+		var orderByArray = getCollectionConfigStruct().orderBy;
+		var i = 1;
+
+		for (var arrayElement in orderByArray){
+		 var propertyIdentifier = arrayElement.propertyIdentifier;
+		 var aliasedPropertyIdentifier = convertPropertyIdentifierToAlias(propertyIdentifier);
+			if(aliasedPropertyIdentifier == calculatedPropertyIdentifier){
+			 arrayDeleteAt(orderByArray, i);
+			 getCollectionConfigStruct().orderBy = orderByArray;
+			 break;
+			}
+		i++;
+		}
 	}
 
 	//returns an array of name/value structs for
