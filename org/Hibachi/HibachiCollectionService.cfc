@@ -716,7 +716,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(arrayLen(collectionEntity.getProcessObjectArray())){
 			response = {};
 			response['data'] = collectionResponse.pageRecords[1];
-			response['processData'] = collectionResponse.processObjects[1];
+			response['processData'] = collectionResponse.processObjectArray[1];
 		}else{
 			response = collectionResponse.pageRecords[1];
 		}
