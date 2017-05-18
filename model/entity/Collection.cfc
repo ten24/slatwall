@@ -102,6 +102,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="getFilterGroupAliasMap" type="struct" persistent="false";
+	property name="requestAccount" type="any" persistent="false";
 
 	property name="groupBys" type="string" persistent="false";
 
@@ -139,6 +140,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.filterGroupAliasMap = {};
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 
+	}
+	
+	public any function getRequestAccount(){
+		if(!structKeyExists(variables,'requestAccount') && !isNull(getHibachiScope().getAccount())){
+			variables.requestAccount = getHibachiScope().getAccount();
+		}
+		return variables.requestAccount;
+	}
+	
+	public void function setRequestAccount(required any requestAccount){
+		variables.requestAccount = arguments.requestAccount;
 	}
 
 	public void function setParentCollection(required any parentCollection){
@@ -1502,10 +1514,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return arguments.propertyIdentifier;
 	}
+	
+	public void function applyPermissions(){
+		
+	}
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
-
+		this.applyPermissions();
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
 
@@ -1605,7 +1621,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
-		if(arguments.formatRecords){
+		this.applyPermissions()
+;		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
 
 			variables.records =	formattedRecords;

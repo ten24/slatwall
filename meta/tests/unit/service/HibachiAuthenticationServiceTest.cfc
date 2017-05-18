@@ -70,6 +70,84 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function authenticateActionByAccount_returns_false_for_mura_integration() {
 		assertFalse( variables.service.authenticateActionByAccount('mura:main.default', request.slatwallScope.newEntity('Account')) );
 	}
+	/**
+	* @test
+	*/
+	public void function getActionAuthenticationDetailsByAccountTest_recordLevelPerms(){
+		var accountData = {
+			accountID=""
+			
+		};
+		var peasantyAccount = createPersistedTestEntity('Account',accountData);
+		//make sure the account is going to enforce permission groups
+		peasantyAccount.setSuperUserFlag(false);
+
+		//set up a 		
+		var permissionGroupData ={
+			permissionGroupID="",
+			permissionGroupName=createUUID()&'testPermgroup'
+		};
+		var permissionGroup = createPersistedTestEntity('PermissionGroup',permissionGroupData);
+		peasantyAccount.addPermissionGroup(permissionGroup);
+		permissionGroup.addAccount(peasantyAccount);
+		
+		assert(arrayLen(peasantyAccount.getPermissionGroups()));
+		assert(arrayLen(permissionGroup.getAccounts()));
+		
+		//set up the account so that they can read orders
+		var permissionData = {
+			permissionID="",
+			accessType="entity",
+			entityClassName="Order",
+			allowReadFlag=1
+		};
+		var permission = createPersistedTestEntity('Permission',permissionData);
+		permission.setAccessType('entity');
+		permission.setPermissionGroup(permissionGroup);
+		permissionGroup.addPermission(permission);
+		
+		//request.slatwallScope.getService('HibachiAuthenticationService').clearEntityPermissionDetails();
+		
+		assert(!isNull(permission.getPermissionGroup()));
+		//double check that read perms are good so far
+		var canRead = variables.service.authenticateEntityCrudByAccount("read","order",peasantyAccount);
+		assert(canRead);
+		
+		//now let's add a record
+		var orderData = {
+			orderID=""
+		};
+		var order = createPersistedTestEntity('Order',orderData);
+		
+		var otherOrder = createPersistedTestEntity('Order',orderData);
+		//verify ouside of having an account that we can get all records
+		var allDataCollection = createTestEntity('collection');
+		allDataCollection.setCollectionObject('Order');
+		allDataCollection.addFilter('orderID',"#order.getOrderID()#,#otherOrder.getOrderID()#",'IN');
+		assert(arraylen(allDataCollection.getRecords()),2);
+		
+		//now record level perms restrictions
+		
+		var collectionEntity = createTestEntity('Collection');
+		collectionEntity.setCollectionObject('Order');
+		collectionEntity.addFilter('orderID',order.getOrderID(),'=');
+		
+		var restrictionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()); 
+		
+		var permissionRecordRestrictionData = {
+			permissionRecordRestrictionID="",
+			restrictionConfig=restrictionConfig
+		};
+		var permissionRecordRestriction = createPersistedTestEntity('PermissionRecordRestriction',permissionRecordRestrictionData);
+		
+		permission.addPermissionRecordRestriction(permissionRecordRestriction);
+		
+		assert(arraylen(permission.getPermissionRecordRestrictions()));
+		
+		//make this request use our account with restrictions 
+		allDataCollection.setRequestAccount(peasantyAccount);
+		
+	}
 	
 	
 }
