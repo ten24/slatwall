@@ -631,38 +631,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 	
-	/**
-	* @test
-	*/
-	public void function addDisplayAggregateCOUNTTest(){
-		var uniqueNumberForDescription = createUUID();
-
-		var productWithSkusData = {
-			productID = '',
-			productName = 'ProductUnitTest',
-			productDescription = uniqueNumberForDescription,
-			skus = [
-				{
-					skuID = '',
-					skuCode= createUUID()
-				},
-				{
-					skuID = '',
-					skuCode= createUUID()
-				}
-			]
-		};
-		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
-
-		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.setDisplayProperties('productName');
-		myCollection.addDisplayAggregate('skus','count','skuCount');
-		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-
-		var pageRecords = myCollection.getPageRecords();
-		assertTrue(pageRecords[1]['skuCount'] == 2);
-	}
-
+	
 	/**
 	* @test
 	*/
@@ -732,57 +701,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	}
 
-	public void function addOrderByTest(){
-
-		var uniqueNumberForDescription = createUUID();
-
-		var productData1 = {
-			productID = '',
-			productName = 'dProduct',
-			productDescription = uniqueNumberForDescription
-		};
-		createPersistedTestEntity('product', productData1);
-
-		var productData2 = {
-			productID = '',
-			productName = 'cProduct',
-			productDescription = uniqueNumberForDescription
-		};
-		createPersistedTestEntity('product', productData2);
-
-		var productData3 = {
-			productID = '',
-			productName = 'bProduct',
-			productDescription = uniqueNumberForDescription
-		};
-		createPersistedTestEntity('product', productData3);
-
-		var productData4 = {
-			productID = '',
-			productName = 'aProduct',
-			productDescription = uniqueNumberForDescription
-		};
-		createPersistedTestEntity('product', productData4);
-
-
-		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.setDisplayProperties('productName');
-		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-		myCollection.setOrderBy('productName|asc');
-
-
-		var collectionConfigStruct = myCollection.getCollectionConfigStruct();
-
-		var pageRecords = myCollection.getPageRecords();
-
-		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
-
-		assertTrue(pageRecords[1]['productName'] == 'aProduct', "'aProduct' was expected in the 1st record");
-		assertTrue(pageRecords[2]['productName'] == 'bProduct', "'bProduct' was expected in the 2nd record");
-		assertTrue(pageRecords[3]['productName'] == 'cProduct', "'cProduct' was expected in the 3rd record");
-		assertTrue(pageRecords[4]['productName'] == 'dProduct', "'dProduct' was expected in the 4rt record");
-
-	}
 
 	/**
 	* @test
@@ -903,6 +821,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuCount'] == 2);
 	}
+	
 
 	/**
 	* @test
