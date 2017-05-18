@@ -271,7 +271,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 			if(arrayLen(arguments.collectionEntity.getProcessObjectArray())){
 				var processObject = arguments.collectionEntity.getProcessObjectArray()[1];
-				formattedPageRecords[ "processObjectArray" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjectArray(),this.getProcessObjectProperties(processObject,arguments.collectionEntity),arguments.collectionEntity);
+				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjectArray(),this.getProcessObjectProperties(processObject,arguments.collectionEntity),arguments.collectionEntity);
 			}
 
 		}
