@@ -1,3 +1,4 @@
+<cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfparam name="attributes.object" type="any" default="" />
@@ -38,7 +39,8 @@
 
 		<!--- Make sure there is text for the tab name --->
 		<cfif not len(tab.text)>
-			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />
+			<cfset local.rbKeyString = replace(replace( replace(tab.view, '../','','all'), '/', '.', 'all') ,':','.','all' ) />
+			<cfset tab.text = attributes.hibachiScope.rbKey(local.rbKeyString) />
 		</cfif>
 
 		<cfif not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag)>
@@ -104,7 +106,7 @@
 											<hb:HibachiPropertyList>
 												<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
 												<cfif attributes.object.hasProperty('remoteID') and attributes.hibachiScope.setting('globalRemoteIDShowFlag')>
-													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 												</cfif>
 												<cfif len( attributes.object.getShortReferenceID() )>
 													<hb:HibachiFieldDisplay title="#attributes.hibachiScope.rbkey('entity.define.shortreferenceid')#" value="#attributes.object.getshortReferenceID()#" edit="false" displayType="dl">
