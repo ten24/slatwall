@@ -48,7 +48,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="price" ormtype="big_decimal";
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
-	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="quantity" hb_populateEnabled="public" ormtype="integer" default="0";
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
@@ -483,7 +483,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public void function setQuantity(required numeric quantity){
-		if (isNull(variables.quantity) || arguments.quantity != variables.quantity){
+		if (arguments.quantity != variables.quantity){
  			variables.quantityHasChanged = true; //a dirty check flag for validation.
  		}		
 		variables.quantity = arguments.quantity;
