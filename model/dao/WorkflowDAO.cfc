@@ -70,6 +70,16 @@ Notes:
 		<cfreturn ORMExecuteQuery('FROM SlatwallWorkflowTrigger where triggerEvent = :triggerEvent',{triggerEvent=arguments.eventName})/>
 	</cffunction>
 
+	<cffunction name="updateOverdueWorkflows" access="public" returntype="any"> 
+		<cfreturn ORMExecuteQuery(' UPDATE SlatwallWorkflowTrigger t 
+									SET runningFlag=false 
+									WHERE nextRunDateTime <= :outdatedNextRunDateTime
+								  ',{outdatedNextRunDateTime=dateAdd('n',-90,now())}) >
+
+					> 
+
+	</cffunction> 
+
 	<cffunction name="getDueWorkflows" access="public" returntype="array">
 		<cfreturn ORMExecuteQuery('FROM
 										SlatwallWorkflowTrigger

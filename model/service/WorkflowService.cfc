@@ -145,6 +145,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runAllWorkflowsByScheduleTrigger() {
+		getWorkflowDAO().updateOverdueWorkflows();
+        getHibachiDAO().flushORMSession();
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		for(var workflowTrigger in workflowTriggers) {
 			runWorkflowsByScheduleTrigger(workflowTrigger);
