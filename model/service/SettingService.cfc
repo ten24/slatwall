@@ -53,7 +53,7 @@ globalEncryptionKeySize
 component extends="HibachiService" output="false" accessors="true" {
 
 	property name="settingDAO" type="any";
-	
+
 	property name="hibachiEventService" type="any";
 	property name="contentService" type="any";
 	property name="currencyService" type="any";
@@ -113,6 +113,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public struct function getAllSettingMetaData() {
+		
 		var allSettingMetaData = {
 
 			// Account
@@ -128,10 +129,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
 			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
 			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
-			
+
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
-			
+
 			// Address
 			addressDisplayTemplate = {fieldType="select"},
 			addressHTMLTitleString = {fieldType="text", defaultValue="${name}"},
@@ -157,17 +158,25 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 
 			// Email
-			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailFromAddress = {fieldType="text", defaultValue=""},
+			emailToAddress = {fieldType="text", defaultValue=""},
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
-			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
+			emailFailToAddress = {fieldType="text", defaultValue=""},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
+			emailReplyToAddress = {fieldType="text", defaultValue=""},
+			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
+			emailSMTPServer = {fieldType="text", defaultValue=""},
+			emailSMTPPort = {fieldType="text", defaultValue=25},
+			emailSMTPUseSSL = {fieldType="yesno", defaultValue="false"},
+			emailSMTPUseTLS = {fieldType="yesno", defaultValue="false"},
+			emailSMTPUsername = {fieldType="text"},
+			emailSMTPPassword = {fieldType="password"},
+			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
+
 
 			// Fulfillment Method
 			fulfillmentMethodShippingOptionSortType = {fieldType="select", defaultValue="sortOrder"},
@@ -179,48 +188,53 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
 
 			// Global
-			globalUsageStats = {fieldType="yesno",defaultValue=0},
-			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
-			globalCurrencyType = {fieldType="select",defaultValue="Local"},
-			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
+			globalAdminDomainNames = {fieldtype="text"},
+			globalAllowedOutsideRedirectSites = {fieldtype="text"},
+			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
+			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
 			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
+			globalCopyCartToNewSessionOnLogout = {fieldtype="yesno", defaultValue=0},
+			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
+			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
+			globalCurrencyType = {fieldType="select",defaultValue="Local"},
+			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
 			globalEncryptionKeyLocation = {fieldType="text"},
 			globalEncryptionKeySize = {fieldType="select",defaultValue="128"},
 			globalEncryptionService = {fieldType="select",defaultValue="internal"},
-            globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
+			globalExtendedSessionAutoLogoutInDays = {fieldtype="text", defaultValue=5, validate={dataType="numeric", required=false}},
+			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
+			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
+      		globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
 			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
+			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
 			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
+			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
+			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalUsageStats = {fieldType="yesno",defaultValue=0},
+			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
+			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
-			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
-			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
-			globalAllowedOutsideRedirectSites = {fieldtype="text"},
-			globalFileTypeWhiteList = {fieldtype="text", defaultValue="pdf,zip,xml,txt,csv,xls,doc,jpeg,jpg,png,gif"},
-			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="image/jpeg,image/png,image/gif,text/csv,application/pdf,application/rss+xml,application/msword,application/zip,text/plain,application/vnd.ms-excel,"},
-			globalAdminDomainNames = {fieldtype="text"},
-			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
-			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
-			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
-			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
-			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
-			
+
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -261,7 +275,7 @@ component extends="HibachiService" output="false" accessors="true" {
             siteRecaptchaSiteKey = {fieldType="text"},
 			siteRecaptchaSecretKey = {fieldType="text"},
 			siteRecaptchaProtectedEvents = {fieldType="multiselect", defaultValue=""},
-			
+
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
@@ -295,6 +309,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
 			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
 			skuOrderMaximumQuantity = {fieldType="text", defaultValue=1000},
+			skuMinimumPercentageAmountRecievedRequiredToPlaceOrder = {fieldType="text", formatType="percentage"},
 			skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
@@ -339,15 +354,39 @@ component extends="HibachiService" output="false" accessors="true" {
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
-
+		
 		var integrationSettingMetaData = getIntegrationService().getAllSettingMetaData();
 
 		structAppend(allSettingMetaData, integrationSettingMetaData, false);
 
+		//need to persist globalClientSecret
+		var globalClientSecretSetting = this.getSettingBySettingName('globalClientSecret');
+		if(isNull(globalClientSecretSetting)){
+			getDao('settingDao').insertSetting('globalClientSecret',allSettingMetaData.globalClientSecret.defaultValue);
+		}
+
 		return allSettingMetaData;
 	}
 
+	private string function extractPackageNameBySettingName (required string settingName){
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
+		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
+		var packageName = Mid(substring,12,len(substring));
+		return packageName;
+	}
+
 	public array function getSettingOptions(required string settingName, any settingObject) {
+		//check if setting is related to an integration
+		if(
+			left(arguments.settingName,11) == 'integration'
+		){
+			var packageName = extractPackageNameBySettingName(arguments.settingName);
+			var integration = getService('integrationService').getIntegrationByIntegrationPackage(trim(packageName));
+			if(!isNull(integration) && structkeyExists(integration.getIntegrationCFC(),"getSettingOptions")){
+				return integration.getIntegrationCFC().getSettingOptions(arguments.settingName);
+			}
+		}
+
 		switch(arguments.settingName) {
 			case "contentTemplateFile":
 				if(structKeyExists(arguments, "settingObject")) {
@@ -474,7 +513,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingOptionsSmartList(required string settingName) {
-			return getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");	
+			return getServiceByEntityName( getSettingMetaData(arguments.settingName).listingMultiselectEntityName ).invokeMethod("get#getSettingMetaData(arguments.settingName).listingMultiselectEntityName#SmartList");
 	}
 
 	public array function getCustomIntegrationOptions() {
@@ -602,8 +641,10 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingMetaData(required string settingName) {
+		
 		var allSettingMetaData = getHibachiCacheService().getOrCacheFunctionValue("settingService_allSettingMetaData", this, "getAllSettingMetaData");
 
+		
 		if(structKeyExists(allSettingMetaData, arguments.settingName)) {
 			return allSettingMetaData[ arguments.settingName ];
 		}
@@ -826,11 +867,12 @@ component extends="HibachiService" output="false" accessors="true" {
 							var thisValue = listGetAt(settingDetails.settingValue, i);
 							settingDetails.settingValueFormatted = listAppend(settingDetails.settingValueFormatted, " " & getServiceByEntityName(settingMetaData.listingMultiselectServiceName).invokeMethod(settingMetaData.listingMultiselectServiceMethod));
 						}
-						
+
 					}
 				// Select
 				} else if (settingMetaData.fieldType == "select") {
 					var options = getSettingOptions(arguments.settingName);
+
 
 					if(!arrayLen(options)){
 						settingDetails.settingValueFormatted = settingDetails.settingValue;
@@ -932,7 +974,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			
+			getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress());
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
@@ -953,7 +995,7 @@ component extends="HibachiService" output="false" accessors="true" {
 					accountDisplayTemplate
 					addressDisplayTemplate", 
 					arguments.entity.getSettingName()
-				) || 
+				) ||
 				left(arguments.entity.getSettingName(),7) == 'content'
 			){
 				for(var site in getSiteService().getSiteSmartList().getRecords()){

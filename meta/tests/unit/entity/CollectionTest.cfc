@@ -3773,6 +3773,118 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		addToDebug(HQL);
 	}
+	
+	/**
+	* @test
+	*/
+	public void function collectionAggregateTest(){
+		var collectionData = {
+			collectionID="",
+			collectionObject="Product",
+			collectionConfig='{
+			    "baseEntityAlias": "_product",
+			    "baseEntityName": "Product",
+			    "columns": [
+			        {
+			            "aggregate": {
+			                "aggregateAlias": "averageRating",
+			                "aggregateFunction": "AVG"
+			            },
+			            "propertyIdentifier": "_product.productReviews.rating"
+			        },
+			        {
+			            "isDeletable": false,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": false,
+			            "ormtype": "id",
+			            "propertyIdentifier": "_product.productID",
+			            "title": "Product ID"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "boolean",
+			            "propertyIdentifier": "_product.activeFlag",
+			            "title": "Active"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "string",
+			            "propertyIdentifier": "_product.urlTitle",
+			            "title": "URL Title"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "string",
+			            "propertyIdentifier": "_product.productName",
+			            "title": "Product Name"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "string",
+			            "propertyIdentifier": "_product.productCode",
+			            "title": "Product Code"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "string",
+			            "propertyIdentifier": "_product.productDescription",
+			            "title": "Product Description"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "boolean",
+			            "propertyIdentifier": "_product.publishedFlag",
+			            "title": "Published"
+			        },
+			        {
+			            "isDeletable": true,
+			            "isExportable": true,
+			            "isSearchable": true,
+			            "isVisible": true,
+			            "ormtype": "integer",
+			            "propertyIdentifier": "_product.sortOrder",
+			            "title": "Sort Order"
+			        }
+			        
+			    ],
+			    "groupBy": [
+			        "_product",
+			        "_product_productReviews"
+			    ],
+			    "orderBy": [
+			        {
+			            "direction": "desc",
+			            "aggregate": {
+			                "aggregateAlias": "averageRating",
+			                "aggregateFunction": "AVG"
+			            },
+			            "propertyIdentifier": "_product.productReviews.rating"
+			        }
+			    ]
+			}'
+		};
+		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
+		collectionEntity.getPageRecords();
+	}
 
 	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user
