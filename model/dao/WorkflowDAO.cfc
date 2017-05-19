@@ -76,8 +76,6 @@ Notes:
 									WHERE nextRunDateTime <= :outdatedNextRunDateTime
 								  ',{outdatedNextRunDateTime=dateAdd('n',-90,now())}) >
 
-					> 
-
 	</cffunction> 
 
 	<cffunction name="getDueWorkflows" access="public" returntype="array">
