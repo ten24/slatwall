@@ -287,12 +287,8 @@ Notes:
 
 			//iterate over overrides and merge them
 			for (var match in matchArray) {
-				try {
-					var results = mergeProperties("#match#");
-					filewrite(path & '/#match#', results);
-				} catch (any e){
-					writeLog(file = "Slatwall", text = "Error reading from the file system while updating properties: #e#!!!!!");
-				}
+				var results = mergeProperties("#match#");
+				filewrite(path & '/#match#', results);
 			}
 			return true;
 		}

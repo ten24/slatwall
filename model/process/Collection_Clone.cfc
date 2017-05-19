@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,30 +45,38 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="collection";
 
-<cfparam name="rc.promotionPeriod" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+	// New Properties
+	property name="newCollection" type="any";
 
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.promotionPeriod#" edit="#rc.edit#" sRedirectAction="admin:entity.editpromotionperiod">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.promotionPeriod#">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="promotionPeriodName" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumAccountUseCount" edit="#rc.edit#" />
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
-</cfoutput>
+	// Data Properties
+	property name="collectionName" hb_rbKey="entity.collection.collectionName";
+	property name="collectionCode" hb_rbKey="entity.collection.collectionCode";
+
+	public function getCollectionName() {
+		if(!structKeyExists(variables, "collectionName")) {
+			if(len(getCollection().getCollectionName())) {
+				variables.collectionName = getCollection().getCollectionName() & ' ( copy )';
+			} else {
+				variables.collectionName = '';
+			}
+		}
+		return variables.collectionName;
+	}
+	public function getCollectionCode() {
+		if(!structKeyExists(variables, "collectionCode")) {
+			if(len(getCollection().getCollectionCode())) {
+				variables.collectionCode = getCollection().getCollectionCode() & '-copy';
+			} else {
+				variables.collectionCode = '';
+			}
+		}
+		return variables.collectionCode;
+	}
+
+}

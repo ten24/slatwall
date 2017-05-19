@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,8 +45,9 @@
 
 Notes:
 
-*/
-component extends="Slatwall.org.Hibachi.Hibachi"{
+--->
+<cfcomponent output="false" extends="Slatwall.org.Hibachi.Hibachi">
+	<cfscript>
 
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
@@ -100,7 +101,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 
 
 	function generateRenderedContent() {
-
+		
 		var site = arguments.slatwallScope.getSite();
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
@@ -193,7 +194,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 				if(!isNull(contentTemplateFile)){
 
 					contentPath = templatePath & contentTemplateFile;
-
+					
 
 					arguments.slatwallScope.setContent(entityTemplateContent);
 				}else{
@@ -223,15 +224,47 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
 		}
-		var $ = getApplicationScope(argumentCollection=arguments);
-		request.context.fw = arguments.slatwallScope.getApplicationValue("application");
-		savecontent variable="local.templateData"{
-			include "#contentPath#";
-		}
+		
+		arguments.contentPath = contentPath;
+		
+		var templateData = buildRenderedContent(argumentCollection=arguments);
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
+		
 		writeOutput(templateBody);
 		abort;
+	}
+	
+	</cfscript>
+	
+	<cffunction name="buildRenderedContent">
+		<cfset request.context.fw = arguments.slatwallScope.getApplicationValue("application")/>
+		<cfset var $ = getApplicationScope(argumentCollection=arguments)/>
+		
+		<!---add cfimport of hibachitags so that we can take advantage of HibachiCache--->
+		<cfimport prefix="hb" taglib="/Slatwall/org/Hibachi/HibachiTags"/>
+		<cfsavecontent variable="local.templateData" >
+			<cfoutput>
+				<hb:HibachiCache>
+					<cfinclude template="#arguments.contentPath#"/>
+				</hb:HibachiCache>
+			</cfoutput>
+		</cfsavecontent>
+		<cfreturn local.templateData/>
+	</cffunction>
+	
+	<cfscript>
+	   	
+	   
+	
+	function getHibachiTagPathByContentPath(required string contentPath){
+		var directoryDepth = listLen(arguments.contentPath,'/');
+		var hibachiTagPath = "org/Hibachi/HibachiTags";
+		var depthString = "";
+		for(var i=1; i < directoryDepth;i++){
+			depthString &= "../";
+		}
+		return depthString & hibachiTagPath;
 	}
 
 	function checkForRewrite(required any slatwallScope, required any site){
@@ -448,4 +481,5 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 
 
-}
+</cfscript>
+</cfcomponent>

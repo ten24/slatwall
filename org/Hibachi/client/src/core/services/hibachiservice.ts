@@ -160,7 +160,7 @@ class HibachiService{
 		var hibachiService = this;
 		angular.forEach(collectionData, (collectionItemData, key)=>{
 			//create base Entity
-			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace(this.appConfig.applicationKey,'')]();
 			//populate entity with data based on the collectionConfig
 			angular.forEach(collectionConfig.columns, (column, key)=>{
 				//get objects base properties

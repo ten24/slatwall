@@ -49,24 +49,40 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.promotionPeriod" type="any" />
+<cfparam name="rc.account" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.promotionPeriod#" edit="#rc.edit#" sRedirectAction="admin:entity.editpromotionperiod">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.promotionPeriod#">
+	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
 		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="promotionPeriodName" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumAccountUseCount" edit="#rc.edit#" />
+				<!--- General Details --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="lastName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="company" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
+				
+				<!--- Authentication --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
+				<hb:HibachiDisplayToggle selector="input[name='createAuthenticationFlag']" loadVisable="#rc.processObject.getCreateAuthenticationFlag()#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
+				</hb:HibachiDisplayToggle>
+
+				<!--- Clone related entities flags --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="cloneAccountAddressesFlag" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="cloneAccountEmailAddressesFlag" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="cloneAccountPhoneNumbersFlag" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="clonePriceGroupsFlag" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="clonePromotionCodesFlag" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="clonePermissionGroupsFlag" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="cloneCustomAttributesFlag" edit="#rc.edit#" />
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

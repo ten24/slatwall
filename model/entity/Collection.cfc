@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" hb_processContexts="clone" {
 
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -82,7 +82,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="aggregateFilters" type="array" persistent="false";
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
-	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/overried the default collectionConfig order bys";
+	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/override the default collectionConfig order bys";
 
 	property name="pageRecordsStart" persistent="false" type="numeric" hint="This represents the first record to display and it is used in paging.";
 	property name="pageRecordsShow" persistent="false" type="numeric" hint="This is the total number of entities to display";
@@ -91,7 +91,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="nonPersistentColumn" type="boolean" persistent="false";
 	property name="processContext" type="string" persistent="false";
-	property name="processObjects" type="array" persistent="false";
+	property name="processObjectArray" type="array" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
@@ -129,7 +129,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 		variables.aggregateFilters = [];
 		variables.collectionConfig = '{}';
-		variables.processObjects = [];
+		variables.processObjectArray = [];
 		variables.hasDisplayAggregate = false;
 		variables.hasManyRelationFilter = false;
 		variables.filterAliasMaps = {};
@@ -526,6 +526,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		arrayAppend(collectionConfig.orderBy,orderBy);
 		this.setCollectionConfigStruct(collectionConfig);
+	}
+
+	public void function removeOrderBy(string orderByString){
+		var propertyIdentifierArray = ListToArray(orderByString, "|");
+		var calculatedPropertyIdentifier = propertyIdentifierArray[1];
+		var orderByArray = getCollectionConfigStruct().orderBy;
+		var i = 1;
+
+		for (var arrayElement in orderByArray){
+		 var propertyIdentifier = arrayElement.propertyIdentifier;
+		 var aliasedPropertyIdentifier = convertPropertyIdentifierToAlias(propertyIdentifier);
+			if(aliasedPropertyIdentifier == calculatedPropertyIdentifier){
+			 arrayDeleteAt(orderByArray, i);
+			 getCollectionConfigStruct().orderBy = orderByArray;
+			 break;
+			}
+		i++;
+		}
 	}
 
 	//returns an array of name/value structs for
@@ -1254,12 +1272,67 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public string function getJoinHQL(){
 		var joinHQL = '';
 		if(structKeyExists(getCollectionConfigStruct(),'joins')){
+            var allAliases = getAllAliases();
 			for(var join in getCollectionConfigStruct()["joins"]){
-				joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
-			}	
+                if(listFind(allAliases, join.alias)){
+                    joinHQL &= addJoinHQL(getCollectionConfigStruct().baseEntityAlias,join);
+                }
+			}
 		}
 		return joinHQL;
 	}
+
+    public any function getAllAliases(){
+        var aliases = '';
+
+        var collectionConfigStruct = getCollectionConfigStruct();
+        aliases = listAppend(aliases, collectionConfigStruct.baseEntityAlias);
+
+        if(structKeyExists(collectionConfigStruct, 'columns') && arraylen(collectionConfigStruct.columns)){
+            for(var i = 1; i <= arraylen(collectionConfigStruct.columns); i++){
+                aliases = listAppend(aliases, listFirst(collectionConfigStruct.columns[i].propertyIdentifier, '.'));
+            }
+        }
+
+        if(structKeyExists(collectionConfigStruct, 'orderBy') && arraylen(collectionConfigStruct.orderBy)){
+            for(var i = 1; i <= arraylen(collectionConfigStruct.orderBy); i++){
+                aliases = listAppend(aliases, listFirst(collectionConfigStruct.orderBy[i].propertyIdentifier, '.'));
+            }
+        }
+
+        if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct.filterGroups)){
+            aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct.filterGroups));
+        }
+
+        if(structKeyExists(collectionConfigStruct,'joins')) {
+            var joinAliasList = [];
+            for(var i = arraylen(collectionConfigStruct.joins); i >= 1; i--){
+                for(var o = 1; o <= arraylen(joinAliasList); o++){
+                    if(refindNoCase("^#collectionConfigStruct.joins[i].alias#", joinAliasList[o])){
+                        aliases = listAppend(aliases, collectionConfigStruct.joins[i].alias);
+                        break;
+                    }
+                }
+                arrayAppend(joinAliasList, collectionConfigStruct.joins[i].alias);
+            }
+        }
+
+        return listremoveduplicates(aliases);
+    }
+
+
+
+    public any function getFilterAliases(filterGroup){
+        var aliasList = '';
+        for(var fgIndex = 1; fgIndex <= arrayLen(filterGroup); fgIndex++){
+            if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
+                aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
+            }else{
+                aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+            }
+        }
+        return aliasList;
+    }
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false, excludeGroupBy=false){
 		variables.HQLParams = {};
@@ -1480,7 +1553,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
-							variables.processObjects = [];
+							variables.processObjectArray = [];
 							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL = 'SELECT #entityAlias# ' & getHQL(excludeGroupBy=true) & ' GROUP BY #entityAlias#';
 							HQLParams = getHQLParams();
@@ -1506,7 +1579,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 								if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
 									var processObject = entity.getProcessObject(this.getProcessContext());
-									arrayAppend(variables.processObjects,processObject);
+									arrayAppend(variables.processObjectArray,processObject);
 								}
 							}
 						}else{
@@ -1792,7 +1865,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var toValue = CreateDateTime(year(currentdatetime), 12, 31, 23, 59, 59);
 							break;
 					}
-
+				//regular date format mm/dd/yyyy
+				}else if(listLen(arguments.filter.value,'-') > 1 && listLen(arguments.filter.value,'/') > 1){
+					//convert unix timestamp
+					
+					var tempRangeArr = listToArray(arguments.filter.value, "-");
+					var fromTemp = listToArray(tempRangeArr[1], "/");
+					var toTemp   = listToArray(tempRangeArr[2], "/");
+					 
+					var tempDateFrom = CreateDate(fromTemp[3], fromTemp[1], fromTemp[2]);
+					var tempDateTo   = CreateDate(toTemp[3], toTemp[1], toTemp[2]);
+					
+					var fromValue = dateFormat(tempDateFrom,"yyyy-mm-dd");
+					var toValue = dateFormat(tempDateTo,"yyyy-mm-dd");
+				//Epoch date format	
 				}else if(listLen(arguments.filter.value,'-') > 1){
 					//convert unix timestamp
 					var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
