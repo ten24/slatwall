@@ -390,8 +390,10 @@ class SWOrderItem{
 					$log.debug("Deleting");
 					$log.debug(scope.orderItem);
 					var deletePromise = scope.orderItem.$$delete();
-					deletePromise.then(function(){
-						delete scope.orderItem;
+					deletePromise.then(function(result){
+ 						if(!result.errors || !Object.keys(result.errors).length){
+ 							delete scope.orderItem;
+ 						}
                         scope.paginator.getCollection();
 					});
 

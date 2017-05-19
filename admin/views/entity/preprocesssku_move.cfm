@@ -46,23 +46,39 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.content" type="any" />
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable>
-		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentTemplateFile" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds" settingObject="#rc.content#" />
-	</swa:SlatwallSettingTable>
+	<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#" sRedirectAction="admin:entity.editsku">
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		</hb:HibachiEntityActionBar>
+		
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<div class="alert alert-info" role="alert">	
+						<span data-sw-rbkey="'entity.sku.process.move.warning'"></span>
+					</div>
+					<sw-typeahead-input-field data-field-name="productID"
+											  data-entity-name="Product"
+											  data-validate-required="true"
+											  data-properties-to-load="productID,productName,productCode"
+											  data-placeholder-rb-key="entity.Sku.process.move.placeholder"
+											  data-property-to-show="productName"
+											  data-property-to-save="productID">
+						<sw-typeahead-search-line-item data-property-identifier="productName"></sw-typeahead-search-line-item>
+					</sw-typeahead-input-field>
+
+							
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
+			
+	</hb:HibachiEntityProcessForm>
+	
 </cfoutput>

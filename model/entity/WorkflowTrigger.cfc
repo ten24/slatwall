@@ -84,7 +84,9 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	}
 	
 	public any function getWorkflowTriggerException(){
-		return variables.workflowTriggerException;
+		if(structKeyExists(variables,"workflowTriggerException")){
+			return variables.workflowTriggerException;
+		}
 	}
 	
 	
