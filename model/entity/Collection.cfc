@@ -2472,6 +2472,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function deserializeCollectionConfig(){
 		return deserializeJSON(getCollectionConfig());
 	}
+	
+	public boolean function isFilterApplied(required string filter, required string value){
+		return structKeyExists(url,"F:#arguments.filter#") && listFindNoCase(url["F:#arguments.filter#"],arguments.value,',');
+	}
+
+	public boolean function isRangeApplied(required string range, required string value){
+		return structKeyExists(url,"R:#arguments.range#") and url["R:#arguments.range#"] eq arguments.value;
+		
+	}
 
 
 
