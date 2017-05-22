@@ -50099,6 +50099,8 @@
 	        this.listingService = listingService;
 	        this.expanded = true;
 	        this.TOGGLE_ACTION = "toggle";
+	        //Misc
+	        this.accountNames = {};
 	        /**
 	         * Returns the comments for the selectedFulfillmentBatchItem
 	         */
@@ -50108,9 +50110,26 @@
 	            _this.commentsCollection.addDisplayProperty("createdByAccountID");
 	            _this.commentsCollection.addDisplayProperty("comment");
 	            _this.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
-	            return _this.commentsCollection.getEntity().then(function (comments) {
-	                console.log("Comments", comments);
-	                return comments['pageRecords'];
+	            _this.commentsCollection.getEntity().then(function (comments) {
+	                _this.commentsCollection = comments['pageRecords'];
+	                for (var account in _this.commentsCollection) {
+	                    if (angular.isDefined(_this.commentsCollection[account]['createdByAccountID'])) {
+	                        //sets the account name to the account names object indexed by the account id.
+	                        _this.getAccountNameByAccountID(_this.commentsCollection[account]['createdByAccountID']);
+	                    }
+	                }
+	            });
+	        };
+	        /**
+	         * Returns account information given an accountID
+	         */
+	        this.getAccountNameByAccountID = function (accountID) {
+	            var accountCollection = _this.collectionConfigService.newCollectionConfig("Account");
+	            accountCollection.addFilter("accountID", accountID, "=");
+	            accountCollection.getEntity().then(function (account) {
+	                if (account['pageRecords'].length) {
+	                    _this.accountNames[accountID] = account['pageRecords'][0]['firstName'] + ' ' + account['pageRecords'][0]['lastName'];
+	                }
 	            });
 	        };
 	        /**
@@ -50137,12 +50156,30 @@
 	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
 	            _this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.fulfillmentBatchId, "=");
 	        };
+	        /**
+	        * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
+	        */
+	        this.getOrderFulfillmentItemCollection = function (orderFulfillmentID) {
+	            _this.orderFulfillmentItemsCollection = _this.collectionConfigService.newCollectionConfig("OrderItem");
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuCode");
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.product.productName");
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuName");
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.imagePath", "Path", { persistent: false });
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.imageFileName", "File Name", { persistent: false });
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("quantity");
+	            _this.orderFulfillmentItemsCollection.addDisplayProperty("orderItemID");
+	            _this.orderFulfillmentItemsCollection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
+	            _this.orderFulfillmentItemsCollection.getEntity().then(function (orderItems) {
+	                console.log("Retrieved OrderItems", orderItems['pageRecords']);
+	                _this.orderFulfillmentItemsCollection = orderItems['pageRecords'];
+	            });
+	        };
 	        //Create the fulfillmentBatchItemCollection
 	        this.createLgOrderFulfillmentBatchItemCollection();
 	        this.createSmOrderFulfillmentBatchItemCollection();
 	        //get the listingDisplay store and listen for changes to the listing display state.
 	        listingService.listingDisplayStore.store$.subscribe(function (update) {
-	            console.log("State => ", update);
 	            if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
 	                //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
 	                //Outer table, will need to toggle and set the floating cards to this data.
@@ -50166,6 +50203,8 @@
 	                                        //Get a new collection using the orderFulfillment.
 	                                        _this.currentRecordOrderDetail = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
 	                                        _this.currentRecordOrderDetail.addFilter("orderFulfillmentID", currentRecord['orderFulfillment_orderFulfillmentID'], "=");
+	                                        //Get the orderItems for this fulfillment
+	                                        _this.getOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
 	                                        //For the order
 	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.orderOpenDateTime", "Open Date"); //date placed
 	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.orderCloseDateTime", "Close Date");
@@ -50183,7 +50222,6 @@
 	                                        _this.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
 	                                        _this.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
 	                                        _this.currentRecordOrderDetail.getEntity().then(function (entityResults) {
-	                                            console.log("Entity Result => ", entityResults['pageRecords'][0]);
 	                                            if (entityResults['pageRecords'].length) {
 	                                                _this.currentRecordOrderDetail = entityResults['pageRecords'][0];
 	                                                _this.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
@@ -50208,10 +50246,10 @@
 	                        if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
 	                            if (_this.expanded == false) {
 	                                _this.expanded = !_this.expanded;
+	                                //set the outer selection to this selection.
+	                                _this.currentSelectedFulfillmentBatchItemID = "";
 	                            }
 	                        }
-	                        //set the outer selection to this selection.
-	                        _this.currentSelectedFulfillmentBatchItemID = "";
 	                    }
 	                }
 	            }

@@ -94,7 +94,7 @@ Notes:
 					<sw-card-list-item title="Fulfillments" value="#arrayLen(rc.fulfillmentBatch.getFulfillmentBatchItems())#" strong="true"></sw-card-list-item>
 					
 					<!--- Number of fulfillments fulfilled --->
-					<sw-card-list-item title="Completed" value="1"></sw-card-list-item>
+					<sw-card-list-item title="Completed" value="2"></sw-card-list-item>
 					
 					<!--- Progress Bar --->
 					<sw-card-progress-bar value-min="0" value-max="100" value-now="50"></sw-card-progress-bar>
