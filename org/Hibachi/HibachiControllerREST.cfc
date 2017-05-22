@@ -103,7 +103,7 @@ component output="false" accessors="true" extends="HibachiController" {
     	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
     	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
     		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
-    	}else{
+    	}else if (hasService('attributeService')){
     		var attributeMetaData = getService('attributeService').getAttributeModel();
     		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
     		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
@@ -642,6 +642,16 @@ component output="false" accessors="true" extends="HibachiController" {
         */
         param name="arguments.rc.propertyIdentifiers" default="";
         
+		if(structKeyExists(arguments.rc, "p:show")){
+			var globalAPIPageShowLimit = getService("SettingService").getSettingValue("globalAPIPageShowLimit");
+			if(arguments.rc["p:show"] > globalAPIPageShowLimit){
+				arguments.rc["p:show"] = globalAPIPageShowLimit; 
+			}	
+		}
+        
+		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
+ 			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
+ 		} 
         
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
@@ -662,7 +672,7 @@ component output="false" accessors="true" extends="HibachiController" {
                 //figure out if we have a collection or a basic entity
                 if(isNull(collectionEntity)){
                     //should only be able to add selects (&propertyIdentifier=)
-                    var result = getService('hibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
+                    var result = getService('HibachiCollectionService').getAPIResponseForBasicEntityWithID( arguments.rc.entityName,
 																										    arguments.rc.entityID,
 																										    arguments.rc );
                     structAppend(arguments.rc.apiResponse.content,result);

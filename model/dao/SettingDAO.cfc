@@ -50,6 +50,24 @@ Notes:
 	
 	<cfproperty name="hibachiCacheService" type="any" />
 	
+	<cffunction name="insertSetting" output="false" returntype="void">
+		<cfargument name="settingName" type="string" required="true" />
+		<cfargument name="settingValue" />
+		
+		<cfset var rs = "" />
+		<cfset var settingID = lcase(replace(createUUID(),"-","","all"))/>
+		<cfquery name="rs">
+			INSERT INTO SwSetting (settingID,settingName,settingValue) 
+			VALUES (
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#settingID#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#">,
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingValue#">
+			)
+		</cfquery>
+		<cfset getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress())/>
+		
+	</cffunction>
+	
 	<cffunction name="getSettingRecordExistsFlag" output="false" returntype="boolean">
 		<cfargument name="settingName" type="string" required="true" />
 		<cfargument name="settingValue" />
