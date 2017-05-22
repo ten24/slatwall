@@ -39,6 +39,24 @@ Notes:
 
 component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="true" output="false" {
 	
+	public any function processAccountCollection_Create(required any accountCollection, required any processObject){
+		arguments.accountCollection = this.saveAccountCollection(arguments.processObject.getAccountCollection());	
+		return arguments.accountCollection; 
+	}
+
+    public any function processCollection_Clone(required any collection, required any processObject, struct data={}) {
+
+        var newCollection = this.newCollection();
+
+        newCollection.setCollectionName(arguments.processObject.getCollectionName());
+        newCollection.setCollectionCode(arguments.processObject.getCollectionCode());
+        newCollection.setCollectionDescription(arguments.collection.getCollectionDescription());
+        newCollection.setCollectionObject(arguments.collection.getCollectionObject());
+        newCollection.setCollectionConfig(arguments.collection.getCollectionConfig());
 	
+        newCollection = this.saveCollection(newCollection);
+
+        return newCollection;
+    }
 	
 }
