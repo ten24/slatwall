@@ -185,7 +185,6 @@ class SWFulfillmentBatchDetailController  {
         this.orderFulfillmentItemsCollection.addDisplayProperty("orderItemID");
         this.orderFulfillmentItemsCollection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
         this.orderFulfillmentItemsCollection.getEntity().then((orderItems)=>{
-            console.log("Retrieved OrderItems", orderItems['pageRecords']);
             this.orderFulfillmentItemsCollection = orderItems['pageRecords'];
         });
      }

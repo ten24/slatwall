@@ -139,10 +139,10 @@
                 
             </ul>
             <!--- Handle displaying Order Information. --->
-            <div class="s-item-detail">
+            <div class="s-item-detail" style="background-color:#F7F7F7">
                 
                 <!--- Item Header --->
-                <div class="s-item-detail-header">
+                <div class="s-item-detail-header" style="background-color:white;">
                     <div class="col-xs-4">
                         <div class="s-item-detail-header-block">
                             <h4>Basic</h4>
@@ -207,8 +207,7 @@
                 <!--- Fulfillment Items Display --->
                 <div class="s-detail-body s-arrow s-remove-manual-fulfill"><!--- ***Removing s-remove-manual-fulfill will show fulfill all and activate inputs*** --->
                     <div class="s-content-block-wrapper">
-                    	
-                        <div class="s-header">
+                        <div class="s-header"  style="background-color:white">
                             <h3>Fulfillment Items <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
                         </div>
                         <div class="s-body">
@@ -254,7 +253,227 @@
                             </div>
                         </div>
                     </div>
-                </div>  <!-- E -->
+                </div>  
+                <!-- E -->
+                
+                <!--- Start Print Label Options --->
+                <div class="s-detail-body s-arrow">
+                    <div class="s-content-block-wrapper"  style="background-color:white">
+                        <div class="s-header">
+                            <h3>Shipping Options</h3>
+                            <a href="#" class="s-toggle"><!--- populated with css ---></a>
+                        </div>
+                        <div class="s-body">
+                            
+                            <div class="s-content-wrapper">
+                                
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label class="s-strong" style="margin-top: 4px;">Print Labels Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="row s-ladel-options">
+                                            <div class="col-xs-4 radio">
+                                                <input id="GenerateShippingLabel" type="radio" name="printOption" checked>
+                                                <label for="GenerateShippingLabel" title="helper text should go here to describe item">Generate Shipping Label(s)</label>
+                                            </div>
+                                            <div class="col-xs-4 radio">
+                                                <input id="ManualShipment" type="radio" name="printOption">
+                                                <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
+                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $('.s-ladel-options input[type=radio]').change(function(){
+                                             if($('#GenerateShippingLabel').is(':checked')) { 
+                                                 $('.s-add-box-wrapper').parent().show();
+                                                 $('.s-tracking-code').hide();
+                                            }else{
+                                                $('.s-add-box-wrapper').parent().hide();
+                                                $('.s-tracking-code').show();
+                                            };
+                                            
+                                        });
+                                        
+                                    </script>
+                                    <div class="col-xs-12">
+                                        <div class="s-add-box-wrapper">
+                                                    
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Boxes</th>
+                                                        <th>Type</th>
+                                                        <th>Height</th>
+                                                        <th>Width</th>
+                                                        <th>Depth</th>
+                                                        <th>Weight</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>
+                                                            <select class="form-control" name="">
+                                                                <option value="">Custom</option>
+                                                                <option value="">10x12x4</option>
+                                                                <option value="">10x10x10</option>
+                                                                <option value="">45x10x34</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="667" placeholder="H">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="34" placeholder="W">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="604" placeholder="D">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="456" placeholder="Weight">
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>
+                                                            <select class="form-control" name="">
+                                                                <option value="">Custom</option>
+                                                                <option value="">10x12x4</option>
+                                                                <option value="">10x10x10</option>
+                                                                <option value="" selected>45x10x34</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="45" placeholder="H">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="W">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="34" placeholder="D">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="167" placeholder="Weight">
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>
+                                                            <select class="form-control" name="">
+                                                                <option value="">Custom</option>
+                                                                <option value="">10x12x4</option>
+                                                                <option value="" selected>10x10x10</option>
+                                                                <option value="">45x10x34</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="H">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="W">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="D">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="30" placeholder="Weight">
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="s-new-box">
+                                                        <td>-</td>
+                                                        <td>
+                                                            <select class="form-control" name="">
+                                                                <option value="" disabled selected>-Select Size-</option>
+                                                                <option value="">Custom</option>
+                                                                <option value="">10x12x4</option>
+                                                                <option value="">10x10x10</option>
+                                                                <option value="">45x10x34</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="H">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="W">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="D">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="Weight">
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                <i class="fa fa-remove"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label class="s-strong" style="margin-top: 4px;">Extra Print Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="row">
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions1" type="checkbox" name="ExtraPrintOptions" checked>
+                                                <label for="ExtraPrintOptions1" title="helper text should go here to describe item"> Standard Packing Slip</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions2" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions2" title="helper text should go here to describe item"> Birthday Coupon</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions3" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions3" title="helper text should go here to describe item"> 15% Off Next Purchase</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions4" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions4" title="helper text should go here to describe item"> April Savings</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions5" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions5" title="helper text should go here to describe item"> Christmas Savings</label>
+                                            </div>
+                                            <div class="col-xs-4 s-checkbox">
+                                                <input id="ExtraPrintOptions6" type="checkbox" name="ExtraPrintOptions">
+                                                <label for="ExtraPrintOptions6" title="helper text should go here to describe item"> Easter Savings</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--- Start Custom Attributes --->
+                
+                
             </div>
 		</div>
 	</div>

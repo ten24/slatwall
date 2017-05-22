@@ -50171,7 +50171,6 @@
 	            _this.orderFulfillmentItemsCollection.addDisplayProperty("orderItemID");
 	            _this.orderFulfillmentItemsCollection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
 	            _this.orderFulfillmentItemsCollection.getEntity().then(function (orderItems) {
-	                console.log("Retrieved OrderItems", orderItems['pageRecords']);
 	                _this.orderFulfillmentItemsCollection = orderItems['pageRecords'];
 	            });
 	        };
