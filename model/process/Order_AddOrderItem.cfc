@@ -117,6 +117,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// ======================== START: Defaults ============================
 
+	public boolean function isNotAlreadyAttendingEvent(){
+		writeDump(!isAlreadyAttendingEvent());
+		return !isAlreadyAttendingEvent();
+	}
+
+	public boolean function isAlreadyAttendingEvent(){
+		var account = getOrder().getAccount();
+
+		var eventRegistrationCollectionlist = getService('eventRegistrationService').getEventRegistrationCollectionlist();
+		eventRegistrationCollectionlist.addFilter('account.accountID',account.getAccountID());
+		eventRegistrationCollectionlist.addFilter('sku.skuID',getSku().getSkuID());
+		eventRegistrationCollectionlist.addFilter('eventRegistrationStatusType.systemCode','esrtCancelled','!=');
+
+		return eventRegistrationCollectionlist.getRecordsCount();
+	}
+
 	public array function getChildOrderItems(){
 		if(structkeyExists(variables,'childOrderItems')){
 			return variables.childOrderItems;
@@ -296,12 +312,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
 			variables.sku = getService("skuService").getSku( getSkuID() );
 		}
-		
+
 		// Now we look for a skuCode
 		if(!structKeyExists(variables, "sku") && !isNull(getSkuCode())) {
 			variables.sku = getService("skuService").getSkuBySkuCode( getSkuCode() );
 		}
-		
+
 		// Then we look for a product & potentiall selected options
 		if(!structKeyExists(variables, "sku") && !isNull(getProduct())) {
 
@@ -347,7 +363,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "product") && !isNull(getProductID())) {
 			variables.product = getService("productService").getProduct( getProductID() );
 		}
-		
+
 		// Now we look for a skuCode
 		if(!structKeyExists(variables, "product") && !isNull(getSkuCode())) {
 			var sku = getService("skuService").getSkuBySkuCode( getSkuCode() );
@@ -355,7 +371,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				variables.product = sku.getProduct();
 			}
 		}
-		
+
 		// Only if a sku was setup can we return one
 		if (structKeyExists(variables, "product")) {
 			return variables.product;
@@ -566,7 +582,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getPrice() != this.getPrice() && (!isNull(arguments.orderItem.getSku().getUserDefinedPriceFlag()) && arguments.orderItem.getSku().getUserDefinedPriceFlag())){
 			return false;
 		}
-		
+
 		//check if the instock value is the same
 		if(!isNull(arguments.orderItem.getStock()) && !isNull(this.getStock()) && arguments.orderItem.getStock().getStockID() != this.getStock().getStockID()){
 			return false;
