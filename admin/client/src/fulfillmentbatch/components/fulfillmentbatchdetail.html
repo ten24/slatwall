@@ -65,12 +65,12 @@
 		<div class="s-detail-body s-arrow" ng-show="!swFulfillmentBatchDetailController.currentRecordOrderDetail">Loading Record . . .</div>
         <div class="s-detail-body s-arrow" ng-show="swFulfillmentBatchDetailController.currentRecordOrderDetail">
             <div class="s-content-header">
-                <h2>Order #72</h2>
+                <h2>Order #{{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_orderNumber']}}</h2>
                 <span class="pull-right">
                     
                     <div class="btn-toolbar" role="toolbar"> 
                         <div class="btn-group" role="group"> 
-                            <button class="btn btn-xs btn-default" role="button" data-toggle="collapse" data-target="##j-comments" aria-expanded="false" aria-controls="j-comments">2 <i class="fa fa-comment"></i></button>
+                            <button class="btn btn-xs btn-default" role="button" data-toggle="collapse" data-target="##j-comments" aria-expanded="false" aria-controls="j-comments">{{swFulfillmentBatchDetailController.commentsCollection.length || 0}} <i class="fa fa-comment"></i></button>
                         </div> 
                         
                         <div class="btn-group">
@@ -100,7 +100,7 @@
                         
                         <div class="btn-group s-btn-dropdown" role="group"> 
                             <button type="button" class="btn btn-primary btn-xs">
-		                    	<span>Capture &amp; Fulfill</span> 
+		                    	<span><span ng-if="swFulfillmentBatchDetailController.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled' && swFulfillmentBatchDetailController.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span> Fulfill</span> 
 		                    </button>
                             <ul class="dropdown-menu" role="menu">
 								<li><a href="##">Fulfill</a></li>
@@ -114,35 +114,21 @@
                 </span>
             </div>
             
-            
-            <ul class="collapse s-item-comments list-unstyled" id="j-comments">
-                
-                <li class="s-comment-item">
+            <!--- Handle displaying / adding and deleting comments on the fulfillment item. --->
+            <ul class="collapse s-item-comments list-unstyled" id="j-comments"> 
+                <li class="s-comment-item" ng-repeat="comment in swFulfillmentBatchDetailController.commentsCollection">
                     <div class="s-info">
                         <span class="s-user">
                             <a href="">Reinaldo Solares</a>
                         </span>
-                        <span class="s-date"> 10 hours ago</span>
-                        <!-- <span class="s-actions">
-                            <a href="##" type="button"><i class="fa fa-remove"></i></a>
-                            <a href="##" type="button"><i class="fa fa-pencil"></i></a>
-                        </span> -->
-                    </div>
-                    <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
-                </li>
-                
-                <li class="s-comment-item">
-                    <div class="s-info">
-                        <span class="s-user">
-                            <a href="">Tom Evens</a>
-                        </span>
-                        <span class="s-date"> 2/23/16</span>
+                        <span class="s-date"> {{comment.createdDateTime}} <!--10 hours ago---></span>
+                        <!--- Should only be able to edit own comments. --->
                         <span class="s-actions">
                             <a href="##" type="button"><i class="fa fa-remove"></i></a>
                             <a href="##" type="button"><i class="fa fa-pencil"></i></a>
                         </span>
                     </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p>{{comment.comment}}</p>
                 </li>
                 
                 <li class="s-comment-item">
@@ -151,7 +137,7 @@
                 </li>
                 
             </ul>
-            
+            <!--- Handle displaying Order Information. --->
             <div class="s-item-detail">
                 
                 <!--- Item Header --->
@@ -163,13 +149,13 @@
                                 <li>
                                     <div class="row s-line-item">
                                         <div class="col-xs-5 s-title">Account:</div>
-                                        <div class="col-xs-7 s-value"><a href="##">Tom Evens</a></div>
+                                        <div class="col-xs-7 s-value"><a href="/?slatAction=entity.detailaccount&accountID={{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_account_accountID']}}">{{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_account_firstName']}} {{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_account_lastName']}}</a></div>
                                     </div>
                                 </li>        
                                 <li>
                                     <div class="row s-line-item">
                                         <div class="col-xs-5 s-title">Date Placed:</div>
-                                        <div class="col-xs-7 s-value">2/23/16</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_orderOpenDateTime']}}</div>
                                     </div>
                                 </li>        
                             </ul>
@@ -182,13 +168,13 @@
                                 <li>
                                     <div class="row s-line-item">
                                         <div class="col-xs-5 s-title">Original Total:</div>
-                                        <div class="col-xs-7 s-value">$100.34</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_calculatedTotal']|currency}}</div>
                                     </div>
                                 </li>        
                                 <li>
                                     <div class="row s-line-item">
                                         <div class="col-xs-5 s-title">Balance Due:</div>
-                                        <div class="col-xs-7 s-value">$100.34</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.currentRecordOrderDetail['order_paymentAmountDue']|currency}}</div>
                                     </div>
                                 </li>            
                             </ul>
@@ -201,14 +187,14 @@
                                 <li>
                                     <div class="row s-line-item">
                                         <div class="col-xs-5 s-title">Method:</div>
-                                        <div class="col-xs-7 s-value">Ground</div>
+                                        <div class="col-xs-7 s-value">{{swFulfillmentBatchDetailController.currentRecordOrderDetail['shippingMethod_shippingMethodName']}}</div>
                                     </div>
                                 </li>        
                                 <li>
                                     <div class="row s-line-item">
                                         <div class="col-xs-5 s-title">Location:</div>
                                         <div class="col-xs-7 s-value">
-                                            <div class="s-city-state">Encinitas CA.</div>
+                                            <div class="s-city-state">{{swFulfillmentBatchDetailController.currentRecordOrderDetail['shippingAddress_city']}} {{swFulfillmentBatchDetailController.currentRecordOrderDetail['shippingAddress_stateCode']|uppercase}}.</div>
                                         </div>
                                     </div>
                                 </li>             

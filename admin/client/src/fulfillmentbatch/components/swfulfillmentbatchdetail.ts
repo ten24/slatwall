@@ -15,6 +15,7 @@ class SWFulfillmentBatchDetailController  {
     public lgFulfillmentBatchItemCollection:any;
     public smFulfillmentBatchItemCollection:any;
     public currentRecordOrderDetail:any;
+    public commentsCollection:any;
     private currentSelectedFulfillmentBatchItemID:any;
 
     // @ngInject
@@ -31,7 +32,6 @@ class SWFulfillmentBatchDetailController  {
                 //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
                 //Outer table, will need to toggle and set the floating cards to this data.
                 if (angular.isDefined(update.action.payload)){
-                    
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
                         //outer listing updated. We need to shrink the view and set the current record to the selected record.
                         console.log("Outer Listing Updated");
@@ -42,20 +42,48 @@ class SWFulfillmentBatchDetailController  {
                             }
                             this.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
                             //use this id to get the record and set it to currentRecordOrderDetail.
-                            console.log("Collection Data", this.smFulfillmentBatchItemCollection);
                             //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
-                            for (var batchItem in this.smFulfillmentBatchItemCollection){
-                                console.log("Item", batchItem, this.smFulfillmentBatchItemCollection[batchItem], this.currentSelectedFulfillmentBatchItemID);
-                                if (this.smFulfillmentBatchItemCollection[batchItem]['orderFulfillment.orderFulfillmentID'] == this.currentSelectedFulfillmentBatchItemID){
-                                    //get a new collection using the orderFulfillment.
-                                    this.currentRecordOrderDetail = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
-                                    this.currentRecordOrderDetail.addFilter("orderFulfillmentID", this.smFulfillmentBatchItemCollection[batchItem]['orderFulfillmentID'], "=");
-                                    this.currentRecordOrderDetail.getEntity().then(function(entityResult){
-                                        console.log("Got entity", entityResult);
-                                    });
+                            let collectionItems = this.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
+                                for (var result in results.pageRecords){
+                                    let currentRecord = results['pageRecords'][result];
+                                    if (currentRecord['fulfillmentBatchItemID'] == this.currentSelectedFulfillmentBatchItemID){
+                                        //Save some items from the currentRecord to display.
+
+                                        //Get a new collection using the orderFulfillment.
+                                        this.currentRecordOrderDetail = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+                                        this.currentRecordOrderDetail.addFilter("orderFulfillmentID", currentRecord['orderFulfillment_orderFulfillmentID'], "=");
+                                        
+                                        //For the order
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.orderOpenDateTime", "Open Date"); //date placed
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.orderCloseDateTime", "Close Date");
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.orderNumber", "Order Number");
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", {persistent: false});
+                                        
+                                        //For the account portion of the tab.
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.account.accountID", "Account Number");
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.account.firstName", "First Name");
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.account.lastName", "Last Name");
+                                        this.currentRecordOrderDetail.addDisplayProperty("order.account.company", "Company");
+                                        
+                                        //For the shipping portion of the tab.
+                                        this.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodName");
+                                        this.currentRecordOrderDetail.addDisplayProperty("shippingAddress.city");
+                                        this.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
+                                        this.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
+                                        
+                                        this.currentRecordOrderDetail.getEntity().then( (entityResults) => {
+                                            console.log("Entity Result => ", entityResults['pageRecords'][0]);
+                                            if (entityResults['pageRecords'].length){
+                                                this.currentRecordOrderDetail = entityResults['pageRecords'][0];
+                                                this.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
+                                                this.currentRecordOrderDetail['comments'] = this.getCommentsForFulfillmentBatchItem(this.currentSelectedFulfillmentBatchItemID);
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                            
+                            });
+
                             //console.log("Batch Item Data", batchItemDetail);
                             //now get the orderFulfillment.
 
@@ -78,6 +106,20 @@ class SWFulfillmentBatchDetailController  {
             }
         }); 
     }
+     /**
+      * Returns the comments for the selectedFulfillmentBatchItem
+      */
+     public getCommentsForFulfillmentBatchItem = (fulfillmentBatchItemID) => {
+        this.commentsCollection = this.collectionConfigService.newCollectionConfig("Comment");
+        this.commentsCollection.addDisplayProperty("createdDateTime");
+        this.commentsCollection.addDisplayProperty("createdByAccountID");
+        this.commentsCollection.addDisplayProperty("comment");
+        this.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
+        return this.commentsCollection.getEntity().then((comments)=>{
+            console.log("Comments", comments);
+            return comments['pageRecords'];
+        });
+     }
 
      /**
      * Setup the initial orderFulfillment Collection.
@@ -89,9 +131,8 @@ class SWFulfillmentBatchDetailController  {
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingAddress.stateCode");
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+        this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         this.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.fulfillmentBatchId, "=");
-        
-       
      }
      /**
      * Setup the initial orderFulfillment Collection.
@@ -101,6 +142,7 @@ class SWFulfillmentBatchDetailController  {
         this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
         this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
         this.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+        this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.fulfillmentBatchId, "=");
         
      }
