@@ -1356,6 +1356,8 @@
 					count(SwContent.contentID) as missingCount
 				FROM
 					tcontentcategoryassign
+				  INNER JOIN 
+				  	tcontent on tcontentcategoryassign.contentID=tcontent.contentID and tcontentcategoryassign.contentHistID=tcontent.contentHistID and tcontent.active=1
 				  INNER JOIN
 				  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
 				  INNER JOIN
@@ -1378,6 +1380,8 @@
 						SwCategory.categoryID
 					FROM
 						tcontentcategoryassign
+					  INNER JOIN 
+				  	    tcontent on tcontentcategoryassign.contentID=tcontent.contentID and tcontentcategoryassign.contentHistID=tcontent.contentHistID and tcontent.active=1
 					  INNER JOIN
 					  	SwContent on tcontentcategoryassign.contentID = SwContent.cmsContentID
 					  INNER JOIN
