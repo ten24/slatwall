@@ -35,12 +35,15 @@
 	    "saleOrderItemIsSku":{
 	    	"stock":{"null":true},
 			 "orderItemTypeSystemCode":{"eq":"oitSale"}
-	    }
+     },
+     "eventOrderIem":{
+       "sku.product.productType.baseProductType":{"eq":"Event"}
+     }
 
 	},
 	"properties":{
 	    "preProcessDisplayedFlag":		[{"conditions":"newOrderFulfillment,newOrderReturn,customizationsExist","eq":1}],
-		"sku":							[{"required":true}],
+		"sku":							[{"required":true},{"conditions":"eventOrderItem","method":"isNotAlreadyAttendingEvent"}],
 		"sku.activeFlag":               [{"conditions":"orderItemTypeSale","eq":true}],
 		"orderFulfillmentID":			[],
 		"orderReturnID":				[],
