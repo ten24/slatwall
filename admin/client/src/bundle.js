@@ -49651,7 +49651,6 @@
 	                case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
 	                    //Toggle the listing
 	                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-	                    //this.state.expandedFulfillmentBatchListing = Observable.of(state.showFulfillmentListing).map((value => !value)).switch();
 	                    return __assign({}, _this.state, { action: action });
 	                case 'EDIT_COMMENT_TOGGLE':
 	                    //Update the comment.
@@ -49771,19 +49770,27 @@
 	                //this is a new comment.
 	                var commentObject = {
 	                    comment: "",
+	                    fulfillmentBatchItem: {
+	                        fulfillmentBatchItemID: ""
+	                    },
 	                    fulfillmentBatchItemID: "",
 	                    createdByAccountID: ""
 	                };
 	                commentObject.comment = newCommentText;
-	                commentObject.fulfillmentBatchItemID = _this.state.currentSelectedFulfillmentBatchItemID;
+	                commentObject.fulfillmentBatchItem.fulfillmentBatchItemID = _this.state.currentSelectedFulfillmentBatchItemID;
 	                commentObject.createdByAccountID = _this.$rootScope.slatwall.account.accountID || "";
-	                return _this.$hibachi.saveEntity("comment", '', commentObject, "save");
+	                _this.$hibachi.saveEntity("comment", '', commentObject, "save").then(function (result) {
+	                    //now regrab all comments so they are redisplayed.
+	                    return _this.createCommentsCollectionForFulfillmentBatchItem(_this.state.currentSelectedFulfillmentBatchItemID);
+	                });
 	            }
 	        };
 	        /** Deletes a comment. */
 	        this.deleteComment = function (comment) {
 	            if (comment != undefined) {
-	                return _this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete");
+	                _this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete").then(function (result) {
+	                    return _this.createCommentsCollectionForFulfillmentBatchItem(_this.state.currentSelectedFulfillmentBatchItemID);
+	                });
 	            }
 	        };
 	        /** Various collections used to retrieve data. */

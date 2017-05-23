@@ -72,7 +72,6 @@ class OrderFulfillmentService {
             case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
                 //Toggle the listing
                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
-                //this.state.expandedFulfillmentBatchListing = Observable.of(state.showFulfillmentListing).map((value => !value)).switch();
                 return {
                     ...this.state, action
                 }
@@ -223,21 +222,29 @@ class OrderFulfillmentService {
             //this is a new comment.
             var commentObject = {
                 comment:"",
+                fulfillmentBatchItem: {
+                    fulfillmentBatchItemID: ""
+                },
                 fulfillmentBatchItemID:"",
                 createdByAccountID:""
             };
 
             commentObject.comment = newCommentText;
-            commentObject.fulfillmentBatchItemID = this.state.currentSelectedFulfillmentBatchItemID;
+            commentObject.fulfillmentBatchItem.fulfillmentBatchItemID = this.state.currentSelectedFulfillmentBatchItemID;
             commentObject.createdByAccountID = this.$rootScope.slatwall.account.accountID || "";
-            return this.$hibachi.saveEntity("comment",'', commentObject, "save");
+            this.$hibachi.saveEntity("comment",'', commentObject, "save").then((result)=>{
+                //now regrab all comments so they are redisplayed.
+                return this.createCommentsCollectionForFulfillmentBatchItem(this.state.currentSelectedFulfillmentBatchItemID);
+            });
         }
     }
 
     /** Deletes a comment. */
     public deleteComment = (comment) => {
         if (comment != undefined) {
-            return this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete");
+            this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete").then((result) => {
+                return this.createCommentsCollectionForFulfillmentBatchItem(this.state.currentSelectedFulfillmentBatchItemID);
+            });
         }
     }
 
