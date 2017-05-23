@@ -50,6 +50,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	property name="accountDAO" type="any";
 
+	property name="addressService" type="any";
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
 	property name="hibachiAuditService" type="any";
@@ -416,17 +417,16 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processAccount_clone(required any account, required any processObject, struct data={}) {
 
 		var newAccount = this.newAccount();
-		var accountData = {};
-		accountData['firstName']=arguments.processObject.getFirstName();
-		accountData['lastName']=arguments.processObject.getLastName();
-		accountData['company']=arguments.processObject.getCompany();
-		accountData['superUserFlag']=arguments.account.getSuperUserFlag();
-		accountData['taxExemptFlag']=arguments.account.getTaxExemptFlag();
-		accountData['organizationFlag']=arguments.account.getOrganizationFlag();
-		accountData['testAccountFlag']=arguments.account.getTestAccountFlag();
+		newAccount.setFirstName(arguments.processObject.getFirstName());
+		newAccount.setLastName(arguments.processObject.getLastName());
+		newAccount.setCompany(arguments.processObject.getCompany());
+		newAccount.setSuperUserFlag(arguments.account.getSuperUserFlag());
+		newAccount.setTaxExemptFlag(arguments.account.getTaxExemptFlag());
+		newAccount.setOrganizationFlag(arguments.account.getOrganizationFlag());
+		newAccount.setTestAccountFlag(arguments.account.getTestAccountFlag());
 
 		// If phone number was passed in the add a primary phone number
-		if(!isNull(processObject.getPhoneNumber())) {
+		if(!isNull(arguments.processObject.getPhoneNumber())) {
 			var accountPhoneNumber = this.newAccountPhoneNumber();
 			accountPhoneNumber.setAccount( newAccount );
 			accountPhoneNumber.setPhoneNumber( processObject.getPhoneNumber() );
@@ -434,18 +434,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	
 		// If email address was passed in then add a primary email address
-		if(!isNull(processObject.getEmailAddress())) {
+		if(!isNull(arguments.processObject.getEmailAddress())) {
 			var accountEmailAddress = this.newAccountEmailAddress();
 			accountEmailAddress.setAccount( newAccount );
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
 			newAccount.setPrimaryEmailAddress( accountEmailAddress );
 		}
-		newAccount = this.saveAccount(newAccount,accountData);
+		newAccount = this.saveAccount(newAccount);
 
 		// If new account saved with no errors
 		if(!newAccount.hasErrors()) {
 			// If the createAuthenticationFlag was set to true, the add the authentication
-			if(processObject.getCreateAuthenticationFlag()) {
+			if(arguments.processObject.getCreateAuthenticationFlag()) {
 				var accountAuthentication = this.newAccountAuthentication();
 				accountAuthentication.setAccount( newAccount );
 	
@@ -457,59 +457,60 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 			// Clone account addresses
-			if(!isNull(processObject.getCloneAccountAddressesFlag())) {
+			if(arguments.processObject.getCloneAccountAddressesFlag()) {
 				for(var accountAddress in arguments.account.getAccountAddresses()){
-					var newAccountAddress = duplicate(accountAddress);
-					newAccountAddress.setAccountAddressID('');
-					var newAddress = duplicate(accountAddress.getAddress());
-					newAddress.setAddressID('');
+					var newAccountAddress = this.newAccountAddress();
+					var newAddress = accountAddress.getAddress().copyAddress( saveNewAddress=true );
 					newAccountAddress.setAddress(newAddress);
 					newAccount.addAccountAddress(newAccountAddress);
 				}
 			}
 			// Clone account email addresses if not already set as primary email address
-			if(!isNull(processObject.getCloneAccountEmailAddressesFlag())) {
+			if(arguments.processObject.getCloneAccountEmailAddressesFlag()) {
 				for(var accountEmailAddress in arguments.account.getAccountEmailAddresses()){
 					if(accountEmailAddress.getEmailAddress() != processObject.getEmailAddress()) {
-						var newAccountEmailAddress = duplicate(accountEmailAddress);
-						newAccountEmailAddress.setAccountEmailAddressID('');
+						var newAccountEmailAddress = this.newAccountEmailAddress();
+						newAccountEmailAddress.setEmailAddress(accountEmailAddress.getEmailAddress());
+						newAccountEmailAddress.setVerifiedFlag(accountEmailAddress.getVerifiedFlag());
+						newAccountEmailAddress.setVerificationCode(accountEmailAddress.getVerificationCode());
+						newAccountEmailAddress.setAccountEmailType(accountEmailAddress.getAccountEmailType());
 						newAccount.addAccountEmailAddress(newAccountEmailAddress);
 					}
 				}
 			}
 			// Clone account phone nunbers if not already set as primary phone number
-			if(!isNull(processObject.getCloneAccountPhoneNumbersFlag())) {
+			if(arguments.processObject.getCloneAccountPhoneNumbersFlag()) {
 				for(var accountPhoneNumber in arguments.account.getAccountPhoneNumbers()){
 					if(accountPhoneNumber.getPhoneNumber() != processObject.getPhoneNumber()) {
-						var newAccountPhoneNumber = duplicate(accountPhoneNumber);
-						newAccountPhoneNumber.setAccountPhoneNumberID('');
+						var newAccountPhoneNumber = this.newAccountPhoneNumber();
+						newAccountPhoneNumber.setPhoneNumber(accountPhoneNumber.getPhoneNumber());
+						newAccountPhoneNumber.setAccountPhoneType(accountPhoneNumber.getAccountPhoneType());
 						newAccount.addAccountPhoneNumber(newAccountPhoneNumber);
 					}
 				}
 			}
 			// Clone account price groups
-			if(!isNull(processObject.getClonePriceGroupsFlag())) {
+			if(arguments.processObject.getClonePriceGroupsFlag()) {
 				for(var priceGroup in arguments.account.getPriceGroups()){
 					newAccount.addPriceGroup(priceGroup);
 				}
 			}
 			// Clone account promotion groups
-			if(!isNull(processObject.getClonePromotionCodesFlag())) {
+			if(arguments.processObject.getClonePromotionCodesFlag()) {
 				for(var promotionCode in arguments.account.getPromotionCodes()){
 					newAccount.addPromotionCode(promotionCode);
 				}
 			}
 			// Clone account permission groups
-			if(!isNull(processObject.getClonePermissionGroupsFlag())) {
+			if(arguments.processObject.getClonePermissionGroupsFlag()) {
 				for(var permissionGroup in arguments.account.getPermissionGroups()){
 					newAccount.addPermissionGroup(permissionGroup);
 				}
 			}
 			// Clone account custom attributes
-			if(!isNull(processObject.getCloneCustomAttributesFlag())) {
+			if(arguments.processObject.getCloneCustomAttributesFlag()) {
 				for(var attributeValue in arguments.account.getAttributeValues()){
-					var newAttributeValue = duplicate(attributeValue);
-					newAttributeValue.setAttributeValueID('');
+					var newAttributeValue = attributeValue.copyAttributeValue( saveNewAttributeValue=true );
 					newAccount.addAttributeValue(newAttributeValue);
 				}
 			}

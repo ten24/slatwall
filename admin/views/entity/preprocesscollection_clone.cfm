@@ -49,24 +49,20 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.promotionPeriod" type="any" />
+<cfparam name="rc.collection" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.promotionPeriod#" edit="#rc.edit#" sRedirectAction="admin:entity.editpromotionperiod">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.promotionPeriod#">
+	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.collection#">
 		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="promotionPeriodName" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumAccountUseCount" edit="#rc.edit#" />
+				<!--- General Details --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionCode" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

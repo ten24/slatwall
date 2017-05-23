@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="startDateTime" hb_formFieldType="datetime"  hb_rbKey="entity.promotionPeriod.startDateTime" hb_nullRBKey="define.forever";
 	property name="endDateTime" hb_formFieldType="datetime" hb_rbKey="entity.promotionPeriod.endDateTime" hb_nullRBKey="define.forever";
 	property name="maximumUseCount" hb_rbKey="entity.promotionPeriod.maximumUseCount";
+	property name="maximumAccountUseCount" hb_rbKey="entity.promotionPeriod.maximumAccountUseCount";
 	
 	public function getPromotionPeriodName() {
 		if(!structKeyExists(variables, "promotionPeriodName")) {
@@ -72,21 +73,43 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	public function getStartDateTime() {
 		if(!structKeyExists(variables, "startDateTime")) {
-			variables.startDateTime = getPromotionPeriod().getStartDateTime();
+			if(!isNull(getPromotionPeriod().getStartDateTime())) {
+				variables.startDateTime = getPromotionPeriod().getStartDateTime();
+			} else {
+				variables.startDateTime = '';
+			}
 		}
 		return variables.startDateTime;
 	}
 	public function getEndDateTime() {
 		if(!structKeyExists(variables, "endDateTime")) {
-			variables.endDateTime = getPromotionPeriod().getEndDateTime();
+			if(!isNull(getPromotionPeriod().getEndDateTime())) {
+				variables.endDateTime = getPromotionPeriod().getEndDateTime();
+			} else {
+				variables.endDateTime = '';
+			}
 		}
 		return variables.endDateTime;
 	}
 	public function getMaximumUseCount() {
 		if(!structKeyExists(variables, "maximumUseCount")) {
-			variables.maximumUseCount = getPromotionPeriod().getMaximumUseCount();
+			if(!isNull(getPromotionPeriod().getMaximumUseCount())) {
+				variables.maximumUseCount = getPromotionPeriod().getMaximumUseCount();
+			} else {
+				variables.maximumUseCount = '';
+			}
 		}
 		return variables.maximumUseCount;
+	}
+	public function getMaximumAccountUseCount() {
+		if(!structKeyExists(variables, "maximumAccountUseCount")) {
+			if(!isNull(getPromotionPeriod().getMaximumAccountUseCount())) {
+				variables.maximumAccountUseCount = getPromotionPeriod().getMaximumAccountUseCount();
+			} else {
+				variables.maximumAccountUseCount = '';
+			}
+		}
+		return variables.maximumAccountUseCount;
 	}
 		
 }
