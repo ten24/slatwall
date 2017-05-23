@@ -57,7 +57,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function isAlreadyAttendingEventTest(){
-		// create data for an account
 		var accountData = {
 			accountID="",
 			firstName=""
@@ -106,29 +105,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			},
 			eventRegistrationStatusType={
 				typeID="b89ae134f66e795e53c858b92360ded7"
+				// ID above is for erstCancelled ^
 			}
 		};
 		var eventRegistration = createPersistedTestEntity("EventRegistration", eventRegistrationData);
 		eventRegistration.setSku(sku);
 		sku.addEventRegistration(eventRegistration);
 
-		var eventRegistrationCollectionlist = request.slatwallScope.getService('EventRegistrationService').getEventRegistrationCollectionlist();
-		eventRegistrationCollectionlist.addFilter(orderItemData.orderItemID, accountData.accountID);
-		eventRegistrationCollectionlist.addFilter(orderItemData.orderItemID, skuData.skuID);
-
-		var eventRegistrationData2 = {
-			eventRegistrationID = ""
-		};
-		var eventRegistration2 = createPersistedTestEntity("EventRegistration", eventRegistrationData2);
-		eventRegistration2.setSku(sku);
-
 		var processObjectData = {
 			quantity=1,
 			price=1,
-			skuid= sku.getSkuID()
+			skuid= sku.getSkuID(),
+			registrants = [
+				{
+					accountID=account.getAccountID()
+				}
+			]
 		};
-
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
+
 		var orderReturn = variables.service.processOrder(order, processObject, 'AddOrderItem');
 		var orderItemsAdded = orderReturn.getOrderItems();
 
