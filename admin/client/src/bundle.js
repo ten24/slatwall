@@ -49651,6 +49651,7 @@
 	                case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
 	                    //Toggle the listing
 	                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
+	                    //this.state.expandedFulfillmentBatchListing = Observable.of(state.showFulfillmentListing).map((value => !value)).switch();
 	                    return __assign({}, _this.state, { action: action });
 	                case 'EDIT_COMMENT_TOGGLE':
 	                    //Update the comment.
@@ -50390,6 +50391,48 @@
 	                payload: { comment: comment, commentText: commentText }
 	            });
 	        };
+	        this.userFulfillment = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "FULFILLMENT_ACTION",
+	                payload: {}
+	            });
+	        };
+	        this.userPrintPickingList = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "PRINT_PICKING_LIST_ACTION",
+	                payload: {}
+	            });
+	        };
+	        this.userPrintPackingList = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "PRINT_PACKING_LIST_ACTION",
+	                payload: {}
+	            });
+	        };
+	        this.userEmailCancellation = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "SEND_EMAIL_CANCELLATION_ACTION",
+	                payload: {}
+	            });
+	        };
+	        this.userEmailConfirmation = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "SEND_EMAIL_CONFIRMATION_ACTION",
+	                payload: {}
+	            });
+	        };
+	        this.userEmailOrderStatus = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "SEND_EMAIL_ORDER_STATUS_ACTION",
+	                payload: {}
+	            });
+	        };
+	        this.userBarcodeSearch = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "BAR_CODE_SEARCH_ACTION",
+	                payload: {}
+	            });
+	        };
 	        //setup a state change listener and send over the fulfillmentBatchID
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
 	            //We only care about the state changes for fulfillmentBatchDetail right now.
@@ -50400,7 +50443,6 @@
 	            if ((stateChanges.action && stateChanges.action.type) && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE") {
 	                //GET the state.
 	                _this.state = stateChanges;
-	                console.log("Updated State", _this.state);
 	            }
 	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "EDIT_COMMENT_TOGGLE" || stateChanges.action.type == "SAVE_COMMENT_ACTION" || stateChanges.action.type == "DELETE_COMMENT_ACTION")) {
 	                //GET the state.

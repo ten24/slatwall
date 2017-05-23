@@ -47,6 +47,7 @@ class OrderFulfillmentService {
             case 'TOGGLE_FULFILLMENT_LISTING':
                 //modify the state and return it.
                 state.showFulfillmentListing = !state.showFulfillmentListing;
+                
                 return {
                     ...state, action
                 };
@@ -71,6 +72,7 @@ class OrderFulfillmentService {
             case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
                 //Toggle the listing
                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
+                //this.state.expandedFulfillmentBatchListing = Observable.of(state.showFulfillmentListing).map((value => !value)).switch();
                 return {
                     ...this.state, action
                 }

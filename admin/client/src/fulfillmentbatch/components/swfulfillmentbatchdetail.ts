@@ -26,7 +26,6 @@ class SWFulfillmentBatchDetailController  {
             if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE"){
                 //GET the state.
                 this.state = stateChanges;
-                console.log("Updated State", this.state);
             }
             if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "EDIT_COMMENT_TOGGLE" || stateChanges.action.type == "SAVE_COMMENT_ACTION" || stateChanges.action.type == "DELETE_COMMENT_ACTION")){
                 //GET the state.
@@ -77,6 +76,55 @@ class SWFulfillmentBatchDetailController  {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "SAVE_COMMENT_ACTION",
             payload: {comment: comment, commentText: commentText}
+        });
+    }
+
+    public userFulfillment = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "FULFILLMENT_ACTION",
+            payload: {}
+        });
+    }
+
+    public userPrintPickingList = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "PRINT_PICKING_LIST_ACTION",
+            payload: {}
+        });
+    }
+
+    public userPrintPackingList = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "PRINT_PACKING_LIST_ACTION",
+            payload: {}
+        });
+    }
+
+    public userEmailCancellation = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "SEND_EMAIL_CANCELLATION_ACTION",
+            payload: {}
+        });
+    }
+
+    public userEmailConfirmation = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "SEND_EMAIL_CONFIRMATION_ACTION",
+            payload: {}
+        });
+    }
+
+    public userEmailOrderStatus = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "SEND_EMAIL_ORDER_STATUS_ACTION",
+            payload: {}
+        });
+    }
+
+    public userBarcodeSearch = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "BAR_CODE_SEARCH_ACTION",
+            payload: {}
         });
     }
 }
