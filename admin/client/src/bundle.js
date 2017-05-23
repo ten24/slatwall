@@ -39605,7 +39605,6 @@
 	            }
 	        };
 	        this.setupDefaultGetCollection = function (listingID) {
-	            console.log("Listing ID", listingID, _this.getListing(listingID));
 	            if (_this.getListing(listingID).collectionConfigs.length == 0) {
 	                _this.getListing(listingID).collectionPromise = _this.getListing(listingID).collectionConfig.getEntity();
 	                return function () {
@@ -49592,13 +49591,28 @@
 	 */
 	var OrderFulfillmentService = (function () {
 	    //@ngInject
-	    function OrderFulfillmentService($timeout, observerService, $hibachi) {
+	    function OrderFulfillmentService($timeout, observerService, $hibachi, collectionConfigService, listingService) {
 	        var _this = this;
 	        this.$timeout = $timeout;
 	        this.observerService = observerService;
 	        this.$hibachi = $hibachi;
+	        this.collectionConfigService = collectionConfigService;
+	        this.listingService = listingService;
 	        this.state = {
-	            showFulfillmentListing: true
+	            //boolean
+	            showFulfillmentListing: true,
+	            expandedFulfillmentBatchListing: true,
+	            //strings
+	            currentSelectedFulfillmentBatchItemID: "",
+	            fulfillmentBatchId: undefined,
+	            //empty collections
+	            smFulfillmentBatchItemCollection: undefined,
+	            lgFulfillmentBatchItemCollection: undefined,
+	            currentRecordOrderDetail: undefined,
+	            commentsCollection: undefined,
+	            orderFulfillmentItemsCollection: undefined,
+	            //arrays
+	            accountNames: []
 	        };
 	        // Middleware - Logger
 	        this.loggerEpic = function () {
@@ -49619,9 +49633,88 @@
 	                    return __assign({}, state, { action: action });
 	                case 'ADD_BATCH':
 	                    return __assign({}, state, { action: action });
+	                //This handles setting up the fulfillment batch detail page including all state.
+	                case 'FULFILLMENT_BATCH_DETAIL_SETUP':
+	                    console.log("Action called: ", action);
+	                    if (action.payload.fulfillmentBatchId != undefined) {
+	                        _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
+	                    }
+	                    _this.setupFulfillmentBatchDetail();
+	                    return __assign({}, _this.state, { action: action });
+	                case 'FULFILLMENT_BATCH_DETAIL_UPDATE':
+	                    console.log("Update called");
+	                    return __assign({}, _this.state, { action: action });
+	                case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
+	                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
+	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return state;
 	            }
+	        };
+	        this.setupFulfillmentBatchDetail = function () {
+	            //Create the fulfillmentBatchItemCollection
+	            _this.createLgOrderFulfillmentBatchItemCollection();
+	            _this.createSmOrderFulfillmentBatchItemCollection();
+	            //get the listingDisplay store and listen for changes to the listing display state.
+	            _this.listingService.listingDisplayStore.store$.subscribe(function (update) {
+	                console.log("Listing Update Called");
+	                if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
+	                    //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
+	                    //Outer table, will need to toggle and set the floating cards to this data.
+	                    if (angular.isDefined(update.action.payload)) {
+	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1") {
+	                            //outer listing updated. We need to shrink the view and set the current record to the selected record.
+	                            console.log("Outer Listing Updated");
+	                            //on the first one being selected, go to the shrink view.
+	                            if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1) {
+	                                if (_this.state.expandedFulfillmentBatchListing) {
+	                                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
+	                                }
+	                                _this.state.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
+	                                //use this id to get the record and set it to currentRecordOrderDetail.
+	                                //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
+	                                var collectionItems = _this.state.smFulfillmentBatchItemCollection.getEntity().then(function (results) {
+	                                    for (var result in results.pageRecords) {
+	                                        var currentRecord = results['pageRecords'][result];
+	                                        if (currentRecord['fulfillmentBatchItemID'] == _this.state.currentSelectedFulfillmentBatchItemID) {
+	                                            //Save some items from the currentRecord to display.
+	                                            //Get the orderItems for this fulfillment
+	                                            _this.getOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
+	                                            _this.createCurrentRecordDetailCollection(currentRecord);
+	                                            //Anounce a statechange to clients.
+	                                            _this.emitUpdateToClient();
+	                                        }
+	                                    }
+	                                });
+	                                //console.log("Batch Item Data", batchItemDetail);
+	                                //now get the orderFulfillment.
+	                            }
+	                            //set the inner selection to this selection.
+	                        }
+	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2") {
+	                            //inner listing updated.
+	                            console.log("Inner Listing Updated");
+	                            //if nothing is selected, go back to the outer view.
+	                            if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
+	                                if (_this.state.expandedFulfillmentBatchListing == false) {
+	                                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
+	                                    //set the outer selection to this selection.
+	                                    //this.state.currentSelectedFulfillmentBatchItemID = "";
+	                                    //Anounce a statechange to clients.
+	                                    _this.emitUpdateToClient();
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            });
+	        };
+	        this.emitUpdateToClient = function () {
+	            console.log("Emiting to client an update");
+	            _this.orderFulfillmentStore.dispatch({
+	                type: "FULFILLMENT_BATCH_DETAIL_UPDATE",
+	                payload: { noop: angular.noop() }
+	            });
 	        };
 	        /**
 	         * Creates a batch. This should use api:main.post with a context of process and an entityName instead of doAction.
@@ -49635,6 +49728,113 @@
 	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
 	                return _this.$hibachi.saveEntity("fulfillmentBatch", '', processObject.data, "create");
 	            }
+	        };
+	        /** Various collections used to retrieve data. */
+	        /**
+	         * Returns the comments for the selectedFulfillmentBatchItem
+	         */
+	        this.createCommentsCollectionForFulfillmentBatchItem = function (fulfillmentBatchItemID) {
+	            _this.state.commentsCollection = _this.collectionConfigService.newCollectionConfig("Comment");
+	            _this.state.commentsCollection.addDisplayProperty("createdDateTime");
+	            _this.state.commentsCollection.addDisplayProperty("createdByAccountID");
+	            _this.state.commentsCollection.addDisplayProperty("comment");
+	            _this.state.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
+	            _this.state.commentsCollection.getEntity().then(function (comments) {
+	                _this.state.commentsCollection = comments['pageRecords'];
+	                for (var account in _this.state.commentsCollection) {
+	                    if (angular.isDefined(_this.state.commentsCollection[account]['createdByAccountID'])) {
+	                        //sets the account name to the account names object indexed by the account id.
+	                        _this.getAccountNameByAccountID(_this.state.commentsCollection[account]['createdByAccountID']);
+	                    }
+	                }
+	            });
+	        };
+	        /**
+	         * Returns the comments for the selectedFulfillmentBatchItem
+	         */
+	        this.createCurrentRecordDetailCollection = function (currentRecord) {
+	            //Get a new collection using the orderFulfillment.
+	            _this.state.currentRecordOrderDetail = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+	            _this.state.currentRecordOrderDetail.addFilter("orderFulfillmentID", currentRecord['orderFulfillment_orderFulfillmentID'], "=");
+	            //For the order
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderOpenDateTime", "Open Date"); //date placed
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderCloseDateTime", "Close Date");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderNumber", "Order Number");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", { persistent: false });
+	            //For the account portion of the tab.
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.accountID", "Account Number");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.firstName", "First Name");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.lastName", "Last Name");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.company", "Company");
+	            //For the shipping portion of the tab.
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodName");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.city");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
+	            _this.state.currentRecordOrderDetail.getEntity().then(function (entityResults) {
+	                if (entityResults['pageRecords'].length) {
+	                    _this.state.currentRecordOrderDetail = entityResults['pageRecords'][0];
+	                    _this.state.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
+	                    _this.state.currentRecordOrderDetail['comments'] = _this.createCommentsCollectionForFulfillmentBatchItem(_this.state.currentSelectedFulfillmentBatchItemID);
+	                }
+	            });
+	        };
+	        /**
+	         * Returns account information given an accountID
+	         */
+	        this.getAccountNameByAccountID = function (accountID) {
+	            var accountCollection = _this.collectionConfigService.newCollectionConfig("Account");
+	            accountCollection.addFilter("accountID", accountID, "=");
+	            accountCollection.getEntity().then(function (account) {
+	                if (account['pageRecords'].length) {
+	                    _this.state.accountNames[accountID] = account['pageRecords'][0]['firstName'] + ' ' + account['pageRecords'][0]['lastName'];
+	                    //Anounce a statechange to clients.
+	                    _this.emitUpdateToClient();
+	                }
+	            });
+	        };
+	        /**
+	        * Setup the initial orderFulfillment Collection.
+	        */
+	        this.createLgOrderFulfillmentBatchItemCollection = function () {
+	            _this.state.lgFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
+	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
+	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
+	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingAddress.stateCode");
+	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
+	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+	            _this.state.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.state.fulfillmentBatchId, "=");
+	        };
+	        /**
+	        * Setup the initial orderFulfillment Collection.
+	        */
+	        this.createSmOrderFulfillmentBatchItemCollection = function () {
+	            _this.state.smFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
+	            _this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
+	            _this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
+	            _this.state.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
+	            _this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+	            _this.state.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.state.fulfillmentBatchId, "=");
+	        };
+	        /**
+	        * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
+	        */
+	        this.getOrderFulfillmentItemCollection = function (orderFulfillmentID) {
+	            _this.state.orderFulfillmentItemsCollection = _this.collectionConfigService.newCollectionConfig("OrderItem");
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuCode");
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.product.productName");
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuName");
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.imagePath", "Path", { persistent: false });
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.imageFileName", "File Name", { persistent: false });
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("quantity");
+	            _this.state.orderFulfillmentItemsCollection.addDisplayProperty("orderItemID");
+	            _this.state.orderFulfillmentItemsCollection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
+	            _this.state.orderFulfillmentItemsCollection.getEntity().then(function (orderItems) {
+	                _this.state.orderFulfillmentItemsCollection = orderItems['pageRecords'];
+	            });
 	        };
 	        //To create a store, we instantiate it using the object that holds the state variables,
 	        //and the reducer. We can also add a middleware to the end if you need.
@@ -50085,7 +50285,7 @@
 	 */
 	var SWFulfillmentBatchDetailController = (function () {
 	    // @ngInject
-	    function SWFulfillmentBatchDetailController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, listingService) {
+	    function SWFulfillmentBatchDetailController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, listingService, orderFulfillmentService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
@@ -50097,162 +50297,37 @@
 	        this.$window = $window;
 	        this.typeaheadService = typeaheadService;
 	        this.listingService = listingService;
-	        this.expanded = true;
-	        this.TOGGLE_ACTION = "toggle";
-	        //Misc
-	        this.accountNames = {};
-	        /**
-	         * Returns the comments for the selectedFulfillmentBatchItem
-	         */
-	        this.getCommentsForFulfillmentBatchItem = function (fulfillmentBatchItemID) {
-	            _this.commentsCollection = _this.collectionConfigService.newCollectionConfig("Comment");
-	            _this.commentsCollection.addDisplayProperty("createdDateTime");
-	            _this.commentsCollection.addDisplayProperty("createdByAccountID");
-	            _this.commentsCollection.addDisplayProperty("comment");
-	            _this.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
-	            _this.commentsCollection.getEntity().then(function (comments) {
-	                _this.commentsCollection = comments['pageRecords'];
-	                for (var account in _this.commentsCollection) {
-	                    if (angular.isDefined(_this.commentsCollection[account]['createdByAccountID'])) {
-	                        //sets the account name to the account names object indexed by the account id.
-	                        _this.getAccountNameByAccountID(_this.commentsCollection[account]['createdByAccountID']);
-	                    }
-	                }
+	        this.orderFulfillmentService = orderFulfillmentService;
+	        /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
+	        this.userViewingFulfillmentBatchDetail = function (batchID) {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "FULFILLMENT_BATCH_DETAIL_SETUP",
+	                payload: { fulfillmentBatchId: batchID }
 	            });
 	        };
-	        /**
-	         * Returns account information given an accountID
-	         */
-	        this.getAccountNameByAccountID = function (accountID) {
-	            var accountCollection = _this.collectionConfigService.newCollectionConfig("Account");
-	            accountCollection.addFilter("accountID", accountID, "=");
-	            accountCollection.getEntity().then(function (account) {
-	                if (account['pageRecords'].length) {
-	                    _this.accountNames[accountID] = account['pageRecords'][0]['firstName'] + ' ' + account['pageRecords'][0]['lastName'];
-	                }
+	        /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
+	        this.userToggleFulfillmentBatchListing = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "TOGGLE_FULFILLMENT_BATCH_LISTING",
+	                payload: {}
 	            });
 	        };
-	        /**
-	        * Setup the initial orderFulfillment Collection.
-	        */
-	        this.createLgOrderFulfillmentBatchItemCollection = function () {
-	            _this.lgFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
-	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
-	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
-	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingAddress.stateCode");
-	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
-	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
-	            _this.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
-	            _this.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.fulfillmentBatchId, "=");
-	        };
-	        /**
-	        * Setup the initial orderFulfillment Collection.
-	        */
-	        this.createSmOrderFulfillmentBatchItemCollection = function () {
-	            _this.smFulfillmentBatchItemCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
-	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
-	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
-	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
-	            _this.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
-	            _this.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.fulfillmentBatchId, "=");
-	        };
-	        /**
-	        * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
-	        */
-	        this.getOrderFulfillmentItemCollection = function (orderFulfillmentID) {
-	            _this.orderFulfillmentItemsCollection = _this.collectionConfigService.newCollectionConfig("OrderItem");
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuCode");
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.product.productName");
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuName");
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.imagePath", "Path", { persistent: false });
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("sku.imageFileName", "File Name", { persistent: false });
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("quantity");
-	            _this.orderFulfillmentItemsCollection.addDisplayProperty("orderItemID");
-	            _this.orderFulfillmentItemsCollection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
-	            _this.orderFulfillmentItemsCollection.getEntity().then(function (orderItems) {
-	                _this.orderFulfillmentItemsCollection = orderItems['pageRecords'];
-	            });
-	        };
-	        //Create the fulfillmentBatchItemCollection
-	        this.createLgOrderFulfillmentBatchItemCollection();
-	        this.createSmOrderFulfillmentBatchItemCollection();
-	        //get the listingDisplay store and listen for changes to the listing display state.
-	        listingService.listingDisplayStore.store$.subscribe(function (update) {
-	            if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
-	                //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
-	                //Outer table, will need to toggle and set the floating cards to this data.
-	                if (angular.isDefined(update.action.payload)) {
-	                    if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1") {
-	                        //outer listing updated. We need to shrink the view and set the current record to the selected record.
-	                        console.log("Outer Listing Updated");
-	                        //on the first one being selected, go to the shrink view.
-	                        if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1) {
-	                            if (_this.expanded) {
-	                                _this.expanded = !_this.expanded;
-	                            }
-	                            _this.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
-	                            //use this id to get the record and set it to currentRecordOrderDetail.
-	                            //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
-	                            var collectionItems = _this.smFulfillmentBatchItemCollection.getEntity().then(function (results) {
-	                                var _loop_1 = function () {
-	                                    var currentRecord = results['pageRecords'][result];
-	                                    if (currentRecord['fulfillmentBatchItemID'] == _this.currentSelectedFulfillmentBatchItemID) {
-	                                        //Save some items from the currentRecord to display.
-	                                        //Get a new collection using the orderFulfillment.
-	                                        _this.currentRecordOrderDetail = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
-	                                        _this.currentRecordOrderDetail.addFilter("orderFulfillmentID", currentRecord['orderFulfillment_orderFulfillmentID'], "=");
-	                                        //Get the orderItems for this fulfillment
-	                                        _this.getOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
-	                                        //For the order
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.orderOpenDateTime", "Open Date"); //date placed
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.orderCloseDateTime", "Close Date");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.orderNumber", "Order Number");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", { persistent: false });
-	                                        //For the account portion of the tab.
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.account.accountID", "Account Number");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.account.firstName", "First Name");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.account.lastName", "Last Name");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("order.account.company", "Company");
-	                                        //For the shipping portion of the tab.
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodName");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("shippingAddress.city");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
-	                                        _this.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
-	                                        _this.currentRecordOrderDetail.getEntity().then(function (entityResults) {
-	                                            if (entityResults['pageRecords'].length) {
-	                                                _this.currentRecordOrderDetail = entityResults['pageRecords'][0];
-	                                                _this.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
-	                                                _this.currentRecordOrderDetail['comments'] = _this.getCommentsForFulfillmentBatchItem(_this.currentSelectedFulfillmentBatchItemID);
-	                                            }
-	                                        });
-	                                    }
-	                                };
-	                                for (var result in results.pageRecords) {
-	                                    _loop_1();
-	                                }
-	                            });
-	                            //console.log("Batch Item Data", batchItemDetail);
-	                            //now get the orderFulfillment.
-	                        }
-	                        //set the inner selection to this selection.
-	                    }
-	                    if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2") {
-	                        //inner listing updated.
-	                        console.log("Inner Listing Updated");
-	                        //if nothing is selected, go back to the outer view.
-	                        if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
-	                            if (_this.expanded == false) {
-	                                _this.expanded = !_this.expanded;
-	                                //set the outer selection to this selection.
-	                                _this.currentSelectedFulfillmentBatchItemID = "";
-	                            }
-	                        }
-	                    }
-	                }
+	        //setup a state change listener and send over the fulfillmentBatchID
+	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
+	            //We only care about the state changes for fulfillmentBatchDetail right now.
+	            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_SETUP") {
+	                //GET the state.
+	                _this.state = stateChanges;
 	            }
+	            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE") {
+	                //GET the state.
+	                _this.state = stateChanges;
+	                console.log("Updated State", _this.state);
+	            }
+	            //If there has been a change to the state because of the listing, update as well.
 	        });
+	        //Dispatch the fulfillmentBatchID and setup the state.
+	        this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);
 	    }
 	    return SWFulfillmentBatchDetailController;
 	}());

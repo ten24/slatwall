@@ -69,7 +69,9 @@ Notes:
 				<sw-card-view id="assignedAccount" card-size="sm">
 					<sw-card-icon icon-name="user"></sw-card-icon>
 					<sw-card-header style="border-bottom:none">User</sw-card-header>
+					<cfif !isNull(rc.fulfillmentBatch.getAssignedAccount())>
 					<sw-card-body>#rc.fulfillmentBatch.getAssignedAccount().getFirstName()# #rc.fulfillmentBatch.getAssignedAccount().getLastName()#</sw-card-body>
+					</cfif>
 				</sw-card-view>
 
 				<sw-card-view id="location" card-size="sm">

@@ -723,10 +723,8 @@ class ListingService{
         }
     };
     
-    
-
     public setupDefaultGetCollection = (listingID:string) =>{
-        console.log("Listing ID", listingID, this.getListing(listingID));
+        
         if(this.getListing(listingID).collectionConfigs.length == 0){
             this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
             

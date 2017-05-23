@@ -2,9 +2,7 @@ import {Subject, Observable} from 'rxjs';
 
 export type Action<T> = {
     type:string|number|T
-    payload:{
-        [key:string] : { value:any } //a key of type string references any value
-    }
+    payload:any
 };
 
 //export type reducer = Function:<S, A>(state:S, action:A):Object
