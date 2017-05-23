@@ -1754,13 +1754,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.recordsCount;
 	}
 
-	public array function getPrimaryIDs(string recordCount){
-		if(!structKeyExists(arguments, 'recordCount') || arguments.recordCount == ""){
-			arguments.recordCount = 0;
-		}
+	public array function getPrimaryIDs(numeric recordCount=0){
+		
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
-
+		
 		return getPropertyNameValues(primaryIDName, arguments.recordCount);
 	}
 
