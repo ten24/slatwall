@@ -352,11 +352,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setQuantity(stockAdjustmentItem.getQuantity());
 				stockReceiverItem.setCost(0);
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
+				this.saveStockReceiverItem( stockReceiverItem );
 			}
-			writeDump(var=stockReceiver.getAssignedAttributeSetSmartList(),top=1);
-			writeDump(var=stockReceiver.getAuditSmartList(),top=1);
-			writeDump(var=stockReceiver.getStockReceiverItems(),top=1);
-			this.saveStockReceiver( stockReceiver );
+			this.saveStockReceiver(stockReceiver);
 		}
 		
 		// Outgoing (Transfer or ManualOut)
@@ -426,10 +424,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 		}
-		
+		abort;
 		// Set the status to closed
 		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );	
-	return arguments.stockAdjustment;
+		return arguments.stockAdjustment;
 
 	}
 	

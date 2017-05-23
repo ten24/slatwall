@@ -46,7 +46,8 @@
 
 
 		public any function save( required target ) {
-
+			writeDump('saving ' & getMetaData(target).fullname);
+			writeDump(target.isNew());
 			// Save this entity
 			entitySave( target );
 
@@ -95,6 +96,10 @@
 	    }
 
 	    public void function flushORMSession() {
+	    	for(var entity in getHibachiScope().getModifiedEntities()){
+	    		writeDump('flushing ' & getMetaData(entity).fullname);
+				writeDump(entity.isNew());
+	    	}
 	    	// Initate the first flush
 	    	ormFlush();
 
