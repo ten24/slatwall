@@ -112,9 +112,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		eventRegistration.setSku(sku);
 		sku.addEventRegistration(eventRegistration);
 
-		var eventRegistrationSmartlist = request.slatwallScope.getService('EventRegistrationService').getEventRegistrationSmartList();
-		eventRegistrationSmartlist.addFilter(orderItemData.orderItemID, accountData.accountID);
-		eventRegistrationSmartlist.addFilter(orderItemData.orderItemID, skuData.skuID);
+		var eventRegistrationCollectionlist = request.slatwallScope.getService('EventRegistrationService').getEventRegistrationCollectionlist();
+		eventRegistrationCollectionlist.addFilter(orderItemData.orderItemID, accountData.accountID);
+		eventRegistrationCollectionlist.addFilter(orderItemData.orderItemID, skuData.skuID);
 
 		var eventRegistrationData2 = {
 			eventRegistrationID = ""
@@ -128,26 +128,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			skuid= sku.getSkuID()
 		};
 
-		orderItem.getSalePrice = getSalePriceFake;
-		orderItem.getExtendedPrice = getExtendedPriceFake;
-
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
 		var orderReturn = variables.service.processOrder(order, processObject, 'AddOrderItem');
 		var orderItemsAdded = orderReturn.getOrderItems();
 
-
 		assert(!isNull(eventRegistration.getEventRegistrationStatusType()));
-
 		assertTrue(processObject.IsAlreadyAttendingEvent());
 
-	}
-
-	private any function getSalePriceFake(){
-		return {};
-	}
-
-	private any function getExtendedPriceFake(){
-		return 0;
 	}
 
 	/**

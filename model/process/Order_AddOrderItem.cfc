@@ -118,7 +118,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ======================== START: Defaults ============================
 
 	public boolean function isNotAlreadyAttendingEvent(){
-		writeDump(!isAlreadyAttendingEvent());
 		return !isAlreadyAttendingEvent();
 	}
 
@@ -128,7 +127,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var eventRegistrationCollectionlist = getService('eventRegistrationService').getEventRegistrationCollectionlist();
 		eventRegistrationCollectionlist.addFilter('account.accountID',account.getAccountID());
 		eventRegistrationCollectionlist.addFilter('sku.skuID',getSku().getSkuID());
-		eventRegistrationCollectionlist.addFilter('eventRegistrationStatusType.systemCode','esrtCancelled','!=');
+		eventRegistrationCollectionlist.addFilter('eventRegistrationStatusType.systemCode','erstCancelled','!=');
 
 		return eventRegistrationCollectionlist.getRecordsCount();
 	}
