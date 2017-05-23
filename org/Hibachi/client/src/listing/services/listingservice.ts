@@ -248,10 +248,20 @@ class ListingService{
     };
 
     public getPageRecordValueByColumn = (pageRecord, column) =>{
-        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)];
-        if( ( angular.isUndefined(pageRecordValue) || 
-            ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
-              angular.isDefined(column.fallbackPropertyIdentifiers)
+        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)] || "";
+        //find the property if we need to...
+        for (var property in pageRecord){
+            if (property.indexOf(this.getPageRecordKey(column.propertyIdentifier).trim()) != -1){
+                //use this record
+                pageRecordValue = pageRecord[property];
+            }
+        }
+        
+        //If pageRecordValue is undefined or 
+        if( angular.isUndefined(pageRecordValue) || 
+            (angular.isString(pageRecordValue) && 
+                pageRecordValue.trim().length == 0 && 
+                angular.isDefined(column.fallbackPropertyIdentifiers))
         ){
             var fallbackPropertyArray = column.fallbackPropertyIdentifiers.replace('.','_').split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){
