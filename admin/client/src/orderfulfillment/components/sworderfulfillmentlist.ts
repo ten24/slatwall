@@ -57,7 +57,6 @@ class SWOrderFulfillmentListController {
         this.collections.push(this.orderItemCollection);
         
         //Setup the processObject
-        console.log(this.$hibachi);
         this.setProcessObject(this.$hibachi.newFulfillmentBatch_Create());
 
         //adds the two default filters to start.
