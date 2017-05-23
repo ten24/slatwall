@@ -24,9 +24,8 @@ class SWFulfillmentBatchDetailController  {
                 
                 this.state = stateChanges;
             }
-            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE"){
+            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE" || stateChanges.action.type == "EDIT_COMMENT_TOGGLE")){
                 //GET the state.
-                
                 this.state = stateChanges;
                 console.log("Updated State", this.state);
             }
@@ -51,6 +50,30 @@ class SWFulfillmentBatchDetailController  {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "TOGGLE_FULFILLMENT_BATCH_LISTING",
             payload: {}
+        });
+    }
+
+    public userEditingComment = (comment) => {
+        console.log(comment);
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "EDIT_COMMENT_TOGGLE",
+            payload: {comment: comment}
+        });
+    }
+
+    public userDeletingComment = (comment) => {
+        console.log(comment);
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "DELETE_COMMENT_ACTION",
+            payload: {comment: comment}
+        });
+    }
+    
+    public userSavingComment = (comment, commentText) => {
+        console.log(comment, commentText);
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "SAVE_COMMENT_ACTION",
+            payload: {comment: comment, commentText: commentText}
         });
     }
 }

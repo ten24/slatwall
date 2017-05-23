@@ -9,11 +9,15 @@ import * as Store from '../../../../../org/hibachi/client/src/core/prototypes/St
  * Fulfillment List Controller
  */
 class OrderFulfillmentService {
-    
+    //This is the single object that contains all state for the component.
     private state = {
         //boolean
         showFulfillmentListing: true,
         expandedFulfillmentBatchListing: true,
+        editComment:false,
+        
+        //objects
+        commentBeingEdited:undefined,
         
         //strings
         currentSelectedFulfillmentBatchItemID: "",
@@ -30,7 +34,7 @@ class OrderFulfillmentService {
         accountNames:[]
     };
 
-    // Middleware - Logger
+    // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
     public loggerEpic = (...args) => {
         return args;
     }
@@ -52,7 +56,7 @@ class OrderFulfillmentService {
                 };
             //This handles setting up the fulfillment batch detail page including all state.
             case 'FULFILLMENT_BATCH_DETAIL_SETUP':
-                console.log("Action called: ", action);
+                //Setup the detail
                 if (action.payload.fulfillmentBatchId != undefined){
                     this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                 }
@@ -61,12 +65,44 @@ class OrderFulfillmentService {
                     ...this.state, action
                 }
             case 'FULFILLMENT_BATCH_DETAIL_UPDATE':
-                console.log("Update called");
                 return {
                     ...this.state, action
                 }
             case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
+                //Toggle the listing
                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
+                return {
+                    ...this.state, action
+                }
+            case 'EDIT_COMMENT_TOGGLE':
+                //Update the comment.
+                console.log(action);
+                this.state.editComment = !this.state.editComment;
+                if (this.state.editComment == true){
+                    this.state.commentBeingEdited = action.payload.comment;
+                }else{
+                    this.state.commentBeingEdited = undefined;
+                }
+                
+                return {
+                    ...this.state, action
+                }
+            case 'SAVE_COMMENT_ACTION':
+                if (action.payload.comment && action.payload.commentText){
+                    //saving
+                    this.saveComment(action.payload.comment, action.payload.commentText);
+                }else{
+                    //editing
+                    this.saveComment({}, action.payload.commentText);
+                }
+                //toggle edit mode. so we are no longer editing.
+                this.state.editComment = false;
+                this.state.commentBeingEdited = undefined;
+                return {
+                    ...this.state, action
+                }
+            case 'DELETE_COMMENT_ACTION':
+                this.deleteComment(action.payload.comment);
                 return {
                     ...this.state, action
                 }
@@ -98,14 +134,12 @@ class OrderFulfillmentService {
         
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
-            console.log("Listing Update Called");
             if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED"){
                 //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
                 //Outer table, will need to toggle and set the floating cards to this data.
                 if (angular.isDefined(update.action.payload)){
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
-                        //outer listing updated. We need to shrink the view and set the current record to the selected record.
-                        console.log("Outer Listing Updated");
+                        
                         //on the first one being selected, go to the shrink view.
                         if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1){
                             if (this.state.expandedFulfillmentBatchListing){
@@ -135,7 +169,6 @@ class OrderFulfillmentService {
                     }
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2"){
                         //inner listing updated.
-                        console.log("Inner Listing Updated");
                         //if nothing is selected, go back to the outer view.
                         if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0){
                             if (this.state.expandedFulfillmentBatchListing == false){
@@ -153,7 +186,6 @@ class OrderFulfillmentService {
     }
 
     public emitUpdateToClient = () => {
-        console.log("Emiting to client an update");
         this.orderFulfillmentStore.dispatch({
             type: "FULFILLMENT_BATCH_DETAIL_UPDATE",
             payload: {noop:angular.noop()}
@@ -174,6 +206,32 @@ class OrderFulfillmentService {
             return this.$hibachi.saveEntity("fulfillmentBatch",'',processObject.data, "create");
         }
     }
+
+    /** Saves a comment. */
+    public saveComment = (comment, newCommentText) => {
+        //Editing
+        if (comment != {}) {
+            comment.comment = newCommentText;
+            return this.$hibachi.saveEntity("comment",'', comment, "save");
+        }
+        //New
+        if (comment == {}){
+            //this is a new comment.
+            let commentObject = this.$hibachi.newComment();
+            commentObject.data.comment = newCommentText;
+            commentObject.data.fulfillmentBatchItemID = this.state.currentSelectedFulfillmentBatchItemID;
+            commentObject.data.createdByAccountID = this.$hibachi.account.accountID || "";
+            return this.$hibachi.saveEntity("comment",'', comment, "create");
+        }
+    }
+
+    /** Deletes a comment. */
+    public deleteComment = (comment) => {
+        if (comment != undefined) {
+            return this.$hibachi.saveEntity("comment",'', comment, "delete");
+        }
+    }
+
     /** Various collections used to retrieve data. */
     /**
      * Returns the comments for the selectedFulfillmentBatchItem
@@ -182,6 +240,7 @@ class OrderFulfillmentService {
         this.state.commentsCollection = this.collectionConfigService.newCollectionConfig("Comment");
         this.state.commentsCollection.addDisplayProperty("createdDateTime");
         this.state.commentsCollection.addDisplayProperty("createdByAccountID");
+        this.state.commentsCollection.addDisplayProperty("commentID");
         this.state.commentsCollection.addDisplayProperty("comment");
         this.state.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
         this.state.commentsCollection.getEntity().then((comments)=>{

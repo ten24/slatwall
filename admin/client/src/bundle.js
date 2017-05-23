@@ -49598,10 +49598,14 @@
 	        this.$hibachi = $hibachi;
 	        this.collectionConfigService = collectionConfigService;
 	        this.listingService = listingService;
+	        //This is the single object that contains all state for the component.
 	        this.state = {
 	            //boolean
 	            showFulfillmentListing: true,
 	            expandedFulfillmentBatchListing: true,
+	            editComment: false,
+	            //objects
+	            commentBeingEdited: undefined,
 	            //strings
 	            currentSelectedFulfillmentBatchItemID: "",
 	            fulfillmentBatchId: undefined,
@@ -49614,7 +49618,7 @@
 	            //arrays
 	            accountNames: []
 	        };
-	        // Middleware - Logger
+	        // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
 	        this.loggerEpic = function () {
 	            var args = [];
 	            for (var _i = 0; _i < arguments.length; _i++) {
@@ -49635,17 +49639,44 @@
 	                    return __assign({}, state, { action: action });
 	                //This handles setting up the fulfillment batch detail page including all state.
 	                case 'FULFILLMENT_BATCH_DETAIL_SETUP':
-	                    console.log("Action called: ", action);
+	                    //Setup the detail
 	                    if (action.payload.fulfillmentBatchId != undefined) {
 	                        _this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
 	                    }
 	                    _this.setupFulfillmentBatchDetail();
 	                    return __assign({}, _this.state, { action: action });
 	                case 'FULFILLMENT_BATCH_DETAIL_UPDATE':
-	                    console.log("Update called");
 	                    return __assign({}, _this.state, { action: action });
 	                case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
+	                    //Toggle the listing
 	                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
+	                    return __assign({}, _this.state, { action: action });
+	                case 'EDIT_COMMENT_TOGGLE':
+	                    //Update the comment.
+	                    console.log(action);
+	                    _this.state.editComment = !_this.state.editComment;
+	                    if (_this.state.editComment == true) {
+	                        _this.state.commentBeingEdited = action.payload.comment;
+	                    }
+	                    else {
+	                        _this.state.commentBeingEdited = undefined;
+	                    }
+	                    return __assign({}, _this.state, { action: action });
+	                case 'SAVE_COMMENT_ACTION':
+	                    if (action.payload.comment && action.payload.commentText) {
+	                        //saving
+	                        _this.saveComment(action.payload.comment, action.payload.commentText);
+	                    }
+	                    else {
+	                        //editing
+	                        _this.saveComment({}, action.payload.commentText);
+	                    }
+	                    //toggle edit mode. so we are no longer editing.
+	                    _this.state.editComment = false;
+	                    _this.state.commentBeingEdited = undefined;
+	                    return __assign({}, _this.state, { action: action });
+	                case 'DELETE_COMMENT_ACTION':
+	                    _this.deleteComment(action.payload.comment);
 	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return state;
@@ -49657,14 +49688,11 @@
 	            _this.createSmOrderFulfillmentBatchItemCollection();
 	            //get the listingDisplay store and listen for changes to the listing display state.
 	            _this.listingService.listingDisplayStore.store$.subscribe(function (update) {
-	                console.log("Listing Update Called");
 	                if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
 	                    //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
 	                    //Outer table, will need to toggle and set the floating cards to this data.
 	                    if (angular.isDefined(update.action.payload)) {
 	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1") {
-	                            //outer listing updated. We need to shrink the view and set the current record to the selected record.
-	                            console.log("Outer Listing Updated");
 	                            //on the first one being selected, go to the shrink view.
 	                            if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1) {
 	                                if (_this.state.expandedFulfillmentBatchListing) {
@@ -49693,7 +49721,6 @@
 	                        }
 	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2") {
 	                            //inner listing updated.
-	                            console.log("Inner Listing Updated");
 	                            //if nothing is selected, go back to the outer view.
 	                            if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
 	                                if (_this.state.expandedFulfillmentBatchListing == false) {
@@ -49710,7 +49737,6 @@
 	            });
 	        };
 	        this.emitUpdateToClient = function () {
-	            console.log("Emiting to client an update");
 	            _this.orderFulfillmentStore.dispatch({
 	                type: "FULFILLMENT_BATCH_DETAIL_UPDATE",
 	                payload: { noop: angular.noop() }
@@ -49729,6 +49755,29 @@
 	                return _this.$hibachi.saveEntity("fulfillmentBatch", '', processObject.data, "create");
 	            }
 	        };
+	        /** Saves a comment. */
+	        this.saveComment = function (comment, newCommentText) {
+	            //Editing
+	            if (comment != {}) {
+	                comment.comment = newCommentText;
+	                return _this.$hibachi.saveEntity("comment", '', comment, "save");
+	            }
+	            //New
+	            if (comment == {}) {
+	                //this is a new comment.
+	                var commentObject = _this.$hibachi.newComment();
+	                commentObject.data.comment = newCommentText;
+	                commentObject.data.fulfillmentBatchItemID = _this.state.currentSelectedFulfillmentBatchItemID;
+	                commentObject.data.createdByAccountID = _this.$hibachi.account.accountID || "";
+	                return _this.$hibachi.saveEntity("comment", '', comment, "create");
+	            }
+	        };
+	        /** Deletes a comment. */
+	        this.deleteComment = function (comment) {
+	            if (comment != undefined) {
+	                return _this.$hibachi.saveEntity("comment", '', comment, "delete");
+	            }
+	        };
 	        /** Various collections used to retrieve data. */
 	        /**
 	         * Returns the comments for the selectedFulfillmentBatchItem
@@ -49737,6 +49786,7 @@
 	            _this.state.commentsCollection = _this.collectionConfigService.newCollectionConfig("Comment");
 	            _this.state.commentsCollection.addDisplayProperty("createdDateTime");
 	            _this.state.commentsCollection.addDisplayProperty("createdByAccountID");
+	            _this.state.commentsCollection.addDisplayProperty("commentID");
 	            _this.state.commentsCollection.addDisplayProperty("comment");
 	            _this.state.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
 	            _this.state.commentsCollection.getEntity().then(function (comments) {
@@ -50312,6 +50362,27 @@
 	                payload: {}
 	            });
 	        };
+	        this.userEditingComment = function (comment) {
+	            console.log(comment);
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "EDIT_COMMENT_TOGGLE",
+	                payload: { comment: comment }
+	            });
+	        };
+	        this.userDeletingComment = function (comment) {
+	            console.log(comment);
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "DELETE_COMMENT_ACTION",
+	                payload: { comment: comment }
+	            });
+	        };
+	        this.userSavingComment = function (comment, commentText) {
+	            console.log(comment, commentText);
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "SAVE_COMMENT_ACTION",
+	                payload: { comment: comment, commentText: commentText }
+	            });
+	        };
 	        //setup a state change listener and send over the fulfillmentBatchID
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
 	            //We only care about the state changes for fulfillmentBatchDetail right now.
@@ -50319,7 +50390,7 @@
 	                //GET the state.
 	                _this.state = stateChanges;
 	            }
-	            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE") {
+	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE" || stateChanges.action.type == "EDIT_COMMENT_TOGGLE")) {
 	                //GET the state.
 	                _this.state = stateChanges;
 	                console.log("Updated State", _this.state);
