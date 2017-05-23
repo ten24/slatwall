@@ -110,7 +110,10 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-
+        //Invariant - We must have some way to instantiate. Everything can't be optional.
+        if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+            return;
+        }
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();

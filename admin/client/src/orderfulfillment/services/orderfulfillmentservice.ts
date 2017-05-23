@@ -77,7 +77,6 @@ class OrderFulfillmentService {
                 }
             case 'EDIT_COMMENT_TOGGLE':
                 //Update the comment.
-                console.log(action);
                 this.state.editComment = !this.state.editComment;
                 if (this.state.editComment == true){
                     this.state.commentBeingEdited = action.payload.comment;
@@ -151,15 +150,14 @@ class OrderFulfillmentService {
                             this.state.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
                             //use this id to get the record and set it to currentRecordOrderDetail.
                             //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
-                            let collectionItems = this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
+                            this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
                                 for (var result in results.pageRecords){
                                     let currentRecord = results['pageRecords'][result];
                                     if (currentRecord['fulfillmentBatchItemID'] == this.state.currentSelectedFulfillmentBatchItemID){
-                                        //Save some items from the currentRecord to display.
+                                        //Matched - Save some items from the currentRecord to display.
                                         //Get the orderItems for this fulfillment
-                                        this.getOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
+                                        this.createOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
                                         this.createCurrentRecordDetailCollection(currentRecord);
-                                        //Anounce a statechange to clients.
                                         this.emitUpdateToClient();
                                     }
                                 }
@@ -178,7 +176,6 @@ class OrderFulfillmentService {
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
                                 //set the outer selection to this selection.
                                 //this.state.currentSelectedFulfillmentBatchItemID = "";
-                                //Anounce a statechange to clients.
                                 this.emitUpdateToClient();
                             }
                         }
@@ -260,12 +257,17 @@ class OrderFulfillmentService {
         this.state.commentsCollection.addDisplayProperty("comment");
         this.state.commentsCollection.addFilter("fulfillmentBatchItem.fulfillmentBatchItemID", fulfillmentBatchItemID, "=");
         this.state.commentsCollection.getEntity().then((comments)=>{
-            this.state.commentsCollection = comments['pageRecords'];
-            for (var account in this.state.commentsCollection){
-                if (angular.isDefined(this.state.commentsCollection[account]['createdByAccountID'])){
-                    //sets the account name to the account names object indexed by the account id.
-                    this.getAccountNameByAccountID(this.state.commentsCollection[account]['createdByAccountID']);
+            if (comments && comments.pageRecords.length){
+                this.state.commentsCollection = comments['pageRecords'];
+                for (var account in this.state.commentsCollection){
+                    if (angular.isDefined(this.state.commentsCollection[account]['createdByAccountID'])){
+                        //sets the account name to the account names object indexed by the account id.
+                        this.getAccountNameByAccountID(this.state.commentsCollection[account]['createdByAccountID']);
+                    }
                 }
+            }else{
+                this.state.commentsCollection = comments.pageRecords;
+                this.emitUpdateToClient();
             }
         });
      }
@@ -302,6 +304,7 @@ class OrderFulfillmentService {
                 this.state.currentRecordOrderDetail = entityResults['pageRecords'][0];
                 this.state.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
                 this.state.currentRecordOrderDetail['comments'] = this.createCommentsCollectionForFulfillmentBatchItem(this.state.currentSelectedFulfillmentBatchItemID);
+                this.emitUpdateToClient();
             }
         });
      }
@@ -315,7 +318,6 @@ class OrderFulfillmentService {
         accountCollection.getEntity().then((account)=>{
             if (account['pageRecords'].length){
                 this.state.accountNames[accountID] = account['pageRecords'][0]['firstName'] + ' ' + account['pageRecords'][0]['lastName'];
-                //Anounce a statechange to clients.
                 this.emitUpdateToClient();
             }
         });
@@ -344,25 +346,30 @@ class OrderFulfillmentService {
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         this.state.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
-        
+        return this.state.smFulfillmentBatchItemCollection;
      }
 
      /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
      */
-     private getOrderFulfillmentItemCollection = (orderFulfillmentID):void => {
-        this.state.orderFulfillmentItemsCollection = this.collectionConfigService.newCollectionConfig("OrderItem");
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuCode");
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.product.productName");
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.skuName");
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.imagePath", "Path", {persistent: false});
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("sku.imageFileName", "File Name", {persistent: false});
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("quantity");
-        this.state.orderFulfillmentItemsCollection.addDisplayProperty("orderItemID");
-        this.state.orderFulfillmentItemsCollection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
-        this.state.orderFulfillmentItemsCollection.getEntity().then((orderItems)=>{
-            this.state.orderFulfillmentItemsCollection = orderItems['pageRecords'];
+     private createOrderFulfillmentItemCollection = (orderFulfillmentID):void => {
+        let collection = this.collectionConfigService.newCollectionConfig("OrderItem");
+        collection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
+        collection.addDisplayProperty("sku.skuCode");
+        collection.addDisplayProperty("sku.product.productName");
+        collection.addDisplayProperty("sku.skuName");
+        collection.addDisplayProperty("sku.imagePath", "Path", {persistent: false});
+        collection.addDisplayProperty("sku.imageFileName", "File Name", {persistent: false});
+        collection.addDisplayProperty("quantity");
+        collection.addDisplayProperty("orderItemID");
+        collection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
+        collection.getEntity().then((orderItems)=>{
+            if (orderItems && orderItems.pageRecords && orderItems.pageRecords.length){
+                this.state.orderFulfillmentItemsCollection = orderItems['pageRecords'];
+            }else{
+                this.state.orderFulfillmentItemsCollection = [];
+            }
+             this.emitUpdateToClient();
         });
      }
 }

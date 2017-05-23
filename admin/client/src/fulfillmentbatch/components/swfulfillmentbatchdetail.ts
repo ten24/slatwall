@@ -14,7 +14,7 @@ class SWFulfillmentBatchDetailController  {
     public fulfillmentBatchId: string;
     
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService){
+    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
             //We only care about the state changes for fulfillmentBatchDetail right now.
@@ -64,11 +64,14 @@ class SWFulfillmentBatchDetailController  {
     }
 
     public userDeletingComment = (comment) => {
-        console.log(comment);
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "DELETE_COMMENT_ACTION",
-            payload: {comment: comment}
-        });
+        //Only fire the event if the user agrees.
+        let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
+        if ( window.confirm(`${warning}?`) ) {
+            this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+                type: "DELETE_COMMENT_ACTION",
+                payload: {comment: comment}
+            });
+        }
     }
     
     public userSavingComment = (comment, commentText) => {
