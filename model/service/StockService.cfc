@@ -336,7 +336,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processStockAdjustment_processAdjustment(required any stockAdjustment) {
-		
+		writeDump(var=stockAdjustment,top=1);
 		// Incoming (Transfer or ManualIn)
 		if( listFindNoCase("satLocationTransfer,satManualIn", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			
@@ -353,7 +353,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setCost(0);
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
 			}
-
+			writeDump(var=stockReceiver,top=2);
 			this.saveStockReceiver( stockReceiver );
 		}
 		

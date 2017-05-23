@@ -135,6 +135,9 @@ component accessors="true" output="false" persistent="false" {
 	public any function invokeMethod(required string methodName, struct methodArguments={}) {
 		if(structKeyExists(this, arguments.methodName)) {
 			var theMethod = this[ arguments.methodName ];
+			// if(arguments.methodName == 'processStockAdjustment_processAdjustment'){	
+			// 	writeDump(var=arguments.methodArguments,top=2);abort;
+			// }
 			return theMethod(argumentCollection = methodArguments);
 		}
 		if(structKeyExists(this, "onMissingMethod")) {

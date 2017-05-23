@@ -50,7 +50,7 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	
 	// Persistent Properties
 	property name="stockReceiverItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer";
+	property name="quantity" ormtype="float";
 	property name="cost" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	

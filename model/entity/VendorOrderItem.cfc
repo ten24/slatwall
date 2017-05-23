@@ -50,7 +50,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// Persistent Properties
 	property name="vendorOrderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer" default=0;
+	property name="quantity" ormtype="float" default=0;
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";

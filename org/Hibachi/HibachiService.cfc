@@ -134,6 +134,7 @@
 			// if the entity still has no errors then we call call the process method
 			if(!arguments.entity.hasErrors()) {
 				var methodName = "process#arguments.entity.getClassName()#_#arguments.processContext#";
+				writeDump(var=arguments.entity, top=1);
 				arguments.entity = this.invokeMethod(methodName, invokeArguments);
 				if(isNull(arguments.entity)) {
 					throw("You have created a process method: #methodName# that does not return an entity.  All process methods should return an entity.");
