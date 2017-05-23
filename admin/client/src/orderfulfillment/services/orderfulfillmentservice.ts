@@ -103,6 +103,8 @@ class OrderFulfillmentService {
                 }
             case 'DELETE_COMMENT_ACTION':
                 this.deleteComment(action.payload.comment);
+                this.state.editComment = false;
+                this.state.commentBeingEdited = undefined;
                 return {
                     ...this.state, action
                 }
@@ -119,7 +121,7 @@ class OrderFulfillmentService {
 
 
     //@ngInject
-    constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService){
+    constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, private $rootScope){
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
         this.orderFulfillmentStore = new Store.Store( this.state, this.orderFulfillmentStateReducer );
@@ -210,25 +212,30 @@ class OrderFulfillmentService {
     /** Saves a comment. */
     public saveComment = (comment, newCommentText) => {
         //Editing
-        if (comment != {}) {
+        if (angular.isDefined(comment) && angular.isDefined(comment.comment) && angular.isDefined(comment.commentID)) {
             comment.comment = newCommentText;
-            return this.$hibachi.saveEntity("comment",'', comment, "save");
-        }
+            return this.$hibachi.saveEntity("comment", comment.commentID, comment, "save");
+        
         //New
-        if (comment == {}){
+        }else{
             //this is a new comment.
-            let commentObject = this.$hibachi.newComment();
-            commentObject.data.comment = newCommentText;
-            commentObject.data.fulfillmentBatchItemID = this.state.currentSelectedFulfillmentBatchItemID;
-            commentObject.data.createdByAccountID = this.$hibachi.account.accountID || "";
-            return this.$hibachi.saveEntity("comment",'', comment, "create");
+            var commentObject = {
+                comment:"",
+                fulfillmentBatchItemID:"",
+                createdByAccountID:""
+            };
+
+            commentObject.comment = newCommentText;
+            commentObject.fulfillmentBatchItemID = this.state.currentSelectedFulfillmentBatchItemID;
+            commentObject.createdByAccountID = this.$rootScope.slatwall.account.accountID || "";
+            return this.$hibachi.saveEntity("comment",'', commentObject, "save");
         }
     }
 
     /** Deletes a comment. */
     public deleteComment = (comment) => {
         if (comment != undefined) {
-            return this.$hibachi.saveEntity("comment",'', comment, "delete");
+            return this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete");
         }
     }
 

@@ -21,13 +21,16 @@ class SWFulfillmentBatchDetailController  {
             
             if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_SETUP"){
                 //GET the state.
-                
                 this.state = stateChanges;
             }
-            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE" || stateChanges.action.type == "EDIT_COMMENT_TOGGLE")){
+            if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE"){
                 //GET the state.
                 this.state = stateChanges;
                 console.log("Updated State", this.state);
+            }
+            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "EDIT_COMMENT_TOGGLE" || stateChanges.action.type == "SAVE_COMMENT_ACTION" || stateChanges.action.type == "DELETE_COMMENT_ACTION")){
+                //GET the state.
+                this.state = stateChanges;
             }
             //If there has been a change to the state because of the listing, update as well.
 

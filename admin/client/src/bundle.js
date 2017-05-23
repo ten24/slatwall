@@ -49591,13 +49591,14 @@
 	 */
 	var OrderFulfillmentService = (function () {
 	    //@ngInject
-	    function OrderFulfillmentService($timeout, observerService, $hibachi, collectionConfigService, listingService) {
+	    function OrderFulfillmentService($timeout, observerService, $hibachi, collectionConfigService, listingService, $rootScope) {
 	        var _this = this;
 	        this.$timeout = $timeout;
 	        this.observerService = observerService;
 	        this.$hibachi = $hibachi;
 	        this.collectionConfigService = collectionConfigService;
 	        this.listingService = listingService;
+	        this.$rootScope = $rootScope;
 	        //This is the single object that contains all state for the component.
 	        this.state = {
 	            //boolean
@@ -49677,6 +49678,8 @@
 	                    return __assign({}, _this.state, { action: action });
 	                case 'DELETE_COMMENT_ACTION':
 	                    _this.deleteComment(action.payload.comment);
+	                    _this.state.editComment = false;
+	                    _this.state.commentBeingEdited = undefined;
 	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return state;
@@ -49758,24 +49761,28 @@
 	        /** Saves a comment. */
 	        this.saveComment = function (comment, newCommentText) {
 	            //Editing
-	            if (comment != {}) {
+	            if (angular.isDefined(comment) && angular.isDefined(comment.comment) && angular.isDefined(comment.commentID)) {
 	                comment.comment = newCommentText;
-	                return _this.$hibachi.saveEntity("comment", '', comment, "save");
+	                return _this.$hibachi.saveEntity("comment", comment.commentID, comment, "save");
+	                //New
 	            }
-	            //New
-	            if (comment == {}) {
+	            else {
 	                //this is a new comment.
-	                var commentObject = _this.$hibachi.newComment();
-	                commentObject.data.comment = newCommentText;
-	                commentObject.data.fulfillmentBatchItemID = _this.state.currentSelectedFulfillmentBatchItemID;
-	                commentObject.data.createdByAccountID = _this.$hibachi.account.accountID || "";
-	                return _this.$hibachi.saveEntity("comment", '', comment, "create");
+	                var commentObject = {
+	                    comment: "",
+	                    fulfillmentBatchItemID: "",
+	                    createdByAccountID: ""
+	                };
+	                commentObject.comment = newCommentText;
+	                commentObject.fulfillmentBatchItemID = _this.state.currentSelectedFulfillmentBatchItemID;
+	                commentObject.createdByAccountID = _this.$rootScope.slatwall.account.accountID || "";
+	                return _this.$hibachi.saveEntity("comment", '', commentObject, "save");
 	            }
 	        };
 	        /** Deletes a comment. */
 	        this.deleteComment = function (comment) {
 	            if (comment != undefined) {
-	                return _this.$hibachi.saveEntity("comment", '', comment, "delete");
+	                return _this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete");
 	            }
 	        };
 	        /** Various collections used to retrieve data. */
@@ -50390,10 +50397,14 @@
 	                //GET the state.
 	                _this.state = stateChanges;
 	            }
-	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE" || stateChanges.action.type == "EDIT_COMMENT_TOGGLE")) {
+	            if ((stateChanges.action && stateChanges.action.type) && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE") {
 	                //GET the state.
 	                _this.state = stateChanges;
 	                console.log("Updated State", _this.state);
+	            }
+	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "EDIT_COMMENT_TOGGLE" || stateChanges.action.type == "SAVE_COMMENT_ACTION" || stateChanges.action.type == "DELETE_COMMENT_ACTION")) {
+	                //GET the state.
+	                _this.state = stateChanges;
 	            }
 	            //If there has been a change to the state because of the listing, update as well.
 	        });
