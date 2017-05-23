@@ -46,7 +46,6 @@
 
 
 		public any function save( required target ) {
-
 			// Save this entity
 			entitySave( target );
 

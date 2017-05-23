@@ -80,21 +80,21 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	// ================== START: Overridden Methods ========================
 	
 	public numeric function getQuantityIn(){
-		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
 			return int(variables.quantityIn);
 		}
 		return variables.quantityIn;
 	}
 
 	public numeric function getQuantityOut(){
-		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
 			return int(variables.quantityOut);
 		}
 		return variables.quantityOut;
 	}
 
 	public void function setQuantityIn(required numeric quantity){
-		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
 			variables.quantityIn = int(arguments.quantity);
 		}else{
 			variables.quantityIn = arguments.quantity;
@@ -102,7 +102,7 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	}
 
 	public void function setQuantityOut(required numeric quantity){
-		if(getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
 			variables.quantityOut = int(arguments.quantity);
 		}else{
 			variables.quantityOut = arguments.quantity;

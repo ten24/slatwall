@@ -353,7 +353,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setCost(0);
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
 			}
-			
+
 			this.saveStockReceiver( stockReceiver );
 		}
 		
@@ -394,7 +394,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						headObjects.stockReceiver.setStockAdjustment( arguments.stockAdjustment );
 						this.saveStockReceiver( headObjects.stockReceiver );
 					}
-					
+
 					// Creating Detail
 					var stockReceiverItem = this.newStockReceiverItem();
 					stockReceiverItem.setStockReceiver( headObjects.stockReceiver );
@@ -403,7 +403,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setCost( 0 );
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
 			
-				
+
 				// If this is Out, create delivery
 				} else if (!isNull(stockAdjustmentItem.getFromStock())) {
 					
@@ -412,6 +412,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						headObjects.stockAdjustmentDelivery = this.newStockAdjustmentDelivery();
 						headObjects.stockAdjustmentDelivery.setStockAdjustment( arguments.stockAdjustment );
 						this.saveStockAdjustmentDelivery( headObjects.stockAdjustmentDelivery );
+
 					}
 					
 					// Creating Detail
@@ -426,7 +427,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Set the status to closed
 		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );	
-
 	return arguments.stockAdjustment;
 
 	}

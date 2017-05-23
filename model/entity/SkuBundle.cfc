@@ -66,7 +66,6 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	
 	// Non-Persistent Properties
 
-
 	public string function getSimpleRepresentation() {
     	return getSku().getSkuCode();
     }
@@ -101,7 +100,23 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 		}
 		variables.measurementUnit = measurementUnit;
 	}
-	
+
+	public numeric function getNativeUnitQuantityFromBundledQuantity(){
+
+		if(isNull(getMeasurementUnit()) || isNull(getBundledSku().getInventoryMeasurementUnit())){
+			return getBundledQuantity();
+		}
+		return getService('measurementService').convertUnits(amount=getBundledQuantity(), originalUnitCode=getMeasurementUnit().getUnitCode(), convertToUnitCode=getBundledSku().getInventoryMeasurementUnit().getUnitCode());
+	}
+
+	public numeric function getBundledUnitQuantityFromNativeQuantity(){
+
+		if(isNull(getMeasurementUnit()) || isNull(getBundledSku().getInventoryMeasurementUnit())){
+			return getBundledQuantity();
+		}
+		return getService('measurementService').convertUnits(amount=getBundledQuantity(), originalUnitCode=getBundledSku().getInventoryMeasurementUnit().getUnitCode(), convertToUnitCode=getMeasurementUnit().getUnitCode());
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
