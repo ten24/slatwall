@@ -78,20 +78,6 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
-	
-	public numeric function getQuantityIn(){
-		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
-			return int(variables.quantityIn);
-		}
-		return variables.quantityIn;
-	}
-
-	public numeric function getQuantityOut(){
-		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
-			return int(variables.quantityOut);
-		}
-		return variables.quantityOut;
-	}
 
 	public void function setQuantityIn(required numeric quantity){
 		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
