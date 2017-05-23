@@ -123,17 +123,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function isAlreadyAttendingEvent(){
 		for (registrant in getRegistrants()) {
-			var accountID = registrant.accountID;
-
-			var eventRegistrationCollectionlist = getService('eventRegistrationService').getEventRegistrationCollectionlist();
-			eventRegistrationCollectionlist.addFilter('account.accountID',accountID);
-			eventRegistrationCollectionlist.addFilter('sku.skuID',getSku().getSkuID());
-			eventRegistrationCollectionlist.addFilter('eventRegistrationStatusType.systemCode','erstCancelled','!=');
-
-			if(!isNull(eventRegistrationCollectionlist.getRecordsCount())){
-				return true;
+			if(!isNull(registrant.accountID)) {
+				var accountID = registrant.accountID;
+				var eventRegistrationCollectionlist = getService('eventRegistrationService').getEventRegistrationCollectionlist();
+				eventRegistrationCollectionlist.addFilter('account.accountID',accountID);
+				eventRegistrationCollectionlist.addFilter('sku.skuID',getSku().getSkuID());
+				eventRegistrationCollectionlist.addFilter('eventRegistrationStatusType.systemCode','erstCancelled','!=');
+				if(!isNull(eventRegistrationCollectionlist.getRecordsCount())){
+					return true;
+				}
 			}
 		}
+		return false;
 	}
 
 	public array function getChildOrderItems(){
