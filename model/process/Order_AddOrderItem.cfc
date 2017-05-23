@@ -123,7 +123,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function isAlreadyAttendingEvent(){
 		for (registrant in getRegistrants()) {
-			if(!isNull(registrant.accountID)) {
+			if(structKeyExists(registrant, 'accountID')) {
 				var accountID = registrant.accountID;
 				var eventRegistrationCollectionlist = getService('eventRegistrationService').getEventRegistrationCollectionlist();
 				eventRegistrationCollectionlist.addFilter('account.accountID',accountID);
