@@ -234,18 +234,18 @@
             var columnCount = arrayLen(columnArray);
             
             if(arguments.fileType == 'csv'){
-					getService("HibachiUtilityService").queryToCsvFile(
-						filePath = filePath,
-						queryData = arguments.data,
-						columnNames = columnNames,
-						columnTitles = columns
-					);
+				getHibachiUtilityService().queryToCsvFile(
+					filePath = filePath,
+					queryData = arguments.data,
+					columnNames = columnNames,
+					columnTitles = columns
+				);
             }else{
-					throw("Implement export for fileType #arguments.fileType#");
+				throw("Implement export for fileType #arguments.fileType#");
             }
             
 			if(structKeyExists(arguments, "downloadFile") && arguments.downloadFile == true){
-				getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
+				getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
 			} else{
 				result.fileName = fileNameWithExt;
 				result.fileType = fileType;
