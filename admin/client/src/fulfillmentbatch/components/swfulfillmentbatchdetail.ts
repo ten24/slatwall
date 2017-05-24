@@ -1,10 +1,6 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import {Observable} from 'rxjs/Observable';
-
-type ActionName = "toggle" | "refresh";
-
 /**
  * Fulfillment Batch Detail Controller
  */
@@ -17,7 +13,7 @@ class SWFulfillmentBatchDetailController  {
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
-            //We only care about the state changes for fulfillmentBatchDetail right now.
+            //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
             
             if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_SETUP"){
                 //GET the state.
@@ -34,6 +30,7 @@ class SWFulfillmentBatchDetailController  {
             //If there has been a change to the state because of the listing, update as well.
 
         });
+        
         //Dispatch the fulfillmentBatchID and setup the state.
         this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);
 

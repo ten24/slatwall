@@ -207,7 +207,6 @@ class SWOrderFulfillmentListController {
 
     //ACTION CREATOR: This will toggle the listing between its 2 states (orderfulfillments and orderitems)
     public toggleOrderFulfillmentListing = () => {
-        console.log("Dispatching");
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({type: "TOGGLE_FULFILLMENT_LISTING", payload: {}});
     }
 
@@ -223,7 +222,6 @@ class SWOrderFulfillmentListController {
      */
     public refreshPage = () => {
         if (this.utilityService.isMultiPageMode()){
-            console.log("MultiPageMode");
             window.location.reload();
         }
     }

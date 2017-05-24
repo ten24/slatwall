@@ -50075,7 +50075,6 @@
 	        };
 	        //ACTION CREATOR: This will toggle the listing between its 2 states (orderfulfillments and orderitems)
 	        this.toggleOrderFulfillmentListing = function () {
-	            console.log("Dispatching");
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({ type: "TOGGLE_FULFILLMENT_LISTING", payload: {} });
 	        };
 	        /**
@@ -50089,7 +50088,6 @@
 	         */
 	        this.refreshPage = function () {
 	            if (_this.utilityService.isMultiPageMode()) {
-	                console.log("MultiPageMode");
 	                window.location.reload();
 	            }
 	        };
@@ -50472,7 +50470,7 @@
 	        };
 	        //setup a state change listener and send over the fulfillmentBatchID
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
-	            //We only care about the state changes for fulfillmentBatchDetail right now.
+	            //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
 	            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_SETUP") {
 	                //GET the state.
 	                _this.state = stateChanges;
