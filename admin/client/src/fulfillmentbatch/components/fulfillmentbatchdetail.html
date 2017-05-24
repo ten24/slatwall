@@ -137,8 +137,8 @@
                     <!--- During editing it is a textarea --->
                     <span ng-if="swFulfillmentBatchDetailController.state.commentBeingEdited == comment">
                     	<span ng-init="editComment = comment.comment"></span><!--- Set the initial value of the comment --->
-                    	<textarea class="form-control" name="name" rows="3" cols="" ng-model="swFulfillmentBatchDetailController.state.editComment"></textarea>
-                    	<button class="btn btn-sm btn-primary" ng-disabled="!swFulfillmentBatchDetailController.state.editComment" style="margin-top:5px" ng-click="swFulfillmentBatchDetailController.userSavingComment(comment, swFulfillmentBatchDetailController.state.editComment)">Save Comment</button>
+                    	<textarea class="form-control" name="name" rows="3" cols="" ng-model="editComment"></textarea>
+                    	<button class="btn btn-sm btn-primary" ng-disabled="!editComment" style="margin-top:5px" ng-click="swFulfillmentBatchDetailController.userSavingComment(comment, editComment)">Save Comment</button>
                     </span>
                 </li>
                 

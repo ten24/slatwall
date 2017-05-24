@@ -39623,7 +39623,7 @@
 	                    _this.getListing(listingID).collectionConfig.setCurrentPage(_this.getListing(listingID).paginator.getCurrentPage());
 	                    _this.getListing(listingID).collectionConfig.setPageShow(_this.getListing(listingID).paginator.getPageShow());
 	                    if (_this.getListing(listingID).multiSlot) {
-	                        _this.getListing(listingID).collection.getEntity().then(function (data) {
+	                        _this.getListing(listingID).collectionConfig.getEntity().then(function (data) {
 	                            _this.getListing(listingID).collectionData = data;
 	                            _this.setupDefaultCollectionInfo(listingID);
 	                            _this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
