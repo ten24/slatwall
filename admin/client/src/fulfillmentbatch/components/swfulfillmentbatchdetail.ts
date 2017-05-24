@@ -11,6 +11,17 @@ class SWFulfillmentBatchDetailController  {
     
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
+        //Setup a refresh action that saves the state of the view.
+        window.onbeforeunload = (event) => {
+            this.serialize();
+            return true;
+        }
+        //Setup
+        window.onload = (event) => {
+            this.deserialize();
+            return true;
+        }
+        //Setup a load handler that checks for the data.
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
             //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
@@ -27,8 +38,7 @@ class SWFulfillmentBatchDetailController  {
                 //GET the state.
                 this.state = stateChanges;
             }
-            //If there has been a change to the state because of the listing, update as well.
-
+            
         });
         
         //Dispatch the fulfillmentBatchID and setup the state.

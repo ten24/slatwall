@@ -79,7 +79,12 @@ Notes:
 					<sw-card-icon icon-name="shopping-cart"></sw-card-icon>
 					<sw-card-header style="border-bottom:none">Batch ID</sw-card-header>
 					<sw-card-body>
-						#rc.fulfillmentBatch.getFulfillmentBatchNumber()#
+						<cfif rc.edit eq "true">
+							<swa:SlatwallPropertyDisplay object="#rc.fulfillmentBatch#" property="fulfillmentBatchNumber" value="#rc.fulfillmentBatch.getFulfillmentBatchNumber()#" title=" " edit="false"></swa:SlatwallPropertyDisplay>
+						<cfelse>
+							#rc.fulfillmentBatch.getFulfillmentBatchNumber()#
+						</cfif>
+						
 					</sw-card-body>
 				</sw-card-view>
 				
@@ -94,13 +99,21 @@ Notes:
 				<sw-card-view id="location" card-size="sm">
 					<sw-card-icon icon-name="building"></sw-card-icon>
 					<sw-card-header style="border-bottom:none">Location</sw-card-header>
-					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> No location. </cfif></sw-card-body>
+					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
 				</sw-card-view>
 			</div>
 			
 			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
 				<!--- Description --->
-				<sw-card-view id="description" card-title="Description" card-body="#rc.fulfillmentBatch.getDescription()#"></sw-card-view>
+				<sw-card-view id="description" card-title="Description">
+					<sw-card-body>
+						<cfif rc.edit eq "true">
+							<swa:SlatwallPropertyDisplay fieldclass="form-control" object="#rc.fulfillmentBatch#" property="description" value="#rc.fulfillmentBatch.getDescription()#" edit="#rc.edit#"></swa:SlatwallPropertyDisplay>
+						<cfelse>
+							#rc.fulfillmentBatch.getDescription()#
+						</cfif>
+					</sw-card-body>
+				</sw-card-view>
 			</div>
 			
 			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	

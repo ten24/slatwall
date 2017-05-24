@@ -34174,7 +34174,8 @@
 	        };
 	        this.addFilterGroup = function (filterGroup) {
 	            var group = {
-	                filterGroup: []
+	                filterGroup: [],
+	                logicalOperator: 'AND'
 	            };
 	            for (var i = 0; i < filterGroup.length; i++) {
 	                var filter = _this.createFilter(filterGroup[i].propertyIdentifier, filterGroup[i].comparisonValue, filterGroup[i].comparisonOperator, filterGroup[i].logicalOperator, filterGroup[i].hidden);
@@ -50191,13 +50192,13 @@
 	                var filter = {};
 	                if (value == true) {
 	                    if (key == "partial") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode", "ofisPartial", "=", "OR", false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisPartial", "=", "OR", false);
 	                    }
 	                    if (key == "available") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode", "ofisAvailable", "=", "OR", false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=", "OR", false);
 	                    }
 	                    if (key == "unavailable") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode", "ofisUnavailable", "=", "OR", false);
+	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisUnavailable", "=", "OR", false);
 	                    }
 	                    if (key == "location") {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=", "OR", false);
@@ -50544,6 +50545,17 @@
 	                payload: {}
 	            });
 	        };
+	        //Setup a refresh action that saves the state of the view.
+	        window.onbeforeunload = function (event) {
+	            _this.serialize();
+	            return true;
+	        };
+	        //Setup
+	        window.onload = function (event) {
+	            _this.deserialize();
+	            return true;
+	        };
+	        //Setup a load handler that checks for the data.
 	        //setup a state change listener and send over the fulfillmentBatchID
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
 	            //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
@@ -50559,7 +50571,6 @@
 	                //GET the state.
 	                _this.state = stateChanges;
 	            }
-	            //If there has been a change to the state because of the listing, update as well.
 	        });
 	        //Dispatch the fulfillmentBatchID and setup the state.
 	        this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);

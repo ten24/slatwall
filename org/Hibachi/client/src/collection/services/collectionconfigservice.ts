@@ -514,7 +514,8 @@ class CollectionConfig {
     
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         var group = {
-            filterGroup:[]
+            filterGroup:[],
+            logicalOperator: 'AND'
         };
         for(var i =  0; i < filterGroup.length; i++){
             var filter = this.createFilter(

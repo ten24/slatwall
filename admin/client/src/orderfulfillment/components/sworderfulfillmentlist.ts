@@ -256,17 +256,17 @@ class SWOrderFulfillmentListController {
             if (value == true){
                 
                 if (key == "partial"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisPartial","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisPartial","=","OR",false);
 
                 }
                 if (key == "available"){
 
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisAvailable","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisAvailable","=","OR",false);
 
                 }
                 if (key == "unavailable"){
 
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatusType.systemCode","ofisUnavailable","=","OR",false);
+                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisUnavailable","=","OR",false);
 
                 }
                 if (key == "location"){
