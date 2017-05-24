@@ -1,2 +1,2 @@
 <cfset variables.framework.applicationKey="Slatwall" />
-<cfset variables.framework.action="slatAction" />everting configFrameword
+<cfset variables.framework.action="slatAction" />
