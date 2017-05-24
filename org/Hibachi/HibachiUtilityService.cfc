@@ -833,6 +833,61 @@
 			return linebreak;
 		}
 
+		public string function trimList(required string originalList, string delimiter = ","){
+			return REReplace(trim(originalList),"\s*#delimiter#\s*",delimiter,"ALL");
+		}
+
+
+		public void function queryToCsvFile(required string filePath, required query queryData, boolean includeHeaderRow = true, string delimiter = ",", string columnNames = "", string columnTitles = ""){
+
+			var newLine     = (chr(13) & chr(10));
+			var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
+
+			if(!listLen(arguments.columnNames)){
+				arguments.columnNames = arguments.queryData.columnlist;
+			}
+
+			if(!listLen(arguments.columnTitles)){
+				arguments.columnTitles = arguments.columnNames;
+			}
+
+			// Check if we should include a header row
+			if(arguments.includeHeaderRow){
+				//Create the file with the headers
+				fileWrite(arguments.filePath,"#ListQualify(arguments.columnTitles,'"',',','all')##newLine#");
+			}else{
+				//Create the file
+				fileWrite(arguments.filePath,"");
+			}
+
+			var colArray = listToArray(arguments.columnNames);
+			var dataFile = fileOpen(filePath,"append");
+
+			// Loop over query and build csv rows
+			for(var i=1; i <= arguments.queryData.recordcount; i++){
+				// this individual row
+				var thisRow = [];
+				// loop over column list
+				for(var j=1; j <= arrayLen(colArray); j=j+1){
+					// create our row
+					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+				}
+				// Append new row to csv output
+				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
+				if(i mod 1000 EQ 0){
+					fileWriteLine(dataFile,buffer.toString());
+					buffer.setLength(0);
+				}else{
+					buffer.append(JavaCast('string', newLine));
+				}
+			}
+			if(buffer.length()){
+				fileWriteLine(dataFile,buffer.toString());
+				buffer.setLength(0);
+			}
+			fileClose(dataFile);
+		};
+
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public">
@@ -1209,6 +1264,26 @@
 		<cfset mac.update(jMsg) />
 
 		<cfreturn mac.doFinal() />
+	</cffunction>
+
+	<cffunction name="HMAC_SHA256" returntype="binary" access="public" output="false">
+		<cfargument name="signKey" type="string" required="true" />
+		<cfargument name="signMessage" type="string" required="true" />
+
+		<cfset var jMsg = JavaCast("string",arguments.signMessage).getBytes("iso-8859-1") />
+		<cfset var jKey = JavaCast("string",arguments.signKey).getBytes("iso-8859-1") />
+
+		<cfset var key = createObject("java","javax.crypto.spec.SecretKeySpec") />
+		<cfset var mac = createObject("java","javax.crypto.Mac") />
+
+		<cfset key = key.init(jKey,"HmacSHA256") />
+
+		<cfset mac = mac.getInstance(key.getAlgorithm()) />
+		<cfset mac.init(key) />
+		<cfset mac.update(jMsg) />
+
+		<cfreturn mac.doFinal() />
+
 	</cffunction>
 
 	<cffunction name="createS3Signature" returntype="string" access="public" output="false">
