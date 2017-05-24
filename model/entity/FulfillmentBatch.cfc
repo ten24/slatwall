@@ -142,16 +142,16 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	public any function getTotalQuantityOnBatch() {
 		var totalQuantityOnBatch = 0;
 		for (fulfillmentItem in getFulfillmentBatchItems() ){
-			totalQuantityOnBatch += fulfillmentItem.getQuantityOnBatch();
+			totalQuantityOnBatch += (fulfillmentItem.getOrderFulfillment().getQuantityUnDelivered()+fulfillmentItem.getOrderFulfillment().getQuantityDelivered());
 		}
 		return totalQuantityOnBatch;
 	}
 	
 	//The total number of fulfillments in this batch.
-	public any function getTotalQuantityOnBatchCompleted() {
+	public any function getFulfillmentsCompletedTotal() {
 		var totalQuantityOnBatchCompleted = 0;
 		for (fulfillmentItem in getFulfillmentBatchItems() ){
-			totalQuantityOnBatchCompleted += fulfillmentItem.getQuantityCompleted();
+			totalQuantityOnBatchCompleted += fulfillmentItem.getOrderFulfillment().getQuantityDelivered();
 		}
 		return totalQuantityOnBatchCompleted;
 	}

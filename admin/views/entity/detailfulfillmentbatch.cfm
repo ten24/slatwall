@@ -55,27 +55,22 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityDetailForm object="#rc.fulfillmentBatch#" edit="#rc.edit#">
 	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-	<cfif !isNull(rc.fulfillmentBatch.getFulfillmentBatchItems())>
-		<cfset totalFulfilled = 0>
-		<cfset totalUnFulfilled = 0>
-		<cfset totalItems = 0>
-		<cfset totalPercentFulfilled = 0>
-		<cfloop array="#rc.fulfillmentBatch.getFulfillmentBatchItems()#" index="local.fulfillmentBatchItem">
-			<cfif local.fulfillmentBatchItem.getQuantityFulfilled() > 0>
-				<cfset totalFulfilled += local.fulfillmentBatchItem.getQuantityFulfilled()>
-			<cfelse>
-				<cfset totalUnfulfilled += local.fulfillmentBatchItem.getQuantityPicked()>
-			</cfif>
-			<cfset totalItems += local.fulfillmentBatchItem.getQuantityOnBatch()>
-		</cfloop>
-		
-		<cfif totalFulfilled > 0>
-			<cfset totalPercentFulfilled = (totalItems / totalFulfilled) * 100 >
+	<cfset totalFulfilled = rc.fulfillmentBatch.getFulfillmentsCompletedTotal()>
+	<cfset totalOnBatch = rc.fulfillmentBatch.getTotalQuantityOnBatch()>
+	<cfif totalFulfilled gt 0>
+			<cfset totalPercentFulfilled = (totalFulfilled/totalOnBatch)*100 >
 		<cfelse>
 			<cfset totalPercentFulfilled = 0 >
 		</cfif>
+	
+	<cfif !isNull(rc.fulfillmentBatch.getLocations() && arrayLen(rc.fulfillmentBatch.getLocations()))>
+		<cfset primaryAddress = rc.fulfillmentBatch.getLocations()[1].getPrimaryAddress()>
+		<cfif !isNull(primaryAddress)>
+			<cfset defaultLocation = primaryAddress.getCity() & ' ' & primaryAddress.getStateCode()>
+		</cfif>
 	</cfif>
-	<section class="s-pick-pack-detail container" ng-init="expanded = true">
+	
+	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">
 			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				
@@ -83,7 +78,9 @@ Notes:
 				<sw-card-view id="batchNumber" card-size="sm">
 					<sw-card-icon icon-name="shopping-cart"></sw-card-icon>
 					<sw-card-header style="border-bottom:none">Batch ID</sw-card-header>
-					<sw-card-body>#rc.fulfillmentBatch.getFulfillmentBatchNumber()#</sw-card-body>
+					<sw-card-body>
+						#rc.fulfillmentBatch.getFulfillmentBatchNumber()#
+					</sw-card-body>
 				</sw-card-view>
 				
 				<sw-card-view id="assignedAccount" card-size="sm">
@@ -97,9 +94,8 @@ Notes:
 				<sw-card-view id="location" card-size="sm">
 					<sw-card-icon icon-name="building"></sw-card-icon>
 					<sw-card-header style="border-bottom:none">Location</sw-card-header>
-					<sw-card-body>New York</sw-card-body>
+					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> No location. </cfif></sw-card-body>
 				</sw-card-view>
-				
 			</div>
 			
 			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
@@ -113,7 +109,7 @@ Notes:
 					<sw-card-header>Status</sw-card-header>
 					
 					<!--- Number of fulfillments total --->
-					<sw-card-list-item title="Fulfillments" value="#totalItems#" strong="true"></sw-card-list-item>
+					<sw-card-list-item title="Fulfillments" value="#totalOnBatch#" strong="true"></sw-card-list-item>
 					
 					<!--- Number of fulfillments fulfilled --->
 					<sw-card-list-item title="Completed" value="#totalFulfilled#"></sw-card-list-item>

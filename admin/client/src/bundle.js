@@ -33606,7 +33606,7 @@
 	        };
 	        this.transclude = true;
 	        this.require = "^SWCardView";
-	        this.template = "\n        <div class=\"row s-line-item\" ng-transclude>\n            <div class=\"col-xs-12\">\n                <div class=\"progress\">\n                    <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{SwCardProgressBarController.valueNow}}\" aria-valuemin=\"{{SwCardProgressBarController.valueMin}}\" aria-valuemax=\"{{SwCardProgressBarController.valueMax}}\" style=\"width:{{SwCardProgressBarController.valueMax|'0'}}%;\">\n                        {{SwCardProgressBarController.valueNow|number :0}}% \n                    </div>\n                </div>\n            </div>\n        </div>\n            ";
+	        this.template = "\n        <div class=\"row s-line-item\" ng-transclude>\n            <div class=\"col-xs-12\">\n                <div class=\"progress\">\n                    <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{SwCardProgressBarController.valueNow}}\" aria-valuemin=\"{{SwCardProgressBarController.valueMin}}\" aria-valuemax=\"{{SwCardProgressBarController.valueMax}}\" style=\"width:{{(SwCardProgressBarController.valueNow||0)}}%;\">\n                        {{SwCardProgressBarController.valueNow|number :0}}% \n                    </div>\n                </div>\n            </div>\n        </div>\n            ";
 	    }
 	    /**
 	     * Handles injecting the partials path into this class
@@ -39255,6 +39255,22 @@
 	                else {
 	                    _this.selectionService.removeSelection(_this.getListing(listingID).tableID, _this.getListingPageRecords(listingID)[i][_this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
 	                }
+	            }
+	        };
+	        /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
+	        this.getSelectedBy = function (listingID, propertyName, value) {
+	            if (!listingID || !propertyName || !value) {
+	                return -1;
+	            }
+	            ;
+	            console.log("Selected: ", _this.getListing(listingID).collectionData.pageRecords.findIndex(function (record) { return record[propertyName] == value; }));
+	            return _this.getListing(listingID).collectionData.pageRecords.findIndex(function (record) { return record[propertyName] == value; });
+	        };
+	        this.clearAllSelections = function (listingID) {
+	            if (!listingID)
+	                return -1;
+	            for (var i = 0; i < _this.getListing(listingID).collectionData.pageRecords.length; i++) {
+	                _this.selectionService.removeSelection(_this.getListing(listingID).tableID, _this.getListingPageRecords(listingID)[i][_this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
 	            }
 	        };
 	        this.getNGClassObjectForPageRecordRow = function (listingID, pageRecord) {
@@ -49697,6 +49713,11 @@
 	                    _this.state.editComment = false;
 	                    _this.state.commentBeingEdited = undefined;
 	                    return __assign({}, _this.state, { action: action });
+	                case 'FULFILLMENT_ACTION':
+	                    //create all the data
+	                    console.log("Fulfilling Items", _this.state.currentRecordOrderDetail, action.payload.viewState);
+	                    _this.fulfillItems(action.payload.viewState, false);
+	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return state;
 	            }
@@ -49712,6 +49733,18 @@
 	                    //Outer table, will need to toggle and set the floating cards to this data.
 	                    if (angular.isDefined(update.action.payload)) {
 	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1") {
+	                            /* if (update.action.payload.values.length){
+	                                 let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable2", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
+	                                 if (selectedRowIndex != -1){
+	                                 this.listingService
+	                                     .getListing("fulfillmentBatchItemTable2").selectionService
+	                                         .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID,
+	                                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+	                                 }
+	                             }else{
+	                                 this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
+	                                 this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+	                             }*/
 	                            //on the first one being selected, go to the shrink view.
 	                            if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1) {
 	                                if (_this.state.expandedFulfillmentBatchListing) {
@@ -49738,13 +49771,10 @@
 	                            //set the inner selection to this selection.
 	                        }
 	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2") {
-	                            //inner listing updated.
 	                            //if nothing is selected, go back to the outer view.
 	                            if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
 	                                if (_this.state.expandedFulfillmentBatchListing == false) {
 	                                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
-	                                    //set the outer selection to this selection.
-	                                    //this.state.currentSelectedFulfillmentBatchItemID = "";
 	                                    _this.emitUpdateToClient();
 	                                }
 	                            }
@@ -49771,6 +49801,51 @@
 	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
 	                return _this.$hibachi.saveEntity("fulfillmentBatch", '', processObject.data, "create");
 	            }
+	        };
+	        /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
+	        this.fulfillItems = function (state, ignoreCapture) {
+	            if (state === void 0) { state = {}; }
+	            if (ignoreCapture === void 0) { ignoreCapture = false; }
+	            console.log("ViewState", state);
+	            var data = {};
+	            //Add the order information
+	            data.order = {};
+	            data.order['orderID'] = _this.state.currentRecordOrderDetail['order_orderID'];
+	            //Add the orderFulfillment.
+	            data['orderDeliveryID'] = ""; //this indicates the the orderDelivery is being created.
+	            data['orderFulfillment'] = {};
+	            data['orderFulfillment']['orderFulfillmentID'] = _this.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID'];
+	            data['trackingNumber'] = state.trackingCode || "";
+	            //Add the orderDelivertyItems as an array with the quantity set to the quantity.
+	            //Make sure all of the deliveryitems have a quantity set by the user.
+	            var idx = 1; //coldfusion indexes at 1
+	            data['orderDeliveryItems'] = [];
+	            for (var orderDeliveryItem in state.orderItem) {
+	                if (state.orderItem[orderDeliveryItem] != undefined) {
+	                    data['orderDeliveryItems'].push({ orderItem: { orderItemID: orderDeliveryItem }, quantity: state.orderItem[orderDeliveryItem] });
+	                }
+	                idx++;
+	            }
+	            //Add the payment information
+	            if (_this.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0 && !ignoreCapture) {
+	                data.captureAuthorizedPaymentsFlag = true;
+	                data.capturableAmount = _this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+	            }
+	            //Create the process object.
+	            var processObject = _this.$hibachi.newOrderDelivery_Create();
+	            processObject.data = data;
+	            processObject.data.entityName = "OrderDelivery";
+	            //Basic Information
+	            processObject.data['location'] = { 'locationID': "402828f95b108573015b165f48760528" }; //sets a random location for now until batch issue with location is resolved.
+	            //Shipping information.
+	            processObject.data['containerLabel'] = data.containerLabel || "";
+	            processObject.data['shippingIntegration'] = data.shippingIntegration || "";
+	            processObject.data['shippingAddress'] = data.shippingAddress || "";
+	            processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
+	            //If we need to capture as well as fulfill.
+	            processObject.data['captureAuthorizedPaymentsFlag'] = data.captureAuthorizedPaymentsFlag || false;
+	            processObject.data['capturableAmount'] = data.capturableAmount || "";
+	            return _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create");
 	        };
 	        /** Saves a comment. */
 	        this.saveComment = function (comment, newCommentText) {
@@ -49845,6 +49920,7 @@
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderOpenDateTime", "Open Date"); //date placed
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderCloseDateTime", "Close Date");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderNumber", "Order Number");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderID", "OrderID");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", { persistent: false });
 	            //For the account portion of the tab.
@@ -50426,10 +50502,10 @@
 	                payload: { comment: comment, commentText: commentText }
 	            });
 	        };
-	        this.userFulfillment = function () {
+	        this.userCaptureAndFulfill = function () {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: "FULFILLMENT_ACTION",
-	                payload: {}
+	                payload: { viewState: _this.state }
 	            });
 	        };
 	        this.userPrintPickingList = function () {

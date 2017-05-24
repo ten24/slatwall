@@ -78,7 +78,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		//Add the locations
-		if (!arrayLen(fulfillmentBatch.getLocations())){
+		if (!isNull(processObject.getLocations()) ){
 			var locations = processObject.getLocations();
 			for (var location in locations){
 				if (!isNull(location) && !fulfillmentBatch.hasLocation(location)){
@@ -86,6 +86,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		
 		//Set the description
 		if (isNull(fulfillmentBatch.getDescription())){
 			arguments.fulfillmentBatch.setDescription(processObject.getDescription());

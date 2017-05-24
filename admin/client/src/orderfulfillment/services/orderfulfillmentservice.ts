@@ -10,7 +10,7 @@ import * as Store from '../../../../../org/hibachi/client/src/core/prototypes/St
  */
 class OrderFulfillmentService {
     //This is the single object that contains all state for the component.
-    private state = {
+    private state:any = {
         //boolean
         showFulfillmentListing: true,
         expandedFulfillmentBatchListing: true,
@@ -108,6 +108,14 @@ class OrderFulfillmentService {
                 return {
                     ...this.state, action
                 }
+            case 'FULFILLMENT_ACTION':
+                //create all the data
+                console.log("Fulfilling Items", this.state.currentRecordOrderDetail, action.payload.viewState);
+                this.fulfillItems(action.payload.viewState, false);
+                
+                return {
+                    ...this.state, action
+                }
             default:
                 return state;
         }
@@ -141,7 +149,18 @@ class OrderFulfillmentService {
                 //Outer table, will need to toggle and set the floating cards to this data.
                 if (angular.isDefined(update.action.payload)){
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
-                        
+                       /* if (update.action.payload.values.length){
+                            let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable2", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
+                            if (selectedRowIndex != -1){
+                            this.listingService
+                                .getListing("fulfillmentBatchItemTable2").selectionService
+                                    .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
+                                        this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+                            }
+                        }else{
+                            this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
+                            this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+                        }*/
                         //on the first one being selected, go to the shrink view.
                         if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1){
                             if (this.state.expandedFulfillmentBatchListing){
@@ -169,13 +188,11 @@ class OrderFulfillmentService {
                         //set the inner selection to this selection.
                     }
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2"){
-                        //inner listing updated.
+                        
                         //if nothing is selected, go back to the outer view.
                         if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0){
                             if (this.state.expandedFulfillmentBatchListing == false){
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
-                                //set the outer selection to this selection.
-                                //this.state.currentSelectedFulfillmentBatchItemID = "";
                                 this.emitUpdateToClient();
                             }
                         }
@@ -205,6 +222,55 @@ class OrderFulfillmentService {
 
             return this.$hibachi.saveEntity("fulfillmentBatch",'',processObject.data, "create");
         }
+    }
+
+    /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
+    public fulfillItems = (state:any={}, ignoreCapture:boolean = false) => {
+        console.log("ViewState",state);
+        let data:any = {};
+        //Add the order information
+        data.order = {};
+        data.order['orderID'] = this.state.currentRecordOrderDetail['order_orderID'];
+        //Add the orderFulfillment.
+        data['orderDeliveryID'] = ""; //this indicates the the orderDelivery is being created.
+        data['orderFulfillment'] = {};
+        data['orderFulfillment']['orderFulfillmentID'] = this.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID'];
+        data['trackingNumber'] = state.trackingCode || "";
+
+        //Add the orderDelivertyItems as an array with the quantity set to the quantity.
+        //Make sure all of the deliveryitems have a quantity set by the user.
+        let idx = 1; //coldfusion indexes at 1
+        data['orderDeliveryItems'] = [];
+        for (var orderDeliveryItem in state.orderItem){
+            if (state.orderItem[orderDeliveryItem] != undefined){
+                data['orderDeliveryItems'].push({orderItem: {orderItemID: orderDeliveryItem}, quantity: state.orderItem[orderDeliveryItem]});
+            }
+            idx++;
+        }
+
+        //Add the payment information
+        if (this.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0 && !ignoreCapture){
+            data.captureAuthorizedPaymentsFlag = true;
+            data.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+        }
+        //Create the process object.
+        let processObject = this.$hibachi.newOrderDelivery_Create();
+        processObject.data = data;
+        processObject.data.entityName = "OrderDelivery";
+        
+        //Basic Information
+        processObject.data['location'] = {'locationID': "402828f95b108573015b165f48760528"};//sets a random location for now until batch issue with location is resolved.
+        
+        //Shipping information.
+        processObject.data['containerLabel'] = data.containerLabel || "";
+        processObject.data['shippingIntegration'] = data.shippingIntegration || "";
+        processObject.data['shippingAddress'] = data.shippingAddress || "";
+        processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
+        
+        //If we need to capture as well as fulfill.
+        processObject.data['captureAuthorizedPaymentsFlag'] = data.captureAuthorizedPaymentsFlag || false;
+        processObject.data['capturableAmount'] = data.capturableAmount || "";
+        return this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create");
     }
 
     /** Saves a comment. */
@@ -284,6 +350,7 @@ class OrderFulfillmentService {
         this.state.currentRecordOrderDetail.addDisplayProperty("order.orderOpenDateTime", "Open Date"); //date placed
         this.state.currentRecordOrderDetail.addDisplayProperty("order.orderCloseDateTime", "Close Date");
         this.state.currentRecordOrderDetail.addDisplayProperty("order.orderNumber", "Order Number");
+        this.state.currentRecordOrderDetail.addDisplayProperty("order.orderID", "OrderID");
         this.state.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
         this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", {persistent: false});
         

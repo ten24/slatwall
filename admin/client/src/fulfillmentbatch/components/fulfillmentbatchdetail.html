@@ -103,13 +103,12 @@
 		                    	<span><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled' && swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span> Fulfill</span> 
 		                    </button>
                             <ul class="dropdown-menu" role="menu">
-								<li><a href="#">Fulfill</a></li>
+								<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
 		                    </ul>
                             <button type="button" class="btn btn-primary s-btn-select btn-xs" data-toggle="dropdown">
 								<span class="caret"></span>
 		                    </button>
                         </div>
-                         
                     </div>
                 </span>
             </div>
@@ -290,7 +289,7 @@
                                             <div class="col-xs-4 radio">
                                                 <input id="ManualShipment" type="radio" name="printOption">
                                                 <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
-                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code...">
+                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-model="swFulfillmentBatchDetailController.state.trackingCode">
                                             </div>
                                         </div>
                                     </div>

@@ -79,10 +79,10 @@ class SWFulfillmentBatchDetailController  {
         });
     }
 
-    public userFulfillment = () => {
+    public userCaptureAndFulfill = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "FULFILLMENT_ACTION",
-            payload: {}
+            payload: { viewState:this.state }
         });
     }
 

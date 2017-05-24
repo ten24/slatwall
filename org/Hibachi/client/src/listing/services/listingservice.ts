@@ -289,6 +289,20 @@ class ListingService{
         }
     };
 
+    /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
+    public getSelectedBy = (listingID, propertyName, value) => {
+        if (!listingID || !propertyName || !value){ return -1;};
+        console.log("Selected: ", this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value}))
+        return this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value});
+    }
+
+     public clearAllSelections = (listingID) => {
+        if (!listingID) return -1;
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        }
+    }
+
     public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
         var classObjectString = "{"; 
         angular.forEach(this.getListing(listingID).colorFilters, (colorFilter, index)=>{
