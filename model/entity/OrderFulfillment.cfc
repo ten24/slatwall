@@ -152,20 +152,22 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	 * Returns Unavailable if none of the items have inventory.
 	 */
 	public any function getOrderFulfillmentInvStatType() {
-		variables.orderFulfillmentInvStatusType = getService("typeService").getTypeBySystemCode('ofisAvailable');
-		var canNotFulfillCount = 0;
-		if(!isNull(getOrderFulfillmentItems())) {
-			for(var orderItem in getOrderFulfillmentItems()) {
-				if(!orderItem.hasQuantityWithinMaxOrderQuantity()) {
-					variables.orderFulfillmentInvStatType = getService("typeService").getTypeBySystemCode('ofisPartial');
-					canNotFulfillCount++;
+		if (!structKeyExists(variables, "orderFulfillmentInvStatType")){
+			//Calculate the status type.
+			variables.orderFulfillmentInvStatType = getService("typeService").getTypeBySystemCode('ofisAvailable');
+			var canNotFulfillCount = 0;
+			if(!isNull(getOrderFulfillmentItems())) {
+				for(var orderItem in getOrderFulfillmentItems()) {
+					if(!orderItem.hasQuantityWithinMaxOrderQuantity()) {
+						variables.orderFulfillmentInvStatType = getService("typeService").getTypeBySystemCode('ofisPartial');
+						canNotFulfillCount++;
+					}
 				}
 			}
+			if (canNotFulfillCount == arrayLen(getOrderFulfillmentItems())){
+				variables.orderFulfillmentInvStatType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
+			}
 		}
-		if (canNotFulfillCount == arrayLen(getOrderFulfillmentItems())){
-			variables.orderFulfillmentInvStatType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
-		}
-		
 		return variables.orderFulfillmentInvStatusType;
 	}
 

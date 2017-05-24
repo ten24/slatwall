@@ -50200,7 +50200,7 @@
 	                    if (key == "unavailable") {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisUnavailable", "=", "OR", false);
 	                    }
-	                    if (key == "location") {
+	                    if (key == "location" && value != undefined) {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=", "OR", false);
 	                    }
 	                    //add the filter to the group
@@ -50319,7 +50319,7 @@
 	            }
 	        };
 	        //Set the initial state for the filters.
-	        this.filters = { "unavailable": false, "partial": true, "available": true };
+	        this.filters = { "unavailable": false, "partial": false, "available": false };
 	        this.collections = [];
 	        //Some setup for the fulfillments collection.
 	        this.createOrderFulfillmentCollection();
@@ -50544,16 +50544,6 @@
 	                type: "BAR_CODE_SEARCH_ACTION",
 	                payload: {}
 	            });
-	        };
-	        //Setup a refresh action that saves the state of the view.
-	        window.onbeforeunload = function (event) {
-	            _this.serialize();
-	            return true;
-	        };
-	        //Setup
-	        window.onload = function (event) {
-	            _this.deserialize();
-	            return true;
 	        };
 	        //Setup a load handler that checks for the data.
 	        //setup a state change listener and send over the fulfillmentBatchID

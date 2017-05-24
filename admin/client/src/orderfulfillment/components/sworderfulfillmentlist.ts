@@ -40,7 +40,7 @@ class SWOrderFulfillmentListController {
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
 
         //Set the initial state for the filters.
-        this.filters = { "unavailable": false, "partial": true, "available": true };
+        this.filters = { "unavailable": false, "partial": false, "available": false };
         this.collections = [];
         
         //Some setup for the fulfillments collection.
@@ -269,7 +269,7 @@ class SWOrderFulfillmentListController {
                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisUnavailable","=","OR",false);
 
                 }
-                if (key == "location"){
+                if (key == "location" && value != undefined){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
                 }
                 //add the filter to the group

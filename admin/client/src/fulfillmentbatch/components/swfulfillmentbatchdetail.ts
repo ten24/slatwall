@@ -11,16 +11,7 @@ class SWFulfillmentBatchDetailController  {
     
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
-        //Setup a refresh action that saves the state of the view.
-        window.onbeforeunload = (event) => {
-            this.serialize();
-            return true;
-        }
-        //Setup
-        window.onload = (event) => {
-            this.deserialize();
-            return true;
-        }
+        
         //Setup a load handler that checks for the data.
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
