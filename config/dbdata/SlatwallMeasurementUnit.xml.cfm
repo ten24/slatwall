@@ -12,8 +12,7 @@
 		<Record unitCode="kg" measurementType="weight" unitName="Kilogram" conversionRatio="0.45359237" />
 		<Record unitCode="g" measurementType="weight" unitName="Gram" conversionRatio="453.59237" />
 		<Record unitCode="mg" measurementType="weight" unitName="Milligram" conversionRatio="453592.37" />
-		<Record unitCode='mL' measurementType="volume" unitName="Milliliter" conversionRatio="1" />
-		<Record unitCode='L' measurementType="volume" unitName="Liter" conversionRatio="1000" />
-		<Record unitCode='Gal' measurementType="volume" unitName="Gallon" conversionRatio="3785.411784" />
+		<Record unitCode='mL' measurementType="volume" unitName="Milliliter" conversionRatio="1000" />
+		<Record unitCode='L' measurementType="volume" unitName="Liter" conversionRatio="1" />
 	</Records>
 </Table>

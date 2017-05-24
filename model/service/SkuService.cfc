@@ -512,7 +512,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var breakupItem = getStockService().newStockAdjustmentItem();
 			breakupItem.setStockAdjustment( stockAdjustment );
-			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
+			breakupItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity()  );
 			breakupItem.setToStock( thisStock );
 
 		}
