@@ -58,9 +58,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			case "SlatwallStockReceiverItem": {
 
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
-					
+
 					// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
-					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' 
+					if(arguments.entity.getStockReceiver().getReceiverType() eq 'order' 
 						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
 						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
 
@@ -68,9 +68,10 @@ component extends="HibachiService" accessors="true" output="false" {
 							locationID=arguments.entity.getStock().getLocation().getLocationID(),
 							quantity=arguments.entity.getQuantity()
 						};
-						
+						if(arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').getPopulatedFlag()){
+							arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').setPopulatedFlag(false);
+						}
 						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'breakupBundledSkus');
-						
 					}
 
 					var inventory = this.newInventory();
