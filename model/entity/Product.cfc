@@ -702,7 +702,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -711,7 +711,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		// If this is a calculated quantity, then we can just return it
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
 			return variables[ arguments.quantityType ];
 		}
 

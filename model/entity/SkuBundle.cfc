@@ -65,6 +65,18 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	property name="bundleQATS" type="numeric" persistent="false";
+	property name="measurementUnitOptions" persistent="false";
+
+	public numeric function getBundleQATS(string locationID){
+		if(structKeyExists(arguments,'locationID')){
+			var skuQATS = getBundledSku().getQuantity(quantityType='QATS',locationID=locationID);
+		}else{
+			var skuQATS = getBundledSku().getQATS();
+		}
+		var bundleQATS = int(convertNativeToBundledUnits(skuQATS) / getBundledQuantity());
+		return bundleQATS;
+	}
 
 	public string function getSimpleRepresentation() {
     	return getSku().getSkuCode();
@@ -99,6 +111,20 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 			return;
 		}
 		variables.measurementUnit = measurementUnit;
+	}
+
+	public numeric function convertNativeToBundledUnits(required numeric quantity){
+		if(isNull(getMeasurementUnit()) || isNull(getBundledSku().getInventoryMeasurementUnit())){
+			return arguments.quantity;
+		}
+		return getService('measurementService').convertUnits(amount=arguments.quantity, originalUnitCode=getBundledSku().getInventoryMeasurementUnit().getUnitCode(), convertToUnitCode=getMeasurementUnit().getUnitCode());
+	}
+
+	public numeric function convertBundledToNativeUnits(required numeric quantity){
+		if(isNull(getMeasurementUnit()) || isNull(getBundledSku().getInventoryMeasurementUnit())){
+			return arguments.quantity;
+		}
+		return getService('measurementService').convertUnits(amount=arguments.quantity, originalUnitCode=getMeasurementUnit().getUnitCode(), convertToUnitCode=getBundledSku().getInventoryMeasurementUnit().getUnitCode());
 	}
 
 	public numeric function getNativeUnitQuantityFromBundledQuantity(){
@@ -139,6 +165,21 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 		}
 		return variables.measurementUnit;
 	}
+
+	public array function getMeasurementUnitOptions(){
+		if(!structKeyExists(variables,'measurementUnitOptions')){
+			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
+			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
+			measurementUnitCollection.addFilter('measurementType', getBundledSku().getInventoryMeasurementUnit().getMeasurementType());
+			var records = measurementUnitCollection.getRecords();
+			var recordOptions = [];
+			for(var record in records){
+				arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode});
+			}
+			variables.measurementUnitOptions = recordOptions;
+		}
+		return variables.measurementUnitOptions;
+	}
 	
 	// ==============  END: Overridden Implicet Getters ====================
 
@@ -147,6 +188,13 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
+
+	public void function preInsert(){
+		super.preInsert();
+		if(isNull(getMeasurementUnit) && !isNull(getBundledSku().getMeasurementUnit())){
+			setMeasurementUnit(getBundledSku().getMeasurementUnit());
+		}
+	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
 	

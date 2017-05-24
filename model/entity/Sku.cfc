@@ -75,7 +75,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
 	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
-	property name="inventoryMeasurementType" ormtype="string" hb_formFieldType="select";
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -182,7 +181,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
 	property name="inventoryTrackByOptions" persistent="false";
-	property name="inventoryMeasurementTypeOptions" persistent="false";
 	property name="inventoryMeasurementUnitOptions" persistent="false";
 	// Deprecated Properties
 
@@ -234,35 +232,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.inventoryTrackByOptions;
 	}
 
-	public array function getInventoryMeasurementTypeOptions(){
-		if(getInventoryTrackBy() == 'Quantity'){
-			return [];
-		}
-		if(!structKeyExists(variables,'inventoryMeasurementTypeOptions')){
-			var measurementUnit = getService('hibachiService').newMeasurementUnit();
-			variables.inventoryMeasurementTypeOptions = measurementUnit.getMeasurementTypeOptions();
-		}
-		return variables.inventoryMeasurementTypeOptions;
-	}
-
 	public array function getInventoryMeasurementUnitOptions(){
-		if(getInventoryTrackBy() == 'Quantity') {
-			return [];
-		}
-		if(!structKeyExists(variables,'inventoryMeasurementUnitOptions') || !arrayLen(variables.inventoryMeasurementUnitOptions) || variables.inventoryMeasurementUnitOptions[1].measurementType != this.getInventoryMeasurementType()){
-			if(isNull(this.getInventoryMeasurementType())){
-				variables.inventoryMeasurementUnitOptions = [];
-			}else{
-				var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
-				measurementUnitCollection.addFilter('measurementType', this.getInventoryMeasurementType());
-				measurementUnitCollection.setDisplayProperties('unitCode,unitName,measurementType');
-				var records = measurementUnitCollection.getRecords();
-				var recordOptions = [];
-				for(var record in records){
-					arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode,'measurementType'=record.measurementType});
-				}
-				variables.inventoryMeasurementUnitOptions = recordOptions;
+		if(!structKeyExists(variables,'inventoryMeasurementUnitOptions')){
+			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
+			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
+			var records = measurementUnitCollection.getRecords();
+			var recordOptions = [{'name'='','value'=''}];
+			for(var record in records){
+				arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode});
 			}
+			variables.inventoryMeasurementUnitOptions = recordOptions;
 		}
 		return variables.inventoryMeasurementUnitOptions;
 	}
@@ -565,7 +544,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 		// Request for calculated quantity
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
 			// If this is a calculated quantity and locationID exists, then delegate
 			if( structKeyExists(arguments, "locationID") ) {
 				//Need to get location and all children of location
@@ -590,7 +569,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -1513,6 +1492,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+
+	public void function setInventoryTrackBy(required any trackBy){
+		variables.inventoryTrackBy = arguments.trackBy;
+		if(arguments.trackBy == "Quantity"){
+			this.setInventoryMeasurementUnit();
+		}
+	}
+
+	public void function setInventoryMeasurementUnit(any measurementUnit){
+		if(this.getInventoryTrackBy() == "Quantity" || isNull(arguments.measurementUnit) || arguments.measurementUnit == ''){
+			structDelete(variables,'inventoryMeasurementUnit');
+			return;
+		}
+		variables.inventoryMeasurementUnit = arguments.measurementUnit;
+	}
 
 	public string function getSimpleRepresentationPropertyName() {
     		return "skuCode";

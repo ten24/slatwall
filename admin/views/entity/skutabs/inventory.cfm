@@ -66,6 +66,9 @@ Notes:
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qc.full')#">#$.slatwall.rbKey('define.qc')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qe.full')#">#$.slatwall.rbKey('define.qe')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qnc.full')#">#$.slatwall.rbKey('define.qnc')#</div></th>
+			<cfif rc.sku.getBundleFlag()>
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.mqatsbom.full')#">#$.slatwall.rbKey('define.mqatsbom')#</div></th>
+			</cfif>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
 		</tr>
@@ -82,6 +85,9 @@ Notes:
 			<td>#rc.sku.getQuantity('QC')#</td>
 			<td>#rc.sku.getQuantity('QE')#</td>
 			<td>#rc.sku.getQuantity('QNC')#</td>
+			<cfif rc.sku.getBundleFlag()>
+				<td>#rc.sku.getQuantity('MQATSBOM')#</td>
+			</cfif>
 			<td>#rc.sku.getQuantity('QATS')#</td>
 			<td>#rc.sku.getQuantity('QIATS')#</td>
 		</tr>

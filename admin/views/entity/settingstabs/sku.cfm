@@ -79,6 +79,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" />
 		<swa:SlatwallSetting settingName="skuTaxCategory" />
 		<swa:SlatwallSetting settingName="skuShippingCostExempt" />
 	</swa:SlatwallSettingTable>

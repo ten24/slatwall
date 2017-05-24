@@ -314,6 +314,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
 			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
+			skuQATSIncludesMQATSBOMFlag = {fieldtype="yesno",defaultValue=0},
 			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
 			skuShippingWeight = {fieldType="text", defaultValue=1},
 			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},

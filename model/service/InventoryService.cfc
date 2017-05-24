@@ -88,15 +88,19 @@ component extends="HibachiService" accessors="true" output="false" {
 
 					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
 					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
-						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
+						&& arguments.entity.getStock().getSku().getBundleFlag()
 						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
 						&& arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity() < 0) {
-							
+
 						var processData = {
 							locationID=arguments.entity.getStock().getLocation().getLocationID(),
-							quantity=arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity()
+							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH")
 						};
-						
+
+						if(arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').getPopulatedFlag()){
+							arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').setPopulatedFlag(false);
+						}
+
 						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makeupBundledSkus');
 					}
 					
@@ -187,6 +191,37 @@ component extends="HibachiService" accessors="true" output="false" {
 	public struct function getQS(string productID, string productRemoteID) {
 		return createInventoryDataStruct( getInventoryDAO().getQS(argumentCollection=arguments), "QS" );
 	}
+
+	//Minimum Quantity Available to Sell of Build of Materials - returns quantity of sku that can be made based on the smallest QATS of bundled skus
+	public numeric function getMQATSBOM(required any entity){
+		if(arguments.entity.getEntityName() == "SlatwallProduct"){
+			var sumMQATS = 0;
+			for(var sku in arguments.entity.getSkus()){
+				sumMQATS += this.getMQATSBOM(sku);
+			}
+			return sumMQATS;
+		}else if(arguments.entity.getEntityName() == "SlatwallStock"){
+			var sku = arguments.entity.getSku();
+			var locationID = arguments.entity.getLocationID();
+		}else{
+			var sku = arguments.entity;
+			var locationID = '';
+		}
+		if(!sku.getBundleFlag()){
+			return 0;
+		}
+		var MQATS = '';
+		for(var bundledSku in sku.getBundledSkus()){
+			var skuQATS = bundledSku.getBundleQATS(locationID=locationID);
+			if(!len(MQATS) || skuQATS < MQATS){
+				MQATS = skuQATS;
+			}
+		}
+		if(MQATS < 0){
+			MQATS = 0;
+		}
+		return MQATS;
+	}
 	
 	// These methods are derived quantity methods from respective DAO methods
 	public numeric function getQC(required any entity) {
@@ -211,6 +246,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROVOFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROVOFlag');
 			var qatsIncludesQNROSAFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.getSku().setting('skuHoldBackQuantity');
+			var qatsIncludesMQATSBOMFlag = arguments.entity.getSku().setting('skuQATSIncludesMQATSBOMFlag');
 		} else {
 			var trackInventoryFlag = arguments.entity.setting('skuTrackInventoryFlag');
 			var allowBackorderFlag = arguments.entity.setting('skuAllowBackorderFlag');
@@ -219,6 +255,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROVOFlag = arguments.entity.setting('skuQATSIncludesQNROVOFlag');
 			var qatsIncludesQNROSAFlag = arguments.entity.setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.setting('skuHoldBackQuantity');
+			var qatsIncludesMQATSBOMFlag = arguments.entity.setting('skuQATSIncludesMQATSBOMFlag');
 		}
 
 		// If trackInventory is not turned on, or backorder is true then we can set the qats to the max orderQuantity
@@ -228,7 +265,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Otherwise we will do a normal bit of calculation logic
 		var ats = arguments.entity.getQuantity('QNC');
-		
+
 		if(qatsIncludesQNROROFlag) {
 			ats += arguments.entity.getQuantity('QNRORO');
 		}
@@ -237,6 +274,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		if(qatsIncludesQNROSAFlag) {
 			ats += arguments.entity.getQuantity('QNROSA');
+		}
+		if(qatsIncludesMQATSBOMFlag){
+			ats += arguments.entity.getQuantity('MQATSBOM');
 		}
 		
 		if(isNumeric(holdBackQuantity)) {
