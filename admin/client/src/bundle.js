@@ -33606,7 +33606,7 @@
 	        };
 	        this.transclude = true;
 	        this.require = "^SWCardView";
-	        this.template = "\n        <div class=\"row s-line-item\" ng-transclude>\n            <div class=\"col-xs-12\">\n                <div class=\"progress\">\n                    <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{SwCardProgressBarController.valueNow}}\" aria-valuemin=\"{{SwCardProgressBarController.valueMin}}\" aria-valuemax=\"{{SwCardProgressBarController.valueMax}}\" style=\"width:50%;\">\n                        50% \n                    </div>\n                </div>\n            </div>\n        </div>\n            ";
+	        this.template = "\n        <div class=\"row s-line-item\" ng-transclude>\n            <div class=\"col-xs-12\">\n                <div class=\"progress\">\n                    <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"{{SwCardProgressBarController.valueNow}}\" aria-valuemin=\"{{SwCardProgressBarController.valueMin}}\" aria-valuemax=\"{{SwCardProgressBarController.valueMax}}\" style=\"width:{{SwCardProgressBarController.valueMax|'0'}}%;\">\n                        {{SwCardProgressBarController.valueNow|number :0}}% \n                    </div>\n                </div>\n            </div>\n        </div>\n            ";
 	    }
 	    /**
 	     * Handles injecting the partials path into this class

@@ -27,8 +27,8 @@ class SWCardProgressBar implements ng.IComponentOptions {
         <div class="row s-line-item" ng-transclude>
             <div class="col-xs-12">
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="{{SwCardProgressBarController.valueNow}}" aria-valuemin="{{SwCardProgressBarController.valueMin}}" aria-valuemax="{{SwCardProgressBarController.valueMax}}" style="width:50%;">
-                        50% 
+                    <div class="progress-bar" role="progressbar" aria-valuenow="{{SwCardProgressBarController.valueNow}}" aria-valuemin="{{SwCardProgressBarController.valueMin}}" aria-valuemax="{{SwCardProgressBarController.valueMax}}" style="width:{{SwCardProgressBarController.valueMax|'0'}}%;">
+                        {{SwCardProgressBarController.valueNow|number :0}}% 
                     </div>
                 </div>
             </div>
