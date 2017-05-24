@@ -39221,14 +39221,16 @@
 	        };
 	        this.getPageRecordValueByColumn = function (pageRecord, column) {
 	            var pageRecordValue = pageRecord[_this.getPageRecordKey(column.propertyIdentifier)] || "";
-	            //find the property if we need to...
-	            for (var property in pageRecord) {
-	                if (property.indexOf(_this.getPageRecordKey(column.propertyIdentifier).trim()) != -1) {
-	                    //use this record
-	                    pageRecordValue = pageRecord[property];
+	            //try to find the property again if we need to...
+	            if (pageRecordValue == "") {
+	                for (var property in pageRecord) {
+	                    if (property.indexOf(_this.getPageRecordKey(column.propertyIdentifier).trim()) != -1) {
+	                        //use this record
+	                        pageRecordValue = pageRecord[property];
+	                    }
 	                }
 	            }
-	            //If pageRecordValue is undefined or 
+	            //last change to find the value
 	            if (angular.isUndefined(pageRecordValue) ||
 	                (angular.isString(pageRecordValue) &&
 	                    pageRecordValue.trim().length == 0 &&
