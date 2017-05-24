@@ -46,6 +46,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="dirtyReadFlag" ormtype="boolean";
+	property name="useElasticSearch" type="boolean" default="0";
 
 	// Calculated Properties
 
@@ -77,6 +78,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
 
+	property name="aggregations" type="struct" persistent="false";
+
 	property name="keywords" type="string" persistent="false";
 	property name="keywordArray" type="array" persistent="false";
 
@@ -98,7 +101,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionEntityObject" type="any" persistent="false";
 	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
-	property name="useElasticSearch" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="getFilterGroupAliasMap" type="struct" persistent="false";
@@ -778,7 +780,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				for(var defaultProperty in defaultProperties){
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
-					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
+
+					columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 					//if propertyKey is a primary id, hide it and make it so it can't be deleted
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
@@ -852,7 +855,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return joinHQL;
 	}
 
-	private string function addJoin(required any join){
+	public void function addJoin(required any join){
 		if(!structKeyExists(getCollectionConfigStruct(),'joins')){
 			getCollectionConfigStruct()["joins"] = [];
 		}
@@ -1535,16 +1538,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						variables.pageRecords = getHibachiScope().getService('elasticSearchService').getPageRecords(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1633,17 +1626,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						variables.records = getHibachiScope().getService('elasticSearchService').getRecords(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1709,16 +1691,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(variables,"records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						var recordCount = getHibachiScope().getService('elasticSearchService').getRecordsCount(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -2459,7 +2431,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return deserializeJSON(getCollectionConfig());
 	}
 
+	public any function getAggregations(){
+		if(isNull(variables.aggregations)){
+			variables.aggregations = {};
+		}
+		return variables.aggregations;
+	}
 
+	public void function addAggregation(key, value){
+		if(isNull(variables.aggregations)){
+			variables.aggregations = {};
+		}
+		variables.aggregations[key] = value;
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
