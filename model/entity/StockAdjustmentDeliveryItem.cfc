@@ -50,7 +50,7 @@ component entityname="SlatwallStockAdjustmentDeliveryItem" table="SwStockAdjustm
 	
 	// Persistent Properties
 	property name="stockAdjustmentDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer";
+	property name="quantity" ormtype="float";
 	
 	// Related Object Properties (many-to-one)
 	property name="stockAdjustmentDelivery" cfc="StockAdjustmentDelivery" fieldtype="many-to-one" fkcolumn="stockAdjustmentDeliveryID";

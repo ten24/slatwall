@@ -478,7 +478,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var makeupItem = getStockService().newStockAdjustmentItem();
 			makeupItem.setStockAdjustment( stockAdjustment );
-			makeupItem.setQuantity( bundledSku.getNativeUnitQuantityFromBundledQuantity() );
+			makeupItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity() );
 			makeupItem.setFromStock( thisStock );
 
 		}
@@ -486,7 +486,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getStockService().saveStockAdjustment(stockAdjustment);
 
 		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
-		
+
 		return arguments.sku;
 	}
 
