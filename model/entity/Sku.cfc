@@ -227,7 +227,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public array function getInventoryTrackByOptions(){
 		if(!structKeyExists(variables, 'inventoryTrackByOptions')){
-			variables.inventoryTrackByOptions = ['Quantity','Measurement'];
+			variables.inventoryTrackByOptions = ['Quantity','Measurement - Weight','Measurement - Volume','Measurement - Length'];
 		}
 		return variables.inventoryTrackByOptions;
 	}
@@ -1501,7 +1501,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	public void function setInventoryMeasurementUnit(any measurementUnit){
-		if(this.getInventoryTrackBy() == "Quantity" || isNull(arguments.measurementUnit) || arguments.measurementUnit == ''){
+		if(this.getInventoryTrackBy() == "Quantity" || isNull(arguments.measurementUnit) || isSimpleValue(arguments.measurementUnit)){
 			structDelete(variables,'inventoryMeasurementUnit');
 			return;
 		}

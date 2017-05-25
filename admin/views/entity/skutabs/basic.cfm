@@ -24,8 +24,10 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryTrackBy" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryMeasurementUnit" edit="#rc.edit#">
+			<sw-property-display data-object="Sku_Create" data-property="inventoryTrackBy" data-edit="#rc.edit#"></sw-property-display>
+			<hb:HibachiDisplayToggle selector="select[name=inventoryTrackBy]" showValues="Measurement - Weight,Measurement - Volume,Measurement - Length" loadVisable="#rc.sku.getValueByPropertyIdentifier('inventoryTrackBy') neq 'Quantity'#">
+				<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryMeasurementUnit" edit="#rc.edit#">
+			</hb:HibachiDisplayToggle>
 
 			<cfif rc.product.getBaseProductType() EQ 'gift-card'>
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="giftCardExpirationTerm" edit="#rc.edit#">

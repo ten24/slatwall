@@ -126,6 +126,25 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			case "SlatwallStockAdjustmentDeliveryItem": {
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+
+					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
+					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
+						&& arguments.entity.getStock().getSku().getBundleFlag()
+						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
+						&& arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity() < 0) {
+
+						var processData = {
+							locationID=arguments.entity.getStock().getLocation().getLocationID(),
+							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH")
+						};
+
+						if(arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').getPopulatedFlag()){
+							arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').setPopulatedFlag(false);
+						}
+
+						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makeupBundledSkus');
+					}
+					
 					var inventory = this.newInventory();
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());

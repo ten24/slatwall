@@ -65,7 +65,6 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="bundleQATS" type="numeric" persistent="false";
 	property name="measurementUnitOptions" persistent="false";
 
 	public numeric function getBundleQATS(string locationID){
@@ -157,7 +156,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 
 	public any function getMeasurementUnit(){
 		if(!StructKeyExists(variables, 'measurementUnit') || isNull(variables.measurementUnit)){
-			if(!isNull(getBundledSku()) && getBundledSku().getinventoryTrackBy() == 'Measurement'){
+			if(!isNull(getBundledSku()) && getBundledSku().getInventoryTrackBy() != 'Quantity'){
 				variables.measurementUnit = getBundledSku().getInventoryMeasurementUnit();
 			}else{
 				return;

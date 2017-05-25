@@ -11,7 +11,7 @@
 	    	"bundleFlag":		{"eq":0}
  	    },
  	    "trackedByMeasurement":{
- 	    	"inventoryTrackBy": {"eq":"Measurement"}
+ 	    	"inventoryTrackBy": {"neq":"Quantity"}
  	    }
 	},
 	"properties":{

@@ -61,7 +61,7 @@ Notes:
 			<hb:HibachiPropertyList>
                 <hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledSku" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="bundledQuantity" edit="#rc.edit#">
-                <cfif !isNull(rc.skuBundle.getBundledSku()) AND rc.skuBundle.getBundledSku().getInventoryTrackBy() eq "Measurement">
+                <cfif !isNull(rc.skuBundle.getBundledSku()) AND rc.skuBundle.getBundledSku().getInventoryTrackBy() neq "Quantity">
                     <hb:HibachiPropertyDisplay object="#rc.skuBundle#" property="measurementUnit" edit="#rc.edit#">
                 </cfif>
 			</hb:HibachiPropertyList>
