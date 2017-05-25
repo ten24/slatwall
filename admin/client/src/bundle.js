@@ -49834,12 +49834,12 @@
 	            }
 	            //Add the payment information
 	            if (_this.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0 && !ignoreCapture) {
-	                data.captureAuthorizedPaymentsFlag = true;
-	                data.capturableAmount = _this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+	                //data.captureAuthorizedPaymentsFlag = true;
+	                //data.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
 	            }
 	            //If the user input a captuable amount, use that instead.
 	            if (state.capturableAmount != undefined) {
-	                data['capturableAmount'] = state.capturableAmount;
+	                //data['capturableAmount'] = state.capturableAmount;
 	                //data['captureAuthorizedPaymentsFlag'] = true;
 	            }
 	            //Create the process object.
@@ -49854,8 +49854,8 @@
 	            processObject.data['shippingAddress'] = data.shippingAddress || "";
 	            processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
 	            //If we need to capture as well as fulfill.
-	            processObject.data['captureAuthorizedPaymentsFlag'] = data.captureAuthorizedPaymentsFlag || false;
-	            processObject.data['capturableAmount'] = data.capturableAmount || "";
+	            //processObject.data['captureAuthorizedPaymentsFlag'] = data.captureAuthorizedPaymentsFlag || false;
+	            //processObject.data['capturableAmount'] = data.capturableAmount || "";
 	            return _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create");
 	        };
 	        /** Saves a comment. */

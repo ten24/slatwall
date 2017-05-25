@@ -168,7 +168,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				variables.orderFulfillmentInvStatType = getService("typeService").getTypeBySystemCode('ofisUnavailable');
 			}
 		}
-		return variables.orderFulfillmentInvStatusType;
+		return variables.orderFulfillmentInvStatType;
 	}
 
     public void function checkNewAccountAddressSave() {
