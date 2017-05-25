@@ -269,6 +269,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
 			formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 			formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
+			formattedPageRecords[ "aggregations" ] = arguments.collectionEntity.getAggregations();
 			if(arrayLen(arguments.collectionEntity.getProcessObjectArray())){
 				var processObject = arguments.collectionEntity.getProcessObjectArray()[1];
 				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjectArray(),this.getProcessObjectProperties(processObject,arguments.collectionEntity),arguments.collectionEntity);
@@ -563,7 +564,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			currentPage = arguments.data['currentPage'];
 		}
 		var pageShow = "";
-		
+
 		if(structKeyExists(arguments.data,'P:Show')){
 			pageShow = arguments.data['P:Show'];
 		} else if(structKeyExists(arguments.data, 'pageShow')){
@@ -618,6 +619,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			dirtyRead = true;
 		}
 
+		var useElasticSearch = false;
+		if(structKeyExists(arguments.data, 'useElasticSearch')){
+			useElasticSearch = arguments.data['useElasticSearch'];
+		}
+
 		var defaultColumns = false;
 		if(structKeyExists(arguments.data,'defaultColumns')){
 			defaultColumns = arguments.data['defaultColumns'];
@@ -641,6 +647,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			groupBysConfig=groupBysConfig,
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
+			useElasticSearch=useElasticSearch,
 			defaultColumns=defaultColumns,
 			processContext=processContext
 		};
@@ -800,6 +807,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			if(structKeyExists(collectionOptions,'dirtyRead')){
 				collectionEntity.setDirtyReadFlag(collectionOptions.dirtyRead);
+			}
+			if(structKeyExists(collectionOptions,'useElasticSearch')){
+				collectionEntity.setUseElasticSearch(collectionOptions.useElasticSearch);
 			} 
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
