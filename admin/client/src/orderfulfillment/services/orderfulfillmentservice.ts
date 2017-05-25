@@ -31,7 +31,8 @@ class OrderFulfillmentService {
         orderFulfillmentItemsCollection:undefined,
         
         //arrays
-        accountNames:[]
+        accountNames:[],
+        orderDeliveryAttributes:[]
     };
 
     // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
@@ -112,6 +113,13 @@ class OrderFulfillmentService {
                 //create all the data
                 console.log("Fulfilling Items", this.state.currentRecordOrderDetail, action.payload.viewState);
                 this.fulfillItems(action.payload.viewState, false);
+                
+                return {
+                    ...this.state, action
+                }
+             case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
+                console.log("Display Attributes");
+                this.createOrderDeliveryAttributeCollection();
                 
                 return {
                     ...this.state, action
@@ -236,7 +244,7 @@ class OrderFulfillmentService {
         data['orderFulfillment'] = {};
         data['orderFulfillment']['orderFulfillmentID'] = this.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID'];
         data['trackingNumber'] = state.trackingCode || "";
-
+        
         //Add the orderDelivertyItems as an array with the quantity set to the quantity.
         //Make sure all of the deliveryitems have a quantity set by the user.
         let idx = 1; //coldfusion indexes at 1
@@ -253,6 +261,12 @@ class OrderFulfillmentService {
             data.captureAuthorizedPaymentsFlag = true;
             data.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
         }
+        //If the user input a captuable amount, use that instead.
+        if (state.capturableAmount != undefined){
+            data['capturableAmount'] = state.capturableAmount;
+            //data['captureAuthorizedPaymentsFlag'] = true;
+        }
+
         //Create the process object.
         let processObject = this.$hibachi.newOrderDelivery_Create();
         processObject.data = data;
@@ -353,6 +367,8 @@ class OrderFulfillmentService {
         this.state.currentRecordOrderDetail.addDisplayProperty("order.orderID", "OrderID");
         this.state.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
         this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", {persistent: false});
+        this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountAuthorizedTotal", "Authorized", {persistent: false});
+        this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountCapturedTotal", "Captured", {persistent: false});
         
         //For the account portion of the tab.
         this.state.currentRecordOrderDetail.addDisplayProperty("order.account.accountID", "Account Number");
@@ -436,8 +452,38 @@ class OrderFulfillmentService {
             }else{
                 this.state.orderFulfillmentItemsCollection = [];
             }
-             this.emitUpdateToClient();
+            this.emitUpdateToClient();
         });
+     }
+
+     /**
+     * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
+     */
+     private createOrderDeliveryAttributeCollection = ():void => {
+        let orderDeliveryAttributes = [];
+        //Get all the attributes from those sets where the set object is orderDelivery.
+        let attributeCollection = this.collectionConfigService.newCollectionConfig("Attribute");
+        attributeCollection.addFilter("attributeSet.attributeSetObject", "OrderDelivery", "=");
+        attributeCollection.getEntity().then((attributes)=>{ 
+            if (attributes && attributes.pageRecords){
+                attributes.pageRecords.forEach(attribute => {
+                    let newAttribute = {
+                        name: attribute.attributeName,
+                        code: attribute.attributeCode,
+                        description: attribute.attributeDescription,
+                        hint: attribute.attributeHint,
+                        type: attribute.attributeInputType,
+                        default: attribute.defaultValue,
+                        isRequired: attribute.requiredFlag,
+                        isActive: attributes.activeFlag
+                    };
+                    orderDeliveryAttributes.push(newAttribute);
+                });
+            }
+        });
+        //For each attribute set, get all the attributes.
+        this.state.orderDeliveryAttributes = orderDeliveryAttributes;
+        this.emitUpdateToClient(); //alert the client that we have new data to give.
      }
 }
 export {

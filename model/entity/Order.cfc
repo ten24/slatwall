@@ -732,6 +732,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		return totalPaymentsAuthorized;
 	}
+	
+	public numeric function getPaymentAmountCapturedTotal() {
+		var totalPaymentsCaptured = 0;
+
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive") {
+				totalPaymentsCaptured = getService('HibachiUtilityService').precisionCalculate(totalPaymentsCaptured + orderPayment.getAmountCaptured());
+			}
+		}
+
+		return totalPaymentsCaptured;
+	}
 
 	public numeric function getPaymentAmountReceivedTotal() {
 		var totalPaymentsReceived = 0;

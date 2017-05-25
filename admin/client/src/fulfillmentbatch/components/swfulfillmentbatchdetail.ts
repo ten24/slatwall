@@ -29,9 +29,14 @@ class SWFulfillmentBatchDetailController  {
                 //GET the state.
                 this.state = stateChanges;
             }
-            
+            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "DISPLAY_ORDER_DELIVERY_ATTRIBUTES")){
+                //GET the state.
+                this.state = stateChanges;
+            }
+
         });
-        
+        //Get the attributes to display in the custom section.
+        this.userViewingOrderDeliveryAttributes();
         //Dispatch the fulfillmentBatchID and setup the state.
         this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);
 
@@ -73,10 +78,16 @@ class SWFulfillmentBatchDetailController  {
     }
     
     public userSavingComment = (comment, commentText) => {
-        console.log(comment, commentText);
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "SAVE_COMMENT_ACTION",
             payload: {comment: comment, commentText: commentText}
+        });
+    }
+
+    public userViewingOrderDeliveryAttributes = () => {
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: "DISPLAY_ORDER_DELIVERY_ATTRIBUTES",
+            payload: {}
         });
     }
 

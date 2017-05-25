@@ -477,8 +477,99 @@
                 </div>
                 
                 <!--- Start Custom Attributes --->
+                <div class="s-detail-body s-arrow">
+                    <div class="s-content-block-wrapper">
+                        <div class="s-header">
+                            <h3>Order Delivery Custom Properties <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
+                            <a href="##" class="s-toggle"><!--- populated with css ---></a>
+                        </div>
+                        <div class="s-body">
+                            <div class="s-content-wrapper form-horizontal">        
+                                <div class="form-group" ng-repeat="attribute in swFulfillmentBatchDetailController.state.orderDeliveryAttributes">
+                                    <label for="input" class="col-xs-3 control-label">{{attribute.name}}: <i class="fa fa-info-circle s-tooltip-hint" title="{{attribute.hint||attribute.description}}"></i></label>
+                                    
+                                    <div class="col-sm-9" ng-if="attribute.type == 'text'">
+                                        <input title="{{attribute.hint||attribute.description}}" type="text" class="form-control" name="{{attribute.code}}" ng-required="{{attribute.isRequired=='Yes '}}" ng-model="swFulfillmentBatchDetailController.state[attribute.code]">
+                                    </div>
+                                    
+                                    <div class="col-sm-9" ng-if="attribute.type == 'textArea'">
+                                        <textarea title="{{attribute.hint||attribute.description}}" rows="5" cols="70" type="textarea" class="form-control" name="{{attribute.code}}" ng-required="{{attribute.isRequired=='Yes '}}" ng-model="swFulfillmentBatchDetailController.state[attribute.code]" ></textarea>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <!---<div class="form-group">
+                                    <label for="input" class="col-xs-3 control-label">Carrier Pickup Time: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control">
+                                            <option value="" disabled selected>-Select-</option>
+                                            <option value="">Example</option>
+                                            <option value="">Example</option>
+                                            <option value="">Example</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="input" class="col-xs-3 control-label">Estimated Arrival Date:</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>--->
+  
+                                        </div>
+                        </div>
+                    </div>
+                </div>
                 
-                
+                <div class="s-detail-body s-arrow">
+                    <div class="s-content-block-wrapper">
+                        <div class="s-header">
+                            <h3>Payment Overview</h3>
+                        </div>
+                        <div class="s-body">
+                            <div class="s-content-wrapper">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <div class="s-title">Authorized</div>
+                                        <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountAuthorizedTotal']|currency}}</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="s-title">Fulfilled</div>
+                                        <div class="s-content">$0.00</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="s-title">Captured</div>
+                                        <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountCapturedTotal']|currency}}</div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="s-title">Amount Due</div>
+                                        <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']|currency}}</div>
+                                    </div>
+                                    <div class="col-xs-2 s-captured">
+                                        <div class="s-title">To Capture</div>
+                                        <input type="text" class="form-control" ng-model="swFulfillmentBatchDetailController.state.capturableAmount" ng-init="swFulfillmentBatchDetailController.state.capturableAmount = swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']">
+                                        <button class="btn btn-xs btn-success">Capture</button>
+                                    </div>
+                                    
+                                    <div class="col-xs-4">
+                                        <div class="btn-group s-btn-dropdown" role="group"> 
+                                            <button type="button" class="btn btn-primary btn-lg">
+						                    	<span><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled' && swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span> Fulfill</span> 
+						                    </button>
+                                            <ul class="dropdown-menu" role="menu">
+												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
+						                    </ul>
+                                            <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
+												<span class="caret"></span>
+						                    </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 		</div>
 	</div>

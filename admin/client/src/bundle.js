@@ -49651,7 +49651,8 @@
 	            commentsCollection: undefined,
 	            orderFulfillmentItemsCollection: undefined,
 	            //arrays
-	            accountNames: []
+	            accountNames: [],
+	            orderDeliveryAttributes: []
 	        };
 	        // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
 	        this.loggerEpic = function () {
@@ -49718,6 +49719,10 @@
 	                    //create all the data
 	                    console.log("Fulfilling Items", _this.state.currentRecordOrderDetail, action.payload.viewState);
 	                    _this.fulfillItems(action.payload.viewState, false);
+	                    return __assign({}, _this.state, { action: action });
+	                case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
+	                    console.log("Display Attributes");
+	                    _this.createOrderDeliveryAttributeCollection();
 	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return state;
@@ -49832,6 +49837,11 @@
 	                data.captureAuthorizedPaymentsFlag = true;
 	                data.capturableAmount = _this.state.currentRecordOrderDetail['order_paymentAmountDue'];
 	            }
+	            //If the user input a captuable amount, use that instead.
+	            if (state.capturableAmount != undefined) {
+	                data['capturableAmount'] = state.capturableAmount;
+	                //data['captureAuthorizedPaymentsFlag'] = true;
+	            }
 	            //Create the process object.
 	            var processObject = _this.$hibachi.newOrderDelivery_Create();
 	            processObject.data = data;
@@ -49924,6 +49934,8 @@
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.orderID", "OrderID");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.calculatedTotal", "Total");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountDue", "Amount Due", { persistent: false });
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountAuthorizedTotal", "Authorized", { persistent: false });
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.paymentAmountCapturedTotal", "Captured", { persistent: false });
 	            //For the account portion of the tab.
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.accountID", "Account Number");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.firstName", "First Name");
@@ -50004,6 +50016,35 @@
 	                }
 	                _this.emitUpdateToClient();
 	            });
+	        };
+	        /**
+	        * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
+	        */
+	        this.createOrderDeliveryAttributeCollection = function () {
+	            var orderDeliveryAttributes = [];
+	            //Get all the attributes from those sets where the set object is orderDelivery.
+	            var attributeCollection = _this.collectionConfigService.newCollectionConfig("Attribute");
+	            attributeCollection.addFilter("attributeSet.attributeSetObject", "OrderDelivery", "=");
+	            attributeCollection.getEntity().then(function (attributes) {
+	                if (attributes && attributes.pageRecords) {
+	                    attributes.pageRecords.forEach(function (attribute) {
+	                        var newAttribute = {
+	                            name: attribute.attributeName,
+	                            code: attribute.attributeCode,
+	                            description: attribute.attributeDescription,
+	                            hint: attribute.attributeHint,
+	                            type: attribute.attributeInputType,
+	                            default: attribute.defaultValue,
+	                            isRequired: attribute.requiredFlag,
+	                            isActive: attributes.activeFlag
+	                        };
+	                        orderDeliveryAttributes.push(newAttribute);
+	                    });
+	                }
+	            });
+	            //For each attribute set, get all the attributes.
+	            _this.state.orderDeliveryAttributes = orderDeliveryAttributes;
+	            _this.emitUpdateToClient(); //alert the client that we have new data to give.
 	        };
 	        //To create a store, we instantiate it using the object that holds the state variables,
 	        //and the reducer. We can also add a middleware to the end if you need.
@@ -50497,10 +50538,15 @@
 	            }
 	        };
 	        this.userSavingComment = function (comment, commentText) {
-	            console.log(comment, commentText);
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: "SAVE_COMMENT_ACTION",
 	                payload: { comment: comment, commentText: commentText }
+	            });
+	        };
+	        this.userViewingOrderDeliveryAttributes = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: "DISPLAY_ORDER_DELIVERY_ATTRIBUTES",
+	                payload: {}
 	            });
 	        };
 	        this.userCaptureAndFulfill = function () {
@@ -50561,7 +50607,13 @@
 	                //GET the state.
 	                _this.state = stateChanges;
 	            }
+	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "DISPLAY_ORDER_DELIVERY_ATTRIBUTES")) {
+	                //GET the state.
+	                _this.state = stateChanges;
+	            }
 	        });
+	        //Get the attributes to display in the custom section.
+	        this.userViewingOrderDeliveryAttributes();
 	        //Dispatch the fulfillmentBatchID and setup the state.
 	        this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);
 	    }
