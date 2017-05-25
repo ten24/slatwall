@@ -211,7 +211,18 @@ class ListingService{
     };
 
     public getPageRecordValueByColumn = (pageRecord, column) =>{
-        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)];
+        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)] || "";
+        
+        //try to find the property again if we need to...
+        if (pageRecordValue == ""){
+            for (var property in pageRecord){
+                if (property.indexOf(this.getPageRecordKey(column.propertyIdentifier).trim()) != -1){
+                    //use this record
+                    pageRecordValue = pageRecord[property];
+                }
+            }
+        }
+        //last change to find the value
         if( ( angular.isUndefined(pageRecordValue) || 
             ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
               angular.isDefined(column.fallbackPropertyIdentifiers)
