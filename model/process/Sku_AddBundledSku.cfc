@@ -59,7 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties (Inputs)
 	property name="quantity";
-	property name="measurementUnit";
+	property name="measurementUnit" hb_formFieldType="select";
 	
 	public numeric function getQuantity() {
 		if(!structKeyExists(variables, "quantity")) {
@@ -86,5 +86,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(structKeyExists(variables, "bundleSku")) {
 			return variables.bundleSku;
 		}
+	}
+
+	public array function getMeasurementUnitOptions(){
+		if(!isNull(getBundleSku()) && getBundleSku().getInventoryTrackBy() != 'Quantity' && !structKeyExists(variables,'measurementUnitOptions')){
+			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
+			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
+			measurementUnitCollection.addFilter('measurementType', getBundleSku().getInventoryMeasurementUnit().getMeasurementType());
+			var records = measurementUnitCollection.getRecords();
+			var recordOptions = [];
+			for(var record in records){
+				arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode});
+			}
+			variables.measurementUnitOptions = recordOptions;
+		}else{
+			return [];
+		}
+		return variables.measurementUnitOptions;
 	}
 }

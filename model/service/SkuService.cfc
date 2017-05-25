@@ -459,6 +459,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var bundledSku = this.newSkuBundle();
 		bundledSku.setBundledSku(arguments.processObject.getBundleSku());
 		bundledSku.setBundledQuantity(arguments.processObject.getQuantity());
+		bundledSku.setMeasurementUnit(this.getMeasurementUnitByUnitCode(arguments.processObject.getMeasurementUnit()));
 		bundledSku.setSku(arguments.sku);
 		this.saveSkuBundle(bundledSku);
 		return sku;

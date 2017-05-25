@@ -161,6 +161,9 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 			}else{
 				return;
 			}
+		}else if(getBundledSku().getInventoryTrackBy() == 'Quantity'){
+			structDelete(variables, 'measurementUnit');
+			return;
 		}
 		return variables.measurementUnit;
 	}

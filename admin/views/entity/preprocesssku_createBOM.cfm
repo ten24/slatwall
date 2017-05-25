@@ -63,9 +63,9 @@ Notes:
 		<!--- <cfdump var="#rc.sku.getBundledSkusSmartlist()#" top=2> --->
 		<hb:HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartlist()#"
 								recordDeleteAction="admin:entity.deleteSkuBundle"
-							  	recordDeleteQueryString="redirectAction=admin:entity.preprocesssku&processContext=createBOM&skuID=#rc.sku.getSkuID()#"
+							  	recordDeleteQueryString="sRedirectAction=admin:entity.preprocesssku%26processContext=createBOM"
 							  	recordEditAction="admin:entity.editSkuBundle"
-							  	recordEditQueryString="redirectAction=admin:entity.preprocesssku&processContext=createBOM&skuID=#rc.sku.getSkuID()#"
+							  	recordEditQueryString="sRedirectAction=admin:entity.preprocesssku%26processContext=createBOM"
 							  	recordEditModal="true">
 			<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
 			<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuDefinition" />    
@@ -73,6 +73,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productType.productTypeName" />
 			<hb:HibachiListingColumn propertyIdentifier="bundledQuantity" />
+			<hb:HibachiListingColumn propertyIdentifier="measurementUnit.unitCode" title="#$.slatwall.rbKey('entity.measurementUnit')#"/>
 		</hb:HibachiListingDisplay>
 		<!--- Skus --->
 		<hb:HibachiListingDisplay smartList="#$.slatwall.getService('skuService').getSkuSmartList()#"
@@ -88,6 +89,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		  	<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+		  	<hb:HibachiListingColumn processObjectProperty="measurementUnit" title="#$.slatwall.rbKey('entity.measurementUnit')#" fieldClass="span1" />
 		</hb:HibachiListingDisplay>
 		
 	</hb:HibachiEntityProcessForm>
