@@ -455,6 +455,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	public any function processSku_addBundledSku(required any sku, required any processObject){
+		var bundledSku = this.newSkuBundle();
+		bundledSku.setBundledSku(arguments.processObject.getBundleSku());
+		bundledSku.setBundledQuantity(arguments.processObject.getQuantity());
+		bundledSku.setSku(arguments.sku);
+		this.saveSkuBundle(bundledSku);
+		return sku;
+	}
+
 	// TODO [paul]: makeup / breakup
 	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
 
@@ -526,16 +535,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processSku_createBOM(required any sku, required any processObject){
-		var childSkuList = arguments.processObject.getSkus();
 		arguments.sku.setBundleFlag(1);
-		for(var childSku in childSkuList){
-			var skuBundle = this.newSkuBundle();
-			skuBundle.setSku(arguments.sku);
-			skuBundle.setBundledSku(this.getSku(childSku));
-			skuBundle.setBundledQuantity(1);
-			this.saveSkuBundle(skuBundle);
-		}
-		getHibachiScope().flushOrmSession();
+		this.saveSku(arguments.sku);
 		return sku;
 	}
 

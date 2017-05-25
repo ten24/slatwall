@@ -484,7 +484,6 @@ component output="false" accessors="true" extends="HibachiController" {
 		if(!requirePreProcess) {
 
 			// Call the process method on the entity, and then populate it back into the RC
-
 			arguments.rc[ arguments.entityName ] = entityService.invokeMethod( "process#arguments.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.processContext} );
 			
 			// SUCCESS

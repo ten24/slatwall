@@ -110,7 +110,7 @@
 			
 			// Announce the processContext specific  event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
-			
+
 			// Verify the preProcess
 			arguments.entity.validate( context=arguments.processContext );
 			

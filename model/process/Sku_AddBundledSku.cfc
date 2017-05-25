@@ -50,5 +50,41 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="sku";
+
+	// Injected, or lazily loaded by ID
+	property name="bundleSku";
+
+	// Data Properties (IDs)
+	property name="bundleSkuID";
+
+	// Data Properties (Inputs)
+	property name="quantity";
+	property name="measurementUnit";
 	
+	public numeric function getQuantity() {
+		if(!structKeyExists(variables, "quantity")) {
+			variables.quantity = 1;
+		}
+		return variables.quantity;
+	}
+	
+	public any function getSku() {
+		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
+			variables.sku = getService("skuService").getSku(getSkuID());
+		} 
+
+		if(structKeyExists(variables, "sku")) {
+			return variables.sku;
+		}
+	}
+
+	public any function getBundleSku() {
+		if(!structKeyExists(variables, "bundleSku") && !isNull(getBundleSkuID())) {
+			variables.bundleSku = getService("skuService").getSku(getBundleSkuID());
+		} 
+
+		if(structKeyExists(variables, "bundleSku")) {
+			return variables.bundleSku;
+		}
+	}
 }

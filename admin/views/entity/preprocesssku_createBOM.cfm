@@ -51,24 +51,43 @@ Notes:
 
 
 <cfparam name="rc.sku" type="any" />
-<cfparam name="rc.processObject" type="any" />
+<!--- <cfparam name="rc.processObject" type="any" /> --->
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#true#">
 		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#" backAction="admin:entity.detailSku" backQueryString="skuID=#rc.sku.getSkuID()#">
 		</hb:HibachiEntityActionBar>
-		
+		<!--- Bundled Skus --->
+		<!--- <cfdump var="#rc.sku.getBundledSkusSmartlist()#" top=2> --->
+		<hb:HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartlist()#"
+								recordDeleteAction="admin:entity.deleteSkuBundle"
+							  	recordDeleteQueryString="redirectAction=admin:entity.preprocesssku&processContext=createBOM&skuID=#rc.sku.getSkuID()#"
+							  	recordEditAction="admin:entity.editSkuBundle"
+							  	recordEditQueryString="redirectAction=admin:entity.preprocesssku&processContext=createBOM&skuID=#rc.sku.getSkuID()#"
+							  	recordEditModal="true">
+			<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuDefinition" />    
+			<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
+			<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productType.productTypeName" />
+			<hb:HibachiListingColumn propertyIdentifier="bundledQuantity" />
+		</hb:HibachiListingDisplay>
 		<!--- Skus --->
-		<hb:HibachiListingDisplay smartList="#rc.processObject.getSkusSmartList()#"
-								  multiselectFieldName="skus"
-								  edit="#rc.edit#">
+		<hb:HibachiListingDisplay smartList="#$.slatwall.getService('skuService').getSkuSmartList()#"
+								recordProcessAction="admin:entity.processSku"
+								recordProcessContext="AddBundledSku"
+							  	recordProcessEntity="#rc.sku#"
+							  	recordProcessUpdateTableID="LD#replace(rc.sku.getBundledSkusSmartList().getSavedStateID(),'-','','all')#"
+							  	recordAlias="bundleSku"
+							  	edit="#rc.edit#">
 			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />    
 			<hb:HibachiListingColumn propertyIdentifier="product.productName" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		  	<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 		</hb:HibachiListingDisplay>
 		
 	</hb:HibachiEntityProcessForm>
