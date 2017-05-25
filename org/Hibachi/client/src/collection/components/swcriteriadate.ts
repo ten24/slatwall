@@ -477,7 +477,7 @@ class SWCriteriaDate{
 								&& scope.filterItem.value.length
 								){
 									var dateRangeArray = scope.filterItem.value.split("-");
-
+ 
                                     var rangeStart = new Date(parseInt(dateRangeArray[0])).toUTCString();
                                     rangeStart = rangeStart.split(' ').slice(0, 4).join(' ');
 

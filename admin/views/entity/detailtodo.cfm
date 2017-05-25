@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,50 +45,23 @@
 
 Notes:
 
-*/
-component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
+--->
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfparam name="rc.todo" />
 
-	// Persistent Properties
-	property name="entityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
-	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="processMethod" ormType="string";
-	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
-	property name="entityQueueDateTime" ormtype="timestamp";
-	property name="entityQueueData" ormtype="string" length="8000";
-	property name="logHistoryFlag" ormtype="boolean" default="0";
+<cfoutput>
+    <hb:HibachiEntityDetailForm object="#rc.todo#" edit="#rc.edit#">
+        <hb:HibachiEntityActionBar type="detail" object="#rc.todo#" showdelete="true"/>
+		<hb:HibachiPropertyRow>
+            <hb:HibachiPropertyDisplay object="#rc.todo#" property="dueDate" edit="#rc.edit#" fieldtype="date">
+			<cfif !rc.todo.getNewFlag()>
+		        <hb:HibachiPropertyDisplay object="#rc.todo#" property="completeFlag" edit="#rc.edit#">
+			</cfif>
 
-	// Related Object Properties (many-to-one)
-	
-	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	        <hb:HibachiPropertyDisplay object="#rc.todo#" property="AssignedToAccount" edit="#rc.edit#" fieldtype="textautocomplete" autocompletePropertyIdentifiers="firstName,lastName" title="Assigned To">
+	        <hb:HibachiPropertyDisplay object="#rc.todo#" property="toDoType" edit="#rc.edit#">
+	        <hb:HibachiPropertyDisplay object="#rc.todo#" property="description" edit="#rc.edit#" fieldtype="wysiwyg" fieldclass="medium" />
 
-	// Related Object Properties (one-to-many)
-
-	// Related Object Properties (many-to-many)
-
-	// Remote Properties
-
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
-	// Non-Persistent Properties
-
-	// ============ START: Non-Persistent Property Methods =================
-
-	// ============  END:  Non-Persistent Property Methods =================
-
-	// ============= START: Bidirectional Helper Methods ===================
-
-	// =============  END:  Bidirectional Helper Methods ===================
-
-	// ================== START: Overridden Methods ========================
-
-	// ==================  END:  Overridden Methods ========================
-
-	// =================== START: ORM Event Hooks  =========================
-
-	// ===================  END:  ORM Event Hooks  =========================
-}
+		</hb:HibachiPropertyRow>
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

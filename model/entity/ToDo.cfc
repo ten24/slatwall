@@ -46,27 +46,26 @@
 Notes:
 
 */
-component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="HibachiEntityQueueService" {
+component displayname="ToDo" entityname="SlatwallToDo" table="SwToDo" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="toDoService" {
 
 	// Persistent Properties
-	property name="entityQueueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
-	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="processMethod" ormType="string";
-	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
-	property name="entityQueueDateTime" ormtype="timestamp";
-	property name="entityQueueData" ormtype="string" length="8000";
-	property name="logHistoryFlag" ormtype="boolean" default="0";
+	property name="toDoID" ormtype="string" hb_populateEnabled="public" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="title" ormtype="string"  hb_populateEnabled="public";
+	property name="description" ormtype="string" hb_populateEnabled="public" length="4000" hb_formFieldType="wysiwyg";
+	property name="dueDate" ormtype="timestamp"  hb_populateEnabled="public" hb_formatType="date";
+	property name="completeFlag" ormtype="boolean" hb_populateEnabled="public" default="0";
+	property name="completeDateTime" ormtype="timestamp" hb_populateEnabled="public";
 
 	// Related Object Properties (many-to-one)
-	
-	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	property name="toDoType" cfc="Type" hb_populateEnabled="public" fieldtype="many-to-one" fkcolumn="toDoTypeID" hb_optionsSmartListData="f:parentType.systemCode=toDoType";
+	property name="assignedToAccount" hb_populateEnabled="public" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 
 	// Related Object Properties (one-to-many)
 
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
+	property name="remoteID" ormtype="string";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -76,6 +75,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 
 	// Non-Persistent Properties
 
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -84,6 +84,18 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
+	// =============== START: Custom Validation Methods ====================
+
+	// ===============  END: Custom Validation Methods =====================
+
+	// =============== START: Custom Formatting Methods ====================
+
+	// ===============  END: Custom Formatting Methods =====================
+
+	// ============== START: Overridden Implicet Getters ===================
+
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
 
 	// ==================  END:  Overridden Methods ========================
@@ -91,4 +103,8 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	// =================== START: ORM Event Hooks  =========================
 
 	// ===================  END:  ORM Event Hooks  =========================
+
+	// ================== START: Deprecated Methods ========================
+
+	// ==================  END:  Deprecated Methods ======================
 }

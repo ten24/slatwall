@@ -77,9 +77,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 
 	// Related Object Properties (one-to-many)
-	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
-	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
-	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
+	property name="childAccountRelationships" singularname="childAccountRelationship" fieldtype="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
+	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldtype="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
+	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldtype="one-to-many" type="array" fkcolumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
 	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";

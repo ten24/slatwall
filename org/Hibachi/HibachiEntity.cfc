@@ -984,17 +984,52 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var properties = getProperties();
 
 		var defaultProperties = [];
-		for(var p=1; p<=arrayLen(properties); p++) {
-			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
 
-			}else{
-				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) ||
-				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") ||
-				properties[p].persistent)){
-					arrayAppend(defaultProperties,properties[p]);
+		//Check if there is any include column
+		if(len(arguments.includesList)){
+			var includesArray = ListToArray(arguments.includesList);
+			for(var i = 1; i <= arraylen(includesArray); i++) {
+				//Loop through IncludeList looking for relational
+				includesArray[i] = trim(includesArray[i]);
+				if(Find('.', includesArray[i]) != 0){
+					var parts = listToArray(includesArray[i], '.');
+
+					var current_object = this.getClassName();
+					var current_properties = getService('hibachiService').getPropertiesStructByEntityName(this.getClassName());
+					for(var p = 1; p <= arraylen(parts); p++ ){
+						if(structKeyExists(current_properties, parts[p]) && structKeyExists(current_properties[parts[p]], 'cfc')){
+							current_object = current_properties[parts[p]]['cfc'];
+							current_properties = getService('hibachiService').getPropertiesStructByEntityName(current_properties[parts[p]]['cfc']);
+						}else{
+							var newProperty = {};
+							structAppend(newProperty,current_properties[parts[p]]);
+							newProperty["name"] = includesArray[i];
+							newProperty["title"] = rbKey('entity.#current_object#.#listLast(includesArray[i],'.')#');
+							//append the Column struct with relational name.
+							arrayAppend(defaultProperties, newProperty);
+
+						}
+					}
+
+				}else{
+					//If its not relational, just use the current entity struct
+					for(var x = 1; x <= arraylen(properties); x++){
+						if(properties[x].name == includesArray[i]){
+							arrayAppend(defaultProperties, properties[x]);
+						}
+					}
+				}
+			}
+		}else{
+			//Remove all non Persistent, Relational and Excluded columns
+			for(var x = 1; x <= arraylen(properties); x++){
+				if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
+				(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
+					arrayAppend(defaultProperties, properties[x]);
 				}
 			}
 		}
+
 		return defaultProperties;
 	}
 

@@ -102,7 +102,7 @@ Notes:
 			<cfset var downloadUUID = createUUID() />
 			<cfset var downloadFileName = "slatwall-#downloadUUID#.zip" />
 			<cfset var downloadHashFileName = "slatwall-#downloadUUID#.md5.txt" />
-			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.htaccess,/web.config,/.settings,/.gitignore' />
+			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.rewriterule,/.htaccess,/web.config,/.settings,/.gitignore' />
 			<cfset var copyContentExclusionList = "" />
 			<cfset var slatwallDirectoryList = "" />
 

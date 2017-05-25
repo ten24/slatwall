@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" hb_processContexts="clone" {
 
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -46,6 +46,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="dirtyReadFlag" ormtype="boolean";
+	property name="useElasticSearch" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
@@ -77,12 +78,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
 
+	property name="aggregations" type="struct" persistent="false";
+
 	property name="keywords" type="string" persistent="false";
 	property name="keywordArray" type="array" persistent="false";
 
 	property name="aggregateFilters" type="array" persistent="false";
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
-	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/overried the default collectionConfig order bys";
+	property name="postOrderBys" type="array" persistent="false" hint="order bys added by the use in the UI, applied/override the default collectionConfig order bys";
 
 	property name="pageRecordsStart" persistent="false" type="numeric" hint="This represents the first record to display and it is used in paging.";
 	property name="pageRecordsShow" persistent="false" type="numeric" hint="This is the total number of entities to display";
@@ -91,14 +94,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="nonPersistentColumn" type="boolean" persistent="false";
 	property name="processContext" type="string" persistent="false";
-	property name="processObjects" type="array" persistent="false";
+	property name="processObjectArray" type="array" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
 	property name="collectionEntityObject" type="any" persistent="false";
 	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
-	property name="useElasticSearch" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="getFilterGroupAliasMap" type="struct" persistent="false";
@@ -130,7 +132,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 		variables.aggregateFilters = [];
 		variables.collectionConfig = '{}';
-		variables.processObjects = [];
+		variables.processObjectArray = [];
 		variables.hasDisplayAggregate = false;
 		variables.hasManyRelationFilter = false;
 		variables.filterAliasMaps = {};
@@ -540,6 +542,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
+	public void function removeOrderBy(string orderByString){
+		var propertyIdentifierArray = ListToArray(orderByString, "|");
+		var calculatedPropertyIdentifier = propertyIdentifierArray[1];
+		var orderByArray = getCollectionConfigStruct().orderBy;
+		var i = 1;
+
+		for (var arrayElement in orderByArray){
+		 var propertyIdentifier = arrayElement.propertyIdentifier;
+		 var aliasedPropertyIdentifier = convertPropertyIdentifierToAlias(propertyIdentifier);
+			if(aliasedPropertyIdentifier == calculatedPropertyIdentifier){
+			 arrayDeleteAt(orderByArray, i);
+			 getCollectionConfigStruct().orderBy = orderByArray;
+			 break;
+			}
+		i++;
+		}
+	}
+
 	//returns an array of name/value structs for
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
@@ -772,7 +792,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				for(var defaultProperty in defaultProperties){
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
-					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
+
+					columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 					//if propertyKey is a primary id, hide it and make it so it can't be deleted
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
@@ -846,7 +867,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return joinHQL;
 	}
 
-	private string function addJoin(required any join){
+	public void function addJoin(required any join){
 		if(!structKeyExists(getCollectionConfigStruct(),'joins')){
 			getCollectionConfigStruct()["joins"] = [];
 		}
@@ -1533,16 +1554,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						variables.pageRecords = getHibachiScope().getService('elasticSearchService').getPageRecords(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1551,7 +1562,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
 							//prepare page records and possible process objects
 							variables.pageRecords = [];
-							variables.processObjects = [];
+							variables.processObjectArray = [];
 							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL = 'SELECT #entityAlias# ' & getHQL(excludeGroupBy=true) & ' GROUP BY #entityAlias#';
 							HQLParams = getHQLParams();
@@ -1577,7 +1588,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 								if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
 									var processObject = entity.getProcessObject(this.getProcessContext());
-									arrayAppend(variables.processObjects,processObject);
+									arrayAppend(variables.processObjectArray,processObject);
 								}
 							}
 						}else{
@@ -1632,17 +1643,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						variables.records = getHibachiScope().getService('elasticSearchService').getRecords(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1708,16 +1708,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(variables,"records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						var recordCount = getHibachiScope().getService('elasticSearchService').getRecordsCount(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1753,13 +1743,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.recordsCount;
 	}
 
-	public array function getPrimaryIDs(string recordCount){
-		if(!structKeyExists(arguments, 'recordCount') || arguments.recordCount == ""){
-			arguments.recordCount = 0;
-		}
+	public array function getPrimaryIDs(numeric recordCount=0){
+		
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
-
+		
 		return getPropertyNameValues(primaryIDName, arguments.recordCount);
 	}
 
@@ -2460,7 +2448,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return deserializeJSON(getCollectionConfig());
 	}
 
+	public any function getAggregations(){
+		if(isNull(variables.aggregations)){
+			variables.aggregations = {};
+		}
+		return variables.aggregations;
+	}
 
+	public void function addAggregation(key, value){
+		if(isNull(variables.aggregations)){
+			variables.aggregations = {};
+		}
+		variables.aggregations[key] = value;
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -2491,6 +2491,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public any function getDefaultCollectionProperties(){
 		return super.getDefaultCollectionProperties();
+	}
+
+	public boolean function getUseElasticSearch(){
+		if(isNull(variables.useElasticSearch)){
+			variables.useElasticSearch = false;
+		}
+		return variables.useElasticSearch;
 	}
 
 	// ==============  END: Overridden Implicit Getters ====================
