@@ -963,20 +963,36 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public void function collectionConfigExport(required struct data) {
 		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
-
+		
 		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
-
+		
 		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
 		if(structKeyExists(arguments.data,'keywords')){
 			collectionEntity.setKeywords(arguments.data.keywords);
 		}
-
 		arguments.data.collectionConfig.columns = getExportableColumnsByCollectionConfig(arguments.data.collectionConfig);
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
-		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
-		var headers = getHeadersListByCollection(collectionEntity);
-		getHibachiService().export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
+
+		var collectionConfigData = getCollectionConfigExportDataByCollection(collectionEntity);
+		getHibachiService().export( argumentCollection=collectionConfigData );
+	}
+	
+	public struct function getCollectionConfigExportDataByCollection(required any collectionEntity){
+		
+		var collectionData = arguments.collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var headers = getHeadersListByCollection(arguments.collectionEntity);
+		
+		var collectionConfigData = {
+			data=collectionData, 
+			columns=headers, 
+			columnNames=headers, 
+			fileName=arguments.collectionEntity.getCollectionConfigStruct().baseEntityName, 
+			fileType = 'csv', 
+			downloadFile=true
+		};
+		
+		return collectionConfigData;
 	}
 
 	public string function getHeadersListByCollection(required any collectionEntity){
