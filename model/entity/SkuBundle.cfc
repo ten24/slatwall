@@ -47,7 +47,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Related Object Properties (many-to-one)
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="bundledSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="bundledSkuID";
-	property name="measurementUnit" cfc="measurementUnit" fieldType="many-to-one" fkcolumn="measurementUnitID";
+	property name="measurementUnit" cfc="MeasurementUnit" fieldType="many-to-one" fkcolumn="measurementUnitID";
 	
 	// Related Object Properties (one-to-many)
 	
