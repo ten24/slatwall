@@ -56,9 +56,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="siteID";
 	
 	public string function getSiteID() {
-		if(!structKeyExists(variables, "siteID")) {
+		if(!structKeyExists(variables, "siteID") && !isNull(getHibachiScope().getSite())) {
 			variables.siteID = getHibachiScope().getSite().getSiteID();
+		}else{
+			return "";
 		}
 		return variables.siteID;
-	}
+	} 
 }

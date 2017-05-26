@@ -46,11 +46,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="dirtyReadFlag" ormtype="boolean";
+	property name="useElasticSearch" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
 	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
+	property name="mergeCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="mergeCollectionID" hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="collectionID" inverse="true" cascade="all-delete-orphan";
@@ -77,6 +79,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="records" type="array" persistent="false";
 	property name="pageRecords" type="array" persistent="false";
 
+	property name="aggregations" type="struct" persistent="false";
+
 	property name="keywords" type="string" persistent="false";
 	property name="keywordArray" type="array" persistent="false";
 
@@ -98,12 +102,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionEntityObject" type="any" persistent="false";
 	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
-	property name="useElasticSearch" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="getFilterGroupAliasMap" type="struct" persistent="false";
 
+	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
+
+	property name="mergeCollectionOptions" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -143,9 +149,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
-			var parentCollectionConfigStruct = arguments.parentCollection.getCollectionConfigStruct();
+			var parentCollectionConfigStruct = Duplicate(arguments.parentCollection.getCollectionConfigStruct());
 			parentCollectionConfigStruct.filterGroups = [{}];
-			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [{}];
+			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [];
 			setCollectionConfig(serializeJson(parentCollectionConfigStruct));
 		}
 
@@ -778,7 +784,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				for(var defaultProperty in defaultProperties){
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
-					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
+
+					columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 					//if propertyKey is a primary id, hide it and make it so it can't be deleted
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
@@ -852,7 +859,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return joinHQL;
 	}
 
-	private string function addJoin(required any join){
+	public void function addJoin(required any join){
 		if(!structKeyExists(getCollectionConfigStruct(),'joins')){
 			getCollectionConfigStruct()["joins"] = [];
 		}
@@ -1048,19 +1055,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
 	}
 
-	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
-		var totalFilterGroups = arrayLen(currentCollection);
-		for(var i =1; i <= totalFilterGroups; i++){
-			if(!ArrayIsDefined(baseCollection, i)){
-				baseCollection[i] = { "filterGroup" = []};
-			}
-			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
-				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
-			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
-		}
-		return baseCollection;
-	}
 
 	public void function mergeJoins(required any baseJoins){
 		var currentCollection = getCollectionConfigStruct();
@@ -1082,21 +1076,44 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+	private void function mergeParentCollectionFilters(){
+		if(variables.parentFilterMerged){
+			return;
+		}
+		var parentCollectionStruct = this.getParentCollection().getCollectionConfigStruct();
+		if(isnull(parentCollectionStruct.filterGroups) || !arraylen(parentCollectionStruct.filterGroups)){
+			return;
+		}
+
+		var finalFilterGroups = [];
+		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+
+		if(arraylen(parentCollectionStruct.filterGroups) == 1){
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups[1].filterGroup});
+		}else{
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups});
+		}
+
+		if(arraylen(filterGroupArray)){
+			if(arraylen(filterGroupArray) == 1){
+				arrayAppend(finalFilterGroups, { "filterGroup" =  filterGroupArray[1].filterGroup , "logicalOperator" = "AND"});
+			}else{
+				arrayAppend(finalFilterGroups, { "filterGroup" =  filterGroupArray, "logicalOperator" = "AND"});
+			}
+		}
+
+		this.getCollectionConfigStruct().filterGroups = finalFilterGroups;
+		if(structKeyExists(parentCollectionStruct, 'joins')){
+			this.mergeJoins(parentCollectionStruct.joins);
+		}
+		variables.parentFilterMerged = true;
+	}
+
 	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
 		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
 		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
 			filterGroupArray = collectionConfig.filterGroups;
-		}
-
-		if(!isnull(arguments.collectionEntity.getParentCollection())){
-			var parentCollectionStruct = arguments.collectionEntity.getParentCollection().getCollectionConfigStruct();
-			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
-				filterGroupArray = mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
-				if(structKeyExists(parentCollectionStruct, 'joins')){
-					mergeJoins(parentCollectionStruct.joins);
-				}
-			}
 		}
 		return filterGroupArray;
 	}
@@ -1535,16 +1552,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						variables.pageRecords = getHibachiScope().getService('elasticSearchService').getPageRecords(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1633,17 +1640,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						variables.records = getHibachiScope().getService('elasticSearchService').getRecords(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -1709,16 +1705,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(variables,"records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
-						if(this.getNewFlag()){
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('entity',getCollectionObject())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}else{
-							if(!getHibachiScope().getService('elasticSearchService').indexExists('collection',getCollectionID())){
-								getHibachiScope().getService('elasticSearchService').indexCollection(this);
-							}
-						}
-
 						var recordCount = getHibachiScope().getService('elasticSearchService').getRecordsCount(argumentCollection=arguments);
 					}else{
 						var HQL = '';
@@ -2145,6 +2131,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var orderByHQL = "";
 			var groupByHQL = "";
 
+			if(!isnull(this.getParentCollection())){
+				mergeParentCollectionFilters();
+			}
+
 
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelectAndOrderBy == false){
@@ -2459,11 +2449,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return deserializeJSON(getCollectionConfig());
 	}
 
+	public any function getAggregations(){
+		if(isNull(variables.aggregations)){
+			variables.aggregations = {};
+		}
+		return variables.aggregations;
+	}
 
+	public void function addAggregation(key, value){
+		if(isNull(variables.aggregations)){
+			variables.aggregations = {};
+		}
+		variables.aggregations[key] = value;
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
+
+	public any function getMergeCollectionOptions(){
+		if(!structKeyExists(variables, 'mergeCollectionOptions')){
+			var mergeCollectionCollection = getHibachiCollectionService().getCollectionCollectionList();
+			mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
+			mergeCollectionCollection.addFilter('collectionID', getCollectionID(), '!=');
+			mergeCollectionCollection.addFilter('collectionObject', getCollectionObject());
+			mergeCollectionCollection.addOrderBy('collectionName');
+			variables.mergeCollectionOptions = mergeCollectionCollection.getRecordOptions();
+		}
+		return variables.mergeCollectionOptions;
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -2484,12 +2498,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// =============== START: Custom Formatting Methods ====================
 
+	public array function getRecordOptions(includeBlankOption=true){
+		var optionsArray = [];
+		if(includeBlankOption){
+			arrayAppend(optionsArray, {'name'='','value'=''});
+		}
+		var exampleEntity = getHibachiCollectionService().invokeMethod("new#getCollectionObject()#");
+		var nameProperty = exampleEntity.getSimpleRepresentationPropertyName();
+		var idProperty = exampleEntity.getPrimaryIDPropertyName();
+
+		for(var item in this.getRecords()){
+			arrayAppend(optionsArray,{'name'=item[nameProperty], 'value'=item[idProperty]});
+		};
+		return optionsArray;
+	}
+
 	// ===============  END: Custom Formatting Methods =====================
 
 	// ============== START: Overridden Implicit Getters ===================
 
 	public any function getDefaultCollectionProperties(){
 		return super.getDefaultCollectionProperties();
+	}
+
+	public boolean function getUseElasticSearch(){
+		if(isNull(variables.useElasticSearch)){
+			variables.useElasticSearch = false;
+		}
+		return variables.useElasticSearch;
 	}
 
 	// ==============  END: Overridden Implicit Getters ====================
