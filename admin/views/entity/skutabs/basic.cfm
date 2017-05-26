@@ -25,8 +25,20 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryTrackBy" edit="#rc.edit#">
+
+			<cfset measurementUnitList = $.slatwall.getService('measurementService').getMeasurementUnitCollectionList() />
+			<cfset measurementUnitList.setDisplayProperties('unitCode,unitName') />
+			<cfset measurementUnits = measurementUnitList.getRecords() />
+			<span ng-init="weightMeasurementUnits = measurementUnits."
+
 			<hb:HibachiDisplayToggle selector="select[name=inventoryTrackBy]" showValues="Measurement" loadVisable="#rc.sku.getValueByPropertyIdentifier('inventoryTrackBy') neq 'Quantity'#">
-				<hb:HibachiPropertyDisplay object="#rc.sku#" property="inventoryMeasurementUnit" edit="#rc.edit#">
+				<select name="inventoryMeasurementUnit">
+					<optgroup label="Weight">
+						<option ng-repeat="unit in weightMeasurementUnits" value="unit.unitCode">{{unit.unitName}}</option>
+					<optgroup label="Volume">
+						<option ng-repeat="unit in volumeMeasurementUnits" value="unit.unitCode">{{unit.unitName}}</option>
+					<optgroup label="Length">
+						<option ng-repeat="unit in lengthMeasurementUnits" value="unit.unitCode">{{unit.unitName}}</option>
 			</hb:HibachiDisplayToggle>
 
 			<cfif rc.product.getBaseProductType() EQ 'gift-card'>
