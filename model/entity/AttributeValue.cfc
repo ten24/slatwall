@@ -123,6 +123,14 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 	}
 
+	// ==================== START: Logical Methods =========================
+
+	public any function copyAttributeValue( saveNewAttributeValue=true ) {
+		return getService("attributeService").copyAttributeValue( this, arguments.saveNewAttributeValue );
+	}
+
+	// ====================  END: Logical Methods ==========================
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	public string function getAttributeValueFileURL() {

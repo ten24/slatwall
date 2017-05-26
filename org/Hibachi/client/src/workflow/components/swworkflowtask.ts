@@ -3,43 +3,19 @@
 class SWWorkflowTask{
 	public static Factory(){
 		var directive = (
-			$log,
-			$location,
-			$timeout,
-			$hibachi,
-			metadataService,
-			collectionService,
 			workflowPartialsPath,
 			hibachiPathBuilder
 		)=> new SWWorkflowTask(
-			$log,
-			$location,
-			$timeout,
-			$hibachi,
-			metadataService,
-			collectionService,
 			workflowPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
-			'$location',
-			'$timeout',
-			'$hibachi',
-			'metadataService',
-			'collectionService',
 			'workflowPartialsPath',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$log,
-		$location,
-		$timeout,
-		$hibachi,
-		metadataService,
-		collectionService,
 		workflowPartialsPath,
 			hibachiPathBuilder
 	){

@@ -12,10 +12,18 @@
 		<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentType" edit="false">
 		<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentStatusType" edit="false">
 		<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-			<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="fromLocation" edit="#rc.stockAdjustment.isNew()#" valueOptions="#$.slatwall.getService("locationService").getLocationOptions()#">
+			<cfif rc.stockAdjustment.isNew()>
+				<swa:SlatwallLocationTypeahead locationPropertyName="fromLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.fromlocationname')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+			<cfelse>
+				<swa:SlatwallLocationTypeahead property="#rc.stockAdjustment.getFromLocation()#" locationPropertyName="billToLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.fromlocationname')#" edit="false" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+			</cfif>								
 		</cfif>
 		<cfif listFindNoCase("satLocationTransfer,satManualIn", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-			<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="toLocation" edit="#rc.stockAdjustment.isNew()#" valueOptions="#$.slatwall.getService("locationService").getLocationOptions()#">
+			<cfif rc.stockAdjustment.isNew()>
+				<swa:SlatwallLocationTypeahead locationPropertyName="toLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.tolocationname')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+			<cfelse>
+				<swa:SlatwallLocationTypeahead property="#rc.stockAdjustment.getFromLocation()#" locationPropertyName="billToLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.tolocationname')#" edit="false" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+			</cfif>							
 		</cfif>
 	</hb:HibachiPropertyList>
 </cfoutput>

@@ -5,7 +5,9 @@
 <cfparam name="rc.edit" type="boolean">
 
 <hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
-	<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
+	<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#"> 
+    <hb:HibachiProcessCaller entity="#rc.collection#" action="admin:entity.preprocesscollection" processContext="clone" queryString="sRedirectAction=admin:entity.detailcollection" type="list" modal="true" hideDisabled="false" />
+  </hb:HibachiEntityActionBar>
 	<hb:HibachiEntityDetailGroup object="#rc.collection#">
 		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/basic" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/options" open="true" text="#$.slatwall.rbKey('admin.define.configuration')#" />

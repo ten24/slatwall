@@ -5,10 +5,7 @@ class SWCriteriaOneToMany{
         var directive = (
             $log,
             $hibachi,
-            $filter,
             collectionPartialsPath,
-            collectionService,
-            metadataService,
             dialogService,
             observerService,
 			hibachiPathBuilder,
@@ -16,10 +13,7 @@ class SWCriteriaOneToMany{
         )=> new SWCriteriaOneToMany(
             $log,
             $hibachi,
-            $filter,
             collectionPartialsPath,
-            collectionService,
-            metadataService,
             dialogService,
             observerService,
 			hibachiPathBuilder,
@@ -28,10 +22,7 @@ class SWCriteriaOneToMany{
         directive.$inject = [
             '$log',
             '$hibachi',
-            '$filter',
             'collectionPartialsPath',
-            'collectionService',
-            'metadataService',
             'dialogService',
             'observerService',
 			'hibachiPathBuilder',
@@ -42,10 +33,7 @@ class SWCriteriaOneToMany{
     constructor(
         $log,
         $hibachi,
-        $filter,
         collectionPartialsPath,
-        collectionService,
-        metadataService,
         dialogService,
         observerService,
         hibachiPathBuilder,

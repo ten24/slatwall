@@ -104,7 +104,7 @@ Notes:
 			var params = { productID = arguments.productID };
 			var hql = "SELECT NEW MAP(
 							COALESCE(sum(orderItem.quantity),0) as QOO, 
-							orderItem.sku.skuID as skuID, 
+							sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath
@@ -114,14 +114,16 @@ Notes:
 					  	  	orderItem.stock stock
 					  	  LEFT JOIN 
 					  	  	stock.location location
+					  	  LEFT JOIN 
+					  	  	orderItem.sku sku
 						WHERE
 										orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
 						  			AND
 						  				orderItem.orderItemType.systemCode = 'oitSale'
 						  			AND 
-										orderItem.sku.product.productID = :productID
+										sku.product.productID = :productID
 						GROUP BY
-						orderItem.sku.skuID, 
+						sku.skuID, 
 						stock.stockID, 
 						location.locationID, 
 						location.locationIDPath
@@ -134,7 +136,7 @@ Notes:
 		public array function getQDOO(required string productID, string productRemoteID){
 			var hql = "SELECT NEW MAP(
 							coalesce( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							orderItem.sku.skuID as skuID, 
+							sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath)
@@ -144,6 +146,8 @@ Notes:
 					  		orderItem.orderDeliveryItems orderDeliveryItem
 					  	  LEFT JOIN
 					  	  	orderItem.stock stock
+					  	  LEFT JOIN
+					  	  	orderItem.sku sku
 					  	  LEFT JOIN 
 					  	  	stock.location location
 						WHERE
@@ -151,9 +155,9 @@ Notes:
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
-							orderItem.sku.product.productID = :productID
+							sku.product.productID = :productID
 						GROUP BY
-							orderItem.sku.skuID,
+							sku.skuID,
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
@@ -168,6 +172,7 @@ Notes:
 			var params = { productID = arguments.productID };
 			
 			var QDOO = getQDOO(productID=arguments.productID);
+			
 			var QDOOHashMap = {};
 			for(var i=1;i <= arrayLen(QDOO);i++){
 				QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 

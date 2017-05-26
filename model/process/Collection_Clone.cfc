@@ -46,31 +46,37 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
-	
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="collection";
+
+	// New Properties
+	property name="newCollection" type="any";
+
+	// Data Properties
+	property name="collectionName" hb_rbKey="entity.collection.collectionName";
+	property name="collectionCode" hb_rbKey="entity.collection.collectionCode";
+
+	public function getCollectionName() {
+		if(!structKeyExists(variables, "collectionName")) {
+			if(len(getCollection().getCollectionName())) {
+				variables.collectionName = getCollection().getCollectionName() & ' ( copy )';
+			} else {
+				variables.collectionName = '';
+			}
+		}
+		return variables.collectionName;
+	}
+	public function getCollectionCode() {
+		if(!structKeyExists(variables, "collectionCode")) {
+			if(len(getCollection().getCollectionCode())) {
+				variables.collectionCode = getCollection().getCollectionCode() & '-copy';
+			} else {
+				variables.collectionCode = '';
+			}
+		}
+		return variables.collectionCode;
+	}
+
 }

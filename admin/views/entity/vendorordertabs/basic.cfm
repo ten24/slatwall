@@ -23,7 +23,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="shippingAndHandlingCost" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="costDistributionType" edit="#rc.edit#">
 			
-				<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
+			<swa:SlatwallLocationTypeahead property="#rc.vendorOrder.getBillToLocation()#" locationPropertyName="billToLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('entity.vendororder.billtolocation')#" edit="#rc.edit#" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
 			
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

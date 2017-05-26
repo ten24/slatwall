@@ -191,6 +191,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
 			newVendorOrderItem.setStock( deliverToLocation );
 		}
+		newVendorOrderItem.setSku( arguments.processObject.getSku() );
 		
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 			

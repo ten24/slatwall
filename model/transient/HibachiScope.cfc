@@ -199,7 +199,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.productSmartList.addFilter('publishedFlag', 1);
 			variables.productSmartList.addRange('calculatedQATS', '1^');
 			if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag() && isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) && getContent().setting('contentIncludeChildContentProductsFlag')) {
-				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingProducts slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.productID = aslatwallproduct.productID) ");
+				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingPages slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.product.productID = aslatwallproduct.productID) ");
 			} else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()) {
 				variables.productSmartList.addFilter('listingPages.contentID',getContent().getContentID());
 			}
@@ -240,21 +240,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Print
-	public array function getPrintQueue() {
-		if(!hasSessionValue('printQueue')) {
-			setSessionValue('printQueue', []);
+	public string function getPrintQueue() {
+		if(!structKeyExists(cookie,'printQueue')){
+			getService('HibachiTagService').cfCookie('printQueue','');
 		}
-		return getSessionValue('printQueue');
+		return cookie.printQueue;
 	}
 	
 	// Clear Email & Print
 	public void function clearPrintQueue() {
-		setSessionValue('printQueue', []);
+		getService('HibachiTagService').cfCookie('printQueue','');
 	}
 	
 	public void function clearEmailAndPrintQueue() {
 		variables.emailQueue = [];
-		setSessionValue('printQueue', []);
+		clearPrintQueue();
 	}
 	
 	// =================== JS helper methods  ===========================

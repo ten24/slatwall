@@ -3,25 +3,25 @@
 class SWWorkflowTriggerHistory{
     public static Factory(){
         var directive=(
-            $log, $location, $hibachi, formService, workflowPartialsPath,
-            hibachiPathBuilder, $rootScope
+            workflowPartialsPath,
+            hibachiPathBuilder,
+            $rootScope
         )=>new SWWorkflowTriggerHistory(
-            $log, $location, $hibachi, formService, workflowPartialsPath,
-            hibachiPathBuilder, $rootScope
+            workflowPartialsPath,
+            hibachiPathBuilder,
+            $rootScope
         );
         directive.$inject = [
-            '$log',
-            '$location',
-            '$hibachi',
-            'formService',
             'workflowPartialsPath',
             'hibachiPathBuilder',
             '$rootScope'
         ];
         return directive;
     }
-    constructor($log, $location, $hibachi, formService, workflowPartialsPath,
-                hibachiPathBuilder, $rootScope){
+    constructor(
+            workflowPartialsPath,
+            hibachiPathBuilder,
+            $rootScope){
 
         return {
             restrict : 'A',

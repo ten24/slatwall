@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,47 +45,26 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="accountEmailAddress";
+<cfparam name="rc.collection" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// Lazy / Injected Objects
-	
-	// New Properties
-
-	// Data Properties (ID's)
-	
-	// Data Properties (Inputs)
-	property name="emailAddress";
-	property name="verificationCode";
-	
-	// Data Properties (Related Entity Populate)
-	
-	// Data Properties (Object / Array Populate)
-	
-	// Option Properties
-	
-	// Helper Properties
-	
-	// ======================== START: Defaults ============================
-	
-	// ========================  END: Defaults =============================
-
-	// =================== START: Lazy Object Helpers ======================
-	
-	// ===================  END: Lazy Object Helpers =======================
-	
-	// ================== START: New Property Helpers ======================
-	
-	// ==================  END: New Property Helpers =======================
-	
-	// ====================== START: Data Options ==========================
-	
-	// ======================  END: Data Options ===========================
-	
-	// ===================== START: Helper Methods =========================
-	
-	// =====================  END: Helper Methods ==========================
-}
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.collection#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.collection#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<!--- General Details --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="collectionCode" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
+</cfoutput>

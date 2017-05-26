@@ -198,6 +198,12 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 		// Add message for what happened
 		response.addMessage(responseData["ssl_result"], responseData["ssl_result_message"]);
 		
+		if( setting('debugModeFlag') ) {
+			structDelete(requestData,"ssl_card_number");
+			response.addMessage("Request", serializeJSON(requestData));
+			response.addMessage("Response", serializeJSON(rawResponse));
+		}
+		
 		// Set the status Code
 		response.setStatusCode(responseData["ssl_result"]);
 		

@@ -103,7 +103,7 @@ component output="false" accessors="true" extends="HibachiController" {
     	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
     	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
     		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
-    	}else{
+    	}else if (hasService('attributeService')){
     		var attributeMetaData = getService('attributeService').getAttributeModel();
     		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
     		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
@@ -725,7 +725,10 @@ component output="false" accessors="true" extends="HibachiController" {
 	            entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
 	        // DELETE
 	        } else if (arguments.rc.context eq 'delete') {
-	            var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+	            getService('HibachiValidationService').validate(entity, 'delete');
+                if(!entity.hasErrors()){
+                  entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+                }
 	        // PROCESS
 	        } else {
 	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});

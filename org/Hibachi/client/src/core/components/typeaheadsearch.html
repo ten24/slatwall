@@ -5,11 +5,11 @@
                 <button type="button" 
                         class="btn btn-default" 
                         data-ng-disabled="swTypeaheadSearch.disabled"
-                        data-toggle="dropdown" 
-                        aria-expanded="false">
+                        ng-click="swTypeaheadSearch.toggleDropdown()" 
+                        aria-expanded="true">
                         <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu" role="menu">
+                <ul ng-if="swTypeaheadSearch.dropdownOpen" class="dropdown-menu" role="menu">
                     <li>
                         <a ng-click="swTypeaheadSearch.updateSearchableProperties('all')">
                             <span sw-rbkey="'define.all'"></span>
