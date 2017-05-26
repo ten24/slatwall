@@ -57,6 +57,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="assignedAccountID" hb_rbKey="entity.fulfillmentBatch.assignedAccount" cfc="Account";
 	property name="description" hb_rbKey="entity.fulfillmentBatch.description";
+	property name="fulfillmentBatchName" hb_rbKey="entity.fulfillmentBatch.batchName";
 	property name="locationIDList" hb_rbKey="entity.fulfillmentBatch.location" cfc="Location";
 	property name="orderFulfillmentIDList" hb_populateEnabled="public" cfc="OrderFulfillment";
 	property name="orderItemIDList" hb_populateEnabled="public" cfc="OrderItem";
@@ -75,9 +76,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public array function getLocations(){
 		if(!structKeyExists(variables,'locations')){
 			variables.locations = [];
-			if(structKeyExists(variables, "locationIDList")){
-				for (var location in locationIDList.split(",")){
-					arrayAppend(variables.locations, getService('locationService').getLocation(location));	
+			if(structKeyExists(variables, "locationIDList") && len(variables.locationIDList)){
+				for (var locationID in variables.locationIDList){
+					arrayAppend(variables.locations, getService('locationService').getLocationByLocationID(locationID));	
 				}
 			}
 		}

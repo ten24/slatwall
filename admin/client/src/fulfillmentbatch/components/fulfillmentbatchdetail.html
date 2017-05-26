@@ -250,7 +250,12 @@
                                             <td>{{orderItem['sku_skuCode']}}</td>
                                             <td>{{orderItem.quantity}}</td>
                                             <td contenteditable='true'>
-                                                <input type="text" name="orderItemQuantity_{{orderItem.orderItemID}}" class="form-control" ng-init="swFulfillmentBatchDetailController.state.orderItem[orderItem.orderItemID] = 1" ng-model="swFulfillmentBatchDetailController.state.orderItem[orderItem.orderItemID]" />
+                                                <input type="text" 
+                                                	name="orderItemQuantity_{{orderItem.orderItemID}}" 
+                                                	class="form-control" 
+                                                	ng-init="swFulfillmentBatchDetailController.state.orderItem[orderItem.orderItemID] = 1" 
+                                                	ng-model="swFulfillmentBatchDetailController.state.orderItem[orderItem.orderItemID]" 
+                                                	ng-required="true" />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -495,29 +500,8 @@
                                     <div class="col-sm-9" ng-if="attribute.type == 'textArea'">
                                         <textarea title="{{attribute.hint||attribute.description}}" rows="5" cols="70" type="textarea" class="form-control" name="{{attribute.code}}" ng-required="{{attribute.isRequired=='Yes '}}" ng-model="swFulfillmentBatchDetailController.state[attribute.code]" ></textarea>
                                     </div>
-                                    
                                 </div>
-                                
-                                <!---<div class="form-group">
-                                    <label for="input" class="col-xs-3 control-label">Carrier Pickup Time: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
-                                    <div class="col-sm-9">
-                                        <select class="form-control">
-                                            <option value="" disabled selected>-Select-</option>
-                                            <option value="">Example</option>
-                                            <option value="">Example</option>
-                                            <option value="">Example</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="input" class="col-xs-3 control-label">Estimated Arrival Date:</label>
-                                    <div class="col-sm-9">
-                                        <textarea class="form-control" rows="3"></textarea>
-                                    </div>
-                                </div>--->
-  
-                                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -542,14 +526,16 @@
                                         <div class="s-title">Captured</div>
                                         <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountCapturedTotal']|currency}}</div>
                                     </div>
-                                    <div class="col-xs-2">
+                                    <!---<div class="col-xs-2">
                                         <div class="s-title">Amount Due</div>
                                         <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']|currency}}</div>
-                                    </div>
+                                    </div>--->
                                     <div class="col-xs-2 s-captured">
-                                        <div class="s-title">To Capture</div>
-                                        <input type="text" class="form-control" ng-model="swFulfillmentBatchDetailController.state.capturableAmount" ng-init="swFulfillmentBatchDetailController.state.capturableAmount = swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']">
-                                        <button class="btn btn-xs btn-success">Capture</button>
+                                    	<span ng-hide="!swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']">
+	                                        <div class="s-title">To Capture</div>
+	                                        <input type="text" class="form-control" ng-model="swFulfillmentBatchDetailController.state.capturableAmount" ng-init="swFulfillmentBatchDetailController.state.capturableAmount = swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue']">
+	                                        <button class="btn btn-xs btn-success">Capture</button>
+                                        </span>
                                     </div>
                                     
                                     <div class="col-xs-4">

@@ -59,7 +59,6 @@ class SWFulfillmentBatchDetailController  {
     }
 
     public userEditingComment = (comment) => {
-        console.log(comment);
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "EDIT_COMMENT_TOGGLE",
             payload: {comment: comment}

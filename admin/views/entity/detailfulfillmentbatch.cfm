@@ -57,18 +57,14 @@ Notes:
 	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 	<cfset totalFulfilled = rc.fulfillmentBatch.getFulfillmentsCompletedTotal()>
 	<cfset totalOnBatch = rc.fulfillmentBatch.getTotalQuantityOnBatch()>
+	<cfset totalFulfillments = arrayLen( rc.fulfillmentBatch.getFulfillmentBatchItems())>
+	
 	<cfif totalFulfilled gt 0>
 			<cfset totalPercentFulfilled = (totalFulfilled/totalOnBatch)*100 >
 		<cfelse>
 			<cfset totalPercentFulfilled = 0 >
 		</cfif>
-	
-	<cfif !isNull(rc.fulfillmentBatch.getLocations() && arrayLen(rc.fulfillmentBatch.getLocations()))>
-		<cfset primaryAddress = rc.fulfillmentBatch.getLocations()[1].getPrimaryAddress()>
-		<cfif !isNull(primaryAddress)>
-			<cfset defaultLocation = primaryAddress.getCity() & ' ' & primaryAddress.getStateCode()>
-		</cfif>
-	</cfif>
+	<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
 	
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">
@@ -92,7 +88,7 @@ Notes:
 					<sw-card-icon icon-name="user"></sw-card-icon>
 					<sw-card-header style="border-bottom:none">User</sw-card-header>
 					<cfif !isNull(rc.fulfillmentBatch.getAssignedAccount())>
-					<sw-card-body>#rc.fulfillmentBatch.getAssignedAccount().getFirstName()# #rc.fulfillmentBatch.getAssignedAccount().getLastName()#</sw-card-body>
+						<sw-card-body>#rc.fulfillmentBatch.getAssignedAccount().getFirstName()# #rc.fulfillmentBatch.getAssignedAccount().getLastName()#</sw-card-body>
 					</cfif>
 				</sw-card-view>
 

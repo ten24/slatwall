@@ -76,12 +76,10 @@ class SWOrderFulfillmentListController {
         
         //Subscribe to state changes in orderFulfillmentService
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((state)=>{
-            console.log("State Change: (OrderFulfillmentStore) ", state);
             this.state = state; //This overrides the current state any time any action takes place.
         });
         //Subscribe for state changes to the typeahead.
         this.typeaheadService.typeaheadStore.store$.subscribe((update)=>{
-            console.log("State Change (TypeaheadStore)", update);
             if (update.action && update.action.payload){
                 this.recieveNotification(update.action);
             }

@@ -48,14 +48,9 @@ class OrderFulfillmentService {
             case 'TOGGLE_FULFILLMENT_LISTING':
                 //modify the state and return it.
                 state.showFulfillmentListing = !state.showFulfillmentListing;
-                
-                return {
-                    ...state, action
-                };
+                return {...state, action};
             case 'ADD_BATCH':
-                return {
-                    ...state, action
-                };
+                return {...state, action};
             //This handles setting up the fulfillment batch detail page including all state.
             case 'FULFILLMENT_BATCH_DETAIL_SETUP':
                 //Setup the detail
@@ -63,19 +58,13 @@ class OrderFulfillmentService {
                     this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                 }
                 this.setupFulfillmentBatchDetail();
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             case 'FULFILLMENT_BATCH_DETAIL_UPDATE':
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
                 //Toggle the listing
                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             case 'EDIT_COMMENT_TOGGLE':
                 //Update the comment.
                 this.state.editComment = !this.state.editComment;
@@ -84,10 +73,7 @@ class OrderFulfillmentService {
                 }else{
                     this.state.commentBeingEdited = undefined;
                 }
-                
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             case 'SAVE_COMMENT_ACTION':
                 if (action.payload.comment && action.payload.commentText){
                     //saving
@@ -99,33 +85,21 @@ class OrderFulfillmentService {
                 //toggle edit mode. so we are no longer editing.
                 this.state.editComment = false;
                 this.state.commentBeingEdited = undefined;
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             case 'DELETE_COMMENT_ACTION':
                 this.deleteComment(action.payload.comment);
                 this.state.editComment = false;
                 this.state.commentBeingEdited = undefined;
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             case 'FULFILLMENT_ACTION':
                 //create all the data
-                console.log("Fulfilling Items", this.state.currentRecordOrderDetail, action.payload.viewState);
                 this.fulfillItems(action.payload.viewState, false);
-                
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
              case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
-                console.log("Display Attributes");
                 this.createOrderDeliveryAttributeCollection();
-                
-                return {
-                    ...this.state, action
-                }
+                return {...this.state, action}
             default:
-                return state;
+                return this.state;
         }
     } 
     /**
@@ -153,28 +127,30 @@ class OrderFulfillmentService {
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
             if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED"){
-                //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
-                //Outer table, will need to toggle and set the floating cards to this data.
+                
+                /*  Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
+                    Outer table, will need to toggle and set the floating cards to this data.
+                    on the first one being selected, go to the shrink view and set the selection on there as well.*/
+                        
                 if (angular.isDefined(update.action.payload)){
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
-                       /* if (update.action.payload.values.length){
-                            let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable2", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
-                            if (selectedRowIndex != -1){
-                            this.listingService
-                                .getListing("fulfillmentBatchItemTable2").selectionService
-                                    .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
-                                        this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
-                            }
-                        }else{
-                            this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
-                            this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
-                        }*/
-                        //on the first one being selected, go to the shrink view.
                         if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1){
                             if (this.state.expandedFulfillmentBatchListing){
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
                             }
                             this.state.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
+                            
+                            //set the selection.
+                            if (update.action.payload.values.length && this.state.currentSelectedFulfillmentBatchItemID){
+                                let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
+                                if (selectedRowIndex != -1){
+                                this.listingService
+                                    .getListing("fulfillmentBatchItemTable2").selectionService
+                                        .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
+                                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+                                }
+                            }
+
                             //use this id to get the record and set it to currentRecordOrderDetail.
                             //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
                             this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
@@ -189,18 +165,17 @@ class OrderFulfillmentService {
                                     }
                                 }
                             });
-                            //console.log("Batch Item Data", batchItemDetail);
-                            //now get the orderFulfillment.
-
                         }
-                        //set the inner selection to this selection.
                     }
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2"){
-                        
                         //if nothing is selected, go back to the outer view.
                         if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0){
                             if (this.state.expandedFulfillmentBatchListing == false){
+                                console.log("Toggle and clear.");
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
+                                //Clear all selections.
+                                this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+                                this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
                                 this.emitUpdateToClient();
                             }
                         }
@@ -227,7 +202,10 @@ class OrderFulfillmentService {
             processObject.data.entityName = "FulfillmentBatch";
             processObject.data['fulfillmentBatch'] = {};
             processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
-
+            //If only 1, add that to the list.
+            if (processObject.data.locationID){
+                processObject.data.locationIDList = processObject.data.locationID;
+            }
             return this.$hibachi.saveEntity("fulfillmentBatch",'',processObject.data, "create");
         }
     }

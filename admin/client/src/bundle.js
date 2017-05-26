@@ -49717,15 +49717,13 @@
 	                    return __assign({}, _this.state, { action: action });
 	                case 'FULFILLMENT_ACTION':
 	                    //create all the data
-	                    console.log("Fulfilling Items", _this.state.currentRecordOrderDetail, action.payload.viewState);
 	                    _this.fulfillItems(action.payload.viewState, false);
 	                    return __assign({}, _this.state, { action: action });
 	                case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
-	                    console.log("Display Attributes");
 	                    _this.createOrderDeliveryAttributeCollection();
 	                    return __assign({}, _this.state, { action: action });
 	                default:
-	                    return state;
+	                    return _this.state;
 	            }
 	        };
 	        this.setupFulfillmentBatchDetail = function () {
@@ -49735,28 +49733,25 @@
 	            //get the listingDisplay store and listen for changes to the listing display state.
 	            _this.listingService.listingDisplayStore.store$.subscribe(function (update) {
 	                if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
-	                    //Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
-	                    //Outer table, will need to toggle and set the floating cards to this data.
+	                    /*  Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
+	                        Outer table, will need to toggle and set the floating cards to this data.
+	                        on the first one being selected, go to the shrink view and set the selection on there as well.*/
 	                    if (angular.isDefined(update.action.payload)) {
 	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1") {
-	                            /* if (update.action.payload.values.length){
-	                                 let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable2", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
-	                                 if (selectedRowIndex != -1){
-	                                 this.listingService
-	                                     .getListing("fulfillmentBatchItemTable2").selectionService
-	                                         .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID,
-	                                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
-	                                 }
-	                             }else{
-	                                 this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
-	                                 this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
-	                             }*/
-	                            //on the first one being selected, go to the shrink view.
 	                            if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1) {
 	                                if (_this.state.expandedFulfillmentBatchListing) {
 	                                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
 	                                }
 	                                _this.state.currentSelectedFulfillmentBatchItemID = update.action.payload.values[0];
+	                                //set the selection.
+	                                if (update.action.payload.values.length && _this.state.currentSelectedFulfillmentBatchItemID) {
+	                                    var selectedRowIndex = _this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", _this.state.currentSelectedFulfillmentBatchItemID);
+	                                    if (selectedRowIndex != -1) {
+	                                        _this.listingService
+	                                            .getListing("fulfillmentBatchItemTable2").selectionService
+	                                            .addSelection(_this.listingService.getListing("fulfillmentBatchItemTable2").tableID, _this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][_this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+	                                    }
+	                                }
 	                                //use this id to get the record and set it to currentRecordOrderDetail.
 	                                //*****Need to iterate over the collection and find the ID to match against and get the orderfulfillment collection that matches this record.
 	                                _this.state.smFulfillmentBatchItemCollection.getEntity().then(function (results) {
@@ -49771,16 +49766,17 @@
 	                                        }
 	                                    }
 	                                });
-	                                //console.log("Batch Item Data", batchItemDetail);
-	                                //now get the orderFulfillment.
 	                            }
-	                            //set the inner selection to this selection.
 	                        }
 	                        if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable2") {
 	                            //if nothing is selected, go back to the outer view.
 	                            if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
 	                                if (_this.state.expandedFulfillmentBatchListing == false) {
+	                                    console.log("Toggle and clear.");
 	                                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
+	                                    //Clear all selections.
+	                                    _this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+	                                    _this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
 	                                    _this.emitUpdateToClient();
 	                                }
 	                            }
@@ -49805,6 +49801,10 @@
 	                processObject.data.entityName = "FulfillmentBatch";
 	                processObject.data['fulfillmentBatch'] = {};
 	                processObject.data['fulfillmentBatch']['fulfillmentBatchID'] = "";
+	                //If only 1, add that to the list.
+	                if (processObject.data.locationID) {
+	                    processObject.data.locationIDList = processObject.data.locationID;
+	                }
 	                return _this.$hibachi.saveEntity("fulfillmentBatch", '', processObject.data, "create");
 	            }
 	        };
@@ -50388,12 +50388,10 @@
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
 	        //Subscribe to state changes in orderFulfillmentService
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (state) {
-	            console.log("State Change: (OrderFulfillmentStore) ", state);
 	            _this.state = state; //This overrides the current state any time any action takes place.
 	        });
 	        //Subscribe for state changes to the typeahead.
 	        this.typeaheadService.typeaheadStore.store$.subscribe(function (update) {
-	            console.log("State Change (TypeaheadStore)", update);
 	            if (update.action && update.action.payload) {
 	                _this.recieveNotification(update.action);
 	            }
@@ -50521,7 +50519,6 @@
 	            });
 	        };
 	        this.userEditingComment = function (comment) {
-	            console.log(comment);
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: "EDIT_COMMENT_TOGGLE",
 	                payload: { comment: comment }
