@@ -70,6 +70,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
+			<hb:HibachiListingColumn propertyIdentifier="stock.sku.inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
 			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
@@ -93,6 +94,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+				<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			</hb:HibachiListingDisplay>
 		</cfif>
 		
@@ -115,6 +117,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
+			<hb:HibachiListingColumn propertyIdentifier="stock.sku.inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
 			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
@@ -142,7 +145,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 				<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" value="#rc.vendorOrder.getBillToLocation().getLocationID()#" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-				<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false"/>
+				<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 				<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
 				
 			</hb:HibachiListingDisplay>
