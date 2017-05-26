@@ -328,7 +328,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag( true );
-			variables.assignedAttributeSetSmartList.joinRelatedProperty("#getHibachiDao('hibachiDao').getApplicationValue('applicationKey')#AttributeSet", "attributes", "INNER", true);
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationValue('applicationKey')#AttributeSet", "attributes", "INNER", true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('globalFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', getClassName());
