@@ -86,6 +86,7 @@ Notes:
 					SL=rc.stockAdjustment.getAddStockAdjustmentItemSkuOptionsSmartList();
 				}
 	</cfscript>
+	
 	<hb:HibachiListingDisplay smartList="#SL#"
 							  recordProcessAction="admin:entity.processStockAdjustment"
 							  recordProcessContext="addStockAdjustmentItem"
@@ -98,6 +99,7 @@ Notes:
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
+			<hb:HibachiListingColumn propertyIdentifier="QATS" />
 			<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
 		<cfelse>
 			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
