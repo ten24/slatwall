@@ -89,7 +89,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public any function getQNDORVO_runs_without_error() {
-		assertEquals(0,variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
+		assertEquals([],variables.dao.getQNDORVO(productID="1", productRemoteID="1"));
 	}	
 		
 	// Ensure getQNDOSA executes without error
@@ -1422,6 +1422,63 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var result = variables.dao.getQNROVO(mockProduct.getProductID());
 		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
+	}
+	/**
+	* @test
+	*/
+	public void function getQNDORVOTest() {
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var vendorOrderData = {
+			vendorOrderID = '',
+			vendorOrderStatusType = {
+				typeID = '444df2b5c8f9b37338229d4f7dd84ad1'//ostNew
+			},
+			vendorOrderType = {
+				typeID = '444df2dc91afb63f25074c7d9512248b'//votReturnOrder
+			}
+		};
+		var mockVendorOrder = createPersistedTestEntity('VendorOrder', vendorOrderData);
+		var vendorOrderItemData1 = {
+			vendorOrderItemID = '',
+			quantity = 100,
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockVendorOrderItem1 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData1);
+		
+		var vendorOrderItemData2 = {
+			vendorOrderItemID = '',
+			quantity = 200,
+			vendorOrder = {
+				vendorOrderID = mockVendorOrder.getVendorOrderID()
+			},
+			stock = {
+				stockID = mockStock.getStockID()
+			}
+		};
+		var mockVendorOrderItem2 = createPersistedTestEntity('VendorOrderItem', vendorOrderItemData2);
+		
+		
+		var result = variables.dao.getQNDORVO(mockProduct.getProductID());
+		assertEquals(300, result[1].QNDORVO, 'QNDORVO should be (100+200) = 300');
 	}
 		
 	/**

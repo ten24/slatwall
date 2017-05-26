@@ -71,11 +71,12 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
 			<hb:HibachiListingColumn propertyIdentifier="stock.sku.inventoryMeasurementUnit.unitCode" sort="false" search="false" />
-			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
-			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
+			<hb:HibachiListingColumn propertyidentifier="quantityDelivered" />
+			<hb:HibachiListingColumn propertyidentifier="quantityUnDelivered" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
-			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
+			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
+			<!---<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />--->
 			
 		</hb:HibachiListingDisplay>
 		
@@ -93,6 +94,7 @@ Notes:
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+				<hb:HibachiListingColumn processObjectProperty="deliverFromLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverFromLocationID')#" fieldClass="span2" value="#rc.vendorOrder.getBillToLocation().getLocationID()#" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 				<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			</hb:HibachiListingDisplay>
@@ -122,8 +124,9 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
+			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
 			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
-			
+			<hb:HibachiListingColumn propertyidentifier="vendorAlternateSkuCode.alternateSkuCode" />
 		</hb:HibachiListingDisplay>
 		
 		<cfif rc.edit and listFindNoCase("vostNew", rc.vendorOrder.getVendorOrderStatusType().getSystemCode())>
@@ -137,6 +140,8 @@ Notes:
 									  recordProcessUpdateTableID="LD#replace(rc.vendorOrder.getVendorOrderItemsSmartList().getSavedStateID(),'-','','all')#">
 									    
 				<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+				<hb:HibachiListingColumn propertyIdentifier="skuName" />
+				<hb:HibachiListingColumn propertyIdentifier="price" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 				<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
@@ -148,6 +153,7 @@ Notes:
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 				<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 				<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
+				<hb:HibachiListingColumn processObjectProperty="vendorSkuCode" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.vendorSkuCode')#" fieldClass="span1"/>
 				
 			</hb:HibachiListingDisplay>
 		</cfif>

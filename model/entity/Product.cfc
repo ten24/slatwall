@@ -146,6 +146,19 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 
+	public any function getAverageCost(){
+		return getDao('productDao').getAverageCost(this.getProductID());
+	}
+	
+	public any function getAverageLandedCost(){
+		return getDao('productDao').getAverageLandedCost(this.getProductID());
+	}
+	
+	public numeric function getCurrentMargin(){
+		return getDao('productDao').getCurrentMargin(this.getProductID());
+	}
+	
+
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
@@ -170,6 +183,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.availableToPurchaseFlag;
+	}
+
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
 	}
 
 	public any function getProductTypeOptions( string baseProductType ) {
@@ -890,6 +907,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public numeric function getQATS() {
 		return getQuantity("QATS");
+	}
+
+	public numeric function getQOH(){
+		return getQuantity("QOH");
 	}
 
 	public numeric function getAllowBackorderFlag() {

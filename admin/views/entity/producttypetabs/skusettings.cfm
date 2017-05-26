@@ -77,5 +77,17 @@ Notes:
 		<cfelseif  rc.productType.getBaseProductType() eq "event">
 			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.productType#" />
 		</cfif>
+		<cfif rc.productType.getBaseProductType() neq "gift-card">
+			<swa:SlatwallSetting settingName="skuExpenseLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuRevenueLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuCogsLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuAssetLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "subscription">
+			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,30 @@
 
 Notes:
 
-*/
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO" persistent="false" accessors="true" output="false" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.ledgerAccountSmartList" type="any" />
+
+<cfoutput>
 	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.ledgerAccountSmartList#" showCreate="false">
 	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>			
+			<hb:HibachiProcessCaller action="admin:entity.createledgeraccount" entity="ledgeraccount" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.ledgeraccount')#" modal="true" />			
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.ledgerAccountSmartList#"
+							   recordEditAction="admin:entity.editLedgerAccount"
+							   recordDetailAction="admin:entity.detailLedgerAccount">
+							      	      
+		<hb:HibachiListingColumn propertyIdentifier="ledgerAccountName" />
+		<hb:HibachiListingColumn propertyIdentifier="ledgerAccountType.typeName" />
+		
+	</hb:HibachiListingDisplay>
+
+</cfoutput>
