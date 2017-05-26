@@ -49673,7 +49673,6 @@
 	                    return __assign({}, state, { action: action });
 	                case 'ADD_BATCH':
 	                    return __assign({}, state, { action: action });
-	                //This handles setting up the fulfillment batch detail page including all state.
 	                case 'FULFILLMENT_BATCH_DETAIL_SETUP':
 	                    //Setup the detail
 	                    if (action.payload.fulfillmentBatchId != undefined) {
@@ -49726,6 +49725,7 @@
 	                    return _this.state;
 	            }
 	        };
+	        /** Sets up the batch detail page including responding to listing changes. */
 	        this.setupFulfillmentBatchDetail = function () {
 	            //Create the fulfillmentBatchItemCollection
 	            _this.createLgOrderFulfillmentBatchItemCollection();
@@ -49772,7 +49772,6 @@
 	                            //if nothing is selected, go back to the outer view.
 	                            if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0) {
 	                                if (_this.state.expandedFulfillmentBatchListing == false) {
-	                                    console.log("Toggle and clear.");
 	                                    _this.state.expandedFulfillmentBatchListing = !_this.state.expandedFulfillmentBatchListing;
 	                                    //Clear all selections.
 	                                    _this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
@@ -49785,6 +49784,7 @@
 	                }
 	            });
 	        };
+	        /** During key times when data changes, we would like to alert the client to those changes. This allows us to do that. */
 	        this.emitUpdateToClient = function () {
 	            _this.orderFulfillmentStore.dispatch({
 	                type: "FULFILLMENT_BATCH_DETAIL_UPDATE",
@@ -49893,7 +49893,6 @@
 	                });
 	            }
 	        };
-	        /** Various collections used to retrieve data. */
 	        /**
 	         * Returns the comments for the selectedFulfillmentBatchItem
 	         */
@@ -50360,7 +50359,7 @@
 	            }
 	        };
 	        //Set the initial state for the filters.
-	        this.filters = { "unavailable": false, "partial": false, "available": false };
+	        this.filters = { "unavailable": false, "partial": false, "available": true };
 	        this.collections = [];
 	        //Some setup for the fulfillments collection.
 	        this.createOrderFulfillmentCollection();

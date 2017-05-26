@@ -61,10 +61,12 @@ Notes:
 	
 	<cfif totalFulfilled gt 0>
 			<cfset totalPercentFulfilled = (totalFulfilled/totalOnBatch)*100 >
-		<cfelse>
-			<cfset totalPercentFulfilled = 0 >
-		</cfif>
-	<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
+	<cfelse>
+		<cfset totalPercentFulfilled = 0 >
+	</cfif>
+	<cfif arrayLen(rc.fulfillmentBatch.getLocations())>
+		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
+	</cfif>
 	
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">

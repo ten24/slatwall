@@ -61,7 +61,7 @@
 		<div class="s-detail-body s-arrow" ng-show="!swFulfillmentBatchDetailController.state.currentRecordOrderDetail">Loading Record . . .</div>
         <div class="s-detail-body s-arrow" ng-show="swFulfillmentBatchDetailController.state.currentRecordOrderDetail">
             <div class="s-content-header">
-                <h2>Order #{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_orderNumber']}}</h2>
+                <h2>Order <a href="/?slataction=entity.detailOrder&orderID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_orderID']}}">#{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_orderNumber']}}</a></h2>
                 <span class="pull-right">
                     
                     <div class="btn-toolbar" role="toolbar"> 

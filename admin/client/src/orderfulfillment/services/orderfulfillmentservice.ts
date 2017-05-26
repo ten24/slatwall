@@ -51,7 +51,7 @@ class OrderFulfillmentService {
                 return {...state, action};
             case 'ADD_BATCH':
                 return {...state, action};
-            //This handles setting up the fulfillment batch detail page including all state.
+
             case 'FULFILLMENT_BATCH_DETAIL_SETUP':
                 //Setup the detail
                 if (action.payload.fulfillmentBatchId != undefined){
@@ -102,6 +102,7 @@ class OrderFulfillmentService {
                 return this.state;
         }
     } 
+    
     /**
      *  Store stream. Set the initial state of the typeahead using startsWith and then scan. 
      *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
@@ -118,6 +119,7 @@ class OrderFulfillmentService {
         
     }
 
+    /** Sets up the batch detail page including responding to listing changes. */
     public setupFulfillmentBatchDetail = () => {
         
         //Create the fulfillmentBatchItemCollection
@@ -171,7 +173,6 @@ class OrderFulfillmentService {
                         //if nothing is selected, go back to the outer view.
                         if (!angular.isDefined(update.action.payload.values) || update.action.payload.values.length == 0){
                             if (this.state.expandedFulfillmentBatchListing == false){
-                                console.log("Toggle and clear.");
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
                                 //Clear all selections.
                                 this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
@@ -185,6 +186,7 @@ class OrderFulfillmentService {
         }); 
     }
 
+    /** During key times when data changes, we would like to alert the client to those changes. This allows us to do that. */
     public emitUpdateToClient = () => {
         this.orderFulfillmentStore.dispatch({
             type: "FULFILLMENT_BATCH_DETAIL_UPDATE",
@@ -303,11 +305,10 @@ class OrderFulfillmentService {
         }
     }
 
-    /** Various collections used to retrieve data. */
     /**
      * Returns the comments for the selectedFulfillmentBatchItem
      */
-     public createCommentsCollectionForFulfillmentBatchItem = (fulfillmentBatchItemID) => {
+    public createCommentsCollectionForFulfillmentBatchItem = (fulfillmentBatchItemID) => {
         this.state.commentsCollection = this.collectionConfigService.newCollectionConfig("Comment");
         this.state.commentsCollection.addDisplayProperty("createdDateTime");
         this.state.commentsCollection.addDisplayProperty("createdByAccountID");
@@ -383,6 +384,7 @@ class OrderFulfillmentService {
             }
         });
      } 
+     
      /**
      * Setup the initial orderFulfillment Collection.
      */
@@ -463,7 +465,7 @@ class OrderFulfillmentService {
         this.state.orderDeliveryAttributes = orderDeliveryAttributes;
         this.emitUpdateToClient(); //alert the client that we have new data to give.
      }
-}
+    }
 export {
     OrderFulfillmentService
 }
