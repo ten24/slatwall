@@ -4,7 +4,7 @@
 		<column name="unitCode" fieldtype="id" />
 		<column name="measurementType" />
 		<column name="unitName" />
-		<column name="conversionRatio" datatype="float" />
+		<column name="conversionRatio" datatype="double" />
 	</Columns>
 	<Records>
 		<Record unitCode="lb" measurementType="weight" unitName="Pound" conversionRatio="1" />

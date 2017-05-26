@@ -73,6 +73,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 		}else{
 			var skuQATS = getBundledSku().getQATS();
 		}
+		writeDump(convertNativeToBundledUnits(skuQATS));
 		var bundleQATS = int(convertNativeToBundledUnits(skuQATS) / getBundledQuantity());
 		return bundleQATS;
 	}

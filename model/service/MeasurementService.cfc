@@ -64,7 +64,10 @@ component extends="HibachiService" output="false" accessors="true"  {
 		
 		// As long as both of the measurement units exist and are of the same type, then we can return the conversion 
 		if(!isNull(omu) && !isNUll(nmu) && !isNull(omu.getConversionRatio()) && !isNull(nmu.getConversionRatio()) && omu.getMeasurementType() == nmu.getMeasurementType()) {
-			return (arguments.amount / omu.getConversionRatio()) * nmu.getConversionRatio();	
+			writeDump('native: ' & omu.getConversionRatio());
+			writeDump('bundled: ' & nmu.getConversionRatio());
+			writeDump('ratio: ' & (nmu.getConversionRatio() / omu.getConversionRatio()));
+			return arguments.amount * (nmu.getConversionRatio() / omu.getConversionRatio());	
 		}
 		
 		// Otherwise just return the original weight
