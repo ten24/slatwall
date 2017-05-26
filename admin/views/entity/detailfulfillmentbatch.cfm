@@ -82,7 +82,6 @@ Notes:
 						<cfelse>
 							#rc.fulfillmentBatch.getFulfillmentBatchNumber()#
 						</cfif>
-						
 					</sw-card-body>
 				</sw-card-view>
 				
