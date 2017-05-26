@@ -227,7 +227,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public array function getInventoryTrackByOptions(){
 		if(!structKeyExists(variables, 'inventoryTrackByOptions')){
-			variables.inventoryTrackByOptions = ['Quantity','Measurement - Weight','Measurement - Volume','Measurement - Length'];
+			variables.inventoryTrackByOptions = ['Quantity','Measurement'];
 		}
 		return variables.inventoryTrackByOptions;
 	}
