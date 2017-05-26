@@ -52,6 +52,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// Related Object Properties (many-to-one)
 	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
+	property name="mergeCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="mergeCollectionID" hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="collectionID" inverse="true" cascade="all-delete-orphan";
@@ -105,7 +106,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="getFilterGroupAliasMap" type="struct" persistent="false";
 
+	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
+
+	property name="mergeCollectionOptions" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -145,9 +149,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
-			var parentCollectionConfigStruct = arguments.parentCollection.getCollectionConfigStruct();
+			var parentCollectionConfigStruct = Duplicate(arguments.parentCollection.getCollectionConfigStruct());
 			parentCollectionConfigStruct.filterGroups = [{}];
-			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [{}];
+			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [];
 			setCollectionConfig(serializeJson(parentCollectionConfigStruct));
 		}
 
@@ -1051,19 +1055,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
 	}
 
-	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
-		var totalFilterGroups = arrayLen(currentCollection);
-		for(var i =1; i <= totalFilterGroups; i++){
-			if(!ArrayIsDefined(baseCollection, i)){
-				baseCollection[i] = { "filterGroup" = []};
-			}
-			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
-				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
-			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
-		}
-		return baseCollection;
-	}
 
 	public void function mergeJoins(required any baseJoins){
 		var currentCollection = getCollectionConfigStruct();
@@ -1085,21 +1076,44 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+	private void function mergeParentCollectionFilters(){
+		if(variables.parentFilterMerged){
+			return;
+		}
+		var parentCollectionStruct = this.getParentCollection().getCollectionConfigStruct();
+		if(isnull(parentCollectionStruct.filterGroups) || !arraylen(parentCollectionStruct.filterGroups)){
+			return;
+		}
+
+		var finalFilterGroups = [];
+		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
+
+		if(arraylen(parentCollectionStruct.filterGroups) == 1){
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups[1].filterGroup});
+		}else{
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups});
+		}
+
+		if(arraylen(filterGroupArray)){
+			if(arraylen(filterGroupArray) == 1){
+				arrayAppend(finalFilterGroups, { "filterGroup" =  filterGroupArray[1].filterGroup , "logicalOperator" = "AND"});
+			}else{
+				arrayAppend(finalFilterGroups, { "filterGroup" =  filterGroupArray, "logicalOperator" = "AND"});
+			}
+		}
+
+		this.getCollectionConfigStruct().filterGroups = finalFilterGroups;
+		if(structKeyExists(parentCollectionStruct, 'joins')){
+			this.mergeJoins(parentCollectionStruct.joins);
+		}
+		variables.parentFilterMerged = true;
+	}
+
 	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
 		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
 		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
 			filterGroupArray = collectionConfig.filterGroups;
-		}
-
-		if(!isnull(arguments.collectionEntity.getParentCollection())){
-			var parentCollectionStruct = arguments.collectionEntity.getParentCollection().getCollectionConfigStruct();
-			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
-				filterGroupArray = mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
-				if(structKeyExists(parentCollectionStruct, 'joins')){
-					mergeJoins(parentCollectionStruct.joins);
-				}
-			}
 		}
 		return filterGroupArray;
 	}
@@ -2117,6 +2131,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var orderByHQL = "";
 			var groupByHQL = "";
 
+			if(!isnull(this.getParentCollection())){
+				mergeParentCollectionFilters();
+			}
+
 
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelectAndOrderBy == false){
@@ -2449,6 +2467,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// ============= START: Bidirectional Helper Methods ===================
 
+	public any function getMergeCollectionOptions(){
+		if(!structKeyExists(variables, 'mergeCollectionOptions')){
+			var mergeCollectionCollection = getHibachiCollectionService().getCollectionCollectionList();
+			mergeCollectionCollection.setDisplayProperties('collectionID,collectionName');
+			mergeCollectionCollection.addFilter('collectionID', getCollectionID(), '!=');
+			mergeCollectionCollection.addFilter('collectionObject', getCollectionObject());
+			mergeCollectionCollection.addOrderBy('collectionName');
+			variables.mergeCollectionOptions = mergeCollectionCollection.getRecordOptions();
+		}
+		return variables.mergeCollectionOptions;
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -2467,6 +2497,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// ===============  END: Custom Validation Methods =====================
 
 	// =============== START: Custom Formatting Methods ====================
+
+	public array function getRecordOptions(includeBlankOption=true){
+		var optionsArray = [];
+		if(includeBlankOption){
+			arrayAppend(optionsArray, {'name'='','value'=''});
+		}
+		var exampleEntity = getHibachiCollectionService().invokeMethod("new#getCollectionObject()#");
+		var nameProperty = exampleEntity.getSimpleRepresentationPropertyName();
+		var idProperty = exampleEntity.getPrimaryIDPropertyName();
+
+		for(var item in this.getRecords()){
+			arrayAppend(optionsArray,{'name'=item[nameProperty], 'value'=item[idProperty]});
+		};
+		return optionsArray;
+	}
 
 	// ===============  END: Custom Formatting Methods =====================
 

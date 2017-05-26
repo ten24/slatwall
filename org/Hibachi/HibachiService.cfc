@@ -291,8 +291,8 @@
         }
         return buffer.toString();
     };
-
-	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
+    
+	public query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
 		var rowsTotal = ArrayLen(arrayOfStructs);
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
