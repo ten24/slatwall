@@ -89,7 +89,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		  	<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-		  	<hb:HibachiListingColumn processObjectProperty="measurementUnit" title="#$.slatwall.rbKey('entity.measurementUnit')#" fieldClass="span1" />
+		  	<hb:HibachiListingColumn processObjectProperty="measurementUnit" title="#$.slatwall.rbKey('entity.measurementUnit')#" fieldClass="span1" showEmptySelectBox="false"/>
 		</hb:HibachiListingDisplay>
 		
 	</hb:HibachiEntityProcessForm>

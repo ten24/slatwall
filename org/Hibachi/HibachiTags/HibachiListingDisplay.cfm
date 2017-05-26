@@ -55,7 +55,7 @@
 	<cfparam name="attributes.tableattributes" type="string" default="" />  <!--- Pass in additional html attributes for the table --->
 	<cfparam name="attributes.tableclass" type="string" default="" />  <!--- Pass in additional classes for the table --->
 	<cfparam name="attributes.adminattributes" type="string" default="" />
-	<cfparam name="attributes.recordAlias" type="string" default="" /> <!--- Optional record alias for process object injection (if recordProcessEntity is same class as record) --->
+	<cfparam name="attributes.recordAlias" type="string" default="" /> <!--- Optional record alias for process object injection --->
 
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
