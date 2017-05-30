@@ -104,7 +104,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
-	property name="getFilterGroupAliasMap" type="struct" persistent="false";
+	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
+	property name="filterGroupAliasMap" type="struct" persistent="false";
 
 	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
@@ -265,7 +266,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return alias & _propertyIdentifier;
  	}
-
+ 	
+ 	
 	public void function addFilterAggregate(
 		required string filterAggregateName,
 		required string propertyIdentifier,
@@ -1255,7 +1257,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
 			}
 		}
+		
 		return filterGroupsHQL;
+	}
+	
+	private string function getLeafNodeHQL(){
+		var leafNodeHQL = "";
+		var parentPropertyName = getService('hibachiService').getParentPropertyByEntityName(getCollectionObject());
+		var parentTableAlias = "_#parentPropertyName#LeafJoin";
+		//TODO: make subquery into othere collection call for elastic search to work better
+		var notLeafNodeSubQuery = "
+			SELECT #parentTableAlias#.#parentPropertyName#.id
+			FROM #getDao('HibachiDao').getApplicationKey()##getCollectionObject()# #parentTableAlias#
+			WHERE #parentTableAlias#.#parentPropertyName# IS NOT NULL
+		";
+		
+		leafNodeHQL = " #getCollectionConfigStruct().baseEntityAlias#.id NOT IN (#trim(notLeafNodeSubQuery)#) ";
+		
+		return leafNodeHQL;
 	}
 
 	private string function getFilterHQL(required array filterGroups){
@@ -1267,6 +1286,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			filterHQL &= ' where ';
 			filterHQL &= filterGroupsHQL;
 		}
+		
+		
+		
+		
 		return filterHQL;
 	}
 
@@ -2215,6 +2238,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arraylen(filterGroupArray)){
 				filterHQL &= getFilterHQL(filterGroupArray);
 			}
+			
+			//add leaf node filters as private filter group
+			if(getFilterByLeafNodesFlag()){
+				var logicalOperator = '';
+				if(len(filterHQL)){
+					logicalOperator = 'AND';
+				}else{
+					filterHQL &= ' where ';
+				}
+				var leafNodeHQL = getLeafNodeHQL();
+				
+				if(len(leafNodeHQL)){
+					filterHQL &= " #logicalOperator# (#leafNodeHQL#)";
+				}
+			}
 
 			var aggregateFilters = getAggregateFilterHQL();
 
@@ -2224,7 +2262,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					groupByHQL = "GROUP BY _#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id";
 				}
 			}
-
+			
 			addPostFiltersFromKeywords(collectionConfig);
 
 			//check if the user has applied any filters from the ui list view

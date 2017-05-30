@@ -87,6 +87,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
         }
     }
+    
+    public string function getParentPropertyName(){
+    	getService('hibachiService').getParentPropertyByEntityName(getClassName());
+    }
+    
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 
