@@ -51,7 +51,6 @@ class OrderFulfillmentService {
                 return {...state, action};
             case 'ADD_BATCH':
                 return {...state, action};
-
             case 'FULFILLMENT_BATCH_DETAIL_SETUP':
                 //Setup the detail
                 if (action.payload.fulfillmentBatchId != undefined){
