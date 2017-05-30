@@ -940,8 +940,20 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			];
 			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+		
+		}else if(!isnull(collectionEntity.getParentCollection())){
+			var filterGroupArray = [];
+			if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
+				filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
+			}
+			var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
+			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
+				collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+				if(structKeyExists(parentCollectionStruct, 'joins')){
+					collectionEntity.mergeJoins(parentCollectionStruct.joins);
+				}
+			}
 		}
-
 		if(!isNull(collectionEntity.getMergeCollection())){
 			var collectionData = getMergedCollectionData(collectionEntity, data);
 			var headers = getHeadersListByCollection(collectionEntity);
