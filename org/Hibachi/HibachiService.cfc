@@ -29,6 +29,11 @@
 			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ].hb_parentPropertyName;
 		}
 		
+		public string function getSimpleRepresentationPropertyNameByEntityName(required string entityName){
+			var example = this.new(arguments.entityName);
+			var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
+			return simpleRepresentationPropertyName;
+		}
 	
 		public any function getSmartList(string entityName, struct data={}){
 			var smartList = getHibachiDAO().getSmartList(argumentcollection=arguments);

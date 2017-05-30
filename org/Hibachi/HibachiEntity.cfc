@@ -34,6 +34,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return super.init();
 	}
+	
+	
 
 	public void function genericPropertyRemove(required string propertyName){
 		evaluate("set#arguments.propertyName#(javacast('null',''))");
@@ -461,6 +463,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return "";
 	}
+	
 
 	// @hint returns an array of name/value pairs that can function as options for a many-to-one property
 	public array function getPropertyOptions( required string propertyName ) {
