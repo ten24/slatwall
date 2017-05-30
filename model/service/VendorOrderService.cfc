@@ -256,6 +256,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 				stockreceiverItem.setQuantity( thisRecord.quantity );
 				stockreceiverItem.setStock( stock );
+				stockreceiveritem.setCost( vendorOrderItem.getCost() );
 				stockreceiverItem.setVendorOrderItem( vendorOrderItem );
 				stockreceiverItem.setStockReceiver( stockReceiver );
 				

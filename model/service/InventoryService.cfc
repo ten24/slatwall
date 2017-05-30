@@ -54,7 +54,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public void function createInventoryByStockReceiverItem(required any stockReceiverItem){
 		if(arguments.stockReceiverItem.getStock().getSku().setting("skuTrackInventoryFlag")) {
 			// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
-			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'orderItem' 
+			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'order' 
 				&& ( !isNull(arguments.stockReceiverItem.getStock().getSku().getBundleFlag()) && arguments.stockReceiverItem.getStock().getSku().getBundleFlag() )
 				&& arguments.stockReceiverItem.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
 
@@ -74,7 +74,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
 			inventory.setStock(arguments.stockReceiverItem.getStock());
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
-			
+
 			//vendorOrderItem logic
 			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendorOrder'){
 				inventory.setCost(arguments.stockReceiverItem.getCost());
