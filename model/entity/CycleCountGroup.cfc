@@ -46,46 +46,37 @@
 Notes:
 
 */
-component displayname="Comment Relationship" entityname="SlatwallCommentRelationship" table="SwCommentRelationship" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="commentService" hb_permission="comment.commentRelationships" {
+component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output="false" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="physicalService" hb_permission="this" hb_processContexts="" {
 	
 	// Persistent Properties
-	property name="commentRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="referencedRelationshipFlag" hb_populateEnabled="false" ormtype="boolean" default="false";
-	property name="referencedExpressionStart" hb_populateEnabled="false" ormtype="integer";
-	property name="referencedExpressionEnd" hb_populateEnabled="false" ormtype="integer";
-	property name="referencedExpressionEntity" hb_populateEnabled="false" ormtype="string";
-	property name="referencedExpressionProperty" hb_populateEnabled="false" ormtype="string";
-	property name="referencedExpressionValue" hb_populateEnabled="false" ormtype="string";
-	
+	property name="cycleCountGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="cycleCountGroupName" ormtype="string";
+	property name="activeFlag" ormtype="boolean" default="1";
+	property name="frequencyToCount" ormtype="integer";
+	property name="daysInCycle" ormtype="integer";
+
 	// Related Object Properties (many-to-one)
-	property name="comment" cfc="Comment" fieldtype="many-to-one" fkcolumn="commentID";
-	
-	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="cycleCountGroup" cfc="CycleCountGroup" fieldtype="many-to-one" fkcolumn="cycleCountGroupID";
-	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
-	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
-	property name="physical" cfc="Physical" fieldtype="many-to-one" fkcolumn="physicalID";
-	property name="stockAdjustment" cfc="StockAdjustment" fieldtype="many-to-one" fkcolumn="stockAdjustmentID";
-	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
+	property name="locationCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="locationCollectionID";
+	property name="skuCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="skuCollectionID";
 	
 	// Related Object Properties (one-to-many)
 	
-	// Related Object Properties (many-to-many)
+	// Related Object Properties (many-to-many - owner)
+	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocation" fkcolumn="cycleCountGroupID" inversejoincolumn="locationID";
+	
+	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
+	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	
-	public any function getRelationshipEntity() {
-		if(!isNull(getOrder())) {
-			return getOrder();
-		} else if (!isNull(getStockAdjustment())) {
-			return getStockAdjustment();
-		}
-	}
+
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -93,31 +84,49 @@ component displayname="Comment Relationship" entityname="SlatwallCommentRelation
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Comment (many-to-one)
-	public void function setComment(required any comment) {
-		variables.comment = arguments.comment;
-		if(isNew() or !arguments.comment.hasCommentRelationship( this )) {
-			arrayAppend(arguments.comment.getCommentRelationships(), this);
+	// Locations (many-to-many - owner)
+	public void function addLocation(required any location) {
+		if(arguments.location.isNew() or !hasLocation(arguments.location)) {
+			arrayAppend(variables.locations, arguments.location);
+		}
+		if(isNew() or !arguments.location.hasCycleCountGroup( this )) {
+			arrayAppend(arguments.location.getCycleCountGroups(), this);
 		}
 	}
-	public void function removeComment(any comment) {
-		if(!structKeyExists(arguments, "comment")) {
-			arguments.comment = variables.comment;
+	public void function removeLocation(required any location) {
+		var thisIndex = arrayFind(variables.locations, arguments.location);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.locations, thisIndex);
 		}
-		var index = arrayFind(arguments.comment.getCommentRelationships(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.comment.getCommentRelationships(), index);
+		var thatIndex = arrayFind(arguments.location.getCycleCountGroups(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.location.getCycleCountGroups(), thatIndex);
 		}
-		structDelete(variables, "comment");
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
-		
+	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
