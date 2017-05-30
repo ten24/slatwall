@@ -63,6 +63,10 @@ component extends="HibachiService" accessors="true" output="false" {
 					quantity=arguments.stockReceiverItem.getQuantity()
 				};
 				
+				if(arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').getPopulatedFlag()){
+					arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').setPopulatedFlag(false);
+				}
+
 				getSkuService().processSku(arguments.stockReceiverItem.getStock().getSku(), processData, 'breakupBundledSkus');
 				
 			}
@@ -108,36 +112,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
-<<<<<<< HEAD
-
-				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
-
-					// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
-					if(arguments.entity.getStockReceiver().getReceiverType() eq 'order' 
-						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
-						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
-
-						var processData = {
-							locationID=arguments.entity.getStock().getLocation().getLocationID(),
-							quantity=arguments.entity.getQuantity()
-						};
-						if(arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').getPopulatedFlag()){
-							arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').setPopulatedFlag(false);
-						}
-						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'breakupBundledSkus');
-					}
-
-					var inventory = this.newInventory();
-					inventory.setQuantityIn(arguments.entity.getQuantity());
-					inventory.setStock(arguments.entity.getStock());
-					inventory.setStockReceiverItem(arguments.entity);
-					getHibachiDAO().save( inventory );
-					
-				}
-				
-=======
 				createInventoryByStockReceiverItem(arguments.entity);
->>>>>>> refs/remotes/origin/develop-rm-accountenhancements
 				break;
 			}
 			case "SlatwallOrderDeliveryItem": {
