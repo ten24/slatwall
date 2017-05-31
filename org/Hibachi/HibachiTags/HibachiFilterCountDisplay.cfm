@@ -3,35 +3,25 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="thistag.filterCountGroups" type="array" default="#arrayNew(1)#" />	
 <cfelse>
+	
 	<cfoutput>
 		<div class="widget shop-categories">
     		<div class="widget-content">
     			<form action="##">
     				<ul class="product_list checkbox">
     					<cfloop array="#thistag.filterCountGroups#" index="filterCountGroup">
-    						<cfif !isNull(filterCountGroup.collectionList)>
-    							<cfset filterCountGroup.entityName = filterCountGroup.collectionList.getCollectionObject()/>
-    						<cfelse>
-    							<cfset filterCountGroup.collectionList = attributes.hibachiScope.getService('HibachiService').getCollectionList(filterCountGroup.entityName)/>
-    						</cfif>
-    						<!--- refine list to ID,Name, and count --->
-    						<cfset primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(filterCountGroup.entityName)/>
-    						<cfset simpleRepresentationPropertyName = attributes.hibachiScope.getService('hibachiService').getSimpleRepresentationPropertyNameByEntityName(filterCountGroup.entityName)/>
-    						<cfset filterCountGroup.collectionList.setDisplayProperties('#primaryIDName#,#simpleRepresentationPropertyName#')/>
-    						<cfset filterCountGroup.collectionList.addDisplayAggregate(filterCountGroup.propertyIdentifier, 'COUNT', 'itemCount')/>
-    						<cfset filterCountGroup.collectionList.applyData(url)/>
+    						
 	    					<li class="filterObj">
 	                            <div class="header-wrapper">
 	    							<span class="arrow arrowToggle"><i class="fa fa-angle-up"></i></span>
-	    							<span>#attributes.hibachiScope.rbKey('entity.#filterCountGroup.entityName#_plural')#</span>
+	    							<span>#filterCountGroup.title#</span>
 	                            </div>
 								<ul class="children active">
 									<cfset iteration = 1/>
 									
-									
-	 								<cfloop array="#filterCountGroup.collectionList.getRecords()#" index="filterCountRecord">
+	 								<cfloop array="#filterCountGroup.optionData#" index="filterCountRecord">
 	 									<cfif filterCountRecord['itemCount'] NEQ 0>
-	 										<cfset buildUrl = "#filterCountGroup.filterType#:#primaryIDName#=#filterCountRecord[primaryIDName]#"/>
+	 										<cfset buildUrl = "#filterCountGroup.filterType#:#filterCountGroup.optionName#=#filterCountRecord[filterCountGroup.optionValue]#"/>
 	 										
 	 										<li>
 	 											<cfset isFilterApplied = false/>
@@ -46,22 +36,10 @@
 	 												</cfif>
 	 											>
 													<cfif isFilterApplied><i class="fa fa-times"></i></cfif>
-													<span class="filterTitle"> #filterCountRecord[simpleRepresentationPropertyName]#</span>
+													<span class="filterTitle">#filterCountRecord[filterCountGroup.optionName]#</span>
 													<span class="count">#filterCountRecord['itemCount']#</span>
 												</a>
 												
-												
-												<!---<cfif productCollection.isFilterApplied('productType.productTypeID', productTypes['productTypeID'][productTypeIteration])>
-													<a href="#$.slatwall.getService('hibachiCollectionService').buildURL('f:productType.productTypeID=#productTypes['productTypeID'][productTypeIteration]#')#" class="remove" id="ProductType#productTypeIteration#" data-toggle="tooltip" data-placement="right" title="Remove">
-														<i class="fa fa-times"></i><span class="filterTitle"> #productTypes['productTypeName'][productTypeIteration]#</span>
-														<span class="count">#filterCount#</span>
-													</a>   
-												<cfelse>
-													<a id="ProductType#productTypeIteration#" href="#$.slatwall.getService('hibachiCollectionService').buildURL('f:productType.productTypeID=#productTypes['productTypeID'][productTypeIteration]#')#">
-														<span class="filterTitle">#productTypes['productTypeName'][productTypeIteration]#</span>
-														<span class="count">#filterCount#</span>
-													</a>
-												</cfif>--->
 											</li> 
 	 									</cfif>
 										<cfset iteration++/>
