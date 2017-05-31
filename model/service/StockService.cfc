@@ -399,7 +399,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setStockReceiver( headObjects.stockReceiver );
 					stockReceiverItem.setStockAdjustmentItem( stockAdjustmentItem );
 					stockReceiverItem.setQuantity( stockAdjustmentItem.getQuantity() );
-					stockReceiverItem.setCost( 0 );
+					stockReceiverItem.setCost( stockAdjustmentItem.getCost() );
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
 
 				// If this is Out, create delivery
@@ -418,6 +418,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockAdjustmentDeliveryItem.setStockAdjustmentDelivery( headObjects.stockAdjustmentDelivery );
 					stockAdjustmentDeliveryItem.setStockAdjustmentItem( stockAdjustmentItem );
 					stockAdjustmentDeliveryItem.setQuantity( stockAdjustmentItem.getQuantity() );
+					stockAdjustmentDeliveryItem.setCost( stockAdjustmentItem.getCost() );
 					stockAdjustmentDeliveryItem.setStock( stockAdjustmentItem.getFromStock() );
 				}
 			}

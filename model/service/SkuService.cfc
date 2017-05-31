@@ -481,17 +481,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		makeupItem.setQuantity( arguments.processObject.getQuantity() );
 		makeupItem.setToStock( makeupStock );
 
+		var makeupItemCost = 0;
 		// Loop over every bundledSku
 		for(bundledSku in arguments.entity.getBundledSkus()) {
 
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 
-			var makeupItem = getStockService().newStockAdjustmentItem();
-			makeupItem.setStockAdjustment( stockAdjustment );
-			makeupItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity() );
-			makeupItem.setFromStock( thisStock );
+			var bundleItem = getStockService().newStockAdjustmentItem();
+			bundleItem.setStockAdjustment( stockAdjustment );
+			bundleItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity() );
+			bundleItem.setCost(bundledSku.getBundledSku().getAverageCost());
+			bundleItem.setFromStock( thisStock );
 
+			makeupItemCost += bundleItem.getCost() * bundleItem.getQuantity();
 		}
+
+		makeupItem.setCost(makeupItemCost);
 
 		getStockService().saveStockAdjustment(stockAdjustment);
 
