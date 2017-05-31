@@ -78,21 +78,18 @@ Notes:
 
 					</td>
 				<cfelseif local.currency.getCurrencyCode() eq rc.promotionReward.getCurrencyCode()>
-					<cfif rc.promotionReward.getAmountType() eq 'amount' or rc.promotionReward.getAmountType() eq 'amountOff'>
 						<td>
-							#$.slatwall.formatValue(rc.promotionReward.getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
+							<cfif rc.promotionReward.getAmountType() eq 'amount' or rc.promotionReward.getAmountType() eq 'amountOff'>
+								#$.slatwall.formatValue(rc.promotionReward.getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
+							<cfelseif rc.promotionReward.getAmountType() eq 'percentageOff'>
+								#$.slatwall.formatValue(rc.promotionReward.getAmount(), 'percentage')#
+							</cfif>
 						</td>
-					<cfelseif rc.promotionReward.getAmountType() eq 'percentageOff'>
-						<td>
-							#$.slatwall.formatValue(rc.promotionReward.getAmount(), 'percentage')#
-						</td>
-					</cfif>
 				<cfelse>
 					<td>
 						#$.slatwall.formatValue($.slatwall.getService("currencyService").convertCurrency(rc.promotionReward.getAmount(), rc.promotionReward.getCurrencyCode(),local.currency.getCurrencyCode()), 'currency', {currencyCode=local.currency.getCurrencyCode()} )# ( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
 					</td>
 				</cfif>
-
 				<td>#local.currencyCode#</td>
 				<td>
 					<cfif local.currency.getCurrencyCode() eq rc.promotionReward.getCurrencyCode()>
