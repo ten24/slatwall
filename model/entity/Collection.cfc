@@ -1454,6 +1454,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					if (structKeyExists(column, 'aggregate')
 						|| structKeyExists(column, 'attributeID')
 						|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
+						|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
 						|| !getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					) continue;
 
@@ -1472,6 +1473,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		variables.groupBys = groupByList;
 		return ' GROUP BY ' & groupByList;
+	}
+
+	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier); 
+		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
 	}
 
 	private struct function getDefaultOrderBy(){
@@ -2044,29 +2050,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(structKeyExists(column,'attributeID')){
 					columnsHQL &= getColumnAttributeHQL(column);
 				}else{
-					//check if we have an aggregate
-					if(!isNull(column.aggregate))
-					{
-						//if we have an aggregate then put wrap the identifier
-						if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-							columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
-						}
-						if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
-							  structKeyExists(column.aggregate, "aggregateFunction") &&
-						   ( column.aggregate.aggregateFunction == 'min' ||
-							 column.aggregate.aggregateFunction == 'max' )
-						){
-							variables.groupByRequired = false;
-							variables.orderByRequired = false;
-						} else {
+					//verify that column is valid, if not remove it
+					if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
+						//check if we have an aggregate
+						if(!isNull(column.aggregate))
+						{
+							//if we have an aggregate then put wrap the identifier
+							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
+								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+							}
+							if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
+								  structKeyExists(column.aggregate, "aggregateFunction") &&
+							   ( column.aggregate.aggregateFunction == 'min' ||
+								 column.aggregate.aggregateFunction == 'max' )
+							){
+								variables.groupByRequired = false;
+								variables.orderByRequired = false;
+							} else {
+								variables.groupByRequired = true;
+								variables.orderByRequired = true;
+							}
+						}else{
 							variables.groupByRequired = true;
 							variables.orderByRequired = true;
+							var columnAlias = getColumnAlias(column);
+							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 						}
 					}else{
-						variables.groupByRequired = true;
-						variables.orderByRequired = true;
-						var columnAlias = getColumnAlias(column);
-						columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+						continue;
 					}
 				}
 
@@ -2215,6 +2226,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					if(
 						!structKeyExists(column,'aggregate')
 						&& !structKeyExists(column,'persistent')
+						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
 						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					){
 						arrayAppend(groupBys,column.propertyIdentifier);
@@ -2485,6 +2497,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public any function deserializeCollectionConfig(){
 		return deserializeJSON(getCollectionConfig());
+	}
+	
+	public boolean function isFilterApplied(required string filter, required string value){
+		return structKeyExists(url,"F:#arguments.filter#") && listFindNoCase(url["F:#arguments.filter#"],arguments.value,',');
+	}
+
+	public boolean function isRangeApplied(required string range, required string value){
+		return structKeyExists(url,"R:#arguments.range#") and url["R:#arguments.range#"] eq arguments.value;
+		
 	}
 
 	public any function getAggregations(){
