@@ -75,7 +75,6 @@ Notes:
 				<cfif structKeyExists( local.promoRewardCurrencyStruct, local.currency.getCurrencyCode())>
 					<td>
 						#$.slatwall.formatValue(local.promoRewardCurrencyStruct[ local.currency.getCurrencyCode() ].getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
-
 					</td>
 				<cfelseif local.currency.getCurrencyCode() eq rc.promotionReward.getCurrencyCode()>
 						<td>
