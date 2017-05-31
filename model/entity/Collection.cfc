@@ -1452,6 +1452,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return ' GROUP BY ' & groupByList;
 	}
 
+	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier); 
+		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
+	}
+
 	private struct function getDefaultOrderBy(){
 		var orderByStruct={};
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
