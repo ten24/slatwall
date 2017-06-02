@@ -22,7 +22,7 @@
 	</cfif>
 	<!--- used to clear template cache --->
 	<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
-	<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#"/>
+	<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 	
 	<cfif !isNull(cacheContent)>
 		<cfsavecontent variable="hibachiTagContent" >
