@@ -105,7 +105,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// Order Item (many-to-one)
 	public void function setOrderItem(required any orderItem) {
 		variables.orderItem = arguments.orderItem;
-		if(isNew() or !arguments.orderItem.hasAppliedTax( this )) {
+		if(!arguments.orderItem.hasAppliedTax( this )) {
 			arrayAppend(arguments.orderItem.getAppliedTaxes(), this);
 		}
 	}
