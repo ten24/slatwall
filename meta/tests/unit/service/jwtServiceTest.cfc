@@ -53,9 +53,10 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		variables.service = request.slatwallScope.getService("HibachiJWTService");
 		variables.key = "abcdefg";
 		variables.jwt = variables.service.newJwt(key);
-		variables.json = '{"ts":"February, 05 2014 12:08:05","userid":"jdoe","iat":"1456503640","exp":"14565027400"}';
+		variables.json = '{"ts":"February, 05 2014 12:08:05","accountid":"#request.slatwallScope.getSession().getAccount().getAccountID()#","iat":"1456503640","exp":"14565027400"}';
 		variables.payload = deserializeJSON(json);
 		variables.jwt.setPayload(variables.payload);
+
 		
 		variables.testTokenInvalid = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0cyI6IkZlYnJ1YXJ5LCAwNSAyMDE0IDEyOjA4OjA1IiwidXNlcmlkIjoiamRvZSJ9.mL2-sQ2xeC4PidmV-uEvlINiI0mlpq5KRKsmO9EDTYx";
 	
