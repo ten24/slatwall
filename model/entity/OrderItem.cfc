@@ -48,7 +48,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="price" ormtype="big_decimal";
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
-	property name="quantity" hb_populateEnabled="public" ormtype="integer" default="0";
+	property name="quantity" hb_populateEnabled="public" ormtype="integer";
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
@@ -123,12 +123,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
-	property name="quantityHasChanged" persistent="false";
+	property name="quantityHasChanged" persistent="false" default="0";
  
  	public boolean function getQuantityHasChanged(){
- 		if (!structKeyExists(variables, "quantityHasChanged")){
- 			return false;
-		}
 		return variables.quantityHasChanged;
 	}
  	
