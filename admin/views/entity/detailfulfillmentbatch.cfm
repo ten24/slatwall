@@ -70,7 +70,7 @@ Notes:
 	
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">	
-			<!-- Icon Properties -->
+			<!--- Icon Properties --->
 			<sw-card-layout card-class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="batchNumber" card-size="sm">
 					<sw-card-icon icon-name="shopping-cart"></sw-card-icon>
@@ -98,7 +98,7 @@ Notes:
 					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
 				</sw-card-view>
 			</sw-card-layout>
-			<!-- Description -->
+			<!--- Description --->
 			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="description" card-title="Description">
 					<sw-card-body>
@@ -110,7 +110,7 @@ Notes:
 					</sw-card-body>
 				</sw-card-view>
 			</sw-card-layout>
-			<!-- Status -->
+			<!--- Status --->
 			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="status">
 					<sw-card-header>Status</sw-card-header>

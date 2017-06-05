@@ -265,7 +265,6 @@ class OrderFulfillmentService {
         
         //Basic Information
         processObject.data['location'] = {'locationID': "402828f95b108573015b165f48760528"};//sets a random location for now until batch issue with location is resolved.
-        
         //Shipping information.
         processObject.data['containerLabel'] = data.containerLabel || "";
         processObject.data['shippingIntegration'] = data.shippingIntegration || "";
@@ -428,7 +427,7 @@ class OrderFulfillmentService {
      /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createLocationCollection = ():void => {
+     private createLocationCollection = () => {
         this.state.locationCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchLocation");
         this.state.locationCollection.addDisplayProperty("locationID");
         this.state.locationCollection.addDisplayProperty("fulfillmentBatchID");
