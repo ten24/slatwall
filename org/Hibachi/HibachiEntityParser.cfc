@@ -28,11 +28,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public boolean function hasCustomProperties(){
-		return findNoCase(variables.customPropertyBeginString, getFileContent());
+		return findNoCase(variables.customPropertyBeginString, getFileContent()) > 0;
 	}
 	
 	public boolean function hasCustomFunctions(){
-		return findNoCase(variables.customFunctionBeginString, getFileContent());
+		return findNoCase(variables.customFunctionBeginString, getFileContent()) > 0;
 	}
 	
 	public numeric function getCustomPropertyStartPosition(){
