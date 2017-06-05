@@ -69,13 +69,12 @@ Notes:
 	</cfif>
 	
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
-		<div class="row s-detail-modules-wrapper">
-			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
-				
+		<div class="row s-detail-modules-wrapper">	
+			<sw-card-layout card-class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<!--- Icon Properties --->
 				<sw-card-view id="batchNumber" card-size="sm">
 					<sw-card-icon icon-name="shopping-cart"></sw-card-icon>
-					<sw-card-header style="border-bottom:none">Batch ID</sw-card-header>
+					<sw-card-header add-border="false">Batch ID</sw-card-header>
 					<sw-card-body>
 						<cfif rc.edit eq "true">
 							<swa:SlatwallPropertyDisplay object="#rc.fulfillmentBatch#" property="fulfillmentBatchNumber" value="#rc.fulfillmentBatch.getFulfillmentBatchNumber()#" title=" " edit="false"></swa:SlatwallPropertyDisplay>
@@ -87,7 +86,7 @@ Notes:
 				
 				<sw-card-view id="assignedAccount" card-size="sm">
 					<sw-card-icon icon-name="user"></sw-card-icon>
-					<sw-card-header style="border-bottom:none">User</sw-card-header>
+					<sw-card-header add-border="false">User</sw-card-header>
 					<cfif !isNull(rc.fulfillmentBatch.getAssignedAccount())>
 						<sw-card-body>#rc.fulfillmentBatch.getAssignedAccount().getFirstName()# #rc.fulfillmentBatch.getAssignedAccount().getLastName()#</sw-card-body>
 					</cfif>
@@ -95,12 +94,12 @@ Notes:
 
 				<sw-card-view id="location" card-size="sm">
 					<sw-card-icon icon-name="building"></sw-card-icon>
-					<sw-card-header style="border-bottom:none">Location</sw-card-header>
+					<sw-card-header add-border="false">Location</sw-card-header>
 					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
 				</sw-card-view>
-			</div>
+			</sw-card-layout>
 			
-			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
+			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
 				<!--- Description --->
 				<sw-card-view id="description" card-title="Description">
 					<sw-card-body>
@@ -111,9 +110,9 @@ Notes:
 						</cfif>
 					</sw-card-body>
 				</sw-card-view>
-			</div>
+			</sw-card-layout>
 			
-			<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
+			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
 				<!--- Status --->
 				<sw-card-view id="status">
 					<sw-card-header>Status</sw-card-header>
@@ -128,7 +127,7 @@ Notes:
 					<sw-card-progress-bar value-min="0" value-max="100" value-now="#totalPercentFulfilled#"></sw-card-progress-bar>
 					
 				</sw-card-view>
-			</div>
+			</sw-card-layout>
 		</div>
 		
 		<sw-fulfillment-batch-detail fulfillment-batch-id="#rc.fulfillmentBatch.getFulfillmentBatchID()#">Loading ...</sw-fulfillment-batch-detail>

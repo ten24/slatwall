@@ -6,6 +6,7 @@
 //services
 
 //components
+import {SWCardLayout} from "./components/swcardlayout";
 import {SWCardView} from "./components/swcardview";
 import {SWCardHeader} from "./components/swcardheader";
 import {SWCardBody} from "./components/swcardbody";
@@ -17,6 +18,7 @@ var cardmodule = angular.module('hibachi.card',[])
 }])
 
 //components
+.component('swCardLayout', SWCardLayout.Factory())
 .component('swCardView', SWCardView.Factory())
 .component('swCardHeader', SWCardHeader.Factory())
 .component('swCardBody', SWCardBody.Factory())
