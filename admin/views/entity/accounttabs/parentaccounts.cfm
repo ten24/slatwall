@@ -56,13 +56,13 @@ Notes:
 						  recordDetailAction="admin:entity.detailaccount"
 						  recordEditAction="admin:entity.editaccount">
 
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.accountCode" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="parentAccount.company" />
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.primaryPhoneNumber.phoneNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.primaryEmailAddress.emailAddress" />
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.guestAccountFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="parentAccount.organizationFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.accountCode" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
+	<hb:HibachiListingColumn propertyIdentifier="account.primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="account.primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="account.guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="account.organizationFlag" />
 </hb:HibachiListingDisplay>
 

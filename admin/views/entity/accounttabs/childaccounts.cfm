@@ -58,14 +58,14 @@ Notes:
 						  recordEditAction="admin:entity.editaccountRelationShip"
 						  >
 
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.accountCode" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="childAccount.company" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryPhoneNumber.phoneNumber" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.primaryEmailAddress.emailAddress" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.guestAccountFlag" />
-	<hb:HibachiListingColumn propertyIdentifier="childAccount.organizationFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.accountCode" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
+	<hb:HibachiListingColumn propertyIdentifier="account.primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="account.primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="account.guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="account.organizationFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="accountRelationshipRole.accountRelationshipRoleName" />
 	<hb:HibachiListingColumn propertyIdentifier="approvalFlag" />
 </hb:HibachiListingDisplay>
