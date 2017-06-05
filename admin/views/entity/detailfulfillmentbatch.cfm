@@ -70,8 +70,8 @@ Notes:
 	
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">	
+			<!-- Icon Properties -->
 			<sw-card-layout card-class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
-				<!--- Icon Properties --->
 				<sw-card-view id="batchNumber" card-size="sm">
 					<sw-card-icon icon-name="shopping-cart"></sw-card-icon>
 					<sw-card-header add-border="false">Batch ID</sw-card-header>
@@ -98,9 +98,8 @@ Notes:
 					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
 				</sw-card-view>
 			</sw-card-layout>
-			
-			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
-				<!--- Description --->
+			<!-- Description -->
+			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="description" card-title="Description">
 					<sw-card-body>
 						<cfif rc.edit eq "true">
@@ -111,14 +110,13 @@ Notes:
 					</sw-card-body>
 				</sw-card-view>
 			</sw-card-layout>
-			
-			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">	
-				<!--- Status --->
+			<!-- Status -->
+			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="status">
 					<sw-card-header>Status</sw-card-header>
 					
 					<!--- Number of fulfillments total --->
-					<sw-card-list-item title="Fulfillments" value="#totalOnBatch#" strong="true"></sw-card-list-item>
+					<sw-card-list-item title="Fulfillment Items" value="#totalOnBatch#" strong="true"></sw-card-list-item>
 					
 					<!--- Number of fulfillments fulfilled --->
 					<sw-card-list-item title="Completed" value="#totalFulfilled#"></sw-card-list-item>
