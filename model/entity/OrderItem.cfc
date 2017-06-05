@@ -480,7 +480,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public void function setQuantity(required numeric quantity){
-		if (arguments.quantity != variables.quantity){
+		if (structKeyExists(variables, "quantity") && arguments.quantity != variables.quantity){
  			variables.quantityHasChanged = true; //a dirty check flag for validation.
  		}		
 		variables.quantity = arguments.quantity;

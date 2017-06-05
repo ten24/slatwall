@@ -672,4 +672,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultOrderOneSkuOneNot = mockOrderItemRunFunction2.hasQuantityWithinMinOrderQuantity();
 		assertFalse(resultOrderOneSkuOneNot, 'quantity should still be 0, the mockOrderItemNoSku should not be added in quantity formula');
 	}
+	
+	/**
+	* @test
+	*/
+	public void function quantityHasChangedHasDefaultValueTest() {
+		var mockSku = createMockSku();
+
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+
+		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982ce', 0, mockSku.getSkuID());
+		
+		var resultQuantityHasChanged = mockOrderItemRunFunction1.getQuantityHasChanged();
+		assertEquals(resultQuantityHasChanged, 0, 'Quantity Has Changed has a default value of false.');
+	}
 }
