@@ -93,6 +93,7 @@ class OrderFulfillmentService {
             case 'FULFILLMENT_ACTION':
                 //create all the data
                 this.fulfillItems(action.payload.viewState, false);
+                //Needs to set the next available fulfillment if this was successful.
                 return {...this.state, action}
              case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
                 this.createOrderDeliveryAttributeCollection();
@@ -271,10 +272,26 @@ class OrderFulfillmentService {
         processObject.data['shippingAddress'] = data.shippingAddress || "";
         processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
         
-        //If we need to capture as well as fulfill.
-        //processObject.data['captureAuthorizedPaymentsFlag'] = data.captureAuthorizedPaymentsFlag || false;
-        //processObject.data['capturableAmount'] = data.capturableAmount || "";
-        return this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create");
+        this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
+            if (result.orderDeliveryID != undefined){
+                return result;
+            }
+            
+            //Sets the next selected value.
+            let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
+            console.log("Selecting the next row.");
+            //clear first
+            this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+            //then select the next.
+            if (selectedRowIndex != -1){
+                //Set the next one.
+                selectedRowIndex = selectedRowIndex+1;
+                this.listingService
+                    .getListing("fulfillmentBatchItemTable2").selectionService
+                        .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
+                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+            }
+        });
     }
 
     /** Saves a comment. */

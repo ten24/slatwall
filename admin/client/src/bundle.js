@@ -39310,7 +39310,6 @@
 	                return -1;
 	            }
 	            ;
-	            console.log("Selected: ", _this.getListing(listingID).collectionData.pageRecords.findIndex(function (record) { return record[propertyName] == value; }));
 	            return _this.getListing(listingID).collectionData.pageRecords.findIndex(function (record) { return record[propertyName] == value; });
 	        };
 	        this.clearAllSelections = function (listingID) {
@@ -49763,6 +49762,7 @@
 	                case 'FULFILLMENT_ACTION':
 	                    //create all the data
 	                    _this.fulfillItems(action.payload.viewState, false);
+	                    //Needs to set the next available fulfillment if this was successful.
 	                    return __assign({}, _this.state, { action: action });
 	                case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
 	                    _this.createOrderDeliveryAttributeCollection();
@@ -49908,10 +49908,24 @@
 	            processObject.data['shippingIntegration'] = data.shippingIntegration || "";
 	            processObject.data['shippingAddress'] = data.shippingAddress || "";
 	            processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
-	            //If we need to capture as well as fulfill.
-	            //processObject.data['captureAuthorizedPaymentsFlag'] = data.captureAuthorizedPaymentsFlag || false;
-	            //processObject.data['capturableAmount'] = data.capturableAmount || "";
-	            return _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create");
+	            _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then(function (result) {
+	                if (result.orderDeliveryID != undefined) {
+	                    return result;
+	                }
+	                //Sets the next selected value.
+	                var selectedRowIndex = _this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", _this.state.currentSelectedFulfillmentBatchItemID);
+	                console.log("Selecting the next row.");
+	                //clear first
+	                _this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+	                //then select the next.
+	                if (selectedRowIndex != -1) {
+	                    //Set the next one.
+	                    selectedRowIndex = selectedRowIndex + 1;
+	                    _this.listingService
+	                        .getListing("fulfillmentBatchItemTable2").selectionService
+	                        .addSelection(_this.listingService.getListing("fulfillmentBatchItemTable2").tableID, _this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][_this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+	                }
+	            });
 	        };
 	        /** Saves a comment. */
 	        this.saveComment = function (comment, newCommentText) {
