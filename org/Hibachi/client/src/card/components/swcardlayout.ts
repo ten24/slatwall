@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class SWCardLayoutController {
+class SWCardBodyController {
     
 	//@ngInject
     constructor(private $log) {}
@@ -11,32 +11,21 @@ class SWCardLayoutController {
 
 } 
 
-class SWCardLayout implements ng.IComponentOptions {
-    public controller:any=SWCardLayoutController;
-    public controllerAs:string = 'SwCardLayoutController';
-    public bindings = {
-        cardClass: "@?"
-    };
-    
-    public transclude:any = {
-        cardView: '?swCardView',
-    }
-    
-    /**
-     * This is a wrapper class for the card components that allow you to define the columns.
-     */
+class SWCardBody implements ng.IComponentOptions {
+    public controller:any=SWCardBodyController;
+    public controllerAs:string = 'SwCardBodyController';
+    public bindings:{[key: string]:string} = {};
+    public transclude:boolean = true;
+    public require:string = "^SWCardView";
     public template:string = `
-        <div class="{{SwCardLayoutController.cardClass}}">
-            <!-- Cards are transcluded here -->
-            <ng-transclude ng-transclude-slot="cardView"></ng-transclude>
-        </div>`;
-    
+                    <div class="s-body" ng-transclude></div>
+            `;
     constructor() {}
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardLayout();
+        return new SWCardBody();
     }
 }
-export {SWCardLayoutController, SWCardLayout};
+export {SWCardBodyController, SWCardBody};
