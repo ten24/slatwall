@@ -21,13 +21,14 @@
 									
 	 								<cfloop array="#filterCountGroup.optionData#" index="filterCountRecord">
 	 									<cfif filterCountRecord['itemCount'] NEQ 0>
-	 										<cfset buildUrl = "#filterCountGroup.filterType#:#filterCountGroup.optionName#=#filterCountRecord[filterCountGroup.optionValue]#"/>
-	 										
+	 										<cfset fullbuildUrl = "#filterCountGroup.filtertype#:#filterCountGroup.buildurlpropertyIdentifier#=#filterCountRecord[filterCountGroup.optionValueKey]#"/>
+	 									
 	 										<li>
-	 											<cfset isFilterApplied = false/>
+	 											<cfset isFilterApplied = filterCountGroup.collectionList.isFilterApplied(filterCountGroup.buildurlpropertyIdentifier,filterCountRecord[filterCountGroup.optionValueKey],filterCountGroup.filterType)/>
+	 											<!---<cfif productCollection.isFilterApplied('productType.productTypeID', productTypes['productTypeID'][productTypeIteration])>--->
 	 											<a 
 	 												id="#filterCountGroup.entityName##iteration#" 
-	 												href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL('#buildUrl#')#" 
+	 												href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL('#fullbuildUrl#')#" 
 	 												<cfif isFilterApplied>
 		 												class="remove" 
 		 												data-toggle="tooltip" 
@@ -36,7 +37,7 @@
 	 												</cfif>
 	 											>
 													<cfif isFilterApplied><i class="fa fa-times"></i></cfif>
-													<span class="filterTitle">#filterCountRecord[filterCountGroup.optionName]#</span>
+													<span class="filterTitle">#filterCountRecord[filterCountGroup.optionNameKey]#</span>
 													<span class="count">#filterCountRecord['itemCount']#</span>
 												</a>
 												

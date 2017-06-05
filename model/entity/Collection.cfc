@@ -535,6 +535,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arrayAppend(collectionConfig.orderBy,orderBy);
 		this.setCollectionConfigStruct(collectionConfig);
 	}
+	
+	public array function getOrderBys(){
+		var collectionConfig = this.getCollectionConfigStruct();
+		if(!structKeyExists(collectionConfig, 'orderBy')){
+			collectionConfig["orderBy"] = [];
+		}
+		return collectionConfig.orderBy;
+	}
 
 	public void function removeOrderBy(string orderByString){
 		var propertyIdentifierArray = ListToArray(orderByString, "|");
@@ -613,125 +621,136 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		//Simple Filters
 		for (var key in data){
+			
 			//handle filters.
-			if (left(key, 3) == "fr:"){
-
-				var prop = key.split(':')[2];
-				var dataToFilterOn = data[key]; //value of the filter.
-
-				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
-				var comparison = "=";
-				try{
-					comparison = key.split(':')[3];
-				}catch(any e){
-					comparison = "=";
-				}
-				if (!isNull(comparison)){
-					if (comparison == 'eq'){
-						if(listLen(dataToFilterOn) == 1){
+			if(isValid('string',data[key])){
+				if (left(key, 3) == "fr:"){
+	
+					var prop = key.split(':')[2];
+					
+					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
+						var dataToFilterOn = data[key]; //value of the filter.
+		
+						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
+						var comparison = "=";
+						try{
+							comparison = key.split(':')[3];
+						}catch(any e){
 							comparison = "=";
-						}else{
-							comparison = "in";
+						}
+						if (!isNull(comparison)){
+							if (comparison == 'eq'){
+								if(listLen(dataToFilterOn) == 1){
+									comparison = "=";
+								}else{
+									comparison = "in";
+								}
+							}
+							if (comparison == 'gte'){
+								comparison = ">=";
+							}
+							if (comparison == 'lte'){
+								comparison = "<=";
+							}
+							if (comparison == 'gt'){
+								comparison = ">";
+							}
+							if (comparison == 'lt'){
+								comparison = "<";
+							}
+							if (comparison == 'neq'){
+								comparison = "!=";
+							}
+							if (comparison == 'like'){
+								dataToFilterOn = "%#dataToFilterOn#%";
+							}
+						}
+						this.removeFilter(prop,dataToFilterOn,comparison);
+					}
+				}
+				//handle filters.
+				if (left(key, 2) == "f:"){
+	
+					var prop = key.split(':')[2];
+					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
+						var dataToFilterOn = data[key]; //value of the filter.
+		
+						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
+						var comparison = "=";
+						try{
+							comparison = key.split(':')[3];
+						}catch(any e){
+							comparison = "=";
+						}
+						if (!isNull(comparison)){
+							if (comparison == 'eq'){
+								if(listLen(dataToFilterOn) == 1){
+									comparison = "=";
+								}else{
+									comparison = "in";
+								}
+							}
+							if (comparison == 'gte'){
+								comparison = ">=";
+							}
+							if (comparison == 'lte'){
+								comparison = "<=";
+							}
+							if (comparison == 'gt'){
+								comparison = ">";
+							}
+							if (comparison == 'lt'){
+								comparison = "<";
+							}
+							if (comparison == 'neq'){
+								comparison = "!=";
+							}
+							if (comparison == 'like'){
+								dataToFilterOn = "%#dataToFilterOn#%";
+							}
+						}
+					
+						this.addFilter(prop, dataToFilterOn, comparison);	
+					}
+				}
+	
+				//Handle Range
+				if (left(key, 2) == "r:"){
+					var value = data[key];
+					var ranges = listToArray(value);
+					var filterParts = "#listToArray(key, ':')#";
+					var prop = filterParts[2];//property
+					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
+						var ormtype = getOrmTypeByPropertyIdentifier(prop);
+						var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
+						var filterGroupIndex = 1;
+		
+						for(var i=1; i <= arraylen(rangeValues);i++){
+							var rangeValue = rangeValues[i];
+							var filterData = {
+								propertyIdentifier=prop,
+								value=replace(rangeValue,'^','-'),
+								comparisonOperator='BETWEEN',
+								ormtype=ormtype
+							};
+		
+							if(i > 1){
+								filterData.logicalOperator = 'OR';
+							}
+		
+							if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+								getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+							}
+		
+							filterData['filterGroupAlias'] = "range#prop#";
+							filterData['filterGroupLogicalOperator'] = "AND";
+							this.addFilter(argumentCollection=filterData);
+		
+							//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
+		
+							//;
 						}
 					}
-					if (comparison == 'gte'){
-						comparison = ">=";
-					}
-					if (comparison == 'lte'){
-						comparison = "<=";
-					}
-					if (comparison == 'gt'){
-						comparison = ">";
-					}
-					if (comparison == 'lt'){
-						comparison = "<";
-					}
-					if (comparison == 'neq'){
-						comparison = "!=";
-					}
-					if (comparison == 'like'){
-						dataToFilterOn = "%#dataToFilterOn#%";
-					}
-				}
-				this.removeFilter(prop,dataToFilterOn,comparison);
-			}
-			//handle filters.
-			if (left(key, 2) == "f:"){
-
-				var prop = key.split(':')[2];
-				var dataToFilterOn = data[key]; //value of the filter.
-
-				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
-				var comparison = "=";
-				try{
-					comparison = key.split(':')[3];
-				}catch(any e){
-					comparison = "=";
-				}
-				if (!isNull(comparison)){
-					if (comparison == 'eq'){
-						if(listLen(dataToFilterOn) == 1){
-							comparison = "=";
-						}else{
-							comparison = "in";
-						}
-					}
-					if (comparison == 'gte'){
-						comparison = ">=";
-					}
-					if (comparison == 'lte'){
-						comparison = "<=";
-					}
-					if (comparison == 'gt'){
-						comparison = ">";
-					}
-					if (comparison == 'lt'){
-						comparison = "<";
-					}
-					if (comparison == 'neq'){
-						comparison = "!=";
-					}
-					if (comparison == 'like'){
-						dataToFilterOn = "%#dataToFilterOn#%";
-					}
-				}
-				this.addFilter(prop, dataToFilterOn, comparison);
-
-			}
-
-			//Handle Range
-			if (left(key, 2) == "r:"){
-				var ranges = listToArray(data[key]);
-				var filterParts = "#listToArray(key, ':')#";
-				var prop = filterParts[2];//property
-				var ormtype = getOrmTypeByPropertyIdentifier(prop);
-				var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
-				var filterGroupIndex = 1;
-
-				for(var i=1; i <= arraylen(rangeValues);i++){
-					var rangeValue = rangeValues[i];
-					var filterData = {
-						propertyIdentifier=prop,
-						value=replace(rangeValue,'^','-'),
-						comparisonOperator='BETWEEN',
-						ormtype=ormtype
-					};
-
-					if(i > 1){
-						filterData.logicalOperator = 'OR';
-					}
-
-					if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
-						getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
-					}
-
-					filterData['filterGroupAlias'] = "range#prop#";
-					filterData['filterGroupLogicalOperator'] = "AND";
-					this.addFilter(argumentCollection=filterData);
-
-					//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
-
-					//;
 				}
 			}
 			//OrderByList
@@ -740,6 +759,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//this is a list.
 				this.setOrderBy(data[key]);
 			}
+				
 
 			//Handle pagination.
 			if(findNoCase('p:current', key)){
@@ -760,6 +780,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 		}
+	}
+	
+	private boolean function getPropertyIdentifierIsPersistent(required string propertyIdentifier){
+		return getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier);
 	}
 
 	public string function getOrmTypeByPropertyIdentifier(required string propertyIdentifier){
@@ -1455,7 +1479,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						|| structKeyExists(column, 'attributeID')
 						|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
 						|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
-						|| !getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
+						|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
 					) continue;
 
 					groupByList = listAppend(groupByList, column.propertyIdentifier);
@@ -2499,8 +2523,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return deserializeJSON(getCollectionConfig());
 	}
 	
-	public boolean function isFilterApplied(required string filter, required string value){
-		return structKeyExists(url,"F:#arguments.filter#") && listFindNoCase(url["F:#arguments.filter#"],arguments.value,',');
+	
+	
+	public boolean function isFilterApplied(required string filter, required string value, string filterType='f'){
+		return structKeyExists(url,"#arguments.filtertype#:#arguments.filter#") && listFindNoCase(url["#arguments.filterType#:#arguments.filter#"],arguments.value,',');
 	}
 
 	public boolean function isRangeApplied(required string range, required string value){
