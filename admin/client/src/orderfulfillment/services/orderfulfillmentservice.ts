@@ -242,8 +242,20 @@ class OrderFulfillmentService {
         }
         //If the user input a captuable amount, use that instead.
         if (state.capturableAmount != undefined){
-            //data['capturableAmount'] = state.capturableAmount;
-            //data['captureAuthorizedPaymentsFlag'] = true;
+
+            data['capturableAmount'] = state.capturableAmount;
+            data['captureAuthorizedPaymentsFlag'] = false;
+            //hidden fields
+            data['order'] = {};
+            data['order']['orderID'] = this.state.currentRecordOrderDetail['order_orderID'] || "";
+            
+            //shippingMethod.shippingMethodID
+            data['shippingMethod'] = {};
+            data['shippingMethod']['shippingMethodID'] = this.state.currentRecordOrderDetail['shippingMethod_shippingMethodID'];
+            //shippingAddress.addressID
+            data['shippingAddress'] = {};
+            data['shippingAddress']['addressID'] = this.state.currentRecordOrderDetail['shippingAddress_addressID'];
+
         }
 
         //Create the process object.
@@ -355,7 +367,9 @@ class OrderFulfillmentService {
         this.state.currentRecordOrderDetail.addDisplayProperty("order.account.company", "Company");
         
         //For the shipping portion of the tab.
+        this.state.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodID");
         this.state.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodName");
+        this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.addressID");
         this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.city");
         this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
         this.state.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
@@ -409,6 +423,17 @@ class OrderFulfillmentService {
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         this.state.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
         return this.state.smFulfillmentBatchItemCollection;
+     }
+
+     /**
+     * Setup the initial orderFulfillment Collection.
+     */
+     private createLocationCollection = ():void => {
+        this.state.locationCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchLocation");
+        this.state.locationCollection.addDisplayProperty("locationID");
+        this.state.locationCollection.addDisplayProperty("fulfillmentBatchID");
+        this.state.locationCollection.addFilter("fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
+        return this.state.locationCollection.getEntity().then( (result) => {return (result.pageRecords.length)?result.pageRecords:[];} );
      }
 
      /**

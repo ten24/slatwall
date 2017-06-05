@@ -49839,8 +49839,17 @@
 	            }
 	            //If the user input a captuable amount, use that instead.
 	            if (state.capturableAmount != undefined) {
-	                //data['capturableAmount'] = state.capturableAmount;
-	                //data['captureAuthorizedPaymentsFlag'] = true;
+	                data['capturableAmount'] = state.capturableAmount;
+	                data['captureAuthorizedPaymentsFlag'] = false;
+	                //hidden fields
+	                data['order'] = {};
+	                data['order']['orderID'] = _this.state.currentRecordOrderDetail['order_orderID'] || "";
+	                //shippingMethod.shippingMethodID
+	                data['shippingMethod'] = {};
+	                data['shippingMethod']['shippingMethodID'] = _this.state.currentRecordOrderDetail['shippingMethod_shippingMethodID'];
+	                //shippingAddress.addressID
+	                data['shippingAddress'] = {};
+	                data['shippingAddress']['addressID'] = _this.state.currentRecordOrderDetail['shippingAddress_addressID'];
 	            }
 	            //Create the process object.
 	            var processObject = _this.$hibachi.newOrderDelivery_Create();
@@ -49941,7 +49950,9 @@
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.lastName", "Last Name");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("order.account.company", "Company");
 	            //For the shipping portion of the tab.
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodID");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingMethod.shippingMethodName");
+	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.addressID");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.city");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("shippingAddress.stateCode");
 	            _this.state.currentRecordOrderDetail.addDisplayProperty("orderFulfillmentStatusType.typeName");
@@ -49991,6 +50002,16 @@
 	            _this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
 	            _this.state.smFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.state.fulfillmentBatchId, "=");
 	            return _this.state.smFulfillmentBatchItemCollection;
+	        };
+	        /**
+	        * Setup the initial orderFulfillment Collection.
+	        */
+	        this.createLocationCollection = function () {
+	            _this.state.locationCollection = _this.collectionConfigService.newCollectionConfig("FulfillmentBatchLocation");
+	            _this.state.locationCollection.addDisplayProperty("locationID");
+	            _this.state.locationCollection.addDisplayProperty("fulfillmentBatchID");
+	            _this.state.locationCollection.addFilter("fulfillmentBatchID", _this.state.fulfillmentBatchId, "=");
+	            return _this.state.locationCollection.getEntity().then(function (result) { return (result.pageRecords.length) ? result.pageRecords : []; });
 	        };
 	        /**
 	        * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
