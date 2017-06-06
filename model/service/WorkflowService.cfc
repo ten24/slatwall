@@ -102,7 +102,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Update the workflowTriggerHistory
 				workflowTriggerHistory.setSuccessFlag(false);
 				workflowTriggerHistory.setResponse(e.Message);
-							workflowTrigger.setWorkflowTriggerException(e);
+				workflowTrigger.setWorkflowTriggerException(e);
 			}
 		}
 
@@ -145,7 +145,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function runAllWorkflowsByScheduleTrigger() {
-		getWorkflowDAO().updateOverdueWorkflows();
+		
+		var runningWorkflowTriggers = getWorkflowDAO().getRunningWorkflows(); 
+		
+		for(var i=1; i<=arrayLen(runningWorkflowTriggers); i++){
+			var runningWorkflowTrigger = runningWorkflowTriggers[i];
+			getWorkflowDAO().updateWorkflowTriggerRunning(runningWorkflowTrigger["workflowTriggerID"],false,runningWorkflowTrigger["timeout"]);
+		}
+
         getHibachiDAO().flushORMSession();
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		for(var workflowTrigger in workflowTriggers) {
