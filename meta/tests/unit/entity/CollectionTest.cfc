@@ -61,6 +61,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return false;
 	}
 	
+	/**
+	* @test
+	*/
+	public void function getCollectionReportTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName');
+		collectionEntity.addDisplayAggregate('firstName',"COUNT",'itemCount');
+		collectionEntity.addOrderBy('firstName');
+		
+		var pageRecords = collectionEntity.getPageRecords();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getLeafNodesOnlyTest(){
+		//TODO: setup up heirarchy with leaf nodes to assert
+		
+		var productTypeCollectionList = request.slatwallScope.getService('hibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setFilterByLeafNodesFlag(true);
+		debug(productTypeCollectionList.getHQL());
+		debug(productTypeCollectionList.getPageRecords());
+		
+		assert(productTypeCollectionList.getFilterByLeafNodesFlag());
+	}
+	
 	//test that if we trun enforce auth off but also aren't authenticated that only 1st level props are available
 	/**
 	* @test
@@ -1332,7 +1358,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "Account.firstName";
+		var propertyIdentifier = "firstName";
 		var aggregate = {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
@@ -1340,7 +1366,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
 		//addToDebug(aggregateHQL);
-		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
+		assertFalse(Compare("COUNT( firstName) as Account_firstName",trim(aggregateHQL)));
+	}
+	
+	/**
+	* @test
+	*/
+	
+	public void function getAggregateHQLTest_hasObject(){
+		makePublic(variables.entity,"getAggregateHQL");
+		var propertyIdentifier = "accountAuthentications";
+		var aggregate = {
+			aggregateFunction = "count",
+			aggregateAlias = "Account_accountAuthentications"
+		};
+		//addToDebug(lcase(replace(createUUID(),'-','')));
+		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		debug(aggregateHQL);
+		//addToDebug(aggregateHQL);
+		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}
 
 	/**
