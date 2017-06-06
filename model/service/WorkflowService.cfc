@@ -153,7 +153,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var timeout = 90; 
 			if(structKeyExists(runningWorkflowTrigger, "timeout")){
 				timeout = runningWorkflowTrigger["timeout"]; 
-			} 
+			}
 			getWorkflowDAO().updateWorkflowTriggerRunning(runningWorkflowTrigger["workflowTriggerID"],false,timeout);
 		}
 
