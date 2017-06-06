@@ -46,26 +46,26 @@
 Notes:
 
 */
-component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="appService" hb_permission="this" hb_processContexts="" {
+component displayname="ToDo" entityname="SlatwallToDo" table="SwToDo" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="toDoService" {
 
 	// Persistent Properties
-	property name="appID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="appName" ormtype="string";
-	property name="appCode" ormtype="string" unique="true" index="PI_APPCODE";
-	property name="appRootPath" ormtype="string";
+	property name="toDoID" ormtype="string" hb_populateEnabled="public" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="title" ormtype="string"  hb_populateEnabled="public";
+	property name="description" ormtype="string" hb_populateEnabled="public" length="4000" hb_formFieldType="wysiwyg";
+	property name="dueDate" ormtype="timestamp"  hb_populateEnabled="public" hb_formatType="date";
+	property name="completeFlag" ormtype="boolean" hb_populateEnabled="public" default="0";
+	property name="completeDateTime" ormtype="timestamp" hb_populateEnabled="public";
 
 	// Related Object Properties (many-to-one)
-	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	property name="toDoType" cfc="Type" hb_populateEnabled="public" fieldtype="many-to-one" fkcolumn="toDoTypeID" hb_optionsSmartListData="f:parentType.systemCode=toDoType";
+	property name="assignedToAccount" hb_populateEnabled="public" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 
 	// Related Object Properties (one-to-many)
-	property name="sites" type="array" cfc="Site" singularname="site" fieldtype="one-to-many" fkcolumn="appID" cascade="all-delete-orphan" inverse="true";
 
-	// Related Object Properties (many-to-many - owner)
+	// Related Object Properties (many-to-many)
 
-	// Related Object Properties (many-to-many - inverse)
-
-	// Remote properties
-	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
+	// Remote Properties
+	property name="remoteID" ormtype="string";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -73,16 +73,8 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non Persistent
-	property name="appPath" persistent="false";
+	// Non-Persistent Properties
 
-	public string function getAppPath(){
-		if(!structKeyExists(variables,'appPath')){
-			var appsPath = expandPath('/#getDao('hibachiDao').getApplicationValue('applicationKey')#/custom/apps');
-			variables.appPath = appsPath & '/' & getAppCode();
-		}
-		return variables.appPath;
-	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -90,46 +82,21 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Sites (one-to-many)
-	public void function addSite(required any site) {
-		arguments.site.setApp( this );
-	}
-	public void function removeSite(required any site) {
-		arguments.site.removeApp( this );
-	}
-
-	// integration (many-to-one)
-	public void function setIntegration(required any Integration) {
-		variables.Integration = arguments.Integration;
-		if(isNew() or !arguments.Integration.hasApp( this )) {
-			arrayAppend(arguments.Integration.getApps(), this);
-		}
-	}
-	public void function removeIntegration(any Integration) {
-		if(!structKeyExists(arguments, "Integration")) {
-			arguments.Integration = variables.Integration;
-		}
-		var index = arrayFind(arguments.Integration.getApps(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.Integration.getApps(), index);
-		}
-		structDelete(variables, "Integration");
-	}
-
 	// =============  END:  Bidirectional Helper Methods ===================
 
-	// ============= START: Overridden Smart List Getters ==================
+	// =============== START: Custom Validation Methods ====================
 
-	// =============  END: Overridden Smart List Getters ===================
+	// ===============  END: Custom Validation Methods =====================
+
+	// =============== START: Custom Formatting Methods ====================
+
+	// ===============  END: Custom Formatting Methods =====================
+
+	// ============== START: Overridden Implicet Getters ===================
+
+	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
-
-	public string function getAppRootPath(){
-		if(!structKeyExists(variables,'appRootPath') && !isNull(getAppCode())){
-			variables.appRootPath = '/custom/apps/' & getAppCode();
-		}
-		return variables.appRootPath;
-	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -139,7 +106,5 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 
 	// ================== START: Deprecated Methods ========================
 
-	// ==================  END:  Deprecated Methods ========================
-
+	// ==================  END:  Deprecated Methods ======================
 }
-

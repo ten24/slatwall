@@ -181,7 +181,7 @@ class HibachiServiceDecorator{
                             if(defaultValues && defaultValues[entity.className] && defaultValues[entity.className][property.name] != null){
                                 jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
                             }else{
-                                jsEntity.data[property.name] = null;
+                                jsEntity.data[property.name] = undefined;
                             }
                         }
                     });

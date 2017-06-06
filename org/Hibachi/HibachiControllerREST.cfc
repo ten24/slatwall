@@ -648,7 +648,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				arguments.rc["p:show"] = globalAPIPageShowLimit; 
 			}	
 		}
-       
+        
 		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
  		} 

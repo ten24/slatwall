@@ -202,7 +202,8 @@
         * @param fileType File type for export. (default: csv)
         * This returns the path and filename of the exported file.
         */ 
-        public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true) {
+         public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true, folderPath) {
+
             if (isArray(data)){
                 arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
             }
@@ -216,7 +217,9 @@
 				throw("File type not supported in export. Only supported file types are #supportedFileTypes#");
 			}
             var fileNameWithExt = arguments.fileName & "." & arguments.fileType ;
-			if(structKeyExists(application,"tempDir")){
+				if(structKeyExists(arguments, "folderPath")){
+					var filePath = arguments.folderPath & "/" & fileNameWithExt;
+				} else if(structKeyExists(application,"tempDir")){
 				var filePath = application.tempDir & "/" & fileNameWithExt;
 			} else {
 				var filePath = GetTempDirectory() & fileNameWithExt;
@@ -231,20 +234,26 @@
             var columnCount = arrayLen(columnArray);
             
             if(arguments.fileType == 'csv'){
-                var csv = queryToCSV(arguments.data);
-                fileWrite(filePath,csv);
-			}
-			
-    
-            // Open / Download File / or return info about the filepath name etc.
-            if (arguments.downLoadFile){
-                 getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true); 
+				getHibachiUtilityService().queryToCsvFile(
+					filePath = filePath,
+					queryData = arguments.data,
+					columnNames = columnNames,
+					columnTitles = columns
+				);
             }else{
-                 return {fileNameWithExt = fileNameWithExt, filePath = filePath};   
+				throw("Implement export for fileType #arguments.fileType#");
             }
             
+			if(structKeyExists(arguments, "downloadFile") && arguments.downloadFile == true){
+				getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
+			} else{
+				result.fileName = fileNameWithExt;
+				result.fileType = fileType;
+				result.filePath = filePath;
+				return result;
+            }
         }
-    
+
     /*
      * queryToCsv
      * Allows us to pass in a query object and returns that data as a CSV.
@@ -255,14 +264,14 @@
      * @return {String}                                         CSV content
      */
     public string function queryToCsv(required query q, required boolean hr = true, required string d = ","){
-        
+
         var colNames    = listToArray( lCase(arguments.q.columnlist) );
         var newLine     = (chr(13) & chr(10));
         var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
         // Check if we should include a header row
         if(arguments.hr){
-            // append our header row 
-            buffer.append( 
+            // append our header row
+            buffer.append(
               ArrayToList(colNames,arguments.d) & newLine
             );
         }
@@ -283,7 +292,7 @@
         return buffer.toString();
     };
     
-	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
+	public query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
 		var rowsTotal = ArrayLen(arrayOfStructs);
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
