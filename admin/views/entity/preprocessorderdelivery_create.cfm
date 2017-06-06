@@ -92,6 +92,8 @@ Notes:
 						</hb:HibachiDisplayToggle>
 					<cfelse>
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+						<a title="Order" class="adminentitydetailorder btn btn-default" target="self" href="/?slatAction=entity.listorderdelivery">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getOrder()#" property="orderNumber"/>
 					</cfif>
 				</cfif>
 
@@ -130,7 +132,6 @@ Notes:
 							<cfset orderItemIndex++ />
 
 							<cfset orderItem = $.slatwall.getService("orderService").getOrderItem( recordData.orderItem.orderItemID ) />
-
 							<td>#orderItem.getSku().getSkuCode()#</td>
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							<td>#orderItem.getSku().displayOptions()#</td>
