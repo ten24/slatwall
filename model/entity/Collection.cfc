@@ -106,6 +106,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
 	property name="filterGroupAliasMap" type="struct" persistent="false";
+	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
 
 	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
@@ -991,7 +992,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM'){
 			return " #aggregateFunction#(COALESCE(#arguments.propertyIdentifier#,0)) as #arguments.aggregate.aggregateAlias#";
 		}else{
-			var distinct = (aggregateFunction == 'COUNT') ? 'DISTINCT':'';
+			
+			var distinct = "";
+			if(aggregateFunction == 'COUNT'){
+				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.propertyIdentifier));
+				//when doing a count on objects it is important to inlcude that it is Distinct
+	//			 however if we are doing a query like 
+	//			SELECT firstName,count(firstName) FROM swaccount	
+	//			group by firstName
+	//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
+	//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections 
+	//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
+				if(isObject){
+					distinct = 'DISTINCT';	
+				}else{
+					setExcludeOrderBy(false);
+				}
+			}
 			return " #aggregateFunction#(#distinct# #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
 		}
 
@@ -1398,11 +1415,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         return aliasList;
     }
 
-	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, removeOrderBy = false, excludeGroupBy=false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false){
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.removeOrderBy,arguments.excludeGroupBy);
+		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
 
 
 		return HQL;
@@ -1491,8 +1508,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
 				}
 			}else{
-				var orderBy = getDefaultOrderBy();
-				groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+				if(!getExcludeOrderBy()){
+					var orderBy = getDefaultOrderBy();
+					groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+				}
 			}
 		}
 		variables.groupBys = groupByList;
@@ -1515,10 +1534,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			};
 		//if not then does it have a createdDateTime
 		} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
+			
 			var orderByStruct={
 				propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
 				direction="desc"
 			};
+			
 		//if still not then order by primary id
 		} else {
 			var orderByStruct={
@@ -1770,7 +1791,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
+						var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
 						}
@@ -2174,13 +2195,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function createHQLFromCollectionObject(required any collectionObject,
 		boolean excludeSelectAndOrderBy=false,
 		boolean forExport=false,
-	    boolean removeOrderBy=false,
+	    boolean excludeOrderBy=false,
 	    boolean excludeGroupBy=false
 	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-
+		if(arguments.excludeOrderBy){
+			this.setExcludeOrderBy(true);
+		}
+		
 		if(!isNull(collectionConfig.baseEntityName)){
 			var selectHQL = "";
 			var fromHQL = "";
@@ -2208,7 +2232,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 				}
 
-				if(!removeOrderBy){
+				if(!this.getExcludeOrderBy()){
 					if (!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())) {
 						orderByHQL &= getOrderByHQL(getPostOrderBys());
 					} else
@@ -2652,7 +2676,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function canSaveCollectionByCollectionObject(){
 		return getHibachiScope().authenticateCollection('read', this);
 	}
-
+	
 }
 
 
