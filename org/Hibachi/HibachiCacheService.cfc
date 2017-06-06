@@ -20,6 +20,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		return super.init();
 	}
 	
+	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
+		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
+	}
+	
 	public any function hasCachedValue( required string key ) {
 		// If using the internal cache, then check there
 		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
