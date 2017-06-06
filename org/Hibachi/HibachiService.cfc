@@ -24,6 +24,16 @@
 		public any function get(required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
 			return getHibachiDAO().get(argumentcollection=arguments);
 		}
+		
+		public any function getParentPropertyByEntityName(required string entityName){
+			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ].hb_parentPropertyName;
+		}
+		
+		public string function getSimpleRepresentationPropertyNameByEntityName(required string entityName){
+			var example = this.new(arguments.entityName);
+			var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
+			return simpleRepresentationPropertyName;
+		}
 	
 		public any function getSmartList(string entityName, struct data={}){
 			var smartList = getHibachiDAO().getSmartList(argumentcollection=arguments);
@@ -291,8 +301,8 @@
         }
         return buffer.toString();
     };
-
-	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
+    
+	public query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
 		var rowsTotal = ArrayLen(arrayOfStructs);
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}

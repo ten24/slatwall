@@ -46,37 +46,20 @@
 Notes:
 
 */
-component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
+component output="false" accessors="true" extends="HibachiProcess" {
 
-	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, required any integration, required string entityQueueData){
-		return ORMExecuteQuery('SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration AND entityQueueData=:entityQueueData',
-			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration,entityQueueData=arguments.entityQueueData}
-			
-		);
+	// Injected Entity
+	property name="promotionPeriod";
+
+	// Data Properties
+	
+	property name="endDateTime" hb_formFieldType="datetime" hb_rbKey="entity.promotionPeriod.endDateTime" hb_nullRBKey="define.forever";
+	
+	public function getEndDateTime() {
+		if(!structKeyExists(variables, "endDateTime")) {
+			variables.endDateTime = getPromotionPeriod().getEndDateTime();
+		}
+		return variables.endDateTime;
 	}
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
 	
 }
