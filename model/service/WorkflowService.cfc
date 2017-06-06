@@ -150,7 +150,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		for(var i=1; i<=arrayLen(runningWorkflowTriggers); i++){
 			var runningWorkflowTrigger = runningWorkflowTriggers[i];
-			getWorkflowDAO().updateWorkflowTriggerRunning(runningWorkflowTrigger["workflowTriggerID"],false,runningWorkflowTrigger["timeout"]);
+			var timeout = 90; 
+			if(structKeyExists(runningWorkflowTrigger, "timeout")){
+				timeout = runningWorkflowTrigger["timeout"]; 
+			} 
+			getWorkflowDAO().updateWorkflowTriggerRunning(runningWorkflowTrigger["workflowTriggerID"],false,timeout);
 		}
 
         getHibachiDAO().flushORMSession();
