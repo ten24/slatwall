@@ -60,7 +60,10 @@ Notes:
 	<hb:HibachiEntityProcessForm entity="#rc.orderDelivery#" edit="#rc.edit#" processActionQueryString="orderFulfillmentID=#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" sRedirectAction="admin:entity.detailorderfulfillment" fRenderItem="preprocessorderdelivery">
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderDelivery#">
+			<!---<hb:HibachiActionCaller action="admin:entity.detailorder" queryString="test=test" class="btn btn-default" icon="arrow-left">--->
 		</hb:HibachiEntityActionBar>
+		
+		
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
@@ -75,6 +78,7 @@ Notes:
 					<input type="hidden" name="shippingMethod.shippingMethodID" value="#rc.processObject.getShippingMethod().getShippingMethodID()#" />
 					<input type="hidden" name="shippingAddress.addressID" value="#rc.processObject.getShippingAddress().getAddressID()#" />
 				</cfif>
+				<hb:HibachiActionCaller action="admin:entity.detailorder" queryString="orderID=#rc.processObject.getOrder().getOrderID()#" text="Order Number: #rc.processObject.getOrder().getOrderNumber()#">
 				
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
@@ -92,8 +96,6 @@ Notes:
 						</hb:HibachiDisplayToggle>
 					<cfelse>
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
-						<a title="Order" class="adminentitydetailorder btn btn-default" target="self" href="/?slatAction=entity.listorderdelivery">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getOrder()#" property="orderNumber"/>
 					</cfif>
 				</cfif>
 
