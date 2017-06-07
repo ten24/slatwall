@@ -1799,6 +1799,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getRecordsCount() {
+		applyPermissions();
 		if(!structKeyExists(variables, "recordsCount")) {
 			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
 				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
