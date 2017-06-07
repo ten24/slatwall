@@ -299,7 +299,7 @@ component output="false" update="true" extends="HibachiService" {
 			var entityName = arguments.objectName;
 			
 			var positions = ['before','after'];
-			var processes = ['Save','Delete'];
+			var processes = ['Save','Delete','Create'];
 			var statuses = ['','Success','Failure'];
 			
 			if(structKeyExists(emd, "hb_processContexts")) {

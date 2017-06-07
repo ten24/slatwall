@@ -191,11 +191,23 @@
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
+				
+				//If new need to announce the Create Success
+				if (arguments.entity.isNew()){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				}
 		    } else {
             
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
+				
+				//If new need to announce the Create Success
+				if (arguments.entity.isNew()){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				}
 	        }
 	        
 	        // Return the entity
