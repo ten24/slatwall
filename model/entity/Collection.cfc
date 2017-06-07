@@ -107,7 +107,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
+	property name="permissionAppliedFlag" type="boolean" persistent="false" default="0";
+	//used to define who is requesting data
 	property name="requestAccount" type="any" persistent="false";
+	
 
 	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
@@ -1613,14 +1616,31 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return arguments.propertyIdentifier;
 	}
-	
+	// Used to apply filter based on record level permissions of the user
 	public void function applyPermissions(){
+		
+		if(!getPermissionAppliedFlag()){
+			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
+			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
+			
+			permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName',getCollectionObject());
+			permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
+			
+			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+			for(var permissionRecordRestriction in permissionRecordRestrictions){
+				var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction.getRestrictionConfig());
+				for(var filterGroup in recordRestrictionFilterGroups){
+					arrayAppend(getCollectionCOnfigStruct().filterGroups,filterGroup);
+				}
+			}
+			setPermissionAppliedFlag(true);
+		}
 		
 	}
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
-		this.applyPermissions();
+		applyPermissions();
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
 
@@ -1710,7 +1730,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
-		this.applyPermissions()
+		applyPermissions();
 ;		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
 

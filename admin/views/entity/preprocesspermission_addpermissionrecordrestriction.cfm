@@ -55,9 +55,9 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 
-<hb:HibachiEntityProcessForm entity="#rc.permission#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.permission#" edit="#rc.edit#" >
 	
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.permission#">
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.permission#" >
 	</hb:HibachiEntityActionBar>
 	
 	<hb:HibachiPropertyRow>

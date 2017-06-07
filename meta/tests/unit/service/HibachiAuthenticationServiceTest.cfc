@@ -127,12 +127,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(arraylen(allDataCollection.getRecords()),2);
 		
 		//now record level perms restrictions
-		
+		//user should not have access to other order
 		var collectionEntity = createTestEntity('Collection');
 		collectionEntity.setCollectionObject('Order');
 		collectionEntity.addFilter('orderID',order.getOrderID(),'=');
 		
-		var restrictionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()); 
+		var restrictionConfig = serializeJson(collectionEntity.getCollectionConfigStruct().filterGroups); 
 		
 		var permissionRecordRestrictionData = {
 			permissionRecordRestrictionID="",
@@ -146,6 +146,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//make this request use our account with restrictions 
 		allDataCollection.setRequestAccount(peasantyAccount);
+		assert(arraylen(allDataCollection.getRecords(true)),2);
+		
 		
 	}
 	

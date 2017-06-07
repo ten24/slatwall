@@ -57,6 +57,7 @@ Notes:
 		recordDetailAction="admin:entity.detailpermissionrecordrestriction"
 		recordEditAction="admin:entity.editpermissionrecordrestriction"
 		recordDeleteAction="admin:entity.deletepermissionrecordrestriction"
+		recordDeleteQueryString="sRedirectAction=entity.detailpermission&permissionID=#rc.permission.getPermissionID()#"
 	>
 		<hb:HibachiListingColumn propertyIdentifier="permissionRecordRestrictionName" tdclass="primary"/>
 	</hb:HibachiListingDisplay>
