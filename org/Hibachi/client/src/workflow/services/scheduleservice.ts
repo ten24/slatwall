@@ -26,7 +26,7 @@ class ScheduleService extends BaseEntityService{
         if(this.schedulePreview[currentDate]  === undefined ){
             this.schedulePreview[currentDate] = {
                 day: cdate.getDate(),
-                month: (longMonthName) ? month[cdate.getMonth() + 1] : monthShort[cdate.getMonth() + 1],
+                month: (longMonthName) ? month[cdate.getMonth()] : monthShort[cdate.getMonth()],
                 year: cdate.getFullYear(),
                 weekday: weekday[cdate.getDay()],
                 times: []
