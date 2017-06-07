@@ -180,7 +180,7 @@ class SWTypeaheadSearchController {
     }
 
     public toggleOptions = () =>{
-        if(this.hideSearch && !this.searchText.length){
+        if(this.hideSearch && (this.searchText && !this.searchText.length)){
             this.search(this.searchText);
         }
         this.hideSearch = !this.hideSearch;
@@ -193,14 +193,14 @@ class SWTypeaheadSearchController {
 		}
 
         this.collectionConfig.setKeywords(search);
-
+        console.log(this.collectionConfig);
         if(angular.isDefined(this.filterGroupsConfig)){
             //allows for filtering on search text
             var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
             filterConfig = filterConfig.trim();
             this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
-
+        console.log(`Searching: ${search}`);
         this._timeoutPromise = this.$timeout(()=>{
 
             var promise = this.collectionConfig.getEntity();
