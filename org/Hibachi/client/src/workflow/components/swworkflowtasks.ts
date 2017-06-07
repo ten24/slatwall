@@ -141,7 +141,6 @@ class SWWorkflowTasks{
                 			scope.finished = false;
                 		}
 						//refresh the task information.
-						console.log("Refreshing.");
 						delete scope.workflow.data.workflowTasks;
 						scope.getWorkflowTasks();
                     }, function (err) {
