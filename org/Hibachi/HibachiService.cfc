@@ -183,7 +183,9 @@
 	        
 	        // Validate this object now that it has been populated
 			arguments.entity.validate(context=arguments.context);
-			        
+			//check if this is new before save - announcements will need this information later.
+	        var isNew = arguments.entity.isNew();
+	        
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
@@ -192,10 +194,10 @@
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
 				
-				//If new need to announce the Create Success
-				if (arguments.entity.isNew()){
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				//If new need to announce the Create process as well as Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_CreateSuccess", arguments);
 				}
 		    } else {
             
@@ -204,9 +206,9 @@
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
 				
 				//If new need to announce the Create Success
-				if (arguments.entity.isNew()){
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_CreateFailure", arguments);
 				}
 	        }
 	        
