@@ -1666,7 +1666,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}else{
 							HQL = getHQL();
 							HQLParams = getHQLParams();
-							throw("#HQL#");
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 								variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -1686,6 +1685,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 		}
+		
 		return variables.pageRecords;
 	}
 
@@ -2434,7 +2434,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			keywordIndex++;
 		}
-		//throw("#serializeJson(variables.postFilterGroups)#");
+		
 	}
 
 	//TODO:write an export/import service so we can share json files of the collectionConfig

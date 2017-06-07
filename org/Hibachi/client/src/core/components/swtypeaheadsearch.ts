@@ -191,16 +191,16 @@ class SWTypeaheadSearchController {
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
 		}
-
+        
         this.collectionConfig.setKeywords(search);
-        console.log(this.collectionConfig);
+        
         if(angular.isDefined(this.filterGroupsConfig)){
             //allows for filtering on search text
             var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
             filterConfig = filterConfig.trim();
             this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
-        console.log(`Searching: ${search}`);
+        
         this._timeoutPromise = this.$timeout(()=>{
 
             var promise = this.collectionConfig.getEntity();
