@@ -1622,15 +1622,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!getPermissionAppliedFlag()){
 			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
 			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
-			
-			permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName',getCollectionObject());
+			permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
+			permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#getCollectionObject()#');
 			permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
-			
-			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+			permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,restrictionConfig');
+			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords(true);
 			for(var permissionRecordRestriction in permissionRecordRestrictions){
-				var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction.getRestrictionConfig());
+				var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction['restrictionConfig']);
 				for(var filterGroup in recordRestrictionFilterGroups){
-					arrayAppend(getCollectionCOnfigStruct().filterGroups,filterGroup);
+					filterGroup['logicalOperator']="AND";
+					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
 				}
 			}
 			setPermissionAppliedFlag(true);
@@ -1640,6 +1641,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
+		if(arguments.refresh){
+			clearRecordsCache();
+		}
+		
 		applyPermissions();
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
@@ -1648,7 +1653,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else{
 			try{
 
-				if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
+				if( !structKeyExists(variables, "pageRecords")) {
 
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
@@ -1728,17 +1733,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return relatedObject.getSettingValue(settingName);
 		}
 	}
+	
+	private void function clearRecordsCache(){
+		structDelete(variables,'records');
+		structDelete(variables,'pageRecords');
+		structDelete(variables,'recordsCount');
+	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
-		applyPermissions();
-;		if(arguments.formatRecords){
+		
+		if(arguments.refresh){
+			clearRecordsCache();
+		}
+		
+		applyPermissions();		
+		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
 
 			variables.records =	formattedRecords;
 		}else{
 			try{
 				//If we are returning only the exportable records, then check and pass through.
-				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+				if( !structKeyExists(variables, "records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
 						variables.records = getHibachiScope().getService('elasticSearchService').getRecords(argumentCollection=arguments);
@@ -1798,7 +1814,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.recordsCount = arguments.total;
 	}
 
-	public any function getRecordsCount() {
+	public any function getRecordsCount(boolean refresh=false) {
+		if(arguments.refresh){
+			clearRecordsCache();
+		}
+		
 		applyPermissions();
 		if(!structKeyExists(variables, "recordsCount")) {
 			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
