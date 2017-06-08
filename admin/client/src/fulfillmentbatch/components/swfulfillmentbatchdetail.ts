@@ -57,14 +57,14 @@ class SWFulfillmentBatchDetailController  {
             payload: {}
         });
     }
-
+    //toggle_editcomment for action based
     public userEditingComment = (comment) => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "EDIT_COMMENT_TOGGLE",
             payload: {comment: comment}
         });
     }
-
+    //requested | failed | succeded
     public userDeletingComment = (comment) => {
         //Only fire the event if the user agrees.
         let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
