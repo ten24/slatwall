@@ -473,112 +473,32 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables, cacheKey)) {
 			variables[ cacheKey ] = [];
 
-			var smartList = getPropertyOptionsSmartList( arguments.propertyName );
-
-			var propertyMeta = getPropertyMetaData( propertyName );
-
-			if(structKeyExists(propertyMeta, "hb_optionsNameProperty")) {
-				smartList.addSelect(propertyIdentifier=propertyMeta.hb_optionsNameProperty, alias="value");
-			} else {
-				var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
-				smartList.addSelect(propertyIdentifier=exampleEntity.getSimpleRepresentationPropertyName(), alias="name");
-			}
-			if(structKeyExists(propertyMeta, "hb_optionsValueProperty")) {
-				smartList.addSelect(propertyIdentifier=propertyMeta.hb_optionsValueProperty, alias="value");
-			} else {
-				smartList.addSelect(propertyIdentifier=getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')), alias="value");
-			}
-
-			if(structKeyExists(propertyMeta, "hb_optionsAdditionalProperties")) {
-				var additionalPropertiesArray = listToArray(propertyMeta.hb_optionsAdditionalProperties);
-				for(var p=1; p<=arrayLen(additionalPropertiesArray); p++) {
-					smartList.addSelect(propertyIdentifier=additionalPropertiesArray[p], alias=replace(additionalPropertiesArray[p],".","_","all"));
-				}
-			}
-
-			variables[ cacheKey ] = smartList.getRecords();
-
-			// If this is a many-to-one related property, then add a 'select' to the top of the list
-			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
-				var recordsStruct = {};
-				recordsStruct['value'] = "";
-				recordsStruct['name'] = rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey);
-				arrayPrepend(variables[ cacheKey ], recordsStruct);
-			}
-		}
-
-		return variables[ cacheKey ];
-
-	}
-
-
-	// @hint returns an array of name/value pairs that can function as options for a many-to-one property
-	public array function getPropertyCollectionOptions( required string propertyName ) {
-
-		var cacheKey = "#arguments.propertyName#Options";
-
-		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = [];
-
-			var nameValueColumns = {};
-
 			var collectionList = getPropertyOptionsCollectionList( arguments.propertyName );
 
 			var propertyMeta = getPropertyMetaData( propertyName );
 
 			if(structKeyExists(propertyMeta, "hb_optionsNameProperty")) {
-				nameValueColumns["value"] = propertyMeta.hb_optionsNameProperty;
-				nameValueColumns["valueAlias"] = collectionList.convertPropertyIdentifierToAlias(propertyMeta.hb_optionsNameProperty);
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|value");
 			} else {
 				var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
-				nameValueColumns["name"] = exampleEntity.getSimpleRepresentationPropertyName();
-				nameValueColumns["nameAlias"] = collectionList.convertPropertyIdentifierToAlias(exampleEntity.getSimpleRepresentationPropertyName());
+				collectionList.addDisplayProperty("#exampleEntity.getSimpleRepresentationPropertyName()#|name");
 			}
 			if(structKeyExists(propertyMeta, "hb_optionsValueProperty")) {
-				nameValueColumns["value"] = propertyMeta.hb_optionsValueProperty;
-				nameValueColumns["valueAlias"] = collectionList.convertPropertyIdentifierToAlias(propertyMeta.hb_optionsValueProperty);
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsValueProperty#|value");
 			} else {
-				nameValueColumns["value"] = getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.'));
-				nameValueColumns["valueAlias"] = collectionList.convertPropertyIdentifierToAlias(getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')));
+				collectionList.addDisplayProperty("#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.'))#|value");
 			}
-
-			var columnsList = "";
-			columnsList = listAppend(columnsList, nameValueColumns["name"]);
-			columnsList = listAppend(columnsList, nameValueColumns["value"]);
 
 			if(structKeyExists(propertyMeta, "hb_optionsAdditionalProperties")) {
-				columnsList = listAppend(columnsList, propertyMeta.hb_optionsAdditionalProperties);
 				var additionalPropertiesArray = listToArray(propertyMeta.hb_optionsAdditionalProperties);
-				nameValueColumns["additionalPropertiesAlias"] = [];
 				for(var p=1; p<=arrayLen(additionalPropertiesArray); p++) {
-					arrayAppend(nameValueColumns["additionalPropertiesAlias"], collectionList.convertPropertyIdentifierToAlias(additionalPropertiesArray[p]));
+					collectionList.addDisplayProperty("#additionalPropertiesArray[p]#|#replace(additionalPropertiesArray[p],'.','_','all')#");
 				}
 			}
 
-			collectionList.setDisplayProperties(columnsList);
-			var collectionRecords = collectionList.getRecords();
+			variables[ cacheKey ] = collectionList.getRecords();
 
-			variables[ cacheKey ] = [];
-
-			for(var i = 1; i <= arraylen(collectionRecords); i++){
-				var recordsStruct = {};
-				if(structKeyExists(collectionRecords[i], nameValueColumns["nameAlias"])){
-					recordsStruct['name'] = collectionRecords[i][nameValueColumns["nameAlias"]];
-				}
-				if(structKeyExists(collectionRecords[i], nameValueColumns["nameAlias"])){
-					recordsStruct['value'] = collectionRecords[i][nameValueColumns["valueAlias"]];
-				}
-
-				if(structKeyExists(nameValueColumns, 'additionalPropertiesAlias')){
-					for(var p=1; p<=arrayLen(nameValueColumns['additionalPropertiesAlias']); p++) {
-						recordsStruct[nameValueColumns['additionalPropertiesAlias'][p]] = collectionRecords[i][nameValueColumns['additionalPropertiesAlias'][p]];
-					}
-				}
-				if(!structIsEmpty(recordsStruct)){
-					arrayAppend(variables[ cacheKey ], recordsStruct);
-				}
-			}
-
+			// If this is a many-to-one related property, then add a 'select' to the top of the list
 			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
 				var recordsStruct = {};
 				recordsStruct['value'] = "";
@@ -628,7 +548,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			variables[ cacheKey ] = entityService.invokeMethod("get#listLast(propertyMeta.cfc,'.')#CollectionList");
 
 			// If there was an hb_optionsCollectionListData defined, then we can now apply that data to this smart list
-			if(structKeyExists(propertyMeta, "hb_optionsCollectionListData")) {
+			if(structKeyExists(propertyMeta, "hb_optionsSmartListData")) {
+				variables[ cacheKey ].applyData( propertyMeta.hb_optionsSmartListData );
+			}else if(structKeyExists(propertyMeta, "hb_optionsCollectionListData")) {
 				variables[ cacheKey ].applyData( propertyMeta.hb_optionsCollectionListData );
 			}
 
@@ -722,8 +644,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var propertySmartList = this.invokeMethod('get#propertyName#SmartList');
-		return propertySmartList.getRecordsCount();
+		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
+		return propertyCollection.getRecordsCount();
 	}
 
 	// @hint handles encrypting a property based on conventions

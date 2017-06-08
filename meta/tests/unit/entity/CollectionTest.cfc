@@ -334,6 +334,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function displayPropertyAliasTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName|MyFirstName,lastName|MyLastName');
+
+		var collectionRecords = collectionEntity.getPageRecords();
+		assert( structKeyExists(collectionRecords[1], 'MyFirstName'));
+		assert( structKeyExists(collectionRecords[1], 'MyLastName'));
+
+	}
+	/**
+	* @test
+	*/
 	public void function addFilterTest(){
 
 		var uniqueNumberForDescription = createUUID();
