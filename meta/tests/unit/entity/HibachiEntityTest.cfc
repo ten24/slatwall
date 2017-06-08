@@ -64,4 +64,33 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			assertTrue(!structKeyExists(defaultProperty,'FKCOLUMN'));
 		}
 	}
+
+	/**
+	* @test
+	*/
+	public void function getPropertyOptionsTest(){
+		var accountEmailAddress = request.slatwallScope.newEntity('AccountEmailAddress');
+		var collectionOptions = accountEmailAddress.getPropertyCollectionOptions('accountEmailType');
+		for(var i =1; i <= arraylen(collectionOptions); i++){
+			assert( structKeyExists(collectionOptions[i], 'name') && structKeyExists(collectionOptions[i], 'value'));
+		}
+	}
+
+	/**
+	* @test
+	**/
+	public void function getPropertyOptionsWithAdditionalProperties(){
+		var accountPaymentMethod = request.slatwallScope.newEntity('AccountPaymentMethod');
+		var collectionOptions = accountPaymentMethod.getPropertyCollectionOptions('paymentMethod');
+		for(var i =1; i <= arraylen(collectionOptions); i++){
+			assert( structKeyExists(collectionOptions[i], 'name'), 'Option Name not found!');
+			assert( structKeyExists(collectionOptions[i], 'value'), 'Option Name not found!');
+			if(i > 1){
+				assert( structKeyExists(collectionOptions[i], 'paymentMethodType'), 'hb_optionsAdditionalProperties not found in the Option list!');
+			}
+		}
+
+	}
+
+
 }
