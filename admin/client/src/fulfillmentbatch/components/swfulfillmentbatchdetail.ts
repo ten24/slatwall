@@ -1,6 +1,8 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+import * as action from '../actions/fulfillmentbatchactions';
+
 /**
  * Fulfillment Batch Detail Controller
  */
@@ -11,7 +13,7 @@ class SWFulfillmentBatchDetailController  {
     
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
-        
+       
         //Setup a load handler that checks for the data.
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{

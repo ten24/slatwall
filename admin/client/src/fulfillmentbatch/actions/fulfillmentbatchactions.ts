@@ -20,30 +20,60 @@
  * they should not do anything other than success.
  */
 
-//UI based actions
+/**
+ * This action will toggle the comment edit and allow a user to start editing or stop editing a comment.
+ */
 export const TOGGLE_EDITCOMMENT = "TOGGLE_EDITCOMMENT";
 
+/**
+ * This will toggle the batch listing to its full or half size view.
+ */
 export const TOGGLE_BATCHLISTING  = "TOGGLE_BATCHLISTING";
 
+/**
+ * This sets up all the state data on page start and should only be called once in a constructor.
+ */
 export const SETUP_BATCHDETAIL  = "SETUP_BATCHDETAIL";
 
+/**
+ * This setups the page that displays the order delivery custom attributes and should only be called once.
+ */
 export const SETUP_ORDERDELIVERYATTRIBUTES  = "SETUP_ORDERDELIVERYATTRIBUTES";
 
-// Server based actions.
+/**
+ * This will delete a comment permenently.
+ */
 export const DELETE_COMMENT_REQUESTED  = "DELETE_COMMENT_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
 export const DELETE_COMMENT_SUCCESS  = "DELETE_COMMENT_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
 export const DELETE_COMMENT_FAILURE  = "DELETE_COMMENT_FAILURE";
 
+/**
+ * This will save a comment.
+ */
 export const SAVE_COMMENT_REQUESTED  = "SAVE_COMMENT_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
 export const SAVE_COMMENT_SUCCESS  = "SAVE_COMMENT_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
 export const SAVE_COMMENT_FAILURE  = "SAVE_COMMENT_FAILURE";
 
+/**
+ * This will fulfill the batch item if it has all needed information.
+ */
 export const CREATE_FULFILLMENT_REQUESTED  = "CREATE_FULFILLMENT_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
 export const CREATE_FULFILLMENT_SUCCESS  = "CREATE_FULFILLMENT_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
 export const CREATE_FULFILLMENT_FAILURE  = "CREATE_FULFILLMENT_FAILURE";
 
+/**
+ * This will print the picking list that the user has defined.
+ */
 export const PRINT_PICKINGLIST_REQUESTED  = "PRINT_PICKINGLIST_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
 export const PRINT_PICKINGLIST_SUCCESS  = "PRINT_PICKINGLIST_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
 export const PRINT_PICKINGLIST_FAILURE  = "PRINT_PICKINGLIST_FAILURE";
 
 
