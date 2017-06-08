@@ -196,8 +196,8 @@
 				
 				//If new need to announce the Create process as well as Success
 				if (isNew){
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#_Create", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#_CreateSuccess", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
 				}
 		    } else {
             
@@ -207,8 +207,8 @@
 				
 				//If new need to announce the Create Success
 				if (isNew){
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#_Create", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#_CreateFailure", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
 				}
 	        }
 	        
