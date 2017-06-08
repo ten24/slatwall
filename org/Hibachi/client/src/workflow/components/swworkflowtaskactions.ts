@@ -118,6 +118,8 @@ class SWWorkflowTaskActionsController {
                 }else if (context == "finish"){
                     this.finished = true;
                 }
+                //Auto save the workflow now that the task action is saved.
+                this.workflowTask.data.workflow.$$save();
             },(err)=>{
                 angular.element('a[href="/##j-basic-2"]').click();
                 console.warn(err);
@@ -172,7 +174,7 @@ class SWWorkflowTaskActionsController {
                 this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject] = this.metadataService.getPropertiesListByBaseEntityAlias(this.workflowTask.data.workflow.data.workflowObject);
                 this.metadataService.formatPropertiesList(this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject], this.workflowTask.data.workflow.data.workflowObject);
                 this.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-
+                console.log("Selected Workflow Task Action Process Method: ", this.workflowTaskActions.selectedTaskAction.data.processMethod);
                 this.emailTemplateSelected =  (this.workflowTaskActions.selectedTaskAction.data.emailTemplate) ? this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateName : '';
 
                 this.emailTemplateCollectionConfig = this.collectionConfigService.newCollectionConfig("EmailTemplate");
@@ -238,9 +240,7 @@ class SWWorkflowTaskActionsController {
                 var proccessOptionsPromise = this.$hibachi.getProcessOptions(objectName);
 
                 proccessOptionsPromise.then((value)=>{
-                    this.$log.debug('getProcessOptions');
                     this.processOptions = value.data;
-
                 });
             }
             this.showProcessOptions = true;
