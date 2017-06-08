@@ -124,7 +124,8 @@ class SWWorkflowTasks{
 
 			  /**
                  * --------------------------------------------------------------------------------------------------------
-                 * Saves the workflow task by calling the objects $$save method.
+                 * Saves the workflow task by calling the objects $$save method. In addition to calling save here,
+				 * we also refresh the data by calling getWorkflowTasks followed by calling the global entity.$$save.
                  * @param task
                  * --------------------------------------------------------------------------------------------------------
                  */
@@ -143,6 +144,9 @@ class SWWorkflowTasks{
 						//refresh the task information.
 						delete scope.workflow.data.workflowTasks;
 						scope.getWorkflowTasks();
+
+						//Save the workflow entity automatically.
+						scope.workflow.$$save();
                     }, function (err) {
                     })
                 }//<--end save*/
