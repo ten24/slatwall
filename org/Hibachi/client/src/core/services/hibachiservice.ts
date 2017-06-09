@@ -169,10 +169,8 @@ class HibachiService{
                 if(propertyIdentifier.charAt(0)==='.'){
                     propertyIdentifier = propertyIdentifier.slice(1);
                 }
-                console.log(propertyIdentifier);
 				var propertyIdentifierArray = propertyIdentifier.split('.');
 				var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
-                console.log(propertyIdentifierKey);
 				var currentEntity = entity;
 				angular.forEach(propertyIdentifierArray,(property,key)=>{
 					if(key === propertyIdentifierArray.length-1){
