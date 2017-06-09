@@ -52,10 +52,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="sku";
 
 	// Injected, or lazily loaded by ID
+
 	property name="bundleSku";
 
 	// Data Properties (IDs)
 	property name="bundleSkuID";
+	property name="skuID";
 
 	// Data Properties (Inputs)
 	property name="quantity";
@@ -89,7 +91,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public array function getMeasurementUnitOptions(){
-		if(!isNull(getBundleSku()) && getBundleSku().getInventoryTrackBy() != 'Quantity' && !structKeyExists(variables,'measurementUnitOptions')){
+		if(!isNull(getBundleSku()) && getBundleSku().getInventoryTrackBy() != 'Quantity'){
 			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
 			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
 			measurementUnitCollection.addFilter('measurementType', getBundleSku().getInventoryMeasurementUnit().getMeasurementType());
