@@ -47,7 +47,6 @@ class OrderFulfillmentService {
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
                 //modify the state and return it.
-                console.log("Toggle Fulfillment Listing", state, action);
                 this.state.showFulfillmentListing = !this.state.showFulfillmentListing;
                 return {...this.state, action};
             case 'ADD_BATCH':
@@ -394,6 +393,10 @@ class OrderFulfillmentService {
         this.state.currentRecordOrderDetail.getEntity().then( (entityResults) => {
             if (entityResults['pageRecords'].length){
                 this.state.currentRecordOrderDetail = entityResults['pageRecords'][0];
+                //set the capturable amount to the amount that still needs to be paid on this order.
+                if (this.state.currentRecordOrderDetail){
+                    this.state.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+                }
                 this.state.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
                 this.state.currentRecordOrderDetail['comments'] = this.createCommentsCollectionForFulfillmentBatchItem(this.state.currentSelectedFulfillmentBatchItemID);
                 this.emitUpdateToClient();

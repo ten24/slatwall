@@ -49714,7 +49714,6 @@
 	            switch (action.type) {
 	                case 'TOGGLE_FULFILLMENT_LISTING':
 	                    //modify the state and return it.
-	                    console.log("Toggle Fulfillment Listing", state, action);
 	                    _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
 	                    return __assign({}, _this.state, { action: action });
 	                case 'ADD_BATCH':
@@ -50020,6 +50019,10 @@
 	            _this.state.currentRecordOrderDetail.getEntity().then(function (entityResults) {
 	                if (entityResults['pageRecords'].length) {
 	                    _this.state.currentRecordOrderDetail = entityResults['pageRecords'][0];
+	                    //set the capturable amount to the amount that still needs to be paid on this order.
+	                    if (_this.state.currentRecordOrderDetail) {
+	                        _this.state.capturableAmount = _this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+	                    }
 	                    _this.state.currentRecordOrderDetail['fulfillmentBatchItem'] = currentRecord;
 	                    _this.state.currentRecordOrderDetail['comments'] = _this.createCommentsCollectionForFulfillmentBatchItem(_this.state.currentSelectedFulfillmentBatchItemID);
 	                    _this.emitUpdateToClient();
