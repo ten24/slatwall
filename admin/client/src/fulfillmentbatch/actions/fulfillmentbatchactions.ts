@@ -36,6 +36,11 @@ export const TOGGLE_BATCHLISTING  = "TOGGLE_BATCHLISTING";
 export const SETUP_BATCHDETAIL  = "SETUP_BATCHDETAIL";
 
 /**
+ * This will refresh all of the batch detail state.
+ */
+export const REFRESH_BATCHDETAIL  = "REFRESH_BATCHDETAIL";
+
+/**
  * This setups the page that displays the order delivery custom attributes and should only be called once.
  */
 export const SETUP_ORDERDELIVERYATTRIBUTES  = "SETUP_ORDERDELIVERYATTRIBUTES";
@@ -75,6 +80,15 @@ export const PRINT_PICKINGLIST_REQUESTED  = "PRINT_PICKINGLIST_REQUESTED";
 export const PRINT_PICKINGLIST_SUCCESS  = "PRINT_PICKINGLIST_SUCCESS";
 /** This action coming back from the reducer indicated that the action was a failure. */
 export const PRINT_PICKINGLIST_FAILURE  = "PRINT_PICKINGLIST_FAILURE";
+
+/**
+ * This will print the packing list that the user has defined.
+ */
+export const PRINT_PACKINGLIST_REQUESTED  = "PRINT_PACKINGLIST_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
+export const PRINT_PACKINGLIST_SUCCESS  = "PRINT_PACKINGLIST_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
+export const PRINT_PACKINGLIST_FAILURE  = "PRINT_PACKINGLIST_FAILURE";
 
 
 

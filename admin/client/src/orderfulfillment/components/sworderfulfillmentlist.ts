@@ -175,9 +175,35 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
      }
     
+     private createOrderFulfillmentCollectionWithStatus = (status):void => {
+        console.log("Creating ", status);
+
+        this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
+        this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+        if (status){
+            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=");
+        }
+        this.collections[0] = this.orderFulfillmentCollection;
+        this.orderFulfillmentCollection.getEntity().then((result)=>{ 
+            console.log("Updates collection");
+        });
+         this.$timeout(()=>{
+            this.refreshFlag = true;
+        }, 1);
+     }
+     
     /**
      * Setup the initial orderItem Collection.
      */
@@ -252,6 +278,10 @@ class SWOrderFulfillmentListController {
      */
     
     public addFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
+        this.$timeout(()=>{
+            this.refreshFlag = true;
+        }, 1);
+        this.refreshFlag = true;
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
             
@@ -262,30 +292,28 @@ class SWOrderFulfillmentListController {
             if (value == true){
                 
                 if (key == "partial"){
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisPartial","=","OR",false);
-
+                    this.createOrderFulfillmentCollectionWithStatus("ofisPartial");
                 }
                 if (key == "available"){
-
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisAvailable","=","OR",false);
-
+                     this.createOrderFulfillmentCollectionWithStatus("ofisAvailable"); 
                 }
                 if (key == "unavailable"){
-
-                    filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentInvStatType.systemCode","ofisUnavailable","=","OR",false);
-
+                     this.createOrderFulfillmentCollectionWithStatus("ofisUnAvailable");
                 }
                 if (key == "location" && value != undefined){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
                 }
+                
                 //add the filter to the group
-                filterGroup.push(filter);
+                //filterGroup.push(filter);
+
                 //add the group
-                this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
+                //this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
 
             }
             if (value = false){
                 console.log("False");
+                this.createOrderFulfillmentCollection();
             }
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
             console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
@@ -294,6 +322,7 @@ class SWOrderFulfillmentListController {
         let refreshedCollection = this.orderFulfillmentCollection;
         this.orderFulfillmentCollection = undefined;
         this.orderFulfillmentCollection = refreshedCollection; 
+        this.collections[0] = this.orderFulfillmentCollection;
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
        
     }

@@ -26854,12 +26854,17 @@
 	            }
 	        };
 	        this.newEntity = function (entityName) {
-	            var entityServiceName = entityName.charAt(0).toLowerCase() + entityName.slice(1) + 'Service';
-	            if (angular.element(document.body).injector().has(entityServiceName)) {
-	                var entityService = angular.element(document.body).injector().get(entityServiceName);
-	                return entityService['new' + entityName]();
+	            if (entityName != undefined) {
+	                var entityServiceName = entityName.charAt(0).toLowerCase() + entityName.slice(1) + 'Service';
+	                if (angular.element(document.body).injector().has(entityServiceName)) {
+	                    var entityService = angular.element(document.body).injector().get(entityServiceName);
+	                    var functionObj = entityService['new' + entityName];
+	                    if (entityService['new' + entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)) {
+	                        return entityService['new' + entityName]();
+	                    }
+	                }
+	                return new _this._jsEntities[entityName];
 	            }
-	            return new _this._jsEntities[entityName];
 	        };
 	        this.getEntityDefinition = function (entityName) {
 	            return _this._jsEntities[entityName];
@@ -27274,7 +27279,10 @@
 	                var serviceName = entityName.charAt(0).toLowerCase() + entityName.slice(1) + 'Service';
 	                if (angular.element(document.body).injector().has(serviceName)) {
 	                    var entityService = angular.element(document.body).injector().get(serviceName);
-	                    return entityService['new' + entity.className]();
+	                    var functionObj = entityService['new' + entity.className];
+	                    if (entityService['new' + entity.className] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)) {
+	                        return entityService['new' + entity.className]();
+	                    }
 	                }
 	                return $delegate.newEntity(entity.className);
 	            };
@@ -50243,7 +50251,31 @@
 	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
 	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
 	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
+	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
 	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+	        };
+	        this.createOrderFulfillmentCollectionWithStatus = function (status) {
+	            console.log("Creating ", status);
+	            _this.orderFulfillmentCollection = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
+	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
+	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
+	            _this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
+	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
+	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
+	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+	            if (status) {
+	                _this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=");
+	            }
+	            _this.collections[0] = _this.orderFulfillmentCollection;
+	            _this.orderFulfillmentCollection.getEntity().then(function (result) {
+	                console.log("Updates collection");
+	            });
+	            _this.$timeout(function () {
+	                _this.refreshFlag = true;
+	            }, 1);
 	        };
 	        /**
 	         * Setup the initial orderItem Collection.
@@ -50310,6 +50342,10 @@
 	         * @param Vvalue: boolean: {true|false}
 	         */
 	        this.addFilter = function (key, value) {
+	            _this.$timeout(function () {
+	                _this.refreshFlag = true;
+	            }, 1);
+	            _this.refreshFlag = true;
 	            //Always keep the orderNumber filter.
 	            if (_this.getCollectionByView(_this.getView()) && _this.getCollectionByView(_this.getView()).baseEntityName == "OrderFulfillment") {
 	                //If there is only one filter group add a second. otherwise add to the second.
@@ -50317,24 +50353,25 @@
 	                var filter = {};
 	                if (value == true) {
 	                    if (key == "partial") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisPartial", "=", "OR", false);
+	                        _this.createOrderFulfillmentCollectionWithStatus("ofisPartial");
 	                    }
 	                    if (key == "available") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=", "OR", false);
+	                        _this.createOrderFulfillmentCollectionWithStatus("ofisAvailable");
 	                    }
 	                    if (key == "unavailable") {
-	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentInvStatType.systemCode", "ofisUnavailable", "=", "OR", false);
+	                        _this.createOrderFulfillmentCollectionWithStatus("ofisUnAvailable");
 	                    }
 	                    if (key == "location" && value != undefined) {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=", "OR", false);
 	                    }
 	                    //add the filter to the group
-	                    filterGroup.push(filter);
+	                    //filterGroup.push(filter);
 	                    //add the group
-	                    _this.getCollectionByView(_this.getView()).addFilterGroup(filterGroup);
+	                    //this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
 	                }
 	                if (value = false) {
 	                    console.log("False");
+	                    _this.createOrderFulfillmentCollection();
 	                }
 	            }
 	            else if (_this.getCollectionByView(_this.getView()).baseEntityName == "OrderItem") {
@@ -50344,6 +50381,7 @@
 	            var refreshedCollection = _this.orderFulfillmentCollection;
 	            _this.orderFulfillmentCollection = undefined;
 	            _this.orderFulfillmentCollection = refreshedCollection;
+	            _this.collections[0] = _this.orderFulfillmentCollection;
 	            _this.refreshCollectionTotal(_this.getCollectionByView(_this.getView()));
 	        };
 	        /**
