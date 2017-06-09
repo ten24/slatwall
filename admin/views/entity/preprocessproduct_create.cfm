@@ -209,19 +209,19 @@ Notes:
 
 					<hb:HibachiPropertyRow>
 						<hb:HibachiPropertyList>
-
+							<!--- Option Listing --->
 							<sw-listing-display
-								ng-if="preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
-								data-collection-promise="preprocessproduct_createCtrl.collectionListingPromise"
-								data-collection="preprocessproduct_createCtrl.collection"
+								ng-if="preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"	
 								data-collection-config="preprocessproduct_createCtrl.collection.collectionConfig"
-								data-multiselect-field-name="options"
 								data-edit="true"
-							    data-show-search="true"
-							    data-has-action-bar="false"
-							>
+								data-has-search="true"
+								data-show-search="true"
+								data-has-action-bar="false" 
+								data-persisted-collection-config="true" 
+								data-multiselect-field-name="options"
+								data-name="optionCollectionTable"
+								data-multi-slot="true">
 							</sw-listing-display>
-
 						</hb:HibachiPropertyList>
 					</hb:HibachiPropertyRow>
 
