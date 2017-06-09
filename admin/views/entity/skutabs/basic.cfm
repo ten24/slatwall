@@ -51,21 +51,21 @@
 								<cfif arrayLen(weightMeasurementUnits)>
 									<optgroup label="Weight">
 										<cfloop array="#weightMeasurementUnits#" index="unit">
-											<option ng-repeat="unit in weightMeasurementUnits" value="#unit.unitCode#" #!isNull(rc.sku.getInventoryMeasurementUnit()) && rc.sku.getInventoryMeasurementUnit().getUnitCode() eq unit.unitCode ? 'selected="true"' : ''#>#unit.unitName#</option>
+											<option value="#unit.unitCode#" #!isNull(rc.sku.getInventoryMeasurementUnit()) && rc.sku.getInventoryMeasurementUnit().getUnitCode() eq unit.unitCode ? 'selected="true"' : ''#>#unit.unitName#</option>
 										</cfloop>
 									</optgroup>
 								</cfif>
 								<cfif arrayLen(volumeMeasurementUnits)>
 									<optgroup label="Volume">
 										<cfloop array="#volumeMeasurementUnits#" index="unit">
-											<option ng-repeat="unit in volumeMeasurementUnits" value="#unit.unitCode#" #!isNull(rc.sku.getInventoryMeasurementUnit()) && rc.sku.getInventoryMeasurementUnit().getUnitCode() eq unit.unitCode ? 'selected="true"' : ''#>#unit.unitName#</option>
+											<option value="#unit.unitCode#" #!isNull(rc.sku.getInventoryMeasurementUnit()) && rc.sku.getInventoryMeasurementUnit().getUnitCode() eq unit.unitCode ? 'selected="true"' : ''#>#unit.unitName#</option>
 										</cfloop>
 									</optgroup>
 								</cfif>
 								<cfif arrayLen(lengthMeasurementUnits)>
 									<optgroup label="Length">
 										<cfloop array="#lengthMeasurementUnits#" index="unit">
-											<option ng-repeat="unit in lengthMeasurementUnits" value="#unit.unitCode#" #!isNull(rc.sku.getInventoryMeasurementUnit()) && rc.sku.getInventoryMeasurementUnit().getUnitCode() eq unit.unitCode ? 'selected="true"' : ''#">#unit.unitName#</option>
+											<option value="#unit.unitCode#" #!isNull(rc.sku.getInventoryMeasurementUnit()) && rc.sku.getInventoryMeasurementUnit().getUnitCode() eq unit.unitCode ? 'selected="true"' : ''#">#unit.unitName#</option>
 										</cfloop>
 									</optgroup>
 								</cfif>
