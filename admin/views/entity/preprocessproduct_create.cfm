@@ -218,8 +218,9 @@ Notes:
 								data-show-search="true"
 								data-has-action-bar="false" 
 								data-persisted-collection-config="true" 
-								data-multiselect-field-name="options"
 								data-name="optionCollectionTable"
+								data-multiselectable="true"
+								data-multiselect-field-name="options"
 								data-multi-slot="true">
 							</sw-listing-display>
 						</hb:HibachiPropertyList>
