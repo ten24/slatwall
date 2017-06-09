@@ -693,4 +693,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultQuantityHasChanged = mockOrderItemRunFunction1.getQuantityHasChanged();
 		assertEquals(resultQuantityHasChanged, 0, 'Quantity Has Changed has a default value of false.');
 	}
+	
+	/**
+	* @test
+	*/
+	public void function quantityHasChangedHasSetter() {
+		var mockSku = createMockSku();
+
+		var productData = {
+			productID = '',
+			skus = [{
+				skuID = mockSku.getSkuID(),
+				skuCode = createUUID()
+			}]
+		};
+		var mockProduct = createPersistedTestEntity('Product', productData);
+
+		var mockOrderItemRunFunction1 = createMockOrderItem('444df2e9a6622ad1614ea75cd5b982cf', 0, mockSku.getSkuID());
+		mockOrderItemRunFunction1.setQuantityHasChanged(true);
+		var resultQuantityHasChanged = mockOrderItemRunFunction1.getQuantityHasChanged();
+		assertEquals(resultQuantityHasChanged, 1, 'Quantity Has Changed has a set value of true.');
+	}
 }
