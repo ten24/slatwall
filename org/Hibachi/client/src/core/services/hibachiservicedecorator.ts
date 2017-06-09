@@ -255,7 +255,7 @@ class HibachiServiceDecorator{
                         }
                     });
                 });
-
+                
                 angular.forEach(entity,function(property){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
                         //if(angular.isUndefined(property.persistent)){

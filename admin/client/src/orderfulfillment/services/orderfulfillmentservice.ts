@@ -47,8 +47,9 @@ class OrderFulfillmentService {
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
                 //modify the state and return it.
-                state.showFulfillmentListing = !state.showFulfillmentListing;
-                return {...state, action};
+                console.log("Toggle Fulfillment Listing", state, action);
+                this.state.showFulfillmentListing = !this.state.showFulfillmentListing;
+                return {...this.state, action};
             case 'ADD_BATCH':
                 return {...state, action};
             case 'FULFILLMENT_BATCH_DETAIL_SETUP':

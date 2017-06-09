@@ -76,8 +76,16 @@ class SWOrderFulfillmentListController {
         
         //Subscribe to state changes in orderFulfillmentService
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((state)=>{
-            this.state = state; //This overrides the current state any time any action takes place.
+            this.state = state;
+            if (state && state.showFulfillmentListing == true){
+                //set the view.
+                this.setView(this.views.Fulfillments);
+            }else{
+                this.setView(this.views.Items);
+            }
+            this.getCollectionByView(this.getView());
         });
+        
         //Subscribe for state changes to the typeahead.
         this.typeaheadService.typeaheadStore.store$.subscribe((update)=>{
             if (update.action && update.action.payload){
@@ -353,7 +361,6 @@ class SWOrderFulfillmentListController {
      * "locationIDfilter", "locationID", or "accountID" These are the same as the names of the forms.
      */
     public recieveNotification = (message): void => {
-        
         switch (message.payload.name) {
             case "locationIDfilter":
                 //If this is called, then the filter needs to be updated based on this id.

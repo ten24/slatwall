@@ -49714,8 +49714,9 @@
 	            switch (action.type) {
 	                case 'TOGGLE_FULFILLMENT_LISTING':
 	                    //modify the state and return it.
-	                    state.showFulfillmentListing = !state.showFulfillmentListing;
-	                    return __assign({}, state, { action: action });
+	                    console.log("Toggle Fulfillment Listing", state, action);
+	                    _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
+	                    return __assign({}, _this.state, { action: action });
 	                case 'ADD_BATCH':
 	                    return __assign({}, state, { action: action });
 	                case 'FULFILLMENT_BATCH_DETAIL_SETUP':
@@ -50468,7 +50469,15 @@
 	        this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
 	        //Subscribe to state changes in orderFulfillmentService
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (state) {
-	            _this.state = state; //This overrides the current state any time any action takes place.
+	            _this.state = state;
+	            if (state && state.showFulfillmentListing == true) {
+	                //set the view.
+	                _this.setView(_this.views.Fulfillments);
+	            }
+	            else {
+	                _this.setView(_this.views.Items);
+	            }
+	            _this.getCollectionByView(_this.getView());
 	        });
 	        //Subscribe for state changes to the typeahead.
 	        this.typeaheadService.typeaheadStore.store$.subscribe(function (update) {
@@ -50598,12 +50607,14 @@
 	                payload: {}
 	            });
 	        };
+	        //toggle_editcomment for action based
 	        this.userEditingComment = function (comment) {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: "EDIT_COMMENT_TOGGLE",
 	                payload: { comment: comment }
 	            });
 	        };
+	        //requested | failed | succeded
 	        this.userDeletingComment = function (comment) {
 	            //Only fire the event if the user agrees.
 	            var warning = _this.rbkeyService.getRBKey("entity.comment.delete.confirm");
