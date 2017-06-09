@@ -366,8 +366,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//if so then add attribute details
 		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier) && hasAttribute){
 			filter['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
-			filter['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
-				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			filter['attributeSetObject'] = getLastEntityNameInPropertyIdentifier(
 				propertyIdentifier=arguments.propertyIdentifier
 			);
 		}
@@ -383,7 +382,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
 
 	}
-
+	
 	public void function setDisplayProperties(string displayPropertiesList=""){
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig["columns"] = [];
@@ -425,13 +424,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifier=arguments.displayProperty
 		);
 		//if so then add attribute details
-		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty) && hasAttribute){
+		if(!hasPropertyByPropertyIdentifier(arguments.displayProperty) && hasAttribute){
 			column['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.displayProperty,'.')).getAttributeID();
 
-			var attributeSetObject = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
-				entityName=getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()),
-				propertyIdentifier=arguments.displayProperty
-			);
+			var attributeSetObject = getLastEntityNameInPropertyIdentifier(arguments.displayProperty);
 			column['attributeSetObject'] = lcase(left(attributeSetObject,1))&right(attributeSetObject,len(attributeSetObject)-1);
 		}else{
 			column['propertyIdentifier'] = collectionConfig.baseEntityAlias & '.' & arguments.displayProperty;
@@ -484,7 +480,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if(isObject){
 			//check if count is on a one-to-many
-			var lastEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(getCollectionObject(), arguments.propertyIdentifier);
+			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.propertyIdentifier);
 			var isOneToMany = structKeyExists(getService('hibachiService').getPropertiesStructByEntityName(lastEntityName)[listLast(arguments.propertyIdentifier,'.')],'singularname');
 
 			//if is a one-to-many propertyKey then add a groupby
@@ -1529,6 +1525,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier); 
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
 	}
+	
+	public string function getLastEntityNameInPropertyIdentifier(required string propertyIdentifier){
+		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier); 
+		return getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			propertyIdentifier=pID
+		);
+	}
 
 	private struct function getDefaultOrderBy(){
 		var orderByStruct={};
@@ -1618,15 +1622,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	// Used to apply filter based on record level permissions of the user
 	public void function applyPermissions(){
-		
+		//this is used for record level permissions
 		if(!getPermissionAppliedFlag()){
-			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
-			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
-			permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
-			permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#getCollectionObject()#');
-			permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
-			permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,restrictionConfig');
-			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords(true);
+			
+			var permissionRecordRestrictions = getPermissionRecordRestrictions();
+			writedump(permissionRecordRestrictions);
 			for(var permissionRecordRestriction in permissionRecordRestrictions){
 				var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction['restrictionConfig']);
 				for(var filterGroup in recordRestrictionFilterGroups){
@@ -1636,7 +1636,29 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			setPermissionAppliedFlag(true);
 		}
+	}
+	
+	//this function probably can be astracted out to the service level for Direct Object Reference Checks
+	private array function getPermissionRecordRestrictions(){
+		var objectPermissionsList = getCollectionObject();
 		
+		for(var column in getCollectionConfigStruct().columns){
+			if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
+				var lastEntityName = getLastEntityNameInPropertyIdentifier(column.propertyIdentifier);
+				objectPermissionsList = listAppend(objectPermissionsList,lastEntityName);
+			}
+		}
+		
+		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
+		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
+		permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
+		permissionRecordRestrictionCollectionList.addFilter('permission.propertyName','NULL','IS');
+		permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
+		permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#objectPermissionsList#','IN');
+		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
+		permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,restrictionConfig,permission.entityClassName');
+		
+		return permissionRecordRestrictionCollectionList.getRecords();
 	}
 
 	// Paging Methods

@@ -107,20 +107,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		permission.setPermissionGroup(permissionGroup);
 		permissionGroup.addPermission(permission);
 		
-		//request.slatwallScope.getService('HibachiAuthenticationService').clearEntityPermissionDetails();
-		
 		assert(!isNull(permission.getPermissionGroup()));
 		//double check that read perms are good so far
 		var canRead = variables.service.authenticateEntityCrudByAccount("read","order",peasantyAccount);
 		assert(canRead);
 		
 		//now let's add a record
-		var orderData = {
+		var orderData = { 
 			orderID=""
 		};
 		var order = createPersistedTestEntity('Order',orderData);
 		
-		var otherOrder = createPersistedTestEntity('Order',orderData);
+		var otherOrderData = {
+			orderID=""
+		};
+		
+		var otherOrder = createPersistedTestEntity('Order',otherOrderData);
 		//verify ouside of having an account that we can get all records
 		var allDataCollection = createTestEntity('collection');
 		allDataCollection.setCollectionObject('Order');
@@ -134,6 +136,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collectionEntity = createTestEntity('Collection');
 		collectionEntity.setCollectionObject('Order');
 		collectionEntity.addFilter('orderID',order.getOrderID(),'=');
+		
+		
 		var restrictionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()['filterGroups']); 
 		var permissionRecordRestrictionData = {
 			permissionRecordRestrictionID="",
@@ -162,8 +166,41 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
 		assertEquals(arraylen(permissionRecordRestrictions),1);
-		
+		//verify that we have refined the list based on restrictions
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
+		
+		//set up order items so we can record level restrict them based on price
+		var orderItemData = {
+			orderItemID="",
+			price=40
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+		
+		var otherOrderItemData = {
+			orderItemID="",
+			price=10
+		};
+		var otherOrderItem = createPersistedTestEntity('OrderItem',otherOrderItemData);
+		
+		orderItem.setOrder(order);
+		order.addOrderItem(orderItem);
+		
+		otherOrderItem.setOrder(otherOrder);
+		otherOrder.addOrderItem(otherOrderItem);
+		
+		var orderItemCollectionList = request.slatwallScope.getService('orderService').getOrderItemCollectionList();
+		orderItemCollectionList.setRequestAccount(peasantyAccount);
+		orderItemCollectionList.setDisplayProperties('order.orderID,orderItemID');
+		
+		orderItemCollectionList.addFilter('orderItemID','#orderItem.getOrderItemID()#,#otherOrderItem.getOrderItemID()#','IN');
+		var orderItemRecords = orderItemCollectionList.getRecords();
+		
+		debug(orderItemRecords);
+		
+		//verify that when records was applied that our order record permissions are also applied if our display options include order data
+		
+		assertEquals(arraylen(orderItemRecords),1);		
+		
 	}
 	
 	
