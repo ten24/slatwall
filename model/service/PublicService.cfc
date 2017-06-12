@@ -981,6 +981,15 @@ component extends="HibachiService"  accessors="true" output="false"
             //Persist the quantity change
             getOrderService().saveOrder(cart);
             
+            // Insure that all items in the cart are within their max constraint
+ 	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
+	 	        cart = getOrderService().processOrder(cart, 'forceItemQuantityUpdate');
+	 	    }
+	 	    
+	 	    if(!cart.hasErrors()) {
+	 	    	getOrderService().saveOrder(cart);
+	 	    }
+            
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
             
