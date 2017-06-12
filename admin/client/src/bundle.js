@@ -50139,6 +50139,7 @@
 	        //To create a store, we instantiate it using the object that holds the state variables,
 	        //and the reducer. We can also add a middleware to the end if you need.
 	        this.orderFulfillmentStore = new Store.Store(this.state, this.orderFulfillmentStateReducer);
+	        console.log(Store);
 	    }
 	    return OrderFulfillmentService;
 	}());
