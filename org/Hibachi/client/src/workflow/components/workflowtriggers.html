@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<!--- Edit Filter Box --->
+<!-- Edit Filter Box -->
 <div data-ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger">
 		<sw-form name="selectedTrigger"
 			data-object="workflowTriggers.selectedTrigger"
@@ -106,14 +106,14 @@
 						<div class="col-xs-6 s-criteria">
 							<span data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
 								<h4>Select Trigger Event:</h4>
-								<!--- Filter Criteria Start --->
+								<!-- Filter Criteria Start -->
 
 								<div class="s-filter-group-item">
 									<div class="form-group form-group-sm">
 										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflow.data.workflowObject}}:</label>
 										<div class="col-sm-12 s-no-paddings">
 
-											<!--- search --->
+											<!-- search -->
 											<div class="s-select-list-wrapper s-search">
 												<div class="form-group">
 													<!-- Option select field wrapper -->
@@ -143,17 +143,24 @@
 												</div>
 
 											</div>
-											<!--- // search --->
+											<!-- // search -->
 
 										</div>
 
                                         <div class="form-group">
+											<sw-property-display
+                                                    data-object="workflowTriggers.selectedTrigger"
+                                                    data-property="timeout"
+                                                    data-editable="true"
+                                                    data-editing="true"
+                                                    ></sw-property-display>
                                             <sw-property-display
                                                     data-object="workflowTriggers.selectedTrigger"
                                                     data-property="saveTriggerHistoryFlag"
                                                     data-editable="true"
                                                     data-editing="true"
                                                     ></sw-property-display>
+													
                                         </div>
 										<div class="clearfix"></div>
 									</div>
@@ -161,7 +168,7 @@
 										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
 										<div class="col-sm-12 s-no-paddings">
 
-											<!--- search --->
+											<!-- search -->
 											<div class="s-search-filter">
 												<div class="input-group">
 													<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
@@ -198,17 +205,17 @@
 													</div>
 												</div>
 											</div>
-											<!--- // search --->
+											<!-- // search -->
 
 										</div>
 										<div class="clearfix"></div>
 									</div>
 								</div>
 							</span>
-							<!--- //Filter Criteria End --->
+							<!-- //Filter Criteria End -->
 							<span data-ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
 								<h4>Select Trigger Schedule:</h4>
-								<!--- Filter Criteria Start --->
+								<!-- Filter Criteria Start -->
 								<div class="s-filter-group-item">
 
 									<div class="form-group form-group-sm">
@@ -231,7 +238,6 @@
                                                 </div>
                                             </div>
 
-											
 											<!--- search --->
 											<!--<div class="s-search-filter">-->
 												<!--<sw-property-display-->
@@ -242,9 +248,8 @@
 													<!--data-is-dirty="true"-->
 													<!--data-title="workflowTriggers.selectedTrigger.data.workflow.data.workflowObject+' Collection'"-->
 												<!--</sw-property-display>-->
-	<!-- -->
 											<!--</div>-->
-											<!--- // search --->
+											<!-- // search -->
 
 										</div>
 										<div class="clearfix"></div>
@@ -253,13 +258,20 @@
                                                 data-property="collectionFetchSize"
                                                 data-editing="true"
                                                 data-is-dirty="true"
-                                                ></sw-property-display>
+                                        ></sw-property-display>
+										<div class="clearfix"></div>
+                                        <sw-property-display
+                                                data-object="workflowTriggers.selectedTrigger"
+                                                data-property="timeout"
+                                                data-editing="true"
+                                                data-is-dirty="true"
+                                        ></sw-property-display>
 									</div>
 
 									<div class="form-group form-group-sm">
 										<div class="col-sm-12 s-no-paddings">
 
-											<!--- search --->
+											<!-- search -->
 											<div class="s-search-filter">
 												<!--<sw-property-display-->
 													<!--data-object="workflowTriggers.selectedTrigger"-->
@@ -407,7 +419,7 @@
                                                 </sw-form>
                                                 </div>
 											</div>
-											<!--- // search --->
+											<!-- // search -->
 										</div>
                                         <div class="form-group">
                                             <sw-property-display
@@ -421,7 +433,7 @@
 									</div>
 								</div>
 							</span>
-							<!--- //Filter Criteria End --->
+							<!-- //Filter Criteria End -->
 						</div>
 						<div class="col-xs-3">
 
@@ -445,7 +457,7 @@
 			</div>
 		</sw-form>
 	</div>
-	<!--- //Edit Filter Box --->
+	<!-- //Edit Filter Box -->
 
 	<button class="btn btn-xs btn-primary"
 		    data-target="#j-create-new-trigger"
