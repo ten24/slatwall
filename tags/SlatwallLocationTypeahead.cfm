@@ -27,7 +27,9 @@
 				</label>
 				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
 					<!--- Generic Configured Location --->
-					<cfset initialEntityID = "#attributes.property.getLocationID()#">
+					<cfif !isNull(attributes.property) && !isNull(attributes.property.getLocationID())>
+						<cfset initialEntityID = "#attributes.property.getLocationID()#">
+					</cfif>
 					<cfif isNull(initialEntityID)>
 						<cfset initialEntityID = "">
 					</cfif>
