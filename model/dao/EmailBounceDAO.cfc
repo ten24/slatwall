@@ -52,7 +52,7 @@ Notes:
 		<cfargument name="email" type="string" required="true" />
 
 		<cfquery name="local.getGiftCardEmailBounce">
-			SELECT * FROM swEmailBounce
+			SELECT * FROM #getTableNameByEntityName('EmailBounce')# 
 			WHERE relatedObject='giftCard'
 			 AND rejectedEmailTo Like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.email#%">
 		</cfquery>
