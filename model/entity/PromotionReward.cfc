@@ -107,7 +107,12 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
+	property name="isDeletableFlag" type="boolean" persistent="false"; 
 	
+	public boolean function getIsDeletableFlag(){
+ 		return getPromotionPeriod().getIsDeletableFlag();
+ 	}
+ 	
 	public string function getSimpleRepresentation() {
 		return "#rbKey('entity.promotionReward')# - #getFormattedValue('rewardType')#";
 	}

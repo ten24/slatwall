@@ -648,7 +648,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				arguments.rc["p:show"] = globalAPIPageShowLimit; 
 			}	
 		}
-       
+        
 		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
  		} 
@@ -725,7 +725,10 @@ component output="false" accessors="true" extends="HibachiController" {
 	            entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
 	        // DELETE
 	        } else if (arguments.rc.context eq 'delete') {
-	            var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+	            getService('HibachiValidationService').validate(entity, 'delete');
+                if(!entity.hasErrors()){
+                  entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+                }
 	        // PROCESS
 	        } else {
 	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});

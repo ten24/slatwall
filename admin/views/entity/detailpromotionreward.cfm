@@ -52,10 +52,16 @@ Notes:
 
 <cfparam name="rc.promotionReward" type="any">
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionReward.getPromotionPeriod()#">
+<cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.amountType" type="string" default="percentage">
 <cfparam name="rc.edit" type="boolean">
 
+<!--- prevent editing promotion period if it is past the startDateTime for this promotion or the startTime is forever then this can not be edited. --->
+<cfif rc.edit and rc.promotionPeriod.getCurrentFlag() and rc.promotion.getPromotionAppliedOrdersCount() gt 0>
+	<cfset rc.edit = false>
+	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod_inprogress.editdisabled_info') />
+</cfif>
 <!--- prevent editing promotion reward if its promotion period has expired --->
 <cfif rc.edit and rc.promotionperiod.isExpired()>
 	<cfset rc.edit = false />

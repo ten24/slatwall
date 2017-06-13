@@ -166,7 +166,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(!structKeyExists(variables, "attributeValuesForEntity")) {
 			variables.attributeValuesForEntity = [];
 			if(hasProperty("attributeValues")) {
-				var primaryIDPropertyIdentifier = "#replace(getEntityName(), 'Slatwall', '')#.#getPrimaryIDPropertyName()#";
+				var primaryIDPropertyIdentifier = "#replace(getEntityName(), '#getDao('hibachiDao').getApplicationValue('applicationKey')#', '')#.#getPrimaryIDPropertyName()#";
 				primaryIDPropertyIdentifier = lcase(left(primaryIDPropertyIdentifier, 1)) & right(primaryIDPropertyIdentifier, len(primaryIDPropertyIdentifier)-1);
 				variables.attributeValuesForEntity = getService("attributeService").getAttributeValuesForEntity(primaryIDPropertyIdentifier=primaryIDPropertyIdentifier, primaryIDValue=getPrimaryIDValue());
 			}
@@ -328,7 +328,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag( true );
-			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "attributes", "INNER", true);
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationValue('applicationKey')#AttributeSet", "attributes", "INNER", true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('globalFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', getClassName());

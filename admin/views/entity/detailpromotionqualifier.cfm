@@ -52,6 +52,7 @@ Notes:
 
 <cfparam name="rc.promotionQualifier" type="any">
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionQualifier.getPromotionPeriod()#" />
+<cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.qualifierType" type="string" default="#rc.promotionQualifier.getQualifierType()#" />
 <cfparam name="rc.edit" type="boolean">
 
@@ -60,7 +61,11 @@ Notes:
 	<cfset rc.edit = false />
 	<cfset arrayAppend(rc.messages,{message=rc.$.slatwall.rbKey('admin.pricing.promotionqualifier.edit_disabled'),messageType="info"}) />
 </cfif>
-
+<!--- prevent editing promotion qualifier if it is past the startDateTime for this promotion or the startTime is forever then this can not be edited. --->
+<cfif rc.edit and rc.promotionPeriod.getCurrentFlag() and rc.promotion.getPromotionAppliedOrdersCount() gt 0>
+	<cfset rc.edit = false>
+	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod_inprogress.editdisabled_info') />
+</cfif>
 <cfset local.qualifierType = rc.promotionQualifier.getQualifierType() />
 
 <cfoutput>

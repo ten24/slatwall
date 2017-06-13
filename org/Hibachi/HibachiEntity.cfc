@@ -34,6 +34,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return super.init();
 	}
+	
+	
 
 	public void function genericPropertyRemove(required string propertyName){
 		evaluate("set#arguments.propertyName#(javacast('null',''))");
@@ -87,6 +89,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
         }
     }
+    
+    public string function getParentPropertyName(){
+    	getService('hibachiService').getParentPropertyByEntityName(getClassName());
+    }
+    
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 
@@ -456,6 +463,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return "";
 	}
+	
 
 	// @hint returns an array of name/value pairs that can function as options for a many-to-one property
 	public array function getPropertyOptions( required string propertyName ) {
@@ -465,30 +473,30 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables, cacheKey)) {
 			variables[ cacheKey ] = [];
 
-			var smartList = getPropertyOptionsSmartList( arguments.propertyName );
+			var collectionList = getPropertyOptionsCollectionList( arguments.propertyName );
 
 			var propertyMeta = getPropertyMetaData( propertyName );
 
 			if(structKeyExists(propertyMeta, "hb_optionsNameProperty")) {
-				smartList.addSelect(propertyIdentifier=propertyMeta.hb_optionsNameProperty, alias="value");
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|value");
 			} else {
 				var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
-				smartList.addSelect(propertyIdentifier=exampleEntity.getSimpleRepresentationPropertyName(), alias="name");
+				collectionList.addDisplayProperty("#exampleEntity.getSimpleRepresentationPropertyName()#|name");
 			}
 			if(structKeyExists(propertyMeta, "hb_optionsValueProperty")) {
-				smartList.addSelect(propertyIdentifier=propertyMeta.hb_optionsValueProperty, alias="value");
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsValueProperty#|value");
 			} else {
-				smartList.addSelect(propertyIdentifier=getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')), alias="value");
+				collectionList.addDisplayProperty("#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.'))#|value");
 			}
 
 			if(structKeyExists(propertyMeta, "hb_optionsAdditionalProperties")) {
 				var additionalPropertiesArray = listToArray(propertyMeta.hb_optionsAdditionalProperties);
 				for(var p=1; p<=arrayLen(additionalPropertiesArray); p++) {
-					smartList.addSelect(propertyIdentifier=additionalPropertiesArray[p], alias=replace(additionalPropertiesArray[p],".","_","all"));
+					collectionList.addDisplayProperty("#additionalPropertiesArray[p]#|#replace(additionalPropertiesArray[p],'.','_','all')#");
 				}
 			}
 
-			variables[ cacheKey ] = smartList.getRecords();
+			variables[ cacheKey ] = collectionList.getRecords();
 
 			// If this is a many-to-one related property, then add a 'select' to the top of the list
 			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
@@ -517,6 +525,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// If there was an hb_optionsSmartListData defined, then we can now apply that data to this smart list
 			if(structKeyExists(propertyMeta, "hb_optionsSmartListData")) {
 				variables[ cacheKey ].applyData( propertyMeta.hb_optionsSmartListData );
+			}
+
+			if( getService("hibachiService").getEntityHasPropertyByEntityName(listLast(propertyMeta.cfc,'.'), 'activeFlag') ) {
+				variables[ cacheKey ].addFilter( 'activeFlag', 1 );
+			}
+		}
+
+		return variables[ cacheKey ];
+	}
+
+
+	// @hint returns a collection list or records that can be used as options for a many-to-one property
+	public any function getPropertyOptionsCollectionList( required string propertyName ) {
+		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
+
+		if(!structKeyExists(variables, cacheKey)) {
+
+			var propertyMeta = getPropertyMetaData( arguments.propertyName );
+			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
+
+			variables[ cacheKey ] = entityService.invokeMethod("get#listLast(propertyMeta.cfc,'.')#CollectionList");
+
+			// If there was an hb_optionsCollectionListData defined, then we can now apply that data to this smart list
+			if(structKeyExists(propertyMeta, "hb_optionsSmartListData")) {
+				variables[ cacheKey ].applyData( propertyMeta.hb_optionsSmartListData );
+			}else if(structKeyExists(propertyMeta, "hb_optionsCollectionListData")) {
+				variables[ cacheKey ].applyData( propertyMeta.hb_optionsCollectionListData );
 			}
 
 			if( getService("hibachiService").getEntityHasPropertyByEntityName(listLast(propertyMeta.cfc,'.'), 'activeFlag') ) {
@@ -609,8 +644,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var propertySmartList = this.invokeMethod('get#propertyName#SmartList');
-		return propertySmartList.getRecordsCount();
+		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
+		return propertyCollection.getRecordsCount();
 	}
 
 	// @hint handles encrypting a property based on conventions
@@ -984,17 +1019,52 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var properties = getProperties();
 
 		var defaultProperties = [];
-		for(var p=1; p<=arrayLen(properties); p++) {
-			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
 
-			}else{
-				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) ||
-				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") ||
-				properties[p].persistent)){
-					arrayAppend(defaultProperties,properties[p]);
+		//Check if there is any include column
+		if(len(arguments.includesList)){
+			var includesArray = ListToArray(arguments.includesList);
+			for(var i = 1; i <= arraylen(includesArray); i++) {
+				//Loop through IncludeList looking for relational
+				includesArray[i] = trim(includesArray[i]);
+				if(Find('.', includesArray[i]) != 0){
+					var parts = listToArray(includesArray[i], '.');
+
+					var current_object = this.getClassName();
+					var current_properties = getService('hibachiService').getPropertiesStructByEntityName(this.getClassName());
+					for(var p = 1; p <= arraylen(parts); p++ ){
+						if(structKeyExists(current_properties, parts[p]) && structKeyExists(current_properties[parts[p]], 'cfc')){
+							current_object = current_properties[parts[p]]['cfc'];
+							current_properties = getService('hibachiService').getPropertiesStructByEntityName(current_properties[parts[p]]['cfc']);
+						}else{
+							var newProperty = {};
+							structAppend(newProperty,current_properties[parts[p]]);
+							newProperty["name"] = includesArray[i];
+							newProperty["title"] = rbKey('entity.#current_object#.#listLast(includesArray[i],'.')#');
+							//append the Column struct with relational name.
+							arrayAppend(defaultProperties, newProperty);
+
+						}
+					}
+
+				}else{
+					//If its not relational, just use the current entity struct
+					for(var x = 1; x <= arraylen(properties); x++){
+						if(properties[x].name == includesArray[i]){
+							arrayAppend(defaultProperties, properties[x]);
+						}
+					}
+				}
+			}
+		}else{
+			//Remove all non Persistent, Relational and Excluded columns
+			for(var x = 1; x <= arraylen(properties); x++){
+				if(!ListContains(excludesList, properties[x].name) && !structKeyExists(properties[x],'FKColumn') &&
+				(!structKeyExists(properties[x], "persistent") || properties[x].persistent)){
+					arrayAppend(defaultProperties, properties[x]);
 				}
 			}
 		}
+
 		return defaultProperties;
 	}
 

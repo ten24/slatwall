@@ -91,17 +91,18 @@ class HibachiInterceptor implements IInterceptor{
         public utilityService,
         public hibachiPathBuilder
 	) {
+
         this.$location = $location;
 		this.$q = $q;
 		this.$log = $log;
 		this.$injector = $injector;
+		this.localStorageService = localStorageService;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
-        this.baseUrl = appConfig.baseURL;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
-		this.localStorageService = localStorageService;
+        this.baseUrl = appConfig.baseURL;
     }
 
 	public request = (config): ng.IPromise<any> => {
@@ -176,7 +177,7 @@ class HibachiInterceptor implements IInterceptor{
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(this.baseUrl+'?slataction=api:main.login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
+                    return $http.get(this.baseUrl+'?'+this.appConfig.action+'=api:main.login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         if(loginResponse.status === 200){
                             this.localStorageService.setItem('token',loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};

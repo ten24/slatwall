@@ -157,6 +157,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
+			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
@@ -368,7 +369,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		return allSettingMetaData;
 	}
-
+ 
 	private string function extractPackageNameBySettingName (required string settingName){
 		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
@@ -972,7 +973,7 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
-
+ 
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
 			getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress());

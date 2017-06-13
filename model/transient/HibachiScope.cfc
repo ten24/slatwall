@@ -199,7 +199,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			variables.productSmartList.addFilter('publishedFlag', 1);
 			variables.productSmartList.addRange('calculatedQATS', '1^');
 			if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag() && isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) && getContent().setting('contentIncludeChildContentProductsFlag')) {
-				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingProducts slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.productID = aslatwallproduct.productID) ");
+				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingPages slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.product.productID = aslatwallproduct.productID) ");
 			} else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()) {
 				variables.productSmartList.addFilter('listingPages.contentID',getContent().getContentID());
 			}
@@ -208,23 +208,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Product Collection List
-	public any function getProductCollectionList() {
-		if(!structKeyExists(variables, "productCollectionList")) {
-			variables.productCollectionList = getService("productService").getProductCollectionList(data=url);
-			variables.productCollectionList.setDistinct(true);
-			variables.productCollectionList.addFilter('activeFlag',1);
-			variables.productCollectionList.addFilter('publishedFlag',1);
-			variables.productCollectionList.addFilter('calculatedQATS','1','>');
+	public any function getProductCollectionList(boolean isNew=false) {
+		if(!structKeyExists(variables,'productCollectionList') || arguments.isNew){
+			var productCollectionList = getService("productService").getProductCollectionList(data=url);
+			productCollectionList.setDistinct(true);
+			productCollectionList.addFilter('activeFlag',1);
+			productCollectionList.addFilter('publishedFlag',1);
+			productCollectionList.addFilter('calculatedQATS','1','>');
 			if(
 				isBoolean(getContent().getProductListingPageFlag()) 
 				&& getContent().getProductListingPageFlag() 
 				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
 				&& getContent().setting('contentIncludeChildContentProductsFlag')
 			){
-				variables.productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
+				productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
-				variables.productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
+				productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
 			}
+			variables.productCollectionList = productCollectionList;
 		}
 		return variables.productCollectionList;
 	}

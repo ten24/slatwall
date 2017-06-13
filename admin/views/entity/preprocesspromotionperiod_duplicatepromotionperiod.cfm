@@ -66,6 +66,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumAccountUseCount" edit="#rc.edit#" />
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

@@ -195,7 +195,6 @@ class CreateCollection{
                 //Set current page here so that the pagination does not break when getting collection
                 $scope.paginator.setCurrentPage(1);
                 $scope.loadingCollection = true;
-                $scope.getCollection();
             }, 500);
         };
 
