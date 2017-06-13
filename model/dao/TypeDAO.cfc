@@ -51,7 +51,7 @@ Notes:
 	<cffunction name="getTypeSystemCodeOptionsByParentSystemCode" output="false" access="public">
 		<cfargument name="systemCode" type="string" required="true" >
 		
-		<cfset var options = ormExecuteQuery("SELECT DISTINCT NEW MAP(atype.systemCode as name, atype.systemCode as value) FROM SlatwallType atype WHERE atype.parentType.systemCode = ?", [arguments.systemCode]) />
+		<cfset var options = ormExecuteQuery("SELECT DISTINCT NEW MAP(atype.systemCode as name, atype.systemCode as value) FROM #getApplicationKey()#Type atype WHERE atype.parentType.systemCode = ?", [arguments.systemCode]) />
 		
 		<cfset arrayPrepend(options, {name=rbKey('define.select'), value=""}) />
 		 
@@ -61,7 +61,7 @@ Notes:
 	<cffunction name="getSystemCodeTypeCount" output="false" access="public">
 		<cfargument name="systemCode" type="string" required="true" >
 		
-		<cfreturn ormExecuteQuery("SELECT count(atype.typeID) FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode])[1] />
+		<cfreturn ormExecuteQuery("SELECT count(atype.typeID) FROM #getApplicationKey()#Type atype WHERE atype.systemCode = ?", [arguments.systemCode])[1] />
 	</cffunction>
 	
 	<cffunction name="getTypeBySystemCode" output="false" access="public">
@@ -69,16 +69,16 @@ Notes:
 		<cfargument name="typeCode" type="string">
 		
 		<cfif structKeyExists(arguments, "typeCode")>
-			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.systemCode, arguments.typeCode], true, {maxResults=1}) />
+			<cfreturn ormExecuteQuery("SELECT atype FROM #getApplicationKey()#Type atype WHERE atype.systemCode = ? AND atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.systemCode, arguments.typeCode], true, {maxResults=1}) />
 		<cfelse>
-			<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? AND atype.typeCode IS NULL ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
+			<cfreturn ormExecuteQuery("SELECT atype FROM #getApplicationKey()#Type atype WHERE atype.systemCode = ? AND atype.typeCode IS NULL ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
 		</cfif>
 	</cffunction>
 	
 	<cffunction name="getTypeOptionsBySystemCode" output="false" access="public">
 		<cfargument name="systemCode" type="string" required="true" >
 		
-		<cfset var options = ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode]) />
+		<cfset var options = ormExecuteQuery("SELECT atype FROM #getApplicationKey()#Type atype WHERE atype.systemCode = ?", [arguments.systemCode]) />
 		
 		<cfreturn options />
 	</cffunction>
