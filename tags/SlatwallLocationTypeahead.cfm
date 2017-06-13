@@ -9,16 +9,19 @@
 	<cfoutput>
 		<!--- Generic Location Typeahead --->
 			<cfif !isNull(attributes.property)><!--- Only show if we have a default --->
-			<div ng-if="!#attributes.edit#" ng-cloak>
+			<div ng-show="'#attributes.edit#' == 'false'" ng-cloak>
 				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
 				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
 					#attributes.property.getLocationName()#
 				</div>
+				<cfif attributes.edit EQ 'false'>
+   					<input type="hidden" name="#attributes.locationPropertyName#" value="#attributes.property.getLocationID()#" />
+   				</cfif>
 			</div>
 			</cfif>
-			<div ng-if="#attributes.edit#" ng-cloak>
+			<div ng-show="'#attributes.edit#' == 'true'" ng-cloak>
 				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
