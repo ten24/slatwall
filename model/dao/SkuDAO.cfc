@@ -80,25 +80,25 @@ Notes:
 		</cfif>
 
 		<cfset hql &= " AND (
-				EXISTS( SELECT a.orderItemID as id FROM SlatwallOrderItem a WHERE sku.skuID = ss.skuID )
+				EXISTS( SELECT a.orderItemID as id FROM #getApplicationKey()#OrderItem a WHERE sku.skuID = ss.skuID )
 				  OR
-			  	EXISTS( SELECT a.inventoryID as id FROM SlatwallInventory a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.inventoryID as id FROM #getApplicationKey()#Inventory a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.orderDeliveryItemID as id FROM SlatwallOrderDeliveryItem a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.orderDeliveryItemID as id FROM #getApplicationKey()#OrderDeliveryItem a WHERE stock.sku.skuID = ss.skuID )
 				  OR
-			  	EXISTS( SELECT a.physicalCountItemID as id FROM SlatwallPhysicalCountItem a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.physicalCountItemID as id FROM #getApplicationKey()#PhysicalCountItem a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockAdjustmentDeliveryItemID as id FROM SlatwallStockAdjustmentDeliveryItem a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.stockAdjustmentDeliveryItemID as id FROM #getApplicationKey()#StockAdjustmentDeliveryItem a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM SlatwallStockAdjustmentItem a WHERE fromStock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM #getApplicationKey()#StockAdjustmentItem a WHERE fromStock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM SlatwallStockAdjustmentItem a WHERE toStock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.stockAdjustmentItemID as id FROM #getApplicationKey()#StockAdjustmentItem a WHERE toStock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockHoldID as id FROM SlatwallStockHold a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.stockHoldID as id FROM #getApplicationKey()#StockHold a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.stockReceiverItemID as id FROM SlatwallStockReceiverItem a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.stockReceiverItemID as id FROM #getApplicationKey()#StockReceiverItem a WHERE stock.sku.skuID = ss.skuID )
 			  	  OR
-			  	EXISTS( SELECT a.vendorOrderItemID as id FROM SlatwallVendorOrderItem a WHERE stock.sku.skuID = ss.skuID )
+			  	EXISTS( SELECT a.vendorOrderItemID as id FROM #getApplicationKey()#VendorOrderItem a WHERE stock.sku.skuID = ss.skuID )
 			  )" />
 
 		<cfif structKeyExists(arguments, "skuID") && !isNull(arguments.skuID)>
@@ -117,21 +117,21 @@ Notes:
 	<cfscript>
 
 	public any function getSkuBySkuCode( required string skuCode){
-		return ormExecuteQuery( "SELECT ss FROM SlatwallSku ss LEFT JOIN ss.alternateSkuCodes ascs WHERE ss.skuCode = :skuCode OR ascs.alternateSkuCode = :skuCode", {skuCode=arguments.skuCode}, true ); 
+		return ormExecuteQuery( "SELECT ss FROM #getApplicationKey()#Sku ss LEFT JOIN ss.alternateSkuCodes ascs WHERE ss.skuCode = :skuCode OR ascs.alternateSkuCode = :skuCode", {skuCode=arguments.skuCode}, true ); 
 	}
 		
 	// returns product skus which matches ALL options (list of optionIDs) that are passed in
 	public any function getSkusBySelectedOptions(required string selectedOptions, string productID) {
 		
 		var params = [];
-		var hql = "select distinct sku from SlatwallSku as sku 
+		var hql = "select distinct sku from #getApplicationKey()#Sku as sku 
 					inner join sku.options as opt 
 					where 
 					0 = 0 ";
 		for(var i=1; i<=listLen(arguments.selectedOptions); i++) {
 			var thisOptionID = listGetat(arguments.selectedOptions,i);
 			hql &= "and exists (
-						from SlatwallOption o
+						from #getApplicationKey()#Option o
 						join o.skus s where s.id = sku.id
 						and o.optionID = ?
 					) ";
@@ -147,10 +147,10 @@ Notes:
 	
 	public any function searchSkusByProductType(string term,string productTypeID) {
 		var q = new Query();
-		var sql = "select skuID,skuCode from SlatwallSku where skuCode like :code";
+		var sql = "select skuID,skuCode from #getApplicationKey()#Sku where skuCode like :code";
 		q.addParam(name="code",value="%#arguments.term#%",cfsqltype="cf_sql_varchar");
 		if(structKeyExists(arguments,"productTypeID") && trim(arguments.productTypeID) != "") {
-			sql &= " and productID in (select productID from SlatwallProduct where productTypeID in (:productTypeIDs))";
+			sql &= " and productID in (select productID from #getApplicationKey()#Product where productTypeID in (:productTypeIDs))";
 			q.addParam(name="productTypeIDs", value="#arguments.productTypeID#", cfsqltype="cf_sql_varchar", list="true");
 		}
 		q.setSQL(sql);
@@ -167,7 +167,7 @@ Notes:
 	
 	public array function getProductSkus(required any product, required any fetchOptions) {
 		
-		var hql = "SELECT sku FROM SlatwallSku sku ";
+		var hql = "SELECT sku FROM #getApplicationKey()#Sku sku ";
 		if(fetchOptions) {
 			if(arguments.product.getBaseProductType() eq "contentAccess") {
 				hql &= "INNER JOIN FETCH sku.accessContents contents ";	
