@@ -54,13 +54,13 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			UPDATE SwSession SET orderID = null WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+			UPDATE #getTableNameByEntityName('Session')# SET orderID = null WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 	</cffunction>
 
 	<cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
-			var results = ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
+			var results = ormExecuteQuery(" FROM #getApplicationKey()#Order o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
 			if(arrayLen(results) && results[1].getOrderStatusType().getSystemCode() == "ostNotPlaced" ) {
 				return results[1];
 			}
@@ -70,7 +70,7 @@ Notes:
 			var params = [arguments.orderID, arguments.skuID];
 
 			var hql = " SELECT new map(sum(oi.quantity) as quantity, sum(oi.price) as price)
-						FROM SlatwallOrderItem oi
+						FROM #getApplicationKey()#OrderItem oi
 						WHERE oi.order.referencedOrder.orderID = ?
 						AND oi.sku.skuID = ?
 						AND oi.order.referencedOrder.orderType.systemCode = 'otReturnAuthorization'    ";
@@ -93,7 +93,7 @@ Notes:
 		public numeric function getPreviouslyReturnedFulfillmentTotal(required any orderID) {
 			var params = [arguments.orderID];
 			var hql = " SELECT new map(sum(r.fulfillmentRefundAmount) as total)
-						FROM SlatwallOrderReturn r
+						FROM #getApplicationKey()#OrderReturn r
 						WHERE r.order.referencedOrder.orderID = ?  ";
 
 			var result = ormExecuteQuery(hql, params);
@@ -106,11 +106,11 @@ Notes:
 		}
 
 		public any function getMaxOrderNumber() {
-			return ormExecuteQuery("SELECT max(cast(aslatwallorder.orderNumber as int)) as maxOrderNumber FROM SlatwallOrder aslatwallorder");
+			return ormExecuteQuery("SELECT max(cast(aslatwallorder.orderNumber as int)) as maxOrderNumber FROM #getApplicationKey()#Order aslatwallorder");
 		}
 
 		public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, string orderPaymentID) {
-			var result = ormExecuteQuery("SELECT orderPaymentID FROM SlatwallOrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?", [arguments.orderID, 'opstActive']);
+			var result = ormExecuteQuery("SELECT orderPaymentID FROM #getApplicationKey()#OrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?", [arguments.orderID, 'opstActive']);
 
 			if(arrayLen(result) && (!structKeyExists(arguments, "orderPaymentID") || result[1] neq arguments.orderPaymentID)) {
 				return true;
@@ -122,7 +122,7 @@ Notes:
 		public array function getRootOrderItems(required string orderID){
 			var params = [arguments.orderID];
 			var hql = "SELECT oi
-					   FROM SlatwallOrderItem oi
+					   FROM #getApplicationKey()#OrderItem oi
 					   WHERE oi.parentOrderItem.orderItemID IS NULL
 					   AND oi.order.orderID = ? ";
 
@@ -136,7 +136,7 @@ Notes:
 		<cfargument name="orderID" required="true">
 
 		<cfquery name="local.giftCardOrderPayment">
-			SELECT SUM(op.amount) amount FROM SwOrderPayment op
+			SELECT SUM(op.amount) amount FROM #getTableNameByEntityName('OrderPayment')# op
 			WHERE
 				op.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a" />
 			AND
@@ -154,8 +154,8 @@ Notes:
 
         <cfquery name="local.giftCardOrderPaymentAmountReceived">
             SELECT SUM(pt.amountReceived) amountReceived FROM SwPaymentTransaction pt
-            LEFT JOIN SwOrderPayment op on pt.orderPaymentID=op.orderPaymentID
-            LEFT JOIN SwOrder o on o.orderID=op.orderID
+            LEFT JOIN #getTableNameByEntityName('OrderPayment')# op on pt.orderPaymentID=op.orderPaymentID
+            LEFT JOIN #getTableNameByEntityName('Order')# o on o.orderID=op.orderID
             WHERE
                 op.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a">
             AND
@@ -179,15 +179,15 @@ Notes:
 				SwOrderPayment.amount,
 				SwType.systemCode
 			FROM
-				SwOrderPayment
+				#getTableNameByEntityName('OrderPayment')#
 			  LEFT JOIN
-			  	SwType on SwOrderPayment.orderPaymentTypeID = SwType.typeID
+			  	#getTableNameByEntityName('Type')# on #getTableNameByEntityName('OrderPayment')#.orderPaymentTypeID = #getTableNameByEntityName('Type')#.typeID
 			WHERE
-				SwOrderPayment.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+				#getTableNameByEntityName('OrderPayment')#.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 			  AND
-			  	SwOrderPayment.amount is not null
+			  	#getTableNameByEntityName('OrderPayment')#.amount is not null
 			  AND
-			  	(SwOrderPayment.orderPaymentStatusTypeID is null or SwOrderPayment.orderPaymentStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="5accbf57dcf5bb3eb71614febe83a31d" />)
+			  	(#getTableNameByEntityName('OrderPayment')#.orderPaymentStatusTypeID is null or #getTableNameByEntityName('OrderPayment')#.orderPaymentStatusTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="5accbf57dcf5bb3eb71614febe83a31d" />)
 		</cfquery>
 
 		<cfloop query="rs">
@@ -207,9 +207,9 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem oi
-    		LEFT JOIN SwSku s ON s.skuID = oi.skuID
-    		LEFT JOIN SwProduct p ON s.productID = p.productID
+			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM #getTableNameByEntityName('OrderItem')# oi
+    		LEFT JOIN #getTableNameByEntityName('Sku')# s ON s.skuID = oi.skuID
+    		LEFT JOIN #getTableNameByEntityName('Product')# p ON s.productID = p.productID
     		WHERE p.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
     		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
@@ -232,11 +232,11 @@ Notes:
 
 		<cfquery name="rs">
 			SELECT
-				SwOrderItem.quantity
+				#getTableNameByEntityName('OrderItem')#.quantity
 			FROM
-				SwOrderItem
+				#getTableNameByEntityName('OrderItem')#
 			WHERE
-				SwOrderItem.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+				#getTableNameByEntityName('OrderItem')#.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
 		</cfquery>
 
 		<cfif rs.recordCount>
@@ -250,7 +250,7 @@ Notes:
 			var orderItemCount = 0;
             if(!isNull(arguments.orderItem.getOrder()) && !isNull(arguments.orderItem.getSku())){
                 orderItemCount = OrmExecuteQuery(
-                    'SELECT count(orderItemID) FROM SlatwallOrderItem where order=:order and sku=:sku',
+                    'SELECT count(orderItemID) FROM #getApplicationKey()#OrderItem where order=:order and sku=:sku',
                     {order=arguments.orderItem.getOrder(),sku=arguments.orderItem.getSku()}
                     ,true
                 );
@@ -262,7 +262,7 @@ Notes:
             var orderItemQuantitySum = 0;
             if(!isNull(arguments.orderItem.getOrder()) && !isNull(arguments.orderItem.getSku())){
                 orderItemQuantitySum = OrmExecuteQuery(
-                    'SELECT sum(quantity) FROM SlatwallOrderItem where order=:order and sku=:sku and orderItemID <> :orderItemID',
+                    'SELECT sum(quantity) FROM #getApplicationKey()#OrderItem where order=:order and sku=:sku and orderItemID <> :orderItemID',
                     {order=arguments.orderItem.getOrder(),sku=arguments.orderItem.getSku(),orderItemID=arguments.orderItem.getOrderItemID()},
                     true
                 );

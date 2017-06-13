@@ -64,7 +64,7 @@ Notes:
 		public void function updateChildrenProductTypeNamePaths(required array productTypeIDs, required string previousProductTypeNamePath, required string newProductTypeNamePath ){
 			var queryService = new query();
 			arguments.contentIDs = listQualify(arguments.productTypeIDs,"'",",");
-			var sql = "UPDATE SwProductType pt SET productTypeNamePath=REPLACE(pt.productTypeNamePath,'#arguments.previousProductTypeNamePath#','#arguments.newProductTypeNamePath#') Where s.productTypeIDs IN (#arguments.productTypeIDs#) ";
+			var sql = "UPDATE #getTableNameByEntityName('ProductType')# pt SET productTypeNamePath=REPLACE(pt.productTypeNamePath,'#arguments.previousProductTypeNamePath#','#arguments.newProductTypeNamePath#') Where s.productTypeIDs IN (#arguments.productTypeIDs#) ";
 			queryService.execute(sql=sql);
 		}
 		
@@ -75,7 +75,7 @@ Notes:
 		public void function setSkusAsInactiveByProductID(required string productID){
 			var updateQuery = new Query();
 			var sql = '
-				UPDATE SwSku
+				UPDATE #getTableNameByEntityName('Sku')#
 				SET activeFlag=0, publishedFlag=0
 				WHERE productID = :productID
 			';
@@ -86,7 +86,7 @@ Notes:
 		public numeric function getProductRating(required any product){
 			return OrmExecuteQuery('
 				SELECT COALESCE(avg(pr.rating), 0)
-				FROM SlatwallProductReview pr 
+				FROM #getApplicationKey()#ProductReview pr 
 				WHERE pr.product = :product
 				AND pr.activeFlag = 1
 				',{product=arguments.product},true
@@ -185,7 +185,7 @@ Notes:
 				var optionGroup = optionGroups[i];
 				var optionGroupKey = replaceNoCase(optionGroup,"option_","","one");
 				dataQuery.setSql("
-					SELECT optionGroupID FROM SlatwallOptionGroup WHERE optionGroupName = '#optionGroupKey#' OR optionGroupCode = '#optionGroupKey#' OR optionGroupID = '#optionGroupKey#';
+					SELECT optionGroupID FROM #getApplicationKey()#OptionGroup WHERE optionGroupName = '#optionGroupKey#' OR optionGroupCode = '#optionGroupKey#' OR optionGroupID = '#optionGroupKey#';
 				");
 				var lookupResult = dataQuery.execute().getResult();
 				if(!lookupResult.recordcount){
@@ -200,11 +200,11 @@ Notes:
 				transaction{
 					// set up brandID and productTypeID, these are required in the import
 					dataQuery.setSql("
-							SELECT brandID FROM SlatwallBrand WHERE brandName = '#data['brand_brandname'][r]#';
+							SELECT brandID FROM #getApplicationKey()#Brand WHERE brandName = '#data['brand_brandname'][r]#';
 						");
 					var brandID = dataQuery.execute().getResult()['brandID'];
 					dataQuery.setSql("
-							SELECT productTypeID FROM SlatwallProductType WHERE productTypeName = '#data['productType_productTypeName'][r]#';
+							SELECT productTypeID FROM #getApplicationKey()#ProductType WHERE productTypeName = '#data['productType_productTypeName'][r]#';
 						");
 					var productTypeID = dataQuery.execute().getResult()['productTypeID'];
 					//Create array of extra data to be saved with product
@@ -213,7 +213,7 @@ Notes:
 					arrayAppend(thisExtraData,{name="brandID",value=brandID});
 					arrayAppend(thisExtraData,{name="productTypeID",value=productTypeID});
 					//save product
-					var productID = saveImportData(data,r,"SlatwallProduct",productColumns,productLookupColumn,"productID",thisExtraData);
+					var productID = saveImportData(data,r,"#getApplicationKey()#Product",productColumns,productLookupColumn,"productID",thisExtraData);
 	
 					//Create array of extra data to be saved with sku
 					var thisExtraData = [];
@@ -227,32 +227,32 @@ Notes:
 						arrayAppend(thisExtraData,{name="skucode",value=skuCode});
 					}
 					//save sku
-					var skuID = saveImportData(data,r,"SlatwallSku",skuColumns,skuLookupColumn,"skuID",thisExtraData);
+					var skuID = saveImportData(data,r,"#getApplicationKey()#Sku",skuColumns,skuLookupColumn,"skuID",thisExtraData);
 					//loop through all the option groups and assign options to sku
 					for(var optionGroup in optiongroups){
 						var optionCode = data[optionGroup][r];
 						if(optionCode != ""){
 							dataQuery.setSql("
-								SELECT SlatwallOption.optionID,SlatwallOptionGroup.optionGroupID FROM SlatwallOptionGroup LEFT JOIN SlatwallOption ON SlatwallOptionGroup.optionGroupID = SlatwallOption.optionGroupID AND SlatwallOption.optionCode = '#optionCode#' WHERE SlatwallOptionGroup.optionGroupID = '#optionGroupIDs[optionGroup]#';
+								SELECT #getApplicationKey()#Option.optionID,#getApplicationKey()#OptionGroup.optionGroupID FROM #getApplicationKey()#OptionGroup LEFT JOIN #getApplicationKey()#Option ON #getApplicationKey()#OptionGroup.optionGroupID = #getApplicationKey()#Option.optionGroupID AND #getApplicationKey()#Option.optionCode = '#optionCode#' WHERE #getApplicationKey()#OptionGroup.optionGroupID = '#optionGroupIDs[optionGroup]#';
 							");
 							var lookupResult = dataQuery.execute().getResult();
 							var optionID = lookupResult.optionID;
 							if(optionID !=  ""){
 								dataQuery.setSql("
-									SELECT optionID FROM SlatwallSkuOption WHERE optionID = '#optionID#' AND skuID = '#skuID#';
+									SELECT optionID FROM #getApplicationKey()#SkuOption WHERE optionID = '#optionID#' AND skuID = '#skuID#';
 								");
 								var exists = dataQuery.execute().getResult().recordcount;
 							} else {
 								var optionID = lcase(replace(createUUID(),"-","","all"));
 								dataQuery.setSql("
-									INSERT INTO SlatwallOption (optionID,optionGroupID,optionCode,optionName,createdDatetime,modifiedDatetime,CreatedByAccountID,modifiedByAccountID) VALUES ('#optionID#','#lookupResult.optionGroupID#','#optionCode#','#optionCode#',#timeStamp#,#timeStamp#,'#administratorID#','#administratorID#');
+									INSERT INTO #getApplicationKey()#Option (optionID,optionGroupID,optionCode,optionName,createdDatetime,modifiedDatetime,CreatedByAccountID,modifiedByAccountID) VALUES ('#optionID#','#lookupResult.optionGroupID#','#optionCode#','#optionCode#',#timeStamp#,#timeStamp#,'#administratorID#','#administratorID#');
 								");
 								dataQuery.execute();
 								var exists = false;
 							}
 							if(!exists){
 								dataQuery.setSql("
-									INSERT INTO SlatwallSkuOption (optionID,skuID) VALUES ('#optionID#','#skuID#');
+									INSERT INTO #getApplicationKey()#SkuOption (optionID,skuID) VALUES ('#optionID#','#skuID#');
 								");
 								dataQuery.execute();
 							}
@@ -264,13 +264,13 @@ Notes:
 						var attributeValue = data[customAttribute][r];
 						if(attributeValue != ""){
 							dataQuery.setSql("
-								UPDATE SlatwallAttributeValue SET attributeValue = :attributeValue WHERE attributeID = '#attributeID#' AND productID = '#productID#';
+								UPDATE #getApplicationKey()#AttributeValue SET attributeValue = :attributeValue WHERE attributeID = '#attributeID#' AND productID = '#productID#';
 							");
 							dataQuery.addParam(name="attributeValue", value="#attributeValue#");
 							if(!dataQuery.execute().getPrefix().recordcount){
 								var attributeValueID = lcase(replace(createUUID(),"-","","all"));
 								dataQuery.setSql("
-									INSERT INTO SlatwallAttributeValue (attributeValueID,attributeValueType,attributeValue,attributeID,productID) VALUES ('#attributeValueID#','Product',:attributeValue,'#attributeID#','#productID#');
+									INSERT INTO #getApplicationKey()#AttributeValue (attributeValueID,attributeValueType,attributeValue,attributeID,productID) VALUES ('#attributeValueID#','Product',:attributeValue,'#attributeID#','#productID#');
 								");
 								dataQuery.execute();
 							}
@@ -291,13 +291,13 @@ Notes:
 							dataQuery.clearParams();
 							if(lookupResult.recordcount){
 								dataQuery.setSql("
-									SELECT productContentID FROM SlatwallProductContent WHERE contentID = '#contentID#' AND productID = '#productID#';
+									SELECT productContentID FROM #getApplicationKey()#ProductContent WHERE contentID = '#contentID#' AND productID = '#productID#';
 								");
 								var exists = dataQuery.execute().getResult().recordcount;
 								if(!exists){
 									var productContentID = lcase(replace(createUUID(),"-","","all"));
 									dataQuery.setSql("
-										INSERT INTO SlatwallProductContent (productContentID,contentID,contentPath,productID) VALUES ('#productContentID#','#contentID#','#contentPath#','#productID#');
+										INSERT INTO #getApplicationKey()#ProductContent (productContentID,contentID,contentPath,productID) VALUES ('#productContentID#','#contentID#','#contentPath#','#productID#');
 									");
 									dataQuery.execute();
 								}
@@ -310,39 +310,39 @@ Notes:
 			//set default sku for all the new products to the first sku
 			if(getApplicationValue("databaseType") eq "mySQL") {
 				dataQuery.setSql("
-					UPDATE SlatwallProduct INNER JOIN SlatwallSku ON SlatwallProduct.productID = SlatwallSku.productID
-					SET defaultSkuID = (SELECT skuID FROM SlatwallSku WHERE SlatwallSku.productID = SlatwallProduct.productID LIMIT 1)
-					WHERE SlatwallProduct.defaultSkuID IS NULL
+					UPDATE #getApplicationKey()#Product INNER JOIN #getApplicationKey()#Sku ON #getApplicationKey()#Product.productID = #getApplicationKey()#Sku.productID
+					SET defaultSkuID = (SELECT skuID FROM #getApplicationKey()#Sku WHERE #getApplicationKey()#Sku.productID = #getApplicationKey()#Product.productID LIMIT 1)
+					WHERE #getApplicationKey()#Product.defaultSkuID IS NULL
 				");
 			} else {	
 				dataQuery.setSql("
-					UPDATE SlatwallProduct
-					SET defaultSkuID = (SELECT top 1 skuID FROM SlatwallSku WHERE SlatwallSku.productID = SlatwallProduct.productID)
-					FROM SlatwallProduct INNER JOIN SlatwallSku ON SlatwallProduct.productID = SlatwallSku.productID
-					WHERE SlatwallProduct.defaultSkuID IS NULL
+					UPDATE #getApplicationKey()#Product
+					SET defaultSkuID = (SELECT top 1 skuID FROM #getApplicationKey()#Sku WHERE #getApplicationKey()#Sku.productID = #getApplicationKey()#Product.productID)
+					FROM #getApplicationKey()#Product INNER JOIN #getApplicationKey()#Sku ON #getApplicationKey()#Product.productID = #getApplicationKey()#Sku.productID
+					WHERE #getApplicationKey()#Product.defaultSkuID IS NULL
 				");
 			}
 			dataQuery.execute();
 			//set sku image to product default image
 			if(getApplicationValue("databaseType") eq "mySql") {
 				dataQuery.setSql("
-					UPDATE SlatwallSku INNER JOIN SlatwallProduct ON SlatwallProduct.productID = SlatwallSku.productID
-					SET imageFile = (SELECT concat(productCode, '.#setting("globalImageExtension")#') FROM SlatwallProduct WHERE SlatwallSku.productID = SlatwallProduct.productID)
-					WHERE SlatwallSku.imageFile IS NULL
+					UPDATE #getApplicationKey()#Sku INNER JOIN #getApplicationKey()#Product ON #getApplicationKey()#Product.productID = #getApplicationKey()#Sku.productID
+					SET imageFile = (SELECT concat(productCode, '.#setting("globalImageExtension")#') FROM #getApplicationKey()#Product WHERE #getApplicationKey()#Sku.productID = #getApplicationKey()#Product.productID)
+					WHERE #getApplicationKey()#Sku.imageFile IS NULL
 				");
 			} else if(getApplicationValue("databaseType") eq "Oracle10g") {	
 				dataQuery.setSql("
-					UPDATE SlatwallSku
-					SET imageFile = (SELECT productCode || '.' || '#setting("globalImageExtension")#' FROM SlatwallProduct WHERE SlatwallSku.productID = SlatwallProduct.productID)
-					FROM SlatwallProduct INNER JOIN SlatwallSku ON SlatwallProduct.productID = SlatwallSku.productID
-					WHERE SlatwallSku.imageFile IS NULL
+					UPDATE #getApplicationKey()#Sku
+					SET imageFile = (SELECT productCode || '.' || '#setting("globalImageExtension")#' FROM #getApplicationKey()#Product WHERE #getApplicationKey()#Sku.productID = #getApplicationKey()#Product.productID)
+					FROM #getApplicationKey()#Product INNER JOIN #getApplicationKey()#Sku ON #getApplicationKey()#Product.productID = #getApplicationKey()#Sku.productID
+					WHERE #getApplicationKey()#Sku.imageFile IS NULL
 				");
 			} else {	
 				dataQuery.setSql("
-					UPDATE SlatwallSku
-					SET imageFile = (SELECT productCode + '.' + '#setting("globalImageExtension")#' FROM SlatwallProduct WHERE SlatwallSku.productID = SlatwallProduct.productID)
-					FROM SlatwallProduct INNER JOIN SlatwallSku ON SlatwallProduct.productID = SlatwallSku.productID
-					WHERE SlatwallSku.imageFile IS NULL
+					UPDATE #getApplicationKey()#Sku
+					SET imageFile = (SELECT productCode + '.' + '#setting("globalImageExtension")#' FROM #getApplicationKey()#Product WHERE #getApplicationKey()#Sku.productID = #getApplicationKey()#Product.productID)
+					FROM #getApplicationKey()#Product INNER JOIN #getApplicationKey()#Sku ON #getApplicationKey()#Product.productID = #getApplicationKey()#Sku.productID
+					WHERE #getApplicationKey()#Sku.imageFile IS NULL
 				");
 			}
 			dataQuery.execute();
@@ -418,11 +418,11 @@ Notes:
 				");
 				dataQuery.execute();
 			} else {
-				if(arguments.tableName == "SlatwallProduct"){
+				if(arguments.tableName == "#getApplicationKey()#Product"){
 					var fileName = getService("hibachiUtilityService").filterFileName(arguments.data['product_productName'][arguments.rowNumber]);
 					/* check if the fileName (product url) already exists*/
 					dataQuery.setSql("
-						SELECT productID FROM SlatwallProduct WHERE urlTitle = '#fileName#';
+						SELECT productID FROM #getApplicationKey()#Product WHERE urlTitle = '#fileName#';
 					");
 					if(dataQuery.execute().getResult().recordCount){
 						fileName &= "_#arguments.data['product_productCode'][arguments.rowNumber]#"; 
@@ -441,7 +441,7 @@ Notes:
 		
 		public any function searchProductsByProductType(string term,string productTypeIDs) {
 			var q = new Query();
-			var sql = "select productID,productName from SlatwallProduct where productName like :prodName";
+			var sql = "select productID,productName from #getApplicationKey()#Product where productName like :prodName";
 			q.addParam(name="prodName",value="%#arguments.term#%",cfsqltype="cf_sql_varchar");		
 			if(structKeyExists(arguments,"productTypeIDs") && len(arguments.productTypeIDs)) {
 				sql &= " and productTypeID in (:productTypeIDs)";
@@ -467,7 +467,7 @@ Notes:
 		
 		<cfquery name="rs">
 			DELETE FROM
-				SwRelatedProduct
+				#getTableNameByEntityName('RelatedProduct')#
 			WHERE
 				productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#" />
 			  OR
@@ -479,7 +479,7 @@ Notes:
 		<cfargument name="fromProductTypeID" type="string" required="true" >
 		<cfargument name="toProductTypeID" type="string" required="true" >
 		<cfquery name="local.updateProduct" >
-			UPDATE SwProduct 
+			UPDATE #getTableNameByEntityName('Product')# 
 			SET productTypeID = <cfqueryparam value="#arguments.toProductTypeID#" cfsqltype="cf_sql_varchar" >
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>

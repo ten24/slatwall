@@ -56,7 +56,7 @@ Notes:
 		<cfquery name="rs" maxrows=1>
 			SELECT
 				count(o.optionID) total
-			FROM SwOption o
+			FROM #getTableNameByEntityName('Option')# o
 			    LEFT JOIN SwSkuOption so ON so.optionID = o.optionID
 			    LEFT JOIN SwSku s ON so.skuID = s.skuID
 			    LEFT JOIN SwProduct p ON s.productID = p.productID
@@ -78,7 +78,7 @@ Notes:
 		<cfquery name="rs" maxrows=1>
 			SELECT
 				count(o.optionID) total
-			FROM SwOption o
+			FROM #getTableNameByEntityName('Option')# o
 			WHERE
 				o.optionGroupID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#optionGroupID#" />
 		</cfquery>
@@ -97,7 +97,7 @@ Notes:
 		<cfquery name="rs">
 			SELECT DISTINCT
     				og.optionGroupID ogID
-			FROM SwOptionGroup og
+			FROM #getTableNameByEntityName('OptionGroup')# og
 			    Left Join SwOption o on og.optionGroupID = o.optionGroupID
 			    Left Join SwSkuOption so on so.optionID = o.optionID
 			    Left Join SwSku s on so.skuID = s.skuID
@@ -128,7 +128,7 @@ Notes:
 				SwOptionGroup.optionGroupID,
 				SwOptionGroup.optionGroupName
 			FROM
-				SwOptionGroup
+				#getTableNameByEntityName('OptionGroup')#
 			LEFT OUTER JOIN
 				SwOptionGroupProductType
    			 ON
@@ -151,7 +151,7 @@ Notes:
 		public void function addOptionGroupByOptionGroupIDAndProductID(required string optionGroupID,required string productID){
 			var optionID = ORMExecuteQuery('
 				SELECT o.optionID
-				FROM SlatwallOptionGroup op
+				FROM #getApplicationKey()#OptionGroup op
 				LEFT JOIN op.options o
 				where op.optionGroupID = :optionGroupID',
 				{optionGroupID=arguments.optionGroupID},
@@ -159,9 +159,9 @@ Notes:
 				{maxResults=1}
 			);
 			var queryService = new query();
-			var sql = "INSERT INTO SwSkuOption (skuID,optionID)
+			var sql = "INSERT INTO #getTableNameByEntityName('SkuOption')# (skuID,optionID)
 				SELECT s.skuID,'#optionID#' as optionID
-				FROM SwSku s where s.productID = :productID
+				FROM #getTableNameByEntityName('Sku')# s where s.productID = :productID
 			";
 			queryService.addParam(name='productID',value=arguments.productID,CFSQLTYPE="CF_SQL_STRING");
 			queryService.execute(sql=sql);
