@@ -52,7 +52,7 @@ Notes:
 		<cfargument name="fromLocationID" type="string" required="true" >
 		<cfargument name="toLocationID" type="string" required="true" >
 		<cfquery name="local.updatestock" >
-			UPDATE SwStock 
+			UPDATE #getTableNameByEntityName('Stock')# 
 			SET locationID = <cfqueryparam value="#arguments.toLocationID#" cfsqltype="cf_sql_varchar" >
 			WHERE locationID = <cfqueryparam value="#arguments.fromLocationID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
@@ -62,7 +62,7 @@ Notes:
 	<cfscript>
 		
 		public any function getStockBySkuAndLocation(required any sku, required any location) {
-			return entityLoad("SlatwallStock", {location=arguments.location, sku=arguments.sku}, true);
+			return entityLoad("#getApplicationKey()#Stock", {location=arguments.location, sku=arguments.sku}, true);
 		}
 		
 		public any function getStockAdjustmentItemForSku(required any sku, required any stockAdjustment) {
@@ -70,7 +70,7 @@ Notes:
 			
 		 	// Epic hack. In order to find the stockAdjustment Item for this Sku, we don't know if it will be in the fromStock or toStock, so try them both.
 			var hql = " SELECT i
-						FROM SlatwallStockAdjustmentItem i
+						FROM #getApplicationKey()#StockAdjustmentItem i
 						WHERE i.fromStock.sku.skuID = ? 
 						AND i.stockAdjustment.stockAdjustmentID = ? ";
 		
@@ -81,7 +81,7 @@ Notes:
 			}
 			
 			var hql = " SELECT i
-						FROM SlatwallStockAdjustmentItem i
+						FROM #getApplicationKey()#StockAdjustmentItem i
 						WHERE i.toStock.sku.skuID = ? 
 						AND i.stockAdjustment.stockAdjustmentID = ? ";
 		
@@ -103,13 +103,13 @@ Notes:
 							vendorOrder.estimatedReceivalDateTime as orderEstimatedReceival,
 							vendorOrderItem.estimatedReceivalDateTime as orderItemEstimatedReceival,
 							vendorOrderItem.quantity as orderedQuantity,
-							(SELECT coalesce( sum(stockReceiverItem.quantity), 0 ) FROM SlatwallStockReceiverItem stockReceiverItem WHERE stockReceiverItem.vendorOrderItem.vendorOrderItemID = vendorOrderItem.vendorOrderItemID) as receivedQuantity,
+							(SELECT coalesce( sum(stockReceiverItem.quantity), 0 ) FROM #getApplicationKey()#StockReceiverItem stockReceiverItem WHERE stockReceiverItem.vendorOrderItem.vendorOrderItemID = vendorOrderItem.vendorOrderItemID) as receivedQuantity,
 							vendorOrderItem.stock.sku.skuID as skuID,
 							vendorOrderItem.stock.stockID as stockID,
 							vendorOrderItem.stock.location.locationID as locationID,
 							vendorOrderItem.stock.sku.product.productID as productID)
 						FROM
-							SlatwallVendorOrderItem vendorOrderItem
+							#getApplicationKey()#VendorOrderItem vendorOrderItem
 						  INNER JOIN
 						  	vendorOrderItem.vendorOrder vendorOrder
 						  INNER JOIN
