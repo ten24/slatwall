@@ -1,4 +1,4 @@
-/*
+﻿/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -46,14 +46,51 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Property
-	property name="account";
-
-	// Data Properties
-	property name="emailAddress";
-	property name="password";
-	property name="authenticationCode";
+component extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
 	
+	property name="adminNavbarHTML";
+	
+	public string function getIntegrationTypes() {
+		return "custom,fw1,app,2fa";
+	}
+	
+	public string function getDisplayName() {
+		return "Google Authenticator";
+	}
+	
+	public struct function getSettings() {
+		return {};
+	}
+	
+	public string function getAdminNavbarHTML() {
+		return 'a href="">What is this?</a>';
+	}
+	
+	public array function getEventHandlers() {
+		//getIntegrationService().getIntegrationByIntegrationPackage("mailchimp").getIntegrationCFC();
+		
+		/*
+		var eventHandlers = ["Slatwall.integrationServices.slatwallcms.model.handler.SlatwallCMSHandler"];
+		//get all cms sites
+		var sitesSmartList = getHibachiScope().getService('siteService').getSiteSmartList();
+		sitesSmartList.addFilter('app.integration.integrationPackage','slatwallcms');
+		var sites = sitesSmartList.getRecords();
+		//use sites to register handlers
+		for(var site in sites){
+			var siteComponentPath = "#getApplicationValue('applicationKey')#.custom.apps.#site.getApp().getAppCode()#.#site.getSiteCode()#.model.handler";
+			var eventHandlerPath = site.getSitePath()&'/model/handler';
+			if(directoryExists(eventHandlerPath)) {
+				var dirList = directoryList(eventHandlerPath);
+				for(var h=1; h<=arrayLen(dirList); h++) {
+					if(listLast(dirList[h], '.') eq 'cfc') {
+						arrayAppend(eventHandlers,"#siteComponentPath#.#listFirst(listLast(dirList[h], '/\'), '.')#");
+					}
+				}
+			}
+		}
+		return eventHandlers;
+		
+		*/
+		return [];
+	}
 }

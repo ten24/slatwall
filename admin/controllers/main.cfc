@@ -236,8 +236,41 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function authorizeLogin(required struct rc) {
-		getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
-
+		// Determine where to retrieve email and password data from
+		// 1. With basic authentication "rc" contains the emailAddress ans password as the login process occurs during a single request
+		// 2. With two-factor authentication "rc" contains the emailAddress and password during the first request
+		//    and during the second request it contains the authenticationCode in order to continue with the login process.
+		//    We do not want to be resending password data back to the client to only to have it repopulated in the "rc" 
+		//    so the emailAddress and password should be set and retained the session to be retrieved during the second request
+		
+		// Populate rc with data from last login attempt
+		if (rc.$.slatwall.hasSessionValue('lastLoginAttemptData')) {
+			structAppend(arguments.rc, rc.$.slatwall.getSessionValue('lastLoginAttemptData'));
+			rc.$.slatwall.clearSessionValue('lastLoginAttemptData');
+		}
+		
+		// TODO-TH refactor
+		// We can avoid a try/catch if we instead first check the accountAuthentication.getAccount().setting('accountUseTwoFactorAuthenticationFlag')
+		// Probably have less unintended consequences dealing with clearing errors on the account and account_login process objects
+		// Use redirect with preserveKeys?
+		try {
+			getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+		// Two Factor Authentication Required
+		} catch (accountAuthenticationCode e) {
+			var lastLoginAttemptData = {
+				'emailAddress' = rc.emailAddress,
+				'password' = rc.password
+			};
+			
+			// Preserve data from last login attempt
+			rc.$.slatwall.setSessionValue('lastLoginAttemptData', lastLoginAttemptData);
+			
+			// Clear errors and proceed with next attempt for authentication code verification
+			rc.$.slatwall.getAccount().clearProcessObject("login");
+			rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
+			rc.twoFactorAuthenticationRequiredFlag = true;
+		}
+		
 		if(getHibachiScope().getLoggedInFlag()) {
 			if(structKeyExists(rc, "sRedirectURL")) {
 				getFW().redirectExact(rc.sRedirectURL);

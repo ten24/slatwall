@@ -550,6 +550,10 @@
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
+		
+		public string function getIdentityHashCode(required any value) {
+			return createObject("java","java.lang.System").identityHashCode(arguments.value);
+		}
 
 		public string function encryptValue(required string value, string salt="") {
 			if(len(arguments.value)){

@@ -56,6 +56,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
+	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
+	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
 	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";

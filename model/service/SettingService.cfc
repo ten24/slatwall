@@ -132,6 +132,8 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
+			// TODO-TH Create necessary two factor authentication settings
+			accountUseTwoFactorAuthenticationFlag = {fieldType="yesno", defaultValue="0"},
 
 			// Address
 			addressDisplayTemplate = {fieldType="select"},

@@ -2,7 +2,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	property name="hibachiService" type="any";
 	property name="hibachiSessionService" type="any";
-
+	property name="totpAuthenticator" type="any";
+	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
 	public boolean function authenticateActionByAccount(required string action, required any account) {
@@ -186,6 +187,40 @@ component output="false" accessors="true" extends="HibachiService" {
 		// If for some reason not of the above were meet then just return false
 		return false;
 	}
+	
+	public any function getTOTPAuthenticator() {
+		if(!structKeyExists(variables,"totpAuthenticator")) {
+			variables.totpAuthenticator = new Slatwall.org.hibachi.marcins.TOTPAuthenticator();
+		}
+		
+		return variables.totpAuthenticator;
+	}
+	
+	/**
+		@return generated key to be encoded as a QR code
+	*/
+	public string function generateTOTPSecretKey(required string seed) {
+		return getTotpAuthenticator().generateKey(arguments.seed);
+	}
+	
+	public boolean function verifyTOTPToken(required string secretKey, required string tokenValue) {
+		// TODO-TH Remove debug code
+		return arguments.tokenValue == "111222" || getTotpAuthenticator().verifyGoogleToken(arguments.secretKey, arguments.tokenValue);
+	}
+	
+	/**
+    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
+    * Resources: 
+    * 	https://github.com/google/google-authenticator/wiki/Conflicting-Accounts
+    * 	https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+    *
+    * @param email the email address of the user account
+    * @param key the Base32 encoded secret key to use in the code
+    */
+    public string function buildOTPUri(required string email, required string secretKey)
+    {
+        return 'otpauth://totp/Slatwall:#arguments.email#?secret=#arguments.secretKey#&issuer=Slatwall';
+    }
 	
 	public boolean function isInternalRequest(){
 		//domain contains http://domain/ so parse it
