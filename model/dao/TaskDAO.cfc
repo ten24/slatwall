@@ -54,7 +54,7 @@ Notes:
 		
 		<cfset var rs = "" />
 		<cfquery name="rs">
-			UPDATE SwTask SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> WHERE taskID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.taskID#">
+			UPDATE getTableNameByEntityName('Task') SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> WHERE taskID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.taskID#">
 		</cfquery>
 	</cffunction>
 
