@@ -321,6 +321,21 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			// Update the cache for this attribute value
 			getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
 			getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
+
+			
+			if(attributeValueEntity.hasErrors()){
+				for(var errorKey in attributeValueEntity.getErrors()){
+					for(var error in attributeValueEntity.getErrors()[errorKey] ){
+						var message = "";
+						if(findNoCase('regex',error) && !isNull(attributeValueEntity.getAttribute()) && !isNull(attributeValueEntity.getAttribute().getValidationMessage())){
+	             			message = attributeValueEntity.getAttribute().getValidationMessage();
+						}else{
+							message = attributeValueEntity.getAttribute().getAttributeName() & ': ' & error;
+						}
+						this.addError(errorKey,hibachiHTMLeditFormat(message));
+					}
+				}
+			}
 		}
 	}
 
