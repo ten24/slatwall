@@ -57,7 +57,7 @@ Notes:
 		<cfset var rs = "" />
 		<cfset var settingID = lcase(replace(createUUID(),"-","","all"))/>
 		<cfquery name="rs">
-			INSERT INTO SwSetting (settingID,settingName,settingValue) 
+			INSERT INTO #getTableNameByEntityName('Setting')# (settingID,settingName,settingValue) 
 			VALUES (
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#settingID#">,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingName#">,
@@ -78,7 +78,7 @@ Notes:
 			SELECT
 				settingID
 			FROM
-				SwSetting
+				#getTableNameByEntityName('Setting')#
 			WHERE
 			  	LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
 		  		<cfif structKeyExists(arguments, "settingValue")>
@@ -104,7 +104,7 @@ Notes:
 				settingValue,
 				settingValueEncryptGen
 			FROM
-				SwSetting
+				#getTableNameByEntityName('Setting')#
 			WHERE
 				LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingName)#">
 				<cfloop list="#potentialRelationships#" index="local.relationship">
@@ -128,11 +128,11 @@ Notes:
 		<cfset var rsResult = "" />
 		
 		<cfquery name="rs">
-			SELECT DISTINCT settingName FROM SwSetting WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
+			SELECT DISTINCT settingName FROM #getTableNameByEntityName('Setting')# WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
 		</cfquery>
 		
 		<cfquery name="rs2" result="rsResult">
-			DELETE FROM SwSetting WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
+			DELETE FROM #getTableNameByEntityName('Setting')# WHERE #columnName# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.columnID#">
 		</cfquery>
 		
 		<cfloop query="rs">
@@ -151,7 +151,7 @@ Notes:
 		<cfset var updatedSettings = 0 />
 		
 		<cfquery name="rs">
-			SELECT settingID, settingName, settingValue FROM SwSetting WHERE settingValue LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.primaryIDValue#%">
+			SELECT settingID, settingName, settingValue FROM #getTableNameByEntityName('Setting')# WHERE settingValue LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.primaryIDValue#%">
 		</cfquery>
 		
 		<cfloop query="rs">
@@ -163,7 +163,7 @@ Notes:
 				<cfset var newValue = listDeleteAt(rs.settingValue, oldListIndex) />
 				
 				<cfquery name="rs2">
-					UPDATE SwSetting SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#newValue#"> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#">
+					UPDATE #getTableNameByEntityName('Setting')# SET settingValue = <cfqueryparam cfsqltype="cf_sql_varchar" value="#newValue#"> WHERE settingID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.settingID#">
 				</cfquery>
 				
 				<cfset getHibachiCacheService().resetCachedKeyByPrefix('setting_#rs.settingName#') />
