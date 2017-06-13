@@ -77,7 +77,7 @@ Notes:
 		<cfset local.readFile = fileRead(local.logFile) />
 		<cfset local.fileArray = listToArray(local.readFile, chr(10)) />
 		<cfloop from="#arrayLen(local.fileArray)#" to="1" step="-1" index="local.i">
-			<cfif structKeyExists(server, "railo") or findNoCase(application.applicationname, local.fileArray[ local.i ])>
+			<cfif structKeyExists(server, "lucee") or structKeyExists(server, "railo") or findNoCase(application.applicationname, local.fileArray[ local.i ])>
 				<cfset writeOutput(replace(replace(local.fileArray[ local.i ],'"Information",',''),'"#UCASE(application.applicationname)#",','')) />
 				<cfset writeOutput("<br />") />
 			</cfif>
