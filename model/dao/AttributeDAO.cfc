@@ -65,9 +65,9 @@ Notes:
 			FROM
 				#getTableNameByEntityName('Attribute')# 
 			  INNER JOIN
-			  	#getTableNameByEntityName('AttributeSet')#  on #getTableNameByEntityName('Attribute')# .attributeSetID = #getTableNameByEntityName('AttribtueSet')# .attributeSetID
+			  	#getTableNameByEntityName('AttributeSet')#  on #getTableNameByEntityName('Attribute')# .attributeSetID = #getTableNameByEntityName('AttributeSet')# .attributeSetID
 			WHERE
-				#getTableNameByEntityName('AttribtueSet')# .attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
+				#getTableNameByEntityName('AttributeSet')# .attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
 		</cfquery>
 		<cfreturn rs />
 	</cffunction>
