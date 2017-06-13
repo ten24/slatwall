@@ -60,7 +60,7 @@ Notes:
 
 	<cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
-			var results = ormExecuteQuery(" FROM #getApplicaitonKey()#Order o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
+			var results = ormExecuteQuery(" FROM #getApplicationKey()#Order o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
 			if(arrayLen(results) && results[1].getOrderStatusType().getSystemCode() == "ostNotPlaced" ) {
 				return results[1];
 			}

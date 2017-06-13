@@ -171,7 +171,7 @@ Notes:
 			FROM
 				#getApplicationKey()#SubscriptionTerm st
 			WHERE
-				st.subscriptionTermID NOT IN (SELECT skust.subscriptionTermID FROM #getApplicaitonKey()#Sku sku INNER JOIN sku.subscriptionTerm skust INNER JOIN sku.product skup WHERE skup.productID = :productID)" />
+				st.subscriptionTermID NOT IN (SELECT skust.subscriptionTermID FROM #getApplicationKey()#Sku sku INNER JOIN sku.subscriptionTerm skust INNER JOIN sku.product skup WHERE skup.productID = :productID)" />
 
 		<cfreturn ormExecuteQuery(hql, {productID=arguments.productID}) />
 	</cffunction>
