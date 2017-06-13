@@ -48,11 +48,90 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test	
+	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
+		variables.service = request.slatwallScope.getService("orderService");
+	}
+	/**
+	* @test
+	*/
+	public void function isAlreadyAttendingEventTest(){
+		var accountData = {
+			accountID="",
+			firstName=""
+		};
+		var account = createPersistedTestEntity("Account", accountData);
+		var orderData = {
+			orderID = "",
+			currencycode = "USD"
+		};
+		var order = createPersistedTestEntity("Order", orderData);
+		order.setAccount(account);
+		account.addOrder(order);
 
-	}	
+		var orderItemData = {
+			orderItemID= "",
+			currencycode = "USD"
+		};
+		var orderItem = createPersistedTestEntity("OrderItem", orderItemData);
+		orderItem.setOrder(order);
+
+		var productData = {
+			productID="",
+			productName="",
+			productType={
+				productTypeID="444df315a963bea00867567110d47728"
+			}
+		};
+		var product = createPersistedTestEntity('Product', productData);
+
+		var skuData = {
+			skuID = "",
+			skuName = "",
+			skuPrice=0,
+			currencycode = "USD",
+			product={
+				productID=product.getProductID()
+			}
+		};
+		var sku = createPersistedTestEntity("Sku", skuData);
+		orderItem.setSku(sku);
+
+		var eventRegistrationData = {
+			eventRegistrationID = "",
+			account={
+				accountID=account.getAccountID()
+			},
+			eventRegistrationStatusType={
+				typeID="b89ae134f66e795e53c858b92360ded7"
+				// ID above is for erstCancelled ^
+			}
+		};
+		var eventRegistration = createPersistedTestEntity("EventRegistration", eventRegistrationData);
+		eventRegistration.setSku(sku);
+		sku.addEventRegistration(eventRegistration);
+
+		var processObjectData = {
+			quantity=1,
+			price=1,
+			skuid= sku.getSkuID(),
+			registrants = [
+				{
+					accountID=account.getAccountID()
+				}
+			]
+		};
+		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
+
+		var orderReturn = variables.service.processOrder(order, processObject, 'AddOrderItem');
+		var orderItemsAdded = orderReturn.getOrderItems();
+
+		assert(!isNull(eventRegistration.getEventRegistrationStatusType()));
+		assertTrue(processObject.IsAlreadyAttendingEvent());
+
+	}
+
 	/**
 	* @test
 	*/
@@ -151,7 +230,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(foundMatch);
 
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -214,7 +293,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		var product = createPersistedTestEntity('Product', productData);
-		
+
 		return product;
 	}
 
