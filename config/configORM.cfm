@@ -5,6 +5,7 @@
 <cftry>
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="Version" name="dbVersion">
 	<cfcatch>
+		<cfset getPageContext().getResponse().setStatus( 500 ) />
 		<cfinclude template="#variables.framework.baseURL#/admin/views/main/nodatasource.cfm" />
 		<cfabort />
 	</cfcatch>
