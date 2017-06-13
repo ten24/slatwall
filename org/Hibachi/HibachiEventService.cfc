@@ -30,7 +30,8 @@
 // after{EntityName}Process
 // after{EntityName}ProcessSuccess
 // after{EntityName}ProcessFailure
-
+// after{EntityName}CreateSuccess
+// after{EntityName}CreateFailure
 // before{EntityName}Process_{processContext}
 // after{EntityName}Process_{processContext}
 // after{EntityName}Process_{processContext}Success
@@ -264,7 +265,7 @@ component output="false" update="true" extends="HibachiService" {
 		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#arguments.entityName#')# - ";
 		
 		var processPrefix = "";
-		if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete'){
+		if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete' && lcase(arguments.process) != 'create'){
 			processPrefix = "Process_";
 			optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('entity.#arguments.entityName#.process.#arguments.process#')#";
 		}else{
@@ -299,7 +300,7 @@ component output="false" update="true" extends="HibachiService" {
 			var entityName = arguments.objectName;
 			
 			var positions = ['before','after'];
-			var processes = ['Save','Delete'];
+			var processes = ['Save','Delete','Create'];
 			var statuses = ['','Success','Failure'];
 			
 			if(structKeyExists(emd, "hb_processContexts")) {

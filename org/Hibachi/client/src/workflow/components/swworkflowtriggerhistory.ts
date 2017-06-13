@@ -5,23 +5,27 @@ class SWWorkflowTriggerHistory{
         var directive=(
             workflowPartialsPath,
             hibachiPathBuilder,
-            $rootScope
+            $rootScope,
+            collectionConfigService
         )=>new SWWorkflowTriggerHistory(
             workflowPartialsPath,
             hibachiPathBuilder,
-            $rootScope
+            $rootScope,
+            collectionConfigService
         );
         directive.$inject = [
             'workflowPartialsPath',
             'hibachiPathBuilder',
-            '$rootScope'
+            '$rootScope',
+            'collectionConfigService'
         ];
         return directive;
     }
     constructor(
             workflowPartialsPath,
             hibachiPathBuilder,
-            $rootScope){
+            $rootScope,
+            collectionConfigService){
 
         return {
             restrict : 'A',
@@ -31,6 +35,14 @@ class SWWorkflowTriggerHistory{
             templateUrl : hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggerhistory.html",
             link : function(scope, element, attrs) {
                 $rootScope.workflowID = scope.workflow.data.workflowID;
+                //Build the history collection.
+                scope.workflowTriggerHistoryCollection = collectionConfigService.newCollectionConfig("WorkflowTriggerHistory");
+                scope.workflowTriggerHistoryCollection.addFilter("workflowTrigger.workflow.workflowID", $rootScope.workflowID ,"=")
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("workflowTrigger.triggerType");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("response");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
             }
         };
     }

@@ -1688,8 +1688,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
-
+			
 		}
+		
 		return variables.pageRecords;
 	}
 
@@ -2356,6 +2357,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
+			
 		}
 		return HQL;
 	}
@@ -2440,6 +2442,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			keywordIndex++;
 		}
+		
 	}
 
 	//TODO:write an export/import service so we can share json files of the collectionConfig
