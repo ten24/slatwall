@@ -467,7 +467,7 @@ Notes:
 		
 		<cfquery name="rs">
 			DELETE FROM
-				SwRelatedProduct
+				#getTableNameByEntityName('RelatedProduct')#
 			WHERE
 				productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#" />
 			  OR
@@ -479,7 +479,7 @@ Notes:
 		<cfargument name="fromProductTypeID" type="string" required="true" >
 		<cfargument name="toProductTypeID" type="string" required="true" >
 		<cfquery name="local.updateProduct" >
-			UPDATE SwProduct 
+			UPDATE #getTableNameByEntityName('Product')# 
 			SET productTypeID = <cfqueryparam value="#arguments.toProductTypeID#" cfsqltype="cf_sql_varchar" >
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
