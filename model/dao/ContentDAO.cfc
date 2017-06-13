@@ -52,13 +52,13 @@ Notes:
 		<cfargument name="cmsContentID" type="string" required="true">
 		<cfargument name="cmsSiteID" type="string" required="true">
 
-		<cfset var contents = ormExecuteQuery(" FROM SlatwallContent c WHERE c.cmsContentID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsContentID, arguments.cmsSiteID ] ) />
+		<cfset var contents = ormExecuteQuery(" FROM #getApplicationKey()#Content c WHERE c.cmsContentID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsContentID, arguments.cmsSiteID ] ) />
 
 		<cfif arrayLen(contents)>
 			<cfreturn contents[1] />
 		</cfif>
 
-		<cfreturn entityNew("SlatwallContent") />
+		<cfreturn entityNew("#getApplicationKey()#Content") />
 	</cffunction>
 
 	<cffunction name="getContentDescendants" access="public" >
@@ -79,26 +79,26 @@ Notes:
 	<cffunction name="deleteCategoryByCmsCategoryID" access="public">
 		<cfargument name="cmsCategoryID" type="string"/>
 		<cfquery name="local.getSlatwallCategoryID" result="local.getSlatwallCategoryIDResult">
-			SELECT categoryID, parentCategoryID FROM SwCategory where cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.cmsCategoryID#" /> 
+			SELECT categoryID, parentCategoryID FROM #getTableNameByEntityName('Category')#  where cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.cmsCategoryID#" /> 
 		</cfquery>		
 		
 		<cfif local.getSlatwallCategoryIDResult.recordCount>
 			
 			<cfquery name="local.getTopLevelChildCategories" result="local.getTopLevelChildCategoriesResult">
-				SELECT categoryID FROM SwCategory where parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
+				SELECT categoryID FROM #getTableNameByEntityName('Category')#  where parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
 			</cfquery>
 			
 			<cfif local.getTopLevelChildCategoriesResult.recordCount>
 				<cfloop query="local.getTopLevelChildCategories">
 					<cfif len(local.getSlatwallCategoryID.parentCategoryID)>
 						<cfquery name="local.updateTopLevelChildCategories">
-							Update SwCategory 
+							Update #getTableNameByEntityName('Category')#  
 							Set parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.parentCategoryID#" />
 							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
 						</cfquery>
 					<cfelse>
 						<cfquery name="local.updateTopLevelChildCategories">
-							Update SwCategory 
+							Update #getTableNameByEntityName('Category')#  
 							Set parentCategoryID = null
 							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
 						</cfquery>
