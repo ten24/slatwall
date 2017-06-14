@@ -67,7 +67,7 @@ Notes:
 				c as comment
 			)
 			FROM
-				#getApplicationKey()#CommentRelationship scr 
+				SlatwallCommentRelationship scr 
 			INNER JOIN 
 				scr.comment c
 			WHERE 
@@ -98,10 +98,10 @@ Notes:
 		<cfset var relatedComment = "" />
 		
 		<cfloop array="#relatedComments#" index="local.relatedComment" >
-			<cfset var results = ormExecuteQuery("DELETE #getApplicationKey()#CommentRelationship WHERE commentRelationshipID = ?", [relatedComment["commentRelationshipID"]]) />
+			<cfset var results = ormExecuteQuery("DELETE SlatwallCommentRelationship WHERE commentRelationshipID = ?", [relatedComment["commentRelationshipID"]]) />
 			
 			<cfif not relatedComment["referencedRelationshipFlag"]>
-				<cfset var results = ormExecuteQuery("DELETE #getApplicationKey()#Comment WHERE commentID = ?", [relatedComment["comment"].getCommentID()]) />
+				<cfset var results = ormExecuteQuery("DELETE SlatwallComment WHERE commentID = ?", [relatedComment["comment"].getCommentID()]) />
 			</cfif>
 		</cfloop>
 		

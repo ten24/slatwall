@@ -51,13 +51,13 @@ Notes:
 	<cffunction name="getUniquePreviousSubscriptionOrderPayments">
 		<cfargument name="subscriptionUsageID" type="string" required="true" />
 
-		<cfreturn ormExecuteQuery("SELECT DISTINCT op FROM #getApplicationKey()#SubscriptionOrderItem soi INNER JOIN soi.orderItem oi INNER JOIN oi.order o INNER JOIN o.orderPayments op WHERE soi.subscriptionUsage.subscriptionUsageID = :subscriptionUsageID AND op.referencedOrderPayment IS NULL AND op.orderPaymentStatusType.systemCode = 'opstActive'", {subscriptionUsageID=arguments.subscriptionUsageID}) />
+		<cfreturn ormExecuteQuery("SELECT DISTINCT op FROM SlatwallSubscriptionOrderItem soi INNER JOIN soi.orderItem oi INNER JOIN oi.order o INNER JOIN o.orderPayments op WHERE soi.subscriptionUsage.subscriptionUsageID = :subscriptionUsageID AND op.referencedOrderPayment IS NULL AND op.orderPaymentStatusType.systemCode = 'opstActive'", {subscriptionUsageID=arguments.subscriptionUsageID}) />
 	</cffunction>
 
 	<cffunction name="getSubscriptionCurrentStatus">
 		<cfargument name="subscriptionUsageID" type="string" required="true" />
 
-		<cfset var hql = "FROM #getApplicationKey()#SubscriptionStatus ss
+		<cfset var hql = "FROM SlatwallSubscriptionStatus ss
 							WHERE ss.subscriptionUsage.subscriptionUsageID = :subscriptionUsageID
 							AND ss.effectiveDateTime <= :now
 							ORDER BY ss.effectiveDateTime DESC " />
@@ -73,22 +73,22 @@ Notes:
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
-				FROM #getTableNameByEntityName('SubscriptionUsage')# su
+				FROM SwSubsUsage su
 				WHERE (su.nextBillDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
-					AND 'sstActive' = (SELECT systemCode FROM #getTableNameByEntityName('SubscriptionStatus')#
-								INNER JOIN #getTableNameByEntityName('Type')# ON #getTableNameByEntityName('SubscriptionStatus')#.subscriptionStatusTypeID = #getTableNameByEntityName('Type')#.typeID
-								WHERE #getTableNameByEntityName('SubscriptionStatus')#.subscriptionUsageID = su.subscriptionUsageID
-								AND #getTableNameByEntityName('SubscriptionStatus')#.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+					AND 'sstActive' = (SELECT systemCode FROM SwSubscriptionStatus
+								INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+								WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
+								AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 								ORDER BY changeDateTime DESC LIMIT 1)
 			</cfquery>
 		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
-				FROM #getTableNameByEntityName('SubscriptionUsage')# su
+				FROM SwSubsUsage su
 				WHERE (su.nextBillDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
-					AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM #getTableNameByEntityName('SubscriptionStatus')#
-				                    INNER JOIN #getTableNameByEntityName('Type')# ON #getTableNameByEntityName('SubscriptionStatus')#.subscriptionStatusTypeID = #getTableNameByEntityName('Type')#.typeID
-				                    WHERE #getTableNameByEntityName('SubscriptionStatus')#.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+					AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM SwSubscriptionStatus
+				                    INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+				                    WHERE SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 				                    ORDER BY changeDateTime DESC)
 									WHERE subscriptionUsageID = su.subscriptionUsageID
 				                    AND rownum <= 1)
@@ -96,18 +96,18 @@ Notes:
 		<cfelse>
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
-				FROM #getTableNameByEntityName('SubscriptionUsage')# su
+				FROM SwSubsUsage su
 				WHERE (su.nextBillDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
-					AND 'sstActive' = (SELECT TOP 1 systemCode FROM #getTableNameByEntityName('SubscriptionStatus')#
-								INNER JOIN #getTableNameByEntityName('Type')# ON #getTableNameByEntityName('SubscriptionStatus')#.subscriptionStatusTypeID = #getTableNameByEntityName('Type')#.typeID
-								WHERE #getTableNameByEntityName('SubscriptionStatus')#.subscriptionUsageID = su.subscriptionUsageID
-								AND #getTableNameByEntityName('SubscriptionStatus')#.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+					AND 'sstActive' = (SELECT TOP 1 systemCode FROM SwSubscriptionStatus
+								INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+								WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
+								AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 								ORDER BY changeDateTime DESC)
 			</cfquery>
 		</cfif>
 
 		<cfif getsu.recordCount>
-			<cfset var hql = "FROM #getApplicationKey()#SubscriptionUsage WHERE subscriptionUsageID IN (:subscriptionUsageIDs)" />
+			<cfset var hql = "FROM SlatwallSubscriptionUsage WHERE subscriptionUsageID IN (:subscriptionUsageIDs)" />
 
 			<cfreturn ormExecuteQuery(hql, {subscriptionUsageIDs=listToArray(valueList(getsu.subscriptionUsageID))}) />
 		</cfif>
@@ -122,22 +122,22 @@ Notes:
 		<cfif getApplicationValue("databaseType") eq "MySQL">
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
-				FROM #getTableNameByEntityName('SubscriptionUsage')# su
+				FROM SwSubsUsage su
 				WHERE (su.nextReminderEmailDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
-					AND 'sstActive' = (SELECT systemCode FROM #getTableNameByEntityName('SubscriptionStatus')#
-								INNER JOIN SwType ON #getTableNameByEntityName('SubscriptionStatus')#.subscriptionStatusTypeID = #getTableNameByEntityName('Type')#.typeID
-								WHERE #getTableNameByEntityName('SubscriptionStatus')#.subscriptionUsageID = su.subscriptionUsageID
-								AND #getTableNameByEntityName('SubscriptionStatus')#.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+					AND 'sstActive' = (SELECT systemCode FROM SwSubscriptionStatus
+								INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+								WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
+								AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 								ORDER BY changeDateTime DESC LIMIT 1)
 			</cfquery>
 		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
-				FROM #getTableNameByEntityName('SubscriptionUsage')# su
+				FROM SwSubsUsage su
 				WHERE (su.nextReminderEmailDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
-					AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM #getTableNameByEntityName('SubscriptionStatus')#
-				                    INNER JOIN #getTableNameByEntityName('Type')# ON #getTableNameByEntityName('SubscriptionStatus')#.subscriptionStatusTypeID = #getTableNameByEntityName('Type')#.typeID
-				                    WHERE #getTableNameByEntityName('SubscriptionStatus')#.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+					AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM SwSubscriptionStatus
+				                    INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+				                    WHERE SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 				                    ORDER BY changeDateTime DESC)
 									WHERE subscriptionUsageID = su.subscriptionUsageID
 				                    AND rownum <= 1)
@@ -145,18 +145,18 @@ Notes:
 		<cfelse>
 			<cfquery name="getsu">
 				SELECT DISTINCT su.subscriptionUsageID
-				FROM #getTableNameByEntityName('SubscriptionUsage')# su
+				FROM SwSubsUsage su
 				WHERE (su.nextReminderEmailDate <= <cfqueryparam value="#dateformat(now(),'mm-dd-yyyy 23:59')#" cfsqltype="cf_sql_timestamp" />)
-					AND 'sstActive' = (SELECT TOP 1 systemCode FROM #getTableNameByEntityName('SubscriptionStatus')#
-								INNER JOIN #getTableNameByEntityName('Type')# ON #getTableNameByEntityName('SubscriptionStatus')#.subscriptionStatusTypeID = #getTableNameByEntityName('Type')#.typeID
-								WHERE #getTableNameByEntityName('SubscriptionStatus')#.subscriptionUsageID = su.subscriptionUsageID
-								AND #getTableNameByEntityName('SubscriptionStatus')#.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+					AND 'sstActive' = (SELECT TOP 1 systemCode FROM SwSubscriptionStatus
+								INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID
+								WHERE SwSubscriptionStatus.subscriptionUsageID = su.subscriptionUsageID
+								AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 								ORDER BY changeDateTime DESC)
 			</cfquery>
 		</cfif>
 
 		<cfif getsu.recordCount>
-			<cfset var hql = "FROM #getApplicationKey()#SubscriptionUsage WHERE subscriptionUsageID IN (:subscriptionUsageIDs)" />
+			<cfset var hql = "FROM SlatwallSubscriptionUsage WHERE subscriptionUsageID IN (:subscriptionUsageIDs)" />
 
 			<cfreturn ormExecuteQuery(hql, {subscriptionUsageIDs=listToArray(valueList(getsu.subscriptionUsageID))}) />
 		</cfif>
@@ -169,9 +169,9 @@ Notes:
 
 		<cfset var hql = "SELECT new map(st.subscriptionTermName as name, st.subscriptionTermID as value)
 			FROM
-				#getApplicationKey()#SubscriptionTerm st
+				SlatwallSubscriptionTerm st
 			WHERE
-				st.subscriptionTermID NOT IN (SELECT skust.subscriptionTermID FROM #getApplicationKey()#Sku sku INNER JOIN sku.subscriptionTerm skust INNER JOIN sku.product skup WHERE skup.productID = :productID)" />
+				st.subscriptionTermID NOT IN (SELECT skust.subscriptionTermID FROM SlatwallSku sku INNER JOIN sku.subscriptionTerm skust INNER JOIN sku.product skup WHERE skup.productID = :productID)" />
 
 		<cfreturn ormExecuteQuery(hql, {productID=arguments.productID}) />
 	</cffunction>

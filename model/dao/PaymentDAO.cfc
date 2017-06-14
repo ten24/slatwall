@@ -62,7 +62,7 @@ Notes:
 			SELECT
 				#idColumnName#
 			FROM
-				#getTableNameByEntityName('PaymentTransaction')#
+				SwPaymentTransaction
 			WHERE
 				#idColumnName# = <cfqueryparam value="#arguments.paymentID#" cfsqltype="cf_sql_varchar" />
 			  AND
@@ -87,7 +87,7 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 
-		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM #getApplicationKey()#PaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN ( :transactionType ) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN ( :transactionType ) AND " />
 		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["authorize", "authorizeAndCharge"] />
 
@@ -117,7 +117,7 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM #getApplicationKey()#PaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
 		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["authorize","authorizeAndCharge"] />
 
@@ -147,7 +147,7 @@ Notes:
 		<cfargument name="referencedOrderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 
-		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM #getApplicationKey()#PaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
+		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
 		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["chargePreAuthorization","authorizeAndCharge"] />
 
@@ -208,7 +208,7 @@ Notes:
 		<cfargument name="orderPaymentID" type="string" />
 		<cfargument name="accountPaymentID" type="string" />
 
-		<cfset var hql = "UPDATE #getApplicationKey()#PaymentTransaction SET authorizationCodeInvalidFlag = 1, modifiedDateTime = :now WHERE authorizationCode = :authorizationCode AND transactionType = :transactionType AND " />
+		<cfset var hql = "UPDATE SlatwallPaymentTransaction SET authorizationCodeInvalidFlag = 1, modifiedDateTime = :now WHERE authorizationCode = :authorizationCode AND transactionType = :transactionType AND " />
 
 		<cfset var hqlParams = {} />
 		<cfset hqlParams['authorizationCode'] = arguments.authorizationCode />
@@ -229,7 +229,7 @@ Notes:
 	<cffunction name="getAccountPaymentMethodNonGenerateTokenTransactionCount" access="public" returntype="any" output="false">
 		<cfargument name="accountPaymentMethodID" type="string" required="true" />
 
-		<cfset var hql = "SELECT count(pt.paymentTransactionID) FROM #getApplicationKey()#PaymentTransaction pt WHERE pt.accountPaymentMethod.accountPaymentMethodID = :accountPaymentMethodID AND pt.transactionType != :transactionType" />
+		<cfset var hql = "SELECT count(pt.paymentTransactionID) FROM SlatwallPaymentTransaction pt WHERE pt.accountPaymentMethod.accountPaymentMethodID = :accountPaymentMethodID AND pt.transactionType != :transactionType" />
 
 		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = "generateToken" />

@@ -52,20 +52,20 @@ Notes:
 		
 		<cfquery name="local.tasks">
 			SELECT
-				#getTableNameByEntityName('Task')#.taskID,
-				#getTableNameByEntityName('TaskSchedule')#.taskScheduleID
+				SwTask.taskID,
+				SwTaskSchedule.taskScheduleID
 			FROM
-				#getTableNameByEntityName('TaskSchedule')#
+				SwTaskSchedule
 			INNER JOIN 
-				#getTableNameByEntityName('Task')# ON #getTableNameByEntityName('Task')#.taskID = #getTableNameByEntityName('TaskSchedule')#.taskid 
+				SwTask ON SwTask.taskID = SwTaskSchedule.taskid 
 			WHERE 
-				#getTableNameByEntityName('Task')#.runningflag=0  
+				SwTask.runningflag=0  
 			AND	
-				#getTableNameByEntityName('Task')#.activeflag= 1 
+				SwTask.activeflag= 1 
 			AND 
 				(
-				#getTableNameByEntityName('TaskSchedule')#.nextRunDateTime IS NULL
-					OR #getTableNameByEntityName('TaskSchedule')#.nextRunDateTime <=	<cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" >
+				SwTaskSchedule.nextRunDateTime IS NULL
+					OR SwTaskSchedule.nextRunDateTime <=	<cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" >
 				)
 		</cfquery>	
 		

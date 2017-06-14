@@ -55,7 +55,7 @@ Notes:
 		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
 		<cfreturn ORMExecuteQuery('SELECT triggerEvent
 									FROM
-										#getApplicationKey()#WorkflowTrigger
+										SlatwallWorkflowTrigger
 									WHERE
 										triggerType = :triggerType'
 									,{triggerType="Event"}) 
@@ -73,14 +73,14 @@ Notes:
 	<cffunction name="getRunningWorkflows" access="public" returntype="array"> 
 		
 		<cfreturn ORMExecuteQuery('SELECT new map(t.workflowTriggerID as workflowTriggerID, t.timeout as timeout)
-								   FROM	#getApplicationKey()#WorkflowTrigger t 
+								   FROM	SlatwallWorkflowTrigger t 
 								   WHERE runningFlag=true') />
 
 	</cffunction> 
 
 	<cffunction name="getDueWorkflows" access="public" returntype="array">
 		<cfreturn ORMExecuteQuery('FROM
-										#getApplicationKey()#WorkflowTrigger
+										SlatwallWorkflowTrigger
 									WHERE
 										triggerType = :triggerType
 									AND
@@ -98,7 +98,7 @@ Notes:
 
 		<cfset var rs = "" />
 		<cfquery name="rs">
-			UPDATE #getTableNameByEntityName('WorkflowTrigger')# 
+			UPDATE SwWorkflowTrigger 
 			SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> 
 			WHERE workflowTriggerID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.workflowTriggerID#">
 			<cfif structKeyExists(arguments, "timeout")>

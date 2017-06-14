@@ -61,13 +61,13 @@ Notes:
 		<cfset var rs = "" />
 		<cfquery name="rs">
 			SELECT
-				#getTableNameByEntityName('Attribute')# .attributeCode
+				SwAttribute.attributeCode
 			FROM
-				#getTableNameByEntityName('Attribute')# 
+				SwAttribute
 			  INNER JOIN
-			  	#getTableNameByEntityName('AttributeSet')#  on #getTableNameByEntityName('Attribute')# .attributeSetID = #getTableNameByEntityName('AttributeSet')# .attributeSetID
+			  	SwAttributeSet on SwAttribute.attributeSetID = SwAttributeSet.attributeSetID
 			WHERE
-				#getTableNameByEntityName('AttributeSet')# .attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
+				SwAttributeSet.attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
 		</cfquery>
 		<cfreturn rs />
 	</cffunction>
@@ -79,7 +79,7 @@ Notes:
 		
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('AttribtueValue')# 
+				SwAttributeValue
 			SET
 				attributeValueOptionID = null
 			WHERE

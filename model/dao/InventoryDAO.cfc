@@ -60,7 +60,7 @@ Notes:
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath)
 						FROM
-							#getApplicationKey()#Inventory inventory
+							SlatwallInventory inventory
 							LEFT JOIN inventory.stock stock
 							LEFT JOIN stock.sku sku
 							LEFT JOIN stock.location location
@@ -91,7 +91,7 @@ Notes:
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath
 						)
-						FROM #getApplicationKey()#OrderItem orderItem
+						FROM SlatwallOrderItem orderItem
 					  	  LEFT JOIN
 					  	  	orderItem.stock stock
 					  	  LEFT JOIN 
@@ -123,7 +123,7 @@ Notes:
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath)
 						FROM
-							#getApplicationKey()#OrderItem orderItem
+							SlatwallOrderItem orderItem
 						  LEFT JOIN
 					  		orderItem.orderDeliveryItems orderDeliveryItem
 					  	  LEFT JOIN
@@ -208,7 +208,7 @@ Notes:
 						location.locationID as locationID, 
 						location.locationIDPath as locationIDPath)
 					FROM
-						#getApplicationKey()#StockAdjustmentItem stockAdjustmentItem
+						SlatwallStockAdjustmentItem stockAdjustmentItem
 					  LEFT JOIN
 					  	stockAdjustmentItem.stockAdjustmentDeliveryItems stockAdjustmentDeliveryItem
 					  LEFT JOIN
@@ -238,7 +238,7 @@ Notes:
 								location.locationID as locationID, 
 								location.locationIDPath as locationIDPath
 							)
-							FROM #getApplicationKey()#StockAdjustmentItem stockAdjustmentItem
+							FROM SlatwallStockAdjustmentItem stockAdjustmentItem
 								 LEFT JOIN
 								  	stockAdjustmentItem.#stockDirection# #stockDirection#
 								  LEFT JOIN
@@ -306,7 +306,7 @@ Notes:
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath)
 						FROM
-							#getApplicationKey()#OrderItem orderItem
+							SlatwallOrderItem orderItem
 						  LEFT JOIN
 					  		orderItem.stockReceiverItems stockReceiverItem
 					  	  LEFT JOIN
@@ -334,7 +334,7 @@ Notes:
 										stock.stockID as stockID, 
 										location.locationID as locationID, 
 										location.locationIDPath as locationIDPath)
-									FROM #getApplicationKey()#OrderItem orderItem
+									FROM SlatwallOrderItem orderItem
 									LEFT JOIN
 								  	  	orderItem.stock stock
 								  	  LEFT JOIN
@@ -406,7 +406,7 @@ Notes:
 							location.locationIDPath as locationIDPath
 						)
 						FROM
-							#getApplicationKey()#VendorOrderItem vendorOrderItem
+							SlatwallVendorOrderItem vendorOrderItem
 						  LEFT JOIN
 					  		vendorOrderItem.stockReceiverItems stockReceiverItem
 					  	  LEFT JOIN
@@ -441,7 +441,7 @@ Notes:
 							location.locationIDPath as locationIDPath
 						)
 						FROM
-							#getApplicationKey()#VendorOrderItem vendorOrderItem
+							SlatwallVendorOrderItem vendorOrderItem
 					  	  LEFT JOIN
 					  	  	vendorOrderItem.stock stock
 					  	  LEFT JOIN
@@ -512,7 +512,7 @@ Notes:
 							location.locationID as locationID, 
 							location.locationIDPath as locationIDPath)
 						FROM
-							#getApplicationKey()#StockAdjustmentItem stockAdjustmentItem
+							SlatwallStockAdjustmentItem stockAdjustmentItem
 						  LEFT JOIN
 						  	stockAdjustmentItem.stockReceiverItems stockReceiverItem
 						  LEFT JOIN
