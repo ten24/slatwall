@@ -52,9 +52,6 @@
 		<cfreturn createHibachiUUID() />
 	</cffunction>
 	<cfscript>
-		public string function getTableNameByEntityName(required string entityName){
-			return getService('HibachiService').getTableNameByEntityName(arguments.entityName);
-		}
 		
 		public void function reencryptData(numeric batchSizeLimit=0){
 		
