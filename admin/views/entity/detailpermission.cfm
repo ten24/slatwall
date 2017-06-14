@@ -57,7 +57,8 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permission#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.permission#" edit="#rc.edit#"
-			backAction="entity.detailpermissiongroup" backQueryString="permissionGroupID=#rc.permission.getPermissionGroup().getPermissionGroupID()#"
+			backAction="entity.detailpermissiongroup" 
+			backQueryString="permissionGroupID=#rc.permission.getPermissionGroup().getPermissionGroupID()#"
 		></hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.permission#">
