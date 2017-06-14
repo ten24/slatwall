@@ -467,7 +467,7 @@ Notes:
 		
 		<cfquery name="rs">
 			DELETE FROM
-				#getTableNameByEntityName('RelatedProduct')#
+				SwRelatedProduct
 			WHERE
 				productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#" />
 			  OR
