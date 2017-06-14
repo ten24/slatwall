@@ -293,30 +293,61 @@ Notes:
 			return true;
 		}
 	</cfscript>
+	
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
-		<cfargument name="entityName"/>
-		<cfargument name="customPropertyName"/>
+		<cfargument name="entityName" type="string" required="true"/>
+		<cfargument name="customPropertyName" type="string" required="true"/>
+		<cfargument name="overrideDataFlag" type="boolean" default="false" >
 		
 		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
 		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
 		
-		<cfquery name="local.attributeToCustomProperty">
-			UPDATE p
-
-			SET p.#arguments.customPropertyName# = av.attributeValue
+		<cfif getApplicationValue("databaseType") eq "MySQL">
 			
-			FROM #entityMetaData.table# p
-			
-			INNER JOIN SwAttributeValue av
-			
-			ON p.#primaryIDName# = av.#primaryIDName#
-			
-			INNER JOIN SwAttribute a
-			
-			ON av.attributeID = a.attributeID 
-			
-			WHERE a.attributeCode = '#arguments.customPropertyName#'
-		</cfquery>
+			<cfquery name="local.attributeToCustomProperty">
+				UPDATE #entityMetaData.table# p
+				
+				INNER JOIN SwAttributeValue av
+				
+				ON p.#primaryIDName# = av.#primaryIDName#
+				
+				INNER JOIN SwAttribute a
+				
+				ON av.attributeID = a.attributeID
+				
+				SET p.#arguments.customPropertyName# = av.attributeValue
+				
+				WHERE a.attributeCode = '#arguments.customPropertyName#'
+				
+				<cfif NOT overrideDataFlag >
+					AND p.#arguments.customPropertyName# IS NULL
+				</cfif>
+				
+			</cfquery>
+		<cfelse>
+			<cfquery name="local.attributeToCustomProperty">
+				UPDATE p
+	
+				SET p.#arguments.customPropertyName# = av.attributeValue
+				
+				FROM #entityMetaData.table# p
+				
+				INNER JOIN SwAttributeValue av
+				
+				ON p.#primaryIDName# = av.#primaryIDName#
+				
+				INNER JOIN SwAttribute a
+				
+				ON av.attributeID = a.attributeID 
+				
+				WHERE a.attributeCode = '#arguments.customPropertyName#'
+				
+				<cfif NOT overrideDataFlag >
+					AND p.#arguments.customPropertyName# IS NULL
+				</cfif>
+				
+			</cfquery>
+		</cfif>
 	</cffunction>
 	
 
