@@ -54,7 +54,7 @@ Notes:
 		<cfargument name="conversionDateTime" type="date" default="#now()#" />
 		
 		<!--- Setup HQL --->
-		<cfset var hql="SELECT currencyrate FROM #getApplicationKey()#CurrencyRate currencyrate
+		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
 			WHERE
 			  	currencyrate.effectiveStartDateTime < :conversionDateTime
 			  AND
@@ -82,7 +82,7 @@ Notes:
 
 	<cffunction name="getCurrencyByCurrencyCode" output="false" access="public">
 		<cfargument name="currencyCode" type="string" required="true" >
-		<cfreturn ormExecuteQuery("SELECT acurrency FROM #getApplicationKey()#Currency acurrency WHERE acurrency.currencyCode = ? ", [arguments.currencyCode], true, {maxResults=1}) />
+		<cfreturn ormExecuteQuery("SELECT acurrency FROM SlatwallCurrency acurrency WHERE acurrency.currencyCode = ? ", [arguments.currencyCode], true, {maxResults=1}) />
 	</cffunction>
 	
 </cfcomponent>

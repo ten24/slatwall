@@ -52,13 +52,13 @@ component extends="HibachiDAO" accessors="true" {
     public query function getProductTypeQuery() {
 	   var qs = new query();
 	   qs.setSQL("SELECT *,
-	   					(SELECT count(#getApplicationKey()#Product.productID)
-						 FROM #getApplicationKey()#Product
-						 WHERE #getApplicationKey()#Product.productTypeID = #getApplicationKey()#ProductType.productTypeID) as isAssigned,
+	   					(SELECT count(SlatwallProduct.productID)
+						 FROM SlatwallProduct
+						 WHERE SlatwallProduct.productTypeID = SlatwallProductType.productTypeID) as isAssigned,
 						 (SELECT count(spt.productTypeID)
-						  FROM #getApplicationKey()#ProductType spt
-						  WHERE spt.parentProductTypeID = #getApplicationKey()#ProductType.productTypeID) as childCount
-	               FROM #getApplicationKey()#ProductType
+						  FROM SlatwallProductType spt
+						  WHERE spt.parentProductTypeID = SlatwallProductType.productTypeID) as childCount
+	               FROM SlatwallProductType
 				   ORDER BY productTypeName ASC");
 	   // return query sorted Product Type tree 
 	   return qs.execute().getResult();

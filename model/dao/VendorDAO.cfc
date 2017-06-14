@@ -50,7 +50,7 @@ component extends="HibachiDAO" {
 	public array function getProductsForVendor(required any vendorID) {
 		var params = [arguments.vendorId];
 		var hql = " SELECT p
-					FROM Slatwall#getApplicationKey()# p
+					FROM SlatwallProduct p
 					INNER JOIN p.brand b
 					INNER JOIN b.vendors v
 					WHERE v.vendorID = ?    ";

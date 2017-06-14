@@ -62,7 +62,7 @@ Notes:
 		<cfargument name="emailAddress" required="true" type="string" />
 
 		<cfquery name="local.getAccountIDByPrimaryEmailAddress" maxrows="1">
-			SELECT a.accountID FROM #getTableNameByEntityName('Account')# AS a LEFT JOIN #getTableNameByEntityName('AccountEmailAddress')#  AS aea ON aea.accountID=a.accountID
+			SELECT a.accountID FROM SwAccount AS a LEFT JOIN SwAccountEmailAddress AS aea ON aea.accountID=a.accountID
 			WHERE emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.emailAddress#" />
 		</cfquery>
 
@@ -77,7 +77,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('Session')# 
+				SwSession
 			SET
 				accountAuthenticationID = null,
 				accountID = null
@@ -93,7 +93,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('OrderFulfillment')# 
+				SwOrderFulfillment
 			SET
 				accountAddressID = null
 			WHERE
@@ -108,7 +108,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('OrderPayment')# 
+				SwOrderPayment
 			SET
 				billingAccountAddressID = null
 			WHERE
@@ -123,7 +123,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('Order')# 
+				SwOrder
 			SET
 				billingAccountAddressID = null
 			WHERE
@@ -132,7 +132,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('Order')# 
+				SwOrder
 			SET
 				shippingAccountAddressID = null
 			WHERE
@@ -148,7 +148,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('SubscriptionUsage')# 
+				SwSubsUsage
 			SET
 				shippingAccountAddressID = null
 			WHERE
@@ -164,7 +164,7 @@ Notes:
 
 		<cfquery name="rs">
 			UPDATE
-				#getTableNameByEntityName('OrderPayment')# 
+				SwOrderPayment
 			SET
 				accountPaymentMethodID = null
 			WHERE
@@ -178,7 +178,7 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			UPDATE #getTableNameByEntityName('Session')# 
+			UPDATE SwSession
 			SET accountAuthenticationID = null
 			WHERE accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" />
 		</cfquery>
@@ -269,7 +269,7 @@ Notes:
 		<cfargument name="accountID" required="true"  />
 		<cfset var rs = "" />
 		<cfquery name="rs">
-			UPDATE #getTableNameByEntityName('Session')#  SET accountID = null, accountAuthenticationID = null WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+			UPDATE SwSession SET accountID = null, accountAuthenticationID = null WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
 	</cffunction>
 
@@ -302,7 +302,7 @@ Notes:
 		</cfloop>
 
 		<cfquery name="rs">
-			DELETE FROM #getTableNameByEntityName('Account')# WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
+			DELETE FROM SwAccount WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
 		</cfquery>
 	</cffunction>
 
@@ -313,7 +313,7 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT MAX(accountLoyaltyNumber) as maxAccountLoyaltyNumber FROM #getTableNameByEntityName('AccountLoyalty')# WHERE loyaltyID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.loyaltyID#" />
+			SELECT MAX(accountLoyaltyNumber) as maxAccountLoyaltyNumber FROM SwAccountLoyalty WHERE loyaltyID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.loyaltyID#" />
 		</cfquery>
 
 		<cfif rs.maxAccountLoyaltyNumber gt 0 >

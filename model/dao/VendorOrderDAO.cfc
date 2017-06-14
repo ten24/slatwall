@@ -51,7 +51,7 @@ component extends="HibachiDAO" {
 	public any function isProductInVendorOrder(productId, vendorOrderId) {
 		var params = [arguments.productId, arguments.vendorOrderId];				
 		var hql = " SELECT  o 
-					FROM #getApplicationKey()#VendorOrder o
+					FROM SlatwallVendorOrder o
 					INNER JOIN o.vendorOrderItems i
 					INNER JOIN i.stock s
 					INNER JOIN s.sku sk
@@ -83,7 +83,7 @@ component extends="HibachiDAO" {
 	public numeric function getQuantityOfStockAlreadyOnOrder(required any vendorOrderID, required any skuID, required any locationID) {
 		var params = [arguments.vendorOrderID, arguments.skuID, arguments.locationID];	
 		var hql = " SELECT new map(sum(voi.quantity) as quantity)
-					FROM #getApplicationKey()#VendorOrderItem voi
+					FROM SlatwallVendorOrderItem voi
 					WHERE voi.vendorOrder.vendorOrderID = ?
 					AND voi.stock.sku.skuID = ?    
 					AND voi.stock.location.locationID = ?                ";
@@ -100,7 +100,7 @@ component extends="HibachiDAO" {
 	public numeric function getQuantityOfStockAlreadyReceived(required any vendorOrderID, required any skuID, required any locationID) {
 		var params = [arguments.vendorOrderID, arguments.skuID, arguments.locationID];	
 		var hql = " SELECT new map(sum(sri.quantity) as quantity)
-					FROM #getApplicationKey()#StockReceiverItem sri
+					FROM SlatwallStockReceiverItem sri
 					WHERE sri.stockReceiver.vendorOrder.vendorOrderID = ?    
 					AND sri.stock.sku.skuID = ?  
 					AND sri.stock.location.locationID = ?                 ";
@@ -117,7 +117,7 @@ component extends="HibachiDAO" {
 	public array function getSkusOrdered(required any vendorOrderID) {
 		var params = [arguments.vendorOrderID];           
 		var hql = " SELECT distinct sk
-					FROM #getApplicationKey()#Sku sk, #getApplicationKey()#VendorOrder vo
+					FROM SlatwallSku sk, SlatwallVendorOrder vo
 					INNER JOIN vo.vendorOrderItems voi
 					INNER JOIN voi.stock s
 					WHERE s.sku.skuID = sk.skuID

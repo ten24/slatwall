@@ -58,7 +58,7 @@ Notes:
 				roundingRuleExpression,
 				roundingRuleDirection
 			FROM
-				#getTableNameByEntityName('RoundingRule')#
+				SwRoundingRule
 			WHERE
 				roundingRuleID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.roundingRuleID#" /> 
 		</cfquery>

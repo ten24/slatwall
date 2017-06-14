@@ -52,7 +52,7 @@ component extends="HibachiDAO" {
 		// Check for stock using this location
 		var params = [arguments.location.getLocationID()];
 		var hql = " SELECT s
-					FROM #getApplicationKey()#Stock s
+					FROM SlatwallStock s
 					INNER JOIN s.location l
 					WHERE l.locationID = ?    ";
 	
@@ -71,7 +71,7 @@ component extends="HibachiDAO" {
 		*/
 
 		var hql = " SELECT new map(count(l) as thecount)
-					FROM #getApplicationKey()#Location l     ";
+					FROM SlatwallLocation l     ";
 	
 		var result = ormExecuteQuery(hql);
 
@@ -85,7 +85,7 @@ component extends="HibachiDAO" {
 	public numeric function getChildLocationCount(required string locationID){
 		return ORMExecuteQuery('
 			SELECT count(cl)
-			FROM #getApplicationKey()#Location l 
+			FROM SlatwallLocation l 
 			LEFT JOIN l.childLocations cl
 			WHERE l.locationID=:locationID'
 			,{locationID=arguments.locationID},true

@@ -52,13 +52,13 @@ Notes:
 		<cfargument name="cmsContentID" type="string" required="true">
 		<cfargument name="cmsSiteID" type="string" required="true">
 
-		<cfset var contents = ormExecuteQuery(" FROM #getApplicationKey()#Content c WHERE c.cmsContentID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsContentID, arguments.cmsSiteID ] ) />
+		<cfset var contents = ormExecuteQuery(" FROM SlatwallContent c WHERE c.cmsContentID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsContentID, arguments.cmsSiteID ] ) />
 
 		<cfif arrayLen(contents)>
 			<cfreturn contents[1] />
 		</cfif>
 
-		<cfreturn entityNew("#getApplicationKey()#Content") />
+		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 
 	<cffunction name="getContentDescendants" access="public" >
@@ -79,26 +79,26 @@ Notes:
 	<cffunction name="deleteCategoryByCmsCategoryID" access="public">
 		<cfargument name="cmsCategoryID" type="string"/>
 		<cfquery name="local.getSlatwallCategoryID" result="local.getSlatwallCategoryIDResult">
-			SELECT categoryID, parentCategoryID FROM #getTableNameByEntityName('Category')#  where cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.cmsCategoryID#" /> 
+			SELECT categoryID, parentCategoryID FROM SwCategory where cmsCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.cmsCategoryID#" /> 
 		</cfquery>		
 		
 		<cfif local.getSlatwallCategoryIDResult.recordCount>
 			
 			<cfquery name="local.getTopLevelChildCategories" result="local.getTopLevelChildCategoriesResult">
-				SELECT categoryID FROM #getTableNameByEntityName('Category')#  where parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
+				SELECT categoryID FROM SwCategory where parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
 			</cfquery>
 			
 			<cfif local.getTopLevelChildCategoriesResult.recordCount>
 				<cfloop query="local.getTopLevelChildCategories">
 					<cfif len(local.getSlatwallCategoryID.parentCategoryID)>
 						<cfquery name="local.updateTopLevelChildCategories">
-							Update #getTableNameByEntityName('Category')#  
+							Update SwCategory 
 							Set parentCategoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.parentCategoryID#" />
 							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
 						</cfquery>
 					<cfelse>
 						<cfquery name="local.updateTopLevelChildCategories">
-							Update #getTableNameByEntityName('Category')#  
+							Update SwCategory 
 							Set parentCategoryID = null
 							Where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getTopLevelChildCategories.categoryID#" />
 						</cfquery>
@@ -113,7 +113,7 @@ Notes:
 			DELETE FROM SwProductCategory WHERE categoryID = <cfqueryparam  cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" /> 
 		</cfquery>
 		<cfquery name="local.deleteCategory">
-			DELETE FROM #getTableNameByEntityName('Category')#  where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
+			DELETE FROM SwCategory where categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.getSlatwallCategoryID.categoryID#" />
 		</cfquery>
 		
 	</cffunction>
@@ -122,13 +122,13 @@ Notes:
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
 
-		<cfreturn ormExecuteQuery(" FROM #getApplicationKey()#Content c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
 
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
 		<cfargument name="CmsCategoryIDs" type="string" />
 
-		<cfset var hql = " FROM #getApplicationKey()#Category sc
+		<cfset var hql = " FROM SlatwallCategory sc
 							WHERE sc.cmsCategoryID IN (:CmsCategoryIDs) " />
 
 		<cfreturn ormExecuteQuery(hql, {CmsCategoryIDs=listToArray(arguments.CmsCategoryIDs)}) />
@@ -139,10 +139,10 @@ Notes:
 		<cfargument name="siteID" type="string" />
 
 		<cfif structKeyExists(arguments, "siteID")>
-			<cfreturn ormExecuteQuery(" FROM #getApplicationKey()#Content WHERE contentTemplateType.systemCode = ? AND site.siteID = ?", ["ctt#arguments.templateType#", arguments.siteID], false, {ignoreCase=true}) />
+			<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ? AND site.siteID = ?", ["ctt#arguments.templateType#", arguments.siteID], false, {ignoreCase=true}) />
 		</cfif>
 
-		<cfreturn ormExecuteQuery(" FROM #getApplicationKey()#Content WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"], false, {ignoreCase=true}) />
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"], false, {ignoreCase=true}) />
 	</cffunction>
 
 	<cffunction name="removeCategoryFromAssociation" access="public">
@@ -151,7 +151,7 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="local.getChildCategory">
-			SELECT categoryID FROM #getTableNameByEntityName('Category')#  WHERE categoryIDPath like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryIDPath#/%" /> order by LENGTH(categoryIDPath) desc 
+			SELECT categoryID FROM SwCategory WHERE categoryIDPath like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryIDPath#/%" /> order by LENGTH(categoryIDPath) desc 
 		</cfquery>
 		
 		<cfloop query="local.getChildCategory">
@@ -163,15 +163,15 @@ Notes:
 			</cfquery>
 			
 			<cfquery name="local.deleteparentcats">
-				UPDATE #getTableNameByEntityName('Category')#  set parentCategoryID=NULL, siteID=NULL WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
+				UPDATE SwCategory set parentCategoryID=NULL, siteID=NULL WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
 			</cfquery>
 			<cfquery name="local.deletecat">
-				DELETE FROM #getTableNameByEntityName('Category')#  WHERE categoryID = <cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
+				DELETE FROM SwCategory WHERE categoryID = <cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getChildCategory.categoryID#" /> 
 			</cfquery>
 		</cfloop>
 		
 		<cfquery name="local.getCategory">
-			SELECT categoryID FROM #getTableNameByEntityName('Category')#  WHERE categoryIDPath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryIDPath#" /> 
+			SELECT categoryID FROM SwCategory WHERE categoryIDPath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryIDPath#" /> 
 		</cfquery>
 		
 		<cfquery name="local.removeCategoryFromContentAssociation">
@@ -182,13 +182,13 @@ Notes:
 		</cfquery>
 		
 		<cfquery name="local.deleteparentcats">
-			UPDATE #getTableNameByEntityName('Category')#  set parentCategoryID=NULL, siteID=NULL WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getCategory.categoryID#" /> 
+			UPDATE SwCategory set parentCategoryID=NULL, siteID=NULL WHERE categoryID =<cfqueryparam list="true" cfsqltype="cf_sql_varchar" value="#local.getCategory.categoryID#" /> 
 		</cfquery>
 	</cffunction>
 
 	<cffunction name="getDefaultContentBySite" access="public">
 		<cfargument name="site" type="any" required="true">
-		<cfreturn ORMExecuteQuery('FROM #getApplicationKey()#Content Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
+		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
 	</cffunction>
 
 	<cffunction name="getContentByUrlTitlePathBySite" access="public">
@@ -196,16 +196,16 @@ Notes:
 		<cfargument name="urlTitlePath" type="any" />
 
 		<cfif isNull(arguments.urlTitlePath)>
-			<cfreturn ORMExecuteQuery("FROM #getApplicationKey()#Content WHERE site = :site AND urlTitlePath IS Null",{site=arguments.site}, true) />
+			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath IS Null",{site=arguments.site}, true) />
 		<cfelse>
-			<cfreturn ORMExecuteQuery("FROM #getApplicationKey()#Content WHERE site = :site AND urlTitlePath = :urlTitlePath",{site=arguments.site,urlTitlePath=arguments.urlTitlePath}, true) />
+			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath = :urlTitlePath",{site=arguments.site,urlTitlePath=arguments.urlTitlePath}, true) />
 		</cfif>
 	</cffunction>
 
 	<cffunction name="getMaxSortOrderByContent" access="public">
 		<cfargument name="content" type="any" required="true" >
 		<cfreturn ORMExecuteQuery(
-			'SELECT DISTINCT COALESCE(max(sortOrder),0) as maxSortOrder FROM #getApplicationKey()#Content
+			'SELECT DISTINCT COALESCE(max(sortOrder),0) as maxSortOrder FROM SlatwallContent
 			where site=:site
 			and parentContent=:parentContent
 			and sortOrder is not null
@@ -219,7 +219,7 @@ Notes:
 		<cfargument name="contentID" type="string" required="true" />
 		<cfargument name="productID" type="string" required="true">
 		<cfreturn !isNull(ORMExecuteQuery('
-			select lp from #getApplicationKey()#ProductListingPage lp
+			select lp from SlatwallProductListingPage lp
 			where content.contentID = :contentID
 			  and product.productID = :productID
 			',
@@ -233,7 +233,7 @@ Notes:
 		<cfargument name="min" type="numeric" required="true">
 		<cfargument name="max" type="numeric" required="true">
 		<cfreturn ORMExecuteQuery(
-			'FROM #getApplicationKey()#Content
+			'FROM SlatwallContent
 			where site=:site
 			and parentContent=:parentContent
 			and sortOrder Between #arguments.min# and #arguments.max#
@@ -245,7 +245,7 @@ Notes:
 	<cffunction name="getChildContentsByDisplayInNavigation" type="array" access="public">
 		<cfargument name="parentContent" type="any" required="true" />
 
-		<cfreturn ORMExecuteQuery( 'FROM #getApplicationKey()#Content
+		<cfreturn ORMExecuteQuery( 'FROM SlatwallContent
 									Where displayInNavigation = true
 									and activeFlag = true
 									and parentContent = :parentContent
@@ -257,7 +257,7 @@ Notes:
 		public void function updateAllDescendantsUrlTitlePathByUrlTitle(required string contentIDs,required string previousURLTitlePath, required string newUrlTitlePath){
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
 			ORMExecuteQuery("
-				UPDATE #getApplicationKey()#Content s
+				UPDATE SlatwallContent s
 				SET urlTitlePath=REPLACE(s.urlTitlePath,'#arguments.previousURLTitlePath#','#arguments.newUrlTitlePath#') 
 				Where s.contentID IN (#arguments.contentIDs#)"
 			);
@@ -265,7 +265,7 @@ Notes:
 
 		public void function updateAllDescendantsTitlePathByUrlTitle(required string contentIDs,required string previousTitlePath, required string newTitlePath){
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
-			ORMExecuteQuery("UPDATE #getApplicationKey()#Content s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ");
+			ORMExecuteQuery("UPDATE SlatwallContent s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ");
 		}
 	</cfscript>
 
@@ -273,13 +273,13 @@ Notes:
 		<cfargument name="cmsCategoryID" type="string" required="true">
 		<cfargument name="cmsSiteID" type="string" required="true">
 
-		<cfset var contents = ormExecuteQuery(" FROM #getApplicationKey()#Category c WHERE c.cmsCategoryID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsCategoryID, arguments.cmsSiteID ] ) />
+		<cfset var contents = ormExecuteQuery(" FROM SlatwallCategory c WHERE c.cmsCategoryID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsCategoryID, arguments.cmsSiteID ] ) />
 
 		<cfif arrayLen(contents)>
 			<cfreturn contents[1] />
 		</cfif>
 
-		<cfreturn entityNew("#getApplicationKey()#Category") />
+		<cfreturn entityNew("SlatwallCategory") />
 	</cffunction>
 
 </cfcomponent>
