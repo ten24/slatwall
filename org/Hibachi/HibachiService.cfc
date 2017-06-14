@@ -183,7 +183,9 @@
 	        
 	        // Validate this object now that it has been populated
 			arguments.entity.validate(context=arguments.context);
-			        
+			//check if this is new before save - announcements will need this information later.
+	        var isNew = arguments.entity.isNew();
+	        
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
@@ -191,11 +193,23 @@
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
+				
+				//If new need to announce the Create process as well as Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				}
 		    } else {
             
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
+				
+				//If new need to announce the Create Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				}
 	        }
 	        
 	        // Return the entity
@@ -1007,6 +1021,11 @@
 			
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
+		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			entityMetaData = getEntityMetaData( arguments.entityName );
+			return entityMetaData.table; 
 		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {

@@ -35,7 +35,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return super.init();
 	}
 	
-	
+	public string function getTableName(){
+		return getService('hibachiService').getTableNameByEntityName(getClassName());
+	}
 
 	public void function genericPropertyRemove(required string propertyName){
 		evaluate("set#arguments.propertyName#(javacast('null',''))");
@@ -473,30 +475,30 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables, cacheKey)) {
 			variables[ cacheKey ] = [];
 
-			var smartList = getPropertyOptionsSmartList( arguments.propertyName );
+			var collectionList = getPropertyOptionsCollectionList( arguments.propertyName );
 
 			var propertyMeta = getPropertyMetaData( propertyName );
 
 			if(structKeyExists(propertyMeta, "hb_optionsNameProperty")) {
-				smartList.addSelect(propertyIdentifier=propertyMeta.hb_optionsNameProperty, alias="value");
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|value");
 			} else {
 				var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
-				smartList.addSelect(propertyIdentifier=exampleEntity.getSimpleRepresentationPropertyName(), alias="name");
+				collectionList.addDisplayProperty("#exampleEntity.getSimpleRepresentationPropertyName()#|name");
 			}
 			if(structKeyExists(propertyMeta, "hb_optionsValueProperty")) {
-				smartList.addSelect(propertyIdentifier=propertyMeta.hb_optionsValueProperty, alias="value");
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsValueProperty#|value");
 			} else {
-				smartList.addSelect(propertyIdentifier=getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')), alias="value");
+				collectionList.addDisplayProperty("#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.'))#|value");
 			}
 
 			if(structKeyExists(propertyMeta, "hb_optionsAdditionalProperties")) {
 				var additionalPropertiesArray = listToArray(propertyMeta.hb_optionsAdditionalProperties);
 				for(var p=1; p<=arrayLen(additionalPropertiesArray); p++) {
-					smartList.addSelect(propertyIdentifier=additionalPropertiesArray[p], alias=replace(additionalPropertiesArray[p],".","_","all"));
+					collectionList.addDisplayProperty("#additionalPropertiesArray[p]#|#replace(additionalPropertiesArray[p],'.','_','all')#");
 				}
 			}
 
-			variables[ cacheKey ] = smartList.getRecords();
+			variables[ cacheKey ] = collectionList.getRecords();
 
 			// If this is a many-to-one related property, then add a 'select' to the top of the list
 			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
@@ -525,6 +527,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// If there was an hb_optionsSmartListData defined, then we can now apply that data to this smart list
 			if(structKeyExists(propertyMeta, "hb_optionsSmartListData")) {
 				variables[ cacheKey ].applyData( propertyMeta.hb_optionsSmartListData );
+			}
+
+			if( getService("hibachiService").getEntityHasPropertyByEntityName(listLast(propertyMeta.cfc,'.'), 'activeFlag') ) {
+				variables[ cacheKey ].addFilter( 'activeFlag', 1 );
+			}
+		}
+
+		return variables[ cacheKey ];
+	}
+
+
+	// @hint returns a collection list or records that can be used as options for a many-to-one property
+	public any function getPropertyOptionsCollectionList( required string propertyName ) {
+		var cacheKey = "#arguments.propertyName#OptionsCollectionList";
+
+		if(!structKeyExists(variables, cacheKey)) {
+
+			var propertyMeta = getPropertyMetaData( arguments.propertyName );
+			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMeta.cfc,'.') );
+
+			variables[ cacheKey ] = entityService.invokeMethod("get#listLast(propertyMeta.cfc,'.')#CollectionList");
+
+			// If there was an hb_optionsCollectionListData defined, then we can now apply that data to this smart list
+			if(structKeyExists(propertyMeta, "hb_optionsSmartListData")) {
+				variables[ cacheKey ].applyData( propertyMeta.hb_optionsSmartListData );
+			}else if(structKeyExists(propertyMeta, "hb_optionsCollectionListData")) {
+				variables[ cacheKey ].applyData( propertyMeta.hb_optionsCollectionListData );
 			}
 
 			if( getService("hibachiService").getEntityHasPropertyByEntityName(listLast(propertyMeta.cfc,'.'), 'activeFlag') ) {
@@ -617,8 +646,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var propertySmartList = this.invokeMethod('get#propertyName#SmartList');
-		return propertySmartList.getRecordsCount();
+		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
+		return propertyCollection.getRecordsCount();
 	}
 
 	// @hint handles encrypting a property based on conventions

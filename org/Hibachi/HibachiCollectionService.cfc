@@ -830,12 +830,18 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 						ArrayAppend(collectionPropertyIdentifiers,piAlias);
 					}
+
 					//add all aggregates by alias
 					if(structKeyExists(column,'aggregate')){
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
-					//add all attributes by alias
 
+					//add all columns with custom alias
+					if(structKeyExists(column,'alias')){
+						ArrayAppend(collectionPropertyIdentifiers,column.alias);
+					}
+
+					//add all attributes by alias
 					if(structKeyExists(column,'attributeID')){
 						ArrayAppend(attributePropertyIdentifierArray,piAlias);
 					}

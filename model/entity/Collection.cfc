@@ -412,9 +412,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addDisplayProperty(required string displayProperty){
 		var collectionConfig = this.getCollectionConfigStruct();
 
-		var column = {
-			"propertyIdentifier"=arguments.displayProperty
-		};
+		var column = {};
+
+		if(find('|', arguments.displayProperty)){
+			column['alias'] = listLast(arguments.displayProperty, '|');
+			arguments.displayProperty = listFirst(arguments.displayProperty, '|');
+		}
+
+		column["propertyIdentifier"]=arguments.displayProperty;
 
 		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
@@ -1689,8 +1694,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
-
+			
 		}
+		
 		return variables.pageRecords;
 	}
 
@@ -2193,6 +2199,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						currentAlias = columnPropertyIdentiferArray[1];
 					}
 				}
+				if(structKeyExists(column, 'alias')){
+					return column.alias;
+				}
 				return Replace(Replace(arguments.column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 			}
 		}
@@ -2355,6 +2364,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias);
 
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
+			
 		}
 		return HQL;
 	}
@@ -2439,6 +2449,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			keywordIndex++;
 		}
+		
 	}
 
 	//TODO:write an export/import service so we can share json files of the collectionConfig
