@@ -88,6 +88,10 @@
 
 			return ormExecuteQuery("SELECT count(*) FROM #arguments.entityName#",true);
 		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			return getService('HibachiService').getTableNameByEntityName(arguments.entityName);
+		}
 
 
 		public void function reloadEntity(required any entity) {
