@@ -1,7 +1,0 @@
-<span ng-init="slatwall = $root.slatwall"></span>
-<!--- country ---> 
-  <label for="countries">Country:</label>
-  <select name="countries" class="form-control" ng-model="selectedCountry" ng-options="country as country.name for country in slatwall.countries.countryCodeOptions" ng-change="slatwall.doAction('/index.cfm/api/scope/getStateCodeOptionsByCountryCode/', {'countryCode':selectedCountry.value} ,'post'); OrderAddShippingObj.countryCode = selectedCountry.value">
-     <option value="US"> Country * </option>
-  </select>
-  <span error-for="country"></span>
