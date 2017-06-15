@@ -77,7 +77,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var filter = accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
 		var filterData = orderItemCollectionList.convertRelatedFilter(propertyIdentifier,filter);
-		assertEquals(filterData.propertyIdentifier,'order.account.orders.orderID');
+		assertEquals(filterData.propertyIdentifier,'_orderitem._order_account_orders.orderID');
 	}
 	
 	/**
@@ -95,7 +95,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var convertedFilterGroup = orderItemCollectionList.convertRelatedFilterGroup(propertyIdentifier,filterGroup);
 		assert(arrayLen(convertedFilterGroup));
-		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'order.orderID');
+		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'_ordertitem_order.orderID');
 	}
 	
 	/**
@@ -134,8 +134,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var productTypeCollectionList = request.slatwallScope.getService('hibachiService').getProductTypeCollectionList();
 		productTypeCollectionList.setFilterByLeafNodesFlag(true);
-		debug(productTypeCollectionList.getHQL());
-		debug(productTypeCollectionList.getPageRecords());
 		
 		assert(productTypeCollectionList.getFilterByLeafNodesFlag());
 	}
@@ -1447,7 +1445,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
-		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}

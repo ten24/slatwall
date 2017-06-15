@@ -1733,7 +1733,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				for(var filterGroup in recordRestrictionFilterGroups){
 					filterGroup['logicalOperator']="AND";
 					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
-				}
+				} 
 			}else{
 				var propertyIdentifier = aliasMap[permissionRecordRestriction['permission_entityClassName']];
 				applyRelatedFilterGroups(propertyIdentifier,recordRestrictionFilterGroups);
