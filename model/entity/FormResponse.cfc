@@ -83,14 +83,18 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
  		var attributeValueCollectionList = getService("HibachiCollectionService").getAttributeValueCollectionList(); 
  		attributeValueCollectionList.addFilter('attribute.formEmailConfirmationFlag', 1); 
  		attributeValueCollectionList.addDisplayProperty('attribute.formEmailConfirmationFlag');
- 		var attributeValueCollectionList = attributeValueCollectionList.getPageRecords(); 
- 		if (!isNull(attributeValueCollectionList)){
- 			attributeValueCollectionList = attributeValueCollectionList[1];
+ 		var attributeValueCollectionListRecords = attributeValueCollectionList.getPageRecords(); 
+ 		if (!isNull(attributeValueCollectionListRecords)){
+ 			var attributeValueCollectionListRecord = attributeValueCollectionListRecords[1];
  		}
- 		var formEmailConfirmationValue = attributeValueCollectionList['attribute_formEmailConfirmationFlag'];
- 		if(!isNull(formEmailConfirmationValue)){
- 			return formEmailConfirmationValue; 
- 		} 
+		if (!isNull(attributeValueCollectionListRecord)){
+ 			var formEmailConfirmationValue = attributeValueCollectionListRecord['attribute_formEmailConfirmationFlag'];
+			if(!isNull(formEmailConfirmationValue)){
+				return formEmailConfirmationValue; 
+			}
+ 		}
+ 		
+		
  	}  
 
 	// ============  END:  Non-Persistent Property Methods =================
