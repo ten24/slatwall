@@ -1704,17 +1704,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var objectPermissionsList = getCollectionObject();
 		
 		var aliasMap ={};
-		
-		for(var column in getCollectionConfigStruct().columns){
-			if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
-				var lastEntityName = getLastEntityNameInPropertyIdentifier(column.propertyIdentifier);
-				if(left(lastEntityName,len(getDao('hibachiDao').getApplicationKey())) == getDao('hibachiDao').getApplicationKey()){
-					lastEntityName = right(lastEntityName,len(lastEntityName) - len(getDao('hibachiDao').getApplicationKey()));
+		if(structKeyExists(getCollectionConfigStruct(),'columns')){
+			for(var column in getCollectionConfigStruct().columns){
+				if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
+					var lastEntityName = getLastEntityNameInPropertyIdentifier(column.propertyIdentifier);
+					if(left(lastEntityName,len(getDao('hibachiDao').getApplicationKey())) == getDao('hibachiDao').getApplicationKey()){
+						lastEntityName = right(lastEntityName,len(lastEntityName) - len(getDao('hibachiDao').getApplicationKey()));
+					}
+					objectPermissionsList = listAppend(objectPermissionsList,lastEntityName);
+					aliasMap[lastEntityName] = column.propertyIdentifier;
 				}
-				objectPermissionsList = listAppend(objectPermissionsList,lastEntityName);
-				aliasMap[lastEntityName] = column.propertyIdentifier;
 			}
 		}
+		
 		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
 		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
 		permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
