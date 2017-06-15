@@ -108,6 +108,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
 	property name="permissionAppliedFlag" type="boolean" persistent="false" default="0";
+	property name="appliedRelatedFilters" type="struct" persistent="false";
 	//used to define who is requesting data
 	property name="requestAccount" type="any" persistent="false";
 	
@@ -1630,30 +1631,90 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//this is used for record level permissions
 		if(!getPermissionAppliedFlag()){
 			
-			var permissionRecordRestrictions = getPermissionRecordRestrictions();
-			writedump(permissionRecordRestrictions);
-			for(var permissionRecordRestriction in permissionRecordRestrictions){
-				var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction['restrictionConfig']);
-				for(var filterGroup in recordRestrictionFilterGroups){
-					filterGroup['logicalOperator']="AND";
-					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
-				}
-			}
+			applyPermissionRecordRestrictions();
+			
 			setPermissionAppliedFlag(true);
 		}
 	}
 	
+	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
+	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
+		var logicalOperator = "";
+		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+			getCollectionConfigStruct().filterGroups = [];
+		}else if(arraylen(getCollectionConfigStruct().filterGroups)){
+			logicalOperator = 'AND';
+		}
+		
+		
+		for(var filterGroup in arguments.relatedFilterGroups){
+			if(structKeyExists(filterGroup,'filterGroup')){
+				filterGroup = {
+					filterGroup=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+				};
+				if(len(logicalOperator)){
+					filterGroup.logicalOperator = logicalOperator;
+				}
+				arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+			}
+		}
+	
+	}
+	
+	public array function convertRelatedFilterGroup(required string propertyIdentifier, required array relatedFilterGroup, string filterGroupAlias){
+		var convertedFilterGroup = [];
+		for(var filterGroup in arguments.relatedFilterGroup){
+			if(structKeyExists(filterGroup,'filterGroup')){
+				filterGroup = {
+					filterGroup=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+				};
+				arrayAppend(convertedFilterGroup,filterGroup);
+			}else{
+				var filter = filterGroup;
+				filter = convertRelatedFilter(arguments.propertyIdentifier,filter);
+				arrayAppend(convertedFilterGroup,filter);
+			}
+		}
+		return convertedFilterGroup;
+	}
+	
+	public struct function convertRelatedFilter(required string propertyIdentifier, required struct relatedFilter){
+		var pid = convertALiasToPropertyIdentifier(arguments.propertyIdentifier);
+		
+		var relatedPropertyIdentifier = convertALiasToPropertyIdentifier(arguments.relatedFilter.propertyIdentifier);
+		
+		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),pid);
+		
+		if(!isObject){
+			//remove tail so that it is an object propertyIdentifier
+			pid = listDeleteAt(pid,listlen(pid,'.'),'.');
+		}
+		
+		pid &= '.'&relatedPropertyIdentifier;
+		var filterData = arguments.relatedFilter;
+		filterData.propertyIdentifier = getPropertyIdentifierAlias(pid);
+		
+		return filterData;
+			
+	}
+	
 	//this function probably can be astracted out to the service level for Direct Object Reference Checks
-	private array function getPermissionRecordRestrictions(){
+	private void function applyPermissionRecordRestrictions(){
 		var objectPermissionsList = getCollectionObject();
+		
+		var aliasMap ={};
 		
 		for(var column in getCollectionConfigStruct().columns){
 			if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
 				var lastEntityName = getLastEntityNameInPropertyIdentifier(column.propertyIdentifier);
+				if(left(lastEntityName,len(getDao('hibachiDao').getApplicationKey())) == getDao('hibachiDao').getApplicationKey()){
+					lastEntityName = right(lastEntityName,len(lastEntityName) - len(getDao('hibachiDao').getApplicationKey()));
+				}
 				objectPermissionsList = listAppend(objectPermissionsList,lastEntityName);
+				aliasMap[lastEntityName] = column.propertyIdentifier;
 			}
 		}
-		
 		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
 		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
 		permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
@@ -1663,7 +1724,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
 		permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,restrictionConfig,permission.entityClassName');
 		
-		return permissionRecordRestrictionCollectionList.getRecords();
+		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+		
+		for(var permissionRecordRestriction in permissionRecordRestrictions){
+			var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction['restrictionConfig']);
+			
+			if(permissionRecordRestriction['permission_entityClassName'] == getClassName()){
+				for(var filterGroup in recordRestrictionFilterGroups){
+					filterGroup['logicalOperator']="AND";
+					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+				}
+			}else{
+				var propertyIdentifier = aliasMap[permissionRecordRestriction['permission_entityClassName']];
+				applyRelatedFilterGroups(propertyIdentifier,recordRestrictionFilterGroups);
+			}
+		}
+		
 	}
 
 	// Paging Methods

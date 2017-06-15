@@ -64,6 +64,59 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function convertRelatedFilterTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var accountCollectionList = request.slatwallScope.getService('HibachiService').getAccountCollectionList();
+		
+		accountCollectionList.addFilter('orders.orderID','test','IN');
+		accountCollectionList.addFilter('accountID','test','IN');
+		
+		//property Identifier that orderitem is trying to get
+		var propertyIdentifier = 'order.account.accountName';
+		
+		var filter = accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filterData = orderItemCollectionList.convertRelatedFilter(propertyIdentifier,filter);
+		assertEquals(filterData.propertyIdentifier,'order.account.orders.orderID');
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterGroupTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.orderID';
+		var filterGroup = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		
+		var convertedFilterGroup = orderItemCollectionList.convertRelatedFilterGroup(propertyIdentifier,filterGroup);
+		assert(arrayLen(convertedFilterGroup));
+		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'order.orderID');
+	}
+	
+	/**
+	* @test
+	*/
+	public void function applyRelatedFilterGroupsTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.orderID';
+		var filterGroups = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		orderItemCollectionList.applyRelatedFilterGroups(propertyIdentifier,filterGroups);
+		
+	}
+	
+	/**
+	* @test
+	*/
 	public void function getCollectionReportTest(){
 		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
 		collectionEntity.setDisplayProperties('firstName');

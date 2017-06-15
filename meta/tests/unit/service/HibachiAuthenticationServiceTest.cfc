@@ -114,12 +114,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//now let's add a record
 		var orderData = { 
-			orderID=""
+			orderID="",
+			orderNumber=1
 		};
 		var order = createPersistedTestEntity('Order',orderData);
 		
 		var otherOrderData = {
-			orderID=""
+			orderID="",
+			orderNumber=2
 		};
 		
 		var otherOrder = createPersistedTestEntity('Order',otherOrderData);
@@ -130,6 +132,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(arraylen(allDataCollection.getRecords()),2);
 		//set the permission applied flag back to false so we can test that the perms we create below can be applied and tested later
 		allDataCollection.setPermissionAppliedFlag(false);
+		
+		
 		
 		//now record level perms restrictions
 		//user should not have access to other order
@@ -165,9 +169,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',peasantyAccount.getAccountID());
 		
 		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+		
 		assertEquals(arraylen(permissionRecordRestrictions),1);
 		//verify that we have refined the list based on restrictions
+		
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
+		
+		
 		
 		//set up order items so we can record level restrict them based on price
 		var orderItemData = {
@@ -187,16 +195,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		otherOrderItem.setOrder(otherOrder);
 		otherOrder.addOrderItem(otherOrderItem);
+		ormflush();
+		assert(arraylen(order.getOrderItems()));
+		assert(arraylen(otherorder.getOrderItems()));
 		
 		var orderItemCollectionList = request.slatwallScope.getService('orderService').getOrderItemCollectionList();
 		orderItemCollectionList.setRequestAccount(peasantyAccount);
-		orderItemCollectionList.setDisplayProperties('order.orderID,orderItemID');
+		orderItemCollectionList.setDisplayProperties('orderItemID,price,order.orderID');
 		
 		orderItemCollectionList.addFilter('orderItemID','#orderItem.getOrderItemID()#,#otherOrderItem.getOrderItemID()#','IN');
-		var orderItemRecords = orderItemCollectionList.getRecords();
-		
-		debug(orderItemRecords);
-		
+		var orderItemRecords = orderItemCollectionList.getRecords(true);
 		//verify that when records was applied that our order record permissions are also applied if our display options include order data
 		
 		assertEquals(arraylen(orderItemRecords),1);		
