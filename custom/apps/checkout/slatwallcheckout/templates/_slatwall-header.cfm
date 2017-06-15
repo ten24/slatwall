@@ -69,14 +69,16 @@ Notes:
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<!---<script src='https://www.google.com/recaptcha/api.js'></script>--->
-		<script>
-	        var hibachiConfig = {
-	            action:'slatAction'
-				,basePartialsPath: '/org/Hibachi/client/src/'
-				,customPartialsPath:'/custom/apps/checkout/slatwallcheckout/templates/angularcore/'
-				,apiSubsystemName:'customsite'
-	        };
-	    </script>
+		<cfoutput>
+			<script>
+		        var hibachiConfig = {
+		            action:'slatAction'
+					,basePartialsPath: '/org/Hibachi/client/src/'
+					,customPartialsPath:'/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/partials/'
+					,apiSubsystemName:'customsite'
+		        };
+		    </script>
+	    </cfoutput>
 	</head>
 	<body>
 		<!--- This is only used by the sample app that is contained in /meta/sample --->

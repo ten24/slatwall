@@ -1,6 +1,6 @@
 <!--- This import allows for the custom tags required by this page to work --->
 <cfinclude template = "_slatwall-header.cfm">
-
+<script>hibachiConfig.customPartialsPath = hibachiConfig.customPartialsPath + 'checkout/'</script>
 <cfoutput>
 
 <!--- For each of the directives/tags below, you may pass in a custom template path/name to use instead of the default.       --->

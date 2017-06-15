@@ -1479,7 +1479,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
-				}
 
 			} else {
 				arguments.order.addError('duplicate', rbKey('validate.processOrder_PlaceOrder.duplicate'));
