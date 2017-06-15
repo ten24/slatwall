@@ -77,7 +77,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var filter = accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
 		var filterData = orderItemCollectionList.convertRelatedFilter(propertyIdentifier,filter);
-		assertEquals(filterData.propertyIdentifier,'_orderitem._order_account_orders.orderID');
+		assertEquals(filterData.propertyIdentifier,'_orderitem_order_account_orders.orderID');
 	}
 	
 	/**
@@ -95,7 +95,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var convertedFilterGroup = orderItemCollectionList.convertRelatedFilterGroup(propertyIdentifier,filterGroup);
 		assert(arrayLen(convertedFilterGroup));
-		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'_ordertitem_order.orderID');
+		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'_orderitem_order.orderID');
+		
 	}
 	
 	/**
@@ -108,10 +109,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		orderCollectionList.addFilter('orderID','test','IN');
 		
-		var propertyIdentifier = 'order.orderID';
+		var propertyIdentifier = 'order.referencedOrder.orderID';
 		var filterGroups = orderCollectionList.getCollectionConfigStruct().filterGroups;
 		orderItemCollectionList.applyRelatedFilterGroups(propertyIdentifier,filterGroups);
-		
+		orderItemCollectionList.getRecords();
 	}
 	
 	/**
