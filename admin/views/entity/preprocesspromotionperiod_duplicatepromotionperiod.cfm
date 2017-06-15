@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,38 +45,30 @@
 
 Notes:
 
-*/
-component extends="HibachiDao" persistent="false" accessors="true" output="false" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, required any integration, required string entityQueueData){
-		return ORMExecuteQuery('SELECT eq FROM SlatwallEntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration AND entityQueueData=:entityQueueData',
-			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration,entityQueueData=arguments.entityQueueData}
-			
-		);
-	}
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+
+<cfparam name="rc.promotionPeriod" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.promotionPeriod#" edit="#rc.edit#" sRedirectAction="admin:entity.editpromotionperiod">
+		
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.promotionPeriod#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="promotionPeriodName" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getStartDateTime())#" property="startDateTime" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" value="#rc.$.slatwall.getService("HibachiUtilityService").formatValue_dateTime(rc.processObject.getEndDateTime())#" property="endDateTime" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumUseCount" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="maximumAccountUseCount" edit="#rc.edit#" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
+</cfoutput>

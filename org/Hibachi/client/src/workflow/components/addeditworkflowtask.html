@@ -80,6 +80,7 @@
 											<sw-filter-groups
 													ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups.length"
 													data-collection-config="workflowTasks.selectedTask.data.taskConditionsConfig"
+													data-save-collection="workflowTasks.selectedTask.$$save()"
 													data-filter-group="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0]"
 							                		data-filter-group-item="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0].filterGroup"
 							                		data-filter-properties-list="filterPropertiesList"

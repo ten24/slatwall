@@ -55,7 +55,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 //iterate through all the actions calling the method.
                 for (var eachAction in actions){
                     //Make sure there are no errors if we have multiple.
-                    if (!arguments.rc.$.slatwall.cart().hasErrors() && !arguments.rc.$.slatwall.account().hasErrors()){
+                    if (!arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].cart().hasErrors() && !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].account().hasErrors()){
                           getHibachiScope().flushORMSession();
                           publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
                     }else{

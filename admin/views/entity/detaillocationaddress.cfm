@@ -68,7 +68,7 @@ Notes:
 		<input type="hidden" name="location.locationID" value="#rc.location.getLocationID()#" />
 		<input type="hidden" name="locationID" value="#rc.location.getLocationID()#" />
 		
-		<swa:SlatwallAdminAddressDisplay address="#rc.locationAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" showPhoneNumber="true" edit="#rc.edit#">
+		<swa:SlatwallAdminAddressDisplay address="#rc.locationAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" showPhoneNumber="true" showEmailAddress="true" edit="#rc.edit#">
 	</hb:HibachiEntityDetailForm>
 	
 </cfoutput>

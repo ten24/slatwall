@@ -46,17 +46,6 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiDAO" {
-	public boolean function isServerInstanceCacheExpired(required serverInstanceIPAddress){
-		var isExpired = ORMExecuteQuery('SELECT si.serverInstanceExpired FROM SlatwallServerInstance si WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress',{serverInstanceIPAddress=arguments.serverInstanceIPAddress},true);
-		if(isNull(isExpired)){
-			isExpired = true;
-		}
-		return isExpired;
-	}
+component extends="Slatwall.org.Hibachi.HibachiCacheDAO" {
 	
-	
-	public void function updateServerInstanceCache(required any serverInstance){
-		ORMExecuteQuery('UPDATE SlatwallServerInstance si SET si.serverInstanceExpired=1 where si<>:serverInstance',{serverInstance=arguments.serverInstance});
-	}
 }

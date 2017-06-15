@@ -467,7 +467,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		return variables.whereGroups[ arguments.whereGroup ].ranges; 
 	}
 	
-	public void function addOrder(required string orderStatement, numeric position) {
+	public void function addOrder(required string orderStatement) {
 		var propertyIdentifier = listFirst(arguments.orderStatement, variables.orderDirectionDelimiter);
 		var orderDirection = "ASC";
 		if(listLen(arguments.orderStatement, variables.orderDirectionDelimiter) > 1 && listFindNoCase("D,DESC", listLast(arguments.orderStatement, variables.orderDirectionDelimiter))) {
@@ -483,6 +483,22 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			}
 			if(!found) {
 				arrayAppend(variables.orders, {property=aliasedProperty, direction=orderDirection});	
+			}
+		}
+	}
+
+	public void function removeOrder(required string orderStatement) {
+		var propertyIdentifier = listFirst(arguments.orderStatement, variables.orderDirectionDelimiter);
+		var orderDirection = "ASC";
+		if(listLen(arguments.orderStatement, variables.orderDirectionDelimiter) > 1 && listFindNoCase("D,DESC", listLast(arguments.orderStatement, variables.orderDirectionDelimiter))) {
+			orderDirection = "DESC";
+		}
+		var aliasedProperty = getAliasedProperty(propertyIdentifier=propertyIdentifier);
+		for(var i=1; i <= arraylen(this.getOrders());i++){
+			var order = this.getOrders()[i];
+			if(order.property == aliasedProperty && orderDirection == order.direction){
+				arrayDeleteAt(this.getOrders(),i);
+				break;
 			}
 		}
 	}
@@ -773,16 +789,17 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		} else if (!structCount(variables.selects)) {
 			
 			var baseEntityObject = getService('hibachiService').getEntityObject( getBaseEntityName() );
-			
+			var direction = "ASC";			
 			if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
 				var obProperty = getAliasedProperty( baseEntityObject.getThisMetaData().hb_defaultOrderProperty );
 			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
 				var obProperty = getAliasedProperty( "createdDateTime" );
+				direction = "DESC";
 			} else {
 				var obProperty = getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
 			}
 			
-			hqlOrder &= " ORDER BY #obProperty# ASC";
+			hqlOrder &= " ORDER BY #obProperty# #direction#";
 		}
 		
 		return hqlOrder;

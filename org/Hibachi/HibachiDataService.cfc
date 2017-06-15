@@ -63,15 +63,18 @@ component accessors="true" output="false" extends="HibachiService" {
 		return csvQuery; 
 	}	
 
-	public array function validateCSVFile(required string pathToCSV, string expectedColumnHeaders){
-		var csvFile = FileOpen(pathToCSV);
+	public array function validateCSVFile(required string pathToCSV, string expectedColumnHeaders, boolean expandedPath = false){
+		if(!arguments.expandedPath){ 
+			arguments.pathToCSV = ExpandPath(arguments.pathToCSV); 
+		} 
+		var csvFile = FileOpen(arguments.pathToCSV);
 		var i = 1;
 		var problemLines = []; 
 		while(!FileisEOF(csvFile)){ 
 			var line = FileReadLine(csvFile);
 			if(i == 1){
 				var columnsList  = REReplaceNoCase(line, "[^a-zA-Z\d,]", "", "all");
-				if(structKeyExists(arguments, "expectedColumnHeaders")){
+				if(structKeyExists(arguments, "expectedColumnHeaders") && len(arguments.expectedColumnHeaders) > 0){
 					arguments.expectedColumnHeaders = REReplaceNoCase(arguments.expectedColumnHeaders, "[^a-zA-Z\d,]", "", "all");
 					if(columnsList != arguments.expectedColumnHeaders){
 						arrayAppend(problemLines, i); 
@@ -115,7 +118,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			i++; 
 		}
 		FileClose(csvFile);
-		return problemLines; 	
+		return problemLines;	
 	}
 
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
@@ -135,13 +138,13 @@ component accessors="true" output="false" extends="HibachiService" {
 					var xmlRaw = FileRead(dirList[i]);
 
 					try{
-						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 3) {
+						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 6) {
 							retryCount += 1;
 							runPopulation = true;
 						}
 					} catch (any e) {
-						// If we haven't retried 3 times, then incriment the retry counter and re-run the population
-						if(retryCount <= 3) {
+						// If we haven't retried 6 times, then incriment the retry counter and re-run the population
+						if(retryCount <= 6) {
 							retryCount += 1;
 							runPopulation = true;
 						} else {

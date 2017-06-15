@@ -199,7 +199,7 @@ class PublicService {
                 if (result['cart']){delete result['cart'];}
             }
 
-            if(setter == 'cart'||setter=='account'){
+            if(setter == 'cart'||setter=='account' && this[setter] && this[setter].populate){
                 //cart and account return cart and account info flat
                 this[setter].populate(result);
 
@@ -247,7 +247,7 @@ class PublicService {
         if (!action) {throw "Action is required exception";}
 
         var urlBase = "";
-		
+
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
             urlBase = action; //any path
@@ -335,7 +335,7 @@ class PublicService {
     }
 
     public getActivePaymentMethods = ()=>{
-        let urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
+        let urlString = "/?"+this.appConfig.action+"=admin:ajax.getActivePaymentMethods";
         let request = this.requestService.newPublicRequest(urlString)
         .then((result:any)=>{
             if (angular.isDefined(result.data.paymentMethods)){
@@ -712,11 +712,11 @@ class PublicService {
     public resetRequests = (request) => {
      	delete this.requests[request];
     }
-    
+
     /** Returns true if the addresses match. */
     public addressesMatch = (address1, address2) => {
     	if (angular.isDefined(address1) && angular.isDefined(address2)){
-        	if ( (address1.streetAddress == address2.streetAddress && 
+        	if ( (address1.streetAddress == address2.streetAddress &&
 	            address1.street2Address == address2.street2Address &&
 	            address1.city == address2.city &&
 	            address1.postalcode == address2.postalcode &&
@@ -749,7 +749,7 @@ class PublicService {
      *  we have a payment but are editting the payment AND nothing else is being edited
      *
      */
-   
+
     public showPaymentTabBody = ()=> {
         if(!this.hasAccount()) return false;
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
@@ -800,6 +800,8 @@ class PublicService {
         }
         return false;
     };
+
+
 
     public isCreatingAccount = () =>{
         return !this.hasAccount() && this.showCreateAccount;

@@ -65,10 +65,8 @@ class SWInputController{
 
 	//@ngInject
 	constructor(
-		public $timeout,
         public $scope,
 		public $log,
-		public $compile,
         public $hibachi,
 		public $injector,
 		public listingService,

@@ -46,31 +46,20 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="promotionPeriod";
+
+	// Data Properties
 	
+	property name="endDateTime" hb_formFieldType="datetime" hb_rbKey="entity.promotionPeriod.endDateTime" hb_nullRBKey="define.forever";
 	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
+	public function getEndDateTime() {
+		if(!structKeyExists(variables, "endDateTime")) {
+			variables.endDateTime = getPromotionPeriod().getEndDateTime();
+		}
+		return variables.endDateTime;
+	}
 	
 }

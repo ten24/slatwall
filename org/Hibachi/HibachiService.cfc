@@ -24,6 +24,16 @@
 		public any function get(required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
 			return getHibachiDAO().get(argumentcollection=arguments);
 		}
+		
+		public any function getParentPropertyByEntityName(required string entityName){
+			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ].hb_parentPropertyName;
+		}
+		
+		public string function getSimpleRepresentationPropertyNameByEntityName(required string entityName){
+			var example = this.new(arguments.entityName);
+			var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
+			return simpleRepresentationPropertyName;
+		}
 	
 		public any function getSmartList(string entityName, struct data={}){
 			var smartList = getHibachiDAO().getSmartList(argumentcollection=arguments);
@@ -172,7 +182,9 @@
 	        
 	        // Validate this object now that it has been populated
 			arguments.entity.validate(context=arguments.context);
-			        
+			//check if this is new before save - announcements will need this information later.
+	        var isNew = arguments.entity.isNew();
+	        
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
@@ -180,11 +192,23 @@
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
+				
+				//If new need to announce the Create process as well as Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				}
 		    } else {
             
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
+				
+				//If new need to announce the Create Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				}
 	        }
 	        
 	        // Return the entity
@@ -201,7 +225,8 @@
         * @param fileType File type for export. (default: csv)
         * This returns the path and filename of the exported file.
         */ 
-        public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true) {
+         public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true, folderPath) {
+
             if (isArray(data)){
                 arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
             }
@@ -215,7 +240,9 @@
 				throw("File type not supported in export. Only supported file types are #supportedFileTypes#");
 			}
             var fileNameWithExt = arguments.fileName & "." & arguments.fileType ;
-			if(structKeyExists(application,"tempDir")){
+				if(structKeyExists(arguments, "folderPath")){
+					var filePath = arguments.folderPath & "/" & fileNameWithExt;
+				} else if(structKeyExists(application,"tempDir")){
 				var filePath = application.tempDir & "/" & fileNameWithExt;
 			} else {
 				var filePath = GetTempDirectory() & fileNameWithExt;
@@ -230,20 +257,26 @@
             var columnCount = arrayLen(columnArray);
             
             if(arguments.fileType == 'csv'){
-                var csv = queryToCSV(arguments.data);
-                fileWrite(filePath,csv);
-			}
-			
-    
-            // Open / Download File / or return info about the filepath name etc.
-            if (arguments.downLoadFile){
-                 getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true); 
+				getHibachiUtilityService().queryToCsvFile(
+					filePath = filePath,
+					queryData = arguments.data,
+					columnNames = columnNames,
+					columnTitles = columns
+				);
             }else{
-                 return {fileNameWithExt = fileNameWithExt, filePath = filePath};   
+				throw("Implement export for fileType #arguments.fileType#");
             }
             
+			if(structKeyExists(arguments, "downloadFile") && arguments.downloadFile == true){
+				getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
+			} else{
+				result.fileName = fileNameWithExt;
+				result.fileType = fileType;
+				result.filePath = filePath;
+				return result;
+            }
         }
-    
+
     /*
      * queryToCsv
      * Allows us to pass in a query object and returns that data as a CSV.
@@ -254,14 +287,14 @@
      * @return {String}                                         CSV content
      */
     public string function queryToCsv(required query q, required boolean hr = true, required string d = ","){
-        
+
         var colNames    = listToArray( lCase(arguments.q.columnlist) );
         var newLine     = (chr(13) & chr(10));
         var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
         // Check if we should include a header row
         if(arguments.hr){
-            // append our header row 
-            buffer.append( 
+            // append our header row
+            buffer.append(
               ArrayToList(colNames,arguments.d) & newLine
             );
         }
@@ -282,7 +315,7 @@
         return buffer.toString();
     };
     
-	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
+	public query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
 		var rowsTotal = ArrayLen(arrayOfStructs);
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
@@ -987,6 +1020,11 @@
 			
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
+		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			entityMetaData = getEntityMetaData( arguments.entityName );
+			return entityMetaData.table; 
 		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {

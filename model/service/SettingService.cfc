@@ -113,6 +113,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public struct function getAllSettingMetaData() {
+		
 		var allSettingMetaData = {
 
 			// Account
@@ -154,18 +155,19 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
+			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 
 			// Email
-			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailFromAddress = {fieldType="text", defaultValue=""},
+			emailToAddress = {fieldType="text", defaultValue=""},
 			emailCCAddress = {fieldType="text"},
 			emailBCCAddress = {fieldType="text"},
-			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailFailToAddress = {fieldType="text", defaultValue=""},
 			emailIMAPServer = {fieldType="text"},
 			emailIMAPServerPort = {fieldType="text"},
 			emailIMAPServerUsername = {fieldType="text"},
 			emailIMAPServerPassword = {fieldType="password"},
-			emailReplyToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
+			emailReplyToAddress = {fieldType="text", defaultValue=""},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
 			emailSMTPServer = {fieldType="text", defaultValue=""},
 			emailSMTPPort = {fieldType="text", defaultValue=25},
@@ -189,6 +191,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
+			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
+			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
@@ -350,14 +354,20 @@ component extends="HibachiService" output="false" accessors="true" {
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
-
+		
 		var integrationSettingMetaData = getIntegrationService().getAllSettingMetaData();
 
 		structAppend(allSettingMetaData, integrationSettingMetaData, false);
 
+		//need to persist globalClientSecret
+		var globalClientSecretSetting = this.getSettingBySettingName('globalClientSecret');
+		if(isNull(globalClientSecretSetting)){
+			getDao('settingDao').insertSetting('globalClientSecret',allSettingMetaData.globalClientSecret.defaultValue);
+		}
+
 		return allSettingMetaData;
 	}
-
+ 
 	private string function extractPackageNameBySettingName (required string settingName){
 		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
@@ -631,8 +641,10 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingMetaData(required string settingName) {
+		
 		var allSettingMetaData = getHibachiCacheService().getOrCacheFunctionValue("settingService_allSettingMetaData", this, "getAllSettingMetaData");
 
+		
 		if(structKeyExists(allSettingMetaData, arguments.settingName)) {
 			return allSettingMetaData[ arguments.settingName ];
 		}
@@ -959,10 +971,10 @@ component extends="HibachiService" output="false" accessors="true" {
 
 		// If there aren't any errors then flush, and clear cache
 		if(!getHibachiScope().getORMHasErrors()) {
-
+ 
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-
+			getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress());
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it

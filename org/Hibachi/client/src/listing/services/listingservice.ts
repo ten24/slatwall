@@ -211,7 +211,18 @@ class ListingService{
     };
 
     public getPageRecordValueByColumn = (pageRecord, column) =>{
-        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)];
+        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)] || "";
+        
+        //try to find the property again if we need to...
+        if (pageRecordValue == ""){
+            for (var property in pageRecord){
+                if (property.indexOf(this.getPageRecordKey(column.propertyIdentifier).trim()) != -1){
+                    //use this record
+                    pageRecordValue = pageRecord[property];
+                }
+            }
+        }
+        //last change to find the value
         if( ( angular.isUndefined(pageRecordValue) || 
             ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
               angular.isDefined(column.fallbackPropertyIdentifiers)
@@ -360,7 +371,15 @@ class ListingService{
             this.getListing(listingID).collectionObject = this.getListing(listingID).collection.collectionObject;
             this.getListing(listingID).collectionConfig = this.collectionConfigService.newCollectionConfig(this.getListing(listingID).collectionObject);
             this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collection.collectionConfig);
+        	
         }
+        if(this.getListing(listingID).multiSlot == false){
+        	this.$timeout(()=>{
+            this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collectionData.collectionConfig);
+            this.getListing(listingID).columns = this.getListing(listingID).collectionConfig.columns;
+        	});
+        }
+        
         if( this.getListing(listingID).paginator != null 
             && this.getListing(listingID).collectionConfig != null
         ){
@@ -369,6 +388,7 @@ class ListingService{
         }
     };
     
+   
 
     public addColumn = (listingID:string, column) =>{
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
@@ -686,7 +706,8 @@ class ListingService{
             return () =>{
                 this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
-                this.getListing(listingID).collectionConfig.getEntity().then(
+                if(this.getListing(listingID).multiSlot){
+                	this.getListing(listingID).getEntity().then(
                     (data)=>{
                         this.getListing(listingID).collectionData = data;
                         this.setupDefaultCollectionInfo(listingID);
@@ -697,6 +718,20 @@ class ListingService{
                         throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
                     }
                 );
+                }else{
+                	this.getListing(listingID).collectionPromise.then(
+                    (data)=>{
+                        this.getListing(listingID).collectionData = data;
+                        this.setupDefaultCollectionInfo(listingID);
+                        this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
+                        this.getListing(listingID).paginator.setPageRecordsInfo(this.getListing(listingID).collectionData);
+                    },
+                    (reason)=>{
+                        throw("Listing Service encounter a problem when trying to get collection. Reason: " + reason);
+                    }
+                );
+                }
+                
             };
         
         } else { 

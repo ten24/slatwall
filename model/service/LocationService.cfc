@@ -55,6 +55,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
 	}
 	
+	public numeric function getChildLocationCount(required any location){
+		return getLocationDao().getChildLocationCount(arguments.location.getLocationID());
+	}
+	
 	public numeric function getLocationCount() {
 		return getLocationDAO().getLocationCount();
 	}
@@ -138,17 +142,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.location = super.save(arguments.location, arguments.data);
 		
 		if(!location.hasErrors()){
-			
+			var isNew = arguments.location.isNew();
 			// We need to persist the state here, so that we can have the locationID in the database
 			getHibachiDAO().flushORMSession();
 			
 			// If this location has any stocks then we need to update them
-			if( arrayLen(arguments.location.getStocks()) && !isNull(arguments.location.getParentLocation()) ) {
+			if( isNew && !isNull(arguments.location.getParentLocation()) && arguments.location.getParentLocation().getStocksCount() ) {
 				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
 			}
-		} 
+		}
 		
 		return arguments.location;
+	}
+	
+	public any function saveLocationAddress(required any locationAddress, required struct data){
+		arguments.locationAddress = super.save(arguments.locationAddress, arguments.data);
+		if(
+			!arguments.locationAddress.hasErrors() 
+			&& !isNull(arguments.locationAddress.getLocation())
+			&& isNull(arguments.locationAddress.getLocation().getPrimaryAddress()) 
+		){
+			arguments.locationAddress.getLocation().setPrimaryAddress(arguments.locationAddress);
+		}
+		return arguments.locationAddress;
 	}
 	
 	// ======================  END: Save Overrides ============================

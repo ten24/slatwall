@@ -50,6 +50,7 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	property name="startDateTime" ormtype="timestamp";
 	property name="endDateTime" ormtype="timestamp" hb_nullRBKey="define.forever";
 	property name="collectionFetchSize" ormtype="integer";
+	property name="timeout" ormtype="integer" default="90"; 
 	
 	// Calculated Properties
 
@@ -85,7 +86,9 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	}
 	
 	public any function getWorkflowTriggerException(){
-		return variables.workflowTriggerException;
+		if(structKeyExists(variables,"workflowTriggerException")){
+			return variables.workflowTriggerException;
+		}
 	}
 	
 	

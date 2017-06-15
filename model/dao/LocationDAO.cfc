@@ -81,4 +81,14 @@ component extends="HibachiDAO" {
 			return result[1]["thecount"];
 		}
 	}
+	
+	public numeric function getChildLocationCount(required string locationID){
+		return ORMExecuteQuery('
+			SELECT count(cl)
+			FROM SlatwallLocation l 
+			LEFT JOIN l.childLocations cl
+			WHERE l.locationID=:locationID'
+			,{locationID=arguments.locationID},true
+		);
+	}
 }

@@ -196,7 +196,7 @@ component accessors="true" output="false" persistent="false" {
 		return getHibachiScope().rbKey(arguments.key);
 	}
 	
-	public string function hibachiHTMLEditFormat(required string html=""){
+	public string function hibachiHTMLEditFormat(required any html=""){
 		return getHibachiScope().hibachiHTMLEditFormat(arguments.html);
 	}
 	
@@ -206,7 +206,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
 		return getService("hibachiUtilityService").formatValue(argumentcollection=arguments);
-	}
+	} 
 	
 	// =========================  END:  DELIGATION HELPERS ==========================================
 	// ========================= START: APPLICATION VAUES ===========================================

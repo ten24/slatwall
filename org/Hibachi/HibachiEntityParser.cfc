@@ -4,7 +4,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	property name="componentFilePath" type="string";
 	property name="lineBreak" type="string"; 
 	property name="metaData" type="any";
-	property name="fileContent" type="string" default="";
+	property name="fileContent" type="string";
 	
 	public void function init(){
 		//declared custom strings
@@ -18,11 +18,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public string function getFileContent(){
 		if(!structKeyExists(variables,'fileContent')){
-			try {
-				variables.fileContent =fileRead( "#ExpandPath('/Slatwall/')#" & getFilePath());
-			}catch(any e){
-				writeLog(file="Slatwall", text="Error reading this file: #e#");
-			}
+			variables.fileContent =fileRead( "#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath());
 		}
 		return variables.fileContent;
 	}

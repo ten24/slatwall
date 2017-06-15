@@ -4,20 +4,6 @@
 
 	<cfscript>
 
-		//antisamy setup
-		variables.antisamyConfig = {
-			policyFile = ExpandPath("org/Hibachi/antisamy/antisamy-slashdot-1.4.1.xml"),
-			jarArray = [
-				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-bin.1.4.1.jar"),
-				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/batik-css.jar"),
-				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/batik-util.jar"),
-				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/nekohtml.jar"),
-				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/xercesImpl.jar")
-			]
-		};
-		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
-		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
-		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
@@ -199,7 +185,17 @@
 
 			while(!unique) {
 				addon++;
-				returnTitle = "#urlTitle#-#addon#";
+				//check to inc the addon.
+				var idx = len(addon)+1;//+1 for dash
+				if (right(returnTitle, idx) == "-#addon#"){
+					addon++;
+					//increase the addon index and then replace the last two chars instead of appending.
+					var removedLast = Left(returnTitle, len(returnTitle)-idx);
+					returnTitle = "#removedLast#-#addon#";
+				}else{
+					returnTitle = "#urlTitle#-#addon#";	
+				}
+				
 				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
 			}
 
@@ -563,7 +559,14 @@
 			}
 		}
 
-		public string function hibachiHTMLEditFormat(required string html){
+		public string function hibachiHTMLEditFormat(required any html=""){
+			//If its something that can be turned into a string, make sure its a string.
+			if (isSimpleValue(arguments.html)){
+				arguments.html = "#arguments.html#";
+			//Otherwise, it can't be passed into htmlEditFormat
+			}else{
+				return "";
+			}
 			var sanitizedString = htmlEditFormat(arguments.html);
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
@@ -840,6 +843,61 @@
 
 			return linebreak;
 		}
+
+		public string function trimList(required string originalList, string delimiter = ","){
+			return REReplace(trim(originalList),"\s*#delimiter#\s*",delimiter,"ALL");
+		}
+
+
+		public void function queryToCsvFile(required string filePath, required query queryData, boolean includeHeaderRow = true, string delimiter = ",", string columnNames = "", string columnTitles = ""){
+
+			var newLine     = (chr(13) & chr(10));
+			var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
+
+			if(!listLen(arguments.columnNames)){
+				arguments.columnNames = arguments.queryData.columnlist;
+			}
+
+			if(!listLen(arguments.columnTitles)){
+				arguments.columnTitles = arguments.columnNames;
+			}
+
+			// Check if we should include a header row
+			if(arguments.includeHeaderRow){
+				//Create the file with the headers
+				fileWrite(arguments.filePath,"#ListQualify(arguments.columnTitles,'"',',','all')##newLine#");
+			}else{
+				//Create the file
+				fileWrite(arguments.filePath,"");
+			}
+
+			var colArray = listToArray(arguments.columnNames);
+			var dataFile = fileOpen(filePath,"append");
+
+			// Loop over query and build csv rows
+			for(var i=1; i <= arguments.queryData.recordcount; i++){
+				// this individual row
+				var thisRow = [];
+				// loop over column list
+				for(var j=1; j <= arrayLen(colArray); j=j+1){
+					// create our row
+					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+				}
+				// Append new row to csv output
+				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
+				if(i mod 1000 EQ 0){
+					fileWriteLine(dataFile,buffer.toString());
+					buffer.setLength(0);
+				}else{
+					buffer.append(JavaCast('string', newLine));
+				}
+			}
+			if(buffer.length()){
+				fileWriteLine(dataFile,buffer.toString());
+				buffer.setLength(0);
+			}
+			fileClose(dataFile);
+		};
 
 	</cfscript>
 
@@ -1219,6 +1277,26 @@
 		<cfreturn mac.doFinal() />
 	</cffunction>
 
+	<cffunction name="HMAC_SHA256" returntype="binary" access="public" output="false">
+		<cfargument name="signKey" type="string" required="true" />
+		<cfargument name="signMessage" type="string" required="true" />
+
+		<cfset var jMsg = JavaCast("string",arguments.signMessage).getBytes("iso-8859-1") />
+		<cfset var jKey = JavaCast("string",arguments.signKey).getBytes("iso-8859-1") />
+
+		<cfset var key = createObject("java","javax.crypto.spec.SecretKeySpec") />
+		<cfset var mac = createObject("java","javax.crypto.Mac") />
+
+		<cfset key = key.init(jKey,"HmacSHA256") />
+
+		<cfset mac = mac.getInstance(key.getAlgorithm()) />
+		<cfset mac.init(key) />
+		<cfset mac.update(jMsg) />
+
+		<cfreturn mac.doFinal() />
+
+	</cffunction>
+
 	<cffunction name="createS3Signature" returntype="string" access="public" output="false">
 		<cfargument name="stringToSign" type="string" required="true" />
 		<cfargument name="awsSecretAccessKey" type="string" required="true">
@@ -1262,7 +1340,7 @@
 		<cfset cs = "PUT\n\n#arguments.contentType#\n#dateTimeString#\nx-amz-acl:#arguments.acl#\nx-amz-storage-class:#arguments.storageClass#\n/#arguments.bucketName#/#arguments.keyName#">
 		
 		<cfset signature = createS3Signature(cs,awsSecretAccessKey)>
-		
+		 
 		<cffile action="readBinary" file="#arguments.uploadDir##arguments.fileName#" variable="binaryFileData">
 		
 		<cfhttp method="PUT" url="http://s3.amazonaws.com/#arguments.bucketName#/#arguments.keyName#" timeout="#arguments.HTTPtimeout#">
