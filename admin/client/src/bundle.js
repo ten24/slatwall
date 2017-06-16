@@ -4119,6 +4119,7 @@
 	        this.showStoreSelector = [];
 	        this.showEmailSelector = [];
 	        this.imagePath = {};
+	        this.successfulActions = [];
 	        // public hasErrors = ()=>{
 	        //     return this.errors.length;
 	        // }
@@ -4175,10 +4176,13 @@
 	            return _this.countryDataPromise;
 	        };
 	        /** accessors for states */
-	        this.getStates = function (countryCode, refresh) {
+	        this.getStates = function (countryCode, address, refresh) {
 	            if (refresh === void 0) { refresh = false; }
 	            if (!angular.isDefined(countryCode))
 	                countryCode = "US";
+	            if (address && address.data) {
+	                countryCode = address.data.countrycode;
+	            }
 	            var urlBase = _this.baseActionPath + 'getStateCodeOptionsByCountryCode/';
 	            if (!_this.stateDataPromise || refresh) {
 	                _this.stateDataPromise = _this.getData(urlBase, "states", "?countryCode=" + countryCode);
@@ -4316,10 +4320,12 @@
 	            _this.errors = response.errors;
 	            //if the action that was called was successful, then success is true.
 	            if (request.hasSuccessfulAction()) {
+	                _this.successfulActions = [];
 	                for (var action in request.successfulActions) {
 	                    if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
 	                        _this.$window.location.href = _this.confirmationUrl;
 	                    }
+	                    _this.successfulActions.push(request.successfulActions[action].split('.')[1]);
 	                }
 	            }
 	        };

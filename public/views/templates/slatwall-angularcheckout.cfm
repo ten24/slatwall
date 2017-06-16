@@ -25,7 +25,7 @@
 	                <h3 ng-show="slatwall.hasAccount()">Account - {{slatwall.account.firstName}} {{slatwall.account.lastName}}</h3>
 	                <p ng-show="slatwall.hasAccount()">Not you? 
 	                	<sw-action-caller
-					        data-action="public:account.logout"
+					        data-action="logout"
 					        data-type="link"
 					        data-text="Logout">
 				    	</sw-action-caller>

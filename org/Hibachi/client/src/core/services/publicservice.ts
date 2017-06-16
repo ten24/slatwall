@@ -250,20 +250,21 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
-        var urlBase = "";
+        var urlBase = hibachiConfig.baseURL;
 
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
-            urlBase = action; //any path
+            urlBase = urlBase + action; //any path
         }else{
-            urlBase = "/index.cfm/api/scope/" + action;//public path
+            urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
         }
         
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
         }else{
-            urlBase += "&returnJsonObject=cart,account";
+            urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
+            urlBase += "returnJsonObject=cart,account";
         }
 
         if (method == "post"){
@@ -281,7 +282,7 @@ class PublicService {
             return request.promise;
         }else{
             //get
-            var url = urlBase + "&returnJsonObject=cart,account";
+            var url = urlBase;
 
             let request = this.requestService.newPublicRequest(url,data,method);
             request.promise.then((result:any)=>{
@@ -316,6 +317,8 @@ class PublicService {
             for (var action in request.successfulActions){
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
+                }else if(request.successfulActions[action].indexOf('public:account.logout') !== -1){
+                    this.account = this.$hibachi.newAccount();
                 }
                 this.successfulActions.push(request.successfulActions[action].split('.')[1]);
             }
