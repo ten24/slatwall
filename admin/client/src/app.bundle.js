@@ -1118,7 +1118,7 @@ webpackJsonp([0],[
 	                    newOrderPaymentErrors['locality'] = 'Required *';
 	                }
 	            }
-	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')) {
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalCode')) {
 	                newOrderPaymentErrors['postalCode'] = 'Required *';
 	            }
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')) {
@@ -1174,7 +1174,7 @@ webpackJsonp([0],[
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
@@ -1285,7 +1285,7 @@ webpackJsonp([0],[
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
@@ -1377,10 +1377,10 @@ webpackJsonp([0],[
 	                weight += _this.cart.orderFulfillments[item].totalShippingWeight;
 	            }
 	            var shipFromAddress = {
-	                "postalcode": ""
+	                "postalCode": ""
 	            };
 	            var shipToAddress = {
-	                "postalcode": zipcode
+	                "postalCode": zipcode
 	            };
 	            var totalWeight = weight;
 	            //get the rates.
@@ -1409,7 +1409,7 @@ webpackJsonp([0],[
 	                if ((address1.streetAddress == address2.streetAddress &&
 	                    address1.street2Address == address2.street2Address &&
 	                    address1.city == address2.city &&
-	                    address1.postalcode == address2.postalcode &&
+	                    address1.postalCode == address2.postalCode &&
 	                    address1.countrycode == address2.countrycode)) {
 	                    return true;
 	                }

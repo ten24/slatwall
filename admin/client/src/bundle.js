@@ -4668,7 +4668,7 @@
 	                if ((address1.streetAddress == address2.streetAddress &&
 	                    address1.street2Address == address2.street2Address &&
 	                    address1.city == address2.city &&
-	                    address1.postalcode == address2.postalcode &&
+	                    address1.postalCode == address2.postalCode &&
 	                    address1.statecode == address2.statecode &&
 	                    address1.countrycode == address2.countrycode)) {
 	                    return true;

@@ -58,6 +58,7 @@ class PublicService {
     public lastRemovedPromoCode;
     public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
+    public successfulActions = [];
 
     ///index.cfm/api/scope/
 
@@ -156,8 +157,11 @@ class PublicService {
     }
 
     /** accessors for states */
-    public getStates=(countryCode:string, refresh=false):any =>  {
+    public getStates=(countryCode:string, address:any, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
+       if(address && address.data){
+           countryCode = address.data.countrycode;
+       }
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
        if(!this.stateDataPromise || refresh){
            this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode);
@@ -308,10 +312,12 @@ class PublicService {
         this.errors = response.errors;
         //if the action that was called was successful, then success is true.
         if (request.hasSuccessfulAction()){
+            this.successfulActions = [];
             for (var action in request.successfulActions){
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
                 }
+                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
             }
         }
     }
@@ -719,7 +725,7 @@ class PublicService {
         	if ( (address1.streetAddress == address2.streetAddress &&
 	            address1.street2Address == address2.street2Address &&
 	            address1.city == address2.city &&
-	            address1.postalcode == address2.postalcode &&
+	            address1.postalCode == address2.postalCode &&
                 address1.statecode == address2.statecode &&
 	            address1.countrycode == address2.countrycode)){
             	return true;

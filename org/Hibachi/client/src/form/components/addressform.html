@@ -12,7 +12,8 @@
 		    data-class="new_address"
 		    data-name="{{SwAddressForm.addressName}}"
 		    data-event-announcers="keyup"
-		    data-action="{{SwAddressForm.action}}">			    
+		    data-action="{{SwAddressForm.action}}"
+		    data-event-listeners="{AddressCountrycodeOnChange:slatwall.binder(null,slatwall.getStates,null,SwAddressForm.address,true)}">			    
 			    <div class="row" ng-cloak>
 			    	<!--- Show address book dropdown? --->
 			    	<div class="col-sm-6" ng-if="SwAddressForm.showAddressBookSelect == 'true'">

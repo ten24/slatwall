@@ -2029,7 +2029,7 @@
 	                    newOrderPaymentErrors['locality'] = 'Required *';
 	                }
 	            }
-	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')) {
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalCode')) {
 	                newOrderPaymentErrors['postalCode'] = 'Required *';
 	            }
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')) {
@@ -2083,7 +2083,7 @@
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
@@ -2194,7 +2194,7 @@
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
 	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+	                'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
 	                'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
 	                'newOrderPayment.saveShippingAsBilling': (_this.saveShippingAsBilling == true),
@@ -2286,10 +2286,10 @@
 	                weight += _this.cart.orderFulfillments[item].totalShippingWeight;
 	            }
 	            var shipFromAddress = {
-	                "postalcode": ""
+	                "postalCode": ""
 	            };
 	            var shipToAddress = {
-	                "postalcode": zipcode
+	                "postalCode": zipcode
 	            };
 	            var totalWeight = weight;
 	            //get the rates.
