@@ -50,26 +50,23 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.cycleCountGroupSmartList" type="any"/>
+<cfparam name="rc.cycleCountBatchSmartList" type="any"/>
 
 <cfoutput>
 	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountGroupSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountBatchSmartList#" showCreate="false">
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createcyclecountgroup" entity="cyclecountgroup" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createcyclecountbatch" entity="cyclecountbatch" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartlist="#rc.cycleCountGroupSmartList#" 
-	                          recordeditaction="admin:entity.editcyclecountgroup"
-							  recorddetailaction="admin:entity.detailcyclecountgroup">
+	<hb:HibachiListingDisplay smartlist="#rc.cycleCountBatchSmartList#" 
+	                          recordeditaction="admin:entity.editcyclecountbatch"
+							  recorddetailaction="admin:entity.detailcyclecountbatch">
 	
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="cycleCountGroupName" />	
-		<hb:HibachiListingColumn propertyidentifier="frequencyToCount" />	
-		<hb:HibachiListingColumn propertyidentifier="daysInCycle" />	
-		<hb:HibachiListingColumn propertyidentifier="activeFlag" />	
-		<hb:HibachiListingColumn propertyidentifier="modifiedDateTime" />
+		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchDate" />
+		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchStatusType" title="Status" />
 	</hb:HibachiListingDisplay>
 
 </cfoutput>

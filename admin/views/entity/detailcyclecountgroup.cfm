@@ -70,3 +70,121 @@ Notes:
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
+
+
+<hr>
+
+<br>rc.cyclecountgroup
+<!--- <cfdump var="#rc.cyclecountgroup#" top="1" expand="false"> --->
+<!--- <cfdump var="#rc.cyclecountgroup.getCycleCountGroupsSkusCollection()#" top="1" expand="false"> --->
+<!--- <cfdump var="#rc.cyclecountgroup.getCycleCountGroupsSkusCollection()#" top="1" expand="false"> --->
+
+<!--- <cfabort> --->
+
+<cfdump var="#arrayLen(rc.cyclecountgroup.getCycleCountGroupsSkusCollection().getPageRecords())# of #arrayLen(rc.cyclecountgroup.getCycleCountGroupsSkusCollection().getRecords())#" top="10">
+<cfdump var="#rc.cyclecountgroup.getCycleCountGroupsSkusCollection().getPageRecords(formatRecords=false)#" top="10">
+<!--- <cfscript>
+	for(skuDetails in rc.cyclecountgroup.getCycleCountGroupsSkusCollection().getPageRecords(formatRecords=false)) {
+		writeDump(var=skuDetails);
+		sku = rc.$.slatwall.getEntity('Sku', skuDetails['skuID']);
+		for(stock in sku.getStocks()) {
+			if(stock.hasInventory()) {
+				writeDump(var=stock,top=1);
+				newcCycleCountBatchItem = rc.$.slatwall.newEntity('cycleCountBatchItem');
+				newcCycleCountBatchItem.setStock(stock);
+				writeDump(var=newcCycleCountBatchItem,top=1);
+			}
+		}
+		abort;
+	}
+
+</cfscript> --->
+
+<!--- <cfdump var="#arrayLen(rc.cyclecountgroup.getCycleCountGroupsSkusCollection().getRecords())#" top="10">
+<cfdump var="#rc.cyclecountgroup.getCycleCountGroupsSkusCollection().getRecords(formatRecords=false)#" top="10"> --->
+
+
+<!--- 
+	<cfset cycleCountGroupSmartList = rc.$.Slatwall.getService('physicalService').getCycleCountGroupSmartList()>
+	<cfdump var="#arrayLen(cycleCountGroupSmartList.getRecords())#" top="1">
+	<cfdump var="#cycleCountGroupSmartList#" top="1" expand="false">
+	<cfloop array="#cycleCountGroupSmartList.getRecords()#" index="CycleCountGroup">
+		<cfdump var="#arrayLen(cyclecountgroup.getLocations())#" top="1">
+		<cfdump var="#cyclecountgroup.getLocations()#" top="1">
+
+		<cfset skuSmartList = rc.$.Slatwall.getService("SkuService").getSkuSmartList()>
+		<cfdump var="#arrayLen(skuSmartList.getRecords())#" top="1">
+		<cfdump var="#skuSmartList#" top="1">
+		<cfdump var="#skuSmartList.getRecords()[1]#" top="1">
+
+		<cfset stockSmartList = rc.$.Slatwall.getService("StockService").getStockSmartList()>
+		<cfset stockSmartList.addFilter('location.locationID','402821e55c415e4b015c65bb038a0098')>
+		<cfdump var="#arrayLen(stockSmartList.getRecords())#" top="1">
+		<cfdump var="#stockSmartList#" top="1">
+		<cfdump var="#stockSmartList.getRecords()[1]#" top="1">
+
+	</cfloop> --->
+
+
+	<!--- <br><cfdump var="#location.getLocationIDPath()#" top="1" expand="false"> --->
+	<!--- <cfset sSL = rc.$.Slatwall.getService('stockService').getStockSmartList()>
+	<cfset sSL.addFilter('calculatedQATS', '0')>
+	<cfdump var="#arrayLen(sSL.getRecords())#" top="1"> --->
+	<!--- <cfdump var="#sSL.getRecords()[1]#" top="1">
+	<cfdump var="#sSL.getRecords()[1].getSku()#" top="1" expand="false"> 
+	<cfdump var="#arrayLen(sSL.getRecords()[1].getSku().getStocks())#" top="1">
+	<cfdump var="#arrayLen(sSL.getRecords()[1].getLocation().getStocks())#" top="1">
+	<cfdump var="#sSL.getRecords()[1].getLocation()#" top="1"> --->
+	<!--- <cfdump var="#arrayLen(sSL.getRecords()[1].getLocation().getSkus())#" top="1"> --->
+
+	<!--- <cfloop array="#sSL.getRecords()#" index="stock">
+		<cfset deleteStock = rc.$.Slatwall.getService('stockService').deleteStock(stock)>
+	</cfloop>
+	<cfset ORMFlush()> --->
+
+
+
+	<!--- <cfabort>
+
+
+	<cfloop array="#rc.cyclecountgroup.getLocations()#" index="location">
+		<br><cfdump var="#location.getLocationIDPath()#" top="1" expand="false">
+		<cfset sSL = rc.$.Slatwall.getService('stockService').getStockSmartList()>
+		<!--- <cfset sSL.addRange('calculatedQATS', '1^')> --->
+		<cfset sSL.addLikeFilter('location.locationIDPath', '#location.getLocationIDPath()#%')>
+		<cfdump var="#arrayLen(sSL.getRecords())#" top="1">
+		<cfdump var="#sSL#" top="1">
+		<cfloop array="#sSL.getRecords()#" index="stock">
+			<cfdump var="#stock.getLocation().getLocationName()#" top="1">
+			<cfdump var="#stock#" top="1">
+		</cfloop>
+	</cfloop> --->
+
+
+	<!--- <cfdump var="#rc.$.slatwallScope.getService('stockService')#" top="1"> --->
+
+
+
+	<!--- 
+	<br>arrayLen(rc.cyclecountgroup.getLocations())
+	<cfdump var="#arrayLen(rc.cyclecountgroup.getLocations())#" top="1">
+	<br>rc.cyclecountgroup.getLocations()
+	<cfloop array="#rc.cyclecountgroup.getLocations()#" index="location">
+		<br><cfdump var="#location.getLocationName()#" top="1" expand="false">
+		<cfdump var="#location#" top="1" expand="false">
+		<br>arrayLen(location.getStocks())
+		<cfdump var="#arrayLen(location.getStocks())#" top="1">
+		<cfloop array="#location.getStocks()#" index="stock">
+			<br><cfdump var="#stock.getLocation().getLocationName()#" top="1" expand="false">
+			<br><cfdump var="#stock.getSku().getSkuCode()#" top="1" expand="false">
+			<cfdump var="#stock#" top="1" >
+		</cfloop>
+	</cfloop>
+
+
+
+
+
+
+
+ --->

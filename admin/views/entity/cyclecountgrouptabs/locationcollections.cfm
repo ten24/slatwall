@@ -15,7 +15,7 @@
 </cfif>
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#locationCollectionSmartList#" selectFieldName="locationCollection.collectionID" selectValue="#locationCollectionID#"  edit="#rc.edit#">
+	<hb:HibachiListingDisplay smartList="#locationCollectionSmartList#" selectFieldName="locationCollection.locationCollectionID" selectValue="#locationCollectionID#" selectTitle="#$.slatwall.rbKey('define.primary')#" edit="#rc.edit#">
 		<hb:HibachiListingColumn propertyIdentifier="collectionName" tdclass="primary" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

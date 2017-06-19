@@ -15,7 +15,7 @@
 </cfif>
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#skuCollectionSmartList#" selectFieldName="locationCollection.collectionID" selectValue="#skuCollectionID#" edit="#rc.edit#">
+	<hb:HibachiListingDisplay smartList="#skuCollectionSmartList#" selectFieldName="skuCollection.skuCollectionID" selectValue="#skuCollectionID#" edit="#rc.edit#">
 		<hb:HibachiListingColumn propertyIdentifier="collectionName" tdclass="primary" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

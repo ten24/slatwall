@@ -79,6 +79,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedQOH" ormtype="integer";
 	property name="calculatedSkuDefinition" ormtype="string";
+	property name="calculatedLastCountedDateTime" ormtype="timestamp" hb_formatType="dateTime";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -1133,6 +1134,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 		}
 		return trim(variables.skuDefinition);
+	}
+
+	public string function getLastCountedDateTime() {
+		return '';
 	}
 
 	public boolean function getTransactionExistsFlag() {
