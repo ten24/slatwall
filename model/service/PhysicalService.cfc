@@ -264,6 +264,51 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.physical;
 	}
 
+	// CycleCountBatch
+	public any function processCycleCountBatch_physicalCount(required any cycleCountBatch, required any processObject) {
+
+		// create Physical
+		var newPhysical = this.newPhysical();
+		var locationPhysicalCounts = {};
+		newPhysical.setPhysicalName(arguments.processObject.getPhysicalName());
+		newPhysical.setCycleCountBatch(arguments.cycleCountBatch);
+		for(var cycleCountBatchItem in arguments.cycleCountBatch.getCycleCountBatchItems()) {
+			if(cycleCountBatchItem.getQuantity() != '') {
+				if(!newPhysical.hasLocation(cycleCountBatchItem.getStock().getLocation())) {
+					newPhysical.addLocation(cycleCountBatchItem.getStock().getLocation());
+					// create Physical Count
+					var newPhysicalCount = this.newPhysicalCount();
+					newPhysicalCount.setPhysical(newPhysical);
+					newPhysicalCount.setLocation(cycleCountBatchItem.getStock().getLocation());
+					newPhysicalCount.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+					newPhysicalCount = this.savePhysical(newPhysicalCount);
+					locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()] = newPhysicalCount;
+				}
+				
+				// create Physical Count Item
+				var newPhysicalCountItem = this.newPhysicalCountItem();
+				newPhysicalCountItem.setPhysicalCount(locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()]);
+				newPhysicalCountItem.setQuantity(cycleCountBatchItem.getQuantity());
+				newPhysicalCountItem.setSTock(cycleCountBatchItem.getStock());
+				newPhysicalCountItem.setSkuCode(cycleCountBatchItem.getStock().getSku().getSkuCode());
+				newPhysicalCountItem.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+				newPhysicalCountItem.setCycleCountBatchItem(cycleCountBatchItem);
+				newPhysicalCountItem = this.savePhysicalCountItem(newPhysicalCountItem);
+				cycleCountBatchItem.getStock().getSku().setCalculatedLastCountedDateTime(arguments.processObject.getCountPostDateTime());
+			}
+		}
+		newPhysical = this.savePhysical(newPhysical);
+		if(newPhysical.hasErrors()) {
+			arguments.cycleCountBatch.addErrors(newPhysical.getErrors());
+		} else {
+			arguments.cycleCountBatch.setPhysical(newPhysical);
+			
+			// Process Physical
+			this.processPhysical(newPhysical, {}, 'commit'); 
+		}
+
+		return arguments.cycleCountBatch;
+	}
 
 	// =====================  END: Process Methods ============================
 	

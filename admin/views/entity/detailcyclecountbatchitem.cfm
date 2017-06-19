@@ -50,26 +50,21 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.cycleCountGroupSmartList" type="any"/>
+<cfparam name="rc.cyclecountbatchitem" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountGroupSmartList#" showCreate="false">
-		<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createcyclecountgroup" entity="cyclecountgroup" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiListingDisplay smartlist="#rc.cycleCountGroupSmartList#" 
-	                          recordeditaction="admin:entity.editcyclecountgroup"
-							  recorddetailaction="admin:entity.detailcyclecountgroup">
-	
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="cycleCountGroupName" />	
-		<hb:HibachiListingColumn propertyidentifier="frequencyToCount" />	
-		<hb:HibachiListingColumn propertyidentifier="daysInCycle" />	
-		<hb:HibachiListingColumn propertyidentifier="activeFlag" />	
-		<hb:HibachiListingColumn propertyidentifier="modifiedDateTime" />
-	</hb:HibachiListingDisplay>
+	<hb:HibachiEntityDetailForm object="#rc.cyclecountbatchitem#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.cyclecountbatchitem#" edit="#rc.edit#"
+									backaction="admin:entity.detailcyclecountbatch"
+									backquerystring="cycleCountBatchID=#rc.cyclecountbatchitem.getCycleCountBatchID()#"
+		>
+		</hb:HibachiEntityActionBar>
 
+		<hb:HibachiEntityDetailGroup object="#rc.cyclecountbatchitem#">
+			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
+		
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
+

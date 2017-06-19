@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,39 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="cycleCountBatch";
+	property name="physical";
+	property name="physicalCount";
+
+	// New Properties
+
+	// Data Properties
+	property name="physicalName" ormtype="string";
+	property name="countPostDateTime" ormtype="timestamp";
+
+	public function getPhysicalName() {
+		if(!structKeyExists(variables, "physicalName")) {
+			variables.physicalName = 'Cycle Count Batch';
+			if(len(getCycleCountBatch().getCycleCountBatchDate())) {
+				variables.physicalName &= ' - ' & getService("HibachiUtilityService").formatValue_date(getCycleCountBatch().getCycleCountBatchDate());
+			}
+		}
+		return variables.physicalName;
+	}
+	public function getCountPostDateTime() {
+		if(!structKeyExists(variables, "countPostDateTime")) {
+			if(len(getCycleCountBatch().getCycleCountBatchDate())) {
+				variables.countPostDateTime = getCycleCountBatch().getCycleCountBatchDate();
+			} else {
+				variables.countPostDateTime = '';
+			}
+		}
+		return variables.countPostDateTime;
+	}
 
 
-<cfparam name="rc.cycleCountGroupSmartList" type="any"/>
-
-<cfoutput>
-	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.cycleCountGroupSmartList#" showCreate="false">
-		<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createcyclecountgroup" entity="cyclecountgroup" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiListingDisplay smartlist="#rc.cycleCountGroupSmartList#" 
-	                          recordeditaction="admin:entity.editcyclecountgroup"
-							  recorddetailaction="admin:entity.detailcyclecountgroup">
-	
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="cycleCountGroupName" />	
-		<hb:HibachiListingColumn propertyidentifier="frequencyToCount" />	
-		<hb:HibachiListingColumn propertyidentifier="daysInCycle" />	
-		<hb:HibachiListingColumn propertyidentifier="activeFlag" />	
-		<hb:HibachiListingColumn propertyidentifier="modifiedDateTime" />
-	</hb:HibachiListingDisplay>
-
-</cfoutput>
+}
