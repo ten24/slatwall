@@ -427,7 +427,7 @@ a:hover {
   border-left: 1px solid #2977B9;
 }
 .table-responsive {
-  overflow: auto;
+  overflow: visible;
   display: block;
   width: 100%;
   margin-bottom: 0px !important;
