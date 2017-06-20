@@ -2,13 +2,13 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as Store from '../../../../../../org/hibachi/client/src/core/prototypes/Store';
+import * as Store from '../../../../../../org/hibachi/client/src/core/prototypes/swstore';
 
 class ListingService{
     
     private listingDisplays = {};
     private state = {};
-    public listingDisplayStore: Store.Store;
+    public listingDisplayStore: Store.IStore;
 
     //@ngInject
     constructor(private $timeout,
@@ -24,7 +24,7 @@ class ListingService{
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
-        this.listingDisplayStore = new Store.Store( this.state, this.listingDisplayStateReducer );
+        this.listingDisplayStore = new Store.IStore( this.state, this.listingDisplayStateReducer );
         
     }
 

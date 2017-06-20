@@ -3,7 +3,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import * as Prototypes from '../prototypes/Observable';
-import * as TypeaheadStore from '../prototypes/Store';
+import * as TypeaheadStore from '../prototypes/swstore';
 import {Observable, Subject} from 'rxjs';
 
 
@@ -50,7 +50,7 @@ class TypeaheadService {
 
     //@ngInject
     constructor(public $timeout, public observerService){
-        this.typeaheadStore = new TypeaheadStore.Store(this.state, this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
+        this.typeaheadStore = new TypeaheadStore.IStore(this.state, this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
     }
     
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{

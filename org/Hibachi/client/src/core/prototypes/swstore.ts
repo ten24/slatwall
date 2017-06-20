@@ -10,7 +10,7 @@ export interface Reducer {
     (state: Object, action: Action<string>): Object;
 }
 
-export class Store { 
+export class IStore { 
     public store$:Observable<any>;
     public actionStream$:Subject<Action<string>>; //a stream of actions. 
     public dispatch:Function = (action:Action<string>):any => this.actionStream$.next((action));

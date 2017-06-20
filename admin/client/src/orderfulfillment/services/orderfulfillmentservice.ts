@@ -3,7 +3,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as Store from '../../../../../org/hibachi/client/src/core/prototypes/Store';
+import * as Store from   '../../../../../org/hibachi/client/src/core/prototypes/swstore';
+import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
 
 /**
  * Fulfillment List Controller
@@ -46,25 +47,36 @@ class OrderFulfillmentService {
     public orderFulfillmentStateReducer:Store.Reducer = (state:any, action:Store.Action<any>):Object => {
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
+            
                 //modify the state and return it.
                 this.state.showFulfillmentListing = !this.state.showFulfillmentListing;
                 return {...this.state, action};
+            
             case 'ADD_BATCH':
+            
                 return {...state, action};
-            case 'FULFILLMENT_BATCH_DETAIL_SETUP':
+            
+            case actions.SETUP_BATCHDETAIL:
+            
                 //Setup the detail
                 if (action.payload.fulfillmentBatchId != undefined){
                     this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
                 }
                 this.setupFulfillmentBatchDetail();
                 return {...this.state, action}
-            case 'FULFILLMENT_BATCH_DETAIL_UPDATE':
+            
+            case actions.UPDATE_BATCHDETAIL:
+            
                 return {...this.state, action}
-            case 'TOGGLE_FULFILLMENT_BATCH_LISTING':
-                //Toggle the listing
+            
+            case actions.TOGGLE_BATCHLISTING:
+            
+                //Toggle the listing from expanded to half size.
                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
                 return {...this.state, action}
-            case 'EDIT_COMMENT_TOGGLE':
+            
+            case actions.TOGGLE_EDITCOMMENT:
+            
                 //Update the comment.
                 this.state.editComment = !this.state.editComment;
                 if (this.state.editComment == true){
@@ -73,7 +85,9 @@ class OrderFulfillmentService {
                     this.state.commentBeingEdited = undefined;
                 }
                 return {...this.state, action}
-            case 'SAVE_COMMENT_ACTION':
+            
+            case actions.SAVE_COMMENT_REQUESTED:
+            
                 if (action.payload.comment && action.payload.commentText){
                     //saving
                     this.saveComment(action.payload.comment, action.payload.commentText);
@@ -85,17 +99,21 @@ class OrderFulfillmentService {
                 this.state.editComment = false;
                 this.state.commentBeingEdited = undefined;
                 return {...this.state, action}
-            case 'DELETE_COMMENT_ACTION':
+            
+            case actions.DELETE_COMMENT_REQUESTED:
                 this.deleteComment(action.payload.comment);
                 this.state.editComment = false;
                 this.state.commentBeingEdited = undefined;
                 return {...this.state, action}
-            case 'FULFILLMENT_ACTION':
+            
+            case actions.CREATE_FULFILLMENT_REQUESTED:
                 //create all the data
                 this.fulfillItems(action.payload.viewState, false);
                 //Needs to set the next available fulfillment if this was successful.
                 return {...this.state, action}
-             case 'DISPLAY_ORDER_DELIVERY_ATTRIBUTES':
+             
+             case actions.SETUP_ORDERDELIVERYATTRIBUTES:
+             
                 this.createOrderDeliveryAttributeCollection();
                 return {...this.state, action}
             default:
@@ -108,15 +126,14 @@ class OrderFulfillmentService {
      *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
      *  it with the newest result. 
      */
-    public orderFulfillmentStore:Store.Store;
+    public orderFulfillmentStore:Store.IStore;
 
 
     //@ngInject
     constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, private $rootScope){
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
-        this.orderFulfillmentStore = new Store.Store( this.state, this.orderFulfillmentStateReducer );
-        console.log(Store);
+        this.orderFulfillmentStore = new Store.IStore( this.state, this.orderFulfillmentStateReducer );
     }
 
     /** Sets up the batch detail page including responding to listing changes. */
@@ -189,7 +206,7 @@ class OrderFulfillmentService {
     /** During key times when data changes, we would like to alert the client to those changes. This allows us to do that. */
     public emitUpdateToClient = () => {
         this.orderFulfillmentStore.dispatch({
-            type: "FULFILLMENT_BATCH_DETAIL_UPDATE",
+            type: actions.UPDATE_BATCHDETAIL,
             payload: {noop:angular.noop()}
         });
     }

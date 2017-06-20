@@ -36,6 +36,11 @@ export const TOGGLE_BATCHLISTING  = "TOGGLE_BATCHLISTING";
 export const SETUP_BATCHDETAIL  = "SETUP_BATCHDETAIL";
 
 /**
+ * This updates all of the state for the batch detail page. 
+ */
+export const UPDATE_BATCHDETAIL  = "UPDATE_BATCHDETAIL";
+
+/**
  * This will refresh all of the batch detail state.
  */
 export const REFRESH_BATCHDETAIL  = "REFRESH_BATCHDETAIL";

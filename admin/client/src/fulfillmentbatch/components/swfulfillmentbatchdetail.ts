@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import * as action from '../actions/fulfillmentbatchactions';
+import * as actions from '../actions/fulfillmentbatchactions';
 
 /**
  * Fulfillment Batch Detail Controller
@@ -19,19 +19,19 @@ class SWFulfillmentBatchDetailController  {
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
             //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
             
-            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_SETUP"){
+            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == actions.SETUP_BATCHDETAIL){
                 //GET the state.
                 this.state = stateChanges;
             }
-            if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == "FULFILLMENT_BATCH_DETAIL_UPDATE"){
+            if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == actions.UPDATE_BATCHDETAIL){
                 //GET the state.
                 this.state = stateChanges;
             }
-            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "EDIT_COMMENT_TOGGLE" || stateChanges.action.type == "SAVE_COMMENT_ACTION" || stateChanges.action.type == "DELETE_COMMENT_ACTION")){
+            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.TOGGLE_EDITCOMMENT || stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED || stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED)){
                 //GET the state.
                 this.state = stateChanges;
             }
-            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == "DISPLAY_ORDER_DELIVERY_ATTRIBUTES")){
+            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES)){
                 //GET the state.
                 this.state = stateChanges;
             }
@@ -47,7 +47,7 @@ class SWFulfillmentBatchDetailController  {
     /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
     public userViewingFulfillmentBatchDetail = (batchID) => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "FULFILLMENT_BATCH_DETAIL_SETUP",
+            type: actions.SETUP_BATCHDETAIL,
             payload: {fulfillmentBatchId: batchID }
         });
     }
@@ -55,24 +55,26 @@ class SWFulfillmentBatchDetailController  {
     /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
     public userToggleFulfillmentBatchListing = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "TOGGLE_FULFILLMENT_BATCH_LISTING",
+            type: actions.TOGGLE_BATCHLISTING,
             payload: {}
         });
     }
+    
     //toggle_editcomment for action based
     public userEditingComment = (comment) => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "EDIT_COMMENT_TOGGLE",
+            type: actions.TOGGLE_EDITCOMMENT,
             payload: {comment: comment}
         });
     }
+    
     //requested | failed | succeded
     public userDeletingComment = (comment) => {
         //Only fire the event if the user agrees.
         let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
         if ( window.confirm(`${warning}?`) ) {
             this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-                type: "DELETE_COMMENT_ACTION",
+                type: actions.DELETE_COMMENT_REQUESTED,
                 payload: {comment: comment}
             });
         }
@@ -80,35 +82,35 @@ class SWFulfillmentBatchDetailController  {
     
     public userSavingComment = (comment, commentText) => {
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SAVE_COMMENT_ACTION",
+            type: actions.SAVE_COMMENT_REQUESTED,
             payload: {comment: comment, commentText: commentText}
         });
     }
 
     public userViewingOrderDeliveryAttributes = () => {
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "DISPLAY_ORDER_DELIVERY_ATTRIBUTES",
+            type: actions.SETUP_ORDERDELIVERYATTRIBUTES,
             payload: {}
         });
     }
 
     public userCaptureAndFulfill = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "FULFILLMENT_ACTION",
+            type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }
         });
     }
 
     public userPrintPickingList = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "PRINT_PICKING_LIST_ACTION",
+            type: actions.PRINT_PICKINGLIST_REQUESTED,
             payload: {}
         });
     }
 
     public userPrintPackingList = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "PRINT_PACKING_LIST_ACTION",
+            type: actions.PRINT_PACKINGLIST_REQUESTED,
             payload: {}
         });
     }

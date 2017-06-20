@@ -98,6 +98,7 @@ Notes:
 					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
 				</sw-card-view>
 			</sw-card-layout>
+			
 			<!--- Description --->
 			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="description" card-title="Description">
@@ -110,6 +111,7 @@ Notes:
 					</sw-card-body>
 				</sw-card-view>
 			</sw-card-layout>
+			
 			<!--- Status --->
 			<sw-card-layout class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
 				<sw-card-view id="status">
