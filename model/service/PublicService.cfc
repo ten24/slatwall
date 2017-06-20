@@ -1056,7 +1056,6 @@ component extends="HibachiService"  accessors="true" output="false"
                 }
             }
         }
-        getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
         
         if(!cart.hasErrors()) {
             //Persist the quantity change
@@ -1069,6 +1068,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	 	    
 	 	    if(!cart.hasErrors()) {
 	 	    	getOrderService().saveOrder(cart);
+          getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
 	 	    }
             
             // Also make sure that this cart gets set in the session as the order

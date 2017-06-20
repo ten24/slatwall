@@ -76,11 +76,11 @@
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-			                    <div class="panel radio panel-default" ng-cloak>
+			                    <div class="panel panel-default" ng-cloak ng-repeat="paymentMethod in slatwall.getEligibleCreditCardPaymentMethods()">
 			                        <div class="panel-heading" role="tab" id="headingOne">
 			                            <h4 class="panel-title">
 			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##collapse1" aria-expanded="false" aria-controls="collapseOne">
-			                                    <span class="dot"></span> Credit Card
+			                                    <span class="dot"></span> {{paymentMethod.paymentMethod.paymentMethodName}}
 			                                </a>
 			                            </h4>
 			                        </div>
@@ -90,7 +90,7 @@
 												<div class="col-md-12">
 													<!--- Credit card --->
 													<swf-directive partial-name="ordererrors"></swf-directive>
-													<swf-directive partial-name="orderpaymentpartial"></swf-directive>
+													<swf-directive partial-name="orderpaymentpartial" variables="{'paymentMethodID':paymentMethod.paymentMethod.paymentMethodID}"></swf-directive>
 												</div>
 											</div>
 			                            </div>

@@ -78,11 +78,11 @@ Notes:
             <h3 ng-show="slatwall.isSigningIn()">Sign in to your Account</h3>
             <div class="details" ng-show="slatwall.isCreatingAccount()">
                 <p>Already have an account?  <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount">Sign in</a></p>
-				<swf-directive partial-name="createaccount"></swf-directive>
+				<swf-directive partial-name="checkout/createaccount"></swf-directive>
 			</div>
 
             <div class="details" ng-show="slatwall.isSigningIn()">
-				<swf-directive partial-name="login"></swf-directive>
+				<swf-directive partial-name="checkout/login"></swf-directive>
                 <p>Need an account? <a href="##" class="loginCreateToggle" ng-click="slatwall.showCreateAccount = !slatwall.showCreateAccount; slatwall.showForgotPassword = false">Create Account</a></p>
 			</div>
         </div>
@@ -107,7 +107,7 @@ Notes:
 							<th>Product</th>
 							<th>Details</th>
 							<th>Price</th>
-							<th>QTY</th>
+							<th>Quantity</th>
 							<th>Ext. Price</th>
 							<th>Discount</th>
 							<th>Total</th>
@@ -153,21 +153,35 @@ Notes:
 						    			<i class="fa fa-chevron-right"></i>
 						    		</button>
 						        </div> --->
-						        <sw-form
-						        	data-object="orderItem"
+						        <sw-form ng-init="orderItemQuantity = {}; slatwall.binder(orderItemQuantity,slatwall.copyOrderItem,orderItem)()"
+						        	data-object="orderItemQuantity"
 						        	data-name="orderItemQuantity"
 						        	data-event-announcers="keyup"
-						        	data-action="updateOrderItemQuantity">
+						        	data-action="updateOrderItemQuantity"
+						        	data-submit-on-enter="true">
+						        	<div class="col-sm-6">
+							        	<swf-property-display
+							        		data-name="quantity"
+							        		data-property-identifier="orderItem.quantity"
+							        		data-label-text=""
+							        		data-field-type="text"
+							        		data-event-listener="{updateOrderItemSuccess:slatwall.binder(orderItemQuantity,slatwall.copyOrderItem,orderItem)}"
+							        	></swf-property-display>
+						        	</div>
+						        	<div class="col-sm-6">
+						        		<span ng-if="!slatwall.loadingThisRequest('updateOrderItemQuantity',{'orderItem.orderItemID':orderItem.orderItemID})">
+								        	<sw-action-caller
+								        		data-type="link"
+								        		data-title="Update">
+								        	</sw-action-caller>
+							        	</span>
+							        	<span class="fa-lg" ng-if="slatwall.loadingThisRequest('updateOrderItemQuantity',{'orderItem.orderItemID':orderItem.orderItemID})">
+								        		<i class="fa fa-spinner fa-pulse fa-fw""></i>
+										</span>
+						        	</div>
 						        	<swf-property-display
-						        		data-name="quantity"
-						        		data-property-identifier="quantity"
-						        		data-label-text=""
-						        		data-field-type="text"
-						        		data-event-listeners="{orderItemQuantitykeyup:slatwall.binder($parent.swForm, $parent.swForm.submit, null)}"
-						        	></swf-property-display>
-						        	<swf-property-display
-						        		data-name="quantity"
-						        		data-property-identifier="orderItemID"
+						        		data-name="orderItemID"
+						        		data-property-identifier="orderItem.orderItemID"
 						        		data-label-text=""
 						        		data-field-type="text"
 						        		data-class="hidden"
@@ -273,7 +287,7 @@ Notes:
 				<div class="col-sm-6">
 					<div class="well">
 						<h4>Promotion Code</h4>
-						<swf-directive partial-name="promopartial"></swf-directive>
+						<swf-directive partial-name="checkout/promopartial"></swf-directive>
 					</div>
 				</div>
 				<div class="col-sm-6">

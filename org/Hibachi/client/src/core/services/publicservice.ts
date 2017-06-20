@@ -984,6 +984,16 @@ class PublicService {
         return Boolean(this.cart.orderFulfillments[fulfillmentIndex].emailAddress)
     }
 
+    public getEligiblePaymentMethodsForPaymentMethodType = (paymentMethodType) => {
+        return this.cart.eligiblePaymentMethodDetails.filter(paymentMethod =>{
+            return paymentMethod.paymentMethod.paymentMethodType == paymentMethodType;
+        });
+    }
+
+    public getEligibleCreditCardPaymentMethods = () => {
+        return this.getEligiblePaymentMethodsForPaymentMethodType('creditCard');
+    }
+
     public getPickupLocation = (fulfillmentIndex) => {
         if(!this.cart.data.orderFulfillments[fulfillmentIndex]) return;
         return this.cart.data.orderFulfillments[fulfillmentIndex].pickupLocation;
@@ -1110,8 +1120,20 @@ class PublicService {
         event.swForm.submit();
     }
 
+    //Use with bind, assigning 'this' as the temporary order item
+    public copyOrderItem(orderItem){
+        console.log("WE COPYIN! THIS=", this)
+        this.orderItem = {orderItemID:orderItem.orderItemID,
+            quantity:orderItem.quantity};
+        return this;
+    }
+
     public binder = (self, fn, ...args)=>{
-        return fn.bind(self, ...args);
+        try{
+            return fn.bind(self, ...args);
+        }catch(e){
+            console.log("can't BIND, breh!", self, fn);
+        }
     }
 }
 export {PublicService};

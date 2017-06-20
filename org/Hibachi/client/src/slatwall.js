@@ -2033,20 +2033,21 @@
 	            if (!action) {
 	                throw "Action is required exception";
 	            }
-	            var urlBase = "";
+	            var urlBase = hibachiConfig.baseURL;
 	            //check if the caller is defining a path to hit, otherwise use the public scope.
 	            if (action.indexOf(":") !== -1) {
-	                urlBase = action; //any path
+	                urlBase = urlBase + action; //any path
 	            }
 	            else {
-	                urlBase = "/index.cfm/api/scope/" + action; //public path
+	                urlBase = urlBase + "index.cfm/api/scope/" + action; //public path
 	            }
 	            if (data) {
 	                method = "post";
 	                data.returnJsonObjects = "cart,account";
 	            }
 	            else {
-	                urlBase += "&returnJsonObject=cart,account";
+	                urlBase += (urlBase.indexOf('?') == -1) ? '?' : '&';
+	                urlBase += "returnJsonObject=cart,account";
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
@@ -2062,7 +2063,7 @@
 	            }
 	            else {
 	                //get
-	                var url = urlBase + "&returnJsonObject=cart,account";
+	                var url = urlBase;
 	                var request_2 = _this.requestService.newPublicRequest(url, data, method);
 	                request_2.promise.then(function (result) {
 	                    _this.processAction(result, request_2);
@@ -2091,6 +2092,9 @@
 	                for (var action in request.successfulActions) {
 	                    if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
 	                        _this.$window.location.href = _this.confirmationUrl;
+	                    }
+	                    else if (request.successfulActions[action].indexOf('public:account.logout') !== -1) {
+	                        _this.account = _this.$hibachi.newAccount();
 	                    }
 	                    _this.successfulActions.push(request.successfulActions[action].split('.')[1]);
 	                }
@@ -2665,6 +2669,14 @@
 	        this.hasEmailFulfillmentAddress = function (fulfillmentIndex) {
 	            return Boolean(_this.cart.orderFulfillments[fulfillmentIndex].emailAddress);
 	        };
+	        this.getEligiblePaymentMethodsForPaymentMethodType = function (paymentMethodType) {
+	            return _this.cart.eligiblePaymentMethodDetails.filter(function (paymentMethod) {
+	                return paymentMethod.paymentMethod.paymentMethodType == paymentMethodType;
+	            });
+	        };
+	        this.getEligibleCreditCardPaymentMethods = function () {
+	            return _this.getEligiblePaymentMethodsForPaymentMethodType('creditCard');
+	        };
 	        this.getPickupLocation = function (fulfillmentIndex) {
 	            if (!_this.cart.data.orderFulfillments[fulfillmentIndex])
 	                return;
@@ -2779,7 +2791,12 @@
 	            for (var _i = 2; _i < arguments.length; _i++) {
 	                args[_i - 2] = arguments[_i];
 	            }
-	            return fn.bind.apply(fn, [self].concat(args));
+	            try {
+	                return fn.bind.apply(fn, [self].concat(args));
+	            }
+	            catch (e) {
+	                console.log("can't BIND, breh!", self, fn);
+	            }
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
@@ -2802,6 +2819,13 @@
 	    }
 	    PublicService.prototype.getOrderFulfillmentItemList = function (fulfillmentIndex) {
 	        return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
+	    };
+	    //Use with bind, assigning 'this' as the temporary order item
+	    PublicService.prototype.copyOrderItem = function (orderItem) {
+	        console.log("WE COPYIN! THIS=", this);
+	        this.orderItem = { orderItemID: orderItem.orderItemID,
+	            quantity: orderItem.quantity };
+	        return this;
 	    };
 	    return PublicService;
 	}());
@@ -7394,7 +7418,7 @@
 	            else {
 	                _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
 	            }
-	            //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+	            //            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
 	            _this.type = _this.type || 'link';
 	            if (angular.isDefined(_this.titleRbKey)) {
 	                _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
@@ -7412,22 +7436,22 @@
 	                    unbindWatcher();
 	                });
 	            }
-	            //			this.actionItem = this.getActionItem();
-	            //			this.actionItemEntityName = this.getActionItemEntityName();
-	            //			this.text = this.getText();
-	            //			if(this.getDisabled()){
-	            //				this.getDisabledText();
-	            //			}else if(this.getConfirm()){
-	            //				this.getConfirmText();
-	            //			}
+	            //            this.actionItem = this.getActionItem();
+	            //            this.actionItemEntityName = this.getActionItemEntityName();
+	            //            this.text = this.getText();
+	            //            if(this.getDisabled()){
+	            //                this.getDisabledText();
+	            //            }else if(this.getConfirm()){
+	            //                this.getConfirmText();
+	            //            }
 	            //
-	            //			if(this.modalFullWidth && !this.getDisabled()){
-	            //				this.class = this.class + " modalload-fullwidth";
-	            //			}
+	            //            if(this.modalFullWidth && !this.getDisabled()){
+	            //                this.class = this.class + " modalload-fullwidth";
+	            //            }
 	            //
-	            //			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-	            //				this.class = this.class + " modalload";
-	            //			}
+	            //            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
+	            //                this.class = this.class + " modalload";
+	            //            }
 	            /*need authentication lookup by api to disable
 	            <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
 	                <cfset attributes.class &= " disabled" />
@@ -7441,7 +7465,10 @@
 	        };
 	        this.submit = function () {
 	            _this.$timeout(function () {
-	                if (_this.form.$valid) {
+	                if (!_this.form) {
+	                    _this.$scope.$root.slatwall.doAction(_this.action);
+	                }
+	                else if (_this.form.$valid) {
 	                    _this.formController.submit(_this.action);
 	                }
 	            });
