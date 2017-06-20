@@ -1903,7 +1903,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getPredicate(required any filter){
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
-			filter.value = "";
+			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
+				filter.value = filter.displayValue;
+			}else{
+				filter.value = "";
+			}
 		}
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
