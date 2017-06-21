@@ -25,18 +25,20 @@ class SWCardLayout implements ng.IComponentOptions {
     /**
      * This is a wrapper class for the card components that allow you to define the columns.
      */
-    public template:string = `
-        <div class="{{SwCardLayoutController.cardClass}}">
-            <!-- Cards are transcluded here -->
-            <ng-transclude ng-transclude-slot="cardView"></ng-transclude>
-        </div>`;
+    public templateUrl:string = "";
     
-    constructor() {}
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardlayout.html');
+    }
+    
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardLayout();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardLayout(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardLayoutController, SWCardLayout};

@@ -16,6 +16,8 @@ import {SWCardListItem} from "./components/swcardlistitem";
 var cardmodule = angular.module('hibachi.card',[])
 .run([function() {
 }])
+//constants
+.constant('cardPartialsPath','card/components/')
 
 //components
 .component('swCardLayout', SWCardLayout.Factory())

@@ -27,45 +27,20 @@ class SWCardView implements ng.IComponentOptions {
         progressBar: '?swCardProgressBar'
     }
 
-    public template:string = `
-                
-                <div class="s-{{(SwCardViewController.cardSize)}}-content-block{{(SwCardViewController.cardSize=='md'?'-inner':'')}}" style="margin-bottom:7px">
-                    <!--- ICON --->
-                    <ng-transclude ng-transclude-slot="cardIcon"></ng-transclude>
-                    
-                    <!-- TITLE -->
-                    <!-- This when using attributes -->
-                    <div class="s-title" ng-bind="SwCardViewController.cardTitle" ng-if="SwCardViewController.cardTitle"></div>
-                    
-                    <!-- This when transcluding the content in -->
-                    <ng-transclude class="s-title" ng-transclude-slot="cardHeader"></ng-transclude>
-                    
-                    <!--- CONTENT --->
-                    <!-- This when using attributes -->
-                    <div class="s-body" ng-bind="SwCardViewController.cardBody" ng-if="SwCardViewController.cardBody"></div>
-                    <!-- This when transcluding the content in -->
-                    <ng-transclude ng-transclude-slot="cardBody"></ng-transclude>
-
-                    <!--- LIST ITEMS --->
-                    <ul class="list-unstyled">
-                        <ng-transclude ng-transclude-slot="listItem"></ng-transclude>
-                    </ul>
-
-                    <!--- PROGRESS --->
-                    <!-- This when transcluding the content in -->
-                    <ng-transclude ng-transclude-slot="progressBar"></ng-transclude>
-
-
-                </div>
-           `;
-
-    constructor() {  }
+    public templateUrl:string = "";
+    
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardview.html');
+    }
     
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardView();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardView(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardViewController, SWCardView};

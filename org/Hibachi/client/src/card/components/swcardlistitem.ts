@@ -23,20 +23,23 @@ class SWCardListItem implements ng.IComponentOptions {
     };
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    public template:string = `
-        <li ng-transclude style="border-bottom:1px solid #eee;">
-            <div class="row s-line-item {{(SwCardListItemController.strong == 'true')?'s-strong':''}}" style="{{(SwCardListItemController.style)}}">
-                <div class="col-xs-6 s-title">{{SwCardListItemController.title}}:</div>
-                <div class="col-xs-6 s-value">{{SwCardListItemController.value}}</div>
-            </div>
-        </li>
-            `;
-    constructor() {}
+    /**
+     * This is a wrapper class for the card components that allow you to define the columns.
+     */
+    public templateUrl:string = "";
+    
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardlistitem.html');
+    }
+    
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardListItem();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardListItem(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardListItemController, SWCardListItem};

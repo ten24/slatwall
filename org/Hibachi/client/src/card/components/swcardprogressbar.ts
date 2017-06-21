@@ -23,23 +23,23 @@ class SWCardProgressBar implements ng.IComponentOptions {
     };
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    public template:string = `
-        <div class="row s-line-item" ng-transclude>
-            <div class="col-xs-12">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="{{SwCardProgressBarController.valueNow}}" aria-valuemin="{{SwCardProgressBarController.valueMin}}" aria-valuemax="{{SwCardProgressBarController.valueMax}}" style="width:{{(SwCardProgressBarController.valueNow||0)}}%;">
-                        {{SwCardProgressBarController.valueNow|number :0}}% 
-                    </div>
-                </div>
-            </div>
-        </div>
-            `;
-    constructor() {}
+    /**
+     * This is a wrapper class for the card components that allow you to define the columns.
+     */
+    public templateUrl:string = "";
+    
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardprogressbar.html');
+    }
+    
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardProgressBar();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardProgressBar(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardProgressBarController, SWCardProgressBar};

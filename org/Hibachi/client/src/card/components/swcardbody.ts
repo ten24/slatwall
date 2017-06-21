@@ -17,15 +17,23 @@ class SWCardBody implements ng.IComponentOptions {
     public bindings:{[key: string]:string} = {};
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    public template:string = `
-                    <div class="s-body" ng-transclude></div>
-            `;
-    constructor() {}
+    /**
+     * This is a wrapper class for the card components that allow you to define the columns.
+     */
+    public templateUrl:string = "";
+    
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardbody.html');
+    }
+    
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardBody();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardBody(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardBodyController, SWCardBody};

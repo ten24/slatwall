@@ -21,20 +21,23 @@ class SWCardHeader implements ng.IComponentOptions {
     };
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    public template:string = `
-                <span ng-if="SwCardHeaderController.addBorder == 'true'">
-                    <div class="s-title" style="border-bottom:2px solid #eee" ng-transclude></div>
-                </span>
-                <span ng-if="SwCardHeaderController.addBorder == 'false'">
-                    <div class="s-title" style="border-bottom: none" ng-transclude></div>
-                </span>
-                `;
-    constructor() {}
+    /**
+     * This is a wrapper class for the card components that allow you to define the columns.
+     */
+    public templateUrl:string = "";
+    
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardheader.html');
+    }
+    
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardHeader();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardHeader(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardHeaderController, SWCardHeader};
