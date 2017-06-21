@@ -80,7 +80,17 @@ component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromot
 	property name="promotionCodesDeletableFlag" type="boolean" persistent="false"; 
 	
 	// ============ START: Non-Persistent Property Methods =================
-
+	
+	public any function getPromotionAppliedOrdersCount(){
+		var promotionAppliedCollectionList = getService("PromotionService").getPromotionAppliedCollectionList();
+		promotionAppliedCollectionList.addFilter('promotion.promotionID', "#getPromotionID()#", "=");
+		var count = promotionAppliedCollectionList.getRecordsCount();
+		if (!isNull(count) && count > 0){
+			return count;
+		}
+		return 0;
+	}
+	
 	public boolean function getCurrentFlag() {
 		if(!structKeyExists(variables, "currentFlag")) {
 			variables.currentFlag = false;

@@ -77,6 +77,8 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createaccountpaymentmethod" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
 			<hb:HibachiActionCaller action="admin:entity.createaccountloyalty" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" modal="true" type="list" />
+			<li class="divider"></li>
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="clone" queryString="sRedirectAction=admin:entity.detailAccount" type="list" modal="true" hideDisabled="false" />
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.account#">
@@ -92,7 +94,10 @@ Notes:
 			<hb:HibachiEntityDetailItem property="productReviews" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem property="permissionGroups" />
-			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/parentaccounts" count="#rc.account.getParentAccountRelationShipsSmartList().getRecordsCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/childaccounts" count="#rc.account.getChildAccountRelationShipsSmartList().getRecordsCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings"/>
+			
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

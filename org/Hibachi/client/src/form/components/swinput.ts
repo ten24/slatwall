@@ -40,15 +40,27 @@ class SWInputController{
 	public property:string;
 	public object:any;
 	public inputAttributes:string;
+	public initialValue:any;
+	public inListingDisplay:boolean;
+	public listingID:string;
+	public pageRecordIndex:number;
+	public propertyDisplayID:string;
 	public noValidate:boolean;
 	public propertyIdentifier:string;
+	public binaryFileTarget:string;
+	public rawFileTarget:string;
 	public type:string;
 	public edit:boolean;
+	public edited:boolean;
 	public editing:boolean;
 	public name:string;
 	public value:any;
+	public reverted:boolean;
+	public revertToValue:any;
+	public showRevert:boolean;
 	public context:string;
 	public eventNameForObjectSuccess:string;
+	public rowSaveEnabled:boolean;
 
 	public eventHandlers:string="";
 	public eventHandlersArray:Array<EventHandler>;
@@ -56,28 +68,16 @@ class SWInputController{
 
 	//@ngInject
 	constructor(
-		public $timeout,
         public $scope,
 		public $log,
-		public $compile,
         public $hibachi,
 		public $injector,
+		public listingService,
 		public utilityService,
         public rbkeyService,
 		public observerService:ObserverService,
 		public metadataService:MetaDataService
 	){
-		this.$timeout = $timeout;
-        this.$scope = $scope;
-		this.utilityService = utilityService;
-		this.$hibachi = $hibachi;
-		this.rbkeyService = rbkeyService;
-		this.$log = $log;
-		this.$injector = $injector;
-		this.observerService = observerService;
-		this.metadataService = metadataService;
-        
-        
 	}
 
 	public onSuccess = ()=>{
@@ -176,7 +176,30 @@ class SWInputController{
 		return spaceDelimitedList;
 	};
 
+	public clear = () =>{
+        if(this.reverted){
+            this.reverted = false;
+            this.showRevert = true;
+        }
+        this.edited = false;
+        this.value= this.initialValue;
+        if(this.inListingDisplay && this.rowSaveEnabled){
+            this.listingService.markUnedited( this.listingID,
+                                              this.pageRecordIndex,
+                                              this.propertyDisplayID
+                                            );
+        }
+    }
+
+    public revert = () =>{
+        this.showRevert = false;
+        this.reverted = true;
+        this.value = this.revertToValue;
+        this.onEvent(<Event>{}, "change");
+    }
+
 	public onEvent = (event:Event,eventName:string):void=>{
+
 		let customEventName = this.swForm.name+this.name+eventName;
 		let data = {
 			event:event,
@@ -192,7 +215,8 @@ class SWInputController{
 	public getTemplate = ()=>{
 		var template = '';
 		var validations = '';
-		var currency = '';
+		var currencyTitle = '';
+		var currencyFormatter = '';
 		var style = "";
 
 		if(!this.class){
@@ -203,10 +227,11 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
-			currency = 'sw-currency-formatter ';
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) != undefined && this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
+			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
-				currency = currency + 'data-currency-code="' + this.object.data.currencyCode + '" ';
+				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
+				currencyTitle = '<span class="s-title">' + this.object.data.currencyCode + '</span>';
 			}
 		}
 
@@ -220,21 +245,22 @@ class SWInputController{
 		if(this.fieldType.toLowerCase() === 'json'){
 			style = style += 'display:none';
 		}
-        
-		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json'];
-        
+
+		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json','file'];
+
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-            var inputType = this.fieldType.toLowerCase();
+			 var inputType = this.fieldType.toLowerCase();
             if(this.fieldType === 'time'){
                 inputType="text";
             }
-			template = '<input type="'+inputType+'" class="'+this.class+'" '+
+			template = currencyTitle + '<input type="' + inputType + '" class="' + this.class + '" '+
 				' ng-model="swInput.value" '+
 				' ng-disabled="swInput.editable === false" '+
 				' ng-show="swInput.editing" '+
+				` ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay} "` +
 				' name="'+this.property+'" ' +
 				' placeholder="'+placeholder+'" '+
-				validations + currency +
+				validations + currencyFormatter +
 				' id="swinput'+this.swForm.name+this.name+'" '+
 				' style="' + style + '" ' + " " +
 	            this.inputAttributes + " " +
@@ -251,32 +277,50 @@ class SWInputController{
 		if(this.fieldType === 'date'){
 			template = template + 'data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" ';
 		}
-
 		if(template.length){
 			template = template + ' />';
 		}
 
+		var actionButtons = `
+			<a class="s-remove-change"
+				data-ng-click="swPropertyDisplay.clear()"
+				data-ng-if="swInput.edited && swInput.editing">
+					<i class="fa fa-remove"></i>
+			</a>
 
-		return template;
+			<!-- Revert Button -->
+			<button class="btn btn-xs btn-default s-revert-btn"
+					data-ng-show="swInput.showRevert"
+					data-ng-click="swInput.revert()"
+					data-toggle="popover"
+					data-trigger="hover"
+					data-content="{{swInput.revertText}}"
+					data-original-title=""
+					title="">
+				<i class="fa fa-refresh"></i>
+			</button>
+		`;
+
+		return template + actionButtons;
 	};
-    
-    public pullBindings = ()=>{
-        var bindToControllerProps = this.$injector.get('swInputDirective')[0].bindToController;
-        for(var i in bindToControllerProps){
-            if(!this[i]){
-                if(!this[i] && this.swFormField && this.swFormField[i]){
-                    this[i] = this.swFormField[i];
-                }else if(!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]){
-                    this[i] = this.swPropertyDisplay[i];
-                }else if(!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]){
-                    this[i] = this.swfPropertyDisplay[i];
-                }else if(!this[i] && this.swForm && this.swForm[i]){
-                    this[i] = this.swForm[i];
-                }
-            }
-        }
 
-        this.property = this.property || this.propertyIdentifier;
+    public pullBindings = ()=>{
+		var bindToControllerProps = this.$injector.get('swInputDirective')[0].bindToController;
+		for(var i in bindToControllerProps){
+			if(!this[i]){
+				if(!this[i] && this.swFormField && this.swFormField[i]){
+					this[i] = this.swFormField[i];
+				}else if(!this[i] && this.swPropertyDisplay && this.swPropertyDisplay[i]){
+					this[i] = this.swPropertyDisplay[i];
+				}else if(!this[i] && this.swfPropertyDisplay && this.swfPropertyDisplay[i]){
+					this[i] = this.swfPropertyDisplay[i];
+				}else if(!this[i] && this.swForm && this.swForm[i]){
+					this[i] = this.swForm[i];
+				}
+			}
+		}
+
+		this.property = this.property || this.propertyIdentifier;
         this.propertyIdentifier = this.propertyIdentifier || this.property;
 
         this.type = this.type || this.fieldType;
@@ -285,21 +329,22 @@ class SWInputController{
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 
-        this.editing = this.editing || true;
-        this.fieldType = this.fieldType || "text";
+		this.editing = this.editing || true;
+		this.fieldType = this.fieldType || "text";
 
-        this.inputAttributes = this.inputAttributes || "";
+		this.inputAttributes = this.inputAttributes || "";
 
-        this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
-        this.value = this.utilityService.getPropertyValue(this.object,this.property);
+		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
+
+		this.value = this.utilityService.getPropertyValue(this.object,this.property);
     }
-    
+
     public pushBindings = ()=>{
         this.observerService.notify('updateBindings').then(()=>{});    
     }
 
 	public $onInit = ()=>{
-        
+
         this.pullBindings();
 
 		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
@@ -312,24 +357,24 @@ class SWInputController{
             }
 		}
 
-		if (angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData.className)){
- 			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success';
+		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
+ 			this.eventNameForObjectSuccess = this.object.metaData.className.split('_')[0]+this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
  		}else{
- 			this.eventNameForObjectSuccess = this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success';
+ 			this.eventNameForObjectSuccess = this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
  		}
- 		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
+		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
 
 		var eventNameForUpdateBindings = 'updateBindings';
-		if (angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData.className)){
+		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
  			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
  		}else{
  			var eventNameForUpdateBindingsID = this.property+'updateBindings';
  		}
         var eventNameForPullBindings = 'pullBindings';
-        if (angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData.className)){
+        if (this.object && this.object.metaData && this.object.metaData.className != undefined){
          	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
- 		}else{
- 			var eventNameForPullBindingsID = this.property+'pullBindings'
+		}else{
+ 			var eventNameForPullBindingsID = this.property+'pullBindings';
  		}
 		//attach a successObserver
 		if(this.object){
@@ -338,7 +383,7 @@ class SWInputController{
 
 			//update bindings manually
 			this.observerService.attach(this.onSuccess,eventNameForUpdateBindings,eventNameForUpdateBindingsID);
-            
+
             //pull bindings from higher binding level manually
             this.observerService.attach(this.pullBindings,eventNameForPullBindings,eventNameForPullBindingsID);
 
@@ -361,7 +406,7 @@ class SWInput{
 		swPropertyDisplay:"?^swPropertyDisplay",
 		swfPropertyDisplay:"?^swfPropertyDisplay"
 	};
-	public $compile:ng.ICompileService;
+
 	public scope={};
 	public propertyDisplay;
 
@@ -376,6 +421,11 @@ class SWInput{
 		label: 	"@?",
 		labelText: "@?",
 		labelClass: "@?",
+		inListingDisplay: "=?",
+		listingID: "=?",
+		pageRecordIndex: "=?",
+	    propertyDisplayID: "=?",
+		initialValue:"=?",
 		optionValues: "=?",
 		edit: 	"=?",
 		title: 	"@?",
@@ -383,6 +433,11 @@ class SWInput{
 		errorText: "@?",
 		fieldType: "@?",
 		property:"@?",
+		binaryFileTarget:"@?",
+		rawFileTarget:"@?",
+		reverted:"=?",
+		revertToValue:"=?",
+		showRevert:"=?",
 		inputAttributes:"@?",
 		type:"@?",
 		editing:"=?",
@@ -391,13 +446,54 @@ class SWInput{
 	}
 	public controller=SWInputController;
 	public controllerAs = "swInput";
+
 	//ngInject
 	constructor(
-		$compile
+		public $compile,
+		public $timeout,
+		public $parse,
+		public fileService
 	){
-		this.$compile = $compile;
 	}
-	public link:ng.IDirectiveLinkFn = (scope:any,element,attr)=>{
+
+	public link:ng.IDirectiveLinkFn = (scope:any,element:any,attr)=>{
+
+		if(scope.swInput.type === 'file'){
+
+			if(angular.isUndefined(scope.swInput.object.data[scope.swInput.rawFileTarget])){
+				scope.swInput.object[scope.swInput.rawFileTarget] = "";
+				scope.swInput.object.data[scope.swInput.rawFileTarget] = "";
+			}
+			var model = this.$parse("swInput.object.data[swInput.rawFileTarget]");
+			var modelSetter = model.assign;
+			element.bind("change", (e)=>{
+
+				var fileToUpload = (e.srcElement || e.target).files[0];
+
+				scope.$apply(
+					()=>{
+						modelSetter(scope, fileToUpload);
+					},
+					()=>{
+						throw("swinput couldn't apply the file to scope");
+					}
+				);
+
+				this.$timeout(()=>{
+
+					this.fileService.uploadFile(fileToUpload, scope.swInput.object, scope.swInput.binaryFileTarget)
+					.then(
+						(result)=>{
+							scope.swInput.object[scope.swInput.property] = fileToUpload;
+							scope.swInput.onEvent(e, "change");
+						},
+						()=>{
+							//error	notify user
+						}
+					);
+				});
+			});
+		}
 
 		//renders the template and compiles it
 		element.html(scope.swInput.getTemplate());
@@ -407,12 +503,21 @@ class SWInput{
 
 	public static Factory(){
 		var directive = (
-			$compile
+			$compile,
+			$timeout,
+			$parse,
+			fileService
 		)=>new SWInput(
-			$compile
+			$compile,
+			$timeout,
+			$parse,
+			fileService
 		);
 		directive.$inject = [
-			'$compile'
+			'$compile',
+			'$timeout',
+			'$parse',
+			'fileService'
 		];
 		return directive
 	}

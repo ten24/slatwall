@@ -58,6 +58,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="testOrderFlag" ormtype="boolean";
 	// Calculated Properties
 	property name="calculatedTotal" ormtype="big_decimal";
 
@@ -158,6 +159,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
+	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -736,7 +738,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(totalPaymentsReceived + orderPayment.getAmountReceived());
+totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(totalPaymentsReceived + orderPayment.getAmountReceived());
 			}
 		}
 
@@ -781,7 +783,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive") {
-				totalPaymentsCredited = getService('HibachiUtilityService').precisionCalculate(totalPaymentsCredited + orderPayment.getAmountCredited());
+				totalPaymentsCredited = val(precisionEvaluate(totalPaymentsCredited + orderPayment.getAmountCredited()));
 			}
 		}
 
@@ -794,7 +796,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		for(var orderPayment in getOrderPayments()) {
 			for(var referencingOrderPayment in orderPayment.getReferencingOrderPayments()) {
 				if(referencingOrderPayment.getStatusCode() eq "opstActive") {
-					totalReferencingPaymentsCredited = getService('HibachiUtilityService').precisionCalculate(totalReferencingPaymentsCredited + referencingOrderPayment.getAmountCredited());
+					totalReferencingPaymentsCredited = val(precisionEvaluate(totalReferencingPaymentsCredited + referencingOrderPayment.getAmountCredited()));
 				}
 			}
 		}
@@ -955,7 +957,63 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return saleQuantity;
 	}
+	
+	/** returns the sum of all deposits required on the order. we can
+ 	 *  tell if a deposit is required because a setting will indicate that they can pay a fraction
+ 	 *  of the whole. Returns the total deposit amount rounded to two decimal places IE. 3.495 becomes 3.50.
+ 	 */
+ 	public numeric function getTotalDepositAmount() {
+ 		var totalDepositAmount = 0;
+ 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+ 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder"))  && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
+ 				if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 0){
+ 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')) * getOrderItems()[i].getExtendedPrice()")) ;	
+ 				}else if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0){
+ 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')/100) * getOrderItems()[i].getExtendedPrice() ")) ;
+ 				}	
+ 			}
+ 		}
+ 		totalDepositAmount = val(precisionEvaluate("round(totalDepositAmount * 100)/100"));
+ 		return totalDepositAmount;
+ 	}
 
+	public boolean function isAllowedToPlaceOrderWithoutPayment(){
+		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
+			if( 
+				isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) 
+				|| len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0 
+				|| val(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) > 0
+			){
+				return false;
+			}
+		}
+		return true;
+	}
+
+ 	public boolean function hasDepositItemsOnOrder(){
+ 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+ 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && !isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) && len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) != 0) {
+ 				
+ 				return true;
+ 			}
+ 		}
+ 		
+ 		return false;
+ 	}
+ 	
+ 	public boolean function hasNonDepositItemsOnOrder(){
+ 		//and has at least one sale item
+ 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+ 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitSale" && isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") || len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0)) {
+ 				return true;
+ 			}
+ 		}
+ 		return false;
+ 	}
+ 	
+ 	
+	
 	public numeric function getTotalReturnQuantity() {
 		var returnQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {

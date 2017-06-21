@@ -1,6 +1,6 @@
-<div ng-if="swPropertyDisplay.object" class="form-group">
+<div data-ng-if="swPropertyDisplay.object" class="form-group" ng-hide="swPropertyDisplay.isHidden" >
 
-    <label class="control-label" ng-if="swPropertyDisplay.fieldType !== 'hidden'">
+    <label class="control-label" data-ng-if="swPropertyDisplay.showLabel">
 
         <span data-ng-bind="swPropertyDisplay.title"></span>:
         <span ng-if="swPropertyDisplay.object.validations.properties[swPropertyDisplay.property][0].required && swPropertyDisplay.fieldType === 'text'">*</span>
@@ -12,13 +12,31 @@
             <i class="fa fa-question-circle"></i>
         </span>
     </label>
-
-    <div class="s-form-input">
+    <div data-ng-class="{ 's-form-input' : !swPropertyDisplay.inListingDisplay, 's-input-group' : swPropertyDisplay.inListingDisplay, 's-edit' : swPropertyDisplay.edited }">
         <!-- Model-->
 
         <span sw-form-field ng-show="swPropertyDisplay.editing"
             data-property-display="swfPropertyDisplay.propertyDisplay">
         </span>
+
+        <!-- Save Button -->
+        <a  class="btn btn-xs btn-success s-action-btn" 
+            data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited && swPropertyDisplay.showSave && !swPropertyDisplay.pageRecord.edited" 
+            data-ng-if="swPropertyDisplay.inListingDisplay && !swPropertyDisplay.inModal" 
+            data-ng-click="swPropertyDisplay.save()" > 
+            save 
+        </a>
+        <!-- Need a second save button for modal data-toggle -->
+        <a  class="btn btn-xs btn-success s-action-btn" 
+            data-ng-show="!swPropertyDisplay.saved && swPropertyDisplay.edited && swPropertyDisplay.showSave && !swPropertyDisplay.pageRecord.edited" 
+            data-toggle="modal" 
+            href="#{{swPropertyDisplay.modalName}}" 
+            ng-if="swPropertyDisplay.inModal" 
+            ng-click="swPropertyDisplay.save()" > 
+            save 
+        </a>
+        <!-- End Save Button -->
+
         <!-- Display -->
         <p  class="form-control-static"
             ng-if="swPropertyDisplay.fieldType !== 'hidden' && swPropertyDisplay.fieldType !== 'select'"

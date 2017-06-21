@@ -59,7 +59,7 @@ component extends="meta.testbox.Application"{
 	this.mappings[ "/mxunit" ] = expandPath( "/testbox/system/compat" );
 	
 	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;

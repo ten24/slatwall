@@ -47,12 +47,12 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-	
+
 	public void function setUp() {
 		super.setup();
 		variables.service = request.slatwallScope.getService("productService");
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -60,7 +60,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collection = variables.service.getProductCollectionList();
 		assertEquals(collection.getCollectionObject(),'Product');
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -77,7 +77,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//assert a single sku was created
 		assertEquals(arrayLen(product.getSkus()),1);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -103,7 +103,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(product.getDefaultSku().getRedemptionAmount(),20);
 
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -127,7 +127,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmountType(),'fixedAmount');
 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmount(),10);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -151,7 +151,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmountType(),'percentage');
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -167,12 +167,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('Product',productData);
-		
-		
+
+
 		//start of with an active product
 		assert(product.getActiveFlag());
 		assert(product.getPublishedFlag());
-		
+
 		//add some active skus
 		var skuData = {
 			skuID="",
@@ -184,7 +184,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku = createPersistedTestEntity('Sku',skuData);
-		
+
 		var skuData2 = {
 			skuID="",
 			skuCode="skucode"&createUUID(),
@@ -195,21 +195,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku2 = createPersistedTestEntity('Sku',skuData2);
-		
+
 		//assert that all skus are active
 		var skus = product.getSkus();
 		for(var sku in skus){
 			assert(sku.getActiveFlag());
 		}
-		
+
 		//set the product as inactive via the service
 		product = variables.service.saveProduct(product,{activeFlag=0});
-		
+
 		//assert that we set it as inactive
 		assertFalse(product.getActiveFlag());
-		
+
 		assertFalse(product.getPublishedFlag());
-		
+
 		//and therefore we should be able to asssume that all skus were set to inactive as well if there were no validation errors
 		//because the dao does the update we need to retrieve the data via dao method as well
 		var skusquery = new Query();
@@ -217,12 +217,56 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var skus = skusquery.execute(
 			sql='select s.activeFlag,s.publishedFlag from SwSku s where s.productID=:productID'
 		).getResult();
-		
-		
+
+
 		for(var sku in skus){
 			assertFalse(sku.activeFlag);
 			assertFalse(sku.publishedFlag);
 		}
+	}
+
+	public void function saveProductWithProductListingPages(){
+
+		var productData = {
+			productID= '',
+			productName="product"& createUUID(),
+			productCode="productcode" & createUUID(),
+			activeFlag=1,
+			publishedFlag=1,
+			productType={
+				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
+			}
+		};
+		var product = createPersistedTestEntity('Product',productData);
+
+		var contentData1 = {
+			contentID=''
+		};
+		var content1 = createPersistedTestEntity('Content',contentData1);
+		var contentData2 = {
+			contentID=''
+		};
+		var content2 = createPersistedTestEntity('Content',contentData2);
+		var contentData3 = {
+			contentID=''
+		};
+		var content3 = createPersistedTestEntity('Content',contentData3);
+
+		var serviceData = {
+			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID(), content3.getContentID()])
+		};
+
+		var productToAssert = variables.service.saveProduct(product, serviceData);
+
+		assert(arrayLen(productToAssert.getListingPages()), 3);
+
+		var serviceData2 = {
+			assignedContentIDList=ArrayToList([content1.getContentID(), content2.getContentID()])
+		};
+
+		var productToAssert2 = variables.service.saveProduct(product, serviceData2);
+
+		assert(arrayLen(productToAssert2.getListingPages()), 3);
 	}
 }
 

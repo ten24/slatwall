@@ -59,7 +59,7 @@ component {
 	this.mappings[ "/mxunit" ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all");
 
 	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;

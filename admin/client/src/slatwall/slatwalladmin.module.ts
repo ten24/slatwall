@@ -10,6 +10,7 @@ import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
+import {skumodule} from "../sku/sku.module";
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -34,6 +35,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,
+  skumodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
@@ -76,7 +78,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //controllers
-.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope:any, $compile) {
+.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
     var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
 
@@ -116,13 +118,12 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         angular.forEach($scope.appliedOrderPayment, function(obj, key) {
             //Don't count the field if its undefied or not a number
             if(obj.amount != undefined && !isNaN(obj.amount)) {
-               //Charge / adjustment condition for subtotal
-              	if($scope.paymentType==paymentType.aptCharge || $scope.paymentType == paymentType.aptAdjustment) {
-                
-               	 if(obj.paymentType==paymentType.aptCharge)
-               	     $scope.totalAmountToApply += parseFloat(obj.amount);
-               	 else if(obj.paymentType==paymentType.aptCredit)
-                    $scope.totalAmountToApply -= parseFloat(obj.amount);
+                //Charge / adjustment condition for subtotal
+                if($scope.paymentType==paymentType.aptCharge || $scope.paymentType == paymentType.aptAdjustment) {
+                    if(obj.paymentType==paymentType.aptCharge)
+                        $scope.totalAmountToApply += parseFloat(obj.amount);
+                    else if(obj.paymentType==paymentType.aptCredit)
+                        $scope.totalAmountToApply -= parseFloat(obj.amount);
 
                 //Credit condition for subtotal
                 } else if($scope.paymentType==paymentType.aptCredit) {
@@ -144,8 +145,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         else if($scope.paymentType==paymentType.aptAdjustment)
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
     }
-
-
 }])
 //filters
 

@@ -69,6 +69,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	// Non-Persistent Properties
 	property name="firstScheduledSku" persistent="false";
 	property name="scheduleSummary" persistent="false";
+	property name="scheduleStartDate" persistent="false";
 
 	public array function getRecurringTimeUnitOptions() {
 		return getService("ProductScheduleService").getRecurringTimeUnitOptions();
@@ -150,9 +151,13 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 
 	public any function getFirstScheduledSku() {
 		if(!structKeyExists(variables,"firstScheduledSku")) {
-			variables.firstScheduledSku = this.getSkus()[1];
+			variables.firstScheduledSku = this.getService("ProductScheduleService").getFirstScheduledSku(this.getProductScheduleID());
 		}
 		return variables.firstScheduledSku;
+	}
+	
+	public string function getScheduleStartDate(){
+		return '#dateFormat(getFirstScheduledSku().getEventStartDateTime(), "medium")# #timeFormat(getFirstScheduledSku().getEventStartDateTime(), "short")#';
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
