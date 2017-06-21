@@ -298,7 +298,7 @@ class SWEditFilterItem{
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
-                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value.toString())){
+                                if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
                                 //if has a pattern then we need to evaluate where to add % for like statement
 							    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
