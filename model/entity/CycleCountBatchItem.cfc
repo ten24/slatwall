@@ -58,7 +58,6 @@ component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem"
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 
 	// Related Object Properties (one-to-many)
-	// property name="physicalCountItems" singularname="physicalCountItem" cfc="PhysicalCountItem" type="array" fieldtype="one-to-many" fkcolumn="physicalCountID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (one-to-one)
 	property name="physicalCountItem" cfc="PhysicalCountItem"fieldtype="one-to-one" fkcolumn="physicalCountItemID";

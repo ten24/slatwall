@@ -56,13 +56,13 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	property name="daysInCycle" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
-	property name="locationCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="locationCollectionID";
-	property name="skuCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="skuCollectionID";
 	
 	// Related Object Properties (one-to-many)
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocation" fkcolumn="cycleCountGroupID" inversejoincolumn="locationID";
+	property name="locationCollections" singularname="locationCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocationCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
+	property name="skuCollections" singularname="skuCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupSkuCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -95,13 +95,9 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 		var cycleCountGroupCollection = getService('HibachiCollectionService').newCollection();
 		cycleCountGroupCollection.setCollectionObject('Sku');
 		var collectionConfigST = getBaseColectionConfig();
-		// writeDump(var="#serializeJSON(collectionConfigST)#");
-		// writeDump(var="|---|");
 		if (arrayLen(this.getLocations())) {
 			arrayAppend(collectionConfigST.filterGroups, getLocationsFilterGroup());
 		}
-		// writeDump(var="#serializeJSON(collectionConfigST)#");
-		// writeDump(var="#collectionConfigST#");
 		cycleCountGroupCollection.setCollectionConfig(serializeJSON(collectionConfigST));
 		cycleCountGroupCollection.setPageRecordsShow((ceiling(arrayLen(cycleCountGroupCollection.getRecords()) * this.getFrequencyToCount()) / this.getDaysInCycle()));
 		return cycleCountGroupCollection;
