@@ -107,7 +107,7 @@ Notes:
 				arguments.print.populate( local.printData );
 				
 				// Append the email to the email queue
-				arrayAppend(getHibachiScope().getPrintQueue(), arguments.print);
+				cookie.printQueue = listAppend(getHibachiScope().getPrintQueue(), arguments.print);
 			}
 			
 		}
