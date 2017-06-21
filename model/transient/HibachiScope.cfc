@@ -248,6 +248,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return cookie.printQueue;
 	}
 	
+	// Adds a PrintID to the print queue.
+	public string function addToPrintQueue(required string printID) {
+		var cookieData = cookie.printQueue;
+		var newPrintQueue = listAppend(cookieData, printID);
+		getService('HibachiTagService').cfCookie('printQueue', newPrintQueue);
+	}
+	
 	// Clear Email & Print
 	public void function clearPrintQueue() {
 		getService('HibachiTagService').cfCookie('printQueue','');
