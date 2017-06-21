@@ -213,70 +213,45 @@ Notes:
 					</table>
 					
 					<!--- START: Custom "Order" Attribute Sets --->
-					<!--- <cfset orderAttributeSets = slatwall.cart.getAssignedAttributeSetSmartList().getRecords() />
-					
-					<!--- Only display if there are attribute sets assigned --->
-					<cfif arrayLen(orderAttributeSets)>
-						
-						<hr />
-						
-						<!--- Loop over all of the attribute sets --->
-						<cfloop array="#orderAttributeSets#" index="attributeSet">
+					<div ng-if="slatwall.cart.assignedAttributeSets" ng-init="slatwall.cart.setAttributeValues = {attributes:slatwall.getAttributeValues()}">
+						<sw-form
+							data-object="slatwall.cart.setAttributeValues"
+				        	data-name="setAttributeValues">
 							
-							<!--- display the attribute set name --->
-							<h5>#attributeSet.getAttributeSetName()}}</h5>
+							<!--- Only display if there are attribute sets assigned --->
+							<div class="row">
+								<div class="col-sm-4" ng-repeat="(attributeCode, attributeValue) in slatwall.cart.setAttributeValues.attributes track by $index">
+									<swf-property-display ng-if="attributeCode !== 'forms'"
+										data-name="attributes.{{attributeCode}}"
+										data-property-identifier="attributes.{{attributeCode}}.attributeValue"
+										data-title="slatwall.cart.setAttributeValues.attributes[attributeCode].attributeName"
+									></swf-property-display>
+								</div>
+							</div>
+							<!--- END: Custom "Order" Attribute Sets --->
 							
-							<!--- Loop over all of the attributes --->
-							<cfloop array="#attributeSet.getAttributes()}}" index="attribute">
-								
-								<!--- Pull this attribute value object out of the order entity ---> 
-								<cfset thisAttributeValueObject = slatwall.cart.getAttributeValue(attribute.getAttributeCode(), true) />
-								
-								<cfif isObject(thisAttributeValueObject)>
-									<!--- Display the attribute value --->
-									<div class="control-group">
-										
-				    					<label class="control-label" for="rating">#attribute.getAttributeName()}}</label>
-				    					<div class="controls">
-				    						
-											<sw:FormField type="#attribute.getFormFieldType()}}" name="#attribute.getAttributeCode()}}" valueObject="#thisAttributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#thisAttributeValueObject.getAttributeValueOptions()}}" class="span4" />
-											<sw:ErrorDisplay object="#thisAttributeValueObject#" errorName="password" />
-											
-				    					</div>
-				  					</div>
-				  				<cfelse>
-				  					<!--- Display the custom property --->
-				  					<div class="control-group">
-										
-				    					<label class="control-label" for="rating">#attribute.getAttributeName()}}</label>
-				    					<div class="controls">
-				    						
-					  						<sw:FormField type="#attribute.getFormFieldType()}}" valueObject="{{slatwall.cart#" valueObjectProperty="#attribute.getAttributeCode()}}" valueOptions="#attribute.getAttributeOptionsOptions()}}" class="span4" />
-											<sw:ErrorDisplay object="{{slatwall.cart#" errorName="#attribute.getAttributeCode()}}" />
-											
-				    					</div>
-				  					</div>
-				  				</cfif>
-								
-							</cfloop>
-							
-							<hr />
-							
-						</cfloop>
-					</cfif>	 --->
-					<!--- END: Custom "Order" Attribute Sets --->
-					
-					<!--- Action Buttons --->
-					<div class="control-group pull-right">
-						<div class="controls">
-							
-							<!--- Clear Cart Button, links to a slatAction that clears the cart --->
-							<a role="button" ng-click="slatwall.doAction('clearOrder',{})" class="btn btn-default">Clear Cart</a>
-							
-							<!--- Checkout, is just a simple link to the checkout page --->
-							<!--- fix somehow --->
-							<a href="/checkout" class="btn btn-default">Checkout</a>
-						</div>
+							<!--- Action Buttons --->
+							<div class="control-group pull-right">
+								<div class="controls">
+									
+									<!--- Clear Cart Button, links to a slatAction that clears the cart --->
+									<sw-action-caller 
+										data-action="clearOrder"
+										data-type="button"
+										data-class="btn btn-default"
+										data-title="Clear Cart">
+									</sw-action-caller>
+									
+									<!--- Checkout, saves any attribute values added--->
+									<sw-action-caller 
+										data-action="finalizeCart"
+										data-type="button"
+										data-class="btn btn-default"
+										data-title="Continue to Checkout">
+									</sw-action-caller>
+								</div>
+							</div>
+						</sw-form>
 					</div>
 					<!--- End: Update Cart Form --->
 						

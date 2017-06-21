@@ -1104,6 +1104,21 @@ component extends="HibachiService"  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
+
+    /** 
+     * @http-context finalizeCart
+     * @description Finalize Cart
+     * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     */
+    public void function finalizeCart(required any data) {
+        var cart = getHibachiScope().cart();
+        
+        for(var attribute in data.attributes){
+          cart.setAttributeValue(attribute,data.attributes[attribute].attributeValue);
+        }
+        getService('orderService').saveOrder(cart);
+        getHibachiScope().addActionResult( "public:cart.finalizeCart", cart.hasErrors() );
+    }
     
     /** 
      * @http-context addPromotionCode

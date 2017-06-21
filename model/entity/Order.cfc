@@ -160,11 +160,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
+	property name="assignedAttributeSets" persistent="false";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
-
+	//CUSTOM PROPERTIES BEGIN
+property name="cheatCode" ormtype="string" hb_formFieldType="text";//CUSTOM PROPERTIES END
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -441,6 +443,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	}
 	// ============ START: Non-Persistent Property Methods =================
+
+	public any function getAssignedAttributeSets(){
+		var attributeSets = this.getAssignedAttributeSetSmartList().getRecords();
+		return attributeSets;
+	}
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();

@@ -2093,6 +2093,9 @@
 	                    if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
 	                        _this.$window.location.href = _this.confirmationUrl;
 	                    }
+	                    else if (request.successfulActions[action].indexOf('public:cart.finalizeCart') !== -1) {
+	                        _this.$window.location.href = _this.checkoutUrl;
+	                    }
 	                    else if (request.successfulActions[action].indexOf('public:account.logout') !== -1) {
 	                        _this.account = _this.$hibachi.newAccount();
 	                    }
@@ -2786,17 +2789,44 @@
 	        this.updateOrderItemQuantity = function (event) {
 	            event.swForm.submit();
 	        };
+	        this.getAttributeValues = function () {
+	            var setAttributeValues = {};
+	            for (var i = 0; i < _this.cart.assignedAttributeSets.length; i++) {
+	                for (var j = 0; j < _this.cart.assignedAttributeSets[i].attributes.length; j++) {
+	                    var attribute = _this.cart.assignedAttributeSets[i].attributes[j];
+	                    console.log(attribute);
+	                    var found = false;
+	                    for (var k = 0; k < _this.cart.attributeValues.length; k++) {
+	                        var attributeValue = _this.cart.attributeValues[i];
+	                        if (attributeValue.data.attribute.attributeCode == attribute.attributeCode) {
+	                            var attributeValueEntry = {
+	                                attributeCode: attribute.attributeCode,
+	                                attributeID: attribute.attributeID,
+	                                attributeName: attribute.attributeName,
+	                                attributeValue: attributeValue.data.attributeValue
+	                            };
+	                            setAttributeValues[attribute.attributeCode] = attributeValueEntry;
+	                            found = true;
+	                        }
+	                    }
+	                    if (!found) {
+	                        var attributeValueEntry = {
+	                            attributeCode: attribute.attributeCode,
+	                            attributeID: attribute.attributeID,
+	                            attributeName: attribute.attributeName
+	                        };
+	                        setAttributeValues[attribute.attributeCode] = attributeValueEntry;
+	                    }
+	                }
+	            }
+	            return setAttributeValues;
+	        };
 	        this.binder = function (self, fn) {
 	            var args = [];
 	            for (var _i = 2; _i < arguments.length; _i++) {
 	                args[_i - 2] = arguments[_i];
 	            }
-	            try {
-	                return fn.bind.apply(fn, [self].concat(args));
-	            }
-	            catch (e) {
-	                console.log("can't BIND, breh!", self, fn);
-	            }
+	            return fn.bind.apply(fn, [self].concat(args));
 	        };
 	        this.orderService = orderService;
 	        this.cartService = cartService;
@@ -2805,6 +2835,7 @@
 	        this.appConfig = appConfig;
 	        this.baseActionPath = this.appConfig.baseURL + "/index.cfm/api/scope/"; //default path
 	        this.confirmationUrl = "/order-confirmation";
+	        this.checkoutUrl = "/checkout";
 	        this.$http = $http;
 	        this.$location = $location;
 	        this.$q = $q;
@@ -2822,7 +2853,6 @@
 	    };
 	    //Use with bind, assigning 'this' as the temporary order item
 	    PublicService.prototype.copyOrderItem = function (orderItem) {
-	        console.log("WE COPYIN! THIS=", this);
 	        this.orderItem = { orderItemID: orderItem.orderItemID,
 	            quantity: orderItem.quantity };
 	        return this;
@@ -21486,6 +21516,7 @@
 	            _this.labelText = _this.labelText || "";
 	            _this.labelClass = _this.labelClass || "";
 	            _this.name = _this.name || "unnamed";
+	            _this.value = _this.value || _this.initialValue;
 	            _this.object = _this.object || _this.swForm.object; //this is the process object
 	            /** handle options */
 	            if (_this.options && angular.isString(_this.options)) {
@@ -21600,6 +21631,7 @@
 	            formTemplate: "@?",
 	            eventAnnouncers: "@",
 	            hideErrors: '=?',
+	            value: "@?",
 	            //swpropertyscope
 	            property: "@?",
 	            object: "=?",

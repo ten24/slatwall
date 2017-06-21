@@ -186,6 +186,7 @@ class SWPropertyDisplayController {
 		this.labelText			= this.labelText || "";
 		this.labelClass			= this.labelClass || "";
 		this.name			    	= this.name || "unnamed";
+        this.value              = this.value || this.initialValue;
 
 
 		this.object				= this.object || this.swForm.object; //this is the process object
@@ -323,6 +324,7 @@ class SWPropertyDisplay implements ng.IDirective{
         formTemplate: "@?",
         eventAnnouncers:"@",
         hideErrors:'=?',
+        value:"@?",
 
         //swpropertyscope
 

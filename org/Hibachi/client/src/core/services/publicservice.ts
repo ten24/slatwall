@@ -27,6 +27,7 @@ class PublicService {
 
     public http:ng.IHttpService;
     public confirmationUrl:string;
+    public checkoutUrl:string;
     public header:any;
     public window:any;
     public finding:boolean;
@@ -85,6 +86,7 @@ class PublicService {
         this.appConfig = appConfig;
         this.baseActionPath = this.appConfig.baseURL+"/index.cfm/api/scope/"; //default path
         this.confirmationUrl = "/order-confirmation";
+        this.checkoutUrl = "/checkout";
         this.$http = $http;
         this.$location = $location;
         this.$q = $q;
@@ -317,6 +319,8 @@ class PublicService {
             for (var action in request.successfulActions){
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
+                }else if (request.successfulActions[action].indexOf('public:cart.finalizeCart') !== -1){
+                    this.$window.location.href = this.checkoutUrl;
                 }else if(request.successfulActions[action].indexOf('public:account.logout') !== -1){
                     this.account = this.$hibachi.newAccount();
                 }
@@ -1120,21 +1124,50 @@ class PublicService {
         event.swForm.submit();
     }
 
+    public getAttributeValues = () =>{
+        let setAttributeValues = {};
+        for(let i = 0; i < this.cart.assignedAttributeSets.length; i++){
+            for(let j = 0; j < this.cart.assignedAttributeSets[i].attributes.length; j++){
+                let attribute = this.cart.assignedAttributeSets[i].attributes[j];
+                console.log(attribute);
+                let found = false;
+                for(let k = 0; k < this.cart.attributeValues.length; k++){
+                    let attributeValue = this.cart.attributeValues[i];
+                    if(attributeValue.data.attribute.attributeCode == attribute.attributeCode){
+                        let attributeValueEntry = {
+                            attributeCode:attribute.attributeCode,
+                            attributeID:attribute.attributeID,
+                            attributeName:attribute.attributeName,
+                            attributeValue:attributeValue.data.attributeValue
+                        };
+                        setAttributeValues[attribute.attributeCode] = attributeValueEntry;
+                        found = true;
+                    }
+                }
+                if(!found){
+                    let attributeValueEntry = {
+                        attributeCode:attribute.attributeCode,
+                        attributeID:attribute.attributeID,
+                        attributeName:attribute.attributeName
+                    };
+                    setAttributeValues[attribute.attributeCode] = attributeValueEntry;
+                }
+            }
+        }
+        return setAttributeValues;
+    }
+
     //Use with bind, assigning 'this' as the temporary order item
     public copyOrderItem(orderItem){
-        console.log("WE COPYIN! THIS=", this)
         this.orderItem = {orderItemID:orderItem.orderItemID,
             quantity:orderItem.quantity};
         return this;
     }
 
     public binder = (self, fn, ...args)=>{
-        try{
-            return fn.bind(self, ...args);
-        }catch(e){
-            console.log("can't BIND, breh!", self, fn);
-        }
+        return fn.bind(self, ...args);
     }
+
 }
 export {PublicService};
 
