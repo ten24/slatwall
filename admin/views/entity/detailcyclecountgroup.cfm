@@ -63,9 +63,6 @@ Notes:
 			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="locations" edit="#rc.edit#">
 			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="locationCollections" text="Location Collections" edit="#rc.edit#">
 			<hb:HibachiEntityDetailItem object="#rc.cyclecountgroup#" property="skuCollections" text="Sku Collections" edit="#rc.edit#">
-			<!--- <hb:HibachiEntityDetailItem view="admin:entity/cyclecountgrouptabs/locationcollections" text="#$.slatwall.rbKey('entity.CycleCountGroup.locationCollection')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountgrouptabs/skucollections" text="#$.slatwall.rbKey('entity.CycleCountGroup.skuCollection')#" /> --->
-			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.cyclecountgroup#" />
 		</hb:HibachiEntityDetailGroup>
 		
