@@ -2794,17 +2794,17 @@
 	            for (var i = 0; i < _this.cart.assignedAttributeSets.length; i++) {
 	                for (var j = 0; j < _this.cart.assignedAttributeSets[i].attributes.length; j++) {
 	                    var attribute = _this.cart.assignedAttributeSets[i].attributes[j];
-	                    console.log(attribute);
 	                    var found = false;
-	                    for (var k = 0; k < _this.cart.attributeValues.length; k++) {
-	                        var attributeValue = _this.cart.attributeValues[i];
-	                        if (attributeValue.data.attribute.attributeCode == attribute.attributeCode) {
+	                    for (var k = 0; k < _this.cart.allAttributeValues.length; k++) {
+	                        var attributeValue = _this.cart.allAttributeValues[k];
+	                        if (attributeValue.attribute.attributeCode == attribute.attributeCode) {
 	                            var attributeValueEntry = {
 	                                attributeCode: attribute.attributeCode,
 	                                attributeID: attribute.attributeID,
 	                                attributeName: attribute.attributeName,
-	                                attributeValue: attributeValue.data.attributeValue
+	                                attributeValue: attributeValue.attributeValue
 	                            };
+	                            console.log(attributeValueEntry);
 	                            setAttributeValues[attribute.attributeCode] = attributeValueEntry;
 	                            found = true;
 	                        }

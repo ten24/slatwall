@@ -1129,17 +1129,17 @@ class PublicService {
         for(let i = 0; i < this.cart.assignedAttributeSets.length; i++){
             for(let j = 0; j < this.cart.assignedAttributeSets[i].attributes.length; j++){
                 let attribute = this.cart.assignedAttributeSets[i].attributes[j];
-                console.log(attribute);
                 let found = false;
-                for(let k = 0; k < this.cart.attributeValues.length; k++){
-                    let attributeValue = this.cart.attributeValues[i];
-                    if(attributeValue.data.attribute.attributeCode == attribute.attributeCode){
+                for(let k = 0; k < this.cart.allAttributeValues.length; k++){
+                    let attributeValue = this.cart.allAttributeValues[k];
+                    if(attributeValue.attribute.attributeCode == attribute.attributeCode){
                         let attributeValueEntry = {
                             attributeCode:attribute.attributeCode,
                             attributeID:attribute.attributeID,
                             attributeName:attribute.attributeName,
-                            attributeValue:attributeValue.data.attributeValue
+                            attributeValue:attributeValue.attributeValue
                         };
+                        console.log(attributeValueEntry);
                         setAttributeValues[attribute.attributeCode] = attributeValueEntry;
                         found = true;
                     }

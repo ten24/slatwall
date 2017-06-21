@@ -281,7 +281,7 @@ component extends="HibachiService"  accessors="true" output="false"
         var account = getAccountService().getAccount( data.accountID );
         if(!isNull(account)) {
             var account = getAccountService().processAccount(account, data, "resetPassword");
-            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );   
+            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );
             // As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
             if(!account.hasErrors() && !structKeyExists(form, "emailAddress") && !structKeyExists(url, "emailAddress")) {
                 form.emailAddress = account.getEmailAddress();
