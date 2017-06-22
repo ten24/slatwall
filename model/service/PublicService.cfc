@@ -1113,10 +1113,13 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function finalizeCart(required any data) {
         var cart = getHibachiScope().cart();
         
-        for(var attribute in data.attributes){
-          cart.setAttributeValue(attribute,data.attributes[attribute].attributeValue);
+        if(structKeyExists(data, 'attributes') && !isNull(data.attributes)){
+          for(var attribute in data.attributes){
+            cart.setAttributeValue(attribute,data.attributes[attribute].attributeValue);
+            getService('orderService').saveOrder(cart);
+          }
         }
-        getService('orderService').saveOrder(cart);
+
         getHibachiScope().addActionResult( "public:cart.finalizeCart", cart.hasErrors() );
     }
     

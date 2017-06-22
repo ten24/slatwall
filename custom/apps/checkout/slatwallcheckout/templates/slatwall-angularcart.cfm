@@ -213,7 +213,8 @@ Notes:
 					</table>
 					
 					<!--- START: Custom "Order" Attribute Sets --->
-					<div ng-if="slatwall.cartDataPromise.$$state.status" ng-init="slatwall.cart.setAttributeValues = {attributes:slatwall.getOrderAttributeValues()}">
+					<!--- Add desired attribute sets to "allowedAttributeSets" below --->
+					<div ng-if="slatwall.cartDataPromise.$$state.status" ng-init="allowedAttributeSets = []; slatwall.cart.setAttributeValues = {attributes:slatwall.getOrderAttributeValues(allowedAttributeSets)}">
 						<sw-form
 							data-object="slatwall.cart.setAttributeValues"
 				        	data-name="setAttributeValues">

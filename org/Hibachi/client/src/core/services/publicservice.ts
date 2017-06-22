@@ -1184,19 +1184,22 @@ class PublicService {
         event.swForm.submit();
     }
 
-    public getOrderAttributeValues = () =>{
+    public getOrderAttributeValues = (allowedAttributeSets) =>{
         var attributeValues = {};
         var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
         for(var attributeSetCode in orderAttributeModel){
             var attributeSet = orderAttributeModel[attributeSetCode];
-            for(var attributeCode in attributeSet.attributes){
-                let attribute = attributeSet.attributes[attributeCode];
+            if(allowedAttributeSets.indexOf(attributeSetCode) !== -1){
+                for(var attributeCode in attributeSet.attributes){
+                    let attribute = attributeSet.attributes[attributeCode];
 
-                attributeValues[attribute.attributeCode] = {
-                    attributeCode:attribute.attributeCode,
-                    attributeName:attribute.attributeName,
-                    attributeValue:this.cart[attribute.attributeCode]
-                };
+                    attributeValues[attribute.attributeCode] = {
+                        attributeCode:attribute.attributeCode,
+                        attributeName:attribute.attributeName,
+                        attributeValue:this.cart[attribute.attributeCode],
+                        inputType:attribute.attributeInputType
+                    };
+                }
             }
         }
         return attributeValues;
