@@ -79,7 +79,6 @@ Notes:
 		            action:'slatAction'
 					,basePartialsPath: '/org/Hibachi/client/src/'
 					,customPartialsPath:'/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/angularcore/'
-					,apiSubsystemName:'customsite'
 		        };
 		    </script>
 	    </cfoutput>

@@ -25,7 +25,7 @@
 	                <h3 ng-show="slatwall.hasAccount()">Account - {{slatwall.account.firstName}} {{slatwall.account.lastName}}</h3>
 	                <p ng-show="slatwall.hasAccount()">Not you? 
 	                	<sw-action-caller
-					        data-action="public:account.logout"
+					        data-action="logout"
 					        data-type="link"
 					        data-text="Logout">
 				    	</sw-action-caller>
@@ -75,6 +75,8 @@
 					</div>
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
+							<div class="alert alert-success" ng-if="slatwall.hasSuccessfulAction('addOrderPayment')">Successfully added order payment.</div>
+							<div class="alert alert-success" ng-if="slatwall.hasSuccessfulAction('removeOrderPayment')">Successfully removed order payment.</div>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
 			                        <div class="panel-heading" role="tab" id="headingOne">

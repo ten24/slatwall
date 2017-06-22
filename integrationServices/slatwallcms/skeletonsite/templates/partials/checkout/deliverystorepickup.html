@@ -2,6 +2,7 @@
 	<div class="panel-body">
 		<h4>Store Pickup</h4>
 		<h5>{{slatwall.getOrderFulfillmentItemList(fulfillmentIndex)}}</h5>
+		<div class="alert alert-success" ng-if="slatwall.pickupLocationUpdateSuccess()">Successfully updated pickup location.</div>
 		<i class="fa fa-map-marker fa-3x icon-left"></i>
 		<span>
 			<h5>Your selected store: <span ng-if="slatwall.getPickupLocation(fulfillmentIndex).locationName != undefined">

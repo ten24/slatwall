@@ -1,6 +1,6 @@
 <!--- This import allows for the custom tags required by this page to work --->
 <cfinclude template = "_slatwall-header.cfm">
-<script>hibachiConfig.customPartialsPath = hibachiConfig.customPartialsPath + 'checkout'</script>
+<script>hibachiConfig.customPartialsPath = hibachiConfig.customPartialsPath + 'checkout/'</script>
 <cfoutput>
 
 <!--- For each of the directives/tags below, you may pass in a custom template path/name to use instead of the default.       --->
@@ -75,12 +75,14 @@
 					</div>
 					<div ng-show="slatwall.showPaymentTabBody()">
 						<div class="col-sm-12">
+							<div class="alert alert-success" ng-if="slatwall.hasSuccessfulAction('addOrderPayment')">Successfully added order payment.</div>
+							<div class="alert alert-success" ng-if="slatwall.hasSuccessfulAction('removeOrderPayment')">Successfully removed order payment.</div>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-			                    <div class="panel panel-default" ng-cloak ng-repeat="paymentMethod in slatwall.getEligibleCreditCardPaymentMethods()">
+			                    <div class="panel radio panel-default" ng-cloak>
 			                        <div class="panel-heading" role="tab" id="headingOne">
 			                            <h4 class="panel-title">
 			                                <a class="collapsed" data-toggle="collapse" data-parent="##accordion" href="##collapse1" aria-expanded="false" aria-controls="collapseOne">
-			                                    <span class="dot"></span> {{paymentMethod.paymentMethod.paymentMethodName}}
+			                                    <span class="dot"></span> Credit Card
 			                                </a>
 			                            </h4>
 			                        </div>
@@ -90,7 +92,7 @@
 												<div class="col-md-12">
 													<!--- Credit card --->
 													<swf-directive partial-name="ordererrors"></swf-directive>
-													<swf-directive partial-name="orderpaymentpartial" variables="{'paymentMethodID':paymentMethod.paymentMethod.paymentMethodID}"></swf-directive>
+													<swf-directive partial-name="orderpaymentpartial"></swf-directive>
 												</div>
 											</div>
 			                            </div>
