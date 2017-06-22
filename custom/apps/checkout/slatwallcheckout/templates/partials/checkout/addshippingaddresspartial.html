@@ -4,8 +4,13 @@
 		<!-- Displays all addresses from the addess book and lets you select one to use as the shipping address. -->
 		<h4>Shipping</h4>
 		<h5>{{slatwall.getOrderFulfillmentItemList(fulfillmentIndex)}}</h5>
-		<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
 
+		<div class="alert alert-success" ng-if="slatwall.shippingUpdateSuccess()">Successfully updated shipping address.</div>
+		<div class="row">
+			<swf-directive partial-name="addshippingbyaccountaddresspartial" ng-show="slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
+		</div>
+
+		<div class="alert alert-success" ng-if="slatwall.shippingMethodUpdateSuccess()">Successfully updated shipping method.</div>
 		<!-- Displays available shipping methods. -->
 		<swf-directive partial-name="shippingmethodoptiondisplay" ng-if="slatwall.hasShippingAddress(fulfillmentIndex) && slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
 

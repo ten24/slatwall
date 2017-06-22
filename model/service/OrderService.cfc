@@ -3158,7 +3158,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return found;
 	}
 	
-	
+	public any function getOrderAttributePropertylist(){
+		var propertyList = '';
+		var orderAttributeModel = getService('AttributeService').getAttributeModel().Order;
+		for(var attributeSetName in orderAttributeModel){
+			var attributeSet = orderAttributeModel[attributeSetName];
+			for(var attribute in attributeSet.attributes){
+				propertyList = listAppend(propertyList, attribute, ',');
+			}
+		}
+		return propertyList;
+	}
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {

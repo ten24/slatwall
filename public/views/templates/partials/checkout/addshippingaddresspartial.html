@@ -8,7 +8,7 @@
 
 		<!-- Displays available shipping methods. -->
 		<swf-directive partial-name="shippingmethodoptiondisplay" ng-if="slatwall.hasShippingAddress(fulfillmentIndex) && slatwall.accountAddressEditFormIndex[fulfillmentIndex] == undefined" variables="{fulfillmentIndex:fulfillmentIndex}"></swf-directive>
-
+		
 		<!-- When an address needs to be saved. -->
 		<div id="editaddress">
 			<div ng-if="slatwall.showEditAccountAddressForm(fulfillmentIndex)">

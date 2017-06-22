@@ -2725,6 +2725,28 @@
 	            });
 	            return addresses;
 	        };
+	        /** Returns true if any action in comma-delimited list exists in this.successfulActions */
+	        this.hasSuccessfulAction = function (actionList) {
+	            for (var _i = 0, _a = actionList.split(','); _i < _a.length; _i++) {
+	                var action = _a[_i];
+	                if (_this.successfulActions.indexOf(action) > -1) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        this.shippingUpdateSuccess = function () {
+	            return _this.hasSuccessfulAction('addShippingAddressUsingAccountAddress,updateAddress,addShippingAddress');
+	        };
+	        this.shippingMethodUpdateSuccess = function () {
+	            return _this.hasSuccessfulAction('addShippingMethodUsingShippingMethodID');
+	        };
+	        this.emailFulfillmentUpdateSuccess = function () {
+	            return _this.hasSuccessfulAction('addEmailFulfillmentAddress');
+	        };
+	        this.pickupLocationUpdateSuccess = function () {
+	            return _this.hasSuccessfulAction('addEmailFulfillmentAddress');
+	        };
 	        /** Returns true if selected pickup location has no name.*/
 	        this.namelessPickupLocation = function (fulfillmentIndex) {
 	            if (!_this.getPickupLocation(fulfillmentIndex))
@@ -2789,37 +2811,21 @@
 	        this.updateOrderItemQuantity = function (event) {
 	            event.swForm.submit();
 	        };
-	        this.getAttributeValues = function () {
-	            var setAttributeValues = {};
-	            for (var i = 0; i < _this.cart.assignedAttributeSets.length; i++) {
-	                for (var j = 0; j < _this.cart.assignedAttributeSets[i].attributes.length; j++) {
-	                    var attribute = _this.cart.assignedAttributeSets[i].attributes[j];
-	                    var found = false;
-	                    for (var k = 0; k < _this.cart.allAttributeValues.length; k++) {
-	                        var attributeValue = _this.cart.allAttributeValues[k];
-	                        if (attributeValue.attribute.attributeCode == attribute.attributeCode) {
-	                            var attributeValueEntry = {
-	                                attributeCode: attribute.attributeCode,
-	                                attributeID: attribute.attributeID,
-	                                attributeName: attribute.attributeName,
-	                                attributeValue: attributeValue.attributeValue
-	                            };
-	                            console.log(attributeValueEntry);
-	                            setAttributeValues[attribute.attributeCode] = attributeValueEntry;
-	                            found = true;
-	                        }
-	                    }
-	                    if (!found) {
-	                        var attributeValueEntry = {
-	                            attributeCode: attribute.attributeCode,
-	                            attributeID: attribute.attributeID,
-	                            attributeName: attribute.attributeName
-	                        };
-	                        setAttributeValues[attribute.attributeCode] = attributeValueEntry;
-	                    }
+	        this.getOrderAttributeValues = function () {
+	            var attributeValues = {};
+	            var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
+	            for (var attributeSetCode in orderAttributeModel) {
+	                var attributeSet = orderAttributeModel[attributeSetCode];
+	                for (var attributeCode in attributeSet.attributes) {
+	                    var attribute = attributeSet.attributes[attributeCode];
+	                    attributeValues[attribute.attributeCode] = {
+	                        attributeCode: attribute.attributeCode,
+	                        attributeName: attribute.attributeName,
+	                        attributeValue: _this.cart[attribute.attributeCode]
+	                    };
 	                }
 	            }
-	            return setAttributeValues;
+	            return attributeValues;
 	        };
 	        this.binder = function (self, fn) {
 	            var args = [];
@@ -2852,6 +2858,8 @@
 	        return this.cart.orderFulfillments[fulfillmentIndex].orderFulfillmentItems.map(function (item) { return item.sku.skuName ? item.sku.skuName : item.sku.product.productName; }).join(', ');
 	    };
 	    //Use with bind, assigning 'this' as the temporary order item
+	    //a.k.a. slatwall.bind(tempOrderItem,slatwall.copyOrderItem,originalOrderItem);
+	    //gets you tempOrderItem.orderItem == originalOrderItem;
 	    PublicService.prototype.copyOrderItem = function (orderItem) {
 	        this.orderItem = { orderItemID: orderItem.orderItemID,
 	            quantity: orderItem.quantity };

@@ -1045,6 +1045,31 @@ class PublicService {
         })
         return addresses;
     }
+    /** Returns true if any action in comma-delimited list exists in this.successfulActions */
+    public hasSuccessfulAction = (actionList:string) =>{
+        for(let action of actionList.split(',')){
+            if(this.successfulActions.indexOf(action) > -1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public shippingUpdateSuccess = () =>{
+        return this.hasSuccessfulAction('addShippingAddressUsingAccountAddress,updateAddress,addShippingAddress');
+    }
+
+    public shippingMethodUpdateSuccess = () =>{
+        return this.hasSuccessfulAction('addShippingMethodUsingShippingMethodID');
+    }
+
+    public emailFulfillmentUpdateSuccess = () =>{
+        return this.hasSuccessfulAction('addEmailFulfillmentAddress');
+    }
+
+    public pickupLocationUpdateSuccess = () =>{
+        return this.hasSuccessfulAction('addEmailFulfillmentAddress');
+    }
 
     /** Returns true if selected pickup location has no name.*/
     public namelessPickupLocation = (fulfillmentIndex) => {
@@ -1124,40 +1149,27 @@ class PublicService {
         event.swForm.submit();
     }
 
-    public getAttributeValues = () =>{
-        let setAttributeValues = {};
-        for(let i = 0; i < this.cart.assignedAttributeSets.length; i++){
-            for(let j = 0; j < this.cart.assignedAttributeSets[i].attributes.length; j++){
-                let attribute = this.cart.assignedAttributeSets[i].attributes[j];
-                let found = false;
-                for(let k = 0; k < this.cart.allAttributeValues.length; k++){
-                    let attributeValue = this.cart.allAttributeValues[k];
-                    if(attributeValue.attribute.attributeCode == attribute.attributeCode){
-                        let attributeValueEntry = {
-                            attributeCode:attribute.attributeCode,
-                            attributeID:attribute.attributeID,
-                            attributeName:attribute.attributeName,
-                            attributeValue:attributeValue.attributeValue
-                        };
-                        console.log(attributeValueEntry);
-                        setAttributeValues[attribute.attributeCode] = attributeValueEntry;
-                        found = true;
-                    }
-                }
-                if(!found){
-                    let attributeValueEntry = {
-                        attributeCode:attribute.attributeCode,
-                        attributeID:attribute.attributeID,
-                        attributeName:attribute.attributeName
-                    };
-                    setAttributeValues[attribute.attributeCode] = attributeValueEntry;
-                }
+    public getOrderAttributeValues = () =>{
+        var attributeValues = {};
+        var orderAttributeModel = JSON.parse(localStorage.attributeMetaData)["Order"];
+        for(var attributeSetCode in orderAttributeModel){
+            var attributeSet = orderAttributeModel[attributeSetCode];
+            for(var attributeCode in attributeSet.attributes){
+                let attribute = attributeSet.attributes[attributeCode];
+
+                attributeValues[attribute.attributeCode] = {
+                    attributeCode:attribute.attributeCode,
+                    attributeName:attribute.attributeName,
+                    attributeValue:this.cart[attribute.attributeCode]
+                };
             }
         }
-        return setAttributeValues;
+        return attributeValues;
     }
 
     //Use with bind, assigning 'this' as the temporary order item
+    //a.k.a. slatwall.bind(tempOrderItem,slatwall.copyOrderItem,originalOrderItem);
+    //gets you tempOrderItem.orderItem == originalOrderItem;
     public copyOrderItem(orderItem){
         this.orderItem = {orderItemID:orderItem.orderItemID,
             quantity:orderItem.quantity};

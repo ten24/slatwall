@@ -106,7 +106,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Non persistent properties
 	property name="addOrderItemSkuOptionsSmartList" persistent="false";
 	property name="addOrderItemStockOptionsSmartList" persistent="false";
-	property name="allAttributeValues" persistent="false";
 	property name="addPaymentRequirementDetails" persistent="false";
 	property name="deliveredItemsAmountTotal" persistent="false";
 	property name="depositItemSmartList" persistent="false";
@@ -161,7 +160,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
-	property name="assignedAttributeSets" persistent="false";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
@@ -444,44 +442,6 @@ property name="cheatCode" ormtype="string" hb_formFieldType="text";//CUSTOM PROP
 
 	}
 	// ============ START: Non-Persistent Property Methods =================
-
-	public any function getAssignedAttributeSets(){
-		if(!structKeyExists(variables, 'assignedAttributeSets')){
-			var attributeSets = this.getAssignedAttributeSetSmartList().getRecords();
-			variables.assignedAttributeSets = attributeSets;
-		}
-		return variables.assignedAttributeSets;
-	}
-
-	public any function getAllAttributeValues(){
-		if(!structKeyExists(variables, 'allAttributeValues')){
-			var attributeValues = [];
-
-			for(var attributeSet in getAssignedAttributeSets()){
-				for(var attribute in attributeSet.getAttributes()){
-
-					var attributeValue = getAttributeValue(attribute.getAttributeCode(),true);
-
-					if(isSimpleValue(attributeValue)){
-						if(!len(attributeValue)){
-							continue;
-						}
-
-						var newAttributeValue = getService('attributeService').newAttributeValue();
-						newAttributeValue.setAttribute(attribute);
-						newAttributeValue.setAttributeValueType('Order');
-						newAttributeValue.setOrder(this);
-						newAttributeValue.setAttributeValue(attributeValue);
-						arrayAppend(attributeValues, newAttributeValue);
-					}else{
-						arrayAppend(attributeValues, attributeValue);
-					}
-				}
-			}
-			variables.allAttributeValues = attributeValues;
-		}
-		return variables.allAttributeValues;
-	}
 
 	public any function getAddOrderItemSkuOptionsSmartList() {
 		var optionsSmartList = getService("skuService").getSkuSmartList();
