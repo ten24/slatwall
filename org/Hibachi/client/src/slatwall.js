@@ -1945,17 +1945,17 @@
 	        /** accessors for states */
 	        this.getStates = function (countryCode, address, refresh) {
 	            if (refresh === void 0) { refresh = false; }
+	            if (address && address.data) {
+	                countryCode = address.data.countrycode || address.countrycode;
+	            }
 	            if (!angular.isDefined(countryCode))
 	                countryCode = "US";
-	            if (address && address.data) {
-	                countryCode = address.data.countrycode;
-	            }
 	            var urlBase = _this.baseActionPath + 'getStateCodeOptionsByCountryCode/';
 	            if (!_this.getRequestByAction('getStateCodeOptionsByCountryCode') || !_this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh) {
 	                _this.stateDataPromise = _this.getData(urlBase, "states", "?countryCode=" + countryCode);
 	                return _this.stateDataPromise;
 	            }
-	            return _this.states.stateCodeOptions;
+	            return _this.stateDataPromise;
 	        };
 	        this.refreshAddressOptions = function (address) {
 	            _this.getStates(null, address);
@@ -1971,14 +1971,27 @@
 	                }
 	            }
 	        };
+	        this.getCountryByCountryCode = function (countryCode) {
+	            if (!angular.isDefined(_this.countries) || !angular.isDefined(_this.countries.countryCodeOptions)) {
+	                return;
+	            }
+	            if (!countryCode) {
+	                countryCode = 'US';
+	            }
+	            for (var country in _this.countries.countryCodeOptions) {
+	                if (_this.countries.countryCodeOptions[country].value == countryCode) {
+	                    return _this.countries.countryCodeOptions[country];
+	                }
+	            }
+	        };
 	        /** accessors for states */
 	        this.getAddressOptions = function (countryCode, address, refresh) {
 	            if (refresh === void 0) { refresh = false; }
+	            if (address && address.data) {
+	                countryCode = address.data.countrycode || address.countrycode;
+	            }
 	            if (!angular.isDefined(countryCode))
 	                countryCode = "US";
-	            if (address && address.data) {
-	                countryCode = address.data.countrycode;
-	            }
 	            var urlBase = _this.baseActionPath + 'getAddressOptionsByCountryCode/';
 	            if (!_this.getRequestByAction('getAddressOptionsByCountryCode') || !_this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh) {
 	                _this.addressOptionData = _this.getData(urlBase, "addressOptions", "?countryCode=" + countryCode);
@@ -2010,7 +2023,6 @@
 	                        _this[setter] = {};
 	                        _this.$timeout(function () {
 	                            _this[setter] = (result);
-	                            _this.stateDataPromise = null;
 	                        });
 	                    }
 	                    else {

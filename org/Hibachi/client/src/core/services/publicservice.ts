@@ -160,10 +160,11 @@ class PublicService {
 
     /** accessors for states */
     public getStates=(countryCode:string, address:any, refresh=false):any =>  {
-       if (!angular.isDefined(countryCode)) countryCode = "US";
        if(address && address.data){
-           countryCode = address.data.countrycode;
+           countryCode = address.data.countrycode || address.countrycode;
        }
+       if (!angular.isDefined(countryCode)) countryCode = "US";
+       
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
 
        if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
@@ -171,7 +172,7 @@ class PublicService {
            return this.stateDataPromise;
        }
 
-       return this.states.stateCodeOptions;
+       return this.stateDataPromise;
     }
 
     public refreshAddressOptions = (address) =>{
@@ -190,12 +191,26 @@ class PublicService {
         }
     }
 
+    public getCountryByCountryCode = (countryCode)=>{
+        if (!angular.isDefined(this.countries) || !angular.isDefined(this.countries.countryCodeOptions)){
+            return;
+        }
+        if(!countryCode){
+            countryCode = 'US';
+        }
+        for (var country in this.countries.countryCodeOptions){
+            if (this.countries.countryCodeOptions[country].value == countryCode){
+                return this.countries.countryCodeOptions[country];
+            }
+        }
+    }
+
     /** accessors for states */
     public getAddressOptions=(countryCode:string, address:any, refresh=false):any =>  {
-       if (!angular.isDefined(countryCode)) countryCode = "US";
        if(address && address.data){
-           countryCode = address.data.countrycode;
+           countryCode = address.data.countrycode || address.countrycode;
        }
+       if (!angular.isDefined(countryCode)) countryCode = "US";
 
        let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
        if(!this.getRequestByAction('getAddressOptionsByCountryCode') || !this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh){
@@ -228,7 +243,6 @@ class PublicService {
                     this[setter]={};
                     this.$timeout(()=>{
                         this[setter]=(result);
-                        this.stateDataPromise = null;
                     });
                 }else{
                     this[setter]=(result);
