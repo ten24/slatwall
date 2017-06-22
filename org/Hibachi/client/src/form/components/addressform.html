@@ -13,7 +13,7 @@
 		    data-name="{{SwAddressForm.addressName}}"
 		    data-event-announcers="keyup"
 		    data-action="{{SwAddressForm.action}}"
-		    data-event-listeners="{AddressCountrycodeOnChange:slatwall.binder(null,slatwall.getStates,null,SwAddressForm.address,true)}">			    
+		    data-event-listeners="{AddressCountrycodeOnChange:slatwall.binder(null,slatwall.refreshAddressOptions,SwAddressForm.address)}">			    
 			    <div class="row" ng-cloak>
 			    	<!--- Show address book dropdown? --->
 			    	<div class="col-sm-6" ng-if="SwAddressForm.showAddressBookSelect == 'true'">
@@ -131,7 +131,7 @@
 					        data-field-type="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="streetAddress"
-					        data-label-text="Street "
+					        data-label-text="{{(slatwall.addressOptions.addressOptions.streetAddressLabel || 'Street')}}"
 					        data-class="form-control"
 					        data-edit="true">
 					    	</swf-property-display>
@@ -144,7 +144,7 @@
 					        data-field-type="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="street2Address"
-					        data-label-text="Apt./Suite"
+					        data-label-text="{{(slatwall.addressOptions.addressOptions.street2AddressLabel || 'Apt/Suite')}}"
 					        data-class="form-control"
 					        data-edit="true" >
 					    	</swf-property-display>
@@ -159,7 +159,7 @@
 					        data-field-type="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="city"
-					        data-label-text="City"
+					        data-label-text="{{(slatwall.addressOptions.addressOptions.cityLabel || 'City')}}"
 					        data-class="form-control"
 					        data-edit="true">
 					    	</swf-property-display>
@@ -168,7 +168,7 @@
 					    <div class="col-sm-6 form-group">
 				          <div class="row">
 				          	
-					        <div class="col-xs-7" ng-if="(SwAddressForm.address.data.selectedcountrycode.value == 'US' || SwAddressForm.address.data.selectedcountrycode.value == 'CA') && slatwall.states.stateCodeOptions">
+					        <div class="col-xs-7" ng-if="slatwall.states.stateCodeOptions && slatwall.states.stateCodeOptions.length">
 					            <swf-property-display 
 					            data-name="statecode" 
 					            data-class="form-control"
@@ -177,7 +177,7 @@
 					            data-edit="true"
 					            data-property-identifier="statecode"
 					            data-object="SwAddressForm.address"
-					            data-label-text="State"
+					            data-label-text="{{(slatwall.addressOptions.addressOptions.stateCodeLabel || 'State')}}"
 					            data-options="slatwall.states.stateCodeOptions"
 					            ng-init="SwAddressForm.address.data.selectedstatecode = slatwall.getStateByStateCode(SwAddressForm.address.statecode)||''" >
 					            </swf-property-display>
@@ -188,7 +188,7 @@
 							        data-field-type="text"
 							        data-object="SwAddressForm.address"
 							        data-property-identifier="locality"
-							        data-label-text="Locality"
+							        data-label-text="{{(slatwall.addressOptions.addressOptions.localityLabel || 'Locality')}}"
 							        data-class="form-control"
 							        data-edit="true" >
 							    </swf-property-display>
@@ -199,7 +199,7 @@
 							        data-field-type="text"
 							        data-object="SwAddressForm.address"
 							        data-property-identifier="postalCode"
-							        data-label-text="Zip"
+							        data-label-text="{{(slatwall.addressOptions.addressOptions.postalCodeLabel || 'Postal Code')}}"
 							        data-class="form-control"
 							        data-edit="true">
 							    </swf-property-display>

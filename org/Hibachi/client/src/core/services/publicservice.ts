@@ -165,10 +165,18 @@ class PublicService {
            countryCode = address.data.countrycode;
        }
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
-       if(!this.stateDataPromise || refresh){
+
+       if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
            this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode);
+           return this.stateDataPromise;
        }
-       return this.stateDataPromise;
+
+       return this.states.stateCodeOptions;
+    }
+
+    public refreshAddressOptions = (address) =>{
+        this.getStates(null, address);
+        this.getAddressOptions(null,address);
     }
 
     public getStateByStateCode = (stateCode)=>{
@@ -183,11 +191,16 @@ class PublicService {
     }
 
     /** accessors for states */
-    public getAddressOptions=(countryCode:string, refresh=false):any =>  {
+    public getAddressOptions=(countryCode:string, address:any, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
+       if(address && address.data){
+           countryCode = address.data.countrycode;
+       }
+
        let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
-       if(!this.addressOptionData || refresh){
-           this.addressOptionData = this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       if(!this.getRequestByAction('getAddressOptionsByCountryCode') || !this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh){
+           this.addressOptionData = this.getData(urlBase, "addressOptions", "?countryCode="+countryCode);
+           return this.addressOptionData;
        }
        return this.addressOptionData;
     }
@@ -211,13 +224,22 @@ class PublicService {
 
             }else{
                 //other functions reutrn cart,account and then data
-                this[setter]=(result);
+                if(setter == 'states'){
+                    this[setter]={};
+                    this.$timeout(()=>{
+                        this[setter]=(result);
+                        this.stateDataPromise = null;
+                    });
+                }else{
+                    this[setter]=(result);
+                }
             }
 
         }).catch((reason)=>{
 
 
         });
+        console.log(request.getAction());
         this.requests[request.getAction()]=request;
         return request.promise;
     }
@@ -271,7 +293,6 @@ class PublicService {
 
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
-             console.log("Request Data: ", data);
             //post
             let request:PublicRequest = this.requestService.newPublicRequest(urlBase,data,method)
 

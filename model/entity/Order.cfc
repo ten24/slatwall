@@ -164,8 +164,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
-	//CUSTOM PROPERTIES BEGIN
-property name="cheatCode" ormtype="string" hb_formFieldType="text";//CUSTOM PROPERTIES END
+
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));

@@ -1951,10 +1951,15 @@
 	                countryCode = address.data.countrycode;
 	            }
 	            var urlBase = _this.baseActionPath + 'getStateCodeOptionsByCountryCode/';
-	            if (!_this.stateDataPromise || refresh) {
+	            if (!_this.getRequestByAction('getStateCodeOptionsByCountryCode') || !_this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh) {
 	                _this.stateDataPromise = _this.getData(urlBase, "states", "?countryCode=" + countryCode);
+	                return _this.stateDataPromise;
 	            }
-	            return _this.stateDataPromise;
+	            return _this.states.stateCodeOptions;
+	        };
+	        this.refreshAddressOptions = function (address) {
+	            _this.getStates(null, address);
+	            _this.getAddressOptions(null, address);
 	        };
 	        this.getStateByStateCode = function (stateCode) {
 	            if (!angular.isDefined(_this.states) || !angular.isDefined(_this.states.stateCodeOptions) || !angular.isDefined(stateCode)) {
@@ -1967,13 +1972,17 @@
 	            }
 	        };
 	        /** accessors for states */
-	        this.getAddressOptions = function (countryCode, refresh) {
+	        this.getAddressOptions = function (countryCode, address, refresh) {
 	            if (refresh === void 0) { refresh = false; }
 	            if (!angular.isDefined(countryCode))
 	                countryCode = "US";
+	            if (address && address.data) {
+	                countryCode = address.data.countrycode;
+	            }
 	            var urlBase = _this.baseActionPath + 'getAddressOptionsByCountryCode/';
-	            if (!_this.addressOptionData || refresh) {
-	                _this.addressOptionData = _this.getData(urlBase, "addressOptions", "&countryCode=" + countryCode);
+	            if (!_this.getRequestByAction('getAddressOptionsByCountryCode') || !_this.getRequestByAction('getAddressOptionsByCountryCode').loading || refresh) {
+	                _this.addressOptionData = _this.getData(urlBase, "addressOptions", "?countryCode=" + countryCode);
+	                return _this.addressOptionData;
 	            }
 	            return _this.addressOptionData;
 	        };
@@ -1997,10 +2006,20 @@
 	                }
 	                else {
 	                    //other functions reutrn cart,account and then data
-	                    _this[setter] = (result);
+	                    if (setter == 'states') {
+	                        _this[setter] = {};
+	                        _this.$timeout(function () {
+	                            _this[setter] = (result);
+	                            _this.stateDataPromise = null;
+	                        });
+	                    }
+	                    else {
+	                        _this[setter] = (result);
+	                    }
 	                }
 	            }).catch(function (reason) {
 	            });
+	            console.log(request.getAction());
 	            _this.requests[request.getAction()] = request;
 	            return request.promise;
 	        };
@@ -2051,7 +2070,6 @@
 	            }
 	            if (method == "post") {
 	                data.returnJsonObjects = "cart,account";
-	                console.log("Request Data: ", data);
 	                //post
 	                var request_1 = _this.requestService.newPublicRequest(urlBase, data, method);
 	                request_1.promise.then(function (result) {
@@ -11608,6 +11626,9 @@
 	        }
 	        if ($hibachi.newState) {
 	            $rootScope.hibachiScope.getStates();
+	        }
+	        if ($hibachi.newState) {
+	            $rootScope.hibachiScope.getAddressOptions();
 	        }
 	    }])
 	    .constant('hibachiPartialsPath', 'hibachi/components/')
@@ -21325,7 +21346,6 @@
 	        var addressName = this.addressName;
 	        if (this.address) {
 	            this.address.getData = function () {
-	                console.log("this: ", _this);
 	                var formData = _this.address || {};
 	                var form = _this.address.forms[addressName];
 	                for (var key_1 in form) {
@@ -21351,7 +21371,6 @@
 	                        }
 	                    }
 	                }
-	                console.log('formData: ', formData);
 	                return formData || "";
 	            };
 	        }
@@ -21361,10 +21380,8 @@
 	        if (this.submitOnEnter) {
 	            this.eventListeners.keyup = this.submitKeyCheck;
 	        }
-	        console.log("event listeners", this.eventListeners);
 	        if (this.eventListeners) {
 	            for (var key in this.eventListeners) {
-	                console.log(key, this.eventListeners[key]);
 	                observerService.attach(this.eventListeners[key], key);
 	            }
 	        }

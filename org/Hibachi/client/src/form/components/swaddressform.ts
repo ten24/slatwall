@@ -49,7 +49,7 @@ class SWAddressFormController {
         let addressName = this.addressName;
         if(this.address){
             this.address.getData = () => {
-                console.log("this: ", this);
+
                 let formData = this.address || {};
                 let form = this.address.forms[addressName];
                 for(let key in form){
@@ -73,7 +73,7 @@ class SWAddressFormController {
                         }
                     }
                 }
-                console.log('formData: ', formData);
+
                 return formData || "";
             }
         }
@@ -83,10 +83,9 @@ class SWAddressFormController {
         if(this.submitOnEnter){
             this.eventListeners.keyup = this.submitKeyCheck;
         }
-        console.log("event listeners", this.eventListeners);
+
        if(this.eventListeners){
             for(var key in this.eventListeners){
-                console.log(key, this.eventListeners[key]);
                 observerService.attach(this.eventListeners[key], key)
             }
         }
