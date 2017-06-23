@@ -167,14 +167,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Turn off the installed and ready flags on any previously setup integration entities
-		for(var integrationEntity in integrationList) {
-			if(!listFindNoCase(installedIntegrationList, integrationEntity.getIntegrationPackage())) {
-				integrationEntity.setInstalledFlag(0);
-				integrationEntity.setActiveFlag(0);
-				
-				getHibachiDAO().flushORMSession();
-			}
-		}
+		ORMExecuteQuery('
+			UPDATE #getDao('hibachiDao').getApplicationKey()#Integration
+			Set activeFlag=0, installedFlag=0
+			WHERE integrationPackage not in :integrationList
+		',{integrationList=listToArray(installedIntegrationList)});
+		getHibachiDAO().flushORMSession();
 		
 		return getBeanFactory();
 	}
