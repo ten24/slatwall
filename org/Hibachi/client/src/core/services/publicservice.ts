@@ -60,6 +60,7 @@ class PublicService {
     public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
     public successfulActions = [];
+    public hibachiConfig:any;
 
     ///index.cfm/api/scope/
 
@@ -164,7 +165,7 @@ class PublicService {
            countryCode = address.data.countrycode || address.countrycode;
        }
        if (!angular.isDefined(countryCode)) countryCode = "US";
-       
+
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
 
        if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
@@ -332,6 +333,21 @@ class PublicService {
             return request.promise;
         }
 
+    }
+
+    public uploadFile = (action, data) =>{
+        let url = hibachiConfig.baseURL + action;
+
+        let formData = new FormData();
+
+        formData.append("fileName", data.fileName);
+        formData.append("uploadFile", data.uploadFile);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+
+        xhr.onload = ()=>{};
+        xhr.send(formData);
     }
 
     private processAction = (response,request:PublicRequest)=>{
@@ -1090,6 +1106,16 @@ class PublicService {
         return false;
     }
 
+    /** Returns true if any action in comma-delimited list exists in this.failureActions */
+    public hasFailureAction = (actionList:string) =>{
+        for(let action of actionList.split(',')){
+            if(this.failureActions.indexOf(action) > -1){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public shippingUpdateSuccess = () =>{
         return this.hasSuccessfulAction('addShippingAddressUsingAccountAddress,updateAddress,addShippingAddress');
     }
@@ -1197,7 +1223,8 @@ class PublicService {
                         attributeCode:attribute.attributeCode,
                         attributeName:attribute.attributeName,
                         attributeValue:this.cart[attribute.attributeCode],
-                        inputType:attribute.attributeInputType
+                        inputType:attribute.attributeInputType,
+                        requiredFlag:attribute.requiredFlag
                     };
                 }
             }
