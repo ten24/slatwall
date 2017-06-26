@@ -291,12 +291,12 @@ component extends="HibachiService" accessors="true" output="false" {
 				var newPhysicalCountItem = this.newPhysicalCountItem();
 				newPhysicalCountItem.setPhysicalCount(locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()]);
 				newPhysicalCountItem.setQuantity(cycleCountBatchItem.getQuantity());
-				newPhysicalCountItem.setSTock(cycleCountBatchItem.getStock());
+				newPhysicalCountItem.setStock(cycleCountBatchItem.getStock());
 				newPhysicalCountItem.setSkuCode(cycleCountBatchItem.getStock().getSku().getSkuCode());
 				newPhysicalCountItem.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
 				newPhysicalCountItem.setCycleCountBatchItem(cycleCountBatchItem);
 				newPhysicalCountItem = this.savePhysicalCountItem(newPhysicalCountItem);
-				cycleCountBatchItem.getStock().getSku().setCalculatedLastCountedDateTime(arguments.processObject.getCountPostDateTime());
+				cycleCountBatchItem.getStock().getSku().updateCalculatedProperties(true);
 			}
 		}
 		newPhysical = this.savePhysical(newPhysical);

@@ -179,6 +179,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
+	property name="lastCountedDateTime" ormtype="timestamp" persistent="false";
+
 	// Deprecated Properties
 
 
@@ -1136,8 +1138,18 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return trim(variables.skuDefinition);
 	}
 
-	public string function getLastCountedDateTime() {
-		return '';
+	public any function getLastCountedDateTime() {
+		if(!structKeyExists(variables, "lastCountedDateTime")) {
+			var pcisl = getService('physicalService').getPhysicalCountItemSmartlist();
+			pcisl.addFilter("Stock.Sku.skuID",this.getSkuId());
+			pcisl.addOrder("countPostDateTime desc");
+			if(arrayLen(pcisl.getRecords())) {
+				variables.lastCountedDateTime = pcisl.getRecords()[1].getCountPostDateTime();
+			} else {
+				variables.lastCountedDateTime = "";
+			}
+		}
+		return variables.lastCountedDateTime;
 	}
 
 	public boolean function getTransactionExistsFlag() {

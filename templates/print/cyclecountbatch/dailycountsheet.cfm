@@ -109,7 +109,10 @@ Notes:
 				<cfloop array="#cycleCountBatch.getCycleCountBatchItemsSmartList().getRecords()#" index="local.item">
 					<tr>
 						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.item.getStock().getSku().getSkuCode()#</td>
-						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.item.getStock().getSku().getProduct().getTitle()#</td>
+						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">
+							#local.item.getStock().getSku().getProduct().getTitle()#<br>
+							#local.item.getStock().getSku().getCalculatedSkuDefinition()#
+						</td>
 						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;">#local.item.getStock().getLocation().getLocationName()#</td>
 						<td style="border: 1px solid ##d8d8d8; padding: 10px 20px;"></td> 
 					</tr>

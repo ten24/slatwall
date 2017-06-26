@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.cyclecountbatchitem#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.cyclecountbatchitem#" edit="#rc.edit#" saveActionQueryString="?slatAction=entity.detailcyclecountbatch&cycleCountBatchID=#rc.cyclecountbatchitem.getCyclecountBatchID()#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.cyclecountbatchitem#" edit="#rc.edit#"
 									backaction="admin:entity.detailcyclecountbatch"
 									backquerystring="cycleCountBatchID=#rc.cyclecountbatchitem.getCycleCountBatchID()#"
