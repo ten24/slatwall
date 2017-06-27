@@ -135,6 +135,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				arguments.rc.pageTitle = getHibachiScope().rbKey('admin.define.detail', replaceData);
 			}
 		}
+
 	}
 
 	// Implicit onMissingMethod() to handle standard CRUD
@@ -520,9 +521,9 @@ component output="false" accessors="true" extends="HibachiController" {
 							}
 						}
 					}
-					
+
 					if(!isSPrimaryIDOverridden){
-						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
+						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();
 					}
 
 					// Render or Redirect a Success
@@ -557,7 +558,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 				// Otherwise do the standard render / redirect
 				} else {
-					
+
 					var isFPrimaryIDOverridden = false;
 					if(structKeyExists(arguments.rc,'fRedirectQS')){
 						var fRedirectQSArray= listToArray(arguments.rc.fRedirectQS,'&');
@@ -567,10 +568,10 @@ component output="false" accessors="true" extends="HibachiController" {
 							}
 						}
 					}
-					
+
 					// Place the id in the URL for redirects in case this was a new entity before
 					if(!isFPrimaryIDOverridden){
-						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
+						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();
 					}
 
 					// Render or Redirect a faluire
@@ -598,11 +599,25 @@ component output="false" accessors="true" extends="HibachiController" {
 			for(var key in arguments.rc) {
 				if(!find('.',key) && right(key, 2) == "ID" && len(arguments.rc[key]) == "32") {
 					var entityName = left(key, len(key)-2);
-					if( getHibachiService().getEntityNameIsValidFlag(entityName) && ( !structKeyExists(arguments.rc, entityName) || !isObject(arguments.rc[entityName]) ) ) {
+					if( 
+						getHibachiService().getEntityNameIsValidFlag(entityName) 
+						&& ( 
+							!structKeyExists(arguments.rc, entityName) 
+							|| !isObject(arguments.rc[entityName]) 
+						) 
+					) {
+						var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#entityName#CollectionList');
 						var entityService = getHibachiService().getServiceByEntityName( entityName=entityName );
-						var entity = entityService.invokeMethod("get#entityName#", {1=arguments.rc[key]});
-						if(!isNull(entity)) {
-							arguments.rc[ entityName ] = entity;
+						var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(entityName);
+						entityCollectionList.setDisplayProperties(primaryIDName);
+						entityCollectionList.addFilter(primaryIDName,arguments.rc[key]);
+						var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+						//if the collection returns a record then 
+						if(entityCollectionRecordsCount > 0){
+							var entity = entityService.invokeMethod("get#entityName#", {1=arguments.rc[key]});
+							if(!isNull(entity)) {
+								arguments.rc[ entityName ] = entity;
+							}
 						}
 					}
 				}
@@ -656,7 +671,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string keysToRemoveOnRedirect="" ) {
 		param name="arguments.rc.sRedirectQS" default="";
-		
+
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
 		if(structKeyExists(arguments.rc, "sRedirectURL")) {
 			getFW().redirectExact( redirectlocation=arguments.rc.sRedirectURL );
