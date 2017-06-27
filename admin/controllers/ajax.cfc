@@ -122,9 +122,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			for(var p=1; p<=arrayLen(piArray); p++) {
 				var value = record.getValueByPropertyIdentifier( propertyIdentifier=piArray[p], formatValue=true );
 				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-					thisRecord[ piArray[p] ] = value & " ";
+					thisRecord[ piArray[p] ] = encodeForHtml(value) & " ";
 				} else {
-					thisRecord[ piArray[p] ] = value;
+					thisRecord[ piArray[p] ] = encodeForHtml(value);
 				}
 			}
 			
