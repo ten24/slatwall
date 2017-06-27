@@ -336,6 +336,7 @@ class PublicService {
     }
 
     public uploadFile = (action, data) =>{
+        this.uploadingFile = true;
         let url = hibachiConfig.baseURL + action;
 
         let formData = new FormData();
@@ -346,7 +347,16 @@ class PublicService {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
 
-        xhr.onload = ()=>{};
+        xhr.onload = (result)=>{
+            var response = JSON.parse(xhr.response);
+            if (xhr.status === 200) {
+               this.successfulActions = response.successfulActions;
+               this.failureActions = response.failureActions;
+            }
+            this.$timeout(()=>{
+                this.uploadingFile = false;
+            });
+        };
         xhr.send(formData);
     }
 

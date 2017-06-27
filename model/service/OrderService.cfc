@@ -728,22 +728,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
   			}
         }
+        
+		//Save the newOrderPayment
+        this.saveOrderPayment(newOrderPayment);
+        
+        if(!newOrderPayment.hasErrors()){
+			// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
+			arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
-		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
-		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
+			// Save the newOrderPayment
+			newOrderPayment = this.saveOrderPayment( newOrderPayment );
 
-		// Save the newOrderPayment
-		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-
-		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
-		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
-			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
-				if ((orderPayment.getStatusCode() == 'opstActive')
-					&& !isNull(orderPayment.getPaymentMethod())
-					&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
-					&& orderPayment.getPaymentMethod().getAllowSaveFlag()){
-					arguments.processObject.setSaveAccountPaymentMethodFlag( true );
-					break;
+			//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
+			if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
+				for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
+					if ((orderPayment.getStatusCode() == 'opstActive')
+						&& !isNull(orderPayment.getPaymentMethod())
+						&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
+						&& orderPayment.getPaymentMethod().getAllowSaveFlag()){
+						arguments.processObject.setSaveAccountPaymentMethodFlag( true );
+						break;
+					}
 				}
 			}
 		}
