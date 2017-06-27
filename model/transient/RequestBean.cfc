@@ -49,6 +49,7 @@ Notes:
 component output="false" accessors="true" extends="HibachiTransient"  {
 	
 	property name="data" type="any";
+	property name="method" type="string" default="GET";
 	
 	public any function init() {
 		// Set Defaults

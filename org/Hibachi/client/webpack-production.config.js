@@ -23,7 +23,20 @@ devConfig.plugins= [
   	new ngAnnotatePlugin({
         add: true,
         // other ng-annotate options here 
-    })
+    }),
+    function()
+    {
+        this.plugin("done", function(stats)
+        {
+            if (stats.compilation.errors && stats.compilation.errors.length)
+            {
+                console.log(stats.compilation.errors);
+                process.exit(1);
+            }
+            // ...
+        });
+    }
+    
   ];
 //change output filename
 //devConfig.output.filename = "bundle.min.js";

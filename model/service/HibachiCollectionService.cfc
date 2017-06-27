@@ -1,7 +1,7 @@
 /*
 
     Slatwall - An Open Source eCommerce Platform
-    Copyright (C) 2011 ten24, LLC
+    Copyright (C) 2011 ten24, LLC 
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -53,10 +53,10 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
         newCollection.setCollectionDescription(arguments.collection.getCollectionDescription());
         newCollection.setCollectionObject(arguments.collection.getCollectionObject());
         newCollection.setCollectionConfig(arguments.collection.getCollectionConfig());
-	
+
         newCollection = this.saveCollection(newCollection);
 
         return newCollection;
     }
-	
+
 }

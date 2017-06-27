@@ -55,7 +55,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// New Properties
 	property name="newOrderPayment" cfc="OrderPayment" fieldType="many-to-one" fkcolumn="orderPaymentID";
-
+ 
 	// Data Properties (ID's)
 	property name="copyFromType" ormtype="string" hb_rbKey="entity.copyFromType" hb_formFieldType="select";
 	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";

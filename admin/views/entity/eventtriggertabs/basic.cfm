@@ -7,13 +7,13 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divClass="col-md-6">
-			<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerName" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventName" edit="false">
 			<cfif rc.eventTrigger.getEventTriggerType() eq "email">
-				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="emailTemplate" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="emailTemplate" edit="false">
 			</cfif>
 			<cfif rc.eventTrigger.getEventTriggerType() eq "print">
-				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="printTemplate" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="printTemplate" edit="false">
 			</cfif>
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">

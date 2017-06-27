@@ -62,6 +62,7 @@ Notes:
 		 </div>
 	   </nav>
 	 </div>
+	
 	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
 
 	<div class="col-md-6">
@@ -85,5 +86,6 @@ Notes:
 		<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
 		<hb:HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
 	</div>
+	
 
 </cfoutput>

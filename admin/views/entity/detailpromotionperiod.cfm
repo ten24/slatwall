@@ -54,6 +54,11 @@ Notes:
 <cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.edit" type="boolean">
 
+<!--- prevent editing promotion period if it is past the startDateTime for this promotion or the startTime is forever then this can not be edited. --->
+<cfif rc.edit and rc.promotionPeriod.getCurrentFlag() and rc.promotion.getPromotionAppliedOrdersCount() gt 0>
+	<cfset rc.edit = false>
+	<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod_inprogress.editdisabled_info') />
+</cfif>
 <!--- prevent editing promotion period if it has expired --->
 <cfif rc.edit and rc.promotionperiod.isExpired()>
 	<cfset rc.edit = false />
@@ -68,7 +73,14 @@ Notes:
 							backQueryString="promotionID=#rc.promotion.getPromotionID()#"
 							cancelAction="admin:entity.detailpromotion"
 							cancelQueryString="promotionID=#rc.promotion.getPromotionID()#"								   
-							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion"   />
+							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion">
+			<!--- Duplicate --->
+			<hb:HibachiProcessCaller action="admin:entity.preProcessPromotionPeriod" entity="#rc.promotionperiod#" processContext="duplicatePromotionPeriod" type="list" modal="true" />
+			
+			<!--- End Promotion Period --->
+			<hb:HibachiProcessCaller action="admin:entity.preProcessPromotionPeriod" entity="#rc.promotionperiod#" processContext="endPromotionPeriod" type="list" modal="true" />
+ 		
+		</hb:HibachiEntityActionBar>
 							    			  	  
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
 		

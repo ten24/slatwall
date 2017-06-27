@@ -60,6 +60,26 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		throw("The processCreditCard() Method was not setup for this integration service");	
 	}
 	
+	public boolean function getTestModeFlag(required any requestBean, string settingKey="testingFlag"){
+		var testModeFlag = setting(arguments.settingKey);
+		
+		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+			testModeFlag = arguments.requestBean.getOrder().getTestOrderFlag();
+		}
+		
+		return testModeFlag;
+	}
+	
+	public boolean function getLiveModeFlag(required any requestBean, string settingKey="liveModeFlag"){
+		var liveModeFlag = setting(arguments.settingKey);
+		
+		if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+			liveModeFlag = false;
+		}
+		
+		return liveModeFlag;
+	}
+	
 	public string function getExternalPaymentHTML() {
 		return "";
 	}

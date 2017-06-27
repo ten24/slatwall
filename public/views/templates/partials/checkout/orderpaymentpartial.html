@@ -1,0 +1,26 @@
+<!-- Add Shipping Address -->
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<span ng-init="$.slatwall.saveShippingAsBilling = undefined"></span>
+<span ng-init="$.slatwall.newBillingAddress = $.slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
+
+<sw-form
+    data-is-process-form="true"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-object="$.slatwall.newBillingAddress"
+    data-on-success="Hide:AddOrderPayment"
+    data-class="new_adderess"
+    data-name="addOrderPayment">
+
+    <div class="alert alert-danger error" ngshow="$.slatwall.cart['errors']['addOrderPayment']" ng-if="$.slatwall.cart['errors']['addOrderPayment']"><i class="fa fa-info-circle"></i> {{$.slatwall.cart['errors']['addOrderPayment'][0]}}</div>
+
+	<!--- Display Order Payment Errors --->
+	<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="ordererrors"></swf-directive>
+
+	<!--- The form without shipping address block --->
+	<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="orderpaymentformfull"></swf-directive>
+
+	<!--- Pleace Order / Review Order / Save Buttons --->
+	<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="orderbuttons"></swf-directive>
+
+</swform>

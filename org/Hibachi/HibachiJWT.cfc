@@ -77,6 +77,20 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(!structKeyExists(getPayload(),'exp')){
 			throw(type="No Valid expiration time date"); 
 		}
+		/*need valid account*/
+		if(!structKeyExists(getPayload(), 'accountID')){
+			throw(type="No Account ID");
+		}
+
+		/*if has session then verify session account against token*/
+		if(
+			!isNull(getHibachiScope().getSession())
+			&& !getHibachiScope().getSession().getAccount().getNewFlag()
+			&& getHibachiScope().getSession().getAccount().getAccountID() != getPayload().accountID
+		){
+			throw(type='AccountID is not valid');
+		}
+
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		if(currentTime lt getPayload().iat || currentTime gt getPayload().exp){
 			throw(type="Token is expired"); 
