@@ -728,7 +728,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
   			}
         }
-        
+
 		//Save the newOrderPayment
         this.saveOrderPayment(newOrderPayment);
         
@@ -3166,10 +3166,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getOrderAttributePropertylist(){
 		var propertyList = '';
 		var orderAttributeModel = getService('AttributeService').getAttributeModel().Order;
-		for(var attributeSetName in orderAttributeModel){
-			var attributeSet = orderAttributeModel[attributeSetName];
-			for(var attribute in attributeSet.attributes){
-				propertyList = listAppend(propertyList, attribute, ',');
+		if(!isNull(orderAttributeModel)){
+			for(var attributeSetName in orderAttributeModel){
+				var attributeSet = orderAttributeModel[attributeSetName];
+				for(var attribute in attributeSet.attributes){
+					propertyList = listAppend(propertyList, attribute, ',');
+				}
 			}
 		}
 		return propertyList;
