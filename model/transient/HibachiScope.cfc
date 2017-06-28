@@ -80,7 +80,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getCurrentRequestSite() {
 		var domain = listFirst(cgi.HTTP_HOST,':');
-		var urlArray = listToArray(listFirst(listFirst(cgi.HTTP_HOST,'/') '?'),'.'); 
+		var urlArray = listToArray(listFirst(listFirst(cgi.HTTP_HOST,'/'),'?'),'.'); 
 		var www = ''; 
 		var subdomain = ''; 
 		var domainName = ''; 
