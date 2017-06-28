@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			domain = domainName; 
 			//topLevelDomain will be absent for local sites
 			if(topLeveldomain != domainName){ 
-				domain &= topLevelDomain;
+				domain &= '.' & topLevelDomain;
 			} 	
  			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteBySubdomainNameAndDomainName(subdomain, domain);
  			if(!isNull(subdomainSite)){ 
