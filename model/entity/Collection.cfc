@@ -730,15 +730,41 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var ormtype = getOrmTypeByPropertyIdentifier(prop);
 						var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
 						var filterGroupIndex = 1;
-		
+						
 						for(var i=1; i <= arraylen(rangeValues);i++){
 							var rangeValue = rangeValues[i];
-							var filterData = {
-								propertyIdentifier=prop,
-								value=replace(rangeValue,'^','-'),
-								comparisonOperator='BETWEEN',
-								ormtype=ormtype
-							};
+							var rangeArray = rangeValue.split("^");
+							var rangeLen = 0;
+							if (isArray(rangeArray)){
+								rangeLen = arrayLen(rangeArray);
+							}
+							
+							if (rangeLen > 1){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^','-'),
+									comparisonOperator='BETWEEN',
+									ormtype=ormtype
+								};
+							}else if (rangeLen == 1 && left(rangeValue, 1) == "^"){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^',''),
+									comparisonOperator='<=',
+									ormtype=ormtype
+								};
+							}else if (rangeLen == 1 && right(rangeValue, 1) == "^"){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^',''),
+									comparisonOperator='>=',
+									ormtype=ormtype
+								};
+							}else{
+								//can't build because there is not enough range information.
+								return;
+							}
+							
 		
 							if(i > 1){
 								filterData.logicalOperator = 'OR';
