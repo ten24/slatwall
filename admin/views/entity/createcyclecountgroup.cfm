@@ -59,6 +59,8 @@ Notes:
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.cyclecountgroup#" property="cyclecountgroupname" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.cyclecountgroup#" property="frequencyToCount" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.cyclecountgroup#" property="daysInCycle" edit="true" />
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
