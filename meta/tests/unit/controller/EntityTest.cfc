@@ -218,7 +218,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		request.slatwallScope.getSession().setAccount(peasantyAccount);
 		
-		debug(request.slatwallScope.getAccount().getFirstName());
 		var rc = {
 			"slatAction"="entity.detailorder",
 			"orderID"=otherOrder.getOrderID(),
