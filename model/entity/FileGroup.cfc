@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="FileGroup" entityname="SlatwallFileGroup" persistent="true" cacheuse="transactional" hb_serviceName="fileService" hb_permission="this" table="SwFileGroup"{
+component displayname="FileGroup" entityname="SlatwallFileGroup" persistent="true" cacheuse="transactional" hb_serviceName="fileService" extends="HibachiEntity" hb_permission="this" table="SwFileGroup"{
 
 	// Persistent Properties
 	property name="fileGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
