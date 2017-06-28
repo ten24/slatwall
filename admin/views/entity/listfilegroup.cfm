@@ -50,48 +50,27 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.file" type="any">
-<cfparam name="rc.edit" type="boolean">
-<cfparam name="rc.baseObject" type="string">
-<cfparam name="rc.baseID" type="string">
+<cfparam name="rc.fileGroupSmartList" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#rc.baseObject#ID=#rc.baseID#">
 	
-		<hb:HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#"
-								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
-								   cancelQueryString="#rc.baseObject#ID=#rc.baseID#"
-								   backAction="#request.context.entityActionDetails.sRedirectAction#"
-								   backQueryString="#rc.baseObject#ID=#rc.baseID#" />
-		
-		<cfif rc.file.isNew()>
-			<input type="hidden" name="baseObject" value="#rc.baseObject#" />
-			<input type="hidden" name="baseID" value="#rc.baseID#" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.fileGroupSmartList#" showCreate="false">
 			
-			<input type="hidden" name="fileRelationships[1].fileRelationshipID" value="" />
-			<input type="hidden" name="fileRelationships[1].baseObject" value="#rc.baseObject#" />
-			<input type="hidden" name="fileRelationships[1].baseID" value="#rc.baseID#" />
-		</cfif>
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createfilegroup" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.fileGroupSmartList#"
+							   recordDetailAction="admin:entity.detailfilegroup"
+							   recordEditAction="admin:entity.editfilegroup"
+							   >
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="col-md-12">
-				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
-				<cfif not rc.file.getNewFlag()>
-					<hb:HibachiPropertyDisplay object="#rc.file#" property="urlTitle" edit="#rc.edit#">
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileGroup" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.file#">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.file.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.file#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fileGroupName" />
+		<hb:HibachiListingColumn propertyIdentifier="fileGroupCode" />
+		<hb:HibachiListingColumn propertyIdentifier="fileGroupDescription" />
+		<hb:HibachiListingColumn propertyIdentifier="fileRestrictAccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="fileTrackAccessFlag" />
+	</hb:HibachiListingDisplay>
 </cfoutput>
-
