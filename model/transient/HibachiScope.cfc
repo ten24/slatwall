@@ -96,7 +96,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				subdomain = urlArray[2]; 
 				domainName = urlArray[3]; 
 			}   
-		} else if(arrayLen(urlArray) == 3){ 
+		} else { 
 			//subdomain.domainname.com
 			subdomain = urlArray[1]; 	
 			domainName = urlArray[2]; 
