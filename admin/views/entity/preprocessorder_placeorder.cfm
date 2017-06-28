@@ -115,7 +115,7 @@ Notes:
 						<input type="hidden" name="newOrderPayment.order.orderID" value="#rc.order.getOrderID()#" />
 
 						<!--- Display the amount that is going to be used --->
-						<cfset amountToChargeDisplay = $.slatwall.formatValue(rc.order.getAddPaymentRequirementDetails().amount, 'currency', {currencyCode=rc.order.getCurrencyCode()}) />
+						<cfset amountToChargeDisplay = $.slatwall.formatValue(rc.order.getOrderPaymentChargeAmountNeeded(), 'currency', {currencyCode=rc.order.getCurrencyCode()}) />
 						<cfif rc.placeOrderNeedsFulfillmentCharge>
 							<cfset amountToChargeDisplay &= " + #$.slatwall.rbKey('entity.orderFulfillment.fulfillmentCharge')#" />
 						</cfif>

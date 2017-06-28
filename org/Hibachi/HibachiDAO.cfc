@@ -88,6 +88,10 @@
 
 			return ormExecuteQuery("SELECT count(*) FROM #arguments.entityName#",true);
 		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			return getService('HibachiService').getTableNameByEntityName(arguments.entityName);
+		}
 
 
 		public void function reloadEntity(required any entity) {
@@ -327,7 +331,14 @@
 							#arguments.tableName#
 						SET
 							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-								<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+ 								<cfif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
+										arguments.updateData[ listGetAt(keyList, i)].value eq true>
+ 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="1">
+ 								<cfelseif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
+										arguments.updateData[ listGetAt(keyList, i)].value eq false>
+
+ 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="0">
+ 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 								<cfelse>
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">

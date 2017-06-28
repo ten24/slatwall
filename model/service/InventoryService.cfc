@@ -141,7 +141,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return createInventoryDataStruct( getInventoryDAO().getQOH(argumentCollection=arguments), "QOH" );
 	}
 	
-	// Quantity On Sales Hold
+	// Quantity On Stock Hold
 	public struct function getQOSH(string productID, string productRemoteID) {
 		return {skus={},stocks={},locations={},QOSH=0};
 		//return createInventoryDataStruct( getInventoryDAO().getQOSH(argumentCollection=arguments), "QOSH" );

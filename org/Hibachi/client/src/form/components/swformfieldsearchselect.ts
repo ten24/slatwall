@@ -4,35 +4,27 @@
 class SWFormFieldSearchSelect{
 	public static Factory(){
 		var directive = (
-			$http,
 			$log,
 			$hibachi,
-			formService,
 			coreFormPartialsPath,
 			hibachiPathBuilder
 		)=>new SWFormFieldSearchSelect(
-			$http,
 			$log,
 			$hibachi,
-			formService,
 			coreFormPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$http',
 			'$log',
 			'$hibachi',
-			'formService',
 			'coreFormPartialsPath',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$http,
 		$log,
 		$hibachi,
-		formService,
 		coreFormPartialsPath,
 		hibachiPathBuilder
 	){

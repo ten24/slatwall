@@ -323,7 +323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		switch(arguments.priceGroupRate.getAmountType()) {
 			case "percentageOff" :
-				var newPrice = getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPrice() - (arguments.sku.getPrice() * (arguments.priceGroupRate.getAmount() / 100)));
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPrice() - (arguments.sku.getPrice() * (arguments.priceGroupRate.getAmount() / 100))));
 
 				// If a rounding rule is in place for this rate, take this newly formated price and apply the rounding rule to it
 				if(!isNull(arguments.priceGroupRate.getRoundingRule())) {
@@ -331,7 +331,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				break;
 			case "amountOff" :
-				var newPrice = getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPrice() - arguments.priceGroupRate.getAmount());
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPrice() - arguments.priceGroupRate.getAmount()));
 				break;
 			case "amount" :
 				var newPrice = arguments.priceGroupRate.getAmount();
@@ -349,7 +349,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		switch(arguments.priceGroupRate.getAmountType()) {
 			case "percentageOff" :
-				var newPrice = getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - (arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) * (arguments.priceGroupRate.getAmount() / 100)));
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - (arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) * (arguments.priceGroupRate.getAmount() / 100))));
 
 				// If a rounding rule is in place for this rate, take this newly formated price and apply the rounding rule to it
 				if(!isNull(arguments.priceGroupRate.getRoundingRule())) {
@@ -357,7 +357,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				break;
 			case "amountOff" :
-				var newPrice = getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - arguments.priceGroupRate.getAmountByCurrencyCode(arguments.currencyCode));
+				var newPrice = val(getService('HibachiUtilityService').precisionCalculate(arguments.sku.getPriceByCurrencyCode(arguments.currencyCode) - arguments.priceGroupRate.getAmountByCurrencyCode(arguments.currencyCode)));
 				break;
 			case "amount" :
 				var newPrice = arguments.priceGroupRate.getAmountByCurrencyCode(arguments.currencyCode);

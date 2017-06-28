@@ -40,10 +40,10 @@ class SWAddressFormController {
 		if (!angular.isDefined(this.action)){
 			this.action="addAddress";
 		}
-		
+
 		if (this.action.indexOf(":") != -1 && this.action.indexOf(this.param) == -1){
 			this.action = this.param + this.action;
-			console.log("setting action", this.action);
+
 		}
 		return this.action;
 	}
@@ -55,10 +55,10 @@ class SWAddressFormController {
 		return false;
 	}
 
-}
+} 
 
 class SWAddressForm implements ng.IComponentOptions {
-    
+
     public templateUrl:string = "";
     public bindings:any;
     public controller:any=SWAddressFormController;

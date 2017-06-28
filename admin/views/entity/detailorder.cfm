@@ -131,7 +131,7 @@ Notes:
 
 			<!--- Referencing Orders --->
 			<cfif rc.order.getReferencingOrdersCount()>
-				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/referencingOrders" count="#rc.order.getReferencingOrdersCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/referencingorders" count="#rc.order.getReferencingOrdersCount()#" />
 			</cfif>
 
 			<!--- Account Details --->

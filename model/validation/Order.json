@@ -1,10 +1,16 @@
 {
+	"conditions":{
+		"isNotTestOrder":{
+			"testOrderFlag":{"neq":true}
+		}
+	},
 	"properties":{
 		"account":							[{"contexts":"addOrderPayment,placeOrder","required":true}],
 		"orderType":						[{"contexts":"save","required":true}],
 		"orderStatusType":					[{"contexts":"save","required":true}],
 		"statusCode":						[
-		    									{"contexts":"placeOrder,delete","inList":"ostNotPlaced"},
+		    									{"contexts":"placeOrder","inList":"ostNotPlaced"},
+												{"conditions":"isNotTestOrder","contexts":"delete","inList":"ostNotPlaced"},
 												{"contexts":"addSaleOrderItem,addOrderPayment,addPromotionCode,updateStatus","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"cancelOrder,closeOrder","inList":"ostNew,ostProcessing,ostOnHold"},
 												{"contexts":"createReturn","inList":"ostNew,ostProcessing,ostOnHold,ostClosed"},
@@ -14,10 +20,10 @@
 		],
 		"quantityDelivered":				[
 												{"contexts":"cancelOrder","maxValue":0},
-												{"contexts":"createReturn","minValue":1}   
+												{"contexts":"createReturn","minValue":1}
 		],
 		"quantityReceived":					[{"contexts":"cancelOrder","maxValue":0}],
-		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1}, 
+		"orderItems":						[{"contexts":"placeOrder,addOrderPayment","minCollection":1},
                                              {"contexts":"cancelOrder", "method":"canCancel"}]
 	},
 	"populatedPropertyValidation":{

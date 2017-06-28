@@ -62,6 +62,34 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="password";
 	property name="passwordConfirm";
 	property name="accessID";
+	property name="organizationFlag" hb_formFieldType="yesno" default=0;
+	property name="parentAccountID";
+	property name="childAccountID";
+	
+	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
+	property name="childAccount" cfc="account" fieldtype="many-to-one";
+	
+	public any function getParentAccount(){
+		if(!structKeyExists(variables,'parentAccount')){
+			if(!isNull(getParentAccountID())){
+				variables.parentAccount = getService('accountService').getAccount(getParentAccountID());	
+			}else{
+				return;
+			}
+		}
+		return variables.parentAccount;
+	}
+	
+	public any function getChildAccount(){
+		if(!structKeyExists(variables,'childAccount')){
+			if(!isNull(getChildAccountID())){
+				variables.childAccount = getService('accountService').getAccount(getChildAccountID());	
+			}else{
+				return;
+			}
+		}
+		return variables.childAccount;
+	}
 	
 	public boolean function getCreateAuthenticationFlag() {
 		if(!structKeyExists(variables, "createAuthenticationFlag")) {

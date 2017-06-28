@@ -49,6 +49,7 @@ Notes:
 <cfparam name="attributes.site" type="any" default="#request.context.fw.getHibachiScope().getSite()#"/>
 <cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfif thisTag.executionMode is "start">
+	
 	<cfset recatchaSiteKey = ""/>
 	
 	<cfif !isNull(attributes.site)>
@@ -58,6 +59,20 @@ Notes:
 	</cfif>
 	
 	<cfoutput>
-		<div class="g-recaptcha" data-sitekey="#recaptchaSiteKey#"></div>
+		<cfset recaptchaID = reReplace(createUUID(),'-','','all')/>
+		<script>
+			$(document).ready(function(){
+				if($('###recaptchaID#').closest('form').find('input[type="submit"]'))
+				$('###recaptchaID#').closest('form').find('input[type="submit"]')[0].disabled = true;
+			});
+			
+			function enableBtn#recaptchaID#(recaptchaID){
+				if($('###recaptchaID#').closest('form').find('input[type="submit"]'))
+		    	$('###recaptchaID#').closest('form').find('input[type="submit"]')[0].disabled = false;
+		    }
+
+			
+		</script>
+		<div id="#recaptchaID#" class="g-recaptcha" data-sitekey="#recaptchaSiteKey#" data-callback="enableBtn#recaptchaID#"></div>
 	</cfoutput>
 </cfif>

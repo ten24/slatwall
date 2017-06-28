@@ -2,14 +2,20 @@
 
 # Functions for increasing the version number
 function format3Digit( ) {
-  if [ ${#micro} = 1 ]
+  if [ ${#micro} = 0 ]
+    then
+      micro=000
+  elif [ ${#micro} = 1 ]
     then
       micro=00$micro
   elif [ ${#micro} = 2 ]
     then
       micro=0$micro
   fi
-  if [ ${#build} = 1 ]
+  if [ ${#build} = 0 ]
+    then
+      build=000
+  elif [ ${#build} = 1 ]
     then
       build=00$build
   elif [ ${#build} = 2 ]

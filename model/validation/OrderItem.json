@@ -1,11 +1,16 @@
 {
+	"conditions":{
+	   "shouldValidateQuantity":{
+			"quantityHasChangedOrOrderNotPlaced":{"eq":true}
+		}
+	},
 	"properties":{
 		"orderItemGiftRecipients":   [{"contexts":"addRecipientsToOrderItem","method":"hasUnassignedGiftCards"}],
 		"orderItemType":			[{"contexts":"save","required":true}],
 		"orderItemStatusType":		[{"contexts":"save","required":true}],
 		"orderStatusCode":			[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],
 		"sku":						[{"contexts":"save","required":true}],
-		"quantity":					[{"contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"contexts":"save","method":"hasQuantityWithinMinOrderQuantity"}],
+		"quantity":					[{"conditions":"shouldValidateQuantity","contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"conditions":"shouldValidateQuantity","contexts":"save","dataType":"numeric","method":"hasQuantityWithinMinOrderQuantity"}],
 		"quantityDelivered":		[{"contexts":"delete", "eq":0}]
 	}
 }

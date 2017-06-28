@@ -11,8 +11,7 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService,
-                $timeout
+            dialogService
 		)=> new SWWorkflowTriggers(
 			$hibachi,
 			workflowPartialsPath,
@@ -21,8 +20,7 @@ class SWWorkflowTriggers{
 			hibachiPathBuilder,
             collectionConfigService,
             scheduleService,
-            dialogService,
-            $timeout
+            dialogService
 		);
 		directive.$inject = [
 			'$hibachi',
@@ -32,8 +30,7 @@ class SWWorkflowTriggers{
 			'hibachiPathBuilder',
             'collectionConfigService',
             'scheduleService',
-            'dialogService',
-            '$timeout'
+            'dialogService'
 		];
 		return directive;
 	}
@@ -45,8 +42,7 @@ class SWWorkflowTriggers{
         hibachiPathBuilder,
         collectionConfigService,
         scheduleService,
-        dialogService,
-        $timeout
+        dialogService
 	){
 		return {
 			restrict: 'E',
@@ -165,7 +161,7 @@ class SWWorkflowTriggers{
 				};
 
 				/**
-				 * Saves the workflow triggers.
+				 * Saves the workflow triggers then cascade a save to the workflow object as well.
 				 */
 				scope.saveWorkflowTrigger = function(context){
                     if(!scope.workflowTriggers.selectedTrigger.$$isPersisted()){
@@ -187,11 +183,13 @@ class SWWorkflowTriggers{
 
                             scope.workflowTriggers.selectedTrigger = undefined;
                         }
+                        //auto saves the workflow as well.
+                        scope.workflow.$$save();
 					});
 				};
 
                 scope.closeTrigger = function(){
-                    console.warn("workflow", scope.workflow);
+                    
                     if(!scope.workflowTriggers.selectedTrigger.$$isPersisted()){
                         scope.workflowTriggers.selectedTrigger.$$setWorkflow();
                     }

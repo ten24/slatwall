@@ -62,7 +62,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 	// BEFORE EACH TEST	
 	public void function setUp() {
 		variables.slatwallFW1Application.bootstrap();
-
+		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
 
 		// Setup a debugging output array
