@@ -102,8 +102,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			domainName = urlArray[2]; 
 		} 
 
-		if(len(subdomain) > 0){	
- 			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteByDomainNameAndSubdomainName(subdomain, domainName & topLevelDomain);
+		if(len(subdomain) > 0){
+			domain = domainName; 
+			//topLevelDomain will be absent for local sites
+			if(topLeveldomain != domainName){ 
+				domain &= topLevelDomain;
+			} 	
+ 			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteByDomainNameAndSubdomainName(subdomain, domain);
  			if(!isNull(subdomainSite)){ 
  				return subdomainSite; 
  			}	
