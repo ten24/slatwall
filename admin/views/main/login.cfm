@@ -119,11 +119,13 @@ Notes:
 						<cfelse>
 							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />
 							<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" fieldAttributes="autocomplete='off' placeholder='Password' required" />
+							<hb:HibachiErrorDisplay object="#authorizeProcessObject#" errorName="authenticationCode" />
+							<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>
 						</cfif>
-						<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>
+				
 						<button type="submit" class="btn btn-lg btn-primary">#$.slatwall.rbKey('define.login')#</button>
 					</form>
-
+					
 					<!--- FORGOT PASSWORD --->
 					<cfset forgotPasswordProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("forgotPassword") />
 					<form class="s-form-signin" action="?s=1"  method="post" id="j-forgot-password-wrapper" novalidate="novalidate">

@@ -1,4 +1,4 @@
-﻿/*
+﻿<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,52 +45,39 @@
 
 Notes:
 
-*/
-component extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.account" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.editaccount">
 	
-	property name="adminNavbarHTML";
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
+	</hb:HibachiEntityActionBar>
 	
-	public string function getIntegrationTypes() {
-		return "custom,fw1,app,2fa";
-	}
+	<hb:HibachiFormField fieldName="totpSecretKey" value="#rc.processObject.getTotpSecretKey()#" fieldType="hidden" />
 	
-	public string function getDisplayName() {
-		return "Google Authenticator";
-	}
+	<p>#$.slatwall.rbKey('admin.entity.preprocessaccount_addtwofactorauthentication.app_installation_instructions')#</p>
 	
-	public struct function getSettings() {
-		return {};
-	}
+	<!--- Display QR Code --->
+	<style>
+		##qrcode img { margin: auto; }
+	</style>
+	<div id="qrcode" class="text-center"></div>
+    <script>new QRCode(document.getElementById('qrcode'), {text: "#rc.processObject.getOtpUri()#", width: 160, height: 160});</script>
+	<hr>
 	
-	public string function getAdminNavbarHTML() {
-		return 'a href="">What is this?</a>';
-	}
+	<!--- Display secret code for manual configuration --->
+	<p class="text-center">#$.slatwall.rbKey('admin.entity.preprocessaccount_addtwofactorauthentication.manual_configuration')#<br>
+	#rc.processObject.getTotpSecretKey()#</p>
+	<hr>
 	
-	public array function getEventHandlers() {
-		//getIntegrationService().getIntegrationByIntegrationPackage("mailchimp").getIntegrationCFC();
-		
-		/*
-		var eventHandlers = ["Slatwall.integrationServices.slatwallcms.model.handler.SlatwallCMSHandler"];
-		//get all cms sites
-		var sitesSmartList = getHibachiScope().getService('siteService').getSiteSmartList();
-		sitesSmartList.addFilter('app.integration.integrationPackage','slatwallcms');
-		var sites = sitesSmartList.getRecords();
-		//use sites to register handlers
-		for(var site in sites){
-			var siteComponentPath = "#getApplicationValue('applicationKey')#.custom.apps.#site.getApp().getAppCode()#.#site.getSiteCode()#.model.handler";
-			var eventHandlerPath = site.getSitePath()&'/model/handler';
-			if(directoryExists(eventHandlerPath)) {
-				var dirList = directoryList(eventHandlerPath);
-				for(var h=1; h<=arrayLen(dirList); h++) {
-					if(listLast(dirList[h], '.') eq 'cfc') {
-						arrayAppend(eventHandlers,"#siteComponentPath#.#listFirst(listLast(dirList[h], '/\'), '.')#");
-					}
-				}
-			}
-		}
-		return eventHandlers;
-		
-		*/
-		return [];
-	}
-}
+	<!--- Confirmation instructions --->
+	<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationCode" edit="#rc.edit#" fieldAttributes="placeholder='#$.slatwall.rbKey('entity.account.authenticationCode_confirm_placeholder')#'">
+</hb:HibachiEntityProcessForm>
+</cfoutput>

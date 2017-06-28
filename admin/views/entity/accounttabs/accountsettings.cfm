@@ -58,7 +58,6 @@ Notes:
 		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" settingObject="#rc.account#" />
 		<swa:SlatwallSetting settingName="accountPaymentTerm" settingObject="#rc.account#" />
 		<swa:SlatwallSetting settingName="accountTermCreditLimit" settingObject="#rc.account#" />
-		<swa:SlatwallSetting settingName="accountUseTwoFactorAuthenticationFlag" settingObject="#rc.account#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

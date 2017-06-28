@@ -197,30 +197,17 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	/**
-		@return generated key to be encoded as a QR code
+		@return generated key that can also be encoded as a QR code
 	*/
 	public string function generateTOTPSecretKey(required string seed) {
+		// Random salt is automatically generated for seed
 		return getTotpAuthenticator().generateKey(arguments.seed);
 	}
 	
 	public boolean function verifyTOTPToken(required string secretKey, required string tokenValue) {
-		// TODO-TH Remove debug code
-		return arguments.tokenValue == "111222" || getTotpAuthenticator().verifyGoogleToken(arguments.secretKey, arguments.tokenValue);
+		// Uses grace parameter of 1 so previous token and current token are valid
+		return getTotpAuthenticator().verifyGoogleToken(arguments.secretKey, arguments.tokenValue, 1);
 	}
-	
-	/**
-    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
-    * Resources: 
-    * 	https://github.com/google/google-authenticator/wiki/Conflicting-Accounts
-    * 	https://github.com/google/google-authenticator/wiki/Key-Uri-Format
-    *
-    * @param email the email address of the user account
-    * @param key the Base32 encoded secret key to use in the code
-    */
-    public string function buildOTPUri(required string email, required string secretKey)
-    {
-        return 'otpauth://totp/Slatwall:#arguments.email#?secret=#arguments.secretKey#&issuer=Slatwall';
-    }
 	
 	public boolean function isInternalRequest(){
 		//domain contains http://domain/ so parse it

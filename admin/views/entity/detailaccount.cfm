@@ -97,7 +97,6 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/parentaccounts" count="#rc.account.getParentAccountRelationShipsSmartList().getRecordsCount()#"/>
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/childaccounts" count="#rc.account.getChildAccountRelationShipsSmartList().getRecordsCount()#"/>
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings"/>
-			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/twofactorauthentication"/>
 			
 
 			<!--- Custom Attributes --->

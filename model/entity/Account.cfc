@@ -137,6 +137,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="slatwallAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
+	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
@@ -328,6 +329,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		termAccountAvailableCredit = val(precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance()));
 
 		return termAccountAvailableCredit;
+	}
+	
+	public string function getTwoFactorAuthenticationFlag() {
+		return !isNull(getTotpSecretKey()) && len(getTotpSecretKey());
 	}
 	
 	public numeric function getOrderPaymentAmount(){

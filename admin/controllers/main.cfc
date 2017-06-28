@@ -241,34 +241,38 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		// 2. With two-factor authentication "rc" contains the emailAddress and password during the first request
 		//    and during the second request it contains the authenticationCode in order to continue with the login process.
 		//    We do not want to be resending password data back to the client to only to have it repopulated in the "rc" 
-		//    so the emailAddress and password should be set and retained the session to be retrieved during the second request
+		//    so the emailAddress and password should be set and retained the session to be retrieved during the second request		
+		// If there is a simpler alternative to achieve preserving login data between multiple requests without persisting to database it should be implemented here
 		
-		// Populate rc with data from last login attempt
-		if (rc.$.slatwall.hasSessionValue('lastLoginAttemptData')) {
-			structAppend(arguments.rc, rc.$.slatwall.getSessionValue('lastLoginAttemptData'));
-			rc.$.slatwall.clearSessionValue('lastLoginAttemptData');
+		// If required, populate rc with preserved data saved during last login attempt
+		if (rc.$.slatwall.hasSessionValue('preservedLoginData')) {
+			structAppend(arguments.rc, rc.$.slatwall.getSessionValue('preservedLoginData'));
+			rc.$.slatwall.clearSessionValue('preservedLoginData');
 		}
 		
-		// TODO-TH refactor
-		// We can avoid a try/catch if we instead first check the accountAuthentication.getAccount().setting('accountUseTwoFactorAuthenticationFlag')
-		// Probably have less unintended consequences dealing with clearing errors on the account and account_login process objects
-		// Use redirect with preserveKeys?
-		try {
+		// Login without two-factor authentication
+		if (!getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddress)) {
 			getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
-		// Two Factor Authentication Required
-		} catch (accountAuthenticationCode e) {
-			var lastLoginAttemptData = {
-				'emailAddress' = rc.emailAddress,
-				'password' = rc.password
-			};
-			
-			// Preserve data from last login attempt
-			rc.$.slatwall.setSessionValue('lastLoginAttemptData', lastLoginAttemptData);
-			
-			// Clear errors and proceed with next attempt for authentication code verification
-			rc.$.slatwall.getAccount().clearProcessObject("login");
-			rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
-			rc.twoFactorAuthenticationRequiredFlag = true;
+		// Login with two-factor authentication
+		} else if (getAccountService().verifyTwoFactorAuthenticationRequiredByEmail(emailAddress=rc.emailAddress)) {
+			// Preserve login data and defer login process request
+			if (!structKeyExists(rc, "authenticationCode")) {
+				var preservedLoginData = {
+				emailAddress = rc.emailAddress,
+				password = rc.password
+				};
+				
+				// Preserve data from last login attempt
+				rc.$.slatwall.setSessionValue('preservedLoginData', preservedLoginData);
+				
+				// Clear errors and proceed with next attempt for authentication code verification
+				rc.$.slatwall.getAccount().clearProcessObject("login");
+				rc.$.slatwall.getAccount().getHibachiErrors().setErrors(structNew());
+				rc.twoFactorAuthenticationRequiredFlag = true;
+			// Process login with all required data
+			} else {
+				getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
+			}
 		}
 		
 		if(getHibachiScope().getLoggedInFlag()) {
