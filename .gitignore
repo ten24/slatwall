@@ -4,7 +4,7 @@
 *.zip
 *.lic
 *.pfx
-custom
+#custom/
 _notes/
 aspnet_client/
 settings.xml
