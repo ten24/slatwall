@@ -250,8 +250,8 @@ component  extends="HibachiService" accessors="true" {
 			createDefaultContentPages(arguments.site);
 		}
 		if(!arguments.createTemplates){
-			DirectoryDelete(arguments.site.getSitePath()&'templates',true); 
-			DirectoryDelete(arguments.site.getSitePath()&'tags',true); 
+			DirectoryDelete(arguments.site.getSitePath()&'templates/',true); 
+			DirectoryDelete(arguments.site.getSitePath()&'tags/',true); 
 		} 
 
 		// create 6 content nodes for this site, and map to the appropriate templates

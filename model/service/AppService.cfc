@@ -65,8 +65,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			copyContentExclusionList=".svn,.git"
 		);
 		if(!createAppTemplatesFlag){ 
-			directoryDelete(arguments.app.getAppPath() & '/templates',true);
-			directoryDelete(arguments.app.getAppPath() & '/tags',true);
+			directoryDelete(arguments.app.getAppPath() & '/templates/',true);
+			directoryDelete(arguments.app.getAppPath() & '/tags/',true);
 		}
 	}
 	
