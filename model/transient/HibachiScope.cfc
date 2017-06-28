@@ -80,13 +80,35 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getCurrentRequestSite() {
 		var domain = listFirst(cgi.HTTP_HOST,':');
-		var subdomain = listFirst(cgi.HTTP_HOST,'.'); 
-		if(subdomain != domain){	
- 			var subdomainSite = getService('siteService').getSiteBySubdomainName(subdomain);
+		var urlArray = listToArray(listFirst(listFirst(cgi.HTTP_HOST,'/') '?'),'.'); 
+		var www = ''; 
+		var subdomain = ''; 
+		var domainName = ''; 
+		var topLevelDomain = urlArray[arrayLen(urlArray)]; 
+		
+		if(lcase(urlArray[1]) == "www"){
+			www = 'www';	
+			if(arrayLen(urlArray) = 3){ 
+				//www.domainname.com
+				domainName = urlArray[2];	
+			} else if(arrayLen(urlArray) = 4){ 
+				//www.subdomain.domainname.com
+				subdomain = urlArray[2]; 
+				domainName = urlArray[3]; 
+			}   
+		} else if(arrayLen(urlArray) == 3{ 
+			//subdomain.domainname.com
+			subdomain = urlArray[1]; 	
+			domainName = urlArray[2]; 
+		} 
+
+		if(len(subdomain) > 0){	
+ 			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteByDomainNameAndSubdomainName(subdomain, domainName & topLevelDomain);
  			if(!isNull(subdomainSite)){ 
  				return subdomainSite; 
  			}	
- 		}	
+ 		}
+		
 		return getDAO('siteDAO').getSiteByDomainName(domain);
 	}
 

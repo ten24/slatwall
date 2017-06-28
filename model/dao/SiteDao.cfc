@@ -54,15 +54,30 @@ Notes:
 							where CONCAT(CONCAT(',',domainNames),',') 
 							like '%,#arguments.siteName#,%'
 							"
-		/>
+		/>	
 		
 		<cfreturn ORMExecuteQuery(
 			HQL,
 			{},
 			true
-		)/>
+		)/>	
 		
 	</cffunction>
+
+	<cffunction name="getSiteBySubdomainNameAndDomainName"
+				access="public"
+				returnType="void"> 
+		<cfargument name="subdomainName" type="string" required="true">		
+		<cfargument name="domainName" type="string" required="true">		
+		
+		<cfset var HQL = "	FROM SlatwallSite AS site 
+							WHERE CONCAT(CONCAT(',',domainNames),',')
+							LIKE '%,#arguments.siteName#,%' AND
+							subdomainName=#arguments.subdomainName#	
+							"
+		/>
+		<cfreturn ORMExecuteQuery(HQL,{},true)/>
+	</cffunction> 
 	
 </cfcomponent>
 
