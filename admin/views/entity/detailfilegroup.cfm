@@ -46,24 +46,31 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.content" type="any" />
+<cfparam name="rc.fileGroup" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<swa:SlatwallSettingTable>
-		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentEnableTrackingFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentTemplateFile" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds" settingObject="#rc.content#" />
-	</swa:SlatwallSettingTable>
+	<hb:HibachiEntityDetailForm object="#rc.fileGroup#" edit="#rc.edit#" enctype="multipart/form-data" >
+	
+		<hb:HibachiEntityActionBar type="detail" object="#rc.fileGroup#" edit="#rc.edit#"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   backAction="#request.context.entityActionDetails.sRedirectAction#"
+								   />
+		<hb:HibachiEntityDetailGroup object="#rc.fileGroup#">
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList divclass="col-md-12">
+					<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupCode" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupDescription" edit="#rc.edit#">
+					
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
+		</hb:HibachiEntityDetailGroup>
+		
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
+
