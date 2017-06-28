@@ -66,7 +66,7 @@ Notes:
 
 	<cffunction name="getSiteBySubdomainNameAndDomainName"
 				access="public"
-				returnType="void"> 
+				returnType="any"> 
 		<cfargument name="subdomainName" type="string" required="true">		
 		<cfargument name="domainName" type="string" required="true">		
 		
