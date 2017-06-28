@@ -648,11 +648,13 @@ component output="false" accessors="true" extends="HibachiController" {
 				arguments.rc["p:show"] = globalAPIPageShowLimit; 
 			}	
 		}
-        
+       
 		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
  		} 
         
+		arguments.rc.restRequestFlag = true;  
+
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
