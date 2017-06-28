@@ -56,6 +56,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="entityQueueType" ormType="string" hb_formatType="rbKey"; // dependent on the integration
 	property name="entityQueueDateTime" ormtype="timestamp";
 	property name="entityQueueData" ormtype="string" length="8000";
+	property name="logHistoryFlag" ormtype="boolean" default="0";
 
 	// Related Object Properties (many-to-one)
 	

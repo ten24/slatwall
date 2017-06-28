@@ -503,7 +503,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Content');
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
-			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "contents", "left");
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationValue('applicationKey')#AttributeSet", "contents", "left");
 
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";

@@ -6,7 +6,8 @@
 	    }
 	},
 	"properties":{
-		"startDateTime":			[{"contexts":"save","dataType":"date"}],
-		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}]
+		"startDateTime":	[{"contexts":"save","dataType":"date"}],
+		"endDateTime":		[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}],
+		"promotionPeriodID":[{"contexts":"delete","method":"getIsDeletableFlag"}]
 	}
 }

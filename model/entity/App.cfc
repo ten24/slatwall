@@ -78,7 +78,7 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 
 	public string function getAppPath(){
 		if(!structKeyExists(variables,'appPath')){
-			var appsPath = expandPath('/Slatwall/custom/apps');
+			var appsPath = expandPath('/#getDao('hibachiDao').getApplicationValue('applicationKey')#/custom/apps');
 			variables.appPath = appsPath & '/' & getAppCode();
 		}
 		return variables.appPath;

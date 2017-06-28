@@ -117,6 +117,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse(variables.service.getPropertyIsObjectByEntityNameAndPropertyIdentifier('sku','product.brand.brandID'));
 	}
 	
+	/**
+	* @test
+	*/
+	public void function transformArrayOfStructsToQueryTest(){
+		
+	}
+	
 //  need mock attribute data
 //	public void function getHasAttributeByEntityNameAndPropertyIdentifierTest(){
 //		assertTrue(variables.service.getHasAttributeByEntityNameAndPropertyIdentifier('SlatwallSku','product.asdf'));

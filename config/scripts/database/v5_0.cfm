@@ -52,6 +52,10 @@ Notes:
 
 <cftry>
 
+	<cfquery name="local.updateWorkflowTriggerTimeouts"> 
+		update SwWorkflowTrigger set timeout=90 where timeout is null
+	</cfquery> 
+
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - ">
 		<cfset local.scriptHasErrors = true />

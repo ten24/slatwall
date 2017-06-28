@@ -64,4 +64,77 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			assertTrue(!structKeyExists(defaultProperty,'FKCOLUMN'));
 		}
 	}
+
+	/**
+	* @test
+	*/
+	public void function getPropertyOptionsTest(){
+		var accountEmailAddress = request.slatwallScope.newEntity('AccountEmailAddress');
+		var collectionOptions = accountEmailAddress.getAccountEmailTypeOptions();
+		for(var i =1; i <= arraylen(collectionOptions); i++){
+			assert( structKeyExists(collectionOptions[i], 'name') && structKeyExists(collectionOptions[i], 'value'));
+		}
+	}
+
+	/**
+	* @test
+	**/
+	public void function getPropertyOptionsWithAdditionalProperties(){
+		var accountPaymentMethod = request.slatwallScope.newEntity('AccountPaymentMethod');
+		var collectionOptions = accountPaymentMethod.getPaymentMethodOptions();
+		for(var i =1; i <= arraylen(collectionOptions); i++){
+			assert( structKeyExists(collectionOptions[i], 'name'), 'Option Name not found!');
+			assert( structKeyExists(collectionOptions[i], 'value'), 'Option Name not found!');
+			if(i > 1){
+				assert( structKeyExists(collectionOptions[i], 'paymentmethodtype'), 'hb_optionsAdditionalProperties not found in the Option list!');
+			}
+		}
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function getPropertyCountTest(){
+
+		var productMock = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productDescription = 'My Description',
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID(),
+					activeFlag = 'false'
+				}
+			]
+		};
+
+		var product = createPersistedTestEntity('product', productMock);
+		assert( product.getSkusCount() == 5);
+
+	}
+
+
+
+
+
+
 }

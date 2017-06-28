@@ -645,8 +645,8 @@ class SWConditionCriteria{
 								scope.conditionOptions = getDateOptions();
 								scope.today = function() {
 									if (angular.isDefined(scope.selectedFilterProperty)) {
-										scope.selectedFilterProperty.criteriaRangeStart = new Date();
-										scope.selectedFilterProperty.criteriaRangeEnd = new Date();
+										scope.selectedFilterProperty.criteriaRangeStart = new Date().getTime();
+										scope.selectedFilterProperty.criteriaRangeEnd = new Date().getTime();
 									}
 								};
 
