@@ -253,12 +253,13 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-
+            
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
@@ -267,6 +268,7 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
+        
         return _propertyIdentifier;
     };
 

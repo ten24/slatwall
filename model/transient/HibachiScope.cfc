@@ -208,23 +208,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Product Collection List
-	public any function getProductCollectionList() {
-		if(!structKeyExists(variables, "productCollectionList")) {
-			variables.productCollectionList = getService("productService").getProductCollectionList(data=url);
-			variables.productCollectionList.setDistinct(true);
-			variables.productCollectionList.addFilter('activeFlag',1);
-			variables.productCollectionList.addFilter('publishedFlag',1);
-			variables.productCollectionList.addFilter('calculatedQATS','1','>');
+	public any function getProductCollectionList(boolean isNew=false) {
+		if(!structKeyExists(variables,'productCollectionList') || arguments.isNew){
+			var productCollectionList = getService("productService").getProductCollectionList(data=url);
+			productCollectionList.setDistinct(true);
+			productCollectionList.addFilter('activeFlag',1);
+			productCollectionList.addFilter('publishedFlag',1);
+			productCollectionList.addFilter('calculatedQATS','1','>');
 			if(
 				isBoolean(getContent().getProductListingPageFlag()) 
 				&& getContent().getProductListingPageFlag() 
 				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
 				&& getContent().setting('contentIncludeChildContentProductsFlag')
 			){
-				variables.productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
+				productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
-				variables.productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
+				productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
 			}
+			variables.productCollectionList = productCollectionList;
 		}
 		return variables.productCollectionList;
 	}
@@ -247,6 +248,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return cookie.printQueue;
 	}
 	
+	// Adds a PrintID to the print queue.
+	public string function addToPrintQueue(required string printID) {
+		var cookieData = cookie.printQueue;
+		var newPrintQueue = listAppend(cookieData, printID);
+		getService('HibachiTagService').cfCookie('printQueue', newPrintQueue);
+	}
+	
 	// Clear Email & Print
 	public void function clearPrintQueue() {
 		getService('HibachiTagService').cfCookie('printQueue','');
@@ -263,7 +271,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode";
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear, accountPaymentMethods.accountPaymentMethodName";
 	}
 	
 	public any function getAccountData(string propertyList) {

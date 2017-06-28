@@ -61,6 +61,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return false;
 	}
 	
+	/**
+	* @test
+	*/
+	public void function getCollectionReportTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName');
+		collectionEntity.addDisplayAggregate('firstName',"COUNT",'itemCount');
+		collectionEntity.addOrderBy('firstName');
+		
+		var pageRecords = collectionEntity.getPageRecords();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getLeafNodesOnlyTest(){
+		//TODO: setup up heirarchy with leaf nodes to assert
+		
+		var productTypeCollectionList = request.slatwallScope.getService('hibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setFilterByLeafNodesFlag(true);
+		debug(productTypeCollectionList.getHQL());
+		debug(productTypeCollectionList.getPageRecords());
+		
+		assert(productTypeCollectionList.getFilterByLeafNodesFlag());
+	}
+	
 	//test that if we trun enforce auth off but also aren't authenticated that only 1st level props are available
 	/**
 	* @test
@@ -304,6 +330,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		//make sure filter was removed
 		assertFalse(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
+	}
+	/**
+	* @test
+	*/
+	public void function displayPropertyAliasTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName|MyFirstName,lastName|MyLastName');
+
+		var collectionRecords = collectionEntity.getPageRecords();
+		assert( structKeyExists(collectionRecords[1], 'MyFirstName'));
+		assert( structKeyExists(collectionRecords[1], 'MyLastName'));
+
 	}
 	/**
 	* @test
@@ -1332,7 +1370,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "Account.firstName";
+		var propertyIdentifier = "firstName";
 		var aggregate = {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
@@ -1340,7 +1378,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
 		//addToDebug(aggregateHQL);
-		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
+		assertFalse(Compare("COUNT( firstName) as Account_firstName",trim(aggregateHQL)));
+	}
+	
+	/**
+	* @test
+	*/
+	
+	public void function getAggregateHQLTest_hasObject(){
+		makePublic(variables.entity,"getAggregateHQL");
+		var propertyIdentifier = "accountAuthentications";
+		var aggregate = {
+			aggregateFunction = "count",
+			aggregateAlias = "Account_accountAuthentications"
+		};
+		//addToDebug(lcase(replace(createUUID(),'-','')));
+		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		debug(aggregateHQL);
+		//addToDebug(aggregateHQL);
+		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}
 
 	/**
@@ -1483,6 +1539,79 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
+
+	}
+
+	/**
+	* @test
+	*/
+
+	public void function mergeParentCollectionFiltersTest(){
+
+
+		var uniqueSkuName = createUUID();
+
+		//Active product with 4 active skuls
+		var productWithActiveSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			skus = [
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = true
+				},
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = true
+				},
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = true
+				},
+				{
+					skuID = '',
+					skuName = uniqueSkuName,
+					skuCode = createUUID(),
+					activeFlag = false
+				},
+				{
+					skuID = '',
+					skuName = 'Other Name',
+					skuCode = createUUID(),
+					activeFlag = false
+				}
+			]
+		};
+
+		var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
+
+		//Create Parent Colleciton
+
+		var mySkuParentCollection = variables.entityService.getSkuCollectionList();
+		mySkuParentCollection.setDisplayProperties('skuID,skuName,skuCode,activeFlag');
+		mySkuParentCollection.addFilter('skuName',uniqueSkuName);
+		var pageRecords = mySkuParentCollection.getPageRecords();
+
+		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+		persistTestEntity(mySkuParentCollection, {});
+
+
+
+		//Create New collection
+		var mySkuCollection = variables.entityService.getSkuCollectionList();
+
+		mySkuCollection.setParentCollection(mySkuParentCollection);
+		mySkuCollection.setDisplayProperties('skuID,skuName,skuCode,activeFlag');
+		mySkuCollection.addFilter('activeFlag',false);
+		var pageRecords = mySkuCollection.getPageRecords();
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
 
@@ -3773,6 +3902,43 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		addToDebug(HQL);
 	}
+
+	public void function getRecordOptionsTest(){
+		var recordOptions = variables.entity.getRecordOptions();
+		assert(structKeyExists(recordOptions[1],'name') && structKeyExists(recordOptions[1],'value'));
+	}
+
+	public void function getMergeCollectionOptionsTest(){
+		variables.entity.setCollectionID(createUUID());
+
+		var accountCollectionData = {
+			collectionid = createUUID(),
+			collectionName = createUUID(),
+			collectionCode = 'account#createUUID()#',
+			collectionObject="Account",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccount",
+					"baseEntityAlias":"_account"
+
+				}
+			'
+		};
+
+		var accountCollection = createPersistedTestEntity('collection',accountCollectionData);
+
+		var mergeCollectionRecords = variables.entity.getMergeCollectionOptions();
+		assert(arrayLen(mergeCollectionRecords));
+		var foundAccountCollection = false;
+		for(var record in mergeCollectionRecords){
+			if(record.name == accountCollectionData.collectionName){
+				foundAccountCollection = true;
+			}
+			assert(record.value != variables.entity.getCollectionID());
+		}
+		assert(foundAccountCollection == true);
+
+	};
 
 	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user

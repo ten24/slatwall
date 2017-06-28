@@ -102,14 +102,14 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 		cycleCountGroupCollection.addFilter('stocks.inventory', 'NULL', 'IS NOT');
 
 		// Add selected locations filters
-		for(var location in this.getLocations()) {
-			cycleCountGroupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#location.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+		for(var locationEntity in this.getLocations()) {
+			cycleCountGroupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 		}
 
 		// Add selected skuCollections filters
 		for(var skuCollection in this.getSkuCollections()) {
 			var inList = '';
-			for(sku in skuCollection.getRecords()) {
+			for(var sku in skuCollection.getRecords()) {
 				inList = listAppend(inList, sku.skuID);
 			}
 			cycleCountGroupCollection.addFilter(propertyIdentifier='skuID', value='#inList#', comparisonOperator='IN', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
@@ -117,8 +117,8 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 
 		// Add selected skuCollections filters
 		for(var locationCollection in this.getLocationCollections()) {
-			for(location in locationCollection.getRecords()) {
-				cycleCountGroupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%location.locationID%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+			for(var locationEntity in locationCollection.getRecords()) {
+				cycleCountGroupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 			}
 		}
 		
