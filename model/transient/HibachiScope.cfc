@@ -88,15 +88,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		if(lcase(urlArray[1]) == "www"){
 			www = 'www';	
-			if(arrayLen(urlArray) = 3){ 
+			if(arrayLen(urlArray) == 3){ 
 				//www.domainname.com
 				domainName = urlArray[2];	
-			} else if(arrayLen(urlArray) = 4){ 
+			} else if(arrayLen(urlArray) == 4){ 
 				//www.subdomain.domainname.com
 				subdomain = urlArray[2]; 
 				domainName = urlArray[3]; 
 			}   
-		} else if(arrayLen(urlArray) == 3{ 
+		} else if(arrayLen(urlArray) == 3){ 
 			//subdomain.domainname.com
 			subdomain = urlArray[1]; 	
 			domainName = urlArray[2]; 
