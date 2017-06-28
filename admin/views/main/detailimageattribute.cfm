@@ -51,5 +51,5 @@ Notes:
 <cfset rc.attribute = $.slatwall.getService('AttributeService').getAttribute(rc.attributeID)/>
 <cfoutput>
 	<cfset imgURL = "#$.slatwall.getURLFromPath(rc.attribute.getAttributeValueUploadDirectory())##rc.value#" />
-	<img src="#imgURL#" style="position: absolute; width: 200px; height: 200px; top:40%; left:40%;"/>
+	<img src="#imgURL#" style="position: absolute; width: 300px; height: 300px; top:30%; left:37.5%;"/>
 </cfoutput>
