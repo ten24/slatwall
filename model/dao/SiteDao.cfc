@@ -72,7 +72,7 @@ Notes:
 		
 		<cfset var HQL = "	FROM SlatwallSite AS site 
 							WHERE CONCAT(CONCAT(',',domainNames),',')
-							LIKE '%,#arguments.siteName#,%' AND
+							LIKE '%,#arguments.domainName#,%' AND
 							subdomainName=#arguments.subdomainName#	
 							"
 		/>

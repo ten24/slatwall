@@ -109,7 +109,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			if(topLeveldomain != domainName){ 
 				domain &= topLevelDomain;
 			} 	
- 			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteByDomainNameAndSubdomainName(subdomain, domain);
+ 			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteBySubdomainNameAndDomainName(subdomain, domain);
  			if(!isNull(subdomainSite)){ 
  				return subdomainSite; 
  			}	
