@@ -425,6 +425,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 
+			if(arguments.order.isNew()){
+				this.saveOrder(arguments.order);
+			}
+
 			// Save the new order items
 			newOrderItem = this.saveOrderItem( newOrderItem );
 

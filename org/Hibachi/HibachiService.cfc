@@ -1022,6 +1022,11 @@
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
 		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			entityMetaData = getEntityMetaData( arguments.entityName );
+			return entityMetaData.table; 
+		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
 			var entityMetaData = getEntityMetaData( arguments.entityName );

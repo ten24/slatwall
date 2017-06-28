@@ -9,33 +9,43 @@
 	<cfoutput>
 		<!--- Generic Location Typeahead --->
 			<cfif !isNull(attributes.property)><!--- Only show if we have a default --->
-			<div ng-if="!#attributes.edit#" ng-cloak>
+			<div ng-show="'#attributes.edit#' == 'false'" ng-cloak>
 				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
 				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
 					#attributes.property.getLocationName()#
 				</div>
+				<cfif attributes.edit EQ 'false'>
+   					<input type="hidden" name="#attributes.locationPropertyName#" value="#attributes.property.getLocationID()#" />
+   				</cfif>
 			</div>
 			</cfif>
-			<div ng-if="#attributes.edit#" ng-cloak>
+			<div ng-show="'#attributes.edit#' == 'true'" ng-cloak>
 				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
 				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
 					<!--- Generic Configured Location --->
+					<cfif !isNull(attributes.property) && !isNull(attributes.property.getLocationID())>
+						<cfset initialEntityID = "#attributes.property.getLocationID()#">
+					</cfif>
+					<cfif isNull(initialEntityID)>
+						<cfset initialEntityID = "">
+					</cfif>
 					<sw-typeahead-input-field
 							data-entity-name="Location"
 					        data-property-to-save="locationID"
 					        data-property-to-show="locationName"
-					        data-properties-to-load="locationID,locationName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+					        data-properties-to-load="locationID,locationName,activeFlag"
 					        data-show-add-button="true"
 					        data-show-view-button="true"
 					        data-placeholder-rb-key="#attributes.rbKey#"
 					        data-multiselect-mode="false"
 					        data-filter-flag="true"
 					        data-selected-format-string="#attributes.selectedFormatString#"
-					        data-field-name="#attributes.locationPropertyName#">
+					        data-field-name="#attributes.locationPropertyName#"
+					        data-initial-entity-id="#initialEntityID#">
 					
 					    <sw-collection-config
 					            data-entity-name="Location"
@@ -43,14 +53,6 @@
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
 					
-							<sw-collection-columns>
-						        <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
-						        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
-						        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
-						        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
-						        <sw-collection-column data-property-identifier="locationName" data-is-searchable="true"></sw-collection-column>
-						        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
-						    </sw-collection-columns>
 							
 							<!--- Order By --->
 					    	<sw-collection-order-bys>
@@ -65,7 +67,6 @@
 					    	</cfif>
 					    </sw-collection-config>
 						
-						<i class="fa fa-map-marker icon-left fa-2x"></i>&nbsp;
 						<span sw-typeahead-search-line-item data-property-identifier="locationName"></span><br>
 						    	
 					</sw-typeahead-input-field>

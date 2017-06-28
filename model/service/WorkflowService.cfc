@@ -187,6 +187,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//get workflowTriggers Object
 			var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+			var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
 			//execute Collection and return only the IDs
 			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
 
@@ -194,7 +195,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
 				//get current ObjectID
 				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
-				var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
+				var currentObjectID = triggerCollectionResult[i][currentObjectPrimaryIDName];
 				var currentThreadName = "thread_#right(workflowTriggerID, 6)&i#";
 
 				thread action="run" name="#currentThreadName#" currentObjectName="#currentObjectName#" currentObjectID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#"{
