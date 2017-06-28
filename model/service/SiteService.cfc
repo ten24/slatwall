@@ -250,8 +250,14 @@ component  extends="HibachiService" accessors="true" {
 			createDefaultContentPages(arguments.site);
 		}
 		if(!arguments.createTemplates){
-			DirectoryDelete(arguments.site.getSitePath()&'templates/',true); 
-			DirectoryDelete(arguments.site.getSitePath()&'tags/',true); 
+			var siteTemplatesPath = arguments.site.getSitePath()&'templates/'; 
+			if(DirectoryExists(siteTemplatesPath)){ 
+				DirectoryDelete(siteTemplatesPath,true); 
+			}
+			var siteTagsPath = arguments.site.getSitePath()&'tags/'; 
+			if(DirectoryExists(siteTagsPath)){ 
+				DirectoryDelete(siteTagsPath,true); 
+			}
 		} 
 
 		// create 6 content nodes for this site, and map to the appropriate templates
