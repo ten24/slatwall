@@ -96,11 +96,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				subdomain = urlArray[2]; 
 				domainName = urlArray[3]; 
 			}   
-		} else { 
+		} else {
+			//domainName (local)  
 			//subdomain.domainname (local) 
 			//subdomain.domainname.com
-			subdomain = urlArray[1]; 	
-			domainName = urlArray[2]; 
+			if(arrayLen(urlArray) >= 2){
+				subdomain = urlArray[1]; 	
+				domainName = urlArray[2]; 
+			} else { 
+				domainName = urlArray[1]; 
+			}
 		} 
 
 		if(len(subdomain) > 0){
