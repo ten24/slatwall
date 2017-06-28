@@ -120,7 +120,7 @@ Notes:
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
 			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
-			<hb:HibachiActionCaller action="main.detailimageattribute" queryString="attributeID=#attribute.getAttributeID()#&value=#fdAttributes.value#" modal="true" icon="eye-open" />
+			<hb:HibachiActionCaller action="main.detailimageattribute" queryString="attributeID=#attribute.getAttributeID()#&value=#fdAttributes.value#" modal="true" icon="picture" />
 			
 
 	</cfloop>
