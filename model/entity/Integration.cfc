@@ -52,7 +52,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="installedFlag" ormtype="boolean";
-	property name="integrationPackage" ormtype="string" unique="true";
+	property name="integrationPackage" ormtype="string" unique="true" index="PI_INTEGRATIONPACKAGE";
 	property name="integrationName" ormtype="string";
 	property name="integrationTypeList" ormtype="string"; 
 	

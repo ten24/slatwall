@@ -11,7 +11,8 @@ class SWOrderItems{
 			formService,
 			orderItemPartialsPath,
 			slatwallPathBuilder,
-			paginationService
+			paginationService,
+			observerService
 		)=> new SWOrderItems(
 			$log,
 			$timeout,
@@ -21,7 +22,8 @@ class SWOrderItems{
 			formService,
 			orderItemPartialsPath,
 			slatwallPathBuilder,
-			paginationService
+			paginationService,
+			observerService
 		);
 		directive.$inject = [
 			'$log',
@@ -32,7 +34,8 @@ class SWOrderItems{
 			'formService',
 			'orderItemPartialsPath',
 			'slatwallPathBuilder',
-			'paginationService'
+			'paginationService',
+			'observerService'
 		];
 		return directive;
 	}
@@ -46,7 +49,8 @@ class SWOrderItems{
 		formService,
 		orderItemPartialsPath,
 		slatwallPathBuilder,
-		paginationService
+		paginationService,
+		observerService
 	){
 		return {
 			restrict: 'E',
@@ -209,6 +213,9 @@ class SWOrderItems{
                     scope.orderItems = undefined;
                     scope.getCollection();
                 });
+
+				observerService.attach(scope.getCollection,'swPaginationAction');
+
 			}//<--End link
 		};
 	}

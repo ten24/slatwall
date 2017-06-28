@@ -961,7 +961,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		return saleQuantity;
 	}
 	
-	/** returns the sum of all deposits required on the order. we can
+	/** returns the sum of all deposits required on the order with tax. we can
  	 *  tell if a deposit is required because a setting will indicate that they can pay a fraction
  	 *  of the whole. Returns the total deposit amount rounded to two decimal places IE. 3.495 becomes 3.50.
  	 */
@@ -972,7 +972,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  				if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 0){
  					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')) * getOrderItems()[i].getExtendedPrice()")) ;	
  				}else if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0){
- 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')/100) * getOrderItems()[i].getExtendedPrice() ")) ;
+ 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')/100) * (getOrderItems()[i].getExtendedPrice() + getOrderItems()[i].getTaxAmount()) ")) ;
  				}	
  			}
  		}

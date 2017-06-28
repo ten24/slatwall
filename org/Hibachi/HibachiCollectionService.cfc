@@ -666,6 +666,11 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
 		}
+
+		if(structKeyExists(arguments.data, "restRequestFlag") && arguments.data.restRequestFlag){
+			collectionEntity.applyData(); 
+ 		} 
+	
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -961,8 +966,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		if(!isNull(collectionEntity.getMergeCollection())){
 			var collectionData = getMergedCollectionData(collectionEntity, data);
-			var headers = getHeadersListByCollection(collectionEntity);
-			getHibachiService().export( collectionData, headers, headers, collectionEntity.getCollectionObject(), "csv" );
+			var headers1 = getHeadersListByCollection(collectionEntity);
+			var headers2 = getHeadersListByCollection(collectionEntity.getMergeCollection());
+			var mergedHeaders = ListRemoveDuplicates(listAppend(headers1, headers2));
+			getHibachiService().export( collectionData, mergedHeaders, mergedHeaders, collectionEntity.getCollectionObject(), "csv" );
 			return;
 		}
 		var exportCollectionConfigData = {};
