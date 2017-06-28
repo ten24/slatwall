@@ -92,7 +92,6 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
-	variables.framework.hibachi.sessionCookieSecure = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 

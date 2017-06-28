@@ -237,6 +237,20 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
+  		
+	  	/**
+	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
+	    * Resources: 
+	    * 	https://github.com/google/google-authenticator/wiki/Conflicting-Accounts
+	    * 	https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+	    *
+	    * @param email the email address of the user account
+	    * @param key the Base32 encoded secret key to use in the code
+	    */
+	    public string function buildOTPUri(required string email, required string secretKey)
+	    {
+	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
+	    }
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
@@ -549,6 +563,10 @@
 		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
+		}
+		
+		public string function getIdentityHashCode(required any value) {
+			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
 
 		public string function encryptValue(required string value, string salt="") {
