@@ -86,7 +86,10 @@ component entityname="SlatwallLocationConfiguration" table="SwLocationConfigurat
 			variables.locationTree="";
 			var locationOptions = this.getLocation().getLocationOptions();
 			if(arrayLen(locationOptions)){
-				variables.locationTree = listAppend(variables.locationTree, locationOptions[1]['name'], ",");	
+				if(structKeyExists(locationOptions[1],'name')){
+					
+					variables.locationTree = listAppend(variables.locationTree, locationOptions[1]['name'], ",");	
+				}
 			}
 		}
 		return variables.locationTree; 

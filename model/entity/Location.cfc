@@ -224,14 +224,15 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
-	
 	public void function preInsert(){
 		setLocationIDPath( buildIDPathList( "parentLocation" ) );
+		setCalculatedLocationPathName( getLocationPathName() );
 		super.preInsert();
 	}
 	
 	public void function preUpdate(struct oldData){
 		setLocationIDPath( buildIDPathList( "parentLocation" ) );
+		setCalculatedLocationPathName( getLocationPathName() );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	
