@@ -59,26 +59,22 @@ Notes:
 
 		<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
 		<cfoutput>#$.slatwall.renderJSObject( subsystem="public" )#</cfoutput>
-
-		<!--- Hides ng-cloaked elements until angular loads --->
 		<style>
 			[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 			  display: none !important;
 			}
 		</style>
-
 		<!--- Bootstrap and Fontawesome CDNs -- Replace with local file copies for production --->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-		<!--- This is necessary in order to build pages that use partial templates. Point the customPartialsPath and basePartialsPath as appropriate. --->
+		<!---<script src='https://www.google.com/recaptcha/api.js'></script>--->
 		<cfoutput>
 			<script>
 		        var hibachiConfig = {
 		            action:'slatAction'
 					,basePartialsPath: '/org/Hibachi/client/src/'
-					,customPartialsPath:'/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/angularcore/'
+					,customPartialsPath:'/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/partials/'
 		        };
 		    </script>
 	    </cfoutput>

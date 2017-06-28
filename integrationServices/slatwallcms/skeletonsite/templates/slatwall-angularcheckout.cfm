@@ -77,6 +77,7 @@
 						<div class="col-sm-12">
 							<div class="alert alert-success" ng-if="slatwall.hasSuccessfulAction('addOrderPayment')">Successfully added order payment.</div>
 							<div class="alert alert-success" ng-if="slatwall.hasSuccessfulAction('removeOrderPayment')">Successfully removed order payment.</div>
+							<swf-directive partial-name="ordererrors"></swf-directive>
 							<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			                    <div class="panel radio panel-default" ng-cloak>
 			                        <div class="panel-heading" role="tab" id="headingOne">
@@ -91,7 +92,6 @@
 											<div class="row">
 												<div class="col-md-12">
 													<!--- Credit card --->
-													<swf-directive partial-name="ordererrors"></swf-directive>
 													<swf-directive partial-name="orderpaymentpartial"></swf-directive>
 												</div>
 											</div>
