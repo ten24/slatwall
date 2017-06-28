@@ -55,6 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getAccessToContentDetails( required any account, required any content ) {
 		
+		//if content.getEntityName() == "SwFile"...
 		// Setup the return struct
 		var accessDetails = {
 			accessFlag = false,
@@ -62,7 +63,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			purchasedAccessFlag = false,
 			subscribedAccessFlag = false,
 			subscribedByContentFlag = false,
-			subscribedByCategoryFlag = false
+			subscribedByCategoryFlag = false,
+			trackAccessFlag = false
 		};
 		var dataIfNotCached = {
 			settingName="contentRestrictAccessFlag",
@@ -80,8 +82,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Check the content's setting to determine if access is restriced
 		if( !content.setting('contentRestrictAccessFlag') ) {
 			accessDetails.accessFlag = true;
+			accessDetails.trackAccessFlag = true; //if secure, then track access by default.
 			accessDetails.nonRestrictedFlag = true;
 			return accessDetails;
+		}
+		
+		// Check the content's setting to determine if access is to be tracked so track even if not secure.
+		if( content.setting('contentTrackAccessFlag') ) {
+			accessDetails.trackAccessFlag = true;
 		}
 		
 		// Get the details of if this content requires a purchase or subscription (or both)
@@ -101,7 +109,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!requireSubscriptionSettingDetails.settingValue) {
 				
 				accessDetails.accessFlag = true;
-				
+				if (accessDetails.trackAccessFlag)
 				logAccess(content=arguments.content, accountContentAccess=accountContentAccessSmartList.getRecords()[1]);
 				
 				return accessDetails;

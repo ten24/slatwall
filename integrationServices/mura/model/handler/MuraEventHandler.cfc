@@ -420,7 +420,7 @@
 				}
 			}
 			
-			
+			//If this is a content node, then get content access details. 
 			var accessToContentDetails = $.slatwall.getService("accessService").getAccessToContentDetails( $.slatwall.getAccount(), $.slatwall.getContent() );
 			
 			// Pass all of the accessDetails into the slatwallScope to be used by templates
