@@ -50,11 +50,14 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	
 	// Persistent Properties
 	property name="accountRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	
+	property name="activeFlag" ormtype="boolean";
+	property name="approvalFlag" ormtype="boolean" default="0";
 	// Related Object Properties (Many-To-One)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
-	property name="relatedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="relatedAccountID" hb_optionsNullRBKey="define.select";
-	property name="relationshipType" cfc="Type" fieldtype="many-to-one" fkcolumn="relationshipTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=relationshipType";
+	
+	property name="parentAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="parentAccountID";
+	property name="childAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="childAccountID";
+	property name="accountRelationshipRole" cfc="AccountRelationshipRole" fieldtype="many-to-one" fkcolumn="accountRelationshipRoleID";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -62,7 +65,27 @@ component displayname="Account Relationship" entityname="SlatwallAccountRelation
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	// ============ START: DEPRECATED Property Methods =================
+	
+	/*DEPRECATED will be removed in the following version. Currently not in use in core*/
+	property name="relatedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="relatedAccountID" hb_optionsNullRBKey="define.select";
+	/*DEPRECATED will be removed in the following version. Currently not in use in core*/
+	property name="relationshipType" cfc="Type" fieldtype="many-to-one" fkcolumn="relationshipTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=relationshipType";
+	
+	// ============ END: DEPRECATED Property Methods =================
+	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getSimpleRepresentation(){
+		var simpleRepresentation = "";
+		if(!isNull(getParentAccount()) && !isNull(getChildAccount())){
+			simpleRepresentation = getParentAccount().getSimpleRepresentation() &  ' > ' & getChildAccount().getSimpleRepresentation();
+			if(!isNull(getAccountRelationShipRole()) && !isNull(getAccountRelationShipRole().getAccountRelationshipRoleName())){
+				simpleRepresentation &= ' ( #getAccountRelationShipRole().getAccountRelationshipRoleName()# )';
+			}
+		}
+		return simpleRepresentation;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	

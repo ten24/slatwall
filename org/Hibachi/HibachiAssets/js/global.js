@@ -49,45 +49,50 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 		var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
 		var ampm = true;
-		if(convertedTimeFormat.slice(-2) != 'TT') {
+		if(convertedTimeFormat != null && typeof convertedTimeFormat.slice == 'function' && convertedTimeFormat.slice(-2) != 'TT') {
 			ampm = false;
 		}
 	
 		// Datetime Picker
-		jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker({
-			dateFormat: convertedDateFormat,
-			timeFormat: convertedTimeFormat,
-			ampm: ampm,
-			onSelect: function(dateText, inst) {
-	
-				// Listing Display Updates
-				if(jQuery(inst.input).hasClass('range-filter-lower')) {
-					var data = {};
-					data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).val() + '^' + jQuery(inst.input).closest('ul').find('.range-filter-upper').val();
-					listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
-				} else if (jQuery(inst.input).hasClass('range-filter-upper')) {
-					var data = {};
-					data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).closest('ul').find('.range-filter-lower').val() + '^' + jQuery(inst.input).val();
-					listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
+		if(typeof jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker({
+				dateFormat: convertedDateFormat,
+				timeFormat: convertedTimeFormat,
+				ampm: ampm,
+				onSelect: function(dateText, inst) {
+		
+					// Listing Display Updates
+					if(jQuery(inst.input).hasClass('range-filter-lower')) {
+						var data = {};
+						data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).val() + '^' + jQuery(inst.input).closest('ul').find('.range-filter-upper').val();
+						listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
+					} else if (jQuery(inst.input).hasClass('range-filter-upper')) {
+						var data = {};
+						data[ jQuery(inst.input).attr('name') ] = jQuery(inst.input).closest('ul').find('.range-filter-lower').val() + '^' + jQuery(inst.input).val();
+						listingDisplayUpdate( jQuery(inst.input).closest('.table').attr('id'), data);
+					}
+		
 				}
-	
-			}
-		});
+			});
+		}
 		// Setup datetimepicker to stop propigation so that id doesn't close dropdowns
 		jQuery( scopeSelector ).find(jQuery('#ui-datepicker-div')).click(function(e){
 			e.stopPropagation();
 		});
 	
 		// Date Picker
-		jQuery( scopeSelector ).find(jQuery('.datepicker')).datepicker({
-			dateFormat: convertedDateFormat
-		});
+		if(typeof jQuery( scopeSelector ).find(jQuery('.datepicker')).timepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.datepicker')).datepicker({
+				dateFormat: convertedDateFormat
+			});
+		}
 	
-		// Time Picker
-		jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker({
-			timeFormat: convertedTimeFormat,
-			ampm: ampm
-		});
+		if(typeof jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.timepicker')).timepicker({
+				timeFormat: convertedTimeFormat,
+				ampm: ampm
+			});
+		}
 	
 		// Dragable
 		jQuery( scopeSelector ).find(jQuery('.draggable')).draggable();
@@ -1575,9 +1580,6 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		if(inputValue !== undefined && inputValue.length > 0) {
 			jQuery.each(inputValue.split(','), function(vi, vv) {
-				console.log(inputValue);
-				console.log(vi);
-				console.log(vv);
 				jQuery(jQuery('table[data-multiselectfield="' + multiselectField  + '"]').find('tr[id=' + vv + '] .hibachi-ui-checkbox').addClass('hibachi-ui-checkbox-checked')).removeClass('hibachi-ui-checkbox');
 			});
 		}
@@ -1806,13 +1808,17 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function convertCFMLDateFormat( dateFormat ) {
-		dateFormat = dateFormat.replace('mmm', 'M');
-		dateFormat = dateFormat.replace('yyyy', 'yy');
+		if(dateFormat != null && typeof dateFormat.replace == 'function'){
+			dateFormat = dateFormat.replace('mmm', 'M');
+			dateFormat = dateFormat.replace('yyyy', 'yy');
+		}
 		return dateFormat;
 	}
 	
 	function convertCFMLTimeFormat( timeFormat ) {
-		timeFormat = timeFormat.replace('tt', 'TT');
+		if(timeFormat != null && typeof timeFormat.replace == 'function'){	
+			timeFormat = timeFormat.replace('tt', 'TT');
+		}
 		return timeFormat;
 	}
 	

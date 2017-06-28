@@ -90,7 +90,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	}
 
 	public numeric function getTotalChargeAfterDiscount() {
-		return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() - getDiscountAmount());
+return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() - getDiscountAmount());
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

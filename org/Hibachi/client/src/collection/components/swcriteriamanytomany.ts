@@ -16,10 +16,7 @@ class SWCriteriaManyToMany{
         )=> new SWCriteriaManyToMany(
             $log,
             $hibachi,
-            $filter,
             collectionPartialsPath,
-            collectionService,
-            metadataService,
             dialogService,
             observerService,
 			hibachiPathBuilder,
@@ -28,10 +25,7 @@ class SWCriteriaManyToMany{
         directive.$inject = [
             '$log',
             '$hibachi',
-            '$filter',
             'collectionPartialsPath',
-            'collectionService',
-            'metadataService',
             'dialogService',
             'observerService',
 			'hibachiPathBuilder',
@@ -42,10 +36,7 @@ class SWCriteriaManyToMany{
     constructor(
         $log,
         $hibachi,
-        $filter,
         collectionPartialsPath,
-        collectionService,
-        metadataService,
         dialogService,
         observerService,
         hibachiPathBuilder,

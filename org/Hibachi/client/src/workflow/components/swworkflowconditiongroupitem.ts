@@ -3,35 +3,23 @@
 class SWWorkflowConditionGroupItem{
 	public static Factory(){
 		var directive = (
-			$log,
-			$location,
-			$hibachi,
-			formService,
+
 			workflowPartialsPath,
 			hibachiPathBuilder
-		)=> new (
-			$log,
-			$location,
-			$hibachi,
-			formService,
+		)=> new SWWorkflowConditionGroupItem(
+
 			workflowPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
-			'$location',
-			'$hibachi',
-			'formService',
+
 			'workflowPartialsPath',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$log,
-		$location,
-		$hibachi,
-		formService,
+
 		workflowPartialsPath,
 			hibachiPathBuilder
 	){
@@ -39,7 +27,7 @@ class SWWorkflowConditionGroupItem{
 			restrict: 'E',
 
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroupitem.html",
-			link: function(scope, element,attrs){
+			link: function(scope:any, element,attrs){
 			}
 		};
 	}

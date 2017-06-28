@@ -1,0 +1,492 @@
+<!-- Add Billing Address -->
+
+<span ng-init="imagePath = '/custom/apps/$.slatwallcms/PROJECTNAME/assets/images'"></span><!-- Project name here -->
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<span ng-init="$.slatwall.saveShippingAsBilling = $.slatwall.saveShippingAsBilling || 'false'"></span>
+<span ng-init="$.slatwall.saveShippingAsBilling = $.slatwall.saveShippingAsBilling || 'false'"></span>
+<span ng-init="$.slatwall.newBillingAddress = {}"></span>
+
+<sw-form
+    data-is-process-form="true"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-object="$.slatwall.newBillingAddress"
+    data-on-success="Hide:AddOrderPayment"
+    data-class="new_adderess"
+    data-name="addOrderPayment"> 
+
+    <span class="error" ng-if="$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['createTransaction']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['createTransaction']['0']}}</span>
+	
+    <div ng-show="$.slatwall.saveShippingAsBilling == 'true'" ng-cloak>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="custom-checkbox form-group same-as-shipping">
+                    <input type="checkbox" id="sameBilling" name="check" ng-model="$.slatwall.saveShippingAsBilling" ng-init="$.slatwall.saveShippingAsBilling=$.slatwall.saveShippingAsBilling||'false'" ng-true-value="'true'" ng-false-value="'false'" ng-click="OrderAddShippingObj.saveShippingAsBilling = $.slatwall.saveShippingAsBilling" ng-checked="$.slatwall.saveShippingAsBilling == 'true'" class="custom-input-checkbox addressCheckBox">
+                    <label class="custom-label-checkbox" for="sameBilling"></label>
+                    <label for="sameBilling">Billing address is the same as shipping address </label>
+                </div>
+            </div>            
+            <div class="content-address-wrapper col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 content-address existing_user loader-wrapper" ng-show="$.slatwall.isLoading('addOrderPayment') && $.slatwall.loading" style="filter: blur(20px);">
+							<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>&nbsp;ADDING PAYMENT...
+					</div>
+                    <div class="col-sm-12 content-address existing_user" ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.addressID && !OrderAddShippingObj.edit">
+                        <div class="address-wrapper address" ng-if="$.slatwall.cart.orderFulfillments['0'].shippingAddress.addressID" ng-init="$.slatwall.newBillingAddress.countrycode = $.slatwall.cart.orderFulfillments['0'].shippingAddress.countrycode||'US'">
+                            <span class="address-indicator">
+                                <i class="fa fa-check-circle"></i>
+                            </span>
+                            <!-- <input type="radio" id="{{$.slatwall.cart.orderFulfillments['0'].shippingAddress.addressID}}" ng-checked="$.slatwall.saveShippingAsBilling == 'true'"/> -->
+                            <input type="hidden" name="" value="{{$.slatwall.cart.orderFulfillments['0'].shippingAddress.addressID}}" ng-if="$.slatwall.saveShippingAsBilling == 'true'">
+                        
+                            <ul class="list-unstyled address-info" for="selectedAddress">
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.firstName">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.firstName}} {{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.lastName}}</li>
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.name">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.name}}</li>
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.streetAddress}}</li>
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2address">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.street2Address}}</li>
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.city}}, <span ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.statecode}}</span> <span ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.postalcode}}</li>
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode}}</li>
+                                <li ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.company">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.company}}</li>
+                                <li><a href="tel:{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.phoneNumber}}" class="tel" ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.phoneNumber">{{$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.phoneNumber}}</a></li>
+                                <li><button type="button" class="btn-white btn-block" ng-click="$.slatwall.saveShippingAsBilling='false'">Edit</a></li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="col-sm-6">
+            	<div class="row">
+                    <div class="col-md-12 form-group">
+                        <label>Name on Credit Card</label>
+                        <input type="text" class="form-control" id="name" tabindex="1" name="nameOnCreditCard" ng-model="$.slatwall.newBillingAddress.nameOnCreditCard">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['nameOnCreditCard']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['nameOnCreditCard']['0']}}</span>
+                    </div>
+
+                    <div class="col-md-9 form-group">
+                		<label for="cardnumber">Card Number</label>
+                		<input type="text" name="creditCardNumber" class="form-control" id="cardnumber" tabindex="2" ng-model="$.slatwall.newBillingAddress.cardNumber">
+                	</div>
+                    
+                    <div class="col-md-3 form-group cvv">
+                        <label for="cvv2" class="mobile">CVV</label>
+                        <input type="text" class="form-control" id="cvv2" tabindex="3" ng-model="$.slatwall.newBillingAddress.cvv">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['securityCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['securityCode']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['securityCode']['0']}} {{$.slatwall.cart.orderPayments.errors['securityCode']}}</span>
+                    </div>        
+                    <!--- Month --->
+                    <div class="col-md-6 form-group selectpicker-wrapper">
+                        <label>Expiration Date</label>
+                        <div class="select-wrapper">
+                            <select class="form-control selectpicker" ng-model="selectedMonth" tabindex="4" ng-options="month as month.name for month in $.slatwall.months" ng-change="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationMonth = selectedMonth.name">
+                                <option value="" selected disabled>-Select Month-</option>
+                                <option>Month *</option>
+                            </select>
+                        </div>
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['expirationMonth']">{{$.slatwall.cart.orderPayments.errors['expirationMonth']}}</span>    
+                    </div>
+                    <!--- Year --->
+                    <div class="col-md-6 form-group selectpicker-wrapper">
+                        <label>&nbsp;</label>
+                        <div class="select-wrapper">
+                            <select class="form-control selectpicker year" ng-model="selectedYear" tabindex="5" ng-options="year for year in $.slatwall.years" ng-change="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationYear = selectedYear">
+                                <option value="" disabled selected>-Select Year-</option>
+                                <option>Year *</option>
+                            </select>
+                        </div>
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['expirationYear']">{{$.slatwall.cart.orderPayments.errors['expirationYear']}}</span>        
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Phone</label>
+                        <input type="text" class="form-control" tabindex="6" ng-model="$.slatwall.newBillingAddress.phoneNumber">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['phoneNumber'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['phoneNumber']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['phoneNumber']['0']}} {{$.slatwall.cart.orderPayments.errors['phoneNumber']}}</span>
+                    </div>
+                </div>
+                <div class="row" ng-if="$.slatwall.cart.errors.addOrderPayment[0].length" class="error" style="color:red">{{$.slatwall.cart.errors.addOrderPayment[0]}}</div>
+                      
+            </div>
+            
+        </div>
+    </div>
+
+    <div ng-show="$.slatwall.saveShippingAsBilling != 'true'" ng-cloak>    
+    	<span class="error" ng-if="$.slatwall.newOrderPayment.errors['general']" >{{$.slatwall.newOrderPayment.errors['general']}}</span>
+        
+        <div class="error row billing-address-form" ng-show="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode != 'US' && $.slatwall.cart.requiresFulfillment">
+        	To purchase your order using an international address - please checkout using Paypal or Money Order.
+        </div>       
+        
+        <div class="row billing-address-form" >
+            <div class="col-md-12">
+                <div class="custom-checkbox form-group same-as-shipping" ng-if="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode == 'US' && $.slatwall.cart.requiresFulfillment">
+                    <input type="checkbox" id="sameBilling" name="check" ng-model="$.slatwall.saveShippingAsBilling" ng-init="$.slatwall.saveShippingAsBilling=$.slatwall.saveShippingAsBilling||'false'" ng-true-value="'true'" ng-false-value="'false'" ng-click="OrderAddShippingObj.saveShippingAsBilling = $.slatwall.saveShippingAsBilling" ng-checked="$.slatwall.saveShippingAsBilling == 'true'" class="custom-input-checkbox addressCheckBox">
+                    <label class="custom-label-checkbox" for="sameBilling"></label>
+                    <label for="sameBilling">Billing address is the same as shipping address </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+        	<div class="col-md-6 form-group" ng-if="slatwall.account.accountPaymentMethods.length > 0">
+            	<label>Select Saved Credit Card</label>
+            	<select class="form-control selectpicker year" ng-model="selectedPaymentMethod" tabindex="5" ng-change="slatwall.selectedPaymentMethod = selectedPaymentMethod">
+                	<option value="" disabled selected>-Payment Methods-</option>
+                
+                	<option ng-repeat="method in slatwall.account.accountPaymentMethods" ng-click="selectedPaymentMethod = '{{method.accountPaymentMethodID}}'" value="{{method.accountPaymentMethodID}}" ng-if="method.paymentMethod.paymentMethodName = 'Credit Card'">
+                		<span><b ng-show="method.accountPaymentMethodName !== ''">{{method.accountPaymentMethodName}} </b>&nbsp;{{method.creditCardType}}&nbsp;-&nbsp;{{method.creditCardLastFour}}&nbsp;|&nbsp;{{method.expirationMonth}}&nbsp;/&nbsp;{{method.expirationYear}}</span>
+                	</option>
+                	<option value="new">Add New Credit Card</option>
+            	</select>
+            	<span class="error" ng-if="slatwall.cart.orderPayments.errors['streetAddress'] || slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors']['streetAddress']">{{slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors']['streetAddress']['0']}} {{slatwall.cart.orderPayments.errors['streetAddress']}}</span>
+       		
+            </div>
+       	 	<div class="col-md-6 form-group" ng-if="slatwall.account.accountPaymentMethods.length > 0 && slatwall.selectedPaymentMethod != 'new' && slatwall.selectedPaymentMethod != undefined">
+        		<label>Edit this payment method</label>
+        		<input type="button" class="btn-white btn-block" ng-click="slatwall.editCurrentPaymentMethod = !slatwall.editCurrentPaymentMethod" value="edit" ng-if="!slatwall.editCurrentPaymentMethod">
+        		<input type="button" class="btn-white btn-block" ng-click="slatwall.editCurrentPaymentMethod = !slatwall.editCurrentPaymentMethod" value="close" ng-if="slatwall.editCurrentPaymentMethod">
+       		</div>
+        </div>
+       	<div class="row">
+           	<!--- New Payment Method --->
+            <div class="col-sm-6" ng-hide="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode != 'US' && $.slatwall.cart.requiresFulfillment == true">
+                
+                <div class="row" ng-if="slatwall.selectedPaymentMethod == 'new' || slatwall.selectedPaymentMethod == undefined">
+                    <div class="col-md-12 form-group">
+                        <label>Street Address</label>
+                        <input type="text" class="form-control" tabindex="10" ng-model="$.slatwall.newBillingAddress.streetAddress">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['streetAddress'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['streetAddress']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['streetAddress']['0']}} {{$.slatwall.cart.orderPayments.errors['streetAddress']}}</span>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label for="suite2" class="mobile">Apt./Suite <span>(optional)</span></label>
+                        <input type="text" class="form-control" id="suite2" tabindex="20" ng-model="$.slatwall.newBillingAddress.street2Address">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['street2Address']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['street2Address']}}</span>
+                    </div>
+
+                    <div class="col-md-6 form-group selectpicker-wrapper">
+                        <label for="countryCode">Country</label>
+                        <div class="countrySelect">
+                            <div class="select-wrapper">
+                                <select name="countryCode" 
+                                    class="form-control" 
+                                    tabindex="30"
+                                    ng-model="$.slatwall.selectedBillingCountry"   
+                                    ng-change="$.slatwall.getStates($.slatwall.selectedBillingCountry); $.slatwall.newBillingAddress.countryCode = $.slatwall.selectedBillingCountry || $.slatwall.countries.countryCodeOptions['234'].value"
+                                    >
+                          
+                                    <option value="" selected="selected">United States</option>
+                                    <option ng-repeat="country in $.slatwall.countries.countryCodeOptions" value="{{country.value}}">{{country.name}}</option>
+                                </select>
+                            	
+                            	<span class="error" ng-if="$.slatwall.cart.orderPayments.errors['countryCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['country']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['country']['0']}} {{$.slatwall.cart.orderPayments.errors['countryCode']}}</span>
+                    			<span class="error" ng-if="$.slatwall.selectedBillingCountry != 'US'">For international orders, please use Paypal or Money Order to complete your order.</span>
+                    			
+                            </div>
+                        </div> 
+                    </div> 
+
+                    <div class="col-md-6 form-group">
+                        <div class="state selectpicker-wrapper" ng-show="$.slatwall.saveShippingAsBilling == 'true' && ($.slatwall.selectedBillingCountry == 'US' || $.slatwall.selectedBillingCountry == 'CA')">                                  
+                            <label for="stateCode" ng-show="$.slatwall.selectedBillingCountry == 'US'">State</label>
+                            <label for="stateCode" ng-show="$.slatwall.selectedBillingCountry == 'CA'">Province</label>
+                            <div class="select-wrapper">
+                                <select tabindex="40" class="form-control selectpicker" required="true" 
+                                        name="stateCode" 
+                                        class="form-control">
+                                        <option label="{{$.slatwall.newBillingAddress.statecode}}" name="{{$.slatwall.newBillingAddress.statecode}}">{{$.slatwall.newBillingAddress.statecode}}</option>
+                                </select>
+                            </div>
+                            <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['stateCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['state']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['addOrderPayment']['state']['0']}} {{$.slatwall.cart.orderPayments.errors['stateCode']}}</span>
+                        </div>
+                        
+                        <div class="state selectpicker-wrapper" ng-show="$.slatwall.saveShippingAsBilling != 'true' && ($.slatwall.selectedBillingCountry == 'US' || $.slatwall.selectedBillingCountry == 'CA')">                                  
+                            <label for="states" ng-show="$.slatwall.selectedBillingCountry == 'US'">State</label>
+                            <label for="states" ng-show="$.slatwall.selectedBillingCountry == 'CA'">Province</label>
+                            <div class="select-wrapper">
+                                <select class="form-control selectpicker" tabindex="40" required="true" 
+                                        name="states" 
+                                        class="form-control" 
+                                        ng-model="selectedBillingState" 
+                                        ng-options="state as state.name for state in $.slatwall.states.stateCodeOptions" 
+                                        ng-change="$.slatwall.newBillingAddress.statecode = selectedBillingState.value"><!-- ng-init="selectedBillingState.value = $.slatwall.cart.orderFulfillments['0'].shippingAddress.statecode" -->
+                                         <option value=""> —Select State— </option>
+                                </select>
+                            </div>
+                            <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['stateCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['state']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['addOrderPayment']['state']['0']}} {{$.slatwall.cart.orderPayments.errors['stateCode']}}</span>
+                        </div>
+                        <div class="state selectpicker-wrapper" ng-show="$.slatwall.selectedBillingCountry != 'US' && $.slatwall.selectedBillingCountry != 'CA'">                                  
+                            <label for="locatity">Locality</label>
+                            <input tabindex="40" class="form-control selectpicker" ng-if="$.slatwall.selectedBillingCountry != 'US' && $.slatwall.selectedBillingCountry != 'CA'" type="text" id="locality" ng-model="$.slatwall.cart.orderFulfillments['0'].shippingAddress.locality" >
+                            <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['locality'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['locality']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['locality']['0']}} {{$.slatwall.cart.orderPayments.errors['locality']}}</span>
+                         </div> 
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" tabindex="50" ng-model="$.slatwall.newBillingAddress.city" >
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['city'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['city']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['city']['0']}} {{$.slatwall.cart.orderPayments.errors['city']}}</span>
+                    </div>
+                    <div class="col-md-6 form-group zip selectpicker-wrapper">
+                        <label for="zip2">Zip</label>
+                        <input type="text" class="form-control selectpicker" id="zip2" tabindex="60" ng-model="$.slatwall.newBillingAddress.postalcode" >
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['postalCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['postalCode']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['addOrderPayment']['postalCode']['0']}} {{$.slatwall.cart.orderPayments.errors['postalCode']}}</span>
+                    </div>
+                 
+               </div>
+               <!--- end new billing address --->
+               
+               <!--- start edit billing --->
+               <div class="row">
+                  <div ng-repeat="paymentMethod in slatwall.account.accountPaymentMethods" ng-if="slatwall.selectedPaymentMethod == paymentMethod['accountPaymentMethodID'] && slatwall.selectedPaymentMethod != undefined && slatwall.editCurrentPaymentMethod == true">
+                    <div class="col-md-12 form-group" ng-init="$.slatwall.newBillingAddress = paymentMethod['billingAddress']">
+                        <label>Street Address</label>
+                        <input type="text" class="form-control" tabindex="10" ng-model="$.slatwall.newBillingAddress.streetAddress">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['streetAddress'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['streetAddress']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['streetAddress']['0']}} {{$.slatwall.cart.orderPayments.errors['streetAddress']}}</span>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label for="suite2" class="mobile">Apt./Suite <span>(optional)</span></label>
+                        <input type="text" class="form-control" id="suite2" tabindex="20" ng-model="$.slatwall.newBillingAddress.street2Address">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['street2Address']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['street2Address']}}</span>
+                    </div>
+                    
+                    <div class="col-md-6 form-group selectpicker-wrapper" ng-init="$.slatwall.selectedBillingCountry = paymentMethod['billingAddress']['countryCode']">
+                        <label for="countryCode">Country</label>
+                        <div class="countrySelect">
+                            <div class="select-wrapper">
+                                <select name="countryCode" 
+                                    class="form-control" 
+                                    tabindex="30"
+                                    ng-model="$.slatwall.selectedBillingCountry"   
+                                    ng-change="$.slatwall.getStates($.slatwall.selectedBillingCountry); $.slatwall.newBillingAddress.countryCode = paymentMethod['billingAddress']['countryCode'] || $.slatwall.selectedBillingCountry || $.slatwall.countries.countryCodeOptions['234'].value">
+                          
+                                    <option label="{{paymentMethod['billingAddress']['countryCode']}}" name="{{paymentMethod['billingAddress']['countryCode']}}" selected="selected">{{paymentMethod['billingAddress']['countryCode']}}</option>
+                                    <option ng-repeat="country in $.slatwall.countries.countryCodeOptions" value="{{country.value}}">{{country.name}}</option>
+                                </select>
+                            	
+                            	<span class="error" ng-if="$.slatwall.cart.orderPayments.errors['countryCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['country']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['country']['0']}} {{$.slatwall.cart.orderPayments.errors['countryCode']}}</span>
+                				<span class="error" ng-if="$.slatwall.selectedBillingCountry != 'US'">For international orders, please use Paypal or Money Order to complete your order.</span>
+                				
+                            </div>
+                        </div> 
+                    </div> 
+                    
+                    <div class="col-md-6 form-group">
+                    	
+                        <div class="state selectpicker-wrapper" ng-show="!$.slatwall.editState">                                  
+                            <label for="stateCode" ng-show="$.slatwall.selectedBillingCountry == 'US'">State</label>
+                            <label for="stateCode" ng-show="$.slatwall.selectedBillingCountry == 'CA'">Province</label>
+                            <div class="select-wrapper">
+                                <select tabindex="40" class="form-control selectpicker" required="true" 
+                                        name="stateCode" 
+                                        class="form-control" ng-click="$.slatwall.editState = !$.slatwall.editState">
+                                        <option label="{{paymentMethod['billingAddress']['stateCode']}}" name="{{paymentMethod['billingAddress']['stateCode']}}" selected="selected">{{paymentMethod['billingAddress']['stateCode']}}</option>
+                                </select>
+                            </div>
+                            <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['stateCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['state']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['addOrderPayment']['state']['0']}} {{$.slatwall.cart.orderPayments.errors['stateCode']}}</span>
+                        </div>
+                        
+                        <div class="state selectpicker-wrapper" ng-show="$.slatwall.editState && $.slatwall.saveShippingAsBilling != 'true' && ($.slatwall.selectedBillingCountry == 'US' || $.slatwall.selectedBillingCountry == 'CA')">                                  
+                            <label for="states" ng-show="$.slatwall.selectedBillingCountry == 'US'">State</label>
+                            <label for="states" ng-show="$.slatwall.selectedBillingCountry == 'CA'">Province</label>
+                            <div class="select-wrapper">
+                                <select class="form-control selectpicker" tabindex="40" required="true" 
+                                        name="states" 
+                                        class="form-control" 
+                                        ng-model="selectedBillingState" 
+                                        ng-options="state as state.name for state in $.slatwall.states.stateCodeOptions" 
+                                        ng-change="$.slatwall.newBillingAddress.statecode = selectedBillingState.value">
+                                        <option name="" selected="selected" disabled="disabled" selected="selected">-Select State-</option>
+                                </select>
+                            </div>
+                            <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['stateCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['state']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['addOrderPayment']['state']['0']}} {{$.slatwall.cart.orderPayments.errors['stateCode']}}</span>
+                        </div>
+                        <div class="state selectpicker-wrapper" ng-init="$.slatwall.newBillingAddress.locality = paymentMethod['billingAddress']['locality']" ng-show="$.slatwall.selectedBillingCountry != 'US' && $.slatwall.selectedBillingCountry != 'CA'">                                  
+                            <label for="locatity">Locality</label>
+                            <input tabindex="40" class="form-control selectpicker" ng-if="$.slatwall.selectedBillingCountry != 'US' && $.slatwall.selectedBillingCountry != 'CA'" type="text" id="locality" ng-model="$.slatwall.cart.orderFulfillments['0'].shippingAddress.locality" >
+                            <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['locality'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['locality']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['locality']['0']}} {{$.slatwall.cart.orderPayments.errors['locality']}}</span>
+                         </div> 
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" tabindex="50" ng-model="$.slatwall.newBillingAddress.city" >
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['city'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['city']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['city']['0']}} {{$.slatwall.cart.orderPayments.errors['city']}}</span>
+                    </div>
+                    <div class="col-md-6 form-group zip selectpicker-wrapper" ng-init="$.slatwall.newBillingAddress.postalcode = paymentMethod['billingAddress']['postalCode']">
+                        <label for="zip2">Zip</label>
+                        <input type="text" class="form-control selectpicker" id="zip2" tabindex="60" ng-model="$.slatwall.newBillingAddress.postalcode" >
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['postalCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['postalCode']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['addOrderPayment']['postalCode']['0']}} {{$.slatwall.cart.orderPayments.errors['postalCode']}}</span>
+                    </div>
+                 </div><!--- END EDIT METHOD --->
+                </div> 
+                <!--- edit edit billing --->
+            </div>
+            <!--- start new card info --->
+            <div class="col-sm-6" ng-show="slatwall.selectedPaymentMethod == 'new' || slatwall.selectedPaymentMethod == undefined" ng-hide="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode != 'US' && slatwall.cart.requiresFulfillment">
+              <div class="row" ng-init="$.slatwall.newBillingAddress = {}">
+                    <div class="col-md-12 form-group">
+                        <label for="namec">Name on Credit Card</label>
+                        <input type="text" class="form-control" tabindex="70" id="name" name="nameOnCreditCard" ng-model="$.slatwall.newBillingAddress.nameOnCreditCard">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['nameOnCreditCard'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['nameOnCreditCard']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['nameOnCreditCard']['0']}} {{$.slatwall.cart.orderPayments.errors['nameOnCreditCard']}}</span>
+                    </div>
+                    <div class="col-md-9 form-group">
+                        <label for="cardnumber">Card Number</label>
+                        <input type="text" class="form-control" id="cardnumber" tabindex="80" ng-model="$.slatwall.newBillingAddress.creditCardNumber">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['creditCardNumber'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['creditCardNumber']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['creditCardNumber']['0']}} {{$.slatwall.cart.orderPayments.errors['creditCardNumber']}}</span>
+                    </div>
+                    <div class="col-md-3 form-group cvv">
+                        <label for="cvv2" class="mobile">CVV</label>
+                        <input type="text" class="form-control" id="cvv2" tabindex="90" ng-model="$.slatwall.newBillingAddress.cvv">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['securityCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['securityCode']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['securityCode']['0']}} {{$.slatwall.cart.orderPayments.errors['securityCode']}}</span>
+                    </div>
+                    <!--- Month --->
+                    <div class="col-md-6 form-group selectpicker-wrapper">
+                        <label>Expiration Date</label>
+                        <div class="select-wrapper">
+                            <select class="form-control selectpicker" ng-model="selectedMonth" tabindex="100" ng-options="month as month.name for month in $.slatwall.months" ng-change="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationMonth = selectedMonth.name">
+                                <option value="" selected disabled>-Select Month-</option>
+                                <option>Month *</option>
+                            </select>
+                        </div>
+                        <span class="error" ng-if="slatwall.cart.orderPayments.errors['expirationMonth']">{{slatwall.cart.orderPayments.errors['expirationMonth']}}</span>
+                    </div>
+                    <!--- Year --->
+                    <div class="col-md-6 form-group selectpicker-wrapper">
+                        <label>&nbsp;</label>
+                        <div class="select-wrapper">
+                            
+                            <select class="form-control selectpicker year" ng-model="selectedYear" tabindex="110" ng-options="year for year in $.slatwall.years" ng-change="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationYear = selectedYear">
+                                <option value="" disabled selected>-Select Year-</option>
+                                <option>Year *</option>
+                            </select>
+                        </div>
+                        <span class="error" ng-if="slatwall.cart.orderPayments.errors['expirationYear']">{{slatwall.cart.orderPayments.errors['expirationYear']}}</span>                   
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Phone</label>
+                        <input type="text" class="form-control" tabindex="120" ng-model="$.slatwall.newBillingAddress.phoneNumber">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['phoneNumber'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['phoneNumber']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['phoneNumber']['0']}} {{$.slatwall.cart.orderPayments.errors['phoneNumber']}}</span>
+                    </div>
+                </div>
+            </div><!--- end new card info --->
+            <!--- start edit card info --->
+			<div class="col-sm-6" ng-repeat="paymentMethod in slatwall.account.accountPaymentMethods" ng-if="slatwall.selectedPaymentMethod == paymentMethod['accountPaymentMethodID'] && slatwall.selectedPaymentMethod != undefined && slatwall.editCurrentPaymentMethod == true" ng-hide="slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode != 'US' && slatwall.cart.requiresFulfillment">
+                <div class="row">
+                	<input type="hidden" ng-model="$.slatwall.newBillingAddress.activeFlag" ng-init="$.slatwall.newBillingAddress.activeFlag = 'true'"/>
+					<input type="hidden" ng-model="$.slatwall.newBillingAddress.accountPaymentMethodID"  ng-init="$.slatwall.newBillingAddress.accountPaymentMethodID = ''"/>	
+					<input type="hidden" ng-model="$.slatwall.newBillingAddress.saveAccountPaymentMethodFlag" ng-init="$.slatwall.newBillingAddress.saveAccountPaymentMethodFlag = 'true'"/>		
+					<input type="hidden" ng-model="$.slatwall.newBillingAddress.saveAccountPaymentMethodName" ng-init="$.slatwall.newBillingAddress.saveAccountPaymentMethodName = 'false'"/>
+					
+																	
+                    <div class="col-md-12 form-group" ng-init="$.slatwall.newBillingAddress.nameOnCreditCard = paymentMethod['nameOnCreditCard']">
+                        <label for="namec">Name on Credit Card</label>
+                        <input type="text" class="form-control" tabindex="70" id="name" name="nameOnCreditCard" ng-model="$.slatwall.newBillingAddress.nameOnCreditCard">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['nameOnCreditCard'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['nameOnCreditCard']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['nameOnCreditCard']['0']}} {{$.slatwall.cart.orderPayments.errors['nameOnCreditCard']}}</span>
+                    </div>
+                    <div class="col-md-9 form-group">
+                        <label for="cardnumber">Card Number</label>
+                        <input type="text" class="form-control" id="cardnumber" tabindex="80" ng-model="$.slatwall.newBillingAddress.creditCardNumber">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['creditCardNumber'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['creditCardNumber']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['creditCardNumber']['0']}} {{$.slatwall.cart.orderPayments.errors['creditCardNumber']}}</span>
+                    </div>
+                    <div class="col-md-3 form-group cvv">
+                        <label for="cvv2" class="mobile">CVV</label>
+                        <input type="text" class="form-control" id="cvv2" tabindex="90" ng-model="$.slatwall.newBillingAddress.cvv">
+                        <span class="error" ng-if="$.slatwall.cart.orderPayments.errors['securityCode'] || $.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['securityCode']">{{$.slatwall.cart.orderPayments[''+$.slatwall.cart.orderPayments.length-1]['errors']['securityCode']['0']}} {{$.slatwall.cart.orderPayments.errors['securityCode']}}</span>
+                    </div>
+                    <!--- Month --->
+                    <div class="col-md-6 selectpicker-wrapper" style="margin-top:0px;" ng-show="!$.slatwall.editMonth">
+                        <label>Expiration Date</label>
+                        <div class="select-wrapper">
+                            <select class="form-control selectpicker" ng-click="$.slatwall.editMonth = !$.slatwall.editMonth" ng-init="$.slatwall.newBillingAddress.expirationMonth = paymentMethod['expirationMonth']" tabindex="100">
+                                <option label="{{paymentMethod['expirationMonth']}}" name="{{paymentMethod['expirationMonth']}}">{{paymentMethod['expirationMonth']}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 selectpicker-wrapper" style="margin-top:0px;" ng-if="$.slatwall.editMonth">
+                        <label>Expiration Date</label>
+                        <div class="select-wrapper">
+                            <select class="form-control selectpicker" ng-model="selectedMonth" tabindex="100" ng-options="month as month.name for month in $.slatwall.months"  ng-change="$.slatwall.newBillingAddress.expirationMonth = selectedMonth.value">
+                            </select>
+                        </div>
+                        <span class="error" ng-if="slatwall.cart.orderPayments.errors['expirationMonth']">{{slatwall.cart.orderPayments.errors['expirationMonth']}}</span>
+                    </div>
+                    
+                    <!--- Year --->
+                    <div class="col-md-6 selectpicker-wrapper" ng-if="!$.slatwall.editYear" style="margin-top:0px;" ng-init="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationYear = paymentMethod['expirationYear']">
+                        <label>&nbsp;</label>
+                        <div class="select-wrapper" ng-init="selectedYear = paymentMethod['expirationYear']">
+                            
+                            <select class="form-control selectpicker year" ng-click="$.slatwall.editYear = !$.slatwall.editYear" tabindex="110" ng-init="$.slatwall.newBillingAddress.expirationYear = paymentMethod['expirationYear']" >
+                                <option label="{{paymentMethod['expirationYear']}}" name="{{paymentMethod['expirationYear']}}" selected="selected" disabled>{{paymentMethod['expirationYear']}}</option> 
+                            </select>
+                        </div>
+                     </div>
+                    
+                    <div class="col-md-6 selectpicker-wrapper" ng-if="$.slatwall.editYear" style="margin-top:0px;" ng-init="$.slatwall.cart.orderFulfillments['0'].shippingAddress.expirationYear = paymentMethod['expirationYear']">
+                        <label>&nbsp;</label>
+                        <div class="select-wrapper" ng-init="selectedYear = paymentMethod['expirationYear']">
+                            
+                            <select class="form-control selectpicker year" ng-model="selectedYear" ng-init="selectedYear = paymentMethod['expirationYear']" tabindex="110" ng-options="year for year in $.slatwall.years" ng-change="$.slatwall.billingAddress.expirationYear = selectedYear">
+                                <option label="{{paymentMethod['expirationYear']}}" name="{{paymentMethod['expirationYear']}}" selected="selected" disabled>{{paymentMethod['expirationYear']}}</option>
+                            </select>
+                        </div>
+                        <span class="error" ng-if="slatwall.cart.orderPayments.errors['expirationYear']">{{slatwall.cart.orderPayments.errors['expirationYear']}}</span>                   
+                    </div>
+                    
+                </div>
+            </div>
+        	<!--- End edit card --->
+            <!--- end edit card info --->
+        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 checkout-step-btn" ng-hide="$.slatwall.cart.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingAddress.countrycode != 'US' && $.slatwall.cart.requiresFulfillment">
+            <input type="hidden" value="{{$.slatwall.selectedBillingCountry.value}},{{$.slatwall.newBillingAddress.countrycode}},{{selectedBillingState.value}}"></input>
+            
+            <div class="custom-checkbox form-group same-as-shipping" ng-if="slatwall.selectedPaymentMethod == 'new' || slatwall.selectedPaymentMethod == undefined">
+               <input type="checkbox" id="savePayment" name="check" ng-model="slatwall.saveAsAccountPaymentMethodFlag" ng-init="slatwall.saveAsAccountPaymentMethodFlag=slatwall.saveAsAccountPaymentMethodFlag||'false'" ng-true-value="'true'" ng-false-value="'false'" ng-click="OrderAddShippingObj.saveShippingAsBilling = slatwall.saveAsAccountPaymentMethodFlag" ng-checked="slatwall.saveAsAccountPaymentMethodFlag == 'true'" class="custom-input-checkbox addressCheckBox">
+            	<label class="custom-label-checkbox" for="savePayment"></label>
+            	<label for="savePayment">Save this payment method for future use? </label>
+            </div>
+            
+            <span class="error" ng-if="$.slatwall.getRequestByAction('addOrderPayment').hasFailureAction()">There was an issue processing your payment. Please review and try again or try another card.</span>
+            <br><br>
+            <span class="next-step-btn" ng-if="$.slatwall.cart.orderPayments.length && !slatwall.editCurrentPaymentMethod">
+                <input type="submit" class="btn-yellow" tabindex="130" value="{{($.slatwall.getRequestByAction('addOrderPayment').loading) ? 'LOADING' : 'CONTINUE TO REVIEW'}}" ng-click="$.slatwall.addOrderPayment({'month':selectedMonth.value,'year':selectedYear,'country':$.slatwall.selectedBillingCountry.value,'state':selectedBillingState.value})"  ng-class="($.slatwall.loading) ? 'spinner icon-spinner icon-spin icon-large' : ''"/>
+            </span>
+            
+			<div class="loading-wrapper">
+                <span class="next-step-btn" ng-if="!$.slatwall.cart.orderPayments.length && !slatwall.editCurrentPaymentMethod">
+                    <input type="submit" 
+                        tabindex="12" 
+                        class="btn-yellow" 
+                        value="{{($.slatwall.getRequestByAction('addOrderPayment').loading) ? 'LOADING' : 'CONTINUE TO REVIEW'}}" 
+                        class="review"
+                        tabindex="130" 
+                        ng-click="$.slatwall.addOrderPayment({'month':selectedMonth.value,'year':selectedYear,'country':$.slatwall.selectedBillingCountry,'state':selectedBillingState.value})" 
+                    />
+                </span>
+            </div>
+            <span ng-if="$.slatwall.getRequestByAction('addAccountPaymentMethod').hasSuccessfulAction()">
+            	<span class="alert-success" ng-init="slatwall.editCurrentPaymentMethod = !slatwall.editCurrentPaymentMethod">Updated Successfully.</span><br><br>
+            </span>
+            <span ng-if="$.slatwall.getRequestByAction('addAccountPaymentMethod').hasFailureAction()">
+            	<span class="error">Update Failed. Please try again.</span><br><br>
+            </span>
+            
+            <!--- Save the pyment method if editing. --->
+            <div class="loading-wrapper">
+                <span class="next-step-btn" ng-if="slatwall.editCurrentPaymentMethod">
+                    <input type="submit" 
+                        tabindex="12" 
+                        class="btn-yellow" 
+                        value="{{($.slatwall.getRequestByAction('addAccountPaymentMethod').loading) ? 'LOADING' : 'UPDATE PAYMENT METHOD'}}" 
+                        class="review"
+                        tabindex="130" 
+                        ng-click="$.slatwall.updateAccountPayment($.slatwall.newBillingAddress)" 
+                    />
+                </span>
+            </div>
+        </div>
+    </div>
+</swform>
+<br/><br/>

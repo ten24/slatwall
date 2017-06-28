@@ -123,6 +123,14 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 	}
 
+	// ==================== START: Logical Methods =========================
+
+	public any function copyAttributeValue( saveNewAttributeValue=true ) {
+		return getService("attributeService").copyAttributeValue( this, arguments.saveNewAttributeValue );
+	}
+
+	// ====================  END: Logical Methods ==========================
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	public string function getAttributeValueFileURL() {
@@ -786,10 +794,16 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 					// Do the upload
 					var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
+					
+					//Check if file complies with any maxFileSize settings on the attribute
+					if(isNull(getAttribute().getMaxFileSize()) || getAttribute().getMaxFileSize() >= uploadData.fileSize){
+						// Update the property with the serverFile name
+						variables.attributeValue =  uploadData.serverFile;
+					}else{
 
-					// Update the property with the serverFile name
-					variables.attributeValue =  uploadData.serverFile;
-
+						fileDelete("#uploadDirectory##uploadData.serverFile#");
+						this.addError('attributeValue', rbKey('validate.save.File.fileUpload.maxFileSize'));
+					}
 				} catch(any e) {
 					// Add an error if there were any hard errors during upload
 					this.addError('attributeValue', rbKey('validate.fileUpload'));

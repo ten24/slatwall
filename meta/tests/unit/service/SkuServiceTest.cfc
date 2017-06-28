@@ -57,7 +57,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	/**
 	* @test
-	*/	
+	*/
 	public void function saveSkuTest_setPublishedFalseIfInactive(){
 		var productData = {
 			productID="",
@@ -85,7 +85,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			product={
 				productID=product.getProductID()
 			}
-		};	
+		};
 		var sku = createPersistedTestEntity('Sku',skuData);
 		
 		assert(sku.getActiveFlag());

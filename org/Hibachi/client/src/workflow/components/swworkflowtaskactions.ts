@@ -28,11 +28,9 @@ class SWWorkflowTaskActionsController {
     private printTemplateCollectionConfig;
     //@ngInject
     constructor(
-        public $scope,
         public $log,
         public $hibachi,
         public metadataService,
-        public collectionService,
         public workflowPartialsPath,
         public hibachiPathBuilder,
         public collectionConfigService,
@@ -108,7 +106,7 @@ class SWWorkflowTaskActionsController {
         this.saveWorkflowTaskAction =  (taskAction, context) =>{
             this.$log.debug("Context: " + context);
             this.$log.debug("saving task action and parent task");
-            this.$log.debug(taskAction);
+            this.$log.debug(taskAction);  
             var savePromise = this.workflowTaskActions.selectedTaskAction.$$save();
             savePromise.then( () => {
                 var taSavePromise = taskAction.$$save;
@@ -120,6 +118,8 @@ class SWWorkflowTaskActionsController {
                 }else if (context == "finish"){
                     this.finished = true;
                 }
+                //Auto save the workflow now that the task action is saved.
+                this.workflowTask.data.workflow.$$save();
             },(err)=>{
                 angular.element('a[href="/##j-basic-2"]').click();
                 console.warn(err);
@@ -174,7 +174,6 @@ class SWWorkflowTaskActionsController {
                 this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject] = this.metadataService.getPropertiesListByBaseEntityAlias(this.workflowTask.data.workflow.data.workflowObject);
                 this.metadataService.formatPropertiesList(this.filterPropertiesList[this.workflowTask.data.workflow.data.workflowObject], this.workflowTask.data.workflow.data.workflowObject);
                 this.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-
                 this.emailTemplateSelected =  (this.workflowTaskActions.selectedTaskAction.data.emailTemplate) ? this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateName : '';
 
                 this.emailTemplateCollectionConfig = this.collectionConfigService.newCollectionConfig("EmailTemplate");
@@ -240,9 +239,7 @@ class SWWorkflowTaskActionsController {
                 var proccessOptionsPromise = this.$hibachi.getProcessOptions(objectName);
 
                 proccessOptionsPromise.then((value)=>{
-                    this.$log.debug('getProcessOptions');
                     this.processOptions = value.data;
-
                 });
             }
             this.showProcessOptions = true;
@@ -254,8 +251,7 @@ class SWWorkflowTaskActionsController {
          */
         this.selectProcess = (processOption)=>{
             this.workflowTaskActions.selectedTaskAction.data.processMethod = processOption.value;
-            this.searchProcess.name = processOption.name;
-
+            this.searchProcess.name = processOption.value;
             this.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
             //this.searchProcess = processOption.name;
             this.showProcessOptions = false;

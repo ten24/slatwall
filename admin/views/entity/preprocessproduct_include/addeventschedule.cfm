@@ -52,8 +52,8 @@ Notes:
 <cfparam name="rc.addEventScheduleProcessObject" type="any" />
 
 <cfoutput>
-	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventStartDateTime" edit="true">
-	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventEndDateTime" edit="true">
+	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventStartDateTime" edit="true" value="#DateTimeFormat(now(), "mmm dd, yyyy hh:nn tt")#">
+	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventEndDateTime" edit="true" value="#DateTimeFormat(DateAdd("d",1,now()), "mmm dd, yyyy hh:nn tt")#">
 	
 	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" fieldname="schedulingType" property="schedulingType" edit="true">
 	

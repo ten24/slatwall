@@ -48,14 +48,14 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	// @hint put things in here that you want to run befor EACH test	
+	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
 
 		variables.entityService = "accountService";
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -74,16 +74,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		account = accountService.processAccount(account, accountData, 'create');
 		var accountHasErrors = account.hasErrors();
-
-		ormFlush();
+		
 
 		var deleteOK = accountService.deleteAccount(account);
 
 		assert(deleteOk);
 
-		ormFlush();
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -108,7 +106,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertEquals(lcase("#accountID##hash(auth1ID & accountID)#"), account.getPasswordResetID() );
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -144,7 +142,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		var resultExistingAdminIcon = mockAccount.getAdminIcon(80);
 //		assertEquals(resultExistingAdminIcon, "see output first");
 //	}
-	
+
 	/**
 	* @test
 	*/
@@ -176,7 +174,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mockAccount = createTestEntity('Account', accountData);
 		assertTrue(isNull(mockAccount.getEmailAddress()));
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -205,15 +203,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultOnlyLastName = mockAccount.getFullName();
-		assertEquals(resultOnlyLastName, " Kitty");
+		assertEquals(resultOnlyLastName, "Kitty");
 		//testing empty FirstName & LastName
 		accountData = {
 			accountID = "001"
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNoName = mockAccount.getFullName();
-		assertEquals(resultNoName, " ");
-	}	
+		assertEquals(resultNoName, "");
+	}
 	/**
 	* @test
 	*/
@@ -281,7 +279,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(resultExistPrimaryNoAccountAddress, "123");		
 		
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -333,7 +331,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 
-		
+	
 	/**
 	* @test
 	*/
@@ -376,7 +374,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultNSUNoPG = mockAccount.getAdminAccountFlag();
 		assertFalse(resultNSUNoPG);
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -424,7 +422,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultEmptyGC = mockAccount.getGiftCardSmartList().getRecords();
 		assertEquals(arraylen(resultEmptyGC), 0);				
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -498,7 +496,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var resultOrdersPlacedSM2 = mockAccount2.getOrdersPlacedSmartList().getRecords();
 		assertEquals(resultOrdersPlacedSM[1].getAccount().getAccountID(),mockAccount.getAccountID());
 		assertEquals(resultOrdersPlacedSM2[1].getAccount().getAccountID(),mockAccount2.getAccountID());
-	}	
+	}
 	/**
 	* @test
 	*/
@@ -614,7 +612,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		
 		assertFalse(mockAccount2.getPrimaryEmailAddressesNotInUseFlag());	
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -678,7 +676,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		//testing the DESC order of modified date, failed.
 		assertEquals(resultOrdersNotPlacedSM.getRecords(refresh=true)[1].getOrderNumber(), "orderNumber004");	
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -699,7 +697,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2HasPassword);
 		var resultWithPassword = mockAccount2.getSlatwallAuthenticationExistsFlag();		
 		assertTrue(resultWithPassword);
-	}	
+	}
 	/**
 	* @test
 	*/
@@ -723,7 +721,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var resultWithIntegration = mockAccount3.getSlatwallAuthenticationExistsFlag();
 		assertFalse(resultWithIntegration);	
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -747,7 +745,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var resultPwdIntegration = mockAccount4.getSlatwallAuthenticationExistsFlag();
 		assertFalse(resultPwdIntegration);		
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -770,7 +768,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1);		
 		var resultTrueFlag = mockAccount1.getSlatwallAuthenticationExistsFlag();
 		assertTrue(resultTrueFlag);
-	}	
+	}
 	/**
 	* @test
 	*/
@@ -793,7 +791,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2);		
 		var resultFalseFlag = mockAccount2.getSlatwallAuthenticationExistsFlag();
 		assertFalse(resultFalseFlag);
-	}	
+	}
 	/**
 	* @test
 	*/
@@ -824,7 +822,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		
 	}
 	
-		
+	
 	/**
 	* @test
 	*/
@@ -907,7 +905,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		subscriptionUsageBenefitIDList = listAppend(subscriptionUsageBenefitIDList,"#mockSubscriptionUsageBenefit2.getsubscriptionUsageBenefitID()#");
 		assertTrue(listFind(subscriptionUsageBenefitIDList, "#result[1].getsubscriptionUsageBenefitID()#") > 0);
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -980,7 +978,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(mockAccount1.getAccountID(), result[1].getSubscriptionUsage().getAccount().getAccountID());
 	}
 
-	
+
 	/**
 	* @test
 	*/
@@ -1039,7 +1037,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 
 		assertEquals(2300, mockAccount1.getTermAccountBalance());
 	}*/
-		
+	
 	/**
 	* @test
 	*/
@@ -1084,10 +1082,10 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var paymentTransaction1 = createPersistedTestEntity("PaymentTransaction", paymentTransactionsData);	
-		
+
 		assertEquals(1500, mockAccount1.getTermAccountBalance());
 	}*/
-		
+	
 	/**
 	* @test
 	*/
@@ -1134,7 +1132,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(0, mockAccount1.getTermAccountBalance());
 	}
 	
-		
+	
 	/**
 	* @test
 	*/
@@ -1200,7 +1198,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(mockLoyalty1Active.getLoyaltyID(), result[arrayLen(result)].value);
 
 	}*/
-		
+	
 	/**
 	* @test
 	*/
@@ -1265,10 +1263,10 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			settingValue = -1000
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-		debug(mockAccount1);
+		
 		assertEquals(-1300, mockAccount1.getTermAccountAvailableCredit());
 	}*/
-		
+	
 	/**
 	* @test
 	*/
@@ -1304,7 +1302,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertFalse(mockAccount1.getGuestAccountFlag());	
 		assertTrue(mockAccount2.getGuestAccountFlag());
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -1394,7 +1392,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertTrue(ListFind(aaaListForResult, result[3].getAccountAuthenticationID()) > 0);
 		assertTrue(ListFind(aaaListForResult, result[4].getAccountAuthenticationID()) > 0);
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -1408,7 +1406,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var result0 = mockAccount0.getActiveAccountAuthentications();
 		assertEquals(0, arrayLen(result0));	
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -1510,7 +1508,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(1, arrayLen(result));
 		assertEquals(mockpaymentMethod1.getPaymentMethodID(), result[1].getPaymentMethodID());		
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -1593,7 +1591,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(1, arrayLen(result));
 		assertEquals(mockpaymentMethod1.getPaymentMethodID(), result[1].getPaymentMethodID());		
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -1646,7 +1644,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(mockpaymentMethod1.getPaymentMethodID(), result[1].getPaymentMethodID());		
 	}
 	
-	
+
 	/**
 	* @test
 	*/
@@ -1738,7 +1736,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	}
 	
 	
-	
+
 	/**
 	* @test
 	*/
@@ -1796,7 +1794,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(1, arrayLen(mockAccount3.getAccountAuthentications()));
 		
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -1909,7 +1907,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals(paymentMethod1.getPaymentMethodID(), mockSM1[2].getPaymentMethodID());
 	}
 	
-	
+
 	/**
 	* @test
 	*/
@@ -2002,7 +2000,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		
 	}
 	
-		
+	
 	/**
 	* @test
 	*/
@@ -2123,7 +2121,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 //		};
 //		var mockAccount = createTestEntity('Account', accountData);
 //	}
-			
+		
 	/**
 	* @test
 	*/
@@ -2224,7 +2222,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	
 	// ============  END TESTING:  Non-Persistent Property Methods =================
 
-	// ================== START TESTING: Overridden Methods ========================	
+	// ================== START TESTING: Overridden Methods ========================
 	/**
 	* @test
 	*/
@@ -2271,7 +2269,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		assertEquals("firstaccountEamilAddress@hotmail.com", mockAccount3.getPrimaryEmailAddress().getEmailAddress());
 		
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -2317,7 +2315,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var mockAccount3 = createTestEntity('Account', accountData3);
 		assertEquals("firstphoneNumber", mockAccount3.getPrimaryPhoneNumber().getPhoneNumber());
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -2357,7 +2355,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		mockAccount = createTestEntity('Account', accountData);
 		assert(mockAccount.getPrimaryAddress().getNewFlag());
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -2402,7 +2400,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var resultNonePrimaryPayment = mockAccount.getPrimaryPaymentMethod();
 		assertTrue(resultNonePrimaryPayment.getNewFlag());
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -2437,7 +2435,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		var resultEmptySuperUserFlag = mockAccount.getSuperUserFlag();
 		assertFalse(resultEmptySuperUserFlag);
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -2457,17 +2455,17 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, " ");
+		assertEquals(resultFirstLastName, "");
 		//testing empty account
 		accountData = {};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, " ");
+		assertEquals(resultFirstLastName, "");
 	}
 	
 	// ================== END TESTING: Overridden Methods ========================
 	
-	// ============= START Testing: Overridden Smart List Getters ================	
+	// ============= START Testing: Overridden Smart List Getters ================
 	/**
 	* @test
 	*/

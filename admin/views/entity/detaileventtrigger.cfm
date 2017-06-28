@@ -54,8 +54,8 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.eventTrigger#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
+	<hb:HibachiEntityDetailForm object="#rc.eventTrigger#" edit="false">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" edit="false" showedit="false"/>
 		
 		<hb:HibachiEntityDetailGroup object="#rc.eventTrigger#">
 			<hb:HibachiEntityDetailItem view="admin:entity/eventtriggertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />

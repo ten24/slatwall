@@ -3,40 +3,20 @@
 class SWCriteriaString{
 	public static Factory(){
 		var directive = (
-			$log,
-			$hibachi,
-			$filter,
 			collectionPartialsPath,
-			collectionService,
-			metadataService,
 			hibachiPathBuilder
 		)=> new SWCriteriaString(
-			$log,
-			$hibachi,
-			$filter,
 			collectionPartialsPath,
-			collectionService,
-			metadataService,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
-			'$hibachi',
-			'$filter',
 			'collectionPartialsPath',
-			'collectionService',
-			'metadataService',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$log,
-		$hibachi,
-		$filter,
 		collectionPartialsPath,
-		collectionService,
-		metadataService,
 		hibachiPathBuilder
 	){
 		return {
