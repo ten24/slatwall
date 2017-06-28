@@ -262,8 +262,8 @@ class SWCriteriaDate{
 			    scope.conditionOptions = getDateOptions(scope.comparisonType);
 				scope.today = function() {
 					if (angular.isDefined(scope.selectedFilterProperty)) {
-						scope.selectedFilterProperty.criteriaRangeStart = new Date();
-						scope.selectedFilterProperty.criteriaRangeEnd = new Date();
+						scope.selectedFilterProperty.criteriaRangeStart = new Date().getTime();
+						scope.selectedFilterProperty.criteriaRangeEnd = new Date().getTime();
 					}
 				};
 
@@ -479,10 +479,10 @@ class SWCriteriaDate{
 									var dateRangeArray = scope.filterItem.value.split("-");
  
                                     var rangeStart = new Date(parseInt(dateRangeArray[0])).toUTCString();
-                                    rangeStart = rangeStart.split(' ').slice(0, 4).join(' ');
+                                    rangeStart = rangeStart.split(' ').slice(0, 5).join(' ');
 
                                     var rangeEnd = new Date(parseInt(dateRangeArray[1])).toUTCString();
-                                    rangeEnd = rangeEnd.split(' ').slice(0, 4).join(' ');
+                                    rangeEnd = rangeEnd.split(' ').slice(0, 5).join(' ');
 
 									scope.selectedFilterProperty.criteriaRangeStart = rangeStart;
 									scope.selectedFilterProperty.criteriaRangeEnd = rangeEnd;
