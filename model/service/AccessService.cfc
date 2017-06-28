@@ -109,9 +109,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!requireSubscriptionSettingDetails.settingValue) {
 				
 				accessDetails.accessFlag = true;
-				if (accessDetails.trackAccessFlag)
-				logAccess(content=arguments.content, accountContentAccess=accountContentAccessSmartList.getRecords()[1]);
-				
+				if (accessDetails.trackAccessFlag){
+					logAccess(content=arguments.content, accountContentAccess=accountContentAccessSmartList.getRecords()[1]);
+				}
 				return accessDetails;
 				
 			}
@@ -130,13 +130,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				accessDetails.accessFlag = true;
 				accessDetails.subscribedAccessFlag = true;
 				accessDetails.subscribedByContentFlag = true;
-				
-				logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaContentSmartList.getRecords()[1]);
-				
+				if (accessDetails.trackAccessFlag){
+					logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaContentSmartList.getRecords()[1]);
+				}
 				return accessDetails;
 			}
 			
-			// If there was not acess via content, then we can check via category or parent category... but only if this content has been categorized
+			// If there was not access via content, then we can check via category or parent category... but only if this content has been categorized
 			if(len(arguments.content.getCategoryIDList())) {
 				
 				var activeAccountBenefitsViaCategorySmartList = duplicate(arguments.account.getActiveSubscriptionUsageBenefitsSmartList());
@@ -147,9 +147,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					accessDetails.accessFlag = true;
 					accessDetails.subscribedAccessFlag = true;
 					accessDetails.subscribedByCategoryFlag = true;
-					
-					logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaCategorySmartList.getRecords()[1]);
-					
+					if (accessDetails.trackAccessFlag){
+						logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaCategorySmartList.getRecords()[1]);
+					}
 					return accessDetails;
 				}
 			}
