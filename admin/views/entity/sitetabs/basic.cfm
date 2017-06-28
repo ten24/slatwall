@@ -14,6 +14,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="false">
 			<cfif !isNull(rc.site.getApp()) && rc.site.getApp().getIntegration().getIntegrationPackage() eq 'slatwallcms'>
 				<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.site#" property="subdomainName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
 			</cfif>
 		</hb:HibachiPropertyList>
