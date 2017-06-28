@@ -375,18 +375,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Setup the current property
 			currentProperty = properties[p];
-
+			
+			
 			// Check to see if we should upload this property
-			if(
-				structKeyExists(arguments.data, currentProperty.name)
+			if( 
+				structKeyExists(arguments.data, currentProperty.name) 
 				&& (
-					!structKeyExists(currentProperty, "fieldType")
+					!structKeyExists(currentProperty, "fieldType") 
 					|| currentProperty.fieldType == "column"
-				) && isSimpleValue(arguments.data[ currentProperty.name ])
-				&& structKeyExists(currentProperty, "hb_fileUpload")
-				&& currentProperty.hb_fileUpload
-				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType")
-				&& len(arguments.data[ currentProperty.name ])
+				) && isSimpleValue(arguments.data[ currentProperty.name ]) 
+				&& structKeyExists(currentProperty, "hb_fileUpload") 
+				&& currentProperty.hb_fileUpload 
+				&& structKeyExists(currentProperty, "hb_fileAcceptMIMEType") 
+				&& len(arguments.data[ currentProperty.name ]) 
 				&& structKeyExists(form, currentProperty.name) 
 				&& len(form[currentProperty.name])
 			) {
@@ -403,7 +404,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// Do the upload
 					var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-
+					
 					// Update the property with the serverFile name
 					_setProperty(currentProperty.name, uploadData.serverFile);
 				} catch(any e) {
@@ -509,7 +510,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
-
+		
 		if(!isNull(object) && !isSimpleValue(object)) {
 			if(arguments.formatValue) {
 				return object.getFormattedValue( propertyName );
@@ -794,13 +795,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	public boolean function getPropertyIsNumeric( required string propertyName ) {
 		var propertyMetaData = getPropertyMetaData(arguments.propertyName);
-		if( structKeyExists(propertyMetaData, "ormtype") &&
+		if( structKeyExists(propertyMetaData, "ormtype") && 
 			listFindNoCase("big_decimal,integer,int,double,float", propertyMetaData.ormtype)
 		){
-			return true;
+			return true; 
 		}
-		return false;
-	}
+		return false; 
+	} 
 
 	// @help public method for getting the meta data of a specific property
 	public struct function getPropertyMetaData( required string propertyName ) {

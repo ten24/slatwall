@@ -69,3 +69,21 @@ Notes:
 		<cfif structKeyExists(request, "sampleNavigation")>
 			<cfoutput>#request.sampleNavigation#</cfoutput>
 		</cfif>
+		
+		<!--- We can display basic user data even if the user is not logged in if they have previously logged in. This only works for non-admin users. --->
+		<cfoutput>
+			<div class="container">
+			<cfif !$.slatwall.getLoggedInFlag()>
+				<span style="color:black;font-size:13px">
+					<cfif !isNull($.slatwall.getAccount().getFullName())> Hello <a href="/meta/sample/account.cfm">#$.slatwall.getAccount().getFullName()# </a></cfif>
+					<span style="color:grey;font-size:14px">
+						<cfif !isNull($.slatwall.getAccount().getCompany())> <small>#$.slatwall.getAccount().getCompany()#</small>&nbsp</cfif>
+					</span>
+					<span style="color:black;font-size:13px">
+						<cfif !isnUll($.slatwall.getSession().getLoggedInDateTime())><small><b>(last seen: #$.slatwall.getSession().getLoggedInDateTime()#)</b></small> &nbsp</cfif><br>
+					</span>
+				</span><br>
+			</cfif>
+			<hr>
+			</div>
+		</cfoutput>

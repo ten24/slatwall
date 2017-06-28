@@ -142,15 +142,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.location = super.save(arguments.location, arguments.data);
 		
 		if(!location.hasErrors()){
-			
+			var isNew = arguments.location.isNew();
 			// We need to persist the state here, so that we can have the locationID in the database
 			getHibachiDAO().flushORMSession();
 			
 			// If this location has any stocks then we need to update them
-			if( !isNull(arguments.location.getParentLocation()) && arguments.location.getParentLocation().getStocksCount() ) {
+			if( isNew && !isNull(arguments.location.getParentLocation()) && arguments.location.getParentLocation().getStocksCount() ) {
 				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
 			}
-		} 
+		}
 		
 		return arguments.location;
 	}

@@ -72,6 +72,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
 		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
 		
 	</hb:HibachiListingDisplay>
 

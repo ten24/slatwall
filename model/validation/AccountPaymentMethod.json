@@ -19,7 +19,7 @@
 		"creditCardNumber":		[{"contexts":"save","conditions":"paymentTypeCreditCardAndNew,editExistingCreditCardNumber","required":true,"dataType":"creditCard"}],
 		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
 		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true,"dataType":"numeric"}],
-		"orderPayments":		[{"contexts":"delete","maxCollection":0}],
+		"subscriptionUsages":	[{"contexts":"delete","maxCollection":0}],
 		"paymentTransactions":	[{"contexts":"delete","method":"hasOnlyGenerateTokenTransactions"}]
 	},
 	"populatedPropertyValidation":{

@@ -72,19 +72,23 @@ class HibachiService{
 	getJsEntities= () =>{
 		return this._jsEntities;
 	};
-		setJsEntities= (jsEntities) =>{
+
+	setJsEntities= (jsEntities) =>{
 		this._jsEntities = jsEntities;
 	};
 
 	getJsEntityInstances= () =>{
 		return this._jsEntityInstances;
 	};
-		setJsEntityInstances= (jsEntityInstances) =>{
+
+	setJsEntityInstances= (jsEntityInstances) =>{
 		this._jsEntityInstances = jsEntityInstances;
 	};
+
 	getEntityExample = (entityName)=>{
 		return this._jsEntityInstances[entityName];
 	};
+
 	getEntityMetaData = (entityName)=>{
 		return this._jsEntityInstances[entityName].metaData;
 	};
@@ -100,6 +104,10 @@ class HibachiService{
 	getEntityHasPropertyByEntityName = (entityName,propertyName):boolean=>{
 		return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
 	};
+
+	getBaseEntityAliasFromName = (entityName)=>{
+		return '_' + entityName;
+	}
 
 	getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName:string,propertyIdentifier:string):boolean=>{
 		var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName,propertyIdentifier);
@@ -129,32 +137,44 @@ class HibachiService{
 				!propertiesStruct[currentProperty] ||
 				!propertiesStruct[currentProperty].cfc
 			){
-				throw("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
+				throw("The Property Identifier "+propertyIdentifier+" is invalid for the entity "+entityName);
 			}
 			var currentEntityName = propertiesStruct[currentProperty].cfc;
 			var currentPropertyIdentifier = propertyIdentifierArray.join('.');
 			return this.getLastEntityNameInPropertyIdentifier(currentEntityName,currentPropertyIdentifier);
 		}
 		return entityName;
+
 	};
-	
+	//helper method to inflate a new entity with data
+	populateEntity = (entityName, data)=>{
+		var newEntity = this.newEntity(entityName);
+		angular.extend(newEntity.data,data);
+		return newEntity;
+	}
 	//service method used to transform collection data to collection objects based on a collectionconfig
 	populateCollection = (collectionData,collectionConfig) =>{
 		//create array to hold objects
 		var entities = [];
 		//loop over all collection data to create objects
 		var hibachiService = this;
-		angular.forEach(collectionData, function(collectionItemData, key){
+		angular.forEach(collectionData, (collectionItemData, key)=>{
 			//create base Entity
-			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace(this.appConfig.applicationKey,'')]();
 			//populate entity with data based on the collectionConfig
-			angular.forEach(collectionConfig.columns, function(column, key){
+			angular.forEach(collectionConfig.columns, (column, key)=>{
 				//get objects base properties
-				var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
+				var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase(),'');
+                propertyIdentifier = this.utilityService.replaceAll(propertyIdentifier,'_','.');
+                if(propertyIdentifier.charAt(0)==='.'){
+                    propertyIdentifier = propertyIdentifier.slice(1);
+                }
+                console.log(propertyIdentifier);
 				var propertyIdentifierArray = propertyIdentifier.split('.');
 				var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+                console.log(propertyIdentifierKey);
 				var currentEntity = entity;
-				angular.forEach(propertyIdentifierArray,function(property,key){
+				angular.forEach(propertyIdentifierArray,(property,key)=>{
 					if(key === propertyIdentifierArray.length-1){
 						//if we are on the last item in the array
 						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
@@ -217,14 +237,17 @@ class HibachiService{
 	/*basic entity getter where id is optional, returns a promise*/
 	getEntity= (entityName:string, options:any) => {
 		/*
-			*
-			* getEntity('Product', '12345-12345-12345-12345');
-			* getEntity('Product', {keywords='Hello'});
-			*
-			*/
+		*
+		* getEntity('Product', '12345-12345-12345-12345');
+		* getEntity('Product', {keywords='Hello'});
+		*
+		*/
+		var apiSubsystemName = this.appConfig.apiSubsystemName || "api";
+
 		if(angular.isUndefined(options)){
 			options = {};
 		}
+
 
 		if(angular.isDefined(options.deferKey)) {
 			this.cancelPromise(options.deferKey);
@@ -233,7 +256,7 @@ class HibachiService{
 		var params:any= {};
 		if(typeof options === 'string') {
 
-			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName+'&entityID='+options;
+			var urlString = this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName='+entityName+'&entityID='+options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
@@ -245,11 +268,12 @@ class HibachiService{
 			params.groupBysConfig = options.groupBysConfig || '';
 			params.isDistinct = options.isDistinct || false;
 			params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-			params.allRecords = options.allRecords || '';
+			params.allRecords = options.allRecords || false;
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
-			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;
+			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
 		}
+
 		if(angular.isDefined(options.id)) {
 			urlString += '&entityId='+options.id;
 		}
@@ -303,14 +327,18 @@ class HibachiService{
         return request.promise;
     };
 	checkUniqueOrNullValue = (object, property, value) => {
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		var objectName = object.metaData.className;
+		var objectID = object.$$getID();
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	};
 	checkUniqueValue = (object, property, value) => {
-		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		var objectName = object.metaData.className;
+		var objectID = object.$$getID();
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + objectName + '&objectID=' + objectID + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;

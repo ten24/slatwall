@@ -18,6 +18,12 @@ class PublicService {
     public newBillingAddress:any;
     public loading:boolean;
 
+    public accountDataPromise:any;
+    public addressOptionData:any;
+    public cartDataPromise:any;
+    public countryDataPromise:any;
+    public stateDataPromise:any;
+
     public http:ng.IHttpService;
     public confirmationUrl:string;
     public header:any;
@@ -36,7 +42,7 @@ class PublicService {
     public edit:String;
     public editPayment:boolean;
     public imagePath:{[key:string]:any}={};
-    
+
     ///index.cfm/api/scope/
 
     //@ngInject
@@ -104,33 +110,48 @@ class PublicService {
         }
     }
     /** accessors for account */
-    public getAccount=():any =>  {
+    public getAccount=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getAccount/';
-        return this.getData(urlBase, "account", "");
+        if(!this.accountDataPromise || refresh){
+            this.accountDataPromise = this.getData(urlBase, "account", "");
+        }
+        return this.accountDataPromise;
     }
     /** accessors for cart */
-    public getCart=():any =>  {
+    public getCart=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCart/';
-        return this.getData(urlBase, "cart", "");
+        if(!this.cartDataPromise || refresh){
+            this.cartDataPromise = this.getData(urlBase, "cart", "");
+        }
+        return this.cartDataPromise;
     }
     /** accessors for countries */
-    public getCountries=():any =>  {
+    public getCountries=(refresh=false):any =>  {
         let urlBase = this.baseActionPath+'getCountries/';
-        return this.getData(urlBase, "countries", "");
+        if(!this.countryDataPromise || refresh){
+            this.countryDataPromise = this.getData(urlBase, "countries", "");
+        }
+        return this.countryDataPromise;
     }
 
     /** accessors for states */
-    public getStates=(countryCode:string):any =>  {
+    public getStates=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
-       return this.getData(urlBase, "states", "?countryCode="+countryCode);
+       if(!this.stateDataPromise || refresh){
+           this.stateDataPromise = this.getData(urlBase, "states", "?countryCode="+countryCode);
+       }
+       return this.stateDataPromise;
     }
 
     /** accessors for states */
-    public getAddressOptions=(countryCode:string):any =>  {
+    public getAddressOptions=(countryCode:string, refresh=false):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
        let urlBase = this.baseActionPath+'getAddressOptionsByCountryCode/';
-       return this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       if(!this.addressOptionData || refresh){
+           this.addressOptionData = this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+       }
+       return this.addressOptionData;
     }
 
     /** accessors for states */
@@ -146,7 +167,7 @@ class PublicService {
                 if (result['cart']){delete result['cart'];}
             }
 
-            if(setter == 'cart'||setter=='account'){
+            if(setter == 'cart'||setter=='account' && this[setter] && this[setter].populate){
                 //cart and account return cart and account info flat
                 this[setter].populate(result);
 
@@ -183,13 +204,15 @@ class PublicService {
         if (!action) {throw "Action is required exception";}
 
         var urlBase = "";
-		
+
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
             urlBase = action; //any path
         }else{
             urlBase = "/index.cfm/api/scope/" + action;//public path
         }
+
+
 
         if(data){
             method = "post";
@@ -262,7 +285,7 @@ class PublicService {
     }
 
     public getActivePaymentMethods = ()=>{
-        let urlString = "/?slataction=admin:ajax.getActivePaymentMethods";
+        let urlString = "/?"+this.appConfig.action+"=admin:ajax.getActivePaymentMethods";
         let request = this.requestService.newPublicRequest(urlString)
         .then((result:any)=>{
             if (angular.isDefined(result.data.paymentMethods)){
@@ -498,7 +521,7 @@ class PublicService {
             'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
         };
 
-        processObject.populate(data);
+        //processObject.populate(data);
 
 
         //Make sure we have required fields for a newOrderPayment.
@@ -737,7 +760,8 @@ class PublicService {
             this.rates = result.data;
         });
     }
-    
+
+
     /** Returns the state from the list of states by stateCode */
     public getStateByStateCode = (stateCode) => {
      	for (var state in this.states.stateCodeOptions){
@@ -746,16 +770,16 @@ class PublicService {
      		}
      	}
     }
-     
+
     /** Returns the state from the list of states by stateCode */
     public resetRequests = (request) => {
      	delete this.requests[request];
     }
-    
+
     /** Returns true if the addresses match. */
     public addressesMatch = (address1, address2) => {
     	if (angular.isDefined(address1) && angular.isDefined(address2)){
-        	if ( (address1.streetAddress == address2.streetAddress && 
+        	if ( (address1.streetAddress == address2.streetAddress &&
 	            address1.street2Address == address2.street2Address &&
 	            address1.city == address2.city &&
 	            address1.postalcode == address2.postalcode &&
@@ -765,35 +789,34 @@ class PublicService {
         }
         return false;
     }
-    
+
     /** Should be pushed down into core. Returns the profile image by name. */
    	public getResizedImageByProfileName = (profileName, skuIDList) => {
    		this.imagePath = {};
-   		
+
    		if (profileName == undefined){
    			profileName = "medium";
    		}
-   		
+
    		this.$http.get("/index.cfm/api/scope/?context=getResizedImageByProfileName&profileName="+profileName+"&skuIds="+skuIDList).success((result:any)=>{
-   		 	
+
    		 	this.imagePath[skuIDList] = "";
-   		 	
+
    		 	result = <any>angular.fromJson(result);
    		 	if (angular.isDefined(result.resizedImagePaths) && angular.isDefined(result.resizedImagePaths.resizedImagePaths) && result.resizedImagePaths.resizedImagePaths[0] != undefined){
-   		 		
+
    		 		this.imagePath[skuIDList] = result.resizedImagePaths.resizedImagePaths[0];
    		 		this.loading = false;
    		 		return this.imagePath[skuIDList];
-   		 		
+
    		 	}else{
    		 		return "";
    		 	}
-   		 	
-   		}); 
+
+   		});
    	}
 
-	
-    /**
+      /**
      *  Returns true when the fulfillment body should be showing
      *  Show if we don't need an account but do need a fulfillment
      *
@@ -813,6 +836,7 @@ class PublicService {
      *  we have a payment but are editting the payment AND nothing else is being edited
      *
      */
+
     public showPaymentTabBody = ()=> {
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
@@ -823,7 +847,7 @@ class PublicService {
         }
         return false;
     };
-    
+
     /**
      *  Returns true if the review tab body should be showing.
      *  Show if we don't need an account,fulfillment,payment, but not if something else is being edited
@@ -838,7 +862,6 @@ class PublicService {
         }
         return false;
     };
-    
     /** Returns true if the fulfillment tab should be active */
     public fulfillmentTabIsActive = ()=> {
         if ((this.edit == 'fulfillment') ||
@@ -848,7 +871,6 @@ class PublicService {
         }
         return false;
     };
-    
     /** Returns true if the payment tab should be active */
     public paymentTabIsActive = ()=> {
         if ((this.edit == 'payment') ||
@@ -860,20 +882,10 @@ class PublicService {
         }
         return false;
     };
-    
-    /** Returns true if the review tab should be active */
-    public reviewTabIsActive =  ()=> {
-        if ((this.edit == 'review' ||
-            (this.edit == '' &&
-                (this.cart.orderRequirementsList.indexOf('account') == -1) && this.account.accountID &&
-                (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-                (this.cart.orderRequirementsList.indexOf('payment') == -1)))) {
-            return true;
-        }
-        return false;
-    };
 
-	
-	
+
+
+
 }
 export {PublicService};
+

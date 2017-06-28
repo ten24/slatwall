@@ -58,14 +58,14 @@ Notes:
 		
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" disabled="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
 
 	<hb:HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
 							   recordDetailAction="admin:entity.detaileventtrigger"
-							   recordEditAction="admin:entity.editeventtrigger">
+							  >
 		
 		<hb:HibachiListingColumn propertyIdentifier="eventTriggerName" />
 		<hb:HibachiListingColumn propertyIdentifier="eventTriggerType" />

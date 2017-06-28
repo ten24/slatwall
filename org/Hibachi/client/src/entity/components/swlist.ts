@@ -4,18 +4,15 @@ class SWList{
 	public static Factory(){
 		var directive = (
 			$log,
-			$hibachi,
 			coreEntityPartialsPath,
 			hibachiPathBuilder
 		)=> new SWList(
 			$log,
-			$hibachi,
 			coreEntityPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
-			'$hibachi',
 			'coreEntityPartialsPath',
 			'hibachiPathBuilder'
 		];
@@ -23,7 +20,6 @@ class SWList{
 	}
 	constructor(
 		$log,
-		$hibachi,
 		coreEntityPartialsPath,
 			hibachiPathBuilder
 	){

@@ -47,7 +47,7 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-		
+	
 	/**
 	* @test
 	*/
@@ -76,7 +76,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!arrayLen(entitiesThatDontHaveSingularNameArray));
 	}
-		
+	
 	/**
 	* @test
 	*/
@@ -100,7 +100,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(allSpelledProperly);
 	}
 
-	//Entity Audit Properties Test	
+	//Entity Audit Properties Test
 	/**
 	* @test
 	*/
@@ -111,7 +111,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entitiesThatDontHaveAuditPropertiesArray = [];
 
 		// Exception Entities with no properties
-		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript";
+		var entitiesWithNoAuditPropsRequired = "SlatwallDatabaseCache,SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript,SlatwallServerInstance";
 
 		// Exception Entities that only require the createdByAccountID & createdDateTime
 		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallShippingMethodOptionSplitShipment,SlatwallStockReceiverItem,SlatwallEmailBounce";
@@ -162,7 +162,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(entitiesThatDontHaveAuditPropertiesArray));
 	}
 
-	//Misspell persistent Test	
+	//Misspell persistent Test
 	/**
 	* @test
 	*/
@@ -191,7 +191,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(misspellCount EQ 0);
 	}
 
-	//Misspell persistent Test	
+	//Misspell persistent Test
 	/**
 	* @test
 	*/
@@ -241,7 +241,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(calculatedErrors EQ 0);
 	}
 
-	// Oracle Naming tests	
+	// Oracle Naming tests
 	/**
 	* @test
 	*/
@@ -260,7 +260,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(pass);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -283,7 +283,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(pass);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -329,7 +329,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(pass);
 	}
 
-	// Table Name Prefixes	
+	// Table Name Prefixes
 	/**
 	* @test
 	*/
@@ -342,7 +342,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			assert(left(getMetaData(entity).table,2) == "Sw", "The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 		}
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -360,7 +360,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		}
 	}
 
-	// Bi Directional Helpers	
+	// Bi Directional Helpers
 	/**
 	* @test
 	*/
@@ -415,7 +415,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(pass);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -448,7 +448,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert(!arrayLen(exceptionErrorEntities));
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -479,7 +479,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!arrayLen(nonFilteredEntities));
 	}
 	
-	//this function makes sure that many-to-many relationships are not using cascade delete. 	
+	//this function makes sure that many-to-many relationships are not using cascade delete. 
 	/**
 	* @test
 	*/
@@ -512,11 +512,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype	
+	//This function checks if a persistant property (not cfc) uses type instead of ormtype to define the datatype
 	/**
 	* @test
 	*/
-	public void function check_persistant_nonCFC_properties_that_use_type() {
+	public void function check_persistant_nonCFC_properties_that_use_type_instead_of_ormtype() {
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
 		var criminalsMessage = "";

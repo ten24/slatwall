@@ -7,7 +7,8 @@
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.category.getChildCategoriesSmartList()#"
 							   recordEditAction="admin:entity.editcategory"
-							   recordDetailAction="admin:entity.detailcategory">
+							   recordDetailAction="admin:entity.detailcategory"
+							   expandable="false">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="categoryName" />
 		<hb:HibachiListingColumn propertyIdentifier="restrictAccessFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />

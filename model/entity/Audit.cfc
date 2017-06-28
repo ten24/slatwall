@@ -50,20 +50,20 @@ component entityname="SlatwallAudit" table="SwAudit" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="auditID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="auditType" ormType="string" hb_formatType="rbKey"; // create, update, delete, rollback, archive, merge, scheduleUpdate, login, logout
+	property name="auditType" ormtype="string" hb_formatType="rbKey"; // create, update, delete, rollback, archive, merge, scheduleUpdate, login, logout
 	property name="auditDateTime" ormtype="timestamp";
 	property name="auditArchiveStartDateTime" ormtype="timestamp";
 	property name="auditArchiveEndDateTime" ormtype="timestamp";
 	property name="auditArchiveCreatedDateTime" ormtype="timestamp";
-	property name="baseObject" ormType="string" index="EI_BASEOBJECT";
-	property name="baseID" ormType="string" index="EI_BASEID";
-	property name="data" ormType="string" length="8000";
-	property name="title" ormType="string" length="1000";
+	property name="baseObject" ormtype="string" index="EI_BASEOBJECT";
+	property name="baseID" ormtype="string" index="EI_BASEID";
+	property name="data" ormtype="string" length="8000";
+	property name="title" ormtype="string" length="1000";
 	
-	property name="sessionIPAddress" ormType="string";
-	property name="sessionAccountID" ormType="string" length="32";
-	property name="sessionAccountEmailAddress"ormType="string";
-	property name="sessionAccountFullName" ormType="string";
+	property name="sessionIPAddress" ormtype="string";
+	property name="sessionAccountID" ormtype="string" length="32";
+	property name="sessionAccountEmailAddress" ormtype="string";
+	property name="sessionAccountFullName" ormtype="string";
 	
 	// TODO future scheduled date
 	// TODO comment

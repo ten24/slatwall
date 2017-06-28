@@ -70,8 +70,8 @@ Notes:
 				<form id="adminResetPasswordForm" action="?s=1" class="s-form-signin" method="post">
 					<h2>Reset Password</h2>
 					<input type="hidden" name="slatAction" value="admin:main.resetPassword" />
-					<input type="hidden" name="swprid" value="#rc.swprid#" />
-					<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
+					<input type="hidden" name="swprid" value="#rc.fw.getHibachiScope().hibachiHtmlEditFormat(rc.swprid)#" />
+					<input type="hidden" name="accountID" value="#rc.fw.getHibachiScope().hibachiHtmlEditFormat(left(rc.swprid, 32))#" />
 
 					<cfif structKeyExists(rc,'processObject')>
 						<cfset processObject = rc.processObject />
@@ -111,7 +111,7 @@ Notes:
 						<!--- <h2>#$.slatwall.rbKey('define.login')#</h2> --->
 						<input type="hidden" name="slatAction" value="admin:main.authorizelogin" />
 						<cfif structKeyExists(rc, "sRedirectURL")>
-							<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
+							<input type="hidden" name="sRedirectURL" value="#rc.fw.getHibachiScope().hibachiHtmlEditFormat(rc.sRedirectURL)#" />
 						</cfif>
 						<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off' placeholder='Email Address' required" />
 						<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" fieldAttributes="autocomplete='off' placeholder='Password' required" />

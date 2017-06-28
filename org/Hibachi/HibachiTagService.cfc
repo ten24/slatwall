@@ -13,6 +13,10 @@
 			<cfset arguments.domain = getApplicationValue("hibachiConfig").sessionCookieDomain />
 		</cfif>
 		
+		<cfif !structKeyExists(arguments, "secure") and len(getApplicationValue("hibachiConfig").sessionCookieSecure)>
+			<cfset arguments.secure = getApplicationValue("hibachiConfig").sessionCookieSecure />
+		</cfif>
+		
 		<cfset arguments = removeNullStructValues(arguments)>
 		<cfcookie attributeCollection="#arguments#" />
 	</cffunction>

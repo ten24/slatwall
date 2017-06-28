@@ -11,7 +11,8 @@ class SWOrderItems{
 			formService,
 			orderItemPartialsPath,
 			slatwallPathBuilder,
-			paginationService
+			paginationService,
+			observerService
 		)=> new SWOrderItems(
 			$log,
 			$timeout,
@@ -21,7 +22,8 @@ class SWOrderItems{
 			formService,
 			orderItemPartialsPath,
 			slatwallPathBuilder,
-			paginationService
+			paginationService,
+			observerService
 		);
 		directive.$inject = [
 			'$log',
@@ -32,7 +34,8 @@ class SWOrderItems{
 			'formService',
 			'orderItemPartialsPath',
 			'slatwallPathBuilder',
-			'paginationService'
+			'paginationService',
+			'observerService'
 		];
 		return directive;
 	}
@@ -46,7 +49,8 @@ class SWOrderItems{
 		formService,
 		orderItemPartialsPath,
 		slatwallPathBuilder,
-		paginationService
+		paginationService,
+		observerService
 	){
 		return {
 			restrict: 'E',
@@ -87,22 +91,37 @@ class SWOrderItems{
 					var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
  					orderItemCollection.setDisplayProperties(
  						`orderItemID,currencyCode,sku.skuName
-                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID,sku.product.productID
- 						,sku.product.productName,sku.product.productDescription,sku.eventStartDateTime
- 						,quantity,orderFulfillment.fulfillmentMethod.fulfillmentMethodName,orderFulfillment.orderFulfillmentID
- 						,orderFulfillment.shippingAddress.streetAddress
-     					,orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode
- 						,orderFulfillment.shippingAddress.countryCode
-                         ,orderItemType.systemCode,orderFulfillment.fulfillmentMethod.fulfillmentMethodType
-                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress,orderFulfillment.pickupLocation.primaryAddress.address.street2Address
-                         ,orderFulfillment.pickupLocation.primaryAddress.address.city,orderFulfillment.pickupLocation.primaryAddress.address.stateCode
+                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID
+						 ,sku.product.productID
+ 						 ,sku.product.productName,sku.product.productDescription
+						 ,sku.eventStartDateTime
+ 						 ,quantity
+						 ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName
+						 ,orderFulfillment.orderFulfillmentID
+ 						 ,orderFulfillment.shippingAddress.streetAddress
+     					 ,orderFulfillment.shippingAddress.street2Address
+						 ,orderFulfillment.shippingAddress.postalCode
+						 ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode
+ 						 ,orderFulfillment.shippingAddress.countryCode
+                         ,orderItemType.systemCode
+						 ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType
+                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress
+						 ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address
+                         ,orderFulfillment.pickupLocation.primaryAddress.address.city
+						 ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode
                          ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode
- 						,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
+						 ,orderReturn.orderReturnID
+ 						 ,orderReturn.returnLocation.primaryAddress.address.streetAddress
+						 ,orderReturn.returnLocation.primaryAddress.address.street2Address
+                         ,orderReturn.returnLocation.primaryAddress.address.city
+						 ,orderReturn.returnLocation.primaryAddress.address.stateCode
+                         ,orderReturn.returnLocation.primaryAddress.address.postalCode
+						 ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
                          ,sku.subscriptionBenefits
                          ,sku.product.productType.systemCode,sku.options,sku.locations
- 						,sku.subscriptionTerm.subscriptionTermName
- 						,sku.imageFile,
-                        stock.location.locationName`
+ 						 ,sku.subscriptionTerm.subscriptionTermName
+ 						 ,sku.imageFile
+                         ,stock.location.locationName`
  					   
                       )
  					.addFilter('order.orderID',scope.orderId)
@@ -194,6 +213,9 @@ class SWOrderItems{
                     scope.orderItems = undefined;
                     scope.getCollection();
                 });
+
+				observerService.attach(scope.getCollection,'swPaginationAction');
+
 			}//<--End link
 		};
 	}

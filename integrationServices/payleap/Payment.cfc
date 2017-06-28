@@ -76,7 +76,9 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 	
 	public any function processCreditCard(required any requestBean){
 		var requestData = getRequestData(requestBean);
-		var rawResponse = postRequest(requestData, requestBean.getTransactionID());
+		var liveModeFlag = getLiveModeFlag();
+		
+		var rawResponse = postRequest(requestData, requestBean.getTransactionID(),liveModeFlag);
 		return getResponseBean(rawResponse, requestData, requestBean);
 	}
 	
@@ -120,11 +122,11 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 		return arrayToList(customerData,"&");
 	}
 	
-	private any function postRequest(required string requestData, required string requestID){
+	private any function postRequest(required string requestData, required string requestID, boolean liveModeFlag=setting('liveMode')){
 		
 		var httpRequest = new http();
 		httpRequest.setMethod("POST");
-		httpRequest.setUrl(getGatewayURL());
+		httpRequest.setUrl(getGatewayURL(arguments.liveModeFlag));
 		httpRequest.setPort(getGatewayPort());
 		httpRequest.setTimeout(variables.timeout);
 		httpRequest.setResolveurl(false);
@@ -136,16 +138,16 @@ component accessors="true" output="false" displayname="PayLeap" implements="Slat
 		return httpRequest.send().getPrefix();
 	}
 	
-	private string function getGatewayURL(){
-		return "https://" & getGatewayAddress();
+	private string function getGatewayURL(boolean liveModeFlag=setting('liveModeFlag')){
+		return "https://" & getGatewayAddress(arguments.liveModeFlag);
 	}
 	
 	private numeric function getGatewayPort(){
 		return 443;
 	}
 	
-	private string function getGatewayAddress(){
-		if(setting('liveModeFlag')){
+	private string function getGatewayAddress(boolean liveModeFlag=setting('liveModeFlag')){
+		if(arguments.liveModeFlag){
 			return variables.liveGatewayAddress;
 		} else {
 			return variables.testGatewayAddress;

@@ -3,31 +3,19 @@
 class SWDetailTabs{
 	public static Factory(){
 		var directive = (
-			$location,
-			$log,
-			$hibachi,
 			coreEntityPartialsPath,
 			hibachiPathBuilder
 		)=> new SWDetailTabs(
-			$location,
-			$log,
-			$hibachi,
 			coreEntityPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$location',
-			'$log',
-			'$hibachi',
 			'coreEntityPartialsPath',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
-		$location,
-		$log,
-		$hibachi,
 		coreEntityPartialsPath,
 		hibachiPathBuilder
 	){

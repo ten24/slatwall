@@ -1,4 +1,3 @@
-<cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.title" type="string" default="">
 <cfparam name="attributes.icon" type="string" default="plus">
@@ -22,7 +21,7 @@
 		<cfelseif attributes.type eq "nav">
 			<cfoutput>
 				<li class="dropdown">
-					<a href="##" class="dropdown-toggle"><i class="fa fa-#attributes.icon#"></i> #attributes.title# </a>
+					<a href="##" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-#attributes.icon#"></i> #attributes.title# </a>
 					<ul class="dropdown-menu #attributes.dropdownClass#" id="#attributes.dropdownId#">
 						#thisTag.generatedContent#
 						<cfset thisTag.generatedContent = "" />
