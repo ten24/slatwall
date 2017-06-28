@@ -80,6 +80,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getCurrentRequestSite() {
 		var domain = listFirst(cgi.HTTP_HOST,':');
+		var subdomain = listFirst(cgi.HTTP_HOST,'.'); 
+		if(subdomain != domain){	
+ 			var subdomainSite = getService('siteService').getSiteBySubdomainName(subdomain);
+ 			if(!isNull(subdomainSite)){ 
+ 				return subdomainSite; 
+ 			}	
+ 		}	
 		return getDAO('siteDAO').getSiteByDomainName(domain);
 	}
 
