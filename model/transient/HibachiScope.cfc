@@ -78,9 +78,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// ================= Overrides =================================
 	
-	public any function getCurrentRequestSite() {
-		var domain = listFirst(cgi.HTTP_HOST,':');
-		var urlArray = listToArray(listFirst(listFirst(cgi.HTTP_HOST,'/'),':'),'.'); 
+	public any function getCurrentRequestSite(required string httpHost=cgi.HTTP_HOST) {
+		var domain = listFirst(arguments.httpHost,':');
+		var urlArray = listToArray(listFirst(listFirst(arguments.httpHost,'/'),':'),'.'); 
 		var www = ''; 
 		var subdomain = ''; 
 		var domainName = ''; 
