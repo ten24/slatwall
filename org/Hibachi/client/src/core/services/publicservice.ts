@@ -60,7 +60,9 @@ class PublicService {
     public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
     public successfulActions = [];
+    public failureActions=[];
     public hibachiConfig:any;
+    public uploadingFile:boolean;
 
     ///index.cfm/api/scope/
 
@@ -289,7 +291,7 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
-        var urlBase = hibachiConfig.baseURL;
+        var urlBase = this.hibachiConfig.baseURL;
 
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
@@ -337,7 +339,7 @@ class PublicService {
 
     public uploadFile = (action, data) =>{
         this.uploadingFile = true;
-        let url = hibachiConfig.baseURL + action;
+        let url = this.hibachiConfig.baseURL + action;
 
         let formData = new FormData();
 
@@ -1165,13 +1167,10 @@ class PublicService {
         return attributeValues;
     }
 
-    //Use with bind, assigning 'this' as the temporary order item
-    //a.k.a. slatwall.bind(tempOrderItem,slatwall.copyOrderItem,originalOrderItem);
-    //gets you tempOrderItem.orderItem == originalOrderItem;
-    public copyOrderItem(orderItem){
-        this.orderItem = {orderItemID:orderItem.orderItemID,
+    public copyOrderItem = (tempOrderItem, orderItem) =>{
+        tempOrderItem.orderItem = {orderItemID:orderItem.orderItemID,
             quantity:orderItem.quantity};
-        return this;
+        return tempOrderItem;
     }
 
     public binder = (self, fn, ...args)=>{
