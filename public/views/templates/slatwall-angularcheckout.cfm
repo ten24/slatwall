@@ -26,7 +26,7 @@
 	                <p ng-show="slatwall.hasAccount()">Not you? 
 	                	<sw-action-caller
 					        data-action="logout"
-					        data-type="link"
+					        data-type="ajaxlink"
 					        data-text="Logout">
 				    	</sw-action-caller>
 			    	</p>
