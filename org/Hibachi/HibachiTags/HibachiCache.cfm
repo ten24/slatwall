@@ -7,14 +7,14 @@
 	
 	<cfif !len(attributes.cacheKey) && !isNull(attributes.hibachiScope.getContent())>
 		<cfset attributes.cacheKey = attributes.hibachiScope.getContent().getContentCacheKey()/>
-		<cfset attributes.timespan = createTimeSpan(0,0,0,"#attributes.hibachiScope.content().setting('contentTemplateCacheInSeconds')#")/>
+		<cfset attributes.timespan = createTimeSpan(0,0,0,"#attributes.hibachiScope.getContent().setting('contentTemplateCacheInSeconds')#")/>
 		
 	</cfif>
 	<cfif attributes.timespan eq 0>
 		<cfcache action="flush" id="#attributes.cacheKey#">
 	</cfif>
 	<!--- used to clear template cache --->
-	<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
+	<cfset expireUrl= "*#attributes.hibachiScope.getContent().getUrlTitlePath()#?clearTemplateCache=true"/>
 	<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 	
 	<cfif !isNull(cacheContent)>
