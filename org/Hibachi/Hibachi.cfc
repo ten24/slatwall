@@ -428,6 +428,7 @@ component extends="FW1.framework" {
 		// Setup a $ in the request context, and the hibachiScope shortcut
 		request.context.fw = getHibachiScope().getApplicationValue("application");
 		request.context.$ = {};
+		request.context.$.Hibachi = getHibachiScope();	
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
@@ -610,7 +611,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiJWT", "#variables.framework.applicationKey#.org.Hibachi.HibachiJWT",false);
 					}
 					if(!coreBF.containsBean("hibachiEntityParser")){
-						coreBF.declareBean("hibachiEntityParser", "#variables.framework.applicationKey#.org.Hibachi.hibachiEntityParser",false);
+						coreBF.declareBean("hibachiEntityParser", "#variables.framework.applicationKey#.org.Hibachi.HibachiEntityParser",false);
 					}
 					if(!coreBF.containsBean("hibachiRecaptcha")){
 						coreBF.declareBean("hibachiRecaptcha", "#variables.framework.applicationKey#.org.Hibachi.HibachiRecaptcha",false);
