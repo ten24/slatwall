@@ -341,7 +341,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	        var orderFulfillmentWithEmailTypeIndex = 0;
 	        var orderFulfillmentWithPickupTypeIndex = 0;
 	        var orderFulfillmentWithShippingTypeIndex = 0;
-	        for(i=1; i<=arrayLen(data.orderFulfillments);i=i+1){
+	        for(var i=1; i<=arrayLen(data.orderFulfillments);i=i+1){
 	        	var orderFulfillment = data.orderFulfillments[i];
 	        	if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'email'){
 	            	orderFulfillmentWithEmailTypeIndex = i;

@@ -1323,6 +1323,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 
 				// Call the saveOrder method so that accounts, fulfillments & payments are updated
+				arguments.order.validate('save');
+				if(!arguments.order.hasErrors()){
 				arguments.order = this.saveOrder(arguments.order, arguments.data);
 					
 					// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
@@ -1488,6 +1490,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
+				}
 
 			} else {
 				arguments.order.addError('duplicate', rbKey('validate.processOrder_PlaceOrder.duplicate'));
@@ -1622,7 +1625,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderPayment.getOrderPaymentID() == arguments.data.orderPaymentID) {
 					if(orderPayment.isDeletable()) {
 						arguments.order.removeOrderPayment( orderPayment );
-						this.deleteOrderPayment( arguments.order , orderPayment );
+						this.deleteOrderPayment( orderPayment );
 					} else {
 						orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstRemoved') );
 					}
@@ -3052,13 +3055,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 
-	public any function deleteOrderPayment( required any order, required any orderPayment ) {
+	public any function deleteOrderPayment( required any orderPayment ) {
 
 		// Check delete validation
 		if(arguments.orderPayment.isDeletable()) {
 
 			// Remove the primary fields so that we can delete this entity
-			arguments.order.removeOrderPayment( arguments.orderPayment );
+			var order = arguments.orderPayment.getOrder();
+
+			order.removeOrderPayment( arguments.orderPayment );
 
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderPayment );
