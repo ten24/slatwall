@@ -73,7 +73,7 @@ Notes:
 		if(structKeyExists(form, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(form.slatAction)) {
-				arguments.slatwallScope.doAction( action, request.context);
+				arguments.actionResult = arguments.slatwallScope.doAction( action, request.context);
 				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
@@ -81,7 +81,7 @@ Notes:
 		} else if (structKeyExists(url, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(url.slatAction)) {
-				var actionResult = arguments.slatwallScope.doAction( action, request.context);
+				arguments.actionResult = arguments.slatwallScope.doAction( action, request.context);
 				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
@@ -226,8 +226,16 @@ Notes:
 		}
 		
 		arguments.contentPath = contentPath;
+
+		arguments.renderActionInTemplate = arguments.hibachiScope.getContent().setting('contentRenderHibachiActionInTemplate');	
+ 		
 		
 		var templateData = buildRenderedContent(argumentCollection=arguments);
+		if(arguments.renderActionInTemplate && structKeyExists(arguments, "actionResult")){
+ 			var hibachiView = {}; 
+ 			hibachiView['contentBody'] = arguments.actionResult;
+ 			templateBody = arguments.hibachiScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,hibachiView);
+ 		} 
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
 		
