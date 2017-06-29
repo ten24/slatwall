@@ -334,42 +334,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
 
-        //Attach some meta for for orderFulfillments
-        if(structKeyExists(data, 'orderFulfillments')){
-	        var requiresFulfillment = false;
-	        var orderFulfillmentWithShippingMethodOptionsIndex = 0;
-	        var orderFulfillmentWithEmailTypeIndex = 0;
-	        var orderFulfillmentWithPickupTypeIndex = 0;
-	        var orderFulfillmentWithShippingTypeIndex = 0;
-	        for(i=1; i<=arrayLen(data.orderFulfillments);i=i+1){
-	        	var orderFulfillment = data.orderFulfillments[i];
-	        	if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'email'){
-	            	orderFulfillmentWithEmailTypeIndex = i;
-	            	requiresFulfillment = true;
-	            	continue;
-	            }
-	            if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'pickup'){
-	            	orderFulfillmentWithPickupTypeIndex = i;
-	            	requiresFulfillment = true;
-	            	continue;
-	            }
-	            if(orderFulfillment.fulfillmentMethod.fulfillmentMethodType == 'shipping'){
-	            	orderFulfillmentWithShippingTypeIndex = i;
-	            	requiresFulfillment = true;
-	            }
-	        	if (isArray(orderFulfillment.shippingMethodOptions) && arrayLen(orderFulfillment.shippingMethodOptions) >= 1){
-	                  orderFulfillmentWithShippingMethodOptionsIndex = i;
-	                  requiresFulfillment = true;
-	                continue;
-	            }
-	        }
-	        data['requiresFulfillment'] = requiresFulfillment;
-	        data['orderFulfillmentWithShippingMethodOptionsIndex'] = orderFulfillmentWithShippingMethodOptionsIndex-1;
-	        data['orderFulfillmentWithEmailTypeIndex'] = orderFulfillmentWithEmailTypeIndex-1;
-	        data['orderFulfillmentWithPickupTypeIndex'] = orderFulfillmentWithPickupTypeIndex-1;
-	        data['orderFulfillmentWithShippingTypeIndex'] = orderFulfillmentWithShippingTypeIndex-1;
-	        
-        }
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
 		data["errors"] = getCart().getErrors();

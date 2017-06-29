@@ -370,7 +370,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var anchorTemplateString = `
                     <a ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
                 `
-                console.log('rightcontentprop', $scope.swTypeaheadSearch.rightContentPropertyIdentifier);
+
                 if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){
                     var rightContentTemplateString = `<span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>`
                 } else {

@@ -518,7 +518,7 @@ component extends="HibachiService"  accessors="true" output="false"
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
                 var order = getHibachiScope().cart();
-                for(fulfillment in order.getOrderFulfillments()){
+                for(var fulfillment in order.getOrderFulfillments()){
                   if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                     var orderFulfillment = fulfillment;
                   }
@@ -564,7 +564,8 @@ component extends="HibachiService"  accessors="true" output="false"
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().getCart();
-            for(fulfillment in order.getOrderFulfillments()){
+
+            for(var fulfillment in order.getOrderFulfillments()){
               if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
               }
@@ -591,7 +592,7 @@ component extends="HibachiService"  accessors="true" output="false"
       var order = getHibachiScope().getCart();
       var orderFulfillments = order.getOrderFulfillments();
 
-      for(fulfillment in orderFulfillments){
+      for(var fulfillment in orderFulfillments){
         if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
           var orderFulfillment = fulfillment;
         }
@@ -620,7 +621,7 @@ component extends="HibachiService"  accessors="true" output="false"
       var order = getHibachiScope().getCart();
       var orderFulfillments = order.getOrderFulfillments();
 
-      for(fulfillment in orderFulfillments){
+      for(var fulfillment in orderFulfillments){
         if(!isNull(data.fulfillmentID)){
           if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
             var orderFulfillment = fulfillment;
@@ -1209,7 +1210,7 @@ component extends="HibachiService"  accessors="true" output="false"
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
 
         if(!giftCard){
-          for(payment in addOrderPayment.getOrderPayments()){
+          for(var payment in addOrderPayment.getOrderPayments()){
             addErrors(data, payment.getErrors());
           }
           getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
@@ -1245,7 +1246,7 @@ component extends="HibachiService"  accessors="true" output="false"
                 param name="data.newOrderPayment.orderPaymentID" default="";
                 param name="data.accountAddressID" default="";
                 param name="data.accountPaymentMethodID" default="";
-                writeDump("why is this");abort;
+
                 // Make sure that someone isn't trying to pass in another users orderPaymentID
                 if(len(data.newOrderPayment.orderPaymentID)) {
                     var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);

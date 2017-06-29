@@ -1323,7 +1323,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 
 				// Call the saveOrder method so that accounts, fulfillments & payments are updated
-				arguments.order = this.saveOrder(arguments.order, arguments.data);
+				arguments.order.validate('save');
+				if(!arguments.order.hasErrors()){
+					arguments.order = this.saveOrder(arguments.order, arguments.data);
 					
 					// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
 					if(!arguments.order.hasErrors()) {
@@ -1488,6 +1490,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
+				}
 
 			} else {
 				arguments.order.addError('duplicate', rbKey('validate.processOrder_PlaceOrder.duplicate'));

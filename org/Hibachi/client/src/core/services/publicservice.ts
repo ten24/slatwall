@@ -540,12 +540,6 @@ class PublicService {
         );
     }
 
-    /** Returns true if the order requires a fulfillment */
-    public orderRequiresFulfillment = ():boolean=> {
-
-        return this.cart.orderRequiresFulfillment();
-    };
-
     /**
      *  Returns true if the order requires a account
      *  Either because the user is not logged in, or because they don't have one.
