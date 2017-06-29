@@ -9,21 +9,24 @@
 		<cfset attributes.cacheKey = ""/>
 		<cfset attributes.cacheKey &= attributes.hibachiScope.getDao('hibachiDao').getApplicationKey()/>
 		<cfset attributes.cacheKey &= attributes.hibachiScope.site().getSiteCode()/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.content().getUrlTitlePath()/>
+		<cfset attributes.cacheKey &= attributes.hibachiScope.getContent().getUrlTitlePath()/>
 		<cfset attributes.cacheKey &= CGI.QUERY_STRING/> 
 		<cfset attributes.cacheKey = hash(attributes.cacheKey,'MD5')/>
 		
 		
-		<cfset attributes.timespan = createTimeSpan(0,0,0,"#attributes.hibachiScope.content().setting('contentTemplateCacheInSeconds')#")/>
+		<cfset attributes.timespan = createTimeSpan(0,0,0,"#attributes.hibachiScope.getContent().setting('contentTemplateCacheInSeconds')#")/>
 		
 	</cfif>
 	<cfif attributes.timespan eq 0>
-		<cfcache action="flush" id="#attributes.cacheKey#">
+		<cfcache action="flush" id="#attributes.cacheKey#"><!--- adding / will break on cf10 ---> 
 	</cfif>
 	<!--- used to clear template cache --->
-	<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
-	<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
-	
+	<cfif !isNull(attributes.hibachiScope.getContent()) AND !isNull(attributes.hibachiScope.getContent().getUrlTitlePath())> 
+		<cfset expireUrl= "*#attributes.hibachiScope.getContent().getUrlTitlePath()#?clearTemplateCache=true"/>
+	</cfif>
+	<cfif len(attributes.cacheKey)> 
+		<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#"><!--- adding /> will break on cf10 ---> 
+	</cfif> 
 	<cfif !isNull(cacheContent)>
 		<cfsavecontent variable="hibachiTagContent" >
 			<cfoutput>#cacheContent#</cfoutput>
@@ -40,7 +43,9 @@
 		<cfoutput>#hibachiTagContent#</cfoutput>
 		<cfexit>
 	<cfelse>
-		<cfcache action="flush" id="#attributes.cacheKey#">
+		<cfif len(attributes.cacheKey)> 
+			<cfcache action="flush" id="#attributes.cacheKey#"><!--- adding /> will break on cf10 ---> 
+		</cfif>
 	</cfif>
 	
 </cfif>
@@ -50,8 +55,10 @@
 	<cfsavecontent variable="hibachiTagContent" >
 		<cfoutput>#thisTag.generatedContent#</cfoutput>
 	</cfsavecontent>
-	<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 	
+	<cfif len(attributes.cacheKey)> 
+		<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#"><!--- adding /> will break on cf10 ---> 
+	</cfif> 	
 	<cfset templateString = "\$\[\[insertUnCachedKey\]\]"/>
 	<cfset uncachedStrings =  reMatchNoCase(templateString,hibachiTagContent)>
 	<cfif arrayLen(uncachedStrings)>
