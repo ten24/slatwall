@@ -74,7 +74,7 @@ Notes:
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
-									<hb:HibachiActionCaller action="main.detailimageattribute" queryString="#thisImagePath#" class="btn btn-default" iconOnly="true" icon="eye-open" modal="true" />
+									<hb:HibachiActionCaller action="main.imagemodal" queryString="imageFile=#imageFileStruct.imageFile#" class="btn btn-default" iconOnly="true" icon="eye-open" modal="true" />
 								</div>
 								<div class="btn-group" role="group">
 									<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFileStruct.imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
