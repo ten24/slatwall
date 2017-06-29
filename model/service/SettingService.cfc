@@ -150,6 +150,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentRequirePurchaseFlag = {fieldType="yesno",defaultValue=0},
 			contentRequireSubscriptionFlag = {fieldType="yesno",defaultValue=0},
 			contentIncludeChildContentProductsFlag = {fieldType="yesno",defaultValue=1},
+			contentRenderHibachiActionInTemplate = {fieldType="yesno", defaultValue=0}, 	
 			contentRestrictedContentDisplayTemplate = {fieldType="select"},
 			contentHTMLTitleString = {fieldType="text"},
 			contentMetaDescriptionString = {fieldType="textarea"},
@@ -879,7 +880,7 @@ component extends="HibachiService" output="false" accessors="true" {
 					}
 					for(var i=1; i<=arrayLen(options); i++) {
 						if(isStruct(options[i])) {
-							if(options[i]['value'] == settingDetails.settingValue) {
+							if(options[i]['value'] == settingDetails.settingValue && structKeyExists(options[i], "name")) {
 								settingDetails.settingValueFormatted = options[i]['name'];
 								break;
 							}
