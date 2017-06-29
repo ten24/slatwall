@@ -46,24 +46,35 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.content" type="any" />
-
-<cfoutput>
-	<swa:SlatwallSettingTable>
-		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRenderHibachiActionInTemplate" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentTemplateFile" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds" settingObject="#rc.content#" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+<cfimport prefix="hb" taglib="../HibachiTags" />
+<cfif thisTag.executionMode is "start">
+	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+	
+	<cfparam name="attributes.settingName" type="string" />
+	<cfparam name="attributes.settingObject" type="any" default="" />
+	<cfparam name="attributes.settingFilterEntities" type="array" default="#arrayNew(1)#" />
+	<cfparam name="attributes.settingDetails" type="any" default="" />
+	<cfparam name="attributes.settingDisplayName" type="string" default="" />
+	<cfparam name="attributes.settingHint" type="string" default="" >
+	<cfparam name="attributes.settingFilterEntitiesName" type="string" default="" >
+	<cfparam name="attributes.settingFilterEntitiesURL" type="string" default="" >
+	
+	<cfif isObject(attributes.settingObject)>
+		<cfset attributes.settingDetails = attributes.settingObject.getSettingDetails(settingName=attributes.settingName, filterEntities=attributes.settingFilterEntities) />
+	<cfelse>
+		<cfset attributes.settingDetails = attributes.hibachiScope.getService("settingService").getSettingDetails(settingName=attributes.settingName, filterEntities=attributes.settingFilterEntities) />
+	</cfif>
+	
+	<cfset attributes.settingDisplayName = attributes.hibachiScope.rbKey("setting.#attributes.settingName#") />
+	<cfset attributes.settingHint = attributes.hibachiScope.rbKey("setting.#attributes.settingName#_hint") />
+	<cfif right(attributes.settingHint, 8) eq "_missing">
+		<cfset attributes.settingHint = "" />
+	</cfif>
+	
+	<cfloop array="#attributes.settingFilterEntities#" index="fe">
+		<cfset attributes.settingFilterEntitiesName = listAppend(attributes.settingFilterEntitiesName, "#attributes.hibachiScope.rbKey('entity.#fe.getClassName()#')#: #fe.getSimpleRepresentation()#") />
+		<cfset attributes.settingFilterEntitiesURL = listAppend(attributes.settingFilterEntitiesURL, "#fe.getPrimaryIDPropertyName()#=#fe.getPrimaryIDValue()#", "&") />
+	</cfloop>
+	
+	<cfassociate basetag="cf_HibachiSettingTable" datacollection="settings">
+</cfif>

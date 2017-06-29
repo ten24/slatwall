@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="HibachiTransient" {
 
 	property name="account" type="any";
+	property name="content" type="any";
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
