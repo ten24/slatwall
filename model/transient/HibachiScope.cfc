@@ -51,7 +51,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// Slatwall specific request entity properties
 	property name="brand" type="any";
 	property name="cart" type="any";
-	property name="content" type="any";
 	property name="product" type="any";
 	property name="productType" type="any";
 	property name="address" type="any";
@@ -164,20 +163,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Display Route Entity
-	public any function getRouteEntity(entityName){
-		if (structKeyExists(variables, "routeEntity") && !isNull(arguments.entityName) && arrayLen(variables.routeEntity[arguments.entityName])) {
-			return variables.routeEntity[arguments.entityName][1];
+	public any function getRouteEntity(string entityName = ""){
+		if (
+			len(arguments.entityName)
+			&& structKeyExists(variables, "routeEntity") 
+			&& structKeyExists(variables.routEntity,arguments.entityName) 
+			&& !isNull(variables.routeEntity[arguments.entityName])
+		) {
+			arguments.entityName = lcase(arguments.entityName);
+			return variables.routeEntity[arguments.entityName];
 		}
 	}
 	
-	public any function setRouteEntity(entityName, entity) {
+	public any function setRouteEntity(required string entityName, any entity) {
 		if (!structKeyExists(variables, "routeEntity")){
 			variables.routeEntity = {};
 		}
+		arguments.entityName = lcase(arguments.entityName);
 		if (!structKeyExists(variables.routeEntity, "#arguments.entityName#")) {
-			variables.routeEntity[arguments.entityName] = [];
+			variables.routeEntity[arguments.entityName] = arguments.entity;
 		}
-		arrayAppend(variables.routeEntity[arguments.entityName], entity);
 	}
 	
 	// Site
