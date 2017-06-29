@@ -100,7 +100,7 @@
 
     <fieldset>
         <legend>Billing Information</legend>
-            <swf-directive partial-name="addbillingbyaccountaddresspartial" ng-show="slatwall.showBillingAccountAddresses()"></swf-directive>
+            <swf-directive partial-name="addbillingbyaccountaddresspartial" variables="{attachTo:slatwall.creditCardPayment,formName:'addOrderPayment'}" ng-show="slatwall.showBillingAccountAddresses()"></swf-directive>
             <sw-address-form ng-if="slatwall.showNewBillingAddressForm()"
                 ng-init="slatwall.billingAddress = slatwall.getAddressEntity()"
                 data-context="billing"

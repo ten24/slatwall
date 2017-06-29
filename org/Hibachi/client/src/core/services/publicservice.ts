@@ -60,8 +60,8 @@ class PublicService {
     public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
     public successfulActions = [];
-    public failureActions=[];
-    public uploadingFile:boolean;
+    public failureActions = [];
+    public hibachiConfig:any;
 
     ///index.cfm/api/scope/
 
@@ -100,7 +100,6 @@ class PublicService {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
-
     }
 
     // public hasErrors = ()=>{
@@ -167,7 +166,7 @@ class PublicService {
            countryCode = address.data.countrycode || address.countrycode;
        }
        if (!angular.isDefined(countryCode)) countryCode = "US";
-
+       
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
 
        if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
@@ -256,7 +255,7 @@ class PublicService {
 
 
         });
-        console.log(request.getAction());
+
         this.requests[request.getAction()]=request;
         return request.promise;
     }
@@ -267,16 +266,18 @@ class PublicService {
     }
 
     /** sets the current billing address */
-    public selectBillingAddress=(key) => {
-        if(this.creditCardPayment &&
-            this.creditCardPayment.forms['addOrderPayment']){
+    public selectBillingAddress=(key, object, formName) => {
+
+        if(object && object.forms[formName]){
             let address = this.account.accountAddresses[key].address
+            address.accountAddressID = this.account.accountAddresses[key].accountAddressID;
             for(let property in address){
-                if(this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.'+property] != undefined){
-                    this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
+                if(object.forms[formName]['newOrderPayment.billingAddress.'+property] != undefined){
+                    object.forms[formName]['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
                 }
             }
-            this.creditCardPayment.newOrderPayment.billingAddress = address;
+            object.newOrderPayment.billingAddress = address;
+
         }
     }
 
@@ -299,7 +300,7 @@ class PublicService {
         }else{
             urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
         }
-        
+
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
@@ -338,7 +339,10 @@ class PublicService {
     }
 
     public uploadFile = (action, data) =>{
-        this.uploadingFile = true;
+        this.$timeout(()=>{
+            this.uploadingFile = true;
+        });
+
         let url = hibachiConfig.baseURL + action;
 
         let formData = new FormData();
@@ -420,10 +424,6 @@ class PublicService {
         });
         this.requests[request.getAction()]=request;
     };
-
-    public logThis = (item)=>{
-        console.log('LOGGING THIS: ',item);
-    }
 
     public filterErrors = (response)=>{
         if(!response || !response.cart || !response.cart.errors) return;
@@ -533,6 +533,11 @@ class PublicService {
         );
     }
 
+    public hasShippingMethodOptions = (fulfillmentIndex) => {
+        let shippingMethodOptions = this.cart.orderFulfillments[fulfillmentIndex].shippingMethodOptions;
+        return shippingMethodOptions && shippingMethodOptions.length && (shippingMethodOptions.length > 1 || (shippingMethodOptions[0].value && shippingMethodOptions[0].value.length));
+    }
+
     /** Returns true if the order fulfillment has a shipping address selected. */
     public hasPickupLocation = (fulfillmentIndex) => {
         return (
@@ -541,6 +546,12 @@ class PublicService {
             this.cart.orderFulfillments[fulfillmentIndex].pickupLocation
         );
     }
+
+    /** Returns true if the order requires a fulfillment */
+    public orderRequiresFulfillment = ():boolean=> {
+
+        return this.cart.orderRequiresFulfillment();
+    };
 
     /**
      *  Returns true if the order requires a account
@@ -634,6 +645,77 @@ class PublicService {
          this.doAction('removePromotionCode', {promotionCode:code});
      }
 
+    public orderPaymentKeyCheck = (event) =>{
+        if(event.event.keyCode == 13 ){
+            event.swForm.clearErrors();
+            this.setCreditCardPaymentInfo().then((result)=>{
+                event.swForm.parseErrors(result.errors);
+            });
+        }
+    }
+
+    /** Prepare swAddressForm billing address / card info to be passed to addOrderPayment */
+    public setCreditCardPaymentInfo = () => {
+        let billingAddress;
+        
+        //if selected, pass shipping address as billing address
+        if(this.useShippingAsBilling){
+            billingAddress = this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingTypeIndex].data.shippingAddress;
+        
+        //If account address selected, use that
+        }else if(this.billingAddressEditFormIndex == undefined){
+            billingAddress = this.selectedBillingAddress;
+        
+        //If creating new address, get from form
+        }else if(this.billingAddressEditFormIndex == 'new'){
+            billingAddress = this.billingAddress.getData();
+        
+        //If editing existing account address, get from form
+        }else{
+            billingAddress = this.editingBillingAddress.getData();
+        }
+
+        //Add card info
+        for(let key in this.newCardInfo){
+            billingAddress[key] = this.newCardInfo[key];
+        }
+        this.newBillingAddress = billingAddress;
+        return this.addCreditCardPayment();
+    }
+
+    /** Add a credit card order payment.*/
+    public addCreditCardPayment = ()=>{
+
+        //Grab all the data
+        var billingAddress  = this.newBillingAddress;
+
+        var processObject = this.orderService.newOrder_AddOrderPayment();
+        var data = {
+            'newOrderPayment.billingAddress.addressID':'',
+            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
+            'newOrderPayment.expirationMonth': billingAddress.selectedMonth,
+            'newOrderPayment.expirationYear': billingAddress.selectedYear,
+            'newOrderPayment.billingAddress.countrycode': billingAddress.countrycode,
+            'newOrderPayment.billingAddress.city': ''+billingAddress.city,
+            'newOrderPayment.billingAddress.statecode': billingAddress.statecode,
+            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+            'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
+            'newOrderPayment.securityCode': billingAddress.cvv,
+            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+            'newOrderPayment.requireBillingAddress':true,
+            'newOrderPayment.creditCardLastFour': billingAddress.cardNumber ? billingAddress.cardNumber.slice(-4) : '',
+            'accountPaymentMethodID': billingAddress.accountPaymentMetgehodID,
+            'copyFromType': billingAddress.copyFromType,
+            'saveAccountPaymentMethodFlag': this.saveCardInfo
+        };
+
+        //Post the new order payment and set errors as needed.
+        return this.doAction('addOrderPayment', data, 'post');
+    };
+
     /** Removes a gift card from the order and sets variable tracking which gift card is being removed.*/
     public removeGiftCard = (payment) =>{
         this.doAction('removeOrderPayment', {orderPaymentID:payment.orderPaymentID});
@@ -709,19 +791,19 @@ class PublicService {
      
     /** Removes request from list */
     public resetRequests = (request) => {
-     	delete this.requests[request];
+         delete this.requests[request];
     }
 
     /** Returns true if the addresses match. */
     public addressesMatch = (address1, address2) => {
-    	if (angular.isDefined(address1) && angular.isDefined(address2)){
-        	if ( (address1.streetAddress == address2.streetAddress &&
-	            address1.street2Address == address2.street2Address &&
-	            address1.city == address2.city &&
-	            address1.postalCode == address2.postalCode &&
+        if (angular.isDefined(address1) && angular.isDefined(address2)){
+            if ( (address1.streetAddress == address2.streetAddress &&
+                address1.street2Address == address2.street2Address &&
+                address1.city == address2.city &&
+                address1.postalCode == address2.postalCode &&
                 address1.statecode == address2.statecode &&
-	            address1.countrycode == address2.countrycode)){
-            	return true;
+                address1.countrycode == address2.countrycode)){
+                return true;
             }
         }
         return false;
@@ -954,14 +1036,14 @@ class PublicService {
         return false;
     }
 
-    public accountAddressIsSelectedBillingAddress = (key) =>{
+    public accountAddressIsSelectedBillingAddress = (key, attachedObject) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           this.creditCardPayment &&
-           this.creditCardPayment.newOrderPayment &&
-           this.creditCardPayment.newOrderPayment.billingAddress){
-            return this.addressesMatch(this.account.accountAddresses[key].address, this.creditCardPayment.newOrderPayment.billingAddress);
-        }        
+           attachedObject &&
+           attachedObject.newOrderPayment &&
+           attachedObject.newOrderPayment.billingAddress){
+            return this.account.accountAddresses[key].accountAddressID == attachedObject.newOrderPayment.billingAddress.accountAddressID;
+        }
         return false;
     }
 
@@ -1167,10 +1249,13 @@ class PublicService {
         return attributeValues;
     }
 
-    public copyOrderItem = (tempOrderItem, orderItem) =>{
-        tempOrderItem.orderItem = {orderItemID:orderItem.orderItemID,
+    //Use with bind, assigning 'this' as the temporary order item
+    //a.k.a. slatwall.bind(tempOrderItem,slatwall.copyOrderItem,originalOrderItem);
+    //gets you tempOrderItem.orderItem == originalOrderItem;
+    public copyOrderItem(orderItem){
+        this.orderItem = {orderItemID:orderItem.orderItemID,
             quantity:orderItem.quantity};
-        return tempOrderItem;
+        return this;
     }
 
     public binder = (self, fn, ...args)=>{
