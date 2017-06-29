@@ -61,7 +61,6 @@ class PublicService {
     public imagePath:{[key:string]:any}={};
     public successfulActions = [];
     public failureActions=[];
-    public hibachiConfig:any;
     public uploadingFile:boolean;
 
     ///index.cfm/api/scope/
@@ -101,6 +100,7 @@ class PublicService {
         this.account = this.accountService.newAccount();
         this.observerService = observerService;
         this.$timeout = $timeout;
+
     }
 
     // public hasErrors = ()=>{
@@ -291,7 +291,7 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
-        var urlBase = this.hibachiConfig.baseURL;
+        var urlBase = hibachiConfig.baseURL;
 
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
@@ -339,7 +339,7 @@ class PublicService {
 
     public uploadFile = (action, data) =>{
         this.uploadingFile = true;
-        let url = this.hibachiConfig.baseURL + action;
+        let url = hibachiConfig.baseURL + action;
 
         let formData = new FormData();
 
