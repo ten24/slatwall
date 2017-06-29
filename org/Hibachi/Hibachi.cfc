@@ -1043,6 +1043,9 @@ component extends="FW1.framework" {
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();
 		var response = context.getResponse();
+		if(variables.framework.hibachi.errorDisplayFlag && structKeyExists(request.context,'apiRequest') && request.context.apiRequest){
+			writeDump(exception); abort;
+		}
 		response.setStatus(500);
 		super.onError(arguments.exception,arguments.event);
 	}
