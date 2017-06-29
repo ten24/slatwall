@@ -321,7 +321,7 @@
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
 		var columnNames = arguments.colNames;
-		var newQuery = queryNew(arrayToList(columnNames));
+		var newQuery = queryNew(arrayToList(columnNames), "VarChar"&repeatString(",VarChar", arraylen(columnNames)-1));
 		queryAddRow(newQuery, rowsTotal);
 		for (var i=1; i <= rowsTotal; i++){
 			for(var n=1; n <= columnsTotal; n++){
