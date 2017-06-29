@@ -5,15 +5,8 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#"/>
 	<!--- figure out if we are in the CMS context based on content --->
 	
-	<cfif !isNull(attributes.hibachiScope.getContent())>
-		<cfset attributes.cacheKey = ""/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.getDao('hibachiDao').getApplicationKey()/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.site().getSiteCode()/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.content().getUrlTitlePath()/>
-		<cfset attributes.cacheKey &= CGI.QUERY_STRING/> 
-		<cfset attributes.cacheKey = hash(attributes.cacheKey,'MD5')/>
-		
-		
+	<cfif !len(attributes.cacheKey) && !isNull(attributes.hibachiScope.getContent())>
+		<cfset attributes.cacheKey = attributes.hibachiScope.getContent().getContentCacheKey()/>
 		<cfset attributes.timespan = createTimeSpan(0,0,0,"#attributes.hibachiScope.content().setting('contentTemplateCacheInSeconds')#")/>
 		
 	</cfif>
