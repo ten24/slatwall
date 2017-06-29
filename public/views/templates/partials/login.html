@@ -14,14 +14,14 @@
 
 
 	<div class="col-md-12" style="margin-top:0px" ng-if="slatwall.userIsLoggedIn() === true">
-		<!--- sign in --->
+		<!-- sign in -->
 		<div class="content-block" style="padding-bottom: 0px">
 			<div class="content-header">
 				<h4>Account - {{slatwall.account.firstName}} {{slatwall.account.lastName}}</h4>
 				<a href="?slatAction=public:account.logout" class="pull-right">Logout</a>
 			</div>
 		</div>
-		<!--- //sign in --->
+		<!-- //sign in -->
   	</div>
 	<div ng-if="slatwall.account.userIsLoggedIn() === false">
 		<div id="loginForm" ng-show="!slatwall.forgotPassword">
@@ -82,7 +82,7 @@
 				></sw-form-field>
 				<sw-error-display
 					data-name="password">
-				</sw-error-display>-->
+				</sw-error-display>
 
 				<!--<input type="text" name="emailAddress" sw-form-subscriber ng-model="swFormSubscriber.object.emailAddress"/>
 				<sw-error-display
@@ -148,7 +148,7 @@
 						<sw-action-caller
 							data-action="forgotPassword"
 							data-modal="false"
-							data-type="submit"
+							data-type="button"
 							data-class="Apply btn-yellow"
 							data-text="Send Me Reset Email">
 						</sw-action-caller>
