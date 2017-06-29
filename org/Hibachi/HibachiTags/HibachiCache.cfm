@@ -18,14 +18,14 @@
 		
 	</cfif>
 	<cfif attributes.timespan eq 0>
-		<cfcache action="flush" id="#attributes.cacheKey#"/>
+		<cfcache action="flush" id="#attributes.cacheKey#"><!--- adding / will break on cf10 ---> 
 	</cfif>
 	<!--- used to clear template cache --->
 	<cfif !isNull(attributes.hibachiScope.getContent()) AND !isNull(attributes.hibachiScope.getContent().getUrlTitlePath())> 
 		<cfset expireUrl= "*#attributes.hibachiScope.getContent().getUrlTitlePath()#?clearTemplateCache=true"/>
 	</cfif>
 	<cfif len(attributes.cacheKey)> 
-		<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#"/>
+		<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#"><!--- adding /> will break on cf10 ---> 
 	</cfif> 
 	<cfif !isNull(cacheContent)>
 		<cfsavecontent variable="hibachiTagContent" >
@@ -44,7 +44,7 @@
 		<cfexit>
 	<cfelse>
 		<cfif len(attributes.cacheKey)> 
-			<cfcache action="flush" id="#attributes.cacheKey#"/>
+			<cfcache action="flush" id="#attributes.cacheKey#"><!--- adding /> will break on cf10 ---> 
 		</cfif>
 	</cfif>
 	
@@ -57,7 +57,7 @@
 	</cfsavecontent>
 	
 	<cfif len(attributes.cacheKey)> 
-		<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#"/>
+		<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#"><!--- adding /> will break on cf10 ---> 
 	</cfif> 	
 	<cfset templateString = "\$\[\[insertUnCachedKey\]\]"/>
 	<cfset uncachedStrings =  reMatchNoCase(templateString,hibachiTagContent)>
