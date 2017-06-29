@@ -1,1 +1,0 @@
-Any .cfc files that get added to this directory will automatically be registered as eventHandlers.  The methods in the component will be called whenever that corisponding event is fired.

@@ -189,7 +189,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		var itemSubTotal = arguments.order.getSubTotalAfterItemDiscounts();
 		if(arguments.order.getOrderDiscountAmountTotal() > 0){
 			itemSubTotal -= arguments.order.getOrderDiscountAmountTotal();
-		} 
+		}
 
 		var total = arguments.order.getTotal(); 
 		

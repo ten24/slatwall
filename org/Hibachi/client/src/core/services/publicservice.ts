@@ -60,6 +60,7 @@ class PublicService {
     public lastRemovedGiftCard;
     public imagePath:{[key:string]:any}={};
     public successfulActions = [];
+    public failureActions = [];
     public hibachiConfig:any;
 
     ///index.cfm/api/scope/
@@ -165,7 +166,7 @@ class PublicService {
            countryCode = address.data.countrycode || address.countrycode;
        }
        if (!angular.isDefined(countryCode)) countryCode = "US";
-
+       
        let urlBase = this.baseActionPath+'getStateCodeOptionsByCountryCode/';
 
        if(!this.getRequestByAction('getStateCodeOptionsByCountryCode') || !this.getRequestByAction('getStateCodeOptionsByCountryCode').loading || refresh){
@@ -254,7 +255,7 @@ class PublicService {
 
 
         });
-        console.log(request.getAction());
+
         this.requests[request.getAction()]=request;
         return request.promise;
     }
@@ -265,16 +266,18 @@ class PublicService {
     }
 
     /** sets the current billing address */
-    public selectBillingAddress=(key) => {
-        if(this.creditCardPayment &&
-            this.creditCardPayment.forms['addOrderPayment']){
+    public selectBillingAddress=(key, object, formName) => {
+
+        if(object && object.forms[formName]){
             let address = this.account.accountAddresses[key].address
+            address.accountAddressID = this.account.accountAddresses[key].accountAddressID;
             for(let property in address){
-                if(this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.'+property] != undefined){
-                    this.creditCardPayment.forms['addOrderPayment']['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
+                if(object.forms[formName]['newOrderPayment.billingAddress.'+property] != undefined){
+                    object.forms[formName]['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
                 }
             }
-            this.creditCardPayment.newOrderPayment.billingAddress = address;
+            object.newOrderPayment.billingAddress = address;
+
         }
     }
 
@@ -297,7 +300,7 @@ class PublicService {
         }else{
             urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
         }
-        
+
         if(data){
             method = "post";
             data.returnJsonObjects = "cart,account";
@@ -336,7 +339,10 @@ class PublicService {
     }
 
     public uploadFile = (action, data) =>{
-        this.uploadingFile = true;
+        this.$timeout(()=>{
+            this.uploadingFile = true;
+        });
+
         let url = hibachiConfig.baseURL + action;
 
         let formData = new FormData();
@@ -418,10 +424,6 @@ class PublicService {
         });
         this.requests[request.getAction()]=request;
     };
-
-    public logThis = (item)=>{
-        console.log('LOGGING THIS: ',item);
-    }
 
     public filterErrors = (response)=>{
         if(!response || !response.cart || !response.cart.errors) return;
@@ -529,6 +531,11 @@ class PublicService {
             this.isShippingFulfillment(this.cart.orderFulfillments[fulfillmentIndex]) && 
             this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress
         );
+    }
+
+    public hasShippingMethodOptions = (fulfillmentIndex) => {
+        let shippingMethodOptions = this.cart.orderFulfillments[fulfillmentIndex].shippingMethodOptions;
+        return shippingMethodOptions && shippingMethodOptions.length && (shippingMethodOptions.length > 1 || (shippingMethodOptions[0].value && shippingMethodOptions[0].value.length));
     }
 
     /** Returns true if the order fulfillment has a shipping address selected. */
@@ -784,19 +791,19 @@ class PublicService {
      
     /** Removes request from list */
     public resetRequests = (request) => {
-     	delete this.requests[request];
+         delete this.requests[request];
     }
 
     /** Returns true if the addresses match. */
     public addressesMatch = (address1, address2) => {
-    	if (angular.isDefined(address1) && angular.isDefined(address2)){
-        	if ( (address1.streetAddress == address2.streetAddress &&
-	            address1.street2Address == address2.street2Address &&
-	            address1.city == address2.city &&
-	            address1.postalCode == address2.postalCode &&
+        if (angular.isDefined(address1) && angular.isDefined(address2)){
+            if ( (address1.streetAddress == address2.streetAddress &&
+                address1.street2Address == address2.street2Address &&
+                address1.city == address2.city &&
+                address1.postalCode == address2.postalCode &&
                 address1.statecode == address2.statecode &&
-	            address1.countrycode == address2.countrycode)){
-            	return true;
+                address1.countrycode == address2.countrycode)){
+                return true;
             }
         }
         return false;
@@ -1029,14 +1036,14 @@ class PublicService {
         return false;
     }
 
-    public accountAddressIsSelectedBillingAddress = (key) =>{
+    public accountAddressIsSelectedBillingAddress = (key, attachedObject) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           this.creditCardPayment &&
-           this.creditCardPayment.newOrderPayment &&
-           this.creditCardPayment.newOrderPayment.billingAddress){
-            return this.addressesMatch(this.account.accountAddresses[key].address, this.creditCardPayment.newOrderPayment.billingAddress);
-        }        
+           attachedObject &&
+           attachedObject.newOrderPayment &&
+           attachedObject.newOrderPayment.billingAddress){
+            return this.account.accountAddresses[key].accountAddressID == attachedObject.newOrderPayment.billingAddress.accountAddressID;
+        }
         return false;
     }
 

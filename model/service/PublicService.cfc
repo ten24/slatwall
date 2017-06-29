@@ -564,6 +564,7 @@ component extends="HibachiService"  accessors="true" output="false"
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().getCart();
+
             for(var fulfillment in order.getOrderFulfillments()){
               if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
@@ -1245,6 +1246,7 @@ component extends="HibachiService"  accessors="true" output="false"
                 param name="data.newOrderPayment.orderPaymentID" default="";
                 param name="data.accountAddressID" default="";
                 param name="data.accountPaymentMethodID" default="";
+
                 // Make sure that someone isn't trying to pass in another users orderPaymentID
                 if(len(data.newOrderPayment.orderPaymentID)) {
                     var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);

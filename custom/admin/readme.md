@@ -1,1 +1,0 @@
-Feel free to customize the admin views and layouts by copying the files to this directory and making changes.

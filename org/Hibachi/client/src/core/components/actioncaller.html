@@ -4,6 +4,18 @@
 <a  ng-if="swActionCaller.type === 'link'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
+	target="_self" 
+	ng-href="{{swActionCaller.actionUrl}}"
+	data-disabled="{{swActionCaller.disabledtext}}"
+	data-confirm="{{swActionCaller.confirmtext}}"
+	href="##"
+	>
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+</a>
+
+<a  ng-if="swActionCaller.type === 'ajaxlink'"
+	ng-attr-title="{{swActionCaller.title}}" 
+	ng-attr-class="{{swActionCaller.class}}" 
 	data-disabled="{{swActionCaller.disabledtext}}"
 	data-confirm="{{swActionCaller.confirmtext}}"
 	role="button"

@@ -101,22 +101,6 @@ class SWFormController {
 
     }
 
-    public parseDotPath = (str:string)=> {
-        let obj;
-        if (str == undefined) return;
-        let path = str.split('.');
-        if(path[0] === 'this'){
-            path.shift();
-            obj = this[path.shift()];
-        }else{
-            obj = window[path.shift()];
-        }
-        while(path.length && obj[path[0]]){
-            obj = obj[path.shift()];
-        }
-        return obj;
-    }
-
     public isObject=()=>{
         return (angular.isObject(this.object));
     }

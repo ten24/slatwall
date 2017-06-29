@@ -75,6 +75,7 @@ class SWTypeaheadInputFieldController {
     }
     
     public addFunction = (value:any) => {
+
         this.modelValue = value[this.propertyToSave];
         if(this.action){
             var data = {};

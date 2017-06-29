@@ -26,7 +26,7 @@
 	                <p ng-show="slatwall.hasAccount()">Not you? 
 	                	<sw-action-caller
 					        data-action="logout"
-					        data-type="link"
+					        data-type="ajaxlink"
 					        data-text="Logout">
 				    	</sw-action-caller>
 			    	</p>
@@ -187,21 +187,21 @@
 									</fieldset>
 		                        </div>
 								<!--- Shipping --->
-								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithShippingTypeIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.hasShippingFulfillmentMethod()">
 									<fieldset>
 										<legend>Shipping</legend>
 										<swf-directive partial-name="review/ordershippingsummary"></swf-directive>
 									</fieldset>
 								</div>
 								<!--- Pickup --->
-								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithPickupTypeIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.hasPickupFulfillmentMethod()">
 									<fieldset>
 										<legend>Pickup</legend>
 										<swf-directive partial-name="review/orderpickupsummary"></swf-directive>
 									</fieldset>
 								</div>
 								<!--- Email --->
-								<div class="shipping_info col-sm-4" ng-if="slatwall.cart.orderFulfillmentWithEmailTypeIndex >= 0">
+								<div class="shipping_info col-sm-4" ng-if="slatwall.hasEmailFulfillmentMethod()">
 									<fieldset>
 										<legend>Email</legend>
 										<swf-directive partial-name="review/orderemailsummary"></swf-directive>
