@@ -148,7 +148,7 @@ Notes:
 												<cfset fileGroup = fileRelation.getFile().getFileGroup()>
 											</cfif>
 											<!--- If this file is restricted and the user is logged in, then let them view OR if the file is not restricted. --->
-											<cfif (not isNull( fileGroup ) and not isNull(fileGroup.getFileRestrictAccessFlag()) AND fileGroup.getFileRestrictAccessFlag() AND $.slatwall.getLoggedInFlag()) OR isNull(fileGroup) >
+											<cfif (not isNull( fileGroup ) and $.slatwall.getService("fileService").allowAccountToAccessFile(fileGroup, $.slatwall.getLoggedInFlag())) >
 												<!--- Only show download link if the user is logged in. --->
 												<li class="download-link">
 													<span class="primary" style="white-space:normal;">#fileRelation.getFile().getFileName()# <small>#fileRelation.getFile().getFileType()#</small></span><br>
@@ -156,7 +156,7 @@ Notes:
 												</li>
 											<!--- Otherwise - it's restricted so ask the user to login --->
 											<cfelse>
-												<a href="/meta/sample/account.cfm"><strong>Sign In or Register</strong> to Download Files.</a>
+												<a href="/meta/sample/account.cfm"><strong>Sign In or Register</strong> to Download File</a>
 											</cfif>
 										</cfloop>
 									</ul>
