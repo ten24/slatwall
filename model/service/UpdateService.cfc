@@ -193,7 +193,7 @@ Notes:
 
 	<cffunction name="runScripts">
 		<cfset var scripts = this.listUpdateScriptOrderByLoadOrder() />
-		<cfloop array="#scripts#" index="local.script"> 
+		<cfloop array="#scripts#" index="local.script">
 			<cfif isNull(script.getSuccessfulExecutionCount())>
 				<cfset script.setSuccessfulExecutionCount(0) />
 			</cfif>
@@ -201,12 +201,7 @@ Notes:
 				<cfset script.setExecutionCount(0) />
 			</cfif>
 			<!--- Run the script if never ran successfully or success count < max count ---->
-			<cfif 
-				isNull(script.getMaxExecutionCount()) 
-				OR script.getSuccessfulExecutionCount() 
-				EQ 0 
-				OR script.getSuccessfulExecutionCount() LT script.getMaxExecutionCount()
-			>
+			<cfif isNull(script.getMaxExecutionCount()) OR script.getSuccessfulExecutionCount() EQ 0 OR script.getSuccessfulExecutionCount() LT script.getMaxExecutionCount()>
 				<!---- try to run the script --->
 				<cftry>
 					<!--- if it's a database script look for db specific file --->
@@ -270,8 +265,10 @@ Notes:
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
 
+				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
 				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
 				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
+				var directories = ArrayToList(directoryList);
 
 				//find which items have an override in the custom folder
 				var matches = 0;
