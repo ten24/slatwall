@@ -52,25 +52,17 @@ Notes:
 
 <cfparam name="rc.fileGroup" type="any">
 <cfparam name="rc.edit" type="boolean">
-
+<cfset backAction = "admin:entity.listfilegroup" />
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.fileGroup#" edit="#rc.edit#" enctype="multipart/form-data" >
 	
 		<hb:HibachiEntityActionBar type="detail" object="#rc.fileGroup#" edit="#rc.edit#"
 								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
-								   backAction="#request.context.entityActionDetails.sRedirectAction#"
+								   backAction="#backAction#"
 								   />
-		<hb:HibachiEntityDetailGroup object="#rc.fileGroup#">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList divclass="col-md-12">
-					<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupName" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupCode" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupDescription" edit="#rc.edit#">
-					
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
+		<hb:HibachiEntityDetailGroup object="#rc.filegroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/filegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		</hb:HibachiEntityDetailGroup>
-		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
