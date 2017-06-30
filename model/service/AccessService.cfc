@@ -65,6 +65,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			subscribedByCategoryFlag = false,
 			trackAccessFlag = false
 		};
+		
 		var dataIfNotCached = {
 			settingName="contentRestrictAccessFlag",
 			settingValue=1
