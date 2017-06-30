@@ -25,10 +25,7 @@
 			</hb:HibachiDisplayToggle>
 			<cfif !isNull(rc.attribute.getForm())>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="formEmailConfirmationFlag" edit="#rc.edit#">
- 			</cfif>
- 			<cfif rc.attribute.getAttributeInputType() EQ 'File'>
- 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="maxFileSize" edit="#rc.edit#">
- 			</cfif>
+ 			</cfif> 
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

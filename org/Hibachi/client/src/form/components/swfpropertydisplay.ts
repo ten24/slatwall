@@ -13,15 +13,13 @@ class SWFPropertyDisplayController extends SWPropertyDisplayController {
     ){
         super($filter,utilityService,$injector,metadataService,observerService);
 
-        this.edit = true;
-
+        this.editing = true;
     }
 }
 
 class SWFPropertyDisplay extends SWPropertyDisplay{
     public controller=SWFPropertyDisplayController;
     public controllerAs="swfPropertyDisplay";
-    public scope={};
     //@ngInject
     constructor(
         public $compile,

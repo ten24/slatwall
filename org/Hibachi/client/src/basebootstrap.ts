@@ -20,10 +20,9 @@ export class BaseBootStrapper{
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
             this.$q = $q;
+
+
              var baseURL = hibachiConfig.baseURL;
-             if(!baseURL) {
-                 baseURL = '/'
-             }
              if(baseURL.length && baseURL.slice(-1) !== '/'){
                 baseURL += '/';
              }

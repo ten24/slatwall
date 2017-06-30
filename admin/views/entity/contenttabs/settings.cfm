@@ -55,7 +55,6 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRenderHibachiActionInTemplate" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />

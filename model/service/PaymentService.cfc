@@ -198,18 +198,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
 									maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
 								}
-								var eligiblePaymentMethod = getTransient('EligiblePaymentMethod');
-								eligiblePaymentMethod.setPaymentMethod(activePaymentMethods[i]);
-								eligiblePaymentMethod.setPaymentTerm(paymentTerm);
-								eligiblePaymentMethod.setMaximumAmount(maximumAmount);
-								arrayAppend(eligiblePaymentMethodDetails, eligiblePaymentMethod);
+
+								arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount, paymentTerm=paymentTerm});
 							}
 						}
 					} else {
-						var eligiblePaymentMethod = getTransient('EligiblePaymentMethod');
-						eligiblePaymentMethod.setPaymentMethod(activePaymentMethods[i]);
-						eligiblePaymentMethod.setMaximumAmount(maximumAmount);
-						arrayAppend(eligiblePaymentMethodDetails, eligiblePaymentMethod);
+						arrayAppend(eligiblePaymentMethodDetails, {paymentMethod=activePaymentMethods[i], maximumAmount=maximumAmount});
 					}
 				}
 			}

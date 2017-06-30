@@ -108,7 +108,7 @@ Notes:
 			SELECT
 				shortReferenceID
 			FROM
-				#getTableNameByEntityName('ShortReference')#
+				SwShortReference
 			WHERE
 				referenceObjectID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />
 			  AND
@@ -152,7 +152,7 @@ Notes:
 		<cfset var newShortReferenceID = 1 />
 			
 		<cfquery name="rs">
-			SELECT MAX(shortReferenceID) as shortReferenceID FROM #getTableNameByEntityName('ShortReference')#
+			SELECT MAX(shortReferenceID) as shortReferenceID FROM SwShortReference
 		</cfquery>
 		
 		<cfif rs.shortReferenceID neq "" and isNumeric(rs.shortReferenceID)>
@@ -160,7 +160,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="rs">
-			INSERT INTO #getTableNameByEntityName('ShortReference')# (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
+			INSERT INTO SwShortReference (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
 		</cfquery>
 		
 		<cfreturn newShortReferenceID />

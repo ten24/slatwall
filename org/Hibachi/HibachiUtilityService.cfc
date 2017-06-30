@@ -256,7 +256,6 @@
 				return;
 			}
 			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
-
 			if(!isNull(object) && isObject(object)) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";
@@ -277,12 +276,8 @@
 
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
-						try{
-							data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-							data[thisProperty][i]["errors"] = object[i].getErrors();
-							}catch(any e){
-								writeDump(var=object[i],top=1);abort;
-							}
+						data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+						data[thisProperty][i]["errors"] = object[i].getErrors();
 					}
 
 					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);

@@ -648,13 +648,11 @@ component output="false" accessors="true" extends="HibachiController" {
 				arguments.rc["p:show"] = globalAPIPageShowLimit; 
 			}	
 		}
-       
+        
 		if(!structKeyExists(arguments.rc, "dirtyReadFlag")){
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
  		} 
         
-		arguments.rc.restRequestFlag = true;  
-
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
@@ -667,6 +665,7 @@ component output="false" accessors="true" extends="HibachiController" {
                 //should be able to add select and where filters here
                 var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
 																								 arguments.rc);
+
                 structAppend(arguments.rc.apiResponse.content,result);
             }else{
 				

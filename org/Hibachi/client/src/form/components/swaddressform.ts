@@ -12,19 +12,11 @@ class SWAddressFormController {
 	public showAddressBookSelect:boolean = false;
 	public showCountrySelect:boolean = true;
 	public showSubmitButton:boolean = true;
-    public address:any;
-    public addressName:string;
+
     public param:string = "?slataction=";
-    public showAlerts:string = "true";
-    public eventListeners:any;
-    public submitOnEnter:boolean;
 
 	//@ngInject
-    constructor(
-        private $scope,
-        private $log,
-        private observerService,
-        private $rootScope) {
+    constructor(private $log) {
 		//if exists, just name it slatwall.
 		if (angular.isDefined(this.slatwallScope)){
 			this.slatwall = this.slatwallScope;
@@ -42,53 +34,6 @@ class SWAddressFormController {
 		if (this.action == undefined) {
 			this.showSubmitButton = false;
 		}
-        if($rootScope.slatwall && !$scope.slatwall){
-            $scope.slatwall = $rootScope.slatwall;
-        }
-
-        let addressName = this.addressName;
-        if(this.address){
-            this.address.getData = () => {
-
-                let formData = this.address || {};
-                let form = this.address.forms[addressName];
-                for(let key in form){
-                    let val = form[key];
-                    if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                        if(val.$modelValue){
-                            val = val.$modelValue;
-                        }else if(val.$viewValue){
-                            val = val.$viewValue;
-                        }else{
-                            val="";
-                        }
-
-                        if(angular.isString(val)){
-                            formData[key] = val;
-                        }
-                        if(val.$modelValue){
-                            formData[key] = val.$modelValue;
-                        }else if(val.$viewValue){
-                            formData[key] = val.$viewValue;
-                        }
-                    }
-                }
-
-                return formData || "";
-            }
-        }
-        if(!this.eventListeners){
-            this.eventListeners = {};
-        }
-        if(this.submitOnEnter){
-            this.eventListeners.keyup = this.submitKeyCheck;
-        }
-
-       if(this.eventListeners){
-            for(var key in this.eventListeners){
-                observerService.attach(this.eventListeners[key], key)
-            }
-        }
     }
 
 	public getAction = () => {
@@ -110,13 +55,6 @@ class SWAddressFormController {
 		return false;
 	}
 
-    public submitKeyCheck = (event) => {
-        if(event.form.$name == this.addressName &&
-            event.event.keyCode == 13){
-            event.swForm.submit(event.swForm.action);
-        }
-    }
-
 } 
 
 class SWAddressForm implements ng.IComponentOptions {
@@ -129,7 +67,6 @@ class SWAddressForm implements ng.IComponentOptions {
     public bindToController = {
         action: '@',
         actionText: '@',
-        context:'@',
         customPartial:'@',
         slatwallScope: '=',
         address: "=",
@@ -137,18 +74,12 @@ class SWAddressForm implements ng.IComponentOptions {
         fieldNamePrefix: "@",
         fieldList: "@",
         fieldClass: "@",
-        fulfillmentIndex:"@",
         tabIndex: "@",
         addressName: "@",
         showAddressBookSelect: "@",
         showCountrySelect: "@",
-        showSubmitButton: "@",
-        showCloseButton: "@",
-        showAlerts: "@",
-        eventListeners:"=?",
-        submitOnEnter:"@"
+        showSubmitButton: "@"
     };
-    public scope={};
     /**
      * Handles injecting the partials path into this class
      */

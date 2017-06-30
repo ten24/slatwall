@@ -1102,21 +1102,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function isAggregateFunction(required string propertyIdentifier){
 		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
 	}
-	
-	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
-		var totalFilterGroups = arrayLen(currentCollection);
-		for(var i =1; i <= totalFilterGroups; i++){
-			if(!ArrayIsDefined(baseCollection, i)){
-				baseCollection[i] = { "filterGroup" = []};
-			}
-			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
-				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
-			}
-			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
-		}
-		return baseCollection;
-	}
-	
+
+
 	public void function mergeJoins(required any baseJoins){
 		var currentCollection = getCollectionConfigStruct();
 		if(isNull(currentCollection.joins) || !arraylen(currentCollection.joins)){
@@ -1916,11 +1903,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getPredicate(required any filter){
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
-			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
-				filter.value = filter.displayValue;
-			}else{
-				filter.value = "";
-			}
+			filter.value = "";
 		}
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){

@@ -127,14 +127,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	   		locationConfigurationID="",
 	   		location={
 	   			locationID=mockLocation.getLocationID()
-	        }
+	   		         }
 	   	};
 	   	
 		mockLocation.getLocationName();
 	   	var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
-		
-		assert(!isNull(mockLocationConfiguration.getLocation().getParentLocation()));
-		
+	
 		var valueAfterAppendIsDone= "parentLocation » locationName"; //valuse after append operation done
 	   	 
 	   	var result= mockLocationConfiguration.getLocationTree();

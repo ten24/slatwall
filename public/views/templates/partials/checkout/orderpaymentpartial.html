@@ -1,26 +1,26 @@
 <!-- Add Shipping Address -->
-<span ng-init="slatwall.saveShippingAsBilling = undefined"></span>
-<span ng-init="slatwall.creditCardPayment = slatwall.$hibachi.newOrder_AddOrderPayment(); slatwall.creditCardPayment.newOrderPayment = {billingAddress:{},paymentMethod:{paymentMethodID:SWFDirective.variables.paymentMethodID}}"></span>
-<swf-directive partial-name="savedcreditcards"></swf-directive>
+<span ng-init="$.slatwall = $root.slatwall"></span>
+<span ng-init="$.slatwall.saveShippingAsBilling = undefined"></span>
+<span ng-init="$.slatwall.newBillingAddress = $.slatwall.$hibachi.newOrder_AddOrderPayment()"></span>
+
 <sw-form
-	ng-if="!slatwall.savedPaymentMethod.accountPaymentMethodID"
-    data-object="slatwall.creditCardPayment"
-    data-class="new_address"
-    data-name="addOrderPayment"
-    data-submit-on-enter="true"
-    data-event-announcers="keyup"
-    data-action="addOrderPayment"
-    data-event-listeners="{addOrderPaymentSuccess:slatwall.checkIfFinalPayment, addGiftCardOrderPaymentSuccess:slatwall.checkIfFinalPayment}">
+    data-is-process-form="true"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-object="$.slatwall.newBillingAddress"
+    data-on-success="Hide:AddOrderPayment"
+    data-class="new_adderess"
+    data-name="addOrderPayment">
+
+    <div class="alert alert-danger error" ngshow="$.slatwall.cart['errors']['addOrderPayment']" ng-if="$.slatwall.cart['errors']['addOrderPayment']"><i class="fa fa-info-circle"></i> {{$.slatwall.cart['errors']['addOrderPayment'][0]}}</div>
+
+	<!--- Display Order Payment Errors --->
+	<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="ordererrors"></swf-directive>
 
 	<!--- The form without shipping address block --->
-	<swf-directive partial-name="orderpaymentformfull"></swf-directive>
+	<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="orderpaymentformfull"></swf-directive>
 
 	<!--- Pleace Order / Review Order / Save Buttons --->
-	<div class="form-group">
-	    <sw-action-caller
-	        data-type="button"
-	        data-class="button blue"
-	        data-text="{{(slatwall.loadingThisRequest('addOrderPayment',{'newOrderPayment.nameOnCreditCard': true}) ? 'LOADING...' : 'Add Payment')}}">
-	    </sw-action-caller>
-	</div>
+	<swf-directive partial-path="/custom/client/src/frontend/components/checkouttemplates/checkout/" partial-name="orderbuttons"></swf-directive>
+
 </swform>

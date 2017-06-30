@@ -77,11 +77,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
 		var ad = request.slatwallScope.getAccountData();
-		var aapArray = listToArray(request.slatwallScope.getAvailableAccountPropertyList());
-		for(var propertyIdentifier in aapArray){
-			var topLevelProperty = listFirst(propertyIdentifier,'.');
-			assertFalse(!structKeyExists(ad,topLevelProperty),topLevelProperty & ' does not exist!');
-		}
+		
+		assertEquals(structCount(ad), 12);
 	}
 		
 	/**
@@ -185,11 +182,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function getCartData_without_any_propertyList_returns_all_available_properties() {
 		var cd = request.slatwallScope.getCartData();
-		var acpArray = listToArray(request.slatwallScope.getAvailableCartPropertyList());
-		for(var propertyIdentifier in acpArray){
-			var topLevelProperty = listFirst(propertyIdentifier,'.');
-			assertFalse(!structKeyExists(cd,topLevelProperty),topLevelProperty & ' does not exist!');
-		}
+		
+		assertEquals(16, structCount(cd));
 	}
 	
 		

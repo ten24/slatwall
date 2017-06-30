@@ -1,0 +1,1 @@
+By adding .cfc objects to this directory you will be able to create custom database tables.

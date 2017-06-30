@@ -43,9 +43,6 @@ var hibachimodule = angular.module('hibachi',[
     if($hibachi.newState){
         $rootScope.hibachiScope.getStates();
     }
-    if($hibachi.newState){
-        $rootScope.hibachiScope.getAddressOptions();
-    }
 }])
 .constant('hibachiPartialsPath','hibachi/components/')
 .directive('swSaveAndFinish',SWSaveAndFinish.Factory())

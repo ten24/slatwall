@@ -52,7 +52,6 @@
 		<cfreturn createHibachiUUID() />
 	</cffunction>
 	<cfscript>
-		
 		public void function reencryptData(numeric batchSizeLimit=0){
 		
 		

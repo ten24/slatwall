@@ -4,12 +4,10 @@ declare var hibachiConfig:any;
 
 class SWFDirectiveController {
     private hibachiScope;
-    public $root;
     //@ngInject
-    constructor(private $log, public $rootScope, public $scope) {
+    constructor(private $log, public $rootScope) {
         this.$rootScope = $rootScope;
         this.hibachiScope = this.$rootScope.hibachiScope;
-        $scope.slatwall = $rootScope.slatwall;
     }
 }
 
@@ -34,12 +32,10 @@ class SWFDirective implements ng.IDirective {
         if(!hibachiConfig){
             hibachiConfig = {};    
         }
-        console.log('customPartialspath', hibachiConfig.customPartialsPath);
+        
         if (!hibachiConfig.customPartialsPath) {
             hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
         }
-
-
 
         this.templatePath = hibachiConfig.customPartialsPath;
         this.url = hibachiConfig.customPartialsPath + 'swfdirectivepartial.html';
@@ -54,8 +50,7 @@ class SWFDirective implements ng.IDirective {
         //Developer specifies the path and name of a partial for creating a custom directive.
         if (attrs.partialName) {
             //returns the attrs.path or the default if not configured.
-            var template = "<span ng-include = " + "'\"" + this.path + attrs.partialName + ".html\"'";
-            template += "></span>";
+            var template = "<span ng-include = " + "'\"" + this.path + attrs.partialName + ".html\"'" + "></span>";
             element.html('').append(this.$compile(template)(scope));
             //Recompile a directive either as attribute or element directive
         } else {
@@ -65,11 +60,7 @@ class SWFDirective implements ng.IDirective {
                 var template = '<span ' + attrs.directive + ' ';
                 if (angular.isDefined(this.scope.variables)) {
                     angular.forEach(this.scope.variables, function(value, key) {
-                        if(!angular.isString(value) && !angular.isNumber(value)){
-                            template += ' ' + key + '="SWFDirective.' + 'variables.' + key + '" ';
-                        } else { 
-                            template += ' ' + key + '="' + value + '" ';
-                        }
+                        template += ' ' + key + '=' + value + ' ';
                     });
                 }
                 template += + '>';
@@ -87,7 +78,6 @@ class SWFDirective implements ng.IDirective {
             
             // Render the template.
             element.html('').append(this.$compile(template)(scope));
-            debugger;
         }
     }
 

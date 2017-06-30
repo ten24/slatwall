@@ -35,9 +35,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return super.init();
 	}
 	
-	public string function getTableName(){
-		return getService('hibachiService').getTableNameByEntityName(getClassName());
-	}
+	
 
 	public void function genericPropertyRemove(required string propertyName){
 		evaluate("set#arguments.propertyName#(javacast('null',''))");
