@@ -33,8 +33,10 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
             pre: (scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
-                element.append(innerHTML);
+                var innerHTML = element[0].innerHTML;
+                element[0].innerHTML = '';
+                var span = '<span ng-if="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '.toString().trim().length">'+innerHTML+'</span><span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                element.append(span);
             },
             post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}
         };

@@ -189,6 +189,7 @@ class SWTypeaheadSearchController {
 
 	public search = (search:string)=>{
         if(this._timeoutPromise){
+
 			this.$timeout.cancel(this._timeoutPromise);
 		}
         
@@ -240,7 +241,7 @@ class SWTypeaheadSearchController {
 		if(!this.hideSearch && !this.multiselectMode){
 			this.hideSearch = true;
 		}
-
+        
         if(!this.multiselectMode){
             if( angular.isDefined(this.propertyToShow) ){
                 this.searchText = item[this.propertyToShow];
@@ -369,7 +370,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var anchorTemplateString = `
                     <a ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
                 `
-                
+
                 if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){
                     var rightContentTemplateString = `<span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>`
                 } else {
@@ -377,7 +378,6 @@ class SWTypeaheadSearch implements ng.IDirective{
                 }
 
                 anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
-                
                 var listItemTemplate = angular.element(listItemTemplateString);
                 var anchorTemplate = angular.element(anchorTemplateString);
                
