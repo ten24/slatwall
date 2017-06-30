@@ -132,7 +132,7 @@ Notes:
 							<dt>Product Description</dt>
 							<dd>#$.slatwall.product().getProductDescription()# &nbsp;</dd>
 							
-							<dt> Secure Downloads </dt>
+							<dt> Downloads </dt>
 							<dd> 
 								
 								<cfset isAnyDownload = false/>
