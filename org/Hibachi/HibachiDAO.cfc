@@ -300,9 +300,13 @@
 		<cfargument name="compositeKeyOperator" required="false" type="string" default="AND" />
 
 		<cfset var keyList = structKeyList(arguments.updateData) />
+		<cfset var keyArray = listToArray(keyList)/>
+		<cfset var keyArrayCount = arraylen(keyArray)/>
 		<cfset var rs = "" />
 		<cfset var sqlResult = "" />
 		<cfset var i = 0 />
+		<cfset var idColumnsArray = listToArray(arguments.idColumns)/>
+		<cfset var idColumnsCount = arraylen(idColumnsArray)/>
 
 		<cfif arguments.compositeKeyOperator eq "">
 			<cfset arguments.compositeKeyOperator = "AND">
@@ -318,9 +322,10 @@
 				FROM
 					#arguments.tableName#
 				WHERE
-					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
-						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
-				<cfif listLen(arguments.idColumns) gt i>#arguments.compositeKeyOperator# </cfif>
+					
+					<cfloop array="#idColumnsCount#" index="local.i">
+						#idColumnsArray[i]# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ idColumnsArray[i] ].datatype#" value="#arguments.updateData[ idColumnsArray[i] ].value#">
+				<cfif idColumnsArrayCount gt i>#arguments.compositeKeyOperator# </cfif>
 					</cfloop>
 			</cfquery>
 			<cfif checkrs.recordCount>
@@ -330,18 +335,19 @@
 						UPDATE
 							#arguments.tableName#
 						SET
-							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
- 								<cfif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
-										arguments.updateData[ listGetAt(keyList, i)].value eq true>
- 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="1">
- 								<cfelseif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
-										arguments.updateData[ listGetAt(keyList, i)].value eq false>
+							
+							<cfloop array="#keyArray#" index="local.i">
+ 								<cfif FindNoCase("boolean",arguments.updateData[ keyArray[i] ].dataType) neq 0 AND 
+										arguments.updateData[ keyArray[i]].value eq true>
+ 									#keyArray[i]# = <cfqueryparam cfsqltype="cf_sql_integer" value="1">
+ 								<cfelseif FindNoCase("boolean",arguments.updateData[ keyArray[i] ].dataType) neq 0 AND 
+										arguments.updateData[ keyArray[i]].value eq false>
 
- 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="0">
- 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
-									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+ 									#keyArray[i]# = <cfqueryparam cfsqltype="cf_sql_integer" value="0">
+ 								<cfelseif arguments.updateData[ keyArray[i] ].value eq "NULL" OR arguments.updateData[ keyArray[i] ].value EQ "">
+									#keyArray[i]# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ keyArray[i] ].dataType#" value="" null="yes">
 								<cfelse>
-									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+									#keyArray[i]# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ keyArray[i] ].dataType#" value="#arguments.updateData[ keyArray[i] ].value#">
 								</cfif>
 								<cfif listLen(keyList) gt i>, </cfif>
 							</cfloop>
@@ -359,18 +365,18 @@
 				UPDATE
 					#arguments.tableName#
 				SET
-					<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
-							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+					<cfloop array="#keyArray#" index="local.i">
+						<cfif arguments.updateData[ keyArray[i] ].value eq "NULL" OR (arguments.insertData[ keyArray[i] ].value EQ "" AND arguments.insertData[ keyArray[i] ].dataType EQ "timestamp")>
+							#keyArray[i]# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 						<cfelse>
-							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+							#keyArray[i]# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ keyArray[i] ].value#">
 						</cfif>
-						<cfif listLen(keyList) gt i>, </cfif>
+						<cfif keyArrayCount gt i>, </cfif>
 					</cfloop>
 				WHERE
-					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="local.i">
-						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
-						<cfif listLen(arguments.idColumns) gt i>AND </cfif>
+					<cfloop array="#idColumnsArray#" index="local.i">
+						#idColumnsArray[i]# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ idColumnsArray[i] ].datatype#" value="#arguments.updateData[ idColumnsArray[i] ].value#">
+						<cfif idColumnsArrayCount gt i>AND </cfif>
 					</cfloop>
 			</cfquery>
 			<cfif !sqlResult.recordCount>
@@ -384,6 +390,8 @@
 		<cfargument name="insertData" required="true" type="struct" />
 
 		<cfset var keyList = structKeyList(arguments.insertData) />
+		<cfset var keyArray = listToArray(keyList)/>
+		<cfset var keyArrayCount = arrayLen(keyArray)/>
 		<cfset var keyListOracle = keyList />
 		<cfset var rs = "" />
 		<cfset var sqlResult = "" />
@@ -393,13 +401,13 @@
 			INSERT INTO	#arguments.tableName# (
 				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
 			) VALUES (
-				<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
-						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+				<cfloop array="#keyArray#" index="local.i">
+					<cfif arguments.insertData[ keyArray[i] ].value eq "NULL" OR (arguments.insertData[ keyArray[i] ].value EQ "" AND arguments.insertData[ keyArray[i] ].dataType EQ "timestamp")>
+						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ keyArray[i] ].dataType#" value="" null="yes">
 					<cfelse>
-						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ keyArray[i] ].dataType#" value="#arguments.insertData[ keyArray[i] ].value#">
 					</cfif>
-					<cfif listLen(keyList) gt i>,</cfif>
+					<cfif keyArrayCount gt i>,</cfif>
 				</cfloop>
 			)
 		</cfquery>
