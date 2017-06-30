@@ -105,13 +105,9 @@ Notes:
 				}
 				
 				arguments.print.populate( local.printData );
-				this.save(arguments.print);
 				
-				//Flush to catch errors and get an id.
-				getDao('hibachiDao').flushOrmSession();
-				
-				//Now add it to the print queue.
-				getHibachiScope().addToPrintQueue(arguments.print.getPrintID());
+				// Append the email to the email queue
+				arrayAppend(getHibachiScope().getPrintQueue(), arguments.print);
 			}
 			
 		}

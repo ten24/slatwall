@@ -794,16 +794,10 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 					// Do the upload
 					var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
-					
-					//Check if file complies with any maxFileSize settings on the attribute
-					if(isNull(getAttribute().getMaxFileSize()) || getAttribute().getMaxFileSize() >= uploadData.fileSize){
-						// Update the property with the serverFile name
-						variables.attributeValue =  uploadData.serverFile;
-					}else{
 
-						fileDelete("#uploadDirectory##uploadData.serverFile#");
-						this.addError('attributeValue', rbKey('validate.save.File.fileUpload.maxFileSize'));
-					}
+					// Update the property with the serverFile name
+					variables.attributeValue =  uploadData.serverFile;
+
 				} catch(any e) {
 					// Add an error if there were any hard errors during upload
 					this.addError('attributeValue', rbKey('validate.fileUpload'));

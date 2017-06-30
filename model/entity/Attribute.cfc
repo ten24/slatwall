@@ -66,7 +66,6 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="validationRegex" hb_populateEnabled="public" ormtype="string";
 	property name="decryptValueInAdminFlag" ormtype="boolean";
 	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
-	property name="maxFileSize" hb_populateEnabled="public" ormtype="integer";
 
 	// Calculated Properties
 

@@ -75,7 +75,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			}
 			
 		}
-		this.saveSession(getHibachiScope().getSession());
+		
 		// Force persistance
 		getHibachiDAO().flushORMSession();
 		

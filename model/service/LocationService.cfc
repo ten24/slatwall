@@ -68,14 +68,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public array function getLocationOptions( string locationID ) {
 		var locationOptions = [];
 		var smartList = this.getLocationSmartList();
-		smartlist.addSelect('calculatedLocationPathName','name');
-		smartlist.addSelect('locationID','value');
 		if(structKeyExists(arguments,"locationID")) {
 			smartList.addFilter("locationID",arguments.locationID);
 		}
 		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
 		smartList.addOrder("locationIDPath");
-		var locationOptions = smartList.getRecords();
+		var locations = smartList.getRecords();
+		
+		for(var i=1;i<=arrayLen(locations);i++) {
+			var locationOption = {};
+			locationOption['name'] = locations[i].getSimpleRepresentation();
+			locationOption['value'] = locations[i].getLocationID();
+			arrayAppend(locationOptions, locationOption);
+		}
 		
 		return locationOptions;
 	}
