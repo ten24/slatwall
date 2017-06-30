@@ -3172,15 +3172,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getOrderAttributePropertylist(){
 		var propertyList = '';
-		var orderAttributeModel = getService('AttributeService').getAttributeModel().Order;
-		if(!isNull(orderAttributeModel)){
-			for(var attributeSetName in orderAttributeModel){
-				var attributeSet = orderAttributeModel[attributeSetName];
-				for(var attribute in attributeSet.attributes){
-					propertyList = listAppend(propertyList, attribute, ',');
+		if(structKeyExists(getService('AttributeService').getAttributeModel(),'Order')){
+			var orderAttributeModel = getService('AttributeService').getAttributeModel().Order;
+			if(!isNull(orderAttributeModel)){
+				for(var attributeSetName in orderAttributeModel){
+					var attributeSet = orderAttributeModel[attributeSetName];
+					for(var attribute in attributeSet.attributes){
+						propertyList = listAppend(propertyList, attribute, ',');
+					}
 				}
 			}
 		}
+		
 		return propertyList;
 	}
 	// ================== START: Private Helper Functions =====================
