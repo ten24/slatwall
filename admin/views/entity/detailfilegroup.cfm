@@ -58,8 +58,7 @@ Notes:
 	
 		<hb:HibachiEntityActionBar type="detail" object="#rc.fileGroup#" edit="#rc.edit#"
 								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
-								   backAction="#backAction#"
-								   />
+								   backAction="#backAction#"/>
 		<hb:HibachiEntityDetailGroup object="#rc.filegroup#">
 			<hb:HibachiEntityDetailItem view="admin:entity/filegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		</hb:HibachiEntityDetailGroup>

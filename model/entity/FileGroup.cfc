@@ -57,7 +57,7 @@ component displayname="FileGroup" entityname="SlatwallFileGroup" persistent="tru
 	property name="fileTrackAccessFlag" ormType="boolean" hb_formatType="yesno";
 	
 	// Related Object Properties (One-To-Many)
-	property name="files" singularname="File" cfc="File" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" cascade="all-delete-orphan";
+	property name="files" singularname="File" cfc="File" fieldtype="one-to-many" type="array" fkcolumn="fileGroupID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" hb_populateEnabled="false" ormtype="string";

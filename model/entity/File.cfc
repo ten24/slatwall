@@ -60,7 +60,7 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	// Calculated Properties    
 	
 	// Related Object Properties (many-to-one)    
-	property name="fileGroup" cfc="FileGroup" fieldtype="many-to-one" fkcolumn="fileGroupID" fetch="join"; //This is the file type that can be tracked and secured.
+	property name="fileGroup" cfc="FileGroup" fieldtype="many-to-one" fkcolumn="fileGroupID"; //This is the file type that can be tracked and secured.
 	    
 	// Related Object Properties (one-to-many)
 	property name="fileRelationships" singularname="FileRelationship" cfc="FileRelationship" type="array" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" fetch="join" cascade="all-delete-orphan";    
