@@ -69,12 +69,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 
+	// File
 	public void function downloadFile(required struct rc) {
-		var file = getService("FileService").downloadFile(fileID=rc.fileID);
-
+		
+		//again check that the user should be downloading this.
+		var file = getService("fileService").getFile(rc.fileID);
+		if (!isNull(file)){
+			var fileGroup = file.getFileGroup();
+			if ((!isNull( fileGroup ) && !isNull(fileGroup.getFileRestrictAccessFlag()) && fileGroup.getFileRestrictAccessFlag() && getHibachiScope().getLoggedInFlag()) || isNull(fileGroup)){
+				//they can download the file.
+				file = getService("fileService").downloadFile(fileID=rc.fileID);
+			}
+		}
 		if (file.hasErrors())
 		{
 			file.showErrorsAndMessages();
+			//renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 		}
 	}
 
