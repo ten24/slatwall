@@ -5,7 +5,7 @@
 
     <!--- Displays the address book addresses --->
     
-    <div class="address" 
+    <span class="address" 
 	    ng-repeat="(key, value) in $.slatwall.account.data.accountAddresses"  
 	    ng-init="orderFulfillmentAddressID = $.slatwall.cart.data.orderFulfillments[$.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].accountAddress.address.addressID||''"> 
 	    
@@ -13,7 +13,7 @@
         		id="selectedAccountAddress{{key}}" 
         		name="selectedAccountAddress{{key}}"
         		ng-click="$.slatwall.accountAddresses['selected']=key;$.slatwall.doAction('updateOrder', {'orderFulfillments[1].orderFulfillmentID':$.slatwall.cart.data.orderFulfillments[0].orderFulfillmentID,'orderFulfillments[1].accountAddress.accountAddressID': value.accountAddressID ,'orderFulfillments[1].order.orderID':$.slatwall.cart.orderID})"
-        		ng-checked="(orderFulfillmentAddressID == $.slatwall.account.data.accountAddresses[key].address.addressID)" />
+        		ng-checked="$.slatwall.accountAddresses['selected'] === key" />
         
         <label for="selectedAccountAddress{{key}}" ng-init="$.slatwall.saveShippingAsBilling = true">
         	<span ng-click="$.slatwall.accountAddresses['selected']=key;$.slatwall.doAction('updateOrder', {'orderFulfillments[1].orderFulfillmentID':$.slatwall.cart.data.orderFulfillments[0].orderFulfillmentID,'orderFulfillments[1].accountAddress.accountAddressID': value.accountAddressID ,'orderFulfillments[1].order.orderID':$.slatwall.cart.orderID})">
@@ -21,9 +21,9 @@
 	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.name">{{$.slatwall.account.data.accountAddresses[key].address.name}}<br></span>
 	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.company">{{$.slatwall.account.data.accountAddresses[key].address.company}}<br></span>    
 	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.streetAddress">{{$.slatwall.account.data.accountAddresses[key].address.streetAddress}}<br></span>
-	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.street2address">{{$.slatwall.account.data.accountAddresses[key].address.street2Address}}<br></span>
-	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.city">{{$.slatwall.account.data.accountAddresses[key].address.city}}</span>, <span ng-if="$.slatwall.account.data.accountAddresses[key].address.stateCode">{{$.slatwall.account.data.accountAddresses[key].address.stateCode}}</span> <span ng-if="$.slatwall.account.data.accountAddresses[key].address.postalCode">{{$.slatwall.account.data.accountAddresses[key].address.postalCode}}<br></span>
-	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.countrycode">{{$.slatwall.account.data.accountAddresses[key].address.countrycode}}<br></span>
+	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.street2Address">{{$.slatwall.account.data.accountAddresses[key].address.street2Address}}<br></span>
+	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.city">{{$.slatwall.account.data.accountAddresses[key].address.city}}</span>, <span ng-if="$.slatwall.account.data.accountAddresses[key].address.stateCode">{{$.slatwall.account.data.accountAddresses[key].address.stateCode}}</span> <span ng-if="$.slatwall.account.data.accountAddresses[key].address.locality">{{$.slatwall.account.data.accountAddresses[key].address.locality}}</span> <span ng-if="$.slatwall.account.data.accountAddresses[key].address.postalCode">{{$.slatwall.account.data.accountAddresses[key].address.postalCode}}<br></span>
+	            <span ng-if="$.slatwall.account.data.accountAddresses[key].address.countryCode">{{$.slatwall.account.data.accountAddresses[key].address.countryCode}}<br></span>
 	            <a href="tel:{{$.slatwall.account.data.accountAddresses[key].address.phoneNumber}}" class="tel" ng-if="$.slatwall.account.data.accountAddresses[key].address.phoneNumber">{{$.slatwall.account.data.accountAddresses[key].address.phoneNumber}}</a><br>   
 	        </span>
 	        <br>
@@ -31,7 +31,7 @@
         	
         </label> 
         
-   </div>
+   </span>
    
    <!--- Button to create a new account address --->
    <div

@@ -1,17 +1,25 @@
-<!-- Example of using the cart directive to list various items and well as modify -->
-<span ng-init="$.slatwall = $root.slatwall"></span>
-<table class="table table-condensed">
-    <tr ng-repeat="orderItem in $.slatwall.cart.orderitems">
+<table class="table table-condensed checkoutMiniCart">
+    <tr ng-repeat="orderItem in slatwall.cart.orderItems">
         <td class="text-center">
-            <a href="#"><img src="{{orderItem.sku.imagePath}}" style="height: 100px;"></a>
+           
+            <div ng-init="slatwall.getResizedImageByProfileName('large', orderItem.sku.skuID)">
+				<img ng-src="{{slatwall.imagePath[orderItem.sku.skuID]}}" class="img-responsive center-block" ng-if="!slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
+				<span ng-if="slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
+					<i class="fa fa-refresh fa-spin fa-lg fa-fw"></i>
+				</span>
+			</div>
         </td>
         <td>
             <h5>
-                <span ng-if="orderItem.sku.skuName == '' && orderItem.sku.product.productName != ''">{{orderItem.sku.product.productName}}</span>
-                <span ng-if="orderItem.sku.skuName != ''">{{orderItem.sku.skuName}}</span>
+                <span ng-if="slatwall.hasProductNameAndNoSkuName(orderItem)">{{orderItem.sku.product.productName}}</span>
+                <span ng-if="orderItem.sku.skuName">{{orderItem.sku.skuName}}</span>
             </h5>
-            {{orderItem.price |currency :($.slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}<br>
+            {{orderItem.sku.calculatedSkuDefinition}}<br>
+            {{orderItem.price |currency :(slatwall.cart.currencyCode == 'EUR'?'&euro;':'$')}}<br>
             Quantity: {{orderItem.quantity}}
         </td>
     </tr>
 </table>
+<div ng-if="slatwall.cartHasNoItems()" class="alert alert-warning ng-cloak">
+    <i class="fa fa-info-circle"></i> There are no items in your cart.
+</div>
