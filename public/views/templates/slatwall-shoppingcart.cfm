@@ -49,7 +49,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="../../tags" />
+<cfimport prefix="sw" taglib="../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -64,6 +64,7 @@ Notes:
 	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
 																				
 --->
+
 <cfoutput>
 	<div class="container">
 		
@@ -120,7 +121,7 @@ Notes:
 									
 									<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
 									<td>
-										<input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#orderItem.getQuantity()#" />
+										<input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#htmlEditFormat( orderItem.getQuantity() )#" />
 										<sw:ErrorDisplay object="#orderItem#" errorName="quantity" />
 									</td>
 									
@@ -166,6 +167,7 @@ Notes:
 											
 					    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
 					    					<div class="controls">
+					    						
 												<sw:FormField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#thisAttributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#thisAttributeValueObject.getAttributeValueOptions()#" class="span4" />
 												<sw:ErrorDisplay object="#thisAttributeValueObject#" errorName="password" />
 												
@@ -177,7 +179,8 @@ Notes:
 											
 					    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
 					    					<div class="controls">
-						  						<sw:FormField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#$.slatwall.cart()#" valueObjectProperty="#attribute.getAttributeCode()#" valueOptions="#attribute.getAttributeOptionsOptions()#" class="span4" />
+					    						
+						  						<sw:FormField type="#attribute.getFormFieldType()#" valueObject="#$.slatwall.cart()#" valueObjectProperty="#attribute.getAttributeCode()#" valueOptions="#attribute.getAttributeOptionsOptions()#" class="span4" />
 												<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="#attribute.getAttributeCode()#" />
 												
 					    					</div>

@@ -26,6 +26,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getAccount"){
             publicService.invokeMethod("getAccountData", {data=arguments.rc});
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
+            writeDump(arguments.rc.context);
             publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
         }
     }

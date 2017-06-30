@@ -352,7 +352,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
-    	
     		variables.shippingMethodOptions = getService("OrderService").getShippingMethodOptions(this);
     	}
     	return variables.shippingMethodOptions;

@@ -667,7 +667,6 @@ component output="false" accessors="true" extends="HibachiController" {
                 //should be able to add select and where filters here
                 var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
 																								 arguments.rc);
-
                 structAppend(arguments.rc.apiResponse.content,result);
             }else{
 				

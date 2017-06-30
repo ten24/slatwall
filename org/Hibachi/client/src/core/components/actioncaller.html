@@ -4,11 +4,10 @@
 <a  ng-if="swActionCaller.type === 'link'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
-	target="_self" 
-	ng-href="{{swActionCaller.actionUrl}}"
 	data-disabled="{{swActionCaller.disabledtext}}"
 	data-confirm="{{swActionCaller.confirmtext}}"
-	href="##"
+	role="button"
+	ng-click="swActionCaller.submit()"
 	>
 	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
 </a>
@@ -36,5 +35,6 @@
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
 	ng-click="swActionCaller.submit()"
+	ng-disabled="swActionCaller.disabled"
 	><i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>
