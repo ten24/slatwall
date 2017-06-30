@@ -141,7 +141,7 @@ Notes:
 								</cfif>
 								
 								<cfif hasDownload>
-									<ul class="list-unstyled">
+									<div class="list-unstyled">
 										<cfloop array="#$.slatwall.getProduct().getFiles()#" index="fileRelation">
 											<!--- Check the file group to see if this is secured. --->
 											<cfif not isNull(fileRelation.getFile().getFileGroup())>
@@ -150,16 +150,16 @@ Notes:
 											<!--- If this file is restricted and the user is logged in, then let them view OR if the file is not restricted. --->
 											<cfif (not isNull( fileGroup ) and $.slatwall.getService("fileService").allowAccountToAccessFile(fileGroup, $.slatwall.getLoggedInFlag())) >
 												<!--- Only show download link if the user is logged in. --->
-												<li class="download-link">
+												<p class="download-link">
 													<span class="primary" style="white-space:normal;">#fileRelation.getFile().getFileName()# <small>#fileRelation.getFile().getFileType()#</small></span><br>
 													<a target="_blank" href="/?slatAction=public:product.downloadfile&fileID=#fileRelation.getFile().getFileID()#&sredirect=/"><i class="fa fa-download" aria-hidden="true"></i> Download File</a>
-												</li>
+												</p>
 											<!--- Otherwise - it's restricted so ask the user to login --->
 											<cfelse>
 												<a href="/meta/sample/account.cfm"><strong>Sign In or Register</strong> to Download File</a>
 											</cfif>
 										</cfloop>
-									</ul>
+									</div>
 								<cfelse>
 									<!--- This message will show if there are no downloads --->
 									<div class="alert alert-info fade in alert-dismissable">
