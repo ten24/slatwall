@@ -216,19 +216,23 @@ component accessors="true" output="false" extends="HibachiService" {
 
 			var insertedData = getHibachiDataDAO().getInsertedDataFile();
 			var updateOnly = ignorePreviouslyInserted && listFindNoCase(insertedData, idKey);
-
-			thread 	name="loadDataFromXMLRaw#createUUID()#" 
-				tableName="#xmlData.table.xmlAttributes.tableName#"
-				idColumns="#idColumns#" 
-				updateData="#updateData#"
-				insertData="#insertData#"
-				updateOnly="#updateOnly#"
-				idKey="#idKey#"
-			{
-				getHibachiDataDAO().recordUpdate(
-					attributes.tableName, attributes.idColumns, attributes.updateData, attributes.insertData, attributes.updateOnly
-				);
-				getHibachiDataDAO().updateInsertedDataFile( attributes.idKey );
+			if(!getHibachiUtilityService().isInThread()){
+				thread 	name="loadDataFromXMLRaw#createUUID()#" 
+					tableName="#xmlData.table.xmlAttributes.tableName#"
+					idColumns="#idColumns#" 
+					updateData="#updateData#"
+					insertData="#insertData#"
+					updateOnly="#updateOnly#"
+					idKey="#idKey#"
+				{
+					getHibachiDataDAO().recordUpdate(
+						attributes.tableName, attributes.idColumns, attributes.updateData, attributes.insertData, attributes.updateOnly
+					);
+					getHibachiDataDAO().updateInsertedDataFile( attributes.idKey );
+				}
+			}else{
+				getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+				getHibachiDataDAO().updateInsertedDataFile( idKey );
 			}
 			
 		}
