@@ -23,7 +23,7 @@
     "json-loader": "^0.5.4",
     "less": "*",
     "ng-annotate-webpack-plugin": "*",
-    "run-sequence": "^1.1.4",
+    "run-sequence": "1.1.4",
     "strip-loader": "^0.1.2",
     "tsify": "*",
     "typescript": "*",
