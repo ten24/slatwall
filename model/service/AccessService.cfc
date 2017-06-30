@@ -55,7 +55,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public struct function getAccessToContentDetails( required any account, required any content ) {
 		
-		//if content.getEntityName() == "SwFile"...
 		// Setup the return struct
 		var accessDetails = {
 			accessFlag = false,
@@ -173,6 +172,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if( structKeyExists(arguments,"accountContentAccess") ) {
 			contentAccess.setAccountContentAccess(arguments.accountContentAccess);
 		}
+		
+		// Pass into the hibernate context
+		this.saveContentAccess(contentAccess);
+		
+		// persist the content access log, needed in case file download aborts the request 
+		getHibachiDAO().flushORMSession();
+	}
+	
+	public void function logFileAccess(required any file) {
+		// Create a new content access log
+		var contentAccess = this.newContentAccess();
+		contentAccess.setFile(arguments.file);
+		contentAccess.setAccount(getSlatwallScope().getCurrentAccount());
 		
 		// Pass into the hibernate context
 		this.saveContentAccess(contentAccess);
