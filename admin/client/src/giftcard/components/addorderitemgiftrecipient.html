@@ -62,14 +62,14 @@
 		<sw-form data-object="addGiftRecipientControl.currentGiftRecipient" name="createRecipient" class="s-add-info-dropdown" ng-hide="!addGiftRecipientControl.adding">
 			<div class="s-add-info-dropdown-inner">
 					<h5 sw-rbkey="'admin.entity.addorderitemgiftrecipient.createRecipient'"></h5>
-					<sw-property-display  data-property="firstName" data-editing="true" ></sw-property-display>
-					<sw-property-display  data-property="lastName" data-editing="true"></sw-property-display>
-					<sw-property-display  data-property="emailAddress" data-editing="true"></sw-property-display>
-					<sw-property-display  data-property="giftMessage" data-editing="true"></sw-property-display>
+					<sw-property-display  data-property-identifier="firstName" data-editing="true" ></sw-property-display>
+					<sw-property-display  data-property-identifier="lastName" data-editing="true"></sw-property-display>
+					<sw-property-display  data-property-identifier="emailAddress" data-editing="true"></sw-property-display>
+					<sw-property-display  data-property-identifier="giftMessage" data-editing="true"></sw-property-display>
 					<div class="s-character-count">
 						<span sw-rbkey="'define.remainingcharacters'"></span>: <strong><span ng-bind="addGiftRecipientControl.getMessageCharactersLeft()"></span></strong>
 					</div>
-					<sw-property-display  data-property="quantity" data-editing="true" data-field-type="select" data-options="addGiftRecipientControl.getUnassignedCountArray()"></sw-property-display>
+					<sw-property-display  data-property-identifier="quantity" data-editing="true" data-field-type="select" data-options="addGiftRecipientControl.getUnassignedCountArray()"></sw-property-display>
 				<div class="alert alert-error" ng-show="addGiftRecipientControl.showInvalidAddFormMessage" sw-rbkey="'admin.entity.addorderitemgiftrecipient.invalid'"></div>
 				<div>
 					<button type="button" class="btn btn-sm btn-primary" ng-click="addGiftRecipientControl.addGiftRecipient(addGiftRecipientControl.addGiftRecipientForm.$valid)" sw-rbkey="'define.add'"></button>
