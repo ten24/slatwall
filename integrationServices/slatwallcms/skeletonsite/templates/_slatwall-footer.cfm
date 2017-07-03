@@ -46,5 +46,8 @@
 Notes: 
 	
 --->
+    <cfoutput>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/slatwall.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
+    </cfoutput>
 	</body>
 </html>

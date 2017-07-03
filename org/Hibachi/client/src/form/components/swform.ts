@@ -26,6 +26,8 @@ class SWFormController {
     public formCtrl;
     public formData = {};
     public inputAttributes:string;
+    public eventListeners;
+    public submitOnEnter;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -78,7 +80,6 @@ class SWFormController {
             }
         }
 
-
         //
         this.context = this.context || this.name;
         if (this.isProcessForm) {
@@ -87,28 +88,15 @@ class SWFormController {
                 this.entityName = "Cart"
             };
         }
+        if(this.submitOnEnter){
+            this.eventListeners = this.eventListeners || {};
+            this.eventListeners.keyup = this.submitKeyCheck;
+        }
 
-        //  /** find the form scope */
-        // this.$scope.$on('anchor', (event, data) =>
-        // {
-        //     if (data.anchorType == "form" && data.scope !== undefined) {
-        //         this.formCtrl = data.scope;
-        //     }
-        // });
-
-        /** make sure we have our data using new logic and $hibachi*/
-//        if (this.context == undefined || this.entityName == undefined) {
-//            throw ("ProcessObject Undefined Exception");
-//        }
-        /* handle events
-        */
-        if (this.onSuccess){
-            this.parseEventString(this.onSuccess, "onSuccess");
-            observerService.attach(this.eventsHandler, "onSuccess");
-
-        }else if(this.onError){
-            this.parseEventString(this.onError, "onError");
-            observerService.attach(this.eventsHandler, "onError");//stub
+        if(this.eventListeners){
+            for(var key in this.eventListeners){
+                this.observerService.attach(this.eventListeners[key], key)
+            }
         }
 
     }
@@ -117,10 +105,18 @@ class SWFormController {
         return (angular.isObject(this.object));
     }
 
+    public submitKeyCheck = (event) => {
+        if(event.form.$name == this.name &&
+            event.event.keyCode == 13){
+            this.submit(event.swForm.action);
+        }
+    }
+
     /** create the generic submit function */
     public submit = (actions) =>
-    {
+    {   
         actions = actions || this.action;
+        console.log('actions!', actions);
         this.clearErrors();
         this.formData = this.getFormData() || "";
         this.doActions(actions);
@@ -146,50 +142,15 @@ class SWFormController {
 
         this.formData = this.formData || {};
         //
+
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
-            if(this.events && this.events.events){
-                if (result.errors) {
-                    this.parseErrors(result.errors);
-                        //trigger an onError event
-
-                    this.observerService.notify("onError", {"caller" : this.context, "events": this.events.events||""});
-                } else {
-                    //trigger a on success event
-                    this.observerService.notify("onSuccess", {"caller":this.context, "events":this.events.events||""});
-                }
+            if(!result) return;
+            this.object.forms[this.name].$setSubmitted(true);
+            if (result.errors) {
+                this.parseErrors(result.errors);
             }
-        }, angular.noop);
-
-    }
-
-    public parseEvents = (str:string, evntType)=> {
-
-        if (str == undefined) return;
-        let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart, event:element]
-        let eventsObj = {
-            "events": []
-        }; //will hold events
-        for (var token in strTokens){
-            let eventName = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-            let formName = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-
-            if (formName == "this") {formName == this.context.toLowerCase();} //<--replaces the alias this with the name of this form.
-            let event = {"name" : eventName, "value" : formName};
-            eventsObj.events.push(event);
-
-        }
-        if (eventsObj.events.length){
-            this.observerService.attach(this.eventsHandler, "onSuccess");
-        }
-
-        return eventsObj;
-    }
-
-     /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-    public parseEventString = (evntStr:string, evntType)=>
-    {
-        this.events = this.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+        });
 
     }
 
@@ -199,12 +160,13 @@ class SWFormController {
         ***/
     public parseErrors = (errors)=>
     {
-
         if (angular.isDefined(errors) && errors) {
             angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
                     this.$timeout(()=> {
-                        primaryElement.append("<span name='" + key + "Error'>" + errors[key] + "</span>");
+                        errors[key].forEach((error)=>{
+                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+                        })
                     }, 0);
             }, this);
         }
@@ -217,7 +179,6 @@ class SWFormController {
         this.$timeout(()=>{
                 let errorElements = this.$element.find("[error-for]");
                 errorElements.empty();
-                //vm["formCtrl"][this.context].$setPristine(true);
         },0);
 
     }
@@ -254,7 +215,17 @@ class SWFormController {
     }
     /** clears this directive on event */
     public clear  = (params) =>{
-       //stub
+        var iterable = this.formCtrl;
+        angular.forEach(iterable, (val, key) => {
+            if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
+                if(this.object.forms[this.name][key].$viewValue){
+                    this.object.forms[this.name][key].$setViewValue("");
+                    this.object.forms[this.name][key].$render();
+                }
+            }else{
+                val = "";
+            }
+        });
     }
 
     /** returns all the data from the form by iterating the form elements */
@@ -262,27 +233,29 @@ class SWFormController {
     {
         var iterable = this.formCtrl;
 
-
         angular.forEach(iterable, (val, key) => {
-
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                if(this.object.forms[this.name][key].$modelValue){
+                 if(this.object.forms[this.name][key].$modelValue){
                     val = this.object.forms[this.name][key].$modelValue;
                 }else if(this.object.forms[this.name][key].$viewValue){
                     val = this.object.forms[this.name][key].$viewValue;
+                }else if(this.object.forms[this.name][key].$dirty){
+                    val="";
                 }
                 /** Check for form elements that have a name that doesn't start with $ */
-                if (angular.isString(val)) {
+                if (angular.isString(val) || angular.isNumber(val) || typeof val == 'boolean') {
                     this.formData[key] = val;
                 }
-                if(val.$modelValue){
+                if(val.$modelValue != undefined){
                     this.formData[key] = val.$modelValue;
-                }else if(val.$viewValue){
+                }else if(val.$viewValue != undefined){
                     this.formData[key] = val.$viewValue;
                 }
             }
+            else{
+            }
         });
-
+        
         return this.formData || "";
     }
 }
@@ -308,13 +281,16 @@ class SWForm implements ng.IDirective {
             actions: "@?",
             formClass: "@?",
             formData: "=?",
+            errorClass: '@?',
             object: "=?",
             onSuccess: "@?",
             onError: "@?",
             hideUntil: "@?",
             isDirty:"=?",
             inputAttributes:"@?",
-            eventHandlers:"@?"
+            eventListeners:"=?",
+            eventAnnouncers:"@",
+            submitOnEnter:"@"
     };
 
     /**

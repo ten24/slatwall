@@ -5,28 +5,31 @@
 		
 			<sw-form
 		    data-is-process-form="true"
+		    data-context="{{SwAddressForm.context}}"
 		    data-form-class="edit"
 		    data-error-class="error"
 		    data-object="SwAddressForm.address"
-		    data-class="new_adderess"
-		    data-name="{{SwAddressForm.addressName}}">
-			    
+		    data-class="new_address"
+		    data-name="{{SwAddressForm.addressName}}"
+		    data-event-announcers="keyup"
+		    data-action="{{SwAddressForm.action}}"
+		    data-event-listeners="{AddressCountrycodeOnChange:slatwall.binder(null,slatwall.refreshAddressOptions,SwAddressForm.address)}">			    
 			    <div class="row" ng-cloak>
 			    	<!--- Show address book dropdown? --->
 			    	<div class="col-sm-6" ng-if="SwAddressForm.showAddressBookSelect == 'true'">
 						<label for="addresses">Address Book</label>
-				        <select required="true" class="form-control" name="addresses" tabindex="3" ng-model="$root.slatwall.selectedAddress" ng-change="$root.slatwall.newShipping.accountAddressID = $root.slatwall.selectedAddress">
+				        <select required="true" class="form-control" name="addresses" tabindex="3" ng-model="slatwall.selectedAddress" ng-change="slatwall.newShipping.accountAddressID = slatwall.selectedAddress">
 							<option value="">-SELECT FROM ADDRESS BOOK-</option>
-							<option value="{{$root.slatwall.account.accountAddresses[key].accountAddressID}}" ng-repeat="(key, value) in $root.slatwall.account.accountAddresses"> {{$root.slatwall.account.accountAddresses[key].accountAddressName}} - {{$root.slatwall.account.accountAddresses[key].address.city}}</option>
+							<option value="{{slatwall.account.accountAddresses[key].accountAddressID}}" ng-repeat="(key, value) in slatwall.account.accountAddresses"> {{slatwall.account.accountAddresses[key].accountAddressName}} - {{slatwall.account.accountAddresses[key].address.city}}</option>
 				        	<option value="new">Create a new address</option>
 				        </select>
 				    </div>
 				    
 			    </div>
 			    <div class="create-address border-address">
-					<div class="row" ng-if="OrderAddShippingObj.edit == false && $root.slatwall.cart.orderFulfillments[$root.slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID.length">
+					<div class="row" ng-if="OrderAddShippingObj.edit == false && slatwall.cart.orderFulfillments[slatwall.cart.orderFulfillmentWithShippingMethodOptionsIndex].data.shippingAddress.addressID.length">
 				        <div class="col-md-12">
-					        <div class="loading-wrapper loading-sm" ng-class="{ 'loading': $root.slatwall.isLoading('addShippingAddress') && $root.slatwall.loading }">
+					        <div class="loading-wrapper loading-sm" ng-class="{ 'loading': slatwall.isLoading('addShippingAddress') && slatwall.loading }">
 					            
 					        </div>
 					    </div>
@@ -34,21 +37,37 @@
 			    	<div class="row" ng-cloak>
 					    <!--- hidden fields - Will contain the address id if one was provided. --->
 					    <input type="hidden" ng-model="SwAddressForm.address.addressID" name="addressID" value="{{SwAddressForm.address.addressID}}" ng-init="SwAddressForm.address.addressID = SwAddressForm.address.addressID||''"/>
-					    
-					    <!-- Country -->
-				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true">
-				    		<input type="hidden" ng-model="SwAddressForm.address.countryCode" value="{{selectedCountry.value}}"/>
-					            
-				    		<label for="countrycode">Country - {{$root.slatwall.selectedCountry.value}}</label>
-				    		<select name="countrycode"
-					    		ng-required="true"
-					        	class="form-control" 
-					            ng-model="$root.slatwall.selectedCountry"  
-					            ng-options="country as country.name for country in $root.slatwall.countries.countryCodeOptions" 
-					            ng-change="$root.slatwall.getStates($root.slatwall.selectedCountry.value); SwAddressForm.address.countryCode = $root.slatwall.selectedCountry.value || $root.slatwall.countries.countryCodeOptions['234']"
-					            ng-init="($root.slatwall.states == undefined)?$root.slatwall.getStates('US'):false;$root.slatwall.selectedCountry = $root.slatwall.countries.countryCodeOptions['234'];SwAddressForm.address.countryCode = $root.slatwall.selectedCountry.value">
-					            <option value="US"> Country * </option>
-							</select>
+					    <input type="hidden" ng-model="slatwall.cart.orderFulfillments[SwAddressForm.fulfillmentIndex].orderFulfillmentID" name="fulfillmentID" value={{SwAddressForm.fulfillmentID}} />
+				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('accountAddressName')">
+						    <swf-property-display
+						        data-name="addressName"
+						        data-field-type="text"
+						        data-object="SwAddressForm.address"
+						        data-property-identifier="accountAddressName"
+						        data-label-text="Name this Address"
+						        data-class="form-control"
+						        data-edit="true" 
+						        >
+						    </swf-property-display>
+					    </div>
+				    </div>
+				    <div class="row" ng-cloak>
+					    <!--- Country --->
+				    	<div class="col-sm-6 form-group" ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && slatwall.countries.countryCodeOptions">
+
+							<swf-property-display 
+					            data-name="countrycode" 
+					            data-class="form-control"
+					            data-field-type="select"
+					            data-select-type="string"
+					            data-edit="true"
+					            data-property-identifier="countrycode"
+					            data-object="SwAddressForm.address"
+					            data-label-text="Country"
+					            data-options="slatwall.countries.countryCodeOptions"
+					            ng-init="SwAddressForm.address.data.selectedcountrycode = slatwall.getCountryByCountryCode(SwAddressForm.address.countrycode);slatwall.refreshAddressOptions( SwAddressForm.address)">
+			            	</swf-property-display>
+
 							<span class="error" error-for="country"></span>
 				    	</div>
 				    	<!--- Default Country --->
@@ -57,22 +76,22 @@
 				    		<input name="countryCode" 
 				    			style="display:none"
 					    		ng-required="true"
-					        	class="form-control" 
-					            ng-model="SwAddressForm.address.countryCode"  
-					            ng-init="SwAddressForm.address.countryCode=$root.slatwall.defaultCountryCode;$root.slatwall.selectedCountry.value = $root.slatwall.defaultCountryCode;" />
+					        	class="form-control"
+					            ng-model="SwAddressForm.address.countryCode"
+					            ng-init="SwAddressForm.address.countryCode=slatwall.defaultCountryCode;slatwall.selectedCountry.value = slatwall.defaultCountryCode;" />
 					          
 							<span class="error" error-for="country"></span>
 				    	</div>
 				    	
-				    	<div class="col-sm-6 form-group">
+				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('phoneNumber')">
 						    <swf-property-display
-						        data-name="{{SwAddressForm.fieldNamePrefix}}phoneNumber"
-						        data-type="text"
+						        data-name="phoneNumber"
+						        data-field-type="text"
 						        data-object="SwAddressForm.address"
 						        data-property-identifier="phoneNumber"
 						        data-label-text="Phone Number"
 						        data-class="form-control"
-						        data-editing="true">
+						        data-edit="true">
 						    </swf-property-display>
 					    </div>
 				    	
@@ -80,25 +99,25 @@
 					 <div class="row">   
 					    <div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('name')">
 						    <swf-property-display
-						        data-name="{{SwAddressForm.fieldNamePrefix}}name"
-						        data-type="text"
+						        data-name="name"
+						        data-field-type="text"
 						        data-object="SwAddressForm.address"
 						        data-property-identifier="name"
 						        data-label-text="Full Name"
 						        data-class="form-control"
-						        data-editing="true" 
+						        data-edit="true" 
 						        >
 						    </swf-property-display>
 					    </div>
 					    <div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('company')">
 						    <swf-property-display
-						        data-name="{{SwAddressForm.fieldNamePrefix}}company"
-						        data-type="text"
+						    	data-name="company"
+						        data-field-type="text"
 						        data-object="SwAddressForm.address"
 						        data-property-identifier="company"
 						        data-label-text="Company (optional)"
 						        data-class="form-control"
-						        data-editing="true" >
+						        data-edit="true" >
 						    </swf-property-display>
 					    </div> 
 				    </div>
@@ -108,26 +127,26 @@
 				    	<!--- Street --->
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('streetAddress')">
 				    		<swf-property-display
-					        data-name="{{SwAddressForm.fieldNamePrefix}}streetAddress"
-					        data-type="text"
+					        data-name="streetAddress"
+					        data-field-type="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="streetAddress"
-					        data-label-text="Street "
+					        data-label-text="{{(slatwall.addressOptions.addressOptions.streetAddressLabel || 'Street')}}"
 					        data-class="form-control"
-					        data-editing="true" input-attributes="ng-required=true">
+					        data-edit="true">
 					    	</swf-property-display>
 					        
 					    </div>
 						<!--- Street 2 --->
 					    <div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('street2Address')">
 					    	<swf-property-display
-					        data-name="{{SwAddressForm.fieldNamePrefix}}street2Address"
-					        data-type="text"
+					        data-name="street2Address"
+					        data-field-type="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="street2Address"
-					        data-label-text="Apt./Suite"
+					        data-label-text="{{(slatwall.addressOptions.addressOptions.street2AddressLabel || 'Apt/Suite')}}"
 					        data-class="form-control"
-					        data-editing="true" >
+					        data-edit="true" >
 					    	</swf-property-display>
 				   		</div>
 				    
@@ -136,47 +155,53 @@
 				    <div class="row"  ng-cloak>
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('city')">
 				    		<swf-property-display
-					        data-name="{{SwAddressForm.fieldNamePrefix}}city"
-					        data-type="text"
+					        data-name="city"
+					        data-field-type="text"
 					        data-object="SwAddressForm.address"
 					        data-property-identifier="city"
-					        data-label-text="City"
+					        data-label-text="{{(slatwall.addressOptions.addressOptions.cityLabel || 'City')}}"
 					        data-class="form-control"
-					        data-editing="true" input-attributes="ng-required=true">
+					        data-edit="true">
 					    	</swf-property-display>
 				    	</div>
 				
 					    <div class="col-sm-6 form-group">
 				          <div class="row">
 				          	
-					        <div class="col-xs-7" ng-if="$root.slatwall.selectedCountry.value == 'US' || $root.slatwall.selectedCountry.value == 'CA'" ng-init="$root.slatwall.selectedCountry.value='US'">
-					            <input type="hidden" ng-model="SwAddressForm.address.stateCode" value="{{selectedState.value}}" />
-					            <label for="statecode">State</label>
-					            <select ng-required="true" required="true" tabindex="9" class="form-control" name="statecode" ng-model="selectedState" ng-init="selectedState = $root.slatwall.getStateByStateCode(SwAddressForm.address.stateCode)||''" ng-options="state as state.name for state in $root.slatwall.states.stateCodeOptions" ng-change="SwAddressForm.address.stateCode = selectedState.value">
-									<option value="" ng-if="SwAddressForm.address.stateCode == undefined || SwAddressForm.address.stateCode == ''"> — Select State — </option>
-					            </select>
-					            
+					        <div class="col-xs-7" ng-if="slatwall.addressOptions.addressOptions.stateCodeShowFlag && slatwall.states.stateCodeOptions && slatwall.states.stateCodeOptions.length">
+					            <swf-property-display 
+					            data-name="statecode" 
+					            data-class="form-control"
+					            data-field-type="select"
+					            data-select-type="string"
+					            data-edit="true"
+					            data-property-identifier="statecode"
+					            data-object="SwAddressForm.address"
+					            data-label-text="{{(slatwall.addressOptions.addressOptions.stateCodeLabel || 'State')}}"
+					            data-options="slatwall.states.stateCodeOptions"
+					            ng-init="SwAddressForm.address.data.selectedstatecode = slatwall.getStateByStateCode(SwAddressForm.address.statecode)||''" >
+					            </swf-property-display>
 					        </div>
-					        <div class="col-xs-7" ng-if="$root.slatwall.selectedCountry.value != 'US' && $root.slatwall.selectedCountry.value != 'CA' && SwAddressForm.hasField('locality')">
+					        <div class="col-xs-7" ng-if="SwAddressForm.address.data.selectedcountrycode.value != 'US' && SwAddressForm.address.data.selectedcountrycode.value != 'CA' && SwAddressForm.hasField('locality')">
 					            <swf-property-display
-							        data-name="{{SwAddressForm.fieldNamePrefix}}locality"
-							        data-type="text"
+							        data-name="locality"
+							        data-field-type="text"
 							        data-object="SwAddressForm.address"
 							        data-property-identifier="locality"
-							        data-label-text="Locality"
+							        data-label-text="{{(slatwall.addressOptions.addressOptions.localityLabel || 'Locality')}}"
 							        data-class="form-control"
-							        data-editing="true" >
+							        data-edit="true" >
 							    </swf-property-display>
 				        	</div>
 					        <div class="col-xs-5" ng-if="SwAddressForm.hasField('postalCode')">
 					        	<swf-property-display
-							        data-name="{{SwAddressForm.fieldNamePrefix}}postalCode"
-							        data-type="text"
+							        data-name="postalCode"
+							        data-field-type="text"
 							        data-object="SwAddressForm.address"
 							        data-property-identifier="postalCode"
-							        data-label-text="Zip"
+							        data-label-text="{{(slatwall.addressOptions.addressOptions.postalCodeLabel || 'Postal Code')}}"
 							        data-class="form-control"
-							        data-editing="true" input-attributes="ng-required=true">
+							        data-edit="true">
 							    </swf-property-display>
 					         </div>
 					      </div>
@@ -184,19 +209,16 @@
 				    </div>
 
 				    <!--- If we want to render the submit button. --->
-				    
-			  		<div class="row" ng-show="SwAddressForm.showSubmitButton" style="padding-top:20px">
-				  		<div class="col-xs-5">
-					    	<sw-action-caller 
-								data-action="{{SwAddressForm.action}}"
-								data-action-text="{{SwAddressForm.actionText}}"
+			  		<div class="row" ng-show="SwAddressForm.showSubmitButton == 'true' || SwAddressForm.showCloseButton == 'true'" style="padding-top:20px">
+				  		<div class="col-xs-5" >
+					    	<sw-action-caller ng-if="SwAddressForm.showSubmitButton == 'true'"
 								data-modal="false" 
 								data-type="button" 
 								data-class="btn-yellow"
-								data-text="{{($root.slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : 'SAVE &amp; CONTINUE')}}">
+								data-text="{{(slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>
-							<button 
-			                    ng-click="$root.slatwall.accountAddressEditFormIndex=undefined;"
+							<button
+			                    ng-click="slatwall.accountAddressEditFormIndex[SwAddressForm.fulfillmentIndex]=undefined; slatwall.billingAddressEditFormIndex = undefined"
 			                    class="btn btn-white">
 			                    Close
 			                </button>
@@ -207,15 +229,16 @@
 			</sw-form>
 		</div>
 	</div>
-		<div class="alert alert-success " ng-if="$root.slatwall.getRequestByAction('updateAddress').hasSuccessfulAction()">
-			<span ng-init="$root.slatwall.accountAddressEditFormIndex=undefined;"></span>
+	<div ng-if="SwAddressForm.showAlerts !== 'false'">
+		<div class="alert alert-success " ng-if="slatwall.getRequestByAction('updateAddress').hasSuccessfulAction()">
+			<!--- <span ng-init="slatwall.accountAddressEditFormIndex=undefined;"></span> --->
 			Address was updated successfully.
 		</div>
-		<div class="alert alert-success " ng-if="$root.slatwall.getRequestByAction('addNewAccountAddress').hasSuccessfulAction()">
-			<span ng-init="$root.slatwall.accountAddressEditFormIndex=undefined;"></span>
+		<div class="alert alert-success " ng-if="slatwall.getRequestByAction('addNewAccountAddress').hasSuccessfulAction()">
+			<!--- <span ng-init="slatwall.accountAddressEditFormIndex=undefined;"></span> --->
 			Address was created successfully.
 		</div>
-
+	</div>
 	
 </div>
 <script>
