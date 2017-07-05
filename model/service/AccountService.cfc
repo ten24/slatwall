@@ -1572,6 +1572,23 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// =====================  END: Delete Overrides ===========================
 
+	public any function getAccountAttributePropertylist(){
+		var propertyList = '';
+		if(structKeyExists(getService('AttributeService').getAttributeModel(),'Account')){
+			var accountAttributeModel = getService('AttributeService').getAttributeModel().Account;
+			if(!isNull(accountAttributeModel)){
+				for(var attributeSetName in accountAttributeModel){
+					var attributeSet = accountAttributeModel[attributeSetName];
+					for(var attribute in attributeSet.attributes){
+						propertyList = listAppend(propertyList, attribute, ',');
+					}
+				}
+			}
+		}
+		
+		return propertyList;
+	}
+
 	// ===================== START: Private Helper Functions ==================
 
 	private any function createNewAccountPassword (required any account, required any processObject ){
