@@ -357,6 +357,8 @@ class PublicService {
             var response = JSON.parse(xhr.response);
             if (xhr.status === 200) {
                this.processAction(response, null);
+               this.successfulActions = response.successfulActions;
+               this.failureActions = response.failureActions;
             }
             this.$timeout(()=>{
                 this.uploadingFile = false;
