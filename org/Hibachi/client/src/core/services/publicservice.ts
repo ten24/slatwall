@@ -356,8 +356,7 @@ class PublicService {
         xhr.onload = (result)=>{
             var response = JSON.parse(xhr.response);
             if (xhr.status === 200) {
-               this.successfulActions = response.successfulActions;
-               this.failureActions = response.failureActions;
+               this.processAction(response, null);
             }
             this.$timeout(()=>{
                 this.uploadingFile = false;
@@ -381,7 +380,7 @@ class PublicService {
         }
         this.errors = response.errors;
         //if the action that was called was successful, then success is true.
-        if (request.hasSuccessfulAction()){
+        if (request && request.hasSuccessfulAction()){
             this.successfulActions = [];
             for (var action in request.successfulActions){
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
@@ -391,6 +390,13 @@ class PublicService {
                 }else if(request.successfulActions[action].indexOf('public:account.logout') !== -1){
                     this.account = this.$hibachi.newAccount();
                 }
+                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
+            }
+        }
+
+        if(request && request.hasFailureAction()){
+            this.failureActions = [];
+            for (var action in request.successfulActions){
                 this.successfulActions.push(request.successfulActions[action].split('.')[1]);
             }
         }
