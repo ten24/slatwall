@@ -50,7 +50,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cftry>
-	<cfset local.errorDisplayFlag = true />
+	<cfset local.errorDisplayFlag = false />
 	<cfset local.errorNotifyEmailAddresses = '' />
 	
 	<cfif structKeyExists(request, "slatwallScope")>
