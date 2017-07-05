@@ -78,7 +78,7 @@
 					    		ng-required="true"
 					        	class="form-control"
 					            ng-model="SwAddressForm.address.countryCode"
-					            ng-init="SwAddressForm.address.countryCode=slatwall.defaultCountryCode;slatwall.selectedCountry.value = slatwall.defaultCountryCode;" />
+					            ng-init="SwAddressForm.address.countrycode=slatwall.defaultCountryCode;SwAddressForm.address.data.selectedcountrycode = slatwall.getCountryByCountryCode(SwAddressForm.address.countrycode);slatwall.refreshAddressOptions( SwAddressForm.address)" />
 					          
 							<span class="error" error-for="country"></span>
 				    	</div>
