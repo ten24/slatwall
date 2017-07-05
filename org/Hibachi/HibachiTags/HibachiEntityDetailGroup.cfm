@@ -38,7 +38,8 @@
 
 		<!--- Make sure there is text for the tab name --->
 		<cfif not len(tab.text)>
-			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />
+			<cfset local.rbKeyString = replace(replace( replace(tab.view, '../','','all'), '/', '.', 'all') ,':','.','all' ) />
+			<cfset tab.text = attributes.hibachiScope.rbKey(local.rbKeyString) />
 		</cfif>
 
 		<cfif not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag)>
