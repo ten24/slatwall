@@ -40,6 +40,7 @@ class SWTypeaheadSearchController {
     public initialEntityId:string;
     public initialEntityCollectionConfig:any; 
     public dropdownOpen:boolean;
+    public searchEndpoint;
 
 	private _timeoutPromise;
     
@@ -53,7 +54,8 @@ class SWTypeaheadSearchController {
                 private observerService, 
                 private rbkeyService, 
                 private collectionConfigService,
-                private typeaheadService
+                private typeaheadService,
+                private $http
      ){
         
         this.dropdownOpen = false;
@@ -165,6 +167,8 @@ class SWTypeaheadSearchController {
         this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
 
         this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
+
+        this.$http = $http;
 	}
 
     public clearSearch = () =>{
@@ -203,8 +207,19 @@ class SWTypeaheadSearchController {
         }
         
         this._timeoutPromise = this.$timeout(()=>{
-
-            var promise = this.collectionConfig.getEntity();
+            var promise;
+            if(this.searchEndpoint){
+                promise = this.$http({
+                    url:this.searchEndpoint,
+                    method:'POST',
+                    data:{
+                        search:search,
+                        options:this.collectionConfig.getOptions()
+                    }
+                });
+            }else{
+                promise = this.collectionConfig.getEntity();
+            }
 
             promise.then( (response) =>{
                 this.results = response.pageRecords || response.records; 
@@ -335,7 +350,8 @@ class SWTypeaheadSearch implements ng.IDirective{
         initialEntityId:"@",
         multiselectMode:"=?",
         typeaheadDataKey:"@?",
-        rightContentPropertyIdentifier:"@?"
+        rightContentPropertyIdentifier:"@?",
+        searchEndpoint:"@?"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";

@@ -111,7 +111,8 @@ class SWTypeaheadInputField implements ng.IDirective{
         action:"@",
         variables:'&?',
         eventListeners:'=?',
-        placeholderText:'@?'
+        placeholderText:'@?',
+        searchEndpoint:'@?'
     };
     public controller=SWTypeaheadInputFieldController;
     public controllerAs="swTypeaheadInputField";
