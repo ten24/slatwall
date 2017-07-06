@@ -138,4 +138,4 @@ class SWTypeaheadInputField implements ng.IDirective{
 export{
     SWTypeaheadInputField,
     SWTypeaheadInputFieldController
-}g
+}
