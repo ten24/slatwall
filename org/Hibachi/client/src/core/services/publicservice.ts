@@ -588,7 +588,7 @@ class PublicService {
     /** Redirects to the passed in URL
     */
     public redirectExact = (url:string)=>{
-        this.$location.url(url);
+        this.$window.location.href= url ;
     }
 
     // /** Returns true if a property on an object is undefined or empty. */
