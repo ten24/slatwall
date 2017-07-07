@@ -752,9 +752,9 @@ class PublicService {
                 this.imagePath = {};
             }
             if (result.resizedImagePaths){
-                result.resizedImagePaths.forEach(skuID=>{
+                for(var skuID in result.resizedImagePaths){
                     this.imagePath[skuID] = result.resizedImagePaths[skuID]
-                })
+                }
             }
          });
         
