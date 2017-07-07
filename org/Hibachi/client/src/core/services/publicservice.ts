@@ -831,8 +831,7 @@ class PublicService {
         if(!this.hasAccount()) return false;
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) && !this.edit ||
-            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-                (this.edit == 'fulfillment')) {
+            (this.edit == 'fulfillment')) {
             return true;
         }
         return false;
@@ -849,6 +848,8 @@ class PublicService {
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
             (this.cart.orderRequirementsList.indexOf('payment') != -1) && !this.edit ||
+            (this.cart.orderRequirementsList.indexOf('account') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
             (this.edit == 'payment')) {
             return true;
         }
@@ -865,7 +866,7 @@ class PublicService {
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
             (this.cart.orderRequirementsList.indexOf('payment') == -1) &&
-            (!this.edit) || (this.edit == 'review')) {
+            ((!this.edit) || (this.edit == 'review'))) {
             return true;
         }
         return false;
