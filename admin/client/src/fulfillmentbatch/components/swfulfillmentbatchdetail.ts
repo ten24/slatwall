@@ -14,7 +14,6 @@ class SWFulfillmentBatchDetailController  {
     // @ngInject
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private listingService, private orderFulfillmentService, private rbkeyService){
        
-        //Setup a load handler that checks for the data.
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
             //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.

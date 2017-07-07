@@ -456,10 +456,10 @@
 							data-name="orderFulfillmentCollectionTable"
 							data-multi-slot="true">
 							
-							<sw-listing-column data-property-identifier="order.orderNumber"></sw-listing-column>
-							<sw-listing-column data-property-identifier="order.orderOpenDateTime"></sw-listing-column>
-							<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName"></sw-listing-column>
-							<sw-listing-column data-property-identifier="shippingAddress.stateCode"></sw-listing-column>
+							<sw-listing-column data-property-identifier="order.orderNumber" data-title="Order Number"></sw-listing-column>
+							<sw-listing-column data-property-identifier="order.orderOpenDateTime" data-title="Date Placed"></sw-listing-column>
+							<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" data-title="Shipping Method"></sw-listing-column>
+							<sw-listing-column data-property-identifier="shippingAddress.stateCode" data-title="State"></sw-listing-column>
 							<sw-listing-column data-property-identifier="orderFulfillmentInvStatType.typeName" data-title="Status"></sw-listing-column>
 						</sw-listing-display>
 				
@@ -483,7 +483,7 @@
 							data-name="orderItemCollectionTable" 
 							data-multi-slot="true">
 							
-							<sw-listing-column data-property-identifier="order.orderNumber"></sw-listing-column>
+							<sw-listing-column data-property-identifier="order.orderNumber" data-title="Order Number"></sw-listing-column>
 							<sw-listing-column data-property-identifier="order.orderOpenDateTime" data-title="Date"></sw-listing-column>
 							<sw-listing-column data-property-identifier="sku.product.productName" data-title="Products"></sw-listing-column>
 							<sw-listing-column data-property-identifier="quantity" data-title="QTY"></sw-listing-column>

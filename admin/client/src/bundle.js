@@ -26909,6 +26909,7 @@
 	                if (angular.isString(data)) {
 	                    data = JSON.parse(data);
 	                }
+	                console.log("Transform Response Called: ", data);
 	                return data;
 	            };
 	            //check if we are using a service to transform the response
@@ -49725,7 +49726,7 @@
 	    return t;
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var Store = __webpack_require__(503);
+	var FluxStore = __webpack_require__(503);
 	var actions = __webpack_require__(607);
 	/**
 	 * Fulfillment List Controller
@@ -50194,7 +50195,7 @@
 	        };
 	        //To create a store, we instantiate it using the object that holds the state variables,
 	        //and the reducer. We can also add a middleware to the end if you need.
-	        this.orderFulfillmentStore = new Store.IStore(this.state, this.orderFulfillmentStateReducer);
+	        this.orderFulfillmentStore = new FluxStore.IStore(this.state, this.orderFulfillmentStateReducer);
 	    }
 	    return OrderFulfillmentService;
 	}());
@@ -50390,13 +50391,13 @@
 	         */
 	        this.createOrderFulfillmentCollection = function () {
 	            _this.orderFulfillmentCollection = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
-	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
-	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
-	            _this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
-	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
+	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
+	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
+	            _this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
+	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
 	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
 	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
 	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
@@ -50404,13 +50405,13 @@
 	        this.createOrderFulfillmentCollectionWithStatus = function (status) {
 	            console.log("Creating ", status);
 	            _this.orderFulfillmentCollection = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
-	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
-	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
-	            _this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
-	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
-	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
+	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
+	            _this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
+	            _this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
+	            _this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+	            _this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
 	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
 	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
 	            if (status) {
@@ -50868,7 +50869,6 @@
 	                payload: {}
 	            });
 	        };
-	        //Setup a load handler that checks for the data.
 	        //setup a state change listener and send over the fulfillmentBatchID
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
 	            //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.

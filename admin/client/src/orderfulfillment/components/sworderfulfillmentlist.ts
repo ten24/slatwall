@@ -168,13 +168,13 @@ class SWOrderFulfillmentListController {
      */
      private createOrderFulfillmentCollection = ():void => {
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
-        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
-        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
-        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
-        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
@@ -184,15 +184,16 @@ class SWOrderFulfillmentListController {
         console.log("Creating ", status);
 
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID");
-        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber");
-        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime");
-        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName");
-        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+        
         if (status){
             this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=");
         }

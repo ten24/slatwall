@@ -3,7 +3,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as Store from   '../../../../../org/hibachi/client/src/core/prototypes/swstore';
+import * as FluxStore from   '../../../../../org/hibachi/client/src/core/prototypes/swstore';
 import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
 
 /**
@@ -44,7 +44,7 @@ class OrderFulfillmentService {
     /**
      * The reducer is responsible for modifying the state of the state object into a new state.
      */
-    public orderFulfillmentStateReducer:Store.Reducer = (state:any, action:Store.Action<any>):Object => {
+    public orderFulfillmentStateReducer:FluxStore.Reducer = (state:any, action:FluxStore.Action<any>):Object => {
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
             
@@ -126,14 +126,14 @@ class OrderFulfillmentService {
      *  Scan, is an accumulator function. It keeps track of the last result emitted, and combines
      *  it with the newest result. 
      */
-    public orderFulfillmentStore:Store.IStore;
+    public orderFulfillmentStore:FluxStore.IStore;
 
 
     //@ngInject
     constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, private $rootScope){
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
-        this.orderFulfillmentStore = new Store.IStore( this.state, this.orderFulfillmentStateReducer );
+        this.orderFulfillmentStore = new FluxStore.IStore( this.state, this.orderFulfillmentStateReducer );
     }
 
     /** Sets up the batch detail page including responding to listing changes. */
