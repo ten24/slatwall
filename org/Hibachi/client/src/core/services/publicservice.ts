@@ -734,23 +734,28 @@ class PublicService {
         return (paymentMethod.accountPaymentMethodName || paymentMethod.nameOnCreditCard) + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
     }
 
-    public getResizedImageByProfileName = (profileName, skuID)=>{
+    public getOrderItemSkuIDs = () =>{
+        return this.cart.orderItems.map(item=>{
+            return item.skuID;
+        })
+    }
+
+    public getResizedImageByProfileName = (profileName, skuIDs)=>{
        this.loading = true;
        
        if (profileName == undefined){
            profileName = "medium";
        }
        
-       this.doAction('getResizedImageByProfileName',{profileName:profileName,skuIds:skuID}).then((result:any)=>{
+       this.doAction('getResizedImageByProfileName',{profileName:profileName,skuIds:skuIDs}).then((result:any)=>{
             if(!angular.isDefined(this.imagePath)){
                 this.imagePath = {};
             }
-            if (result.resizedImagePaths && result.resizedImagePaths[skuID]){
-                this.imagePath[skuID] = result.resizedImagePaths[skuID]
-                return this.imagePath[skuID];
-                
+            if (result.resizedImagePaths){
+                result.resizedImagePaths.forEach(skuID=>{
+                    this.imagePath[skuID] = result.resizedImagePaths[skuID]
+                })
             }
-            
          });
         
      };
