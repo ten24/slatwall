@@ -50,10 +50,9 @@
 						        >
 						    </swf-property-display>
 					    </div>
-				    </div>
-				    <div class="row" ng-cloak>
-					    <!--- Country --->
-				    	<div class="col-sm-6 form-group" ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && slatwall.countries.countryCodeOptions">
+				    
+					    <!--- Country 
+				    	<div class="col-sm-6 form-group" ng-hide ng-if="(SwAddressForm.showCountrySelect == 'true'|| SwAddressForm.showCountrySelect == true) && slatwall.countries.countryCodeOptions">
 
 							<swf-property-display 
 					            data-name="countrycode" 
@@ -69,19 +68,20 @@
 			            	</swf-property-display>
 
 							<span class="error" error-for="country"></span>
+							
 				    	</div>
-				    	<!--- Default Country --->
+						--->
+				    	<!-- Default Country 
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.showCountrySelect == 'false'|| SwAddressForm.showCountrySelect == false">
 				    		
-				    		<input name="countryCode" 
+				    		<input name="countrycode" 
 				    			style="display:none"
-					    		ng-required="true"
 					        	class="form-control"
-					            ng-model="SwAddressForm.address.countryCode"
+					            ng-model="SwAddressForm.address.countrycode"
 					            ng-init="SwAddressForm.address.countrycode=slatwall.defaultCountryCode;SwAddressForm.address.data.selectedcountrycode = slatwall.getCountryByCountryCode(SwAddressForm.address.countrycode);slatwall.refreshAddressOptions( SwAddressForm.address)" />
 					          
 							<span class="error" error-for="country"></span>
-				    	</div>
+				    	</div> -->
 				    	
 				    	<div class="col-sm-6 form-group" ng-if="SwAddressForm.hasField('phoneNumber')">
 						    <swf-property-display
@@ -182,6 +182,7 @@
 					            ng-init="SwAddressForm.address.data.selectedstatecode = slatwall.getStateByStateCode(SwAddressForm.address.statecode)||''" >
 					            </swf-property-display>
 					        </div>
+							<!---
 					        <div class="col-xs-7" ng-if="SwAddressForm.address.data.selectedcountrycode.value != 'US' && SwAddressForm.address.data.selectedcountrycode.value != 'CA' && SwAddressForm.hasField('locality')">
 					            <swf-property-display
 							        data-name="locality"
@@ -192,7 +193,7 @@
 							        data-class="form-control"
 							        data-edit="true" >
 							    </swf-property-display>
-				        	</div>
+				        	</div>--->
 					        <div class="col-xs-5" ng-if="SwAddressForm.hasField('postalCode')">
 					        	<swf-property-display
 							        data-name="postalCode"
@@ -204,6 +205,7 @@
 							        data-edit="true">
 							    </swf-property-display>
 					         </div>
+							<ng-transclude></ng-transclude>
 					      </div>
 				       </div>
 				    </div>
@@ -214,7 +216,7 @@
 					    	<sw-action-caller ng-if="SwAddressForm.showSubmitButton == 'true'"
 								data-modal="false" 
 								data-type="button" 
-								data-class="btn-yellow"
+								data-class="btn btn-primary"
 								data-text="{{(slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>
 							<button

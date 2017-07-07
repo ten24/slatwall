@@ -123,6 +123,7 @@ class SWAddressForm implements ng.IComponentOptions {
 
     public templateUrl:string = "";
     public bindings:any;
+    public transclude = true;
     public controller:any=SWAddressFormController;
     public controllerAs:string='SwAddressForm';
     public template:string;
