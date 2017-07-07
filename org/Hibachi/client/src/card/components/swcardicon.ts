@@ -12,10 +12,11 @@ class SWCardIconController {
 
 } 
 
-class SWCardIcon implements ng.IComponentOptions {
+class SWCardIcon implements ng.IDirective {
     public controller:any=SWCardIconController;
     public controllerAs:string = 'SwCardIconController';
-    public bindings:{[key: string]:string} = {
+    public scope = {};
+    public bindToController:{[key: string]:string} = {
         iconName: "@?",
         iconMultiplier: "@?"
     };

@@ -11,10 +11,11 @@ class SWCardBodyController {
 
 } 
 
-class SWCardBody implements ng.IComponentOptions {
+class SWCardBody implements ng.IDirective {
     public controller:any=SWCardBodyController;
     public controllerAs:string = 'SwCardBodyController';
-    public bindings:{[key: string]:string} = {};
+    public scope = {};
+    public bindToController:{[key: string]:string} = {};
     public transclude:boolean = true;
     public require:string = "^SWCardView";
     /**

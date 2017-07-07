@@ -12,10 +12,11 @@ class SWCardListItemController {
 
 } 
 
-class SWCardListItem implements ng.IComponentOptions {
+class SWCardListItem implements ng.IDirective {
     public controller:any=SWCardListItemController;
     public controllerAs:string = 'SwCardListItemController';
-    public bindings:{[key: string]:string} = {
+    public scope = {};
+    public bindToController = {
        title: "@?",
        value: "@?",
        strong: "@?",
@@ -37,9 +38,11 @@ class SWCardListItem implements ng.IComponentOptions {
      * Handles injecting the partials path into this class
      */
     public static Factory(){
+        console.log("Getting new list item");
         var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardListItem(cardPartialsPath, hibachiPathBuilder);
         component.$inject = ['cardPartialsPath','hibachiPathBuilder']
         return component;
     }
+
 }
 export {SWCardListItemController, SWCardListItem};

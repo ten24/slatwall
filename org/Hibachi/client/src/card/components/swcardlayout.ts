@@ -2,19 +2,22 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWCardLayoutController {
-    
+    public cardClass;
 	//@ngInject
-    constructor(private $log) {}
+    constructor(private $log) {
+        console.log("This card class", this.cardClass);
+    }
 
     public $onInit = function() {
     };
 
 } 
 
-class SWCardLayout implements ng.IComponentOptions {
+class SWCardLayout implements ng.IDirective {
     public controller:any=SWCardLayoutController;
     public controllerAs:string = 'SwCardLayoutController';
-    public bindings = {
+    public scope = {};
+    public bindToController = {
         cardClass: "@?"
     };
     

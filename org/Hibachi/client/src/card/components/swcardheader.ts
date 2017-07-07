@@ -13,10 +13,11 @@ class SWCardHeaderController {
 
 } 
 
-class SWCardHeader implements ng.IComponentOptions {
+class SWCardHeader implements ng.IDirective {
     public controller:any=SWCardHeaderController;
     public controllerAs:string = 'SwCardHeaderController';
-    public bindings:{[key: string]:string} = {
+    public scope = {};
+    public bindToController:{[key: string]:string} = {
         addBorder: '@?'
     };
     public transclude:boolean = true;

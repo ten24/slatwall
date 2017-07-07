@@ -33395,6 +33395,7 @@
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
 	Object.defineProperty(exports, "__esModule", { value: true });
 	//modules
+	var core_module_1 = __webpack_require__(16);
 	//services
 	//components
 	var swcardlayout_1 = __webpack_require__(466);
@@ -33404,17 +33405,18 @@
 	var swcardicon_1 = __webpack_require__(470);
 	var swcardprogressbar_1 = __webpack_require__(471);
 	var swcardlistitem_1 = __webpack_require__(472);
-	var cardmodule = angular.module('hibachi.card', [])
-	    .run([function () {
+	var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
+	    .config([function () {
+	    }]).run([function () {
 	    }])
 	    .constant('cardPartialsPath', 'card/components/')
-	    .component('swCardLayout', swcardlayout_1.SWCardLayout.Factory())
-	    .component('swCardView', swcardview_1.SWCardView.Factory())
-	    .component('swCardHeader', swcardheader_1.SWCardHeader.Factory())
-	    .component('swCardBody', swcardbody_1.SWCardBody.Factory())
-	    .component('swCardIcon', swcardicon_1.SWCardIcon.Factory())
-	    .component('swCardProgressBar', swcardprogressbar_1.SWCardProgressBar.Factory())
-	    .component('swCardListItem', swcardlistitem_1.SWCardListItem.Factory());
+	    .directive('swCardLayout', swcardlayout_1.SWCardLayout.Factory())
+	    .directive('swCardView', swcardview_1.SWCardView.Factory())
+	    .directive('swCardHeader', swcardheader_1.SWCardHeader.Factory())
+	    .directive('swCardBody', swcardbody_1.SWCardBody.Factory())
+	    .directive('swCardIcon', swcardicon_1.SWCardIcon.Factory())
+	    .directive('swCardProgressBar', swcardprogressbar_1.SWCardProgressBar.Factory())
+	    .directive('swCardListItem', swcardlistitem_1.SWCardListItem.Factory());
 	exports.cardmodule = cardmodule;
 
 
@@ -33432,6 +33434,7 @@
 	        this.$log = $log;
 	        this.$onInit = function () {
 	        };
+	        console.log("This card class", this.cardClass);
 	    }
 	    return SWCardLayoutController;
 	}());
@@ -33441,7 +33444,8 @@
 	    function SWCardLayout(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardLayoutController;
 	        this.controllerAs = 'SwCardLayoutController';
-	        this.bindings = {
+	        this.scope = {};
+	        this.bindToController = {
 	            cardClass: "@?"
 	        };
 	        this.transclude = {
@@ -33487,8 +33491,9 @@
 	    //@ngInject
 	    function SWCardView(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardViewController;
+	        this.scope = {};
 	        this.controllerAs = 'SwCardViewController';
-	        this.bindings = {
+	        this.bindToController = {
 	            cardTitle: "@?",
 	            cardBody: "@?",
 	            cardSize: "@?" //sm, md, lg
@@ -33507,9 +33512,9 @@
 	     * Handles injecting the partials path into this class
 	     */
 	    SWCardView.Factory = function () {
-	        var component = function (cardPartialsPath, hibachiPathBuilder) { return new SWCardView(cardPartialsPath, hibachiPathBuilder); };
-	        component.$inject = ['cardPartialsPath', 'hibachiPathBuilder'];
-	        return component;
+	        var directive = function (cardPartialsPath, hibachiPathBuilder) { return new SWCardView(cardPartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ["cardPartialsPath", 'hibachiPathBuilder'];
+	        return directive;
 	    };
 	    return SWCardView;
 	}());
@@ -33539,7 +33544,8 @@
 	    function SWCardHeader(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardHeaderController;
 	        this.controllerAs = 'SwCardHeaderController';
-	        this.bindings = {
+	        this.scope = {};
+	        this.bindToController = {
 	            addBorder: '@?'
 	        };
 	        this.transclude = true;
@@ -33586,7 +33592,8 @@
 	    function SWCardBody(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardBodyController;
 	        this.controllerAs = 'SwCardBodyController';
-	        this.bindings = {};
+	        this.scope = {};
+	        this.bindToController = {};
 	        this.transclude = true;
 	        this.require = "^SWCardView";
 	        /**
@@ -33632,7 +33639,8 @@
 	    function SWCardIcon(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardIconController;
 	        this.controllerAs = 'SwCardIconController';
-	        this.bindings = {
+	        this.scope = {};
+	        this.bindToController = {
 	            iconName: "@?",
 	            iconMultiplier: "@?"
 	        };
@@ -33681,8 +33689,9 @@
 	    //@ngInject
 	    function SWCardProgressBar(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardProgressBarController;
+	        this.scope = {};
 	        this.controllerAs = 'SwCardProgressBarController';
-	        this.bindings = {
+	        this.bindToController = {
 	            valueMin: "@?",
 	            valueMax: "@?",
 	            valueNow: "@?"
@@ -33732,7 +33741,8 @@
 	    function SWCardListItem(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardListItemController;
 	        this.controllerAs = 'SwCardListItemController';
-	        this.bindings = {
+	        this.scope = {};
+	        this.bindToController = {
 	            title: "@?",
 	            value: "@?",
 	            strong: "@?",
@@ -33750,6 +33760,7 @@
 	     * Handles injecting the partials path into this class
 	     */
 	    SWCardListItem.Factory = function () {
+	        console.log("Getting new list item");
 	        var component = function (cardPartialsPath, hibachiPathBuilder) { return new SWCardListItem(cardPartialsPath, hibachiPathBuilder); };
 	        component.$inject = ['cardPartialsPath', 'hibachiPathBuilder'];
 	        return component;

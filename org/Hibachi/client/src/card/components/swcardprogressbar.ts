@@ -13,10 +13,11 @@ class SWCardProgressBarController {
 
 } 
 
-class SWCardProgressBar implements ng.IComponentOptions {
+class SWCardProgressBar implements ng.IDirective {
     public controller:any=SWCardProgressBarController;
+    public scope = {};
     public controllerAs:string = 'SwCardProgressBarController';
-    public bindings:{[key: string]:string} = {
+    public bindToController:{[key: string]:string} = {
         valueMin: "@?",
         valueMax: "@?",
         valueNow: "@?"

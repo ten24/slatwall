@@ -10,10 +10,11 @@ class SWCardViewController {
 
 } 
 
-class SWCardView implements ng.IComponentOptions {
+class SWCardView implements ng.IDirective {
     public controller:any=SWCardViewController;
+    public scope = {};
     public controllerAs:string = 'SwCardViewController';
-    public bindings = {
+    public bindToController = {
         cardTitle: "@?",
         cardBody: "@?",
         cardSize: "@?" //sm, md, lg
@@ -38,9 +39,13 @@ class SWCardView implements ng.IComponentOptions {
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardView(cardPartialsPath, hibachiPathBuilder);
-        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
-        return component;
-    }
+		var directive:ng.IDirectiveFactory = (
+			cardPartialsPath, hibachiPathBuilder
+		)=> new SWCardView(
+            cardPartialsPath, hibachiPathBuilder
+		);
+		directive.$inject = ["cardPartialsPath",'hibachiPathBuilder'];
+		return directive;
+	}
 }
 export {SWCardViewController, SWCardView};
