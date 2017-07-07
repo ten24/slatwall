@@ -830,7 +830,7 @@ class PublicService {
     public showFulfillmentTabBody = ()=> {
         if(!this.hasAccount()) return false;
         if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
-            (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) ||
+            (this.cart.orderRequirementsList.indexOf('fulfillment') != -1) && !this.edit ||
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
                 (this.edit == 'fulfillment')) {
             return true;
