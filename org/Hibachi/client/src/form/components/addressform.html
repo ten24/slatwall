@@ -206,8 +206,8 @@
 							    </swf-property-display>
 					         </div>
 				          </div>
-						  <ng-transclude></ng-transclude>	
 				       </div>
+					  <ng-transclude></ng-transclude>	
 				    </div>
 
 				    <!--- If we want to render the submit button. --->
@@ -220,6 +220,7 @@
 								data-text="{{(slatwall.getRequestByAction(SwAddressForm.action).loading ? 'LOADING' : SwAddressForm.actionText || 'SAVE &amp; CONTINUE')}}">
 							</sw-action-caller>
 							<button
+								ng-if="SwAddressForm.showCloseButton == 'true'"
 			                    ng-click="slatwall.accountAddressEditFormIndex[SwAddressForm.fulfillmentIndex]=undefined; slatwall.billingAddressEditFormIndex = undefined"
 			                    class="btn btn-white">
 			                    Close
