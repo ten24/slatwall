@@ -1,8 +1,8 @@
-<table class="table table-condensed checkoutMiniCart">
+<table class="table table-condensed checkoutMiniCart" ng-init="slatwall.getResizedImageByProfileName('large', slatwall.getOrderItemSkuIDs())">
     <tr ng-repeat="orderItem in slatwall.cart.orderItems">
         <td class="text-center">
            
-            <div ng-init="slatwall.getResizedImageByProfileName('large', orderItem.sku.skuID)">
+            <div>
 				<img ng-src="{{slatwall.imagePath[orderItem.sku.skuID]}}" class="img-responsive center-block" ng-if="!slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
 				<span ng-if="slatwall.loadingThisRequest('getResizedImageByProfileName',{skuIds:orderItem.sku.skuID})">
 					<i class="fa fa-refresh fa-spin fa-lg fa-fw"></i>
