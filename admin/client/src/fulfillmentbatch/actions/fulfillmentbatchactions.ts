@@ -60,6 +60,15 @@ export const DELETE_COMMENT_SUCCESS  = "DELETE_COMMENT_SUCCESS";
 export const DELETE_COMMENT_FAILURE  = "DELETE_COMMENT_FAILURE";
 
 /**
+ * This will delete a fulfillment batch item permenently and from the fulfillment batch.
+ */
+export const DELETE_FULFILLMENTBATCHITEM_REQUESTED  = "DELETE_FULFILLMENTBATCHITEM_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
+export const DELETE_FULFILLMENTBATCHITEM_SUCCESS  = "DELETE_FULFILLMENTBATCHITEM_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
+export const DELETE_FULFILLMENTBATCHITEM_FAILURE  = "DELETE_FULFILLMENTBATCHITEM_FAILURE";
+
+/**
  * This will save a comment.
  */
 export const SAVE_COMMENT_REQUESTED  = "SAVE_COMMENT_REQUESTED";

@@ -45,6 +45,7 @@ class OrderFulfillmentService {
      * The reducer is responsible for modifying the state of the state object into a new state.
      */
     public orderFulfillmentStateReducer:FluxStore.Reducer = (state:any, action:FluxStore.Action<any>):Object => {
+        console.log(action);
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
             
@@ -115,6 +116,10 @@ class OrderFulfillmentService {
              case actions.SETUP_ORDERDELIVERYATTRIBUTES:
              
                 this.createOrderDeliveryAttributeCollection();
+                return {...this.state, action}
+            
+            case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
+                this.deleteFulfillmentBatchItem();
                 return {...this.state, action}
             default:
                 return this.state;
@@ -231,7 +236,7 @@ class OrderFulfillmentService {
 
     /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
     public fulfillItems = (state:any={}, ignoreCapture:boolean = false) => {
-        console.log("ViewState",state);
+        
         let data:any = {};
         //Add the order information
         data.order = {};
@@ -296,7 +301,7 @@ class OrderFulfillmentService {
             
             //Sets the next selected value.
             let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
-            console.log("Selecting the next row.");
+            
             //clear first
             this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
             //then select the next.
@@ -346,6 +351,18 @@ class OrderFulfillmentService {
             this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete").then((result) => {
                 return this.createCommentsCollectionForFulfillmentBatchItem(this.state.currentSelectedFulfillmentBatchItemID);
             });
+        }
+    }
+
+    /** Deletes a fulfillment batch item. */
+    public deleteFulfillmentBatchItem = () => {
+        if (this.state.currentSelectedFulfillmentBatchItemID){
+            let fulfillmentBatchItem = {"fulfillmentBatchItemID" : this.state.currentSelectedFulfillmentBatchItemID};//get current fulfillmentBatchItem;
+            if (fulfillmentBatchItem.fulfillmentBatchItemID != undefined) {
+                this.$hibachi.saveEntity("fulfillmentBatchItem", fulfillmentBatchItem.fulfillmentBatchItemID, fulfillmentBatchItem, "delete").then((result) => {
+                    window.location.reload(false);
+                });
+            }
         }
     }
 

@@ -26909,7 +26909,6 @@
 	                if (angular.isString(data)) {
 	                    data = JSON.parse(data);
 	                }
-	                console.log("Transform Response Called: ", data);
 	                return data;
 	            };
 	            //check if we are using a service to transform the response
@@ -49774,6 +49773,7 @@
 	         * The reducer is responsible for modifying the state of the state object into a new state.
 	         */
 	        this.orderFulfillmentStateReducer = function (state, action) {
+	            console.log(action);
 	            switch (action.type) {
 	                case 'TOGGLE_FULFILLMENT_LISTING':
 	                    //modify the state and return it.
@@ -49829,6 +49829,9 @@
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.SETUP_ORDERDELIVERYATTRIBUTES:
 	                    _this.createOrderDeliveryAttributeCollection();
+	                    return __assign({}, _this.state, { action: action });
+	                case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
+	                    _this.deleteFulfillmentBatchItem();
 	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return _this.state;
@@ -49921,7 +49924,6 @@
 	        this.fulfillItems = function (state, ignoreCapture) {
 	            if (state === void 0) { state = {}; }
 	            if (ignoreCapture === void 0) { ignoreCapture = false; }
-	            console.log("ViewState", state);
 	            var data = {};
 	            //Add the order information
 	            data.order = {};
@@ -49977,7 +49979,6 @@
 	                }
 	                //Sets the next selected value.
 	                var selectedRowIndex = _this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", _this.state.currentSelectedFulfillmentBatchItemID);
-	                console.log("Selecting the next row.");
 	                //clear first
 	                _this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
 	                //then select the next.
@@ -50023,6 +50024,17 @@
 	                _this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete").then(function (result) {
 	                    return _this.createCommentsCollectionForFulfillmentBatchItem(_this.state.currentSelectedFulfillmentBatchItemID);
 	                });
+	            }
+	        };
+	        /** Deletes a fulfillment batch item. */
+	        this.deleteFulfillmentBatchItem = function () {
+	            if (_this.state.currentSelectedFulfillmentBatchItemID) {
+	                var fulfillmentBatchItem = { "fulfillmentBatchItemID": _this.state.currentSelectedFulfillmentBatchItemID }; //get current fulfillmentBatchItem;
+	                if (fulfillmentBatchItem.fulfillmentBatchItemID != undefined) {
+	                    _this.$hibachi.saveEntity("fulfillmentBatchItem", fulfillmentBatchItem.fulfillmentBatchItemID, fulfillmentBatchItem, "delete").then(function (result) {
+	                        window.location.reload(false);
+	                    });
+	                }
 	            }
 	        };
 	        /**
@@ -50261,6 +50273,14 @@
 	exports.DELETE_COMMENT_SUCCESS = "DELETE_COMMENT_SUCCESS";
 	/** This action coming back from the reducer indicated that the action was a failure. */
 	exports.DELETE_COMMENT_FAILURE = "DELETE_COMMENT_FAILURE";
+	/**
+	 * This will delete a fulfillment batch item permenently and from the fulfillment batch.
+	 */
+	exports.DELETE_FULFILLMENTBATCHITEM_REQUESTED = "DELETE_FULFILLMENTBATCHITEM_REQUESTED";
+	/** This action coming back from the reducer indicated that the action was a success. */
+	exports.DELETE_FULFILLMENTBATCHITEM_SUCCESS = "DELETE_FULFILLMENTBATCHITEM_SUCCESS";
+	/** This action coming back from the reducer indicated that the action was a failure. */
+	exports.DELETE_FULFILLMENTBATCHITEM_FAILURE = "DELETE_FULFILLMENTBATCHITEM_FAILURE";
 	/**
 	 * This will save a comment.
 	 */
@@ -50812,6 +50832,17 @@
 	                _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                    type: actions.DELETE_COMMENT_REQUESTED,
 	                    payload: { comment: comment }
+	                });
+	            }
+	        };
+	        //Try to delete the fulfillment batch item.
+	        this.deleteFulfillmentBatchItem = function () {
+	            //Only fire the event if the user agrees.
+	            var warning = _this.rbkeyService.getRBKey("entity.comment.delete.confirm");
+	            if (window.confirm(warning + "?")) {
+	                _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                    type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
+	                    payload: {}
 	                });
 	            }
 	        };

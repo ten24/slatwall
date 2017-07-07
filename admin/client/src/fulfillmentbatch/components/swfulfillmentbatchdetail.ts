@@ -78,6 +78,18 @@ class SWFulfillmentBatchDetailController  {
             });
         }
     }
+
+    //Try to delete the fulfillment batch item.
+    public deleteFulfillmentBatchItem = () => {
+        //Only fire the event if the user agrees.
+        let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
+        if ( window.confirm(`${warning}?`) ) {
+            this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+                type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
+                payload: {}
+            });
+        }
+    }
     
     public userSavingComment = (comment, commentText) => {
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
