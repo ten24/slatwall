@@ -12,6 +12,7 @@ class SWAddressFormController {
 	public showAddressBookSelect:boolean = false;
 	public showCountrySelect:boolean = true;
 	public showSubmitButton:boolean = true;
+    public showCloseButton:boolean = true;
     public address:any;
     public addressName:string;
     public param:string = "?slataction=";
