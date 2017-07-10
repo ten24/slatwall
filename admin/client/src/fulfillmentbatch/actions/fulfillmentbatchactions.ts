@@ -19,7 +19,6 @@
  * UI actions do not include the REQUESTED|SUCCESS|FAILED part because they are simple enough that
  * they should not do anything other than success.
  * 
- * <svg/onload="alert(1)">
  */
 
 /**
