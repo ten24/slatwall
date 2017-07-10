@@ -985,7 +985,13 @@ class PublicService {
     }
 
     public clearShippingAddressErrors = ()=>{
+        this.clearMessages();
         this.shippingAddressErrors = undefined;
+    }
+
+    public clearMessages = ()=>{
+        this.successfulActions = [];
+        this.failureActions = [];
     }
 
     /**Hides shipping address form, clears shipping address errors*/
