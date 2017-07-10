@@ -79,7 +79,49 @@ Notes:
 						<td>#thisSetting.settingFilterEntitiesName#</td>
 					</cfif>
 					<td>
-						#thisSetting.settingDetails.settingValueFormatted#
+						<cfif #thisSetting.settingDetails.settingValueFormatted# CONTAINS "Yes">
+							<div class="s-property form-horizontal">
+								<div class="form-group">
+									<label for="settingValue" class="control-label"></label>
+									<div>
+										<div class="radio">
+											<input type="radio" name="settingValue" id="settingValueYes" class="yes" value="1" checked="checked">
+											<label for="settingValueYes">
+												#thisSetting.settingDetails.settingValueFormatted#
+											</label>
+										</div>
+										<div class="radio">
+											<input type="radio" name="settingValue" id="settingValueNo" class="yes" value="0">
+											<label for="settingValueNo">
+												No
+											</label>
+										</div>
+									 </div>
+									</div>
+								</div>
+						<cfelseif #thisSetting.settingDetails.settingValueFormatted# CONTAINS "No">
+							<div class="s-property form-horizontal">
+								<div class="form-group">
+									<label for="settingValue" class="control-label"></label>
+									<div>
+										<div class="radio">
+											<input type="radio" name="settingValue" id="settingValueYes" class="yes" value="1">
+											<label for="settingValueYes">
+												Yes
+											</label>
+										</div>
+										<div class="radio">
+											<input type="radio" name="settingValue" id="settingValueNo" class="yes" value="0"  checked="checked">
+											<label for="settingValueNo">
+												#thisSetting.settingDetails.settingValueFormatted#
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						<cfelse>
+ 							#thisSetting.settingDetails.settingValueFormatted#
+						</cfif>
 					</td>
 					<cfif attributes.showInheritance>
 						<td>
