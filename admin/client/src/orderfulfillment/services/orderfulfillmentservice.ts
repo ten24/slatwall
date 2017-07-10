@@ -19,6 +19,7 @@ class OrderFulfillmentService {
         
         //objects
         commentBeingEdited:undefined,
+        emailTemplates:undefined,
         
         //strings
         currentSelectedFulfillmentBatchItemID: "",
@@ -133,7 +134,6 @@ class OrderFulfillmentService {
      */
     public orderFulfillmentStore:FluxStore.IStore;
 
-
     //@ngInject
     constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, private $rootScope){
         //To create a store, we instantiate it using the object that holds the state variables,
@@ -147,7 +147,8 @@ class OrderFulfillmentService {
         //Create the fulfillmentBatchItemCollection
         this.createLgOrderFulfillmentBatchItemCollection();
         this.createSmOrderFulfillmentBatchItemCollection();
-        
+        this.getOrderFulfillmentEmailTemplates();
+
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
             if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED"){
@@ -464,6 +465,20 @@ class OrderFulfillmentService {
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         this.state.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
+     }
+
+     /**
+     * Get a collection of orderFulfillment email templates.
+     */
+     private getOrderFulfillmentEmailTemplates = ():void => {
+        let emailTemplates = this.collectionConfigService.newCollectionConfig("EmailTemplate");
+        emailTemplates.addFilter("emailTemplateObject", "orderFulfillment", "=");
+        emailTemplates.getEntity().then((emails)=>{
+            if (emails['pageRecords'].length){
+                this.state.emailTemplates = emails['pageRecords'];
+                this.emitUpdateToClient();
+            }
+        });
      }
      
      /**

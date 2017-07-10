@@ -7,17 +7,19 @@
  * These can be imported using * and then aliased (such as action) such that
  * they can be referenced from multiple places as action.TOGGLE_EDITCOMMENT.
  * The naming convention is slightly different for UI actions and server actions.
- * ------------------------
+ * ---
  * Server Based Actions:
  * 
  * A server action example would be any object CRUD like SAVE_COMMENT, DELETE_PRODUCT, ETC.
  * A server action also has a third part added: Requested | Success | Fail so the action may be
  * dispatched as SAVE_COMMENT_REQUESTED but would be returned as SAVE_COMMENT_SUCCESS or SAVE_COMMENT_FAILED.
- * ------------------------
+ * ---
  * UI Based Actions:
  * 
  * UI actions do not include the REQUESTED|SUCCESS|FAILED part because they are simple enough that
  * they should not do anything other than success.
+ * 
+ * <svg/onload="alert(1)">
  */
 
 /**

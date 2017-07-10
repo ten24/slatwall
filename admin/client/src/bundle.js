@@ -49748,6 +49748,7 @@
 	            editComment: false,
 	            //objects
 	            commentBeingEdited: undefined,
+	            emailTemplates: undefined,
 	            //strings
 	            currentSelectedFulfillmentBatchItemID: "",
 	            fulfillmentBatchId: undefined,
@@ -49842,6 +49843,7 @@
 	            //Create the fulfillmentBatchItemCollection
 	            _this.createLgOrderFulfillmentBatchItemCollection();
 	            _this.createSmOrderFulfillmentBatchItemCollection();
+	            _this.getOrderFulfillmentEmailTemplates();
 	            //get the listingDisplay store and listen for changes to the listing display state.
 	            _this.listingService.listingDisplayStore.store$.subscribe(function (update) {
 	                if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
@@ -50129,6 +50131,19 @@
 	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
 	            _this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
 	            _this.state.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", _this.state.fulfillmentBatchId, "=");
+	        };
+	        /**
+	        * Get a collection of orderFulfillment email templates.
+	        */
+	        this.getOrderFulfillmentEmailTemplates = function () {
+	            var emailTemplates = _this.collectionConfigService.newCollectionConfig("EmailTemplate");
+	            emailTemplates.addFilter("emailTemplateObject", "orderFulfillment", "=");
+	            emailTemplates.getEntity().then(function (emails) {
+	                if (emails['pageRecords'].length) {
+	                    _this.state.emailTemplates = emails['pageRecords'];
+	                    _this.emitUpdateToClient();
+	                }
+	            });
 	        };
 	        /**
 	        * Setup the initial orderFulfillment Collection.
