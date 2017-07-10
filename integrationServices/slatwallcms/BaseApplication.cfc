@@ -59,7 +59,7 @@ Notes:
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
 
 	this.ormEnabled = true;
-	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity"];
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
@@ -241,13 +241,9 @@ Notes:
 		<cfset request.context.fw = arguments.slatwallScope.getApplicationValue("application")/>
 		<cfset var $ = getApplicationScope(argumentCollection=arguments)/>
 		
-		<!---add cfimport of hibachitags so that we can take advantage of HibachiCache--->
-		<cfimport prefix="hb" taglib="/Slatwall/org/Hibachi/HibachiTags"/>
 		<cfsavecontent variable="local.templateData" >
 			<cfoutput>
-				<hb:HibachiCache>
-					<cfinclude template="#arguments.contentPath#"/>
-				</hb:HibachiCache>
+				<cfinclude template="templates/basetemplate.cfm"/>
 			</cfoutput>
 		</cfsavecontent>
 		<cfreturn local.templateData/>

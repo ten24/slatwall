@@ -104,15 +104,38 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.vendorOrderItemTypeSystemCode;
 	}
-	
-	public any function getDeliverToLocationIDOptions() {
-		if(!structKeyExists(variables, "deliveryToLocationIDOptions")) {
+	public any function getDeliveryLocationIDOptions(){
+		if(!structKeyExists(variables,'deliveryLocationIDOptions')){
 			sl = getService("locationService").getLocationSmartList();
 			sl.addSelect('locationName', 'name');
 			sl.addSelect('locationID', 'value');
-			variables.deliveryToLocationIDOptions = sl.getRecords();
+			variables.deliveryLocationIDOptions = sl.getRecords();
+		}
+		return variables.deliveryLocationIDOptions;
+	}
+	
+	public any function getDeliverToLocationIDOptions() {
+		if(!structKeyExists(variables, "deliveryToLocationIDOptions")) {
+			variables.deliveryToLocationIDOptions = getDeliveryLocationIDOptions();
 		}
 		return variables.deliveryToLocationIDOptions;
+	}
+	
+	public any function getDeliverToLocationID(){
+		if(
+			!structKeyExists(variables,'deliverToLocationID')
+		){
+			if(
+				!isNull(getVendorOrder()) 
+				&& !isNull(getVendorOrder().getBillToLocation())
+			){
+				variables.deliverToLocationID = getVendorOrder().getBillToLocation().getLocationID();
+			}else{
+				variables.deliverToLocationID = "";
+			}
+		}
+		
+		return variables.deliverToLocationID;
 	}
 	
 }

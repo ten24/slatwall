@@ -5,24 +5,17 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#"/>
 	<!--- figure out if we are in the CMS context based on content --->
 	
-	<cfif !isNull(attributes.hibachiScope.getContent())>
-		<cfset attributes.cacheKey = ""/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.getDao('hibachiDao').getApplicationKey()/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.site().getSiteCode()/>
-		<cfset attributes.cacheKey &= attributes.hibachiScope.content().getUrlTitlePath()/>
-		<cfset attributes.cacheKey &= CGI.QUERY_STRING/> 
-		<cfset attributes.cacheKey = hash(attributes.cacheKey,'MD5')/>
-		
-		
+	<cfif !len(attributes.cacheKey) && !isNull(attributes.hibachiScope.getContent())>
+		<cfset attributes.cacheKey = attributes.hibachiScope.getContent().getContentCacheKey()/>
 		<cfset attributes.timespan = createTimeSpan(0,0,0,"#attributes.hibachiScope.content().setting('contentTemplateCacheInSeconds')#")/>
 		
 	</cfif>
 	<cfif attributes.timespan eq 0>
-		<cfcache action="flush" id="#attributes.cacheKey#"/>
+		<cfcache action="flush" id="#attributes.cacheKey#">
 	</cfif>
 	<!--- used to clear template cache --->
 	<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
-	<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#"/>
+	<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 	
 	<cfif !isNull(cacheContent)>
 		<cfsavecontent variable="hibachiTagContent" >
@@ -40,7 +33,7 @@
 		<cfoutput>#hibachiTagContent#</cfoutput>
 		<cfexit>
 	<cfelse>
-		<cfcache action="flush" id="#attributes.cacheKey#"/>
+		<cfcache action="flush" id="#attributes.cacheKey#">
 	</cfif>
 	
 </cfif>
@@ -50,7 +43,7 @@
 	<cfsavecontent variable="hibachiTagContent" >
 		<cfoutput>#thisTag.generatedContent#</cfoutput>
 	</cfsavecontent>
-	<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#"/>
+	<cfcache value="#hibachiTagContent#" action="put" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 	
 	<cfset templateString = "\$\[\[insertUnCachedKey\]\]"/>
 	<cfset uncachedStrings =  reMatchNoCase(templateString,hibachiTagContent)>

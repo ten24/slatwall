@@ -115,6 +115,13 @@ class SWColumnItem{
 									propertyIdentifier:column.propertyIdentifier,
 									direction:column.sorting.sortOrder
 								};
+                                if(column.aggregate && column.aggregate.aggregateFunction){
+                                    var aggregateFunction = column.aggregate.aggregateFunction.toUpperCase();
+                                    if(aggregateFunction == 'AVERAGE'){
+                                        aggregateFunction = 'AVG';
+                                    }
+                                    orderBy.propertyIdentifier = aggregateFunction + '('+column.propertyIdentifier+')';
+                                }
 								scope.orderBy.push(orderBy);
 							}
 						});

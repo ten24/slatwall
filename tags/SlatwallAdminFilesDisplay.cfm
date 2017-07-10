@@ -83,7 +83,7 @@
 							<td class="admin admin2">
 								<hb:HibachiActionCaller action="admin:entity.downloadfile" queryString="fileID=#fileRelation.getFile().getFileID()#&redirectAction=#request.context.slatAction#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" modal="false" class="btn btn-default btn-xs" icon="download" iconOnly="true" />
 								<hb:HibachiActionCaller action="admin:entity.editfile" queryString="fileID=#fileRelation.getFile().getFileID()#&baseObject=#attributes.object.getClassName()#&baseID=#attributes.object.getPrimaryIDValue()#&sRedirectAction=#request.context.slatAction#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" />
-								<hb:HibachiActionCaller action="admin:entity.deletefilerelationship" querystring="fileRelationshipID=#fileRelation.getFileRelationshipID()#&redirectAction=#request.context.slatAction#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash" confirm="true" />
+								<hb:HibachiActionCaller action="admin:entity.deletefilerelationship" querystring="fileRelationshipID=#fileRelation.getFileRelationshipID()#&redirectAction=#attributes.redirectAction#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash" confirm="true" />
 							</td>
 							</cfif>
 						</tr>

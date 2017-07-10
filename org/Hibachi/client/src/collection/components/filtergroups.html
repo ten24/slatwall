@@ -1,4 +1,5 @@
-<div data-ng-if="!filterGroupItem.length" class="alert alert-info" sw-rbkey="'entity.Collection.filter.norecordsfound'" style="margin-right: 15px; margin-left: 15px;" role="alert"><!-- Message created by rb key --></div>
+<div data-ng-if="collectionConfig && !filterGroupItem.length" class="alert alert-info" sw-rbkey="'entity.Collection.filter.norecordsfound'" style="margin-right: 15px; margin-left: 15px;" role="alert"><!-- Message created by rb key --></div>
+
 <ul class="list-unstyled s-filter-groups" style="margin-bottom: 0" data-ng-if="filterGroup">
 	<span data-ng-repeat="filterGroup in filterGroupItem" >
 		<!-- figure out if item is filterItem or filterGroup-->

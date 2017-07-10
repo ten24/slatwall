@@ -64,7 +64,7 @@ Notes:
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="packingSlipNumber" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="boxCount" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" value="#rc.vendorOrder.getBillToLocation().getLocationID()#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

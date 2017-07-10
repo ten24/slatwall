@@ -47,7 +47,33 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiService" accessors="true">
-
+	
+	<!--- prepare constants and environment variables --->
+	<cffunction name="init" returntype="void" >
+		<cfscript>
+			getEnvironmentVariables();
+			
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getEnvironmentVariables" returntype="void">
+		<cfscript>
+			variables.lineBreak = getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
+			
+			variables.paddingCount = 2;
+			variables.conditionLineBreak="";
+			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
+				variables.paddingCount = 3;
+				variables.conditionLineBreak=variables.lineBreak;
+			}
+			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac' || lcase(getApplicationValue("lineBreakStyle")) == 'unix'){
+				variables.paddingCount = 3;
+				variables.conditionLineBreak=variables.lineBreak;
+			}
+			
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="update">
 		<cfargument name="branch" type="string" default="master">
 		
@@ -76,7 +102,7 @@ Notes:
 			<cfset var downloadUUID = createUUID() />
 			<cfset var downloadFileName = "slatwall-#downloadUUID#.zip" />
 			<cfset var downloadHashFileName = "slatwall-#downloadUUID#.md5.txt" />
-			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.htaccess,/web.config,/.settings,/.gitignore' />
+			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.rewriterule,/.htaccess,/web.config,/.settings,/.gitignore' />
 			<cfset var copyContentExclusionList = "" />
 			<cfset var slatwallDirectoryList = "" />
 
@@ -186,7 +212,7 @@ Notes:
 						<cfelseif fileExists(expandPath("/Slatwall/config/scripts/#script.getScriptPath()#"))>
 							<cfinclude template="#getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						<cfelse>
-							<cfthrow message="update script file doesn't exist" />
+							<cfthrow message="update script file doesn't exist #getHibachiScope().getBaseURL()#/config/scripts/#script.getScriptPath()#" />
 						</cfif>
 					</cfif>
 					<cfset script.setSuccessfulExecutionCount(script.getSuccessfulExecutionCount()+1) />
@@ -196,7 +222,8 @@ Notes:
 					</cfcatch>
 				</cftry>
 				<cfset script.setLastExecutedDateTime(now()) />
-				<cfset this.saveUpdateScript(script) />
+				<cfset getDao('HibachiDao').save(script) />
+				<cfset getDao('HibachiDao').flushORMSession()/>
 			</cfif>
 		</cfloop>
 	</cffunction>
@@ -235,10 +262,8 @@ Notes:
 	</cffunction>
 	<cfscript>
 		 public boolean function updateEntitiesWithCustomProperties(){
-			try{
 				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
-				var compiledPath = "#ExpandPath('/Slatwall/')#" & "model/entity";
 
 				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
 				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
@@ -260,196 +285,163 @@ Notes:
 					return true;
 				}
 
-				//iterate over overrides and merge them
-				for (var match in matchArray){
-					var results = mergeProperties("#match#");
-					filewrite(compiledPath & '/#match#',results);
-				}
-				return true;
-			}catch(any e){
-				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
-				return false;
+			//iterate over overrides and merge them
+			for (var match in matchArray) {
+				var results = mergeProperties("#match#");
+				filewrite(path & '/#match#', results);
 			}
 			return true;
 		}
 	</cfscript>
+	
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
-		<cfargument name="entityName"/>
-		<cfargument name="customPropertyName"/>
+		<cfargument name="entityName" type="string" required="true"/>
+		<cfargument name="customPropertyName" type="string" required="true"/>
+		<cfargument name="overrideDataFlag" type="boolean" default="false" >
 		
 		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
 		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
 		
-		<cfquery name="local.attributeToCustomProperty">
-			UPDATE p
-
-			SET p.#arguments.customPropertyName# = av.attributeValue
+		<cfif getApplicationValue("databaseType") eq "MySQL">
 			
-			FROM #entityMetaData.table# p
-			
-			INNER JOIN SwAttributeValue av
-			
-			ON p.#primaryIDName# = av.#primaryIDName#
-			
-			INNER JOIN SwAttribute a
-			
-			ON av.attributeID = a.attributeID 
-			
-			WHERE a.attributeCode = '#arguments.customPropertyName#'
-		</cfquery>
+			<cfquery name="local.attributeToCustomProperty">
+				UPDATE #entityMetaData.table# p
+				
+				INNER JOIN SwAttributeValue av
+				
+				ON p.#primaryIDName# = av.#primaryIDName#
+				
+				INNER JOIN SwAttribute a
+				
+				ON av.attributeID = a.attributeID
+				
+				SET p.#arguments.customPropertyName# = av.attributeValue
+				
+				WHERE a.attributeCode = '#arguments.customPropertyName#'
+				
+				<cfif NOT overrideDataFlag >
+					AND p.#arguments.customPropertyName# IS NULL
+				</cfif>
+				
+			</cfquery>
+		<cfelse>
+			<cfquery name="local.attributeToCustomProperty">
+				UPDATE p
+	
+				SET p.#arguments.customPropertyName# = av.attributeValue
+				
+				FROM #entityMetaData.table# p
+				
+				INNER JOIN SwAttributeValue av
+				
+				ON p.#primaryIDName# = av.#primaryIDName#
+				
+				INNER JOIN SwAttribute a
+				
+				ON av.attributeID = a.attributeID 
+				
+				WHERE a.attributeCode = '#arguments.customPropertyName#'
+				
+				<cfif NOT overrideDataFlag >
+					AND p.#arguments.customPropertyName# IS NULL
+				</cfif>
+				
+			</cfquery>
+		</cfif>
 	</cffunction>
 	
+
 	<cfscript>
-		public any function mergeProperties(string filename){ 
-			var lineBreak = getHibachiUtilityService().getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
-			var paddingCount = 2;
-			var conditionalLineBreak="";
-			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
-				paddingCount = 3;
-				conditionalLineBreak=lineBreak;
-			}
-			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac'){
-				paddingCount = 3;
-				conditionalLineBreak=lineBreak;
-			}
-			
-			//declared file paths
-			var filePath =  "model/entity/#arguments.fileName#";
-			var customFilePath =  "custom/model/entity/#arguments.fileName#";
-		    //declared component paths
-		    var fileComponentPath = left(filePath, len(filePath)-4);
-		    fileComponentPath = replace(fileComponentPath, "/", ".", "All");
-			var customFileComponentPath = left(customFilePath, len(customFilePath)-4);
-		    customFileComponentPath = replace(customFileComponentPath, "/", ".", "All");
-
-			var baseMeta = getComponentMetaData(fileComponentPath);
-			var customMeta = getComponentMetaData(customFileComponentPath);
-
-			//Grab the contents of the files and figure our the properties.
-			var fileContent = ReReplace(fileRead(expandPath(filePath)),'\r','','All');
-
-			//declared custom strings
-			
-			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN';
-			var customPropertyEndString = '//CUSTOM PROPERTIES END';
-			var customFunctionBeginString = chr(9) &'//CUSTOM FUNCTIONS BEGIN';
-			var customFunctionEndString = '//CUSTOM FUNCTIONS END';
-			//if they already exists, then remove the custom properties and custom functions
-			if(findNoCase(customPropertyBeginString, fileContent)){
-				var customPropertyStartPos = findNoCase(chr(9)&customPropertyBeginString, fileContent);
-				var customPropertyEndPos = findNoCase(customPropertyEndString, fileContent) + len(customPropertyEndString);
-				fileContent = left(fileContent,customPropertyStartPos-1) & mid(fileContent,customPropertyEndPos, (len(fileContent) - customPropertyEndPos)+1);
-				if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
-					conditionalLineBreak = "";
-				}
-			}
-
-			if(findNoCase(customFunctionBeginString, fileContent)){
-				var customFunctionStartPos = findNoCase(customFunctionBeginString, fileContent);
-				var customFunctionEndPos = findNoCase(customFunctionEndString, fileContent) + len(customFunctionEndString);
-				fileContent = left(fileContent,customFunctionStartPos-1) & mid(fileContent,customFunctionEndPos, abs(len(fileContent) - customFunctionEndPos) + 1);
-				if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
-					conditionalLineBreak = "";
-				}
-			}
-			
-			var customFileContent = ReReplace(fileRead(expandPath(customFilePath)),'\r','','All') ;
-
+		
+		public void function checkIfCustomPropertiesExistInBase(required any customMeta, required any baseMeta){
 			// check duplicate properties and if there is a duplicate then write it to log
-			if(structKeyExists(customMeta,'properties')){
-				for(var i=1; i <= arraylen(customMeta.properties); i++) {
-					for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
-						if(baseMeta.properties[j].name == customMeta.properties[i].name) {
+			if(structKeyExists(arguments.customMeta,'properties')){
+				for(var i=1; i <= arraylen(arguments.customMeta.properties); i++) {
+					for(var j=1; j <= arraylen(arguments.baseMeta.properties); j++ ) {
+						if(arguments.baseMeta.properties[j].name == arguments.customMeta.properties[i].name) {
 							writeLog(
 								file="Slatwall",
-								text="Custom property names can't be same as core property names"
+								text="Custom property names can't be same as core property names: #arguments.customMeta.properties[i].name#"
 							);
 						}
 					}
 				}
 			}
-
-			//declare custom positions
-			var propertyStartPos = findNoCase("property name=", customFileContent) ;
-			var privateFunctionLineStartPos = reFindNoCase('\private[^"].*function.*\(.*\)',customFileContent) ;
-			var publicFunctionLineStartPos = reFindNoCase('\public[^"].*function.*\(.*\)',customFileContent) ;
-
-			var functionLineStartPos = 0;
-			if(privateFunctionLineStartPos && publicFunctionLineStartPos){
-				if(privateFunctionLineStartPos > publicFunctionLineStartPos){
-					functionLineStartPos = publicFunctionLineStartPos;
-				}else{
-					functionLineStartPos = privateFunctionLineStartPos;
-				}
-			}else if(privateFunctionLineStartPos){
-				functionLineStartPos = privateFunctionLineStartPos;
-			}else if(publicFunctionLineStartPos){
-				functionLineStartPos = publicFunctionLineStartPos;
+		}
+		
+		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false){
+			var conditionalLineBreak = variables.conditionLineBreak;
+			
+			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
+				conditionalLineBreak = "";
 			}
-
-			var componentEndPos = customFileContent.lastIndexOf("}") ;
-			if(functionLineStartPos){
-				var propertyEndPos = functionLineStartPos -1;
-			}else{
-				var propertyEndPos = componentEndPos;
-			}
-
-			//create function and properties strings
-			var functionString = '';
-			if(functionLineStartPos){
-				functionString =  mid(customFileContent, functionLineStartPos, abs(componentEndPos - functionLineStartPos));
-			}
-			var propertyString = '';
-			if(propertyStartPos){
-				propertyString = mid(customFileContent, propertyStartPos, abs(propertyEndPos-propertyStartPos));
-			}
-			var newContent = fileContent;
-
+			var newContent = "";
 			//add properties
-			if(len(propertyString)){
-
-				var customPropertyString = customPropertyBeginString & linebreak & chr(9) & propertyString & chr(9) & customPropertyEndString & linebreak;
-
-				propertyStartPos = findNoCase("property name=", newContent) ;
-				privateFunctionLineStartPos = reFind('private ',newContent);
-				publicFunctionLineStartPos = reFind('public ',newContent);
-
-				if(privateFunctionLineStartPos && publicFunctionLineStartPos){
-					if(privateFunctionLineStartPos > publicFunctionLineStartPos){
-						functionLineStartPos = publicFunctionLineStartPos;
-					}else{
-						functionLineStartPos = privateFunctionLineStartPos;
+			if(len(arguments.customEntityParser.getPropertyString())){
+				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
+				}
+				
+				if(arguments.coreEntityParser.hasCustomProperties()){
+					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
+					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
+					
+					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS arguments.customEntityParser.getPropertyString()){
+						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition()-1);
+						var contentAfterCustomPropertiesStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
+						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&customEntityParser.getPropertyString();
+						var customPropertyContent = contentBeforeCustomPropertiesStart & combinedPropertyContent & contentAfterCustomPropertiesStart;
+						arguments.coreEntityParser.setFileContent(customPropertyContent);	
 					}
-				}else if(privateFunctionLineStartPos){
-					functionLineStartPos = privateFunctionLineStartPos;
-				}else if(publicFunctionLineStartPos){
-					functionLineStartPos = publicFunctionLineStartPos;
-				}
-
-				componentEndPos = newContent.lastIndexOf("}") ;
-				if(functionLineStartPos){
-					propertyEndPos = functionLineStartPos -1;
 				}else{
-					propertyEndPos = componentEndPos;
-				}
-
-				var newContentPropertiesStartPos = propertyEndPos;
-				newContent = left(newContent,newContentPropertiesStartPos-paddingCount) & conditionalLineBreak & chr(9) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
+					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString();
+					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
+									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
+									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
+					;
+					arguments.coreEntityParser.setFileContent(newContent);
+				} 
 			}
 			//add functions
-			if(len(functionString)){
+			if(len(arguments.customEntityParser.getFunctionString())){
+				if(arguments.purgeCustomProperties && arguments.coreEntityParser.hasCustomFunctions()){
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));	
+				}	
+				
+				if(arguments.coreEntityParser.hasCustomFunctions()){
+					var customFunctionStartPos = arguments.coreEntityParser.getCustomFunctionStartPosition();
+					var customFunctionEndPos = arguments.coreEntityParser.getCustomFunctionEndPosition();
+					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS arguments.customEntityParser.getFunctionString()){
+						var contentBeforeCustomFunctionsStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentStartPosition()-1);
+						var contentAfterCustomFunctionsStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
+						var combinedFunctionContent = coreEntityParser.getCustomFunctionContent()&variables.lineBreak&customEntityParser.getFunctionString();
+						var customFunctionContent = contentBeforeCustomFunctionsStart & combinedFunctionContent & contentAfterCustomFunctionsStart;
+						arguments.coreEntityParser.setFileContent(customFunctionContent);	
+					}
+				}else{
+					var customFunctionString = arguments.customEntityParser.getCustomFunctionStringByFunctionString();
 
-				var customFunctionString =  customFunctionBeginString & lineBreak & chr(9) & functionString & lineBreak & chr(9) & customfunctionEndString & lineBreak;
-
-				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
-
-				newContent = left(newContent,newContentComponentEndPos-(paddingCount-1)) & conditionalLineBreak & customFunctionString & '}';
+					newContent = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getComponentEndPos()-(variables.paddingCount-1)) & conditionalLineBreak & customFunctionString & '}';
+					arguments.coreEntityParser.setFileContent(newContent);
+				}
 			}
+		}
+	
+		public any function mergeProperties(string filename){ 
+	
+		
+			var customEntityParser = getTransient('HibachiEntityParser');
+			customEntityParser.setFilePath("custom/model/entity/#arguments.fileName#");
+			
+			//declared file paths
+			var coreEntityParser = getTransient('HibachiEntityParser');
+			coreEntityParser.setFilePath("model/entity/#arguments.fileName#");
 
-			return newContent;
+			mergeEntityParsers(coreEntityParser,customEntityParser,true);
+
+			return coreEntityParser.getFileContent();
+		
 		}
 	</cfscript>
-	<cffunction name="addPropertiesToFile" returntype="String">
-	</cffunction>
-
+	 
 </cfcomponent>

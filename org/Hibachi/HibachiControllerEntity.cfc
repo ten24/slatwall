@@ -511,7 +511,19 @@ component output="false" accessors="true" extends="HibachiController" {
 				} else {
 
 					// Place the id in the URL for redirects in case this was a new entity before
-					url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();
+					var isSPrimaryIDOverridden = false;
+					if(structKeyExists(arguments.rc,'sRedirectQS')){
+						var sRedirectQSArray= listToArray(arguments.rc.sRedirectQS,'&');
+						for(var sRedirectQSString in sRedirectQSArray){
+							if(listfirst(sRedirectQSString,'=')==entity.getPrimaryIDPropertyName()){
+								isSPrimaryIDOverridden = true;
+							}
+						}
+					}
+					
+					if(!isSPrimaryIDOverridden){
+						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
+					}
 
 					// Render or Redirect a Success
 					renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
@@ -545,9 +557,21 @@ component output="false" accessors="true" extends="HibachiController" {
 
 				// Otherwise do the standard render / redirect
 				} else {
-
+					
+					var isFPrimaryIDOverridden = false;
+					if(structKeyExists(arguments.rc,'fRedirectQS')){
+						var fRedirectQSArray= listToArray(arguments.rc.fRedirectQS,'&');
+						for(var fRedirectQSString in fRedirectQSArray){
+							if(listfirst(fRedirectQSString,'=')==entity.getPrimaryIDPropertyName()){
+								isFPrimaryIDOverridden = true;
+							}
+						}
+					}
+					
 					// Place the id in the URL for redirects in case this was a new entity before
-					url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();
+					if(!isFPrimaryIDOverridden){
+						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
+					}
 
 					// Render or Redirect a faluire
 					renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
@@ -632,7 +656,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string keysToRemoveOnRedirect="" ) {
 		param name="arguments.rc.sRedirectQS" default="";
-
+		
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
 		if(structKeyExists(arguments.rc, "sRedirectURL")) {
 			getFW().redirectExact( redirectlocation=arguments.rc.sRedirectURL );

@@ -32,7 +32,7 @@ class HibachiServiceDecorator{
                 defaultValues = appConfig.modelConfig.defaultValues;
 
             angular.forEach(entities,function(entity){
-                if(attributeMetaData[entity.className]){
+                if(attributeMetaData && attributeMetaData[entity.className]){
                     var relatedAttributes = attributeMetaData[entity.className];
                     for(var attributeSetCode in relatedAttributes){
                         var attributeSet = relatedAttributes[attributeSetCode];
@@ -59,6 +59,7 @@ class HibachiServiceDecorator{
                             entityInstance.processObject = processObjectInstance;
                         }else{
                             if(entityInstance.populate){
+
                                 entityInstance.populate(response);
 
                             }else{
@@ -177,7 +178,7 @@ class HibachiServiceDecorator{
 
                     angular.forEach(entity,function(property){
                         if(angular.isObject(property) && angular.isDefined(property.name)){
-                            if(angular.isDefined(defaultValues[entity.className][property.name])){
+                            if(defaultValues && defaultValues[entity.className] && defaultValues[entity.className][property.name] != null){
                                 jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
                             }else{
                                 jsEntity.data[property.name] = undefined;
@@ -238,19 +239,19 @@ class HibachiServiceDecorator{
                 angular.forEach(relatedAttributes,function(attributeSet){
                     angular.forEach(attributeSet.attributes,function(attribute){
                         if(attribute && attribute.attributeCode){
-                            Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
-                                configurable:true,
-                                enumerable:false,
-                                get: function() {
-                                    if(this.data[attribute.attributeCode] == null){
-                                        return undefined;
-                                    }
-                                    return this.data[attribute.attributeCode];
-                                },
-                                set: function(value) {
-                                    this.data[attribute.attributeCode]=value;
+                        Object.defineProperty(_jsEntities[ entity.className ].prototype, attribute.attributeCode, {
+                            configurable:true,
+                            enumerable:false,
+                            get: function() {
+                                if(attribute != null && this.data[attribute.attributeCode] == null){
+                                    return undefined;
                                 }
-                            });
+                                return this.data[attribute.attributeCode];
+                            },
+                            set: function(value) {
+                                this.data[attribute.attributeCode]=value;
+                            }
+                        });
                         }
                     });
                 });
@@ -393,6 +394,10 @@ class HibachiServiceDecorator{
                                     }
 
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
+
+                                    if(!property.singularname){
+                                        throw('need to define a singularname for ' +property.fieldtype);
+                                    }
                                     _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
                                         if(angular.isUndefined(entityInstance)){
@@ -580,6 +585,7 @@ class HibachiServiceDecorator{
             angular.forEach(_jsEntities,function(jsEntity:any){
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
+
             });
 
             $delegate.setJsEntityInstances(_jsEntityInstances);
@@ -805,7 +811,7 @@ class HibachiServiceDecorator{
                     if(modifiedData.valid){
                         var params:any = {};
 
-                        params.serializedJsonData = angular.toJson(modifiedData.value);
+                        params.serializedJsonData = utilityService.toJson(modifiedData.value);
                         //if we have a process object then the context is different from the standard save
                         var entityName = '';
                         var context = 'save';

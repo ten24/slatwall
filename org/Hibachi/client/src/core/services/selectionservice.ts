@@ -19,10 +19,10 @@ class SelectionService extends BaseService{
             ids: []
         };
     };
-    radioSelection=(selectionid:string,selection:any):void =>{
+    radioSelection=(selectionid:string,selection:any):void =>{  
         this.createSelections(selectionid);
         this._selection[selectionid].ids.push(selection);
-        this.observerService.notify('swSelectionToggleSelection',{action:'check',selectionid,selection});
+        this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'check',selectionid,selection});
     };
     addSelection=(selectionid:string,selection:any):void =>{
         /*if allSelected flag is true addSelection will remove selection*/
@@ -30,11 +30,11 @@ class SelectionService extends BaseService{
             var index = this._selection[selectionid].ids.indexOf(selection);
             if (index > -1) {
                 this._selection[selectionid].ids.splice(index, 1);
-                this.observerService.notify('swSelectionToggleSelection',{action:'check',selectionid,selection});
+                this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'check',selectionid,selection});
             }
         }else if(!this.hasSelection(selectionid,selection)){
             this._selection[selectionid].ids.push(selection);
-            this.observerService.notify('swSelectionToggleSelection',{action:'check',selectionid,selection});
+            this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'check',selectionid,selection});
         }
 
         console.info(this._selection[selectionid])
@@ -54,12 +54,12 @@ class SelectionService extends BaseService{
             var index = this._selection[selectionid].ids.indexOf(selection);
             if (index > -1) {
                 this._selection[selectionid].ids.splice(index, 1);
-                this.observerService.notify('swSelectionToggleSelection',{action:'uncheck',selectionid,selection});
+                this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'uncheck',selectionid,selection});
             }
         /*if allSelected flag is true removeSelection will add selection*/
         }else if(!this.hasSelection(selectionid,selection)) {
             this._selection[selectionid].ids.push(selection);
-            this.observerService.notify('swSelectionToggleSelection', {action: 'uncheck', selectionid, selection});
+            this.observerService.notify('swSelectionToggleSelection' + selectionid, {action: 'uncheck', selectionid, selection});
         }
         console.info(this._selection[selectionid])
     };
@@ -83,7 +83,7 @@ class SelectionService extends BaseService{
     };
     clearSelection=(selectionid):void=>{
         this.createSelections(selectionid);
-        this.observerService.notify('swSelectionToggleSelection',{action:'clear'});
+        this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'clear'});
         console.info(this._selection[selectionid])
     };
     selectAll=(selectionid):void=>{
@@ -91,7 +91,7 @@ class SelectionService extends BaseService{
             allSelected: true,
             ids: []
         };
-        this.observerService.notify('swSelectionToggleSelection',{action:'selectAll'});
+        this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'selectAll'});
         console.info(this._selection[selectionid])
     };
     isAllSelected=(selectionid)=>{
