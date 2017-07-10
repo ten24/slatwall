@@ -974,14 +974,25 @@ class PublicService {
     }
 
     public editAccountAddress = (key, fulfillmentIndex) =>{
+        this.clearShippingAddressErrors();
         this.accountAddressEditFormIndex[fulfillmentIndex] = key;
         this.editingAccountAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
+        this.editingAccountAddress.accountAddressName = this.account.accountAddresses[key].accountAddressName;
+        this.editingAccountAddress.accountAddressID = this.account.accountAddresses[key].accountAddressID;
     }
 
-    public editBillingAddress = (key) =>{
+    public editBillingAddress = (key, formName) =>{
         this.billingAddressEditFormIndex = key;
         this.selectedBillingAddress = null
-        this.billingAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
+        if(formName){
+            this[formName + 'BillingAddress'] = this.getAddressEntity(this.account.accountAddresses[key].address);
+            this[formName + 'BillingAddress'].accountAddressName = this.account.accountAddresses[key].accountAddressName;
+            this[formName + 'BillingAddress'].accountAddressID = this.account.accountAddresses[key].accountAddressID;
+        }else{
+            this.billingAddress = this.getAddressEntity(this.account.accountAddresses[key].address);
+            this.billingAddress.accountAddressName = this.account.accountAddresses[key].accountAddressName;
+            this.billingAddress.accountAddressID = this.account.accountAddresses[key].accountAddressID;
+        }
     }
 
     public clearShippingAddressErrors = ()=>{
