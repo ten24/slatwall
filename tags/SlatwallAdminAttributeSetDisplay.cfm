@@ -109,9 +109,8 @@ Notes:
 		</cfif>
 
 		<!--- Setup file link --->
-		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>		
 			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
-			
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
 			
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
@@ -120,8 +119,9 @@ Notes:
 			<cfset removeLink = "?slatAction=admin:entity.deleteCustomPropertyFile&#attributes.entity.getPrimaryIDPropertyName()#=#attributes.entity.getPrimaryIDValue()#&entityName=#attribute.getAttributeSet().getAttributeSetObject()#&attributeCode=#attribute.getAttributeCode()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
-
 			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+			<hb:HibachiActionCaller action="main.detailimageattribute" queryString="attributeID=#attribute.getAttributeID()#&value=#fdAttributes.value#" modal="true" icon="picture" />
+			
 
 	</cfloop>
 </cfif>

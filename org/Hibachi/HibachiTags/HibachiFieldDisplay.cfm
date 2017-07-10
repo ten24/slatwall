@@ -33,7 +33,7 @@
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
-
+	
 	<cfif !attributes.ignoreHTMLEditFormat>
 		<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
 	</cfif>
@@ -70,11 +70,12 @@
 								<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></p>
 							<cfelse>
 								<cfif attributes.valueLink neq "">
-									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></p>
 									<cfif IsImageFile(expandPath(attributes.valueLink))>
 										<div class="s-image">
-											<img src="#attributes.valueLink#" height="250" width="250" /> 
+											<img src="#attributes.valueLink#" height="250" width="250" />
 										</div>
+									<cfelseif !IsImageFile(expandPath(attributes.valueLink))>
+										<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></p>
 									</cfif>										
 								<cfelse>
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
