@@ -285,6 +285,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 
+		if(structKeyExists(getService('accountService'), "getCustomAvailableProperties")){
+			availablePropertyList = listAppend(availablePropertyList, getService('accountService').getCustomAvailableProperties());
+		}
+
 		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
 			arguments.propertyList = availablePropertyList;
 		}
@@ -332,6 +336,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 		availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
+
+		if(structKeyExists(getService('OrderService'), "getCustomAvailableProperties")){
+			availablePropertyList = listAppend(availablePropertyList, getService('OrderService').getCustomAvailableProperties());
+		}
 		
 		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
 			arguments.propertyList = availablePropertyList;
