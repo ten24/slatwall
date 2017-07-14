@@ -4197,13 +4197,63 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			var foundCorrectError = false;
 			
 			for (var error in collectionEntity.getError('collectionConfig')){
-				if (refindNoCase('filterGroups', error) > 0){
+				if (refindNoCase('filters', error) > 0){
 					foundCorrectError = true;
 				}
 			}
 			assertTrue(foundCorrectError); //should have the correct validation errors.
 	}
-
+	
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithInvalidNestedFilterGroupsTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"Account",
+					"baseEntityAlias":"_account",
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"filterGroup" : [
+									{
+										"logicalOperator":"OR",
+										"propertyIdentifier":"Account.superUserFlag",
+										"comparisonOperator":"="
+									}
+								]
+								}
+							]
+						}
+					]
+				}
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				if (refindNoCase('filters', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
 
 
 
