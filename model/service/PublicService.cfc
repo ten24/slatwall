@@ -1200,7 +1200,7 @@ component extends="HibachiService"  accessors="true" output="false"
             orderPayment.setOrder(getHibachiScope().getCart());
             orderPayment.validate('save');
             //Add billing address error
-            orderPayment.addError('addOrderPayment','Billing address is required.');
+            orderPayment.addError('addBillingAddress','Billing address is required.');
 
             this.addErrors(data, orderPayment.getErrors());
 
