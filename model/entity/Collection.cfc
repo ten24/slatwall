@@ -2470,7 +2470,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function importCollectionConfigAsJSON(required string filePath, fileName){
 		setCollectionConfig(fileRead( "#filePath##filename#.json" ));
 	}
-
+	
 	// =============== Saved State Logic ===========================
 
 	public void function loadSavedState(required string savedStateID) {
@@ -2558,10 +2558,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfig = trim(arguments.collectionConfig);
 		//reinflate collectionConfigStruct if the collectionConfig is modified directly
 		variables.collectionConfigStruct = deserializeCollectionConfig();
-	}
-
-	public string function getCollectionConfig(){
-		return variables.collectionConfig;
 	}
 
 	public any function getCollectionConfigStruct(){
@@ -2703,6 +2699,209 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//validationMethods
 	public any function canSaveCollectionByCollectionObject(){
 		return getHibachiScope().authenticateCollection('read', this);
+	}
+	
+	//Validation - this is valid json in the collection config.
+	public boolean function isValidJson(){
+		
+		//check if collectionConfig is valid Json
+		if(!isJSON(getCollectionConfig())){
+			return false;
+		}
+		return true;
+	}
+	
+	//Validation - canBeDeserialized makes sure it can be turned into a struct.
+	public boolean function canBeDeserialized(){
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		
+		//check json is deserialized
+		if(!isStruct(collectionConfigStruct)){
+			return false;
+		}
+		return true;
+	}
+	
+	//VALIDATION CONDITIONS
+	
+	//Validation - baseEntityName exists.
+	public boolean function baseEntityNameExists(){
+		if (!isNull(this.getCollectionConfigStruct())){
+			var collectionConfigStruct = this.getCollectionConfigStruct();
+		}else{
+			var collectionConfigStruct = deserializeJSON(getCollectionConfig());	
+		}
+		
+		//check json is deserialized
+		if(!isStruct(collectionConfigStruct)){
+			return false;
+		}
+		
+		//checks if the baseEntityName exists in collection config
+		if(!structKeyExists(collectionConfigStruct,'baseEntityName')){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	//Validation - baseEntityAlias exists.
+	public boolean function baseEntityAliasExists(){
+		//Check is baseEntityAlias exists in collection config
+		if(!structKeyExists(deserializeJSON(getCollectionConfig()),'baseEntityAlias')){
+			return false;
+		}
+		return true;
+	}
+	
+	//Validation - Check columns exists.
+	public boolean function getCheckColumnsExist(){
+		//Check if columns exists
+		if(!structKeyExists(deserializeJSON(getCollectionConfig()),'columns')){
+			return false;
+		}
+		return true;
+	}
+	
+	//Validation - Check joins exists.
+	public boolean function getCheckJoinsExist(){
+		//Check if columns exists
+		if(!structKeyExists(deserializeJSON(getCollectionConfig()),'joins')){
+			return false;
+		}
+		return true;
+	}
+	
+	//Validation - Check filtergroups exists.
+	public boolean function getCheckFilterGroupsExist(){
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		
+		//Make sure filterGroups exists
+		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	//Validation - Check orderbys exist.
+	public boolean function getCheckOrderBysExist(){
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		
+		//Make sure orderby exists
+		if(!structKeyExists(collectionConfigStruct,'orderBy')){
+			return false;
+		}
+		
+		return true;
+	}
+	
+	// VALIDATION METHODS
+	//Validation - base entity alias is valid.
+	public boolean function baseEntityAliasIsValid(){
+		//Validate the base Alias
+		if(deserializeJSON(getCollectionConfig()).baseEntityAlias != "_#lCase(collectionConfigStruct.baseEntityName)#"){
+			return false;
+		}
+		return true;
+	}
+	
+	//Validation - Validate the columns if they exist
+	public boolean function checkColumnsAreValid(){
+		//If has columns, check the structure for required keys and values
+		
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		if(arraylen(collectionConfigStruct.columns) > 0){
+			for(var i = 1; i <= arraylen(collectionConfigStruct.columns); i++){
+				if(!structKeyExists(collectionConfigStruct.columns[i], 'propertyIdentifier')
+					|| !len(collectionConfigStruct.columns[i].propertyIdentifier)
+					|| !structKeyExists(collectionConfigStruct.columns[i], 'ormtype')
+					|| !len(collectionConfigStruct.columns[i].ormtype)){
+					return false;
+				}
+				
+				//If is a aggregate, check the structure
+				if(structKeyExists(collectionConfigStruct.columns[i], 'aggregate') &&
+					(!structKeyExists(collectionConfigStruct.columns[i].aggregate, 'aggregateFunction')
+						|| !len(collectionConfigStruct.columns[i].aggregate.aggregateFunction)
+						|| !structKeyExists(collectionConfigStruct.columns[i].aggregate, 'aggregateAlias')
+						|| !len(collectionConfigStruct.columns[i].aggregate.aggregateAlias))){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	//Validation - Check joins are valid
+	public boolean function checkJoinsAreValid(){
+		//Check if has joins
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		
+		//Loop the joins and validate the structure
+		for(var j = 1; j <= arraylen(collectionConfigStruct.joins); j++){
+			if(!structKeyExists(collectionConfigStruct.joins[j], 'associationName')
+			|| !len(collectionConfigStruct.joins[j].associationName)
+			|| !structKeyExists(collectionConfigStruct.joins[j], 'alias')
+			|| !len(collectionConfigStruct.joins[j].alias)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	//Validation - Check filterGroups are valid
+	public boolean function checkFilterGroupsAreValid(){
+		//Check if has joins
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		
+		//Check the filter groups.
+		for(var f = 1; f <= arraylen(collectionConfigStruct.filterGroups); f++){
+			if(structKeyExists(collectionConfigStruct.filterGroups[f], 'filterGroup')){
+				var filterGroup = collectionConfigStruct.filterGroups[f]['filterGroup'];
+				//validate the filtergroup.
+				var isValidFilterGroup = checkFilterGroup( filterGroup, this.getFilterAliases(filterGroup) );
+				if (!isValidFilterGroup) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean function checkOrderBysAreValid(){
+		//If orderBy exist, validate the structure
+		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
+		
+		for(var c = 1; c <= arraylen(collectionConfigStruct.orderBy); c++) {
+			if (!structKeyExists(collectionConfigStruct.orderBy[c], 'propertyIdentifier')
+					|| !len(collectionConfigStruct.orderBy[c].propertyIdentifier)
+					|| !structKeyExists(collectionConfigStruct.orderBy[c], 'direction')
+					|| !len(collectionConfigStruct.orderBy[c].direction)) {
+				return false;
+			}
+			//check if orderBy base alias exists in the AliasList
+			if(!listFind(aliasList, listFirst(collectionConfigStruct.orderBy[c].propertyIdentifier, '.'))){
+				return false;
+			}
+		}
+	}
+	
+	//Validation helper method used above.
+	private function checkFilterGroup(filterGroup, aliasList){
+		if(structKeyExists(arguments.filterGroup, 'filterGroup')){
+			return checkFilterGroup(arguments.filterGroup.filterGroup, arguments.aliasList);
+		}
+
+		if(!structKeyExists(arguments.filterGroup, 'propertyIdentifier')
+			|| !len(arguments.filterGroup.propertyIdentifier)
+			|| !listFind(arguments.aliasList, listFirst(arguments.filterGroup.propertyIdentifier, '.'))
+			|| !structKeyExists(arguments.filterGroup, 'comparisonOperator')
+			|| !structKeyExists(arguments.filterGroup, 'value')){
+			return false;
+		}
+		return true;
 	}
 	
 }

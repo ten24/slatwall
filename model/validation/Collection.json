@@ -1,7 +1,31 @@
 {
+	"conditions":{
+	    "hasColumns":{
+	        "checkColumnsExist":{"eq":true}
+	    },
+	    "hasJoins":{
+	        "checkJoinsExist":{"eq":true}
+	    },
+	    "hasFilterGroups":{
+	        "checkFilterGroupsExist":{"eq":true}
+	    },
+	    "hasOrderBys":{
+	        "checkOrderBysExist":{"eq":true}
+	    }
+	},
 	"properties":{
 		"collectionID":		    [{"contexts":"save","method":"canSaveCollectionByCollectionObject"},{"contexts":"delete","method":"hasNoAssociatedCollection"}],
 		"collectionCode":	    [{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
-		"collectionName":		[{"contexts":"save","required":true}]
+		"collectionName":		[{"contexts":"save","required":true}],
+		
+		"collectionConfig": 	[{"contexts":"save","method":"isValidJson"},
+								 {"contexts":"save","method":"canBeDeserialized"},
+								 {"contexts":"save","method":"baseEntityNameExists"},
+								 {"contexts":"save","method":"baseEntityAliasExists"},
+								 {"contexts":"save","method":"baseEntityAliasIsValid"},
+								 {"contexts":"save","conditions":"hasColumns","method":"checkColumnsAreValid"},
+								 {"contexts":"save","conditions":"hasJoins","method":"checkJoinsAreValid"},
+								 {"contexts":"save","conditions":"hasFilterGroups","method":"checkFilterGroupsAreValid"},
+								 {"contexts":"save","conditions":"hasOrderBys","method":"checkOrderBysAreValid"}]
 	}
 }
