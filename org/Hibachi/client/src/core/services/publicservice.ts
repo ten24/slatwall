@@ -957,10 +957,8 @@ class PublicService {
     }
 
     /** Returns errors from addBillingAddress request. */
-    public billingAddressError = () =>{
-        if(this.cart.hasErrors && this.cart.errors.addBillingAddress){
-            return this.cart.errors.addBillingAddress;
-        }
+    public addBillingAddressError = () =>{
+        return this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
     }
 
     /** Returns errors from addGiftCard request. */
