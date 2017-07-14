@@ -2890,16 +2890,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//Validation helper method used above.
 	private function checkFilterGroup(filterGroup, aliasList){
-		if(structKeyExists(arguments.filterGroup, 'filterGroup')){
-			return checkFilterGroup(arguments.filterGroup.filterGroup, arguments.aliasList);
-		}
-
-		if(!structKeyExists(arguments.filterGroup, 'propertyIdentifier')
-			|| !len(arguments.filterGroup.propertyIdentifier)
-			|| !listFind(arguments.aliasList, listFirst(arguments.filterGroup.propertyIdentifier, '.'))
-			|| !structKeyExists(arguments.filterGroup, 'comparisonOperator')
-			|| !structKeyExists(arguments.filterGroup, 'value')){
-			return false;
+		for (var fg in arguments.filterGroup){
+			if(!structKeyExists(fg, 'propertyIdentifier')
+				|| !len(fg.propertyIdentifier)
+				|| !listFind(arguments.aliasList, listFirst(fg.propertyIdentifier, '.'))
+				|| !structKeyExists(fg, 'comparisonOperator')
+				|| !structKeyExists(fg, 'value')){
+				return false;
+			}
 		}
 		return true;
 	}
