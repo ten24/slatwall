@@ -3939,6 +3939,278 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(foundAccountCollection == true);
 
 	};
+	
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithMissingBaseEntityNameTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"",
+					"baseEntityAlias":"account"
+			 }
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				
+				if (refindNoCase('base entity name', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
+	
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithInvalidBaseEntityAliasTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"Account",
+					"baseEntityAlias":"Accounts"
+			 }
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				
+				if (refindNoCase('base entity alias', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
+	
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithColumnsTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"Account",
+					"baseEntityAlias":"_account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						}
+					]
+				}
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				
+				if (refindNoCase('columns', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
+	
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithInvalidJoinsTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"Account",
+					"baseEntityAlias":"_account",
+					"columns":[
+						{
+							"propertyIdentifier":"Account.firstName",
+							"ormtype": "string"
+						}
+					],
+					"joins":[
+						{
+							"associationName":"primaryEmailAddress"
+						}
+					]
+				}
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				if (refindNoCase('joins', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
+
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithInvalidOrderbyTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"Account",
+					"baseEntityAlias":"_account",
+					"orderBy":[
+						{
+							"propertyIdentifier":"Account.firstName"
+						},
+						{
+							"direction":"ASC"
+						}
+					]
+				}
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				if (refindNoCase('orderbys', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
+	
+	/**
+	* @test
+	*/
+	public void function collectionFailsValidationWithInvalidFilterGroupsTest(){
+		var collectionEntityData = {
+			collectionid = '',
+			collectionCode = 'IanAccounts',
+			collectionName = 'IansAcounts',
+			collectionObject = "SlatwallAccount"
+		};
+		
+		//Create without invalid config.
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//Set the config invalid.
+		collectionConfig = 
+			'{
+					"baseEntityName":"Account",
+					"baseEntityAlias":"_account",
+					"filterGroups":[
+						{
+							"filterGroup":[
+								{
+									"comparisonOperator":"=",
+									"value":"true"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"value":"false"
+								},
+								{
+									"logicalOperator":"OR",
+									"propertyIdentifier":"Account.superUserFlag",
+									"comparisonOperator":"="
+								}
+							]
+
+						}
+					]
+				}
+			';
+			collectionEntity.setCollectionConfig(collectionConfig);
+			var isValidCollectionConfig = collectionEntity.isValidJson();
+			assertTrue(isValidCollectionConfig);
+			
+			variables.entityService.saveCollection(collectionEntity); //should not validate;
+			assertTrue(collectionEntity.hasErrors()); //should have validation errors.
+			var foundCorrectError = false;
+			
+			for (var error in collectionEntity.getError('collectionConfig')){
+				if (refindNoCase('filterGroups', error) > 0){
+					foundCorrectError = true;
+				}
+			}
+			assertTrue(foundCorrectError); //should have the correct validation errors.
+	}
+
+
+
+
+
+
+
+
 
 	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user

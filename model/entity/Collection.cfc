@@ -1427,7 +1427,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
             if(structKeyExists(filterGroup[fgIndex], 'filterGroup')){
                 aliasList = listAppend(aliasList,getFilterAliases(filterGroup[fgIndex].filterGroup));
             }else{
-                aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+            	if (structKeyExists(filterGroup[fgIndex], "propertyIdentifier")){
+                	aliasList = listAppend(aliasList, listFirst(filterGroup[fgIndex].propertyIdentifier, '.'));
+                }
             }
         }
         return aliasList;
@@ -2742,7 +2744,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		//checks if the baseEntityName exists in collection config
-		if(!structKeyExists(collectionConfigStruct,'baseEntityName')){
+		if(!structKeyExists(collectionConfigStruct,'baseEntityName') || len(collectionConfigStruct.baseEntityName) < 1){
 			return false;
 		}
 		
@@ -2752,7 +2754,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//Validation - baseEntityAlias exists.
 	public boolean function baseEntityAliasExists(){
 		//Check is baseEntityAlias exists in collection config
-		if(!structKeyExists(deserializeJSON(getCollectionConfig()),'baseEntityAlias')){
+		if(!structKeyExists(deserializeJSON(getCollectionConfig()),'baseEntityAlias') || len(deserializeJSON(getCollectionConfig())['baseEntityAlias']) < 1){
 			return false;
 		}
 		return true;
@@ -2877,7 +2879,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function checkOrderBysAreValid(){
 		//If orderBy exist, validate the structure
 		var collectionConfigStruct = deserializeJSON(getCollectionConfig());
-		
+		//Add base entity Alias to the list
+		var aliasList = "";
+		aliasList = listAppend(aliasList, collectionConfigStruct.baseEntityAlias);
+
 		for(var c = 1; c <= arraylen(collectionConfigStruct.orderBy); c++) {
 			if (!structKeyExists(collectionConfigStruct.orderBy[c], 'propertyIdentifier')
 					|| !len(collectionConfigStruct.orderBy[c].propertyIdentifier)
@@ -2890,6 +2895,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				return false;
 			}
 		}
+		return true;
 	}
 	
 	//Validation helper method used above.
@@ -2899,6 +2905,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				|| !len(fg.propertyIdentifier)
 				|| !listFind(arguments.aliasList, listFirst(fg.propertyIdentifier, '.'))
 				|| !structKeyExists(fg, 'comparisonOperator')
+				|| isNull(fg['value'])
 				|| !structKeyExists(fg, 'value')){
 				return false;
 			}
