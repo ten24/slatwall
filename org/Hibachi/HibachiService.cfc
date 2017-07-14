@@ -918,6 +918,7 @@
 
 				for(var beanName in serviceBeanInfo){
 					var bean = getBeanFactory().getBean(beanName);
+					var serviceMetaData = getMetaData(bean);
 					var serviceFunctions = [];
 					if(structKeyExists(serviceMetaData,'functions')){
 						for(var functionItem in serviceMetaData.functions){
