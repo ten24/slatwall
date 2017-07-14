@@ -2560,6 +2560,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfigStruct = deserializeCollectionConfig();
 	}
 
+	public string function getCollectionConfig(){
+		return variables.collectionConfig;
+	}
+	
 	public any function getCollectionConfigStruct(){
 		if(isNull(variables.collectionConfigStruct)){
 			variables.collectionConfigStruct = deserializeCollectionConfig();
