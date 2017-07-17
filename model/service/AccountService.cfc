@@ -404,7 +404,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 	
 			// Call save on the account now that it is all setup
-			arguments.account = this.saveAccount(arguments.account);
+			if(!arguments.account.hasErrors()){
+				arguments.account = this.saveAccount(arguments.account);
+			}
 			
 			// if all validation passed and setup accounts subscription benefits based on access 
 			if(!arguments.account.hasErrors() && !isNull(access)) {
