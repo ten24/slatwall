@@ -398,8 +398,8 @@ class PublicService {
 
         if(request && request.hasFailureAction()){
             this.failureActions = [];
-            for (var action in request.successfulActions){
-                this.successfulActions.push(request.successfulActions[action].split('.')[1]);
+            for (var action in request.failureActions){
+                this.failureActions.push(request.failureActions[action].split('.')[1]);
             }
         }
     }
