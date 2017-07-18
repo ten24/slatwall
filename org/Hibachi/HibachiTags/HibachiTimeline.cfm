@@ -111,7 +111,7 @@
 							<cfset dateGroupingUsageFlags[dateGroupUsageKey] = true />
 						</cfif>
 						<tr>
-							<td style="white-space:nowrap;width:1%;"><cfif showTime>#currentAudit.getFormattedValue("auditDateTime", "time")#</cfif><cfif len(currentAudit.getSessionAccountFullName())> - #currentAudit.getSessionAccountFullName()#</cfif></td>
+							<td style="white-space:nowrap;width:1%;"><cfif showTime>#currentAudit.getFormattedValue("auditDateTime", "time")#</cfif><cfif len(currentAudit.getSessionAccountFullName())> - #attributes.hibachiScope.getService("HibachiUtilityService").hibachiHTMLEditFormat(currentAudit.getSessionAccountFullName())#</cfif></td>
 							<td class="primary">
 								<cfif not listFindNoCase("login,loginInvalid,logout", currentAudit.getAuditType())>
 									#currentAudit.getFormattedValue('auditType')#<cfif thisTag.mode neq 'object'> #currentAudit.getBaseObject()# - </cfif>

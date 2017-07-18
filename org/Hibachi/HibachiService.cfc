@@ -123,7 +123,7 @@
 			
 			// Verify the preProcess
 			arguments.entity.validate( context=arguments.processContext );
-			
+
 			// If we pass preProcess validation then we can try to setup the processObject if the entity has one, and validate that
 			if(!arguments.entity.hasErrors() && arguments.entity.hasProcessObject(arguments.processContext)) {
 				invokeArguments[ "processObject" ] = arguments.entity.getProcessObject(arguments.processContext);
@@ -138,7 +138,6 @@
 				}
 				
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
-				
 			}
 			
 			// if the entity still has no errors then we call call the process method
@@ -183,7 +182,9 @@
 	        
 	        // Validate this object now that it has been populated
 			arguments.entity.validate(context=arguments.context);
-			        
+			//check if this is new before save - announcements will need this information later.
+	        var isNew = arguments.entity.isNew();
+	        
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
@@ -191,11 +192,23 @@
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
+				
+				//If new need to announce the Create process as well as Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				}
 		    } else {
             
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
+				
+				//If new need to announce the Create Success
+				if (isNew){
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				}
 	        }
 	        
 	        // Return the entity
@@ -307,7 +320,7 @@
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
 		var columnNames = arguments.colNames;
-		var newQuery = queryNew(arrayToList(columnNames));
+		var newQuery = queryNew(arrayToList(columnNames), "VarChar"&repeatString(",VarChar", arraylen(columnNames)-1));
 		queryAddRow(newQuery, rowsTotal);
 		for (var i=1; i <= rowsTotal; i++){
 			for(var n=1; n <= columnsTotal; n++){
@@ -1007,6 +1020,11 @@
 			
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
+		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			entityMetaData = getEntityMetaData( arguments.entityName );
+			return entityMetaData.table; 
 		}
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {

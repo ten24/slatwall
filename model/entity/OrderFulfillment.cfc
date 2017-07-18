@@ -352,7 +352,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     public any function getShippingMethodOptions() {
     	if( !structKeyExists(variables, "shippingMethodOptions")) {
-    	
     		variables.shippingMethodOptions = getService("OrderService").getShippingMethodOptions(this);
     	}
     	return variables.shippingMethodOptions;
@@ -436,8 +435,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	var totalShippingWeight = 0;
 
     	for( var orderItem in getOrderFulfillmentItems()) {
-    		var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
-    		totalShippingWeight = getService('HibachiUtilityService').precisionCalculate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
+    		//Only calculate the weight for top level items so that product bundles don't cause weight doubling.
+    		if (isNull(orderItem.getParentOrderItem())){	
+    			var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
+    			totalShippingWeight = getService('HibachiUtilityService').precisionCalculate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
+    		}
     	}
 
     	return totalShippingWeight;
