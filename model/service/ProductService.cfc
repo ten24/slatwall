@@ -1147,9 +1147,7 @@ component extends="HibachiService" accessors="true" {
 		return delete( arguments.product );
 	}
 
-	public boolean function deleteProductListingPage(required any productListingPage){ 
-		
-		arguments.productListingPage.removeContent(); 
+	public boolean function deleteProductListingPage(required any productListingPage){  
 		arguments.productListingPage.removeProduct(); 
 		return delete( arguments.productListingPage ); 
 	}	
