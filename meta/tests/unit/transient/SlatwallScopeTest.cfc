@@ -248,7 +248,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 		
 	/**
-	*
+	* @test
 	*/
 	public void function getCurrentRequestSite_with_and_without_subdomain() { 
 		var integration = request.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('slatwallcms');
