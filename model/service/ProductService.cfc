@@ -1148,6 +1148,7 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public boolean function deleteProductListingPage(required any productListingPage){  
+		arguments.productListingPage.removeContent(); 
 		arguments.productListingPage.removeProduct(); 
 		return delete( arguments.productListingPage ); 
 	}	
