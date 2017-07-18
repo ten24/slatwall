@@ -131,17 +131,6 @@ class SWOrderItems{
 					.setCurrentPage(scope.paginator.getCurrentPage())
  					;
 
-					//add attributes to the column config
-					angular.forEach(scope.attributes,function(attribute){
-						var attributeColumn:any = {
-							propertyIdentifier:"_orderitem."+attribute.attributeCode,
-							attributeID:attribute.attributeID,
-					         attributeSetObject:"orderItem"
-						};
-						orderItemCollection.columns.push(attributeColumn);
-					});
-
-
 					var orderItemsPromise = orderItemCollection.getEntity();
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
