@@ -264,6 +264,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var queryString = '?r:price=20^100';
 		
 		collectionEntity.applyData(queryString);
+		debug(collectionEntity.getCollectionConfigStruct());
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
 		assertEquals(filter.comparisonOperator,'BETWEEN');
@@ -281,9 +282,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
-		assertEquals(filter.comparisonOperator,'BETWEEN');
-		assertEquals(filter.value,'20-');
-		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		assertEquals(filter.comparisonOperator,'>=');
+		assertEquals(filter.value,'20');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price >= ');
 		
 	}
 	/**
@@ -297,9 +298,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
-		assertEquals(filter.comparisonOperator,'BETWEEN');
-		assertEquals(filter.value,'-100');
-		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		assertEquals(filter.comparisonOperator,'<=');
+		assertEquals(filter.value,'100');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price <= ');
 	}
 	/**
 	* @test

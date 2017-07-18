@@ -632,7 +632,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(isValid('string',data[key])){
 				if (left(key, 3) == "fr:"){
 	
-					var prop = key.split(':')[2];
+					var prop = listToArray(key,':')[2];
 					
 					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 						var dataToFilterOn = data[key]; //value of the filter.
@@ -640,7 +640,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 						var comparison = "=";
 						try{
-							comparison = key.split(':')[3];
+							comparison = listToArray(key,':')[3];
 						}catch(any e){
 							comparison = "=";
 						}
@@ -677,14 +677,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//handle filters.
 				if (left(key, 2) == "f:"){
 	
-					var prop = key.split(':')[2];
+					var prop = listToArray(key,':')[2];
 					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 						var dataToFilterOn = data[key]; //value of the filter.
 		
 						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 						var comparison = "=";
 						try{
-							comparison = key.split(':')[3];
+							comparison = listToArray(key,':')[3];
 						}catch(any e){
 							comparison = "=";
 						}
@@ -733,7 +733,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						
 						for(var i=1; i <= arraylen(rangeValues);i++){
 							var rangeValue = rangeValues[i];
-							var rangeArray = rangeValue.split("^");
+							var rangeArray = listToArray(rangeValue,'^');
 							var rangeLen = 0;
 							if (isArray(rangeArray)){
 								rangeLen = arrayLen(rangeArray);
