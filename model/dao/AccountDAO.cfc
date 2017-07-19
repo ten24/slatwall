@@ -193,14 +193,17 @@ Notes:
 
 	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
-
-		<cfreturn ormExecuteQuery("
-			SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
+		<cfset var hql = "SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
 			INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea 
 			WHERE aa.password is not null 
 			AND lower(pea.emailAddress)=:emailAddress 
-			AND aa.activeFlag = true 
-			ORDER BY aa.createdDateTime DESC", {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
+			AND aa.activeFlag = true"
+		/>
+		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
+			<cfset hql &= "AND aa.integration.integrationID is null"/> 
+		</cfif>
+		<cfset hql &= "ORDER BY aa.createdDateTime DESC"/>
+		<cfreturn ormExecuteQuery(hql, {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
 	</cffunction>
 
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
