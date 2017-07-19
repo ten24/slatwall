@@ -174,6 +174,7 @@ Notes:
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
 								<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
+								<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
 							</hb:HibachiActionCallerDropdown>
 							<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
 							<cfif arrayLen(local.integrationSubsystems)>
