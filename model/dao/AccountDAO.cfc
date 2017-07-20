@@ -200,9 +200,9 @@ Notes:
 			AND aa.activeFlag = true"
 		/>
 		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
-			<cfset hql &= "AND aa.integration.integrationID is null"/> 
+			<cfset hql &= "AND aa.integration.integrationID is null "/> 
 		</cfif>
-		<cfset hql &= "ORDER BY aa.createdDateTime DESC"/>
+		<cfset hql &= " ORDER BY aa.createdDateTime DESC"/>
 		<cfreturn ormExecuteQuery(hql, {emailAddress=lcase(arguments.emailAddress)}, true, {maxResults=1}) />
 	</cffunction>
 
