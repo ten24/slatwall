@@ -642,7 +642,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(isValid('string',data[key])){
 			if (left(key, 3) == "fr:"){
 
-				var prop = key.split(':')[2];
+					var prop = listToArray(key,':')[2];
 					
 					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 				var dataToFilterOn = data[key]; //value of the filter.
@@ -650,7 +650,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 				var comparison = "=";
 				try{
-					comparison = key.split(':')[3];
+							comparison = listToArray(key,':')[3];
 				}catch(any e){
 					comparison = "=";
 				}
@@ -687,14 +687,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//handle filters.
 			if (left(key, 2) == "f:"){
 
-				var prop = key.split(':')[2];
+					var prop = listToArray(key,':')[2];
 					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 				var dataToFilterOn = data[key]; //value of the filter.
 
 				dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 				var comparison = "=";
 				try{
-					comparison = key.split(':')[3];
+							comparison = listToArray(key,':')[3];
 				}catch(any e){
 					comparison = "=";
 				}
@@ -743,12 +743,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 				for(var i=1; i <= arraylen(rangeValues);i++){
 					var rangeValue = rangeValues[i];
+							var rangeArray = listToArray(rangeValue,'^');
+							var rangeLen = 0;
+							if (isArray(rangeArray)){
+								rangeLen = arrayLen(rangeArray);
+							}
+							
+							if (rangeLen > 1){
 					var filterData = {
 						propertyIdentifier=prop,
 						value=replace(rangeValue,'^','-'),
 						comparisonOperator='BETWEEN',
 						ormtype=ormtype
 					};
+							}else if (rangeLen == 1 && left(rangeValue, 1) == "^"){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^',''),
+									comparisonOperator='<=',
+									ormtype=ormtype
+								};
+							}else if (rangeLen == 1 && right(rangeValue, 1) == "^"){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^',''),
+									comparisonOperator='>=',
+									ormtype=ormtype
+								};
+							}else{
+								//can't build because there is not enough range information.
+								return;
+							}
 
 					if(i > 1){
 						filterData.logicalOperator = 'OR';
@@ -1112,6 +1137,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
 	}
 
+	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
+		var totalFilterGroups = arrayLen(currentCollection);
+		for(var i =1; i <= totalFilterGroups; i++){
+			if(!ArrayIsDefined(baseCollection, i)){
+				baseCollection[i] = { "filterGroup" = []};
+			}
+			if(arraylen(baseCollection[i].filterGroup) && arraylen(currentCollection[i].filterGroup)){
+				currentCollection[i].filterGroup[1].logicalOperator = 'AND';
+			}
+			ArrayAppend(baseCollection[i].filterGroup, currentCollection[i].filterGroup, true);
+		}
+		return baseCollection;
+	}
 
 	public void function mergeJoins(required any baseJoins){
 		var currentCollection = getCollectionConfigStruct();
@@ -2051,7 +2089,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getPredicate(required any filter){
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
-			filter.value = "";
+			if(structKeyExists(filter,'ormtype') && filter.ormtype == 'string' && structKeyExists(filter,'displayValue')){
+				filter.value = filter.displayValue;
+			}else{
+				filter.value = "";
+			}
 		}
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){

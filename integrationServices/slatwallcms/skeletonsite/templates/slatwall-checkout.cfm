@@ -679,7 +679,7 @@ Notes:
 							
 							<!--- Loop over all of the eligible payment methods --->
 							<cfloop array="#eligiblePaymentMethods#" index="paymentDetails">
-								<li class="#getHibachiScope().getService('hibachiUtilityService').hibachiTernary(first, 'active', '')#"><a href="##tab#paymentDetails.paymentMethod.getPaymentMethodID()#" data-toggle="tab">Pay with #paymentDetails.paymentMethod.getPaymentMethodName()#</a></li>
+								<li class="#iif(first, de('active'), de(''))#"><a href="##tab#paymentDetails.paymentMethod.getPaymentMethodID()#" data-toggle="tab">Pay with #paymentDetails.paymentMethod.getPaymentMethodName()#</a></li>
 								<cfset first = false />
 							</cfloop>
 						</ul>
@@ -746,7 +746,7 @@ Notes:
 							<!--- Loop over all of the eligible payment methods --->
 							<cfloop array="#eligiblePaymentMethods#" index="paymentDetails">
 								
-								<div class="tab-pane#getHibachiScope().getService('hibachiUtilityService').hibachiTernary(first, ' active', '')#" id="tab#paymentDetails.paymentMethod.getPaymentMethodID()#">
+								<div class="tab-pane#iif(first, de(' active'), de(''))#" id="tab#paymentDetails.paymentMethod.getPaymentMethodID()#">
 									
 									<!--- EXTERNAL --->
 									<cfif paymentDetails.paymentMethod.getPaymentMethodType() eq "external">

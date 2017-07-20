@@ -4,7 +4,7 @@
         <span ng-show="swSkuPriceEdit.showPriceEdit">
             <sw-property-display
                     data-object="swSkuPriceEdit.sku"
-                    data-property="price"
+                    data-property-identifier="price"
                     data-in-listing-display="true"
                     data-editing="true"
                     data-editable="true"
@@ -27,7 +27,7 @@
             <sw-property-display
                     ng-if="!swSkuPriceEdit.skuPrice.data.inferred"
                     data-object="swSkuPriceEdit.skuPrice"
-                    data-property="price"
+                    data-property-identifier="price"
                     data-in-listing-display="true"
                     data-show-save="swSkuPriceEdit.showSave"
                     data-on-change="swSkuPriceEdit.updateSkuPrices()"

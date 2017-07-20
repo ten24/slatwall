@@ -51,7 +51,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// Slatwall specific request entity properties
 	property name="brand" type="any";
 	property name="cart" type="any";
-	property name="content" type="any";
 	property name="product" type="any";
 	property name="productType" type="any";
 	property name="address" type="any";
@@ -164,20 +163,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Display Route Entity
-	public any function getRouteEntity(entityName){
-		if (structKeyExists(variables, "routeEntity") && !isNull(arguments.entityName) && arrayLen(variables.routeEntity[arguments.entityName])) {
-			return variables.routeEntity[arguments.entityName][1];
+	public any function getRouteEntity(string entityName = ""){
+		if (
+			len(arguments.entityName)
+			&& structKeyExists(variables, "routeEntity") 
+			&& structKeyExists(variables.routEntity,arguments.entityName) 
+			&& !isNull(variables.routeEntity[arguments.entityName])
+		) {
+			arguments.entityName = lcase(arguments.entityName);
+			return variables.routeEntity[arguments.entityName];
 		}
 	}
 	
-	public any function setRouteEntity(entityName, entity) {
+	public any function setRouteEntity(required string entityName, any entity) {
 		if (!structKeyExists(variables, "routeEntity")){
 			variables.routeEntity = {};
 		}
+		arguments.entityName = lcase(arguments.entityName);
 		if (!structKeyExists(variables.routeEntity, "#arguments.entityName#")) {
-			variables.routeEntity[arguments.entityName] = [];
+			variables.routeEntity[arguments.entityName] = arguments.entity;
 		}
-		arrayAppend(variables.routeEntity[arguments.entityName], entity);
 	}
 	
 	// Site
@@ -248,6 +253,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return cookie.printQueue;
 	}
 	
+	// Adds a PrintID to the print queue.
+	public string function addToPrintQueue(required string printID) {
+		var cookieData = cookie.printQueue;
+		var newPrintQueue = listAppend(cookieData, printID);
+		getService('HibachiTagService').cfCookie('printQueue', newPrintQueue);
+	}
+	
 	// Clear Email & Print
 	public void function clearPrintQueue() {
 		getService('HibachiTagService').cfCookie('printQueue','');
@@ -261,10 +273,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// =================== JS helper methods  ===========================
 
 	public any function getAvailableAccountPropertyList() {
-		return "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+		return ReReplace("accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
 			primaryAddress.accountAddressID,
 			accountAddresses.accountAddressName,accountAddresses.accountAddressID,
-			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode, accountAddresses.address.name, accountAddresses.address.company, accountAddresses.address.phoneNumber, accountPaymentMethods.accountPaymentMethodID, accountPaymentMethods.creditCardLastFour, accountPaymentMethods.creditCardType, accountPaymentMethods.nameOnCreditCard, accountPaymentMethods.expirationMonth, accountPaymentMethods.expirationYear, accountPaymentMethods.accountPaymentMethodName";
+			accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalCode,accountAddresses.address.countrycode,accountAddresses.address.name,accountAddresses.address.company,accountAddresses.address.phoneNumber,accountPaymentMethods.accountPaymentMethodID,accountPaymentMethods.creditCardLastFour,accountPaymentMethods.creditCardType,accountPaymentMethods.nameOnCreditCard,accountPaymentMethods.expirationMonth,accountPaymentMethods.expirationYear,accountPaymentMethods.accountPaymentMethodName","[[:space:]]","","all");
 	}
 	
 	public any function getAccountData(string propertyList) {
@@ -295,7 +307,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 
 	public any function getAvailableCartPropertyList() {
-		return "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
+		return rereplace("orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,
 			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
@@ -303,15 +315,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderItems.sku.product.brand.brandName,
 			orderItems.sku.product.productType.productTypeName,
 			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
-			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
+			orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,orderFulfillments.fulfillmentMethod.fulfillmentMethodType,orderFulfillments.orderFulfillmentItems.sku.skuName,orderFulfillments.orderFulfillmentItems.sku.product.productName,
 			orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
-			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
+			orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalCode,orderFulfillments.shippingAddress.countrycode,
 			orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
-			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
-			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
-			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
-			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,
-			promotionCodes.promotionCode";
+			orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount, orderFulfillments.emailAddress,orderFulfillments.pickupLocation.locationID, orderFulfillments.pickupLocation.locationName, orderFulfillments.pickupLocation.primaryAddress.address.streetAddress, orderFulfillments.pickupLocation.primaryAddress.address.street2Address,
+			orderFulfillments.pickupLocation.primaryAddress.address.city, orderFulfillments.pickupLocation.primaryAddress.address.statecode, orderFulfillments.pickupLocation.primaryAddress.address.postalCode,
+			orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard, orderPayments.creditCardLastFour,orderPayments.purchaseOrderNumber,
+			orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalCode,orderPayments.billingAddress.countrycode,
+			orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName, orderPayments.giftCard.balanceAmount, orderPayments.giftCard.giftCardCode, promotionCodes.promotionCode,promotionCodes.promotion.promotionName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodName,eligiblePaymentMethodDetails.paymentMethod.paymentMethodType,eligiblePaymentMethodDetails.paymentMethod.paymentMethodID,eligiblePaymentMethodDetails.maximumAmount","[[:space:]]","");
 	}
 	
 	public any function getCartData(string propertyList) {
@@ -319,13 +331,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		var availablePropertyList = getAvailableCartPropertyList();
 		
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+		availablePropertyList = ListAppend(availablePropertyList, getService('OrderService').getOrderAttributePropertyList());
 		
 		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
 			arguments.propertyList = availablePropertyList;
 		}
-		
+
 		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
-		
+
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
 		data["errors"] = getCart().getErrors();
