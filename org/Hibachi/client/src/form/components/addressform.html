@@ -173,16 +173,16 @@
 				          	
 					        <div class="col-xs-7" ng-if="slatwall.addressOptions.addressOptions.stateCodeShowFlag && slatwall.states.stateCodeOptions && slatwall.states.stateCodeOptions.length">
 					            <swf-property-display 
-					            data-name="statecode" 
+					            data-name="stateCode" 
 					            data-class="form-control"
 					            data-field-type="select"
 					            data-select-type="string"
 					            data-edit="true"
-					            data-property-identifier="statecode"
+					            data-property-identifier="stateCode"
 					            data-object="SwAddressForm.address"
 					            data-label-text="{{(slatwall.addressOptions.addressOptions.stateCodeLabel || 'State')}}"
 					            data-options="slatwall.states.stateCodeOptions"
-					            ng-init="SwAddressForm.address.data.selectedstatecode = slatwall.getStateByStateCode(SwAddressForm.address.statecode)||''" >
+					            ng-init="SwAddressForm.address.data.selectedstateCode = slatwall.getStateByStateCode(SwAddressForm.address.stateCode)||''" >
 					            </swf-property-display>
 					        </div>
 							<!---

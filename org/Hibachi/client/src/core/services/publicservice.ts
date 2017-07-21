@@ -708,7 +708,7 @@ class PublicService {
             'newOrderPayment.expirationYear': billingAddress.selectedYear,
             'newOrderPayment.billingAddress.countrycode': billingAddress.countrycode,
             'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': billingAddress.statecode,
+            'newOrderPayment.billingAddress.stateCode': billingAddress.stateCode,
             'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
             'newOrderPayment.billingAddress.postalCode': billingAddress.postalCode,
             'newOrderPayment.securityCode': billingAddress.cvv,
@@ -814,7 +814,7 @@ class PublicService {
                 address1.street2Address == address2.street2Address &&
                 address1.city == address2.city &&
                 address1.postalCode == address2.postalCode &&
-                address1.statecode == address2.statecode &&
+                address1.stateCode == address2.stateCode &&
                 address1.countrycode == address2.countrycode)){
                 return true;
             }
