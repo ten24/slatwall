@@ -83,6 +83,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function getManyToOnePropertiesWhereCFCEqualsNameTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		makePublic(collectionEntity,'getManyToOnePropertiesWhereCFCEqualsName');
+		var manyToONeProperties = collectionEntity.getManyToOnePropertiesWhereCFCEqualsName();
+		
+		var orderOriginFound = false;
+		for(var item in manyToONeProperties){
+			if(item.cfc == 'OrderOrigin'){
+				orderOriginFound = true;
+			}
+		}
+		assert(orderOriginFound);
+	}
+	
+	/**
+	* @test
+	*/
 	public void function convertRelatedFilterGroupTest(){
 		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
 		

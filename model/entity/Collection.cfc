@@ -1737,6 +1737,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 	}
 	
+	private array function getManyToOnePropertiesWhereCFCEqualsName(){
+		var properties = getService('HibachiService').getPropertiesByEntityName(getCollectionObject());
+		var manyToOneProperties = [];
+		for(var prop in properties){
+			if(
+				structKeyExists(prop,'fieldtype') 
+				&& prop.fieldtype == 'many-to-one' 
+				&& prop.name == prop.cfc
+			){
+				arrayAppend(manyToOneProperties,prop);
+			}
+		}
+		
+		return manyToOneProperties;
+	}
+	
 	//this function probably can be astracted out to the service level for Direct Object Reference Checks
 	private void function applyPermissionRecordRestrictions(){
 		var objectPermissionsList = getCollectionObject();
@@ -1753,6 +1769,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					aliasMap[lastEntityName] = column.propertyIdentifier;
 				}
 			}
+		}
+		var manyToOneProperties = getManyToOnePropertiesWhereCFCEqualsName();
+		for(var prop in manyToOneProperties){
+			objectPermissionsList = listAppend(objectPermissionsList,prop.cfc);
+			aliasMap[prop.cfc] = prop.cfc;
 		}
 		
 		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
