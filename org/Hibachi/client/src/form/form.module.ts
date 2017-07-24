@@ -21,6 +21,8 @@ import {SWAddressForm} from "./components/swaddressform";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
+import {SWMultipleFileForm} from "./components/swmultiplefileform"; 
+import {SWFileUpload} from "./components/swfileupload"; 
 
 var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',coremodule.name]).config(()=>{
 
@@ -41,7 +43,10 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 .directive('swPropertyDisplay',SWPropertyDisplay.Factory(SWPropertyDisplay,"propertydisplay.html"))
 .directive('swErrorDisplay',SWErrorDisplay.Factory())
 .directive('swAddressForm',SWAddressForm.Factory())
-.directive('swFormSubscriber',SWFormSubscriber.Factory());
+.directive('swFormSubscriber',SWFormSubscriber.Factory())
+.directive('swMultipleFileForm',SWMultipleFileForm.Factory())
+.directive('swFileUpload',SWFileUpload.Factory())
+;
 export{
 	formmodule
 }

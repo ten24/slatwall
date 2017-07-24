@@ -17,21 +17,15 @@ class SWTypeaheadInputFieldController {
     public initialEntityId:string; 
     public searchText:string;
     public validateRequired:boolean;
-    public action:string;
-    public eventListeners;
-    public variables;
     private collectionConfig;
-    private $root;
     
     // @ngInject
 	constructor(private $scope,
                 private $transclude,
-                private collectionConfigService,
-                private $rootScope,
-                private observerService
+                private collectionConfigService
     ){
-        this.$root = $rootScope;
-
+        
+        
         if( angular.isUndefined(this.typeaheadCollectionConfig)){
             if(angular.isDefined(this.entityName)){
                 this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName);
@@ -66,25 +60,10 @@ class SWTypeaheadInputFieldController {
         if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.modelValue = this.initialEntityId;
         }
-
-        if(this.eventListeners){
-            for(var key in this.eventListeners){
-                observerService.attach(this.eventListeners[key], key)
-            }
-        }
     }
     
     public addFunction = (value:any) => {
-
-        this.modelValue = value[this.propertyToSave];
-        if(this.action){
-            var data = {};
-            if(this.variables){
-                data = this.variables();
-            }
-            data['value'] = this.modelValue;
-            this.$root.slatwall.doAction(this.action, data);
-        }
+        this.modelValue = value[this.propertyToSave]; 
     }
 
 }
@@ -107,10 +86,7 @@ class SWTypeaheadInputField implements ng.IDirective{
         initialEntityId:"@",
         allRecords:"=?",
         validateRequired:"=?", 
-        maxRecords:"@",
-        action:"@",
-        variables:'&?',
-        eventListeners:'=?'
+        maxRecords:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";

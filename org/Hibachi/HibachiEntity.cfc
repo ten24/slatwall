@@ -91,11 +91,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
         }
     }
+
     
     public string function getParentPropertyName(){
     	getService('hibachiService').getParentPropertyByEntityName(getClassName());
     }
     
+
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 
@@ -480,7 +482,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var propertyMeta = getPropertyMetaData( propertyName );
 
 			if(structKeyExists(propertyMeta, "hb_optionsNameProperty")) {
-				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|value");
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|name");
 			} else {
 				var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
 				collectionList.addDisplayProperty("#exampleEntity.getSimpleRepresentationPropertyName()#|name");
@@ -603,19 +605,29 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
 		if(!structKeyExists(variables, cacheKey)) {
+			var propertyMetaData = getPropertyMetaData(arguments.propertyName); 
 
-			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
-			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
+			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMetaData.cfc,'.') );
+			var collectionList = entityService.invokeMethod("get#listLast(propertyMetaData.cfc,'.')#CollectionList");
 
 			// Create an example entity so that we can read the meta data
-			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
+			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(propertyMetaData.cfc,'.')#");
+
 
 			// If its a one-to-many, then add filter
-			if(getPropertyMetaData( arguments.propertyName ).fieldtype == "one-to-many") {
+			if(propertyMetaData.fieldtype == "one-to-many") {
 				// Loop over the properties in the example entity to
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
-					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == propertyMetaData.fkcolumn ) {
 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
+					}
+				}	
+			} else if(propertyMetaData.fieldtype == "many-to-many"){
+				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "inversejoincolumn") && exampleEntity.getProperties()[i].inversejoincolumn == propertyMetaData.fkcolumn ) {
+						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
 					}
 				}
 			}

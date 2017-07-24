@@ -299,7 +299,7 @@ class SWEditFilterItem{
 
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
+                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
                                 //if has a pattern then we need to evaluate where to add % for like statement
 							    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
                                     filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;

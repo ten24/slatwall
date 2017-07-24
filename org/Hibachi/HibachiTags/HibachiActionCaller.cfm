@@ -31,7 +31,11 @@
 	--->
 	
 	<cfif attributes.icon neq "">
-		<cfset attributes.icon = '<i class="glyphicon glyphicon-#attributes.icon#"></i> ' />
+		<cfif left(attributes.icon,3) EQ "fa ">
+			<cfset attributes.icon = '<i class="#attributes.icon#"></i> ' />
+		<cfelse>
+			<cfset attributes.icon = '<i class="glyphicon glyphicon-#attributes.icon#"></i> ' />
+		</cfif>
 	</cfif>
 	
 	<cfset actionItem = listLast(attributes.action, ".") />
@@ -120,10 +124,6 @@
 					class="#attributes.class#" 
 					target="_self" 
 					href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
-					<cfif attributes.modal && not attributes.disabled>
-						 data-toggle="modal" 
-						 data-target="##adminModal"
-					</cfif>
 					<cfif attributes.disabled>
 						 data-disabled="#attributes.disabledtext#"
 					<cfelseif attributes.confirm> 
@@ -143,12 +143,6 @@
 						class="#attributes.class#" 
 						target="_self" 
 						href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"
-						<cfif attributes.modal 
-							&& not attributes.disabled
-						> 
-							data-toggle="modal" 
-							data-target="##adminModal"
-						</cfif>
 						<cfif attributes.disabled>
 							 data-disabled="#attributes.disabledtext#"
 						<cfelseif attributes.confirm>
@@ -169,10 +163,6 @@
 						<cfif len(attributes.name)> 
 							name="#attributes.name#" 
 							value="#attributes.action#"
-						</cfif>
-						<cfif attributes.modal && not attributes.disabled> 
-							data-toggle="modal" 
-							data-target="##adminModal"
 						</cfif>
 						<cfif attributes.disabled>
 							 data-disabled="#attributes.disabledtext#"

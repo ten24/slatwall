@@ -14,6 +14,7 @@ class SWFormFieldController {
 	public name;
 	public class;
 	public errorClass;
+	public type;
 	public option;
 	public valueObject;
 	public object;
@@ -21,11 +22,13 @@ class SWFormFieldController {
 	public labelText;
 	public labelClass;
 	public optionValues;
+	public edit;
 	public title;
 	public value;
 	public errorText;
 	public fieldType;
-	public edit:boolean;
+	public property;
+	public editing:boolean;
 	public selectedRadioFormName;
 	public form:ng.IFormController;
 	public options:any;
@@ -38,7 +41,6 @@ class SWFormFieldController {
 	public binaryFileTarget:string;
 	public optionsArguments:any;
 	public valueOptions:any;
-	public eventListeners:any;
 
 	//@ngInject
 	constructor(
@@ -57,39 +59,35 @@ class SWFormFieldController {
 		this.$hibachi = $hibachi;
 		this.observerService = observerService;
 		this.utilityService = utilityService;
-
 	}
 
 	public formFieldChanged = (option)=>{
         
 		if(this.fieldType === 'yesno'){
-			this.object.data[this.propertyIdentifier] = option.value;
+			this.object.data[this.property] = option.value;
 
-			this.form[this.propertyIdentifier].$dirty = true;
-			this.form['selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName].$dirty = false;
-		}else if(this.fieldType == 'checkbox'){
-			this.object.data[this.propertyIdentifier] = option.value;
-			this.form[this.propertyIdentifier].$dirty = true;
+			this.form[this.property].$dirty = true;
+			this.form['selected'+this.object.metaData.className+this.property+this.selectedRadioFormName].$dirty = false;
 		}else if(this.fieldType === 'select'){
 			this.$log.debug('formfieldchanged');
 			this.$log.debug(option);
-			if(this.selectType === 'object' && typeof this.object.data[this.propertyIdentifier].$$getIDName == "function" ){
-				this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = option.value;
-				if(angular.isDefined(this.form[this.object.data[this.propertyIdentifier].$$getIDName()])){
-					this.form[this.object.data[this.propertyIdentifier].$$getIDName()].$dirty = true;
+			if(this.selectType === 'object' && typeof this.object.data[this.property].$$getIDName == "function" ){
+				this.object.data[this.property]['data'][this.object.data[this.property].$$getIDName()] = option.value;
+				if(angular.isDefined(this.form[this.object.data[this.property].$$getIDName()])){
+					this.form[this.object.data[this.property].$$getIDName()].$dirty = true;
 				}
 			}else if(this.selectType === 'string' && option && option.value != null){
 
-				this.object.data[this.propertyIdentifier] = option.value;
-				this.form[this.propertyIdentifier].$dirty = true;
+				this.object.data[this.property] = option.value;
+				this.form[this.property].$dirty = true;
 			}
 
-			this.observerService.notify(this.object.metaData.className+this.propertyIdentifier.charAt(0).toUpperCase()+this.propertyIdentifier.slice(1)+'OnChange', option);
+			this.observerService.notify(this.object.metaData.className+this.property.charAt(0).toUpperCase()+this.property.slice(1)+'OnChange', option);
 		}else{
-			this.object.data[this.propertyIdentifier] = option.value;
+			this.object.data[this.property] = option.value;
 
-			this.form[this.propertyIdentifier].$dirty = true;
-			this.form['selected'+this.object.metaData.className+this.propertyIdentifier+this.selectedRadioFormName].$dirty = false;
+			this.form[this.property].$dirty = true;
+			this.form['selected'+this.object.metaData.className+this.property+this.selectedRadioFormName].$dirty = false;
 		}
 
 	};
@@ -108,8 +106,19 @@ class SWFormFieldController {
 			}
 		}
 
-		this.edit = this.edit || true;
+		this.property = this.property || this.propertyIdentifier;
+        this.propertyIdentifier = this.propertyIdentifier || this.property;
+
+        this.type = this.type || this.fieldType;
+        this.fieldType = this.fieldType || this.type;
+
+        this.edit = this.edit || this.editing;
+        this.editing = this.editing || this.edit;
+
+		this.editing = this.editing || true;
 		this.fieldType = this.fieldType || "text";
+
+
 
 		if(this.fieldType === 'yesno'){
 			this.yesnoStrategy();
@@ -120,18 +129,12 @@ class SWFormFieldController {
 			this.selectStrategy();
 		}
 
-		if(this.eventListeners){
-            for(var key in this.eventListeners){
-                this.observerService.attach(this.eventListeners[key], key)
-            }
-        }
-
 	}
 
 	public selectStrategy = ()=>{
 		//this is specific to the admin because it implies loading of options via api
 
-        if(angular.isDefined(this.object.metaData) && angular.isDefined(this.object.metaData[this.propertyIdentifier]) && angular.isDefined(this.object.metaData[this.propertyIdentifier].fieldtype)){
+        if(angular.isDefined(this.object.metaData[this.property].fieldtype)){
             this.selectType = 'object';
             this.$log.debug('selectType:object');
         }else{
@@ -145,9 +148,9 @@ class SWFormFieldController {
 
 
 		if(angular.isUndefined(this.options)){
-			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyIdentifier')){
+			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('property')){
 				this.optionsArguments={
-					'propertyIdentifier':this.propertyIdentifier
+					'property':this.propertyIdentifier || this.property
 				};
 			}
 
@@ -160,58 +163,58 @@ class SWFormFieldController {
 				if(this.selectType === 'object'
 				){
 
-					if(angular.isUndefined(this.object.data[this.propertyIdentifier])){
-						this.object.data[this.propertyIdentifier] = this.$hibachi['new'+this.object.metaData[this.propertyIdentifier].cfc]();
+					if(angular.isUndefined(this.object.data[this.property])){
+						this.object.data[this.property] = this.$hibachi['new'+this.object.metaData[this.property].cfc]();
 					}
 
-					if(this.object.data[this.propertyIdentifier].$$getID() === ''){
+					if(this.object.data[this.property].$$getID() === ''){
 						this.$log.debug('no ID');
-						this.$log.debug(this.object.data[this.propertyIdentifier].$$getIDName());
-						this.object.data['selected'+this.propertyIdentifier] = this.options[0];
-						this.object.data[this.propertyIdentifier] = this.$hibachi['new'+this.object.metaData[this.propertyIdentifier].cfc]();
-						this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = this.options[0].value;
+						this.$log.debug(this.object.data[this.property].$$getIDName());
+						this.object.data['selected'+this.property] = this.options[0];
+						this.object.data[this.property] = this.$hibachi['new'+this.object.metaData[this.property].cfc]();
+						this.object.data[this.property]['data'][this.object.data[this.property].$$getIDName()] = this.options[0].value;
 					}else{
 						var found = false;
 						for(var i in this.options){
 							if(angular.isObject(this.options[i].value)){
 								this.$log.debug('isObject');
-								this.$log.debug(this.object.data[this.propertyIdentifier].$$getIDName());
-								if(this.options[i].value === this.object.data[this.propertyIdentifier]){
-									this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-									this.object.data[this.propertyIdentifier] = this.options[i].value;
+								this.$log.debug(this.object.data[this.property].$$getIDName());
+								if(this.options[i].value === this.object.data[this.property]){
+									this.object.data['selected'+this.property] = this.options[i];
+									this.object.data[this.property] = this.options[i].value;
 									found = true;
 									break;
 								}
 							}else{
 								this.$log.debug('notisObject');
-								this.$log.debug(this.object.data[this.propertyIdentifier].$$getIDName());
-								if(this.options[i].value === this.object.data[this.propertyIdentifier].$$getID()){
-									this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-									this.object.data[this.propertyIdentifier]['data'][this.object.data[this.propertyIdentifier].$$getIDName()] = this.options[i].value;
+								this.$log.debug(this.object.data[this.property].$$getIDName());
+								if(this.options[i].value === this.object.data[this.property].$$getID()){
+									this.object.data['selected'+this.property] = this.options[i];
+									this.object.data[this.property]['data'][this.object.data[this.property].$$getIDName()] = this.options[i].value;
 									found = true;
 									break;
 								}
 							}
 							if(!found){
-								this.object.data['selected'+this.propertyIdentifier] = this.options[0];
+								this.object.data['selected'+this.property] = this.options[0];
 							}
 						}
 
 					}
 				}else if(this.selectType === 'string'){
 
-					if(this.object.data[this.propertyIdentifier] !== null){
+					if(this.object.data[this.property] !== null){
 						for(var i in this.options){
-							if(this.options[i].value === this.object.data[this.propertyIdentifier]){
-								this.object.data['selected'+this.propertyIdentifier] = this.options[i];
-								this.object.data[this.propertyIdentifier] = this.options[i].value;
+							if(this.options[i].value === this.object.data[this.property]){
+								this.object.data['selected'+this.property] = this.options[i];
+								this.object.data[this.property] = this.options[i].value;
 							}
 						}
 
 					}else{
 
-						this.object.data['selected'+this.propertyIdentifier] = this.options[0];
-						this.object.data[this.propertyIdentifier] = this.options[0].value;
+						this.object.data['selected'+this.property] = this.options[0];
+						this.object.data[this.property] = this.options[0].value;
 					}
 
 				}
@@ -223,11 +226,11 @@ class SWFormFieldController {
 	public yesnoStrategy = ()=>{
 		//format value
 		this.selectedRadioFormName = this.utilityService.createID(26);
-		this.object.data[this.propertyIdentifier] = (
-			this.object.data[this.propertyIdentifier]
-			&& this.object.data[this.propertyIdentifier].length
-			&& this.object.data[this.propertyIdentifier].toLowerCase().trim() === 'yes'
-		) || this.object.data[this.propertyIdentifier] == 1 ? 1 : 0;
+		this.object.data[this.property] = (
+			this.object.data[this.property]
+			&& this.object.data[this.property].length
+			&& this.object.data[this.property].toLowerCase().trim() === 'yes'
+		) || this.object.data[this.property] == 1 ? 1 : 0;
 
 		this.options = [
 			{
@@ -240,21 +243,21 @@ class SWFormFieldController {
 			}
 		];
 
-		if(angular.isDefined(this.object.data[this.propertyIdentifier])){
+		if(angular.isDefined(this.object.data[this.property])){
 
 			for(var i in this.options){
-				if(this.options[i].value === this.object.data[this.propertyIdentifier]){
+				if(this.options[i].value === this.object.data[this.property]){
 					this.selected = this.options[i];
-					this.object.data[this.propertyIdentifier] = this.options[i].value;
+					this.object.data[this.property] = this.options[i].value;
 				}
 			}
 		}else{
 			this.selected = this.options[0];
-			this.object.data[this.propertyIdentifier] = this.options[0].value;
+			this.object.data[this.property] = this.options[0].value;
 		}
 
 		this.$timeout(()=>{
-			this.form[this.propertyIdentifier].$dirty = this.isDirty;
+			this.form[this.property].$dirty = this.isDirty;
 		});
 	}
 }
@@ -273,11 +276,11 @@ class SWFormField{
 	public controllerAs = "swFormField";
 	public scope = {};
 	public bindToController = {
-		propertyIdentifier: "@?", property:"@?",
+		propertyIdentifier: "@?",
 		name : "@?",
 		class: "@?",
 		errorClass: "@?",
-		fieldType: "@?", type: "@?",
+		type: "@?",
 		option: "=?",
 		valueObject: "=?",
 		object: "=?",
@@ -289,6 +292,8 @@ class SWFormField{
 		title: 	"@?",
 		value: 	"=?",
 		errorText: "@?",
+		fieldType: "@?",
+		property:"@?",
 		inListingDisplay:"=?", 
 		inputAttributes:"@?",
 		options:"=?",
@@ -299,9 +304,8 @@ class SWFormField{
         isDirty:"=?",
         onChange:"=?",
 		editable:"=?",
-		eventListeners:"=?",
-		context:"@?",
-		eventAnnouncers:"@"
+		eventHandlers:"@?",
+		context:"@?"
 	};
 
 	//@ngInject

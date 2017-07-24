@@ -9,9 +9,6 @@ class Account extends BaseEntity{
     public firstName:string;
     public lastName:string;
     public entity:any;
-    public processObjects:any;
-    public accountAddresses:Array<any>;
-    public accountPaymentMethods:Array<any>;
 
     constructor($injector){
         super($injector);

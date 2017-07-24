@@ -32,6 +32,7 @@ class SWListingDisplayController{
     public expandableRules = [];
     public exampleEntity:any = "";
     public exportAction;
+    public fallbackPropertiesToCompare:string; 
     public filters = [];
     public filterGroups = [];
     public isAngularRoute:boolean;
@@ -106,7 +107,6 @@ class SWListingDisplayController{
         public rbkeyService
     ){
 
-
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -172,7 +172,7 @@ class SWListingDisplayController{
             );
         }else if(this.multiSlot == false){
 
-        	this.setupCollectionPromise();
+            this.setupCollectionPromise();
             
         }
         
@@ -180,35 +180,61 @@ class SWListingDisplayController{
              this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+        this.observerService.attach(this.doListingAction,'swListingAction');
     }
     
     public getCollectionByPagination = (state) =>{
-        if(state.type){
+        if(state.type && state.payload != undefined && typeof state.payload === 'object' && state.payload.paginatorUUID == this.paginator.uuid){
             switch(state.type){
                 case 'setCurrentPage':
-                    this.collectionConfig.currentPage = state.payload;
+                    this.collectionConfig.currentPage = state.payload.currentPage;
                     break;
                 case 'nextPage':
-                    this.collectionConfig.currentPage = state.payload;
+                    this.collectionConfig.currentPage = state.payload.currentPage;
                     break;
                 case 'prevPage':
-                    this.collectionConfig.currentPage = state.payload;
+                    this.collectionConfig.currentPage = state.payload.currentPage;
                     break;
                 case 'setPageShow':
                     this.collectionConfig.currentPage = 1;
-                    this.collectionConfig.setPageShow(state.payload);
+                    this.collectionConfig.setPageShow(state.payload.pageShow);
                     break;
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
+                data['paginatorUUID'] = this.paginator.uuid;
                 this.observerService.notify('swPaginationUpdate',data);
             });
-            
         }
-        
     }
-    
+
+    public doListingAction = (state) =>{
+        if(state.type && this.name == state.payload.listingName){
+            switch(state.type){
+                case 'addFilter':
+                    this.collectionConfig.addFilter(
+                        state.payload.filter.propertyIdentifier,
+                        state.payload.filter.comparisonOperator,
+                        state.payload.filter.logicalOperator
+                    );
+                    break;
+                case 'upsertFilterGroup':
+                    this.collectionConfig.upsertFilterGroup(state.payload.filterGroupName, state.payload.filterGroup);
+                    break;
+            }
+            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+                this.collectionData = data;
+                data['paginatorUUID'] = this.paginator.uuid;
+                this.observerService.notify('swPaginationUpdate',data);
+            });
+
+        }
+
+    }
+
     private setupCollectionPromise=()=>{
+        this.listingService.initCollectionConfigData(this.tableID);
+
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
             
@@ -470,6 +496,10 @@ class SWListingDisplayController{
         this.isCurrentPageRecordsSelected = false;
     };
 
+    public replaceStringWithProperties=(data,context)=>{
+        return this.utilityService.replaceStringWithProperties(data,context);
+    }
+
     public selectCurrentPageRecords=()=>{
         this.listingService.selectCurrentPageRecords(this.tableID);
     };
@@ -575,7 +605,7 @@ class SWListingDisplay implements ng.IDirective{
             sortContextIDValue:"@?",
 
             /*Single Select*/
-            selectFiledName:"@?",
+            selectFieldName:"@?",
             selectValue:"@?",
             selectTitle:"@?",
 
@@ -584,6 +614,8 @@ class SWListingDisplay implements ng.IDirective{
             multiselectPropertyIdentifier:"@?",
             multiselectIdPaths:"@?",
             multiselectValues:"@?",
+
+            fallbackPropertiesToCompare:"@?",
 
             /*Helper / Additional / Custom*/
             tableattributes:"@?",
