@@ -54,6 +54,7 @@ component entityname="SlatwallPermissionRecordRestriction" table="SwPermissionRe
 	// Persistent Properties
 	property name="permissionRecordRestrictionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="permissionRecordRestrictionName" column="permRecordRestrictionName" ormtype="string";
+	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="restrictionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	// Related Object Properties (many-to-one)
 	property name="permission" cfc="Permission" fieldtype="many-to-one" fkcolumn="permissionID";
@@ -74,7 +75,6 @@ component entityname="SlatwallPermissionRecordRestriction" table="SwPermissionRe
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="collectionConfig" persistent="false";
 
 	property name="collectionConfigStruct" persistent="false";
 
