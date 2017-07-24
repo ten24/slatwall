@@ -210,7 +210,7 @@ component extends="FW1.framework" {
 
 			// Verify that the application is setup
 			verifyApplicationSetup();
-
+			
 			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
 			}else{
@@ -220,9 +220,9 @@ component extends="FW1.framework" {
 					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
 					serverInstance.setSettingsExpired(false);
 					getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-				}
+				}	
 			}
-
+			
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 
@@ -230,7 +230,7 @@ component extends="FW1.framework" {
 			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
 				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
 			}
-
+			
 			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
 			if(
 				structKeyExists(httpRequestData, "headers") &&
@@ -241,16 +241,16 @@ component extends="FW1.framework" {
 
 				var accessKey 		= httpRequestData.headers["Access-Key"];
 				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
-
+				
 				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
 				var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
+				
 				// If an account was found, then set that account in the session for this request.  This should not persist
 				if (!isNull(accessKeyAccount)){
 					getHibachiScope().getSession().setAccount( accessKeyAccount );
 					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
-			}
+			} 
 
 			//check if we have the authorization header
 			if(len(AuthToken)){
@@ -260,18 +260,18 @@ component extends="FW1.framework" {
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
 				var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
+				
 				if(jwt.verify()){
-
+					
 					var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
 					if(!isNull(jwtAccount)){
 						jwtAccount.setJwtToken(jwt);
 						getHibachiScope().getSession().setAccount( jwtAccount );
 					}
 				}
-
+		
 			}
-
+			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -343,7 +343,7 @@ component extends="FW1.framework" {
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
-
+		
 		if(
 			!authorizationDetails.authorizedFlag
 		) {
@@ -428,7 +428,7 @@ component extends="FW1.framework" {
 		// Setup a $ in the request context, and the hibachiScope shortcut
 		request.context.fw = getHibachiScope().getApplicationValue("application");
 		request.context.$ = {};
-		request.context.$.Hibachi = getHibachiScope();
+		request.context.$.Hibachi = getHibachiScope();	
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
@@ -458,14 +458,14 @@ component extends="FW1.framework" {
 		// Announce the applicatoinRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestStart");
 	}
-
+	
 	public boolean function hasReloadKey(){
-		return structKeyExists(url, variables.framework.reload)
+		return structKeyExists(url, variables.framework.reload) 
 		&& url[variables.framework.reload] == variables.framework.password;
 	}
-
+	
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
-
+		
 		if(
 			(
 				hasReloadKey()
@@ -478,7 +478,7 @@ component extends="FW1.framework" {
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="600"  {
-
+				
 				// Set the request timeout to 600
 				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
 
@@ -666,17 +666,17 @@ component extends="FW1.framework" {
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-
-					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup
+					
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
 						&& (
-							!structKeyExists(server,'runFullUpdate')
+							!structKeyExists(server,'runFullUpdate') 
 							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
 						)
 					);
 					if(
-						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm')
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
 						|| (
-							structKeyExists(url, variables.framework.hibachi.fullUpdateKey)
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
 							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
 						)
 						|| runFullUpdate
@@ -715,21 +715,21 @@ component extends="FW1.framework" {
 					getBeanFactory().getBean('hibachiJsonService').createJson();
 
 					//===================== END: JSON BUILD SETUP =========================
-
+					
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
-
+					
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getServerInstanceIPAddress());
+						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getServerInstanceIPAddress());						
 					}else{
-
+						
 						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
 						serverInstance.setServerInstanceExpired(false);
 						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 					}
-
+					
 					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
-
+					
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Setup Complete");
@@ -756,7 +756,7 @@ component extends="FW1.framework" {
 			}
 		}
 	}
-
+	
 	public string function getServerInstanceIPAddress(){
 		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();
 	}
@@ -815,6 +815,7 @@ component extends="FW1.framework" {
 		if(request.context.apiRequest) {
 			renderApiResponse();
 		}
+
 		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			populateAPIHeaders();
@@ -873,7 +874,7 @@ component extends="FW1.framework" {
 
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
-
+		
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
