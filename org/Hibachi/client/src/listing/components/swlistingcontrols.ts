@@ -42,6 +42,10 @@ class SWListingControlsController {
         if(angular.isDefined(this.tableId)){
             this.listingColumns = this.listingService.getListingColumns(this.tableId);
         }
+        console.log('simple',this.simple,angular.isUndefined(this.simple));
+        if(angular.isUndefined(this.simple)){
+            this.simple = true;
+        }
 
 
         this.filterPropertiesList = {};
@@ -122,7 +126,9 @@ class SWListingControlsController {
     public toggleFilters = ()=>{
         if(this.filtersClosed) {
             this.filtersClosed = false;
-            this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+            if(this.simple){
+                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+            }
         }
     };
 
@@ -132,7 +138,11 @@ class SWListingControlsController {
     };
 
     public saveCollection = ()=>{
-        this.getCollection()();
+        this.getCollection();
+        var data = {
+            collectionConfig:this.collectionConfig
+        };
+        this.observerService.notify('saveCollection',data);
     };
 
 }
@@ -151,7 +161,8 @@ class SWListingControls  implements ng.IDirective{
         getCollection : "&",
         showFilters : "=?",
         showToggleFilters : "=?",
-        showToggleDisplayOptions : "=?"
+        showToggleDisplayOptions : "=?",
+        simple:"=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';

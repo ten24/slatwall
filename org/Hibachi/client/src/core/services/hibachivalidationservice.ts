@@ -88,6 +88,7 @@ class HibachiValidationService{
                             if(angular.isDefined(entityInstance.metaData[key])
                             && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
                             && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+
                                 modifiedData[key] = angular.toJson(inputField.$modelValue);
                             }else{
                                 modifiedData[key] = inputField.$modelValue;
@@ -101,7 +102,8 @@ class HibachiValidationService{
                 }
 
             }
-        }
+		}
+
         modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
         this.$log.debug(modifiedData);
 

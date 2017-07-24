@@ -5,23 +5,27 @@ class SWFilterGroups{
 		var directive = (
 			$log,
 			collectionPartialsPath,
-			hibachiPathBuilder
+			hibachiPathBuilder,
+			observerService
 		)=> new SWFilterGroups(
 			$log,
 			collectionPartialsPath,
-			hibachiPathBuilder
+			hibachiPathBuilder,
+			observerService
 		);
 		directive.$inject = [
 			'$log',
 			'collectionPartialsPath',
-			'hibachiPathBuilder'
+			'hibachiPathBuilder',
+			'observerService'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
 		collectionPartialsPath,
-		hibachiPathBuilder
+		hibachiPathBuilder,
+		observerService
 	){
 		return {
 			restrict: 'EA',
@@ -62,6 +66,7 @@ class SWFilterGroups{
 
 				this.saveCollection = function(){
 					$scope.saveCollection();
+
 				};
 
 				$scope.deselectItems = function(filterItem){
@@ -71,6 +76,7 @@ class SWFilterGroups{
 				};
 
 				this.removeFilterItem = function(filterItemIndex){
+					console.log('removeFilterItem',filterItemIndex);
 					if(angular.isDefined(filterItemIndex)){
 
 						$scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
