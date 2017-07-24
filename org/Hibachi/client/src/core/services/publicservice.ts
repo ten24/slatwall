@@ -964,8 +964,7 @@ class PublicService {
         if(!this.billingAddressEditFormIndex && this.errors && this.hasFailureAction('addBillingAddress')){
             let addressProperties = this.$hibachi.newAddress().data;
             for(let property in this.errors){
-                console.log(property);
-                console.log(addressProperties.hasOwnProperty(property));
+                
                 if(addressProperties.hasOwnProperty(property)){
 
                     this.addBillingAddressErrors = this.addBillingAddressErrors || [];
