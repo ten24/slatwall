@@ -61,7 +61,9 @@ class PublicService {
     public imagePath:{[key:string]:any}={};
     public successfulActions = [];
     public failureActions = [];
-    public hibachiConfig:any;
+    public addBillingAddressErrors;
+    public uploadingFile;
+    public orderItem;
 
     ///index.cfm/api/scope/
 
@@ -292,7 +294,7 @@ class PublicService {
 
         if (!action) {throw "Action is required exception";}
 
-        var urlBase = hibachiConfig.baseURL;
+        var urlBase = this.appConfig.baseURL;
 
         //check if the caller is defining a path to hit, otherwise use the public scope.
         if (action.indexOf(":") !== -1){
@@ -343,7 +345,7 @@ class PublicService {
             this.uploadingFile = true;
         });
 
-        let url = hibachiConfig.baseURL + action;
+        let url = this.appConfig.baseURL + action;
 
         let formData = new FormData();
 
@@ -367,7 +369,7 @@ class PublicService {
         xhr.send(formData);
     }
 
-    private processAction = (response,request:PublicRequest)=>{
+        private processAction = (response,request:PublicRequest)=>{
         //Run any specific adjustments needed
         this.runCheckoutAdjustments(response);
 
@@ -734,10 +736,10 @@ class PublicService {
         return (paymentMethod.accountPaymentMethodName || paymentMethod.nameOnCreditCard) + ' - ' + paymentMethod.creditCardType + ' *' + paymentMethod.creditCardLastFour + ' exp. ' + ('0' + paymentMethod.expirationMonth).slice(-2) + '/' + paymentMethod.expirationYear.toString().slice(-2)
     }
 
-    public getOrderItemSkuIDs = () =>{
-        return this.cart.orderItems.map(item=>{
-            return item.skuID;
-        })
+    public getOrderItemSkuIDs = (cart) =>{
+        return cart.orderItems.map(item=>{
+            return item.sku.skuID;
+        }).join(',');
     }
 
     public getResizedImageByProfileName = (profileName, skuIDs)=>{
@@ -845,12 +847,12 @@ class PublicService {
 
     public showPaymentTabBody = ()=> {
         if(!this.hasAccount()) return false;
-        if ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
+        if (((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-            (this.cart.orderRequirementsList.indexOf('payment') != -1) && !this.edit ||
-            (this.cart.orderRequirementsList.indexOf('account') == -1) &&
+            (this.cart.orderRequirementsList.indexOf('payment') != -1) && !this.edit) ||
+            ((this.cart.orderRequirementsList.indexOf('account') == -1) &&
             (this.cart.orderRequirementsList.indexOf('fulfillment') == -1) &&
-            (this.edit == 'payment')) {
+            (this.edit == 'payment'))) {
             return true;
         }
         return false;
@@ -953,12 +955,27 @@ class PublicService {
 
     /** Returns errors from addOrderPayment request. */
     public addOrderPaymentError = () =>{
-        return this.cart.errors.addOrderPayment || this.errors ? this.errors['ADDORDERPAYMENT'] : false;
+        return this.cart.errors.addOrderPayment || (angular.isDefined(this.errors) ? this.errors['ADDORDERPAYMENT'] : false);
     }
 
     /** Returns errors from addBillingAddress request. */
     public addBillingAddressError = () =>{
-        return this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
+        this.addBillingAddressErrors = this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
+        if(!this.billingAddressEditFormIndex && this.errors && this.hasFailureAction('addBillingAddress')){
+            let addressProperties = this.$hibachi.newAddress().data;
+            for(let property in this.errors){
+                console.log(property);
+                console.log(addressProperties.hasOwnProperty(property));
+                if(addressProperties.hasOwnProperty(property)){
+
+                    this.addBillingAddressErrors = this.addBillingAddressErrors || [];
+
+                    this.errors[property].forEach((error)=>{
+                        this.addBillingAddressErrors.push(error);
+                    })
+                }
+            }
+        }
     }
 
     /** Returns errors from addGiftCard request. */
@@ -1163,7 +1180,7 @@ class PublicService {
     }
 
     public shippingUpdateSuccess = () =>{
-        return this.hasSuccessfulAction('addShippingAddressUsingAccountAddress,updateAddress,addShippingAddress');
+        return this.hasSuccessfulAction('addShippingAddressUsingAccountAddress,addShippingAddress');
     }
 
     public shippingMethodUpdateSuccess = () =>{
