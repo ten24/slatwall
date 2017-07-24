@@ -118,8 +118,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"propertyIdentifier":"accountID"
 				}
 			]
-			
-
 		};
 		
 		collectionConfig['filterGroups'] = filterGroups;
