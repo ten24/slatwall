@@ -142,17 +142,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		collectionEntity.addFilter('orderID',order.getOrderID(),'=');
 		
 		
-		var restrictionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()['filterGroups']); 
+		var collectionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()); 
 		var permissionRecordRestrictionData = {
 			permissionRecordRestrictionID="",
 			permission={
 				permissionID=permission.getPermissionID()
-			},
-			restrictionConfig=restrictionConfig
+			}
 		};
 		var permissionRecordRestriction = createPersistedTestEntity('PermissionRecordRestriction',permissionRecordRestrictionData);
+		
+		
 		permission.addPermissionRecordRestriction(permissionRecordRestriction);
 		permissionRecordRestriction.setPermission(permission);
+		
+		permissionRecordRestriction.setCollectionConfig(collectionConfig);
+		
 		PersistTestEntity(permissionRecordRestriction,{});
 		assert(!isNull(permissionRecordRestriction.getPermission()));
 		assert(permissionRecordRestriction.getPermission().getEntityClassName() == 'Order');
@@ -172,7 +176,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(arraylen(permissionRecordRestrictions),1);
 		//verify that we have refined the list based on restrictions
-		
+		debug(permissionRecordRestriction.getRestrictionConfig());
+		debug(allDataCollection.getHQL());	
+		debug(arraylen(allDataCollection.getRecords(true)));
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		
 		
@@ -207,7 +213,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemRecords = orderItemCollectionList.getRecords(true);
 		//verify that when records was applied that our order record permissions are also applied if our display options include order data
 		
-		assertEquals(arraylen(orderItemRecords),1);		
+		
+		assertEquals(arraylen(orderItemRecords),1);	
 		
 	}
 	
