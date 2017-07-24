@@ -32,6 +32,14 @@ class ListingService{
         return listingID + "initiated"; 
     }
 
+    public getListingUpdateMultiSelectEventString = (listingID:string) =>{
+        return this.getListing(listingID).defaultSelectEvent;
+    }
+
+    public notifyListingUpdateMultiSelect = (listingID:string, data?) =>{
+        this.observerService.notify(this.getListingUpdateMultiSelectEventString(listingID), data);
+    }
+
     public notifyListingPageRecordsUpdate = (listingID:string) =>{
         this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID), listingID);
     }
@@ -40,8 +48,12 @@ class ListingService{
         this.observerService.attach(callback, this.getListingPageRecordsUpdateEventString(listingID), id);
     }
 
-    public attachToOrderByChangedUpdate = (listingID:string, callback, id:string) =>{
-        this.observerService.attach(callback, this.getListingOrderByChangedEventString(listingID), id);
+    public attachToOrderByChangedUpdate = (listingID:string, callback) =>{
+        this.observerService.attach(callback, this.getListingOrderByChangedEventString(listingID));
+    }
+
+    public attachToListingUpdateMultiSelect = (listingID:string, callback, id:string=this.utilityService.createID(32)) =>{
+        this.observerService.attach(callback,this.getListingUpdateMultiSelectEventString(listingID),this.getListing(listingID).collectionObject);
     }
 
     public attachToListingInitiated = (listingID:string, callback) =>{
@@ -130,6 +142,10 @@ class ListingService{
         return this.getListing(listingID).getCollection(); 
     }
 
+    public getFallbackPropertiesToCompare = (listingID:string) =>{
+         return this.getListing(listingID).fallbackPropertiesToCompare;
+    }
+
     public getPageRecordsWithManualSortOrder = (listingID:string) =>{
         if( angular.isDefined(this.getListing(listingID)) && this.getListingPageRecords(listingID) != null ){
             var pageRecords = this.getListingPageRecords(listingID); 
@@ -174,11 +190,20 @@ class ListingService{
         var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID); 
         for(var j = 0; j < pageRecords.length; j++){
             var pageRecord = pageRecords[j]; 
-            if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
+            if(pageRecord[primaryIDPropertyName] == null || pageRecordToCompare[primaryIDPropertyName] == null){
+                //check fallback property options
+                var fallbackPropertiesToCompare = this.getFallbackPropertiesToCompare(listingID).split(',');
+                for(var k = 0; k < fallbackPropertiesToCompare.length; k++){
+                    if(pageRecord[fallbackPropertiesToCompare[k]] == pageRecordToCompare[fallbackPropertiesToCompare[k]]){
                 return j; 
             }
         }
-        return -1; 
+            } else if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
+                return j;
+            }
+
+        }
+        return -1;
     }
 
     public insertListingPageRecord = (listingID:string, pageRecord:any) =>{
@@ -192,9 +217,13 @@ class ListingService{
     public removeListingPageRecord = (listingID:string, pageRecord) =>{
         var pageRecords = this.getListingPageRecords(listingID); 
         if(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord) != -1){
-            this.notifyListingPageRecordsUpdate(listingID); 
-            return pageRecords.splice(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord), 1)[0];//this will always be an array of one element 
+            return this.removeListingPageRecordByIndex(listingID,this.getListingPageRecordIndexByPageRecord(listingID, pageRecord));
         }
+    }
+
+    public removeListingPageRecordByIndex = (listingID:string, index:number) =>{
+         this.notifyListingPageRecordsUpdate(listingID);
+         return this.getListingPageRecords(listingID).splice(index, 1)[0];//this will always be an array of one element
     }
 
     public getPageRecordKey = (propertyIdentifier)=>{
@@ -375,7 +404,9 @@ class ListingService{
         }
         if(this.getListing(listingID).multiSlot == false){
         	this.$timeout(()=>{
+                var joinsCopy = angular.copy(this.getListing(listingID).collectionConfig.joins);
             this.getListing(listingID).collectionConfig.loadJson(this.getListing(listingID).collectionData.collectionConfig);
+                this.getListing(listingID).collectionConfig.joins = joinsCopy;
             this.getListing(listingID).columns = this.getListing(listingID).collectionConfig.columns;
         	});
         }
@@ -611,6 +642,8 @@ class ListingService{
 
             //attach observer so we know when a selection occurs
             this.getListing(listingID).observerService.attach(this.getListing(listingID).updateMultiselectValues,this.getListing(listingID).defaultSelectEvent,this.getListing(listingID).collectionObject);
+
+            this.attachToListingUpdateMultiSelect(listingID,this.getListing(listingID).updateMultiselectValues)
 
             //attach observer so we know when a pagination change occurs
             this.getListing(listingID).observerService.attach(this.getListing(listingID).paginationPageChange,'swPaginationAction');

@@ -124,13 +124,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+paramString;
 				config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+paramString;
 				config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+paramString;
-				config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+paramString;
-				
+                //allow override via attributes
 				var editor = CKEDITOR.replace( v, config);
 				
-				CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
-				//allow override via attributes
-			}
+				config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+paramString;
+                if(typeof(CKFinder) != "undefined") {
+                    //allow override via attributes
+                    CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
+			    }
+            }
 		});
 	
 		// Tooltips
@@ -386,42 +388,54 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		// Modal Loading
 		jQuery('body').on('click', '.modalload', function(e){
-	
+            e.preventDefault();
+
+            jQuery('body').addClass('slideout');
 			var modalLink = initModal( jQuery(this) );
 	
 			jQuery.ajax({
 				url:modalLink,
 				method:'get',
 				success: function(response){
-					jQuery('#adminModal').modal();
-					
-					var elem = angular.element(document.getElementById('ngApp'));
-				    var injector = elem.injector();
-				    var $compile = injector.get('$compile'); 
-				    var $rootScope = injector.get('$rootScope'); 
-				    
-				    jQuery('#adminModal').html($compile(response)($rootScope));
-					initUIElements('#adminModal');
-					
-					jQuery('#adminModal').css({
-						'width': 'auto'
-					});
-					
-					jQuery('#adminModal input').each(function(index,input){
-						//used to digest previous jquery value into the ng-model
-						jQuery(input).trigger('input');
-					});
+                    appendHtmlToModal(response);
 				},
 				error:function(response,status){
 					//returns 401 in the case of unauthorized access and boots to the appropriate login page
 					//Hibachi.cfc 308-311
-					if(response.status == 401){
-						window.location.href = "/?slataction=" + response.statusText;
+					if(response.status == 401 || response.status == 403){
+						window.location.href = "/?hibachiAction=" + response.statusText;
+					}else{
+                        jQuery('#adminModal').html('<div class="wrapper"> <header class="header"> <div class="col-xs-7 clearfix"> <h3>Oops!</h3> </div> <div class="col-xs-5"> <div class="actions clearfix"> </div> </div> <i class="fa fa-close"></i> </header> <div class="main-content"> <div class="ajax_loader"><i class="fa fa-exclamation-triangle fa-3x fa-fw"></i><h5>An Internal Error Occurred.</h5></div></div></div>');
 					}
 				}
 			});
 		});
-	
+					
+        function appendHtmlToModal(html){
+            try {
+					var elem = angular.element(document.getElementById('ngApp'));
+				    var injector = elem.injector();
+				    var $compile = injector.get('$compile'); 
+				    var $rootScope = injector.get('$rootScope'); 
+            }catch(err){
+			   console.warn(err);
+               setTimeout(function(){
+                    appendHtmlToModal(html);
+               }, 1000);
+			   return;
+            }
+            jQuery('#adminModal').html($compile(html)($rootScope));
+					initUIElements('#adminModal');
+					jQuery('#adminModal input').each(function(index,input){
+						//used to digest previous jquery value into the ng-model
+						jQuery(input).trigger('input');
+					});
+				}
+
+        jQuery('body').on('click', '.slideout-menu .fa-close', function(e) {
+            jQuery('body').removeClass('slideout');
+        });
+
 		jQuery('body').on('click', '.modalload-fullwidth', function(e){
 	
 			var modalLink = initModal( jQuery(this) );
@@ -471,19 +485,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		
 				}
 			}
-			
-			//return to default size
-			jQuery('#adminModal .modal-body').css({
-					'height':'auto'
-					},{
-					'max-height': '400px'
-					});
-			jQuery('#adminModal').css({
-					'height':'auto'
-					});
-	
-		});
-		
+
+        });
+
 		jQuery('body').on('submit', '.action-bar-search', function(e){
 			e.preventDefault();
 		});
@@ -1070,8 +1074,14 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	}
 	
 	function initModal( modalWin ){
-	
-		jQuery('#adminModal').html('<img src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" style="position:absolute;top:50%;left:50%;padding:20px;" />');
+        var modalTitle = "&nbsp";
+
+        if ($("#adminModal").attr('data-title')) {
+            modalTitle = $("#adminModal").attr('data-title');
+        }
+
+
+        jQuery('#adminModal').html('<div class="wrapper"> <header class="header"> <div class="col-xs-7 clearfix"> <h3>'+modalTitle+'</h3> </div> <div class="col-xs-5"> <div class="actions clearfix"> </div> </div> <i class="fa fa-close"></i> </header> <div class="main-content"> <div class="ajax_loader"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><h5>loading...</h5></div></div></div>');
 		var modalLink = jQuery( modalWin ).attr( 'href' );
 	
 		if( modalLink.indexOf("?") !== -1) {

@@ -9,6 +9,7 @@ class SWProcessCallerController{
     public text:string; 
 	public type:string;
 	public queryString:string;
+	public disabled:boolean;
 	//@ngInject
 	constructor(private rbkeyService, public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public corePartialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService,
 			hibachiPathBuilder){
@@ -21,9 +22,13 @@ class SWProcessCallerController{
 		this.$scope = $scope;
 		this.$element = $element;
 		this.$transclude = this.$transclude;
+
 		this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"processcaller.html").then((html)=>{
 			var template = angular.element(html);
 			this.$element.parent().append(template);
+			if(angular.isDefined($scope.swProcessCaller.modal) && !$scope.swProcessCaller.getDisabled()){
+                $scope.swProcessCaller.class += ' modalload';
+            }
 			$compile(template)(this.$scope);
 		});
         if(angular.isDefined(this.titleRbKey)){
@@ -31,6 +36,15 @@ class SWProcessCallerController{
         }
         if(angular.isUndefined(this.text)){
             this.text = this.title;
+        }
+	}
+
+	public getDisabled = ():boolean =>{
+        //if item is disabled
+        if(angular.isDefined(this.disabled) && this.disabled){
+            return true;
+        }else{
+            return false;
         }
 	}
 }

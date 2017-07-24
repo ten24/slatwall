@@ -41,7 +41,7 @@ class Pagination{
     public pageShowOptionChanged = (pageShowOption) => {
         this.setPageShow(pageShowOption.value);
         this.currentPage = 1;
-        this.observerService.notify('swPaginationAction',{type:'setPageShow', payload:this.getPageShow()});
+        this.observerService.notify('swPaginationAction',{'type':'setPageShow', 'payload':{'paginatorUUID': this.uuid, 'pageShow': this.getPageShow()}});
     };
 
     public getTotalPages=():number =>{
@@ -85,8 +85,7 @@ class Pagination{
     };
     public setCurrentPage=(currentPage:number):void =>{
         this.currentPage = currentPage;
-        this.observerService.notify('swPaginationAction',{action:'pageChange', currentPage});
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:this.getCurrentPage()});
+        this.observerService.notify('swPaginationAction',{'type':'setCurrentPage', 'payload':{'paginatorUUID': this.uuid, 'currentPage':this.getCurrentPage()}});
     };
     public previousPage=():void =>{
         if(this.getCurrentPage() == 1) return;
@@ -95,7 +94,7 @@ class Pagination{
     public nextPage=():void =>{
         if(this.getCurrentPage() < this.getTotalPages()){
             this.setCurrentPage(this.getCurrentPage() + 1);
-            this.observerService.notify('swPaginationAction',{type:'nextPage', payload:this.getCurrentPage()});
+            this.observerService.notify('swPaginationAction',{'type':'nextPage', 'payload':{'paginatorUUID': this.uuid, 'currentPage':this.getCurrentPage()}});
         }
     };
     public hasPrevious=():boolean =>{
@@ -140,6 +139,9 @@ class Pagination{
     
     
     public setPageRecordsInfo = (collection):void =>{
+        if(angular.isDefined(collection.paginatorUUID) && collection.paginatorUUID != this.uuid){
+            return;
+        }
         this.setRecordsCount(collection.recordsCount);
         if(this.getRecordsCount() === 0 ){
             this.setPageStart(0);
