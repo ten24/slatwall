@@ -23,8 +23,8 @@ class TypeaheadService{
         this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
     }
 
-    public notifyTypeaheadSelectionUpdateEvent = (key:string) =>{
-        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key)); 
+    public notifyTypeaheadSelectionUpdateEvent = (key:string, data:any) =>{
+        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key), data);
     }
 
     public setTypeaheadState = (key:string, state:any) =>{
@@ -57,7 +57,7 @@ class TypeaheadService{
             this.typeaheadData[key] = [];
         }
         this.typeaheadData[key].push(data); 
-        this.notifyTypeaheadSelectionUpdateEvent(key); 
+        this.notifyTypeaheadSelectionUpdateEvent(key,data);
     } 
 
     public removeSelection = (key:string, index:number, data?:any) => {
@@ -72,7 +72,7 @@ class TypeaheadService{
         ){
             this.updateSelections(key);
             var removedItem = this.typeaheadData[key].splice(index,1)[0];//this will always be an array of 1 element
-            this.notifyTypeaheadSelectionUpdateEvent(key); 
+            this.notifyTypeaheadSelectionUpdateEvent(key,removedItem);
             return removedItem; 
         }
     }

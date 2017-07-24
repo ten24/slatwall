@@ -4,6 +4,7 @@
 import {BaseEntity} from "./baseentity";
 
 class Cart extends BaseEntity{
+    public requiresFulfillment:boolean=false;
     public orderRequirementsList:string="";
     public orderPayments:any=[];
     public orderItems:Array<any>=[];
@@ -31,6 +32,10 @@ class Cart extends BaseEntity{
             return true;
         }
         return false;
+    };
+
+    public orderRequiresFulfillment = ():boolean=> {
+        return this.requiresFulfillment;
     };
 
     public getOrderItemQuantitySum = ()=>{

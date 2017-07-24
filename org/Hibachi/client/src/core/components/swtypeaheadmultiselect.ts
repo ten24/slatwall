@@ -26,12 +26,14 @@ class SWTypeaheadMultiselectController {
     public inListingDisplay:boolean; 
     public listingId:string; 
     public disabled:boolean; 
-      
+    public primaryIDName:string;
+
     // @ngInject
 	constructor(private $scope, 
                 private $transclude, 
                 private $hibachi, 
                 private listingService, 
+                private selectionService,
                 private typeaheadService,
                 private utilityService, 
                 private collectionConfigService
@@ -57,6 +59,8 @@ class SWTypeaheadMultiselectController {
         if(angular.isDefined(this.selectedCollectionConfig)){
             this.typeaheadService.initializeSelections(this.typeaheadDataKey, this.selectedCollectionConfig);
         }
+        this.primaryIDName = this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.collectionConfig.baseEntityName);
+
         this.typeaheadService.attachTypeaheadSelectionUpdateEvent(this.typeaheadDataKey, this.updateSelectionList);
     }
     
@@ -64,6 +68,8 @@ class SWTypeaheadMultiselectController {
         this.typeaheadService.addSelection(this.typeaheadDataKey, item);
         if(this.inListingDisplay){
             this.listingService.insertListingPageRecord(this.listingId, item);
+            this.selectionService.addSelection(this.listingId, item[this.primaryIDName]);
+            this.listingService.notifyListingUpdateMultiSelect(this.listingId);
         }
     }
     
@@ -71,6 +77,8 @@ class SWTypeaheadMultiselectController {
         var itemRemoved = this.typeaheadService.removeSelection(this.typeaheadDataKey, index);
         if(this.inListingDisplay){
             this.listingService.removeListingPageRecord(this.listingId, itemRemoved); 
+            this.selectionService.removeSelection(this.listingId, itemRemoved[this.primaryIDName])
+            this.listingService.notifyListingUpdateMultiSelect(this.listingId);
         }
     }
     
