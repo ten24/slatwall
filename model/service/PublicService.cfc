@@ -518,6 +518,7 @@ component extends="HibachiService"  accessors="true" output="false"
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
                 var order = getHibachiScope().cart();
+                order.setShippingAddress(savedAddress);
                 for(var fulfillment in order.getOrderFulfillments()){
                   if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                     var orderFulfillment = fulfillment;
@@ -555,26 +556,31 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
-        if(isNull(data.accountAddressID)){
-          getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-          return;
+        var accountAddressId = data.accountAddressID;
+        if (isNull(accountAddressID)){
+            this.addErrors(arguments.data, "Could not add account address. address id empty."); //add the basic errors
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+       		return;
         }
-        var accountAddressID = data.accountAddressID;
+
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().getCart();
 
             for(var fulfillment in order.getOrderFulfillments()){
-              if(fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+              if(data.fulfillmentID && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
+              }else if(!data.fulfillmentID){
+              	orderFulfillment.setShippingAddress(accountAddress.getAddress());
+             	getService("OrderService").saveOrderFulfillment(orderFulfillment);
               }
             }
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
-              getOrderService().saveOrder(order);
-              getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
             }
+            getOrderService().saveOrder(order);
+          	getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
             else{
               getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
             }
@@ -647,7 +653,10 @@ component extends="HibachiService"  accessors="true" output="false"
     /** Sets the shipping method to an order shippingMethodID */
     public void function addShippingMethodUsingShippingMethodID(required data){
         var shippingMethodId = data.shippingMethodID;
-
+        var orderFulfillmentWithShippingMethodOptions = 1;
+        if (!isNull(data.orderFulfillmentWithShippingMethodOptions)){
+          orderFulfillmentWithShippingMethodOptions = data.orderFulfillmentWithShippingMethodOptions + 1; //from js to cf
+        }
         if (isNull(shippingMethodId)){
             return;
         }
@@ -663,6 +672,8 @@ component extends="HibachiService"  accessors="true" output="false"
                   var orderFulfillment = fulfillment;
                 }
               }
+            }else{
+            	var orderFulfillment = order.getOrderFulfillments()[orderFulfillmentWithShippingMethodOptions];
             }
             orderFulfillment.setShippingMethod(shippingMethod);
             getOrderService().saveOrder(order); 
@@ -1056,6 +1067,12 @@ component extends="HibachiService"  accessors="true" output="false"
                     orderItem.setQuantity(data.orderItem.quantity);
                 }
             }
+		}else if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") && data.orderItem.qty > 0 ){
+            for (var orderItem in cart.getOrderItems()){
+                if (orderItem.getSku().getSkuID() == data.orderItem.sku.skuID){
+                    orderItem.setQuantity(data.orderItem.qty);
+                }
+            }
         }
         
         if(!cart.hasErrors()) {
@@ -1068,8 +1085,8 @@ component extends="HibachiService"  accessors="true" output="false"
 	 	    }
 	 	    
 	 	    if(!cart.hasErrors()) {
-	 	    	getOrderService().saveOrder(cart);
-          getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
+
+
 	 	    }
             
             // Also make sure that this cart gets set in the session as the order
@@ -1081,6 +1098,7 @@ component extends="HibachiService"  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getErrors());
         }
+		getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
     }
     /** 
      * @http-context removeOrderItem
@@ -1179,6 +1197,7 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.newOrderPayment" default="#structNew()#";
         param name="data.newOrderPayment.orderPaymentID" default="";
         param name="data.newOrderPayment.requireBillingAddress" default="1";
+        param name="data.newOrderPayment.saveShippingAsBilling" default="0";
         param name="data.accountAddressID" default="";
         param name="data.accountPaymentMethodID" default="";
         param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="444df303dedc6dab69dd7ebcc9b8036a";
@@ -1190,7 +1209,7 @@ component extends="HibachiService"  accessors="true" output="false"
                 data.newOrderPayment.orderPaymentID = "";
             }
         }
-        if(data.newOrderPayment.requireBillingAddress){
+        if(data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling){
           if(!structKeyExists(data.newOrderPayment, 'billingAddress')){
             addErrors(data, {
               addOrderPayment=['Billing address is required.']
@@ -1215,10 +1234,21 @@ component extends="HibachiService"  accessors="true" output="false"
           }
           getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
         }
+	}
 
-        return addOrderPayment;
+
+	/**
+     Adds an order payment and then calls place order.
+    */
+    public void function addOrderPaymentAndPlaceOrder(required any data) {
+        addOrderPayment(arguments.data);
+        if (!getHibachiScope().cart().hasErrors()){
+            placeOrder(arguments.data);
+        }
+        
     }
-    
+
+
     /** 
      * @http-context removeOrderPayment
      * @description Remove Order Payment 
@@ -1236,6 +1266,7 @@ component extends="HibachiService"  accessors="true" output="false"
      @ProcessMethod Order_PlaceOrder
      */
     public void function placeOrder(required any data) {
+
         // Insure that all items in the cart are within their max constraint
         if(!getHibachiScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
             getOrderService().processOrder(getHibachiScope().cart(), 'forceItemQuantityUpdate');
@@ -1254,10 +1285,13 @@ component extends="HibachiService"  accessors="true" output="false"
                         data.newOrderPayment.orderPaymentID = "";
                     }
                 }
+                
                 data.newOrderPayment.order.orderID = getHibachiScope().cart().getOrderID();
                 data.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
             }
+            
             var order = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'placeOrder');
+
             getHibachiScope().addActionResult( "public:cart.placeOrder", order.hasErrors() );
             
             if(!order.hasErrors()) {
@@ -1294,6 +1328,7 @@ component extends="HibachiService"  accessors="true" output="false"
     }
     
     public any function addErrors( required struct data , errors){
+
         if (!structKeyExists(arguments.data, "ajaxResponse")){
             arguments.data["ajaxResponse"] = {};
         }
