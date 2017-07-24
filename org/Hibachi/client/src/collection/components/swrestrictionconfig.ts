@@ -36,8 +36,6 @@ class SWRestrictionConfigController{
         this.permissionRecordRestriction.data.collectionConfig = angular.toJson(payload.collectionConfig.getCollectionConfig());
 
         this.permissionRecordRestriction.forms['permissionRecordRestrictionForm'].collectionConfig.$setViewValue(payload.collectionConfig.getCollectionConfig());
-        console.log(this.permissionRecordRestriction);
-        console.log(angular.toJson(payload.collectionConfig.getCollectionConfig()));
         this.permissionRecordRestriction.forms['permissionRecordRestrictionForm'].$setDirty(true);
         this.permissionRecordRestriction.$$save();
 

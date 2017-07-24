@@ -42,7 +42,6 @@ class SWListingControlsController {
         if(angular.isDefined(this.tableId)){
             this.listingColumns = this.listingService.getListingColumns(this.tableId);
         }
-        console.log('simple',this.simple,angular.isUndefined(this.simple));
         if(angular.isUndefined(this.simple)){
             this.simple = true;
         }

@@ -76,7 +76,7 @@ class SWFilterGroups{
 				};
 
 				this.removeFilterItem = function(filterItemIndex){
-					console.log('removeFilterItem',filterItemIndex);
+					
 					if(angular.isDefined(filterItemIndex)){
 
 						$scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
