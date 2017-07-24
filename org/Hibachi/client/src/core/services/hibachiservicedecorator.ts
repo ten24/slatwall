@@ -805,6 +805,7 @@ class HibachiServiceDecorator{
                     var entityID = entityInstance.$$getID();
 
                     var modifiedData:any = _getModifiedData(entityInstance);
+
                     //$log.debug('modifiedData complete');
                     //$log.debug(modifiedData);
                     //timeoutPromise.valid = modifiedData.valid;

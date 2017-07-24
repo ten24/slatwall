@@ -47,8 +47,13 @@ class SWCollectionTable{
 
                 if(angular.isUndefined(scope.angularLinks)){
                     scope.angularLinks = false;
-                }
-                scope.collectionObject = $hibachi['new'+scope.collection.collectionObject]();
+				}
+
+				if(scope.collection.collectionObject){
+                	scope.collectionObject = $hibachi['new'+scope.collection.collectionObject]();
+				}else if(scope.collectionConfig.baseEntityName){
+					scope.collectionObject = scope.collectionConfig.baseEntityName;
+				}
 
                 var escapeRegExp = function(str) {
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");

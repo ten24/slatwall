@@ -5,10 +5,9 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<!---<span sw-collection
-		  ng-controller="collections"
-		  toggleoption="true"
-		  >
-		
-	</span>--->
+	<sw-restriction-config
+		data-permission-record-restriction-id="#rc.permissionRecordRestriction.getPermissionRecordRestrictionID()#"
+	>
+	</sw-restriction-config>
+
 </cfoutput>

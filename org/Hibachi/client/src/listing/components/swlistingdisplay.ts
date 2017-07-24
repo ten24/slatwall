@@ -125,9 +125,9 @@ class SWListingDisplayController{
             this.multipleCollectionDeffered.reject();
         }
 		this.initializeState();
-		
+
 		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-		        
+
         if(angular.isDefined(this.collectionPromise)){
              this.hasCollectionPromise = true;
              this.multipleCollectionDeffered.reject();
@@ -142,12 +142,12 @@ class SWListingDisplayController{
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
         console.log('multislot',this.multiSlot);
-        
+
 		if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
             });
-    
+
             this.multipleCollectionPromise.then(
                 ()=>{
                     //now do the intial setup
@@ -163,9 +163,9 @@ class SWListingDisplayController{
                     if(angular.isUndefined(this.getCollection)){
                         this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                     }
-    
+
                     this.paginator.getCollection = this.getCollection;
-    
+
                     var getCollectionEventID = this.tableID;
             		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
                 }
@@ -173,15 +173,15 @@ class SWListingDisplayController{
         }else if(this.multiSlot == false){
 
         	this.setupCollectionPromise();
-            
+
         }
-        
+
         if (this.collectionObject){
              this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
     }
-    
+
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -203,20 +203,20 @@ class SWListingDisplayController{
                 this.collectionData = data;
                 this.observerService.notify('swPaginationUpdate',data);
             });
-            
+
         }
-        
+
     }
-    
+
     private setupCollectionPromise=()=>{
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
-            
-            
+
+
         }
 
         this.paginator.getCollection = this.getCollection;
-        
+
         var getCollectionEventID = this.tableID;
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
@@ -597,6 +597,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showSimpleListingControls:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",
