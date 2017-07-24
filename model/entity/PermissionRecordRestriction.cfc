@@ -80,35 +80,6 @@ component entityname="SlatwallPermissionRecordRestriction" table="SwPermissionRe
 
 	// ============ START: Non-Persistent Property Methods =================
 
-	// public string function getRestrictionConfig(){
-	// 	if(!structKeyExists(variables,'restrictionConfig')){
-	// 		if(structKeyExists(getCollectionConfigStruct(),'filterGroups')){
-	// 			variables.restrictionConfig = serializeJson(getCollectionConfigStruct()['filterGroups']);
-	// 		}else{
-	// 			variables.restrictionConfig = serializeJson([]);
-	// 		}
-
-	// 	}
-	// 	return variables.restrictionConfig;
-	// }
-
-	// public void function setCollectionConfig(required string collectionConfig){
-	// 	variables.collectionConfig = arguments.collectionConfig;
-	// 	if(structKeyExists(variables))
-	// 	variables.restrictionConfig = getCollectionConfigStruct()['filterGroups'];
-	// }
-
-	// public struct function getCollectionConfigStruct(){
-
-	// 	if(!isNull(getCollectionConfig())){
-	// 		return deserializeJson(getCollectionConfig());
-	// 	}else if(!isNull(getPermission())){
-	// 		var entityName = getPermission().getEntityClassName();
-	// 		var collectionEntity = getService('HibachiCollectionService').invokeMethod('get#entityName#CollectionList');
-	// 		return collectionEntity.getCollectionConfigStruct();
-	// 	}
-	// 	return {};
-	// }
 
 	public string function getCollectionConfig(){
 		return variables.collectionConfig;
