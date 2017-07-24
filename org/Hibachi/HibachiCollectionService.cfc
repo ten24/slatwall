@@ -667,6 +667,11 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
 		}
+		
+		if(structKeyExists(arguments.data, "restRequestFlag") && arguments.data.restRequestFlag){
+			collectionEntity.applyData(); 
+		} 
+
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
