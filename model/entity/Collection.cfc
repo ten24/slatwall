@@ -1684,15 +1684,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			logicalOperator = 'AND';
 		}
 		
-		
 		for(var filterGroup in arguments.relatedFilterGroups){
 			if(structKeyExists(filterGroup,'filterGroup')){
+				
 				filterGroup = {
-					filterGroup=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+					'filterGroup'=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
 				};
 				if(len(logicalOperator)){
-					filterGroup.logicalOperator = logicalOperator;
+					filterGroup['logicalOperator'] = logicalOperator;
 				}
+				
 				arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
 			}
 		}
@@ -1744,7 +1745,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(
 				structKeyExists(prop,'fieldtype') 
 				&& prop.fieldtype == 'many-to-one' 
-				&& prop.name == prop.cfc
+				&& lcase(prop.name) == lcase(prop.cfc)
 			){
 				arrayAppend(manyToOneProperties,prop);
 			}
@@ -1773,7 +1774,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var manyToOneProperties = getManyToOnePropertiesWhereCFCEqualsName();
 		for(var prop in manyToOneProperties){
 			objectPermissionsList = listAppend(objectPermissionsList,prop.cfc);
-			aliasMap[prop.cfc] = prop.cfc;
+			var baseEntityObject = getService('hibachiService').getEntityObject( prop.cfc );
+			var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
+			aliasMap[prop.cfc] = "#prop.name#.#primaryIDName#";
 		}
 		
 		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
@@ -1789,18 +1792,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		for(var permissionRecordRestriction in permissionRecordRestrictions){
 			var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction['restrictionConfig']);
-			
-			if(permissionRecordRestriction['permission_entityClassName'] == getClassName()){
+			if(permissionRecordRestriction['permission_entityClassName'] == getCollectionObject()){
 				for(var filterGroup in recordRestrictionFilterGroups){
 					filterGroup['logicalOperator']="AND";
 					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
 				} 
 			}else{
+				
 				var propertyIdentifier = aliasMap[permissionRecordRestriction['permission_entityClassName']];
 				applyRelatedFilterGroups(propertyIdentifier,recordRestrictionFilterGroups);
 			}
 		}
-		
 	}
 
 	// Paging Methods

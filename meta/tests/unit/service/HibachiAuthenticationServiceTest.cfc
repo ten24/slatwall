@@ -176,9 +176,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(arraylen(permissionRecordRestrictions),1);
 		//verify that we have refined the list based on restrictions
-		debug(permissionRecordRestriction.getRestrictionConfig());
-		debug(allDataCollection.getHQL());	
-		debug(arraylen(allDataCollection.getRecords(true)));
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		
 		
@@ -222,6 +219,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getActionAuthenticationDetailsByAccountTest_recordLevelPerms_fkcolumnAccount(){
+		
+		//set up restricted user
 		var accountData = {
 			accountID=""
 			
@@ -229,8 +228,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var peasantyAccount = createPersistedTestEntity('Account',accountData);
 		//make sure the account is going to enforce permission groups
 		peasantyAccount.setSuperUserFlag(false);
+		
+		
 
-		//set up a 		
+		//set up a permission Group
 		var permissionGroupData ={
 			permissionGroupID="",
 			permissionGroupName=createUUID()&'testPermgroup'
@@ -241,6 +242,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(arrayLen(peasantyAccount.getPermissionGroups()));
 		assert(arrayLen(permissionGroup.getAccounts()));
+		
+		
 		
 		//set up the account so that they can read orders
 		var permissionData = {
@@ -272,6 +275,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		permissionGroup.addPermission(accountPermission);
 		
 		assert(!isNull(accountPermission.getPermissionGroup()));
+		assertEquals(arraylen(permissionGroup.getPermissions()),2);
+		
+		
 		
 		//double check that read perms are good so far
 		var canRead = variables.service.authenticateEntityCrudByAccount("read","order",peasantyAccount);
@@ -279,7 +285,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var canRead = variables.service.authenticateEntityCrudByAccount("read","Account",peasantyAccount);
 		assert(canRead);
 		
-		//now let's add a record
+		
+		
+		//now let's add two order records
 		var orderData = { 
 			orderID="",
 			orderNumber=1
@@ -292,10 +300,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		
 		var otherOrder = createPersistedTestEntity('Order',otherOrderData);
+		
+		
 		//verify ouside of having an account that we can get all records
 		var allDataCollection = createTestEntity('collection');
 		allDataCollection.setCollectionObject('Order');
 		allDataCollection.addFilter('orderID',"#order.getOrderID()#,#otherOrder.getOrderID()#",'IN');
+		
 		assertEquals(arraylen(allDataCollection.getRecords()),2);
 		//set the permission applied flag back to false so we can test that the perms we create below can be applied and tested later
 		allDataCollection.setPermissionAppliedFlag(false);
@@ -329,6 +340,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(permissionRecordRestriction.getPermission().getEntityClassName() == 'Order');
 		assert(arraylen(permission.getPermissionRecordRestrictions()));
 		
+		ormflush();
+		
+		allDataCollection.setRequestAccount(peasantyAccount);
+		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
+		
 		//now record level perms restrictions
 		//user should not have access to account
 		var restrictedAccountData = {
@@ -336,87 +352,41 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var restrictedAccount = createPersistedTestEntity('Account',restrictedAccountData);
 		
-		var collectionEntity = createTestEntity('Collection');
+		collectionEntity = createTestEntity('Collection');
 		collectionEntity.setCollectionObject('Account');
-		collectionEntity.addFilter('accountID',order.getOrderID(),'=');
+		collectionEntity.addFilter('accountID',restrictedAccount.getAccountID(),'!=');
 		
 		
-		var collectionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()); 
-		var permissionRecordRestrictionData = {
+		collectionConfig = serializeJson(collectionEntity.getCollectionConfigStruct()); 
+		permissionRecordRestrictionData = {
 			permissionRecordRestrictionID="",
 			permission={
-				permissionID=permission.getPermissionID()
+				permissionID=accountPermission.getPermissionID()
 			}
 		};
-		var permissionRecordRestriction = createPersistedTestEntity('PermissionRecordRestriction',permissionRecordRestrictionData);
+		var accountPermissionRecordRestriction = createPersistedTestEntity('PermissionRecordRestriction',permissionRecordRestrictionData);
 		
 		
-		permission.addPermissionRecordRestriction(permissionRecordRestriction);
-		permissionRecordRestriction.setPermission(permission);
+		accountPermission.addPermissionRecordRestriction(accountPermissionRecordRestriction);
+		accountPermissionRecordRestriction.setPermission(accountPermission);
 		
-		permissionRecordRestriction.setCollectionConfig(collectionConfig);
+		accountPermissionRecordRestriction.setCollectionConfig(collectionConfig);
 		
-		PersistTestEntity(permissionRecordRestriction,{});
-		assert(!isNull(permissionRecordRestriction.getPermission()));
-		assert(permissionRecordRestriction.getPermission().getEntityClassName() == 'Order');
-		assert(arraylen(permission.getPermissionRecordRestrictions()));
+		PersistTestEntity(accountPermissionRecordRestriction,{});
+		assert(!isNull(accountPermissionRecordRestriction.getPermission()));
+		assert(accountPermissionRecordRestriction.getPermission().getEntityClassName() == 'Account');
+		assertEquals(arraylen(accountPermission.getPermissionRecordRestrictions()),1);
 		
-		//make this request use our account with restrictions 
-		allDataCollection.setRequestAccount(peasantyAccount);
-		//assert that we can find the pemission record
-		var permissionRecordRestrictionCollectionList = request.slatwallScope.getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
-		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
-		//permissionRecordRestrictionCollectionList.setDisplayProperties('permission.entityClassName');
-		permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
-		permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#allDataCollection.getCollectionObject()#');
-		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',peasantyAccount.getAccountID());
-		
-		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
-		
-		assertEquals(arraylen(permissionRecordRestrictions),1);
-		//verify that we have refined the list based on restrictions
-		debug(permissionRecordRestriction.getRestrictionConfig());
-		debug(allDataCollection.getHQL());	
-		debug(arraylen(allDataCollection.getRecords(true)));
-		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
-		
-		
-		
-		//set up order items so we can record level restrict them based on price
-		var orderItemData = {
-			orderItemID="",
-			price=40
-		};
-		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
-		
-		var otherOrderItemData = {
-			orderItemID="",
-			price=10
-		};
-		var otherOrderItem = createPersistedTestEntity('OrderItem',otherOrderItemData);
-		
-		orderItem.setOrder(order);
-		order.addOrderItem(orderItem);
-		
-		otherOrderItem.setOrder(otherOrder);
-		otherOrder.addOrderItem(otherOrderItem);
+		order.setAccount(restrictedAccount);
 		ormflush();
-		assert(arraylen(order.getOrderItems()));
-		assert(arraylen(otherorder.getOrderItems()));
-		
-		var orderItemCollectionList = request.slatwallScope.getService('orderService').getOrderItemCollectionList();
-		orderItemCollectionList.setRequestAccount(peasantyAccount);
-		orderItemCollectionList.setDisplayProperties('orderItemID,price,order.orderID');
-		
-		orderItemCollectionList.addFilter('orderItemID','#orderItem.getOrderItemID()#,#otherOrderItem.getOrderItemID()#','IN');
-		var orderItemRecords = orderItemCollectionList.getRecords(true);
-		//verify that when records was applied that our order record permissions are also applied if our display options include order data
-		
-		
-		assertEquals(arraylen(orderItemRecords),1);	
-		
-		
-		
+		//make this request use our account with restrictions 
+		var allDataCollection2 = createTestEntity('collection');
+		allDataCollection2.setCollectionObject('Order');
+		allDataCollection2.addFilter('orderID',"#order.getOrderID()#,#otherOrder.getOrderID()#",'IN');
+		allDataCollection2.setRequestAccount(peasantyAccount);
+		allDataCollection2.applyPermissions();
+		//verify that we have refined the list based on restrictions
+		assertEquals(arraylen(allDataCollection2.getRecords(true)),0);
 		
 	}
 	
