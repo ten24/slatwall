@@ -599,21 +599,8 @@ component output="false" accessors="true" extends="HibachiController" {
 			for(var key in arguments.rc) {
 				if(!find('.',key) && right(key, 2) == "ID" && len(arguments.rc[key]) == "32") {
 					var entityName = left(key, len(key)-2);
-					if( 
-						getHibachiService().getEntityNameIsValidFlag(entityName) 
-						&& ( 
-							!structKeyExists(arguments.rc, entityName) 
-							|| !isObject(arguments.rc[entityName]) 
-						) 
-					) {
-						var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#entityName#CollectionList');
+					if( getHibachiService().getEntityNameIsValidFlag(entityName) && ( !structKeyExists(arguments.rc, entityName) || !isObject(arguments.rc[entityName]) ) ) {
 						var entityService = getHibachiService().getServiceByEntityName( entityName=entityName );
-						var primaryIDName = getHibachiService().getPrimaryIDPropertyNameByEntityName(entityName);
-						entityCollectionList.setDisplayProperties(primaryIDName);
-						entityCollectionList.addFilter(primaryIDName,arguments.rc[key]);
-						var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
-						//if the collection returns a record then 
-						if(entityCollectionRecordsCount > 0){
 							var entity = entityService.invokeMethod("get#entityName#", {1=arguments.rc[key]});
 							if(!isNull(entity)) {
 								arguments.rc[ entityName ] = entity;
@@ -621,7 +608,6 @@ component output="false" accessors="true" extends="HibachiController" {
 						}
 					}
 				}
-			}
 		}catch(any e){
 			writedump(e);abort;
 		}
