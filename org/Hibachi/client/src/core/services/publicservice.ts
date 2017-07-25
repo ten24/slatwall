@@ -6,8 +6,6 @@ import {Account} from "../model/entity/account";
 import {PublicRequest} from "../model/transient/publicrequest";
 
 class PublicService {
-
-
     public account:Account;
     public cart:any;
     public states:any;
@@ -24,7 +22,6 @@ class PublicService {
     public countryDataPromise:any;
     public stateDataPromise:any;
     public lastSelectedShippingMethod:any;
-
     public http:ng.IHttpService;
     public confirmationUrl:string;
     public checkoutUrl:string;

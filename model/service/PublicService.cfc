@@ -581,9 +581,6 @@ component extends="HibachiService"  accessors="true" output="false"
             }
             getOrderService().saveOrder(order);
           	getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
-            else{
-              getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-            }
         }else{
             if(!isNull(accountAddress)){
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
