@@ -68,7 +68,7 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId" ng-show="paginator.getRecordsCount()">
+				<tbody ng-repeat="orderItem in orderItems | unique:'orderItemID'" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId" ng-show="paginator.getRecordsCount()">
 					<!-- Begin Merchandise Row -->
 				</tbody>
 
