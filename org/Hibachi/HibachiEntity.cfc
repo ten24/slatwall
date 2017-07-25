@@ -875,8 +875,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return true;
 		}
 		return false;
-		var entityManager = ORMGetSession();
-		return !entityManager.contains(this);
 	}
 
 	public boolean function getEncryptedPropertiesExistFlag() {
