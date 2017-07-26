@@ -30,14 +30,14 @@
                         data-add-function="selectProductBundleGroupType"
                         data-add-button-function="productBundleGroupTypes.setAdding"
                         data-validate-required="true"
-                        >
+                        data-collection-config="productBundleGroupTypeCollection()">
                         
                         <sw-collection-config 
                             data-entity-name="Type"
                             data-parent-directive-controller-as-name="swTypeaheadSearch"
 							data-collection-config-property="collectionConfig"
                             data-all-records="true"
-                        >
+                            data-entity="Type" data-all-records="true">
                             <sw-collection-column data-property-identifier="typeID"></sw-collection-column>
                             <sw-collection-column data-property-identifier="typeCode" data-is-searchabled="true"></sw-collection-column>
                             <sw-collection-column data-property-identifier="typeName" data-is-searchabled="true"></sw-collection-column>

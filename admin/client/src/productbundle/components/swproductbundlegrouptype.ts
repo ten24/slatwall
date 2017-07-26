@@ -68,6 +68,14 @@ class SWProductBundleGroupType{
 					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
 				}
 
+				$scope.productBundleGroupTypeCollection = () => {
+					let collection = collectionConfigService.newCollectionConfig(("Type"));
+					collection.setAllRecords(true);
+					collection.addFilter("parentType.systemCode", "productBundleGroupType", "=");
+					console.log("Called");
+					return collection;
+				}
+
 				/**
 				 * Sets the state to adding and sets the initial data.
 				 */
