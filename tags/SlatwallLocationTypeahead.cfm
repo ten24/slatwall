@@ -45,7 +45,8 @@
 					        data-filter-flag="true"
 					        data-selected-format-string="#attributes.selectedFormatString#"
 					        data-field-name="#attributes.locationPropertyName#"
-					        data-initial-entity-id="#initialEntityID#">
+					        data-initial-entity-id="#initialEntityID#"
+					        data-order-by-list="locationName|ASC">
 					
 					    <sw-collection-config
 					            data-entity-name="Location"
@@ -53,12 +54,6 @@
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
 					
-							
-							<!--- Order By --->
-					    	<sw-collection-order-bys>
-					        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
-					    	</sw-collection-order-bys>
-					    	
 					    	<!--- Filters --->
 					    	<cfif attributes.showActiveLocationsFlag EQ true>
 						    	<sw-collection-filters>
