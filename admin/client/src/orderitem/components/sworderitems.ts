@@ -118,7 +118,9 @@ class SWOrderItems{
                          ,orderReturn.returnLocation.primaryAddress.address.postalCode
 						 ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
                          ,sku.subscriptionBenefits
-                         ,sku.product.productType.systemCode,sku.options,sku.locations
+						 ,sku.product.productType.systemCode
+						 ,sku.options
+						 ,sku.locations
  						 ,sku.subscriptionTerm.subscriptionTermName
  						 ,sku.imageFile
                          ,stock.location.locationName`
