@@ -54,6 +54,7 @@ component displayname="Option" entityname="SlatwallOption" table="SwOption" pers
 	property name="optionName" ormtype="string";
 	property name="optionDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="sortOrder" ormtype="integer" sortContext="optionGroup";
+	property name="activeFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="optionGroup" cfc="OptionGroup" fieldtype="many-to-one" fkcolumn="optionGroupID";

@@ -10,6 +10,7 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.option#" property="optionName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.option#" property="optionCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.option#" property="activeFlag" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
