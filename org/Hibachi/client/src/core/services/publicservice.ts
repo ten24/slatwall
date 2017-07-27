@@ -381,27 +381,20 @@ class PublicService {
     }
 
     private processAction = (response,request:PublicRequest)=>{
+
         //Run any specific adjustments needed
         this.runCheckoutAdjustments(response);
 
-        /** update the account and the cart */
-        if(response.account){
-            this.account.populate(response.account);
-            this.account.request = request;
-        }
-        if(response.cart){
-            this.cart.populate(response.cart);
-            this.cart.request = request;
-        }
-        this.errors = response.errors;
         //if the action that was called was successful, then success is true.
         if (request && request.hasSuccessfulAction()){
             this.successfulActions = [];
             for (var action in request.successfulActions){
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
+                    return;
                 }else if (request.successfulActions[action].indexOf('public:cart.finalizeCart') !== -1){
                     this.$window.location.href = this.checkoutUrl;
+                    return;
                 }else if(request.successfulActions[action].indexOf('public:account.logout') !== -1){
                     this.account = this.$hibachi.newAccount();
                 }
@@ -415,6 +408,17 @@ class PublicService {
                 this.failureActions.push(request.failureActions[action].split('.')[1]);
             }
         }
+
+        /** update the account and the cart */
+        if(response.account){
+            this.account.populate(response.account);
+            this.account.request = request;
+        }
+        if(response.cart){
+            this.cart.populate(response.cart);
+            this.cart.request = request;
+        }
+        this.errors = response.errors;
     }
 
     public runCheckoutAdjustments = (response) =>{
