@@ -1077,15 +1077,13 @@ component extends="HibachiService"  accessors="true" output="false"
             getOrderService().saveOrder(cart);
             
             // Insure that all items in the cart are within their max constraint
- 	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
-	 	        cart = getOrderService().processOrder(cart, 'forceItemQuantityUpdate');
-	 	    }
-	 	    
-	 	    if(!cart.hasErrors()) {
-
-
-	 	    }
-            
+     	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
+    	 	        cart = getOrderService().processOrder(cart, 'forceItemQuantityUpdate');
+    	 	    }
+    	 	    
+    	 	    if(!cart.hasErrors()) {
+              getOrderService().saveOrder(cart);
+            }
             // Also make sure that this cart gets set in the session as the order
             getHibachiScope().getSession().setOrder( cart );
             
@@ -1095,7 +1093,7 @@ component extends="HibachiService"  accessors="true" output="false"
         }else{
             addErrors(data, getHibachiScope().getCart().getErrors());
         }
-		getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
+		  getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
     }
     /** 
      * @http-context removeOrderItem
@@ -1225,22 +1223,23 @@ component extends="HibachiService"  accessors="true" output="false"
           }
           //use this billing information
           var newBillingAddress = this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
-        }
+      }
 
-        if(!isNull(newBillingAddress) && newBillingAddress.hasErrors()){
-          this.addErrors(arguments.data, newBillingAddress.getErrors());
-          return;
-        }
+      if(!isNull(newBillingAddress) && newBillingAddress.hasErrors()){
+        this.addErrors(arguments.data, newBillingAddress.getErrors());
+        return;
+      }
 
-        var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
+      var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
 
-        if(!giftCard){
-          for(var payment in addOrderPayment.getOrderPayments()){
-            addErrors(data, payment.getErrors());
-          }
-          getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+      if(!giftCard){
+        for(var payment in addOrderPayment.getOrderPayments()){
+          addErrors(data, payment.getErrors());
         }
-	}
+        getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+      }
+      return addOrderPayment;
+    }
 
 
 	/**
