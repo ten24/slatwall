@@ -51,6 +51,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// Slatwall specific request entity properties
 	property name="brand" type="any";
 	property name="cart" type="any";
+	property name="content" type="any";
 	property name="product" type="any";
 	property name="productType" type="any";
 	property name="address" type="any";
