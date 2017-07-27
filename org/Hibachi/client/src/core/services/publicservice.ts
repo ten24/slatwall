@@ -380,7 +380,7 @@ class PublicService {
         xhr.send(formData);
     }
 
-        private processAction = (response,request:PublicRequest)=>{
+    private processAction = (response,request:PublicRequest)=>{
         //Run any specific adjustments needed
         this.runCheckoutAdjustments(response);
 
@@ -485,7 +485,7 @@ class PublicService {
     /** Returns a boolean indicating whether or not the order has the named payment method.*/
     public hasPaymentMethod = (paymentMethodName)=>{
         for (var payment of this.cart.orderPayments){
--            if(payment.paymentMethod.paymentMethodName === paymentMethodName) return true;
+            if(payment.paymentMethod.paymentMethodName === paymentMethodName) return true;
         }
         return false;
     }
@@ -642,7 +642,7 @@ class PublicService {
      /** returns true if the shipping method option passed in is the selected shipping method
      */
      public isSelectedShippingMethod = (option, fulfillmentIndex) =>{
-     	// DEPRECATED LOGIC
+ 	// DEPRECATED LOGIC
      	if(typeof option === 'number' || typeof option === 'string'){
      		let index = option, value = fulfillmentIndex;
      		let orderFulfillment;
@@ -659,20 +659,10 @@ class PublicService {
             return false;
 
      	}
-     	//NEW LOGIC
+ 	//NEW LOGIC
          return (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod && 
              this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethod.shippingMethodID == option.value) || 
             (this.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions.length == 1);
-     }
-
-     /** returns the index of the selected shipping method.
-     */
-     public getSelectedShippingIndex = function(index, value){
-        for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++){
-            if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge){
-                return i;
-            }
-        }
      }
 
      /** Select a shipping method - temporarily changes the selected method on the front end while awaiting official change from server
@@ -693,288 +683,6 @@ class PublicService {
      public removePromoCode = (code)=>{
          this.doAction('removePromotionCode', {promotionCode:code});
      }
-
-    /** simple validation just to ensure data is present and accounted for.
-     */
-    public validateNewOrderPayment =  (newOrderPayment)=> {
-        var newOrderPaymentErrors = {};
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
-            newOrderPaymentErrors['countrycode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-                newOrderPaymentErrors['statecode'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
-                newOrderPaymentErrors['city'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
-            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
-                newOrderPaymentErrors['locality'] = 'Required *';
-            }
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
-            newOrderPaymentErrors['postalCode'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
-            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
-            newOrderPaymentErrors['streetAddress'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
-            newOrderPaymentErrors['expirationYear'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
-            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
-        }
-        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
-            newOrderPaymentErrors['securityCode'] = 'Required *';
-        }
-        if (Object.keys(newOrderPaymentErrors).length){
-            //this.cart.orderPayments.hasErrors = true;
-            //this.cart.orderPayments.errors = newOrderPaymentErrors;
-        }
-    }
-
-    /** Allows an easy way to calling the service addOrderPayment.
-    */
-    public addOrderPayment = (formdata)=>{
-        //reset the form errors.
-        // this.cart.hasErrors=false;
-        // this.cart.orderPayments.errors = {};
-        // this.cart.orderPayments.hasErrors = false;
-
-        //Grab all the data
-        var billingAddress  = this.newBillingAddress;
-        var expirationMonth = formdata.month;
-        var expirationYear  = formdata.year;
-        var country         = formdata.country;
-        var state           = formdata.state;
-        var accountFirst    = this.account.firstName;
-        var accountLast     = this.account.lastName;
-        var data = {};
-
-        var processObject = this.orderService.newOrder_AddOrderPayment();
-
-        // processObject.newBillingAddress = this.newBillingAddress;
-        // processObject.newBillingAddress.expirationMonth = formdata.month;
-        // processObject.newBillingAddress.expirationYear = formdata.year;
-        // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
-        // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
-        // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
-
-
-        data = {
-            'newOrderPayment.billingAddress.addressID':'',
-            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
-            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
-            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
-            'newOrderPayment.expirationMonth': expirationMonth,
-            'newOrderPayment.expirationYear': expirationYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
-            'newOrderPayment.billingAddress.city': ''+billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
-            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-            'newOrderPayment.securityCode': billingAddress.cvv,
-            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
-        };
-
-        //processObject.populate(data);
-
-
-        //Make sure we have required fields for a newOrderPayment.
-        this.validateNewOrderPayment( data );
-        if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
-            return -1;
-        }
-
-        //Post the new order payment and set errors as needed.
-        this.doAction('addOrderPayment', data, 'post').then((result)=>{
-            var serverData = result;
-
-
-            if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
-                this.cart.hasErrors = true;
-                this.readyToPlaceOrder = true;
-                this.edit = '';
-            }else{
-                this.editPayment = false;
-                this.readyToPlaceOrder = true;
-                this.edit = '';
-            }
-        });
-    };
-
-    /** Allows an easy way to calling the service addOrderPayment.
-    */
-    public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
-        //reset the form errors.
-        this.cart.hasErrors=false;
-        this.cart.orderPayments.errors = {};
-        this.cart.orderPayments.hasErrors = false;
-
-        //Grab all the data
-        var giftCards = this.account.giftCards;
-        var data = {};
-
-        data = {
-            'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
-            'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
-        };
-
-        //add the amounts from the gift cards
-        for (var card in giftCards){
-            if (giftCards[card].applied == true){
-
-                data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
-                if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
-                    data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
-                }else{
-                    data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
-                }
-                data['copyFromType'] = "";
-
-                //Post the new order payment and set errors as needed.
-                this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
-                    var serverData;
-                    if (angular.isDefined(result['0'])){
-                        serverData = result['0'].data;
-                    }
-                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
-                        this.cart.hasErrors = true;
-                        this.readyToPlaceOrder = true;
-                        this.edit = '';
-                    }else{
-
-                    }
-                });
-            }
-        }
-
-    };
-
-    /** Allows an easy way to calling the service addOrderPayment.
-    */
-    public addOrderPaymentAndPlaceOrder = (formdata)=>{
-        //reset the form errors.
-        this.orderPlaced = false;
-        //Grab all the data
-        var billingAddress  = this.newBillingAddress;
-        var expirationMonth = formdata.month;
-        var expirationYear  = formdata.year;
-        var country         = formdata.country;
-        var state           = formdata.state;
-        var accountFirst    = this.account.firstName;
-        var accountLast     = this.account.lastName;
-        var data = {};
-
-        data = {
-            'orderid':this.cart.orderID,
-            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
-            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
-            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' +accountLast,
-            'newOrderPayment.expirationMonth': expirationMonth,
-            'newOrderPayment.expirationYear': expirationYear,
-            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
-            'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
-            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
-            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
-            'newOrderPayment.securityCode': billingAddress.cvv,
-            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
-            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
-        };
-
-        //Make sure we have required fields for a newOrderPayment.
-        //this.validateNewOrderPayment( data );
-        if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
-
-            return -1;
-        }
-
-        //Post the new order payment and set errors as needed.
-        this.$q.all([this.doAction('addOrderPayment,placeOrder', data, 'post')]).then(function(result){
-            var serverData
-            if (angular.isDefined(result['0'])){
-                serverData = result['0'].data;
-            }else{
-
-            }//|| angular.isDefined(serverData.cart.orderPayments[serverData.cart.orderPayments.length-1]['errors']) && slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors'].hasErrors
-            if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")){
-                if (serverData.failureActions.length){
-                    for (var action in serverData.failureActions){
-                        //
-                    }
-                }
-                this.edit = '';
-                return true;
-            } else if (serverData.successfulActions.length) {
-                //
-                this.cart.hasErrors = false;
-                this.editPayment = false;
-                this.edit = '';
-                for (var action in serverData.successfulActions){
-                    //
-                    if (serverData.successfulActions[action].indexOf("placeOrder") != -1){
-                        //if there are no errors then redirect.
-                        this.orderPlaced = true;
-                        this.redirectExact('/order-confirmation/');
-                    }
-                }
-            }else{
-                this.edit = '';
-            }
-        });
-
-    };
-
-    //Applies a giftcard from the user account onto the payment.
-    public applyGiftCard = (giftCardCode)=>{
-        this.finding = true;
-
-        //find the code already on the account.
-        var found = false;
-        for (var giftCard in this.account.giftCards){
-            if (this.account.giftCards[giftCard].balanceAmount == 0){
-                this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
-                found = false;
-            }
-            if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
-                this.account.giftCards[giftCard].applied = true;
-                found = true;
-            }
-        }
-        if (found){
-            this.finding = false;
-            this.addGiftCardOrderPayments(false);
-        }else{
-            this.finding = false;
-            this.addGiftCardOrderPayments(true);
-        }
-
-    };
-
-    //returns the amount total of giftcards added to this account.
-    public getAppliedGiftCardTotals = ()=>{
-        //
-        var total = 0;
-        for (var payment in this.cart.orderPayments){
-            if (this.cart.orderPayments[payment].giftCardNumber != ""){
-                total = total + parseInt(this.cart.orderPayments[payment]['amount']);
-            }
-        }
-        return total;
-    };
 
     //gets the calcuated total minus the applied gift cards.
     public getTotalMinusGiftCards = ()=>{
@@ -1054,10 +762,6 @@ class PublicService {
         return addressEntity;
 	}
 
-
-
-
-
     public resetRequests = (request) => {
          delete this.requests[request];
     }
@@ -1076,12 +780,6 @@ class PublicService {
         }
         return false;
     }
-
-
-
-
-
-
 
       /**
      *  Returns true when the fulfillment body should be showing
@@ -1565,6 +1263,292 @@ class PublicService {
     public binder = (self, fn, ...args)=>{
         return fn.bind(self, ...args);
     }
+
+    /*********************************************************************************/
+    /*******************                                    **************************/
+    /*******************         DEPRECATED METHODS         **************************/
+    /*******************                                    **************************/
+    /*********************************************************************************/
+     /** DEPRECATED
+     */
+     public getSelectedShippingIndex = function(index, value){
+        for (var i = 0; i <= this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions.length; i++){
+            if (this.cart.fulfillmentTotal == this.cart.orderFulfillments[this.cart.orderFulfillmentWithShippingMethodOptionsIndex].shippingMethodOptions[i].totalCharge){
+                return i;
+            }
+        }
+     }
+     /** simple validation just to ensure data is present and accounted for.
+     */
+    public validateNewOrderPayment =  (newOrderPayment)=> {
+        var newOrderPaymentErrors = {};
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.streetAddress')){
+            newOrderPaymentErrors['streetAddress'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')){
+            newOrderPaymentErrors['countrycode'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
+                newOrderPaymentErrors['statecode'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')){
+                newOrderPaymentErrors['city'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')){
+            if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')){
+                newOrderPaymentErrors['locality'] = 'Required *';
+            }
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.postalcode')){
+            newOrderPaymentErrors['postalCode'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.nameOnCreditCard')){
+            newOrderPaymentErrors['nameOnCreditCard']= 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationMonth')){
+            newOrderPaymentErrors['streetAddress'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.expirationYear')){
+            newOrderPaymentErrors['expirationYear'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.creditCardNumber')){
+            newOrderPaymentErrors['creditCardNumber'] = 'Required *';
+        }
+        if (this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.securityCode')){
+            newOrderPaymentErrors['securityCode'] = 'Required *';
+        }
+        if (Object.keys(newOrderPaymentErrors).length){
+            //this.cart.orderPayments.hasErrors = true;
+            //this.cart.orderPayments.errors = newOrderPaymentErrors;
+        }
+    }
+
+    /** Allows an easy way to calling the service addOrderPayment.
+    */
+    public addOrderPayment = (formdata)=>{
+        //reset the form errors.
+
+        //Grab all the data
+        var billingAddress  = this.newBillingAddress;
+        var expirationMonth = formdata.month;
+        var expirationYear  = formdata.year;
+        var country         = formdata.country;
+        var state           = formdata.state;
+        var accountFirst    = this.account.firstName;
+        var accountLast     = this.account.lastName;
+        var data = {};
+
+        var processObject = this.orderService.newOrder_AddOrderPayment();
+
+
+        data = {
+            'newOrderPayment.billingAddress.addressID':'',
+            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCreditCard,
+            'newOrderPayment.billingAddress.name': billingAddress.nameOnCreditCard,
+            'newOrderPayment.expirationMonth': expirationMonth,
+            'newOrderPayment.expirationYear': expirationYear,
+            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+            'newOrderPayment.billingAddress.city': ''+billingAddress.city,
+            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+            'newOrderPayment.securityCode': billingAddress.cvv,
+            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
+        };
+
+        //processObject.populate(data);
+
+
+        //Make sure we have required fields for a newOrderPayment.
+        this.validateNewOrderPayment( data );
+        if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
+            return -1;
+        }
+
+        //Post the new order payment and set errors as needed.
+        this.doAction('addOrderPayment', data, 'post').then((result)=>{
+            var serverData = result;
+
+
+            if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
+                this.cart.hasErrors = true;
+                this.readyToPlaceOrder = true;
+                this.edit = '';
+            }else{
+                this.editPayment = false;
+                this.readyToPlaceOrder = true;
+                this.edit = '';
+            }
+        });
+    };
+
+    /** Allows an easy way to calling the service addOrderPayment.
+    */
+    public addGiftCardOrderPayments = (redeemGiftCardToAccount)=>{
+        //reset the form errors.
+        this.cart.hasErrors=false;
+        this.cart.orderPayments.errors = {};
+        this.cart.orderPayments.hasErrors = false;
+
+        //Grab all the data
+        var giftCards = this.account.giftCards;
+        var data = {};
+
+        data = {
+            'newOrderPayment.paymentMethod.paymentMethodID':'50d8cd61009931554764385482347f3a',
+            'newOrderPayment.redeemGiftCardToAccount':redeemGiftCardToAccount,
+        };
+
+        //add the amounts from the gift cards
+        for (var card in giftCards){
+            if (giftCards[card].applied == true){
+
+                data['newOrderPayment.giftCardNumber'] = giftCards[card].giftCardCode;
+                if (giftCards[card].calculatedTotal < this.cart.calculatedTotal){
+                    data['newOrderPayment.amount'] = giftCards[card].calculatedBalanceAmount; //will use once we have amount implemented.
+                }else{
+                    data['newOrderPayment.amount'] = this.cart.calculatedTotal;//this is so it doesn't throw the 100% error
+                }
+                data['copyFromType'] = "";
+
+                //Post the new order payment and set errors as needed.
+                this.$q.all([this.doAction('addOrderPayment', data, 'post')]).then(function(result){
+                    var serverData;
+                    if (angular.isDefined(result['0'])){
+                        serverData = result['0'].data;
+                    }
+                    if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[''+(this.cart.orderPayments.length-1)]['errors'].hasErrors){
+                        this.cart.hasErrors = true;
+                        this.readyToPlaceOrder = true;
+                        this.edit = '';
+                    }else{
+
+                    }
+                });
+            }
+        }
+
+    };
+
+    /** Allows an easy way to calling the service addOrderPayment.
+    */
+    public addOrderPaymentAndPlaceOrder = (formdata)=>{
+        //reset the form errors.
+        this.orderPlaced = false;
+        //Grab all the data
+        var billingAddress  = this.newBillingAddress;
+        var expirationMonth = formdata.month;
+        var expirationYear  = formdata.year;
+        var country         = formdata.country;
+        var state           = formdata.state;
+        var accountFirst    = this.account.firstName;
+        var accountLast     = this.account.lastName;
+        var data = {};
+
+        data = {
+            'orderid':this.cart.orderID,
+            'newOrderPayment.billingAddress.streetAddress': billingAddress.streetAddress,
+            'newOrderPayment.billingAddress.street2Address': billingAddress.street2Address,
+            'newOrderPayment.nameOnCreditCard': billingAddress.nameOnCard || accountFirst + ' ' +accountLast,
+            'newOrderPayment.expirationMonth': expirationMonth,
+            'newOrderPayment.expirationYear': expirationYear,
+            'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
+            'newOrderPayment.billingAddress.city': '' + billingAddress.city,
+            'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+            'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
+            'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
+            'newOrderPayment.securityCode': billingAddress.cvv,
+            'newOrderPayment.creditCardNumber': billingAddress.cardNumber,
+            'newOrderPayment.saveShippingAsBilling':(this.saveShippingAsBilling == true),
+        };
+
+        //Make sure we have required fields for a newOrderPayment.
+        //this.validateNewOrderPayment( data );
+        if ( this.cart.orderPayments.hasErrors && Object.keys(this.cart.orderPayments.errors).length ){
+
+            return -1;
+        }
+
+        //Post the new order payment and set errors as needed.
+        this.$q.all([this.doAction('addOrderPayment,placeOrder', data, 'post')]).then(function(result){
+            var serverData
+            if (angular.isDefined(result['0'])){
+                serverData = result['0'].data;
+            }else{
+
+            }//|| angular.isDefined(serverData.cart.orderPayments[serverData.cart.orderPayments.length-1]['errors']) && slatwall.cart.orderPayments[''+slatwall.cart.orderPayments.length-1]['errors'].hasErrors
+            if (serverData.cart.hasErrors || (angular.isDefined(serverData.failureActions) && serverData.failureActions.length && serverData.failureActions[0] == "public:cart.addOrderPayment")){
+                if (serverData.failureActions.length){
+                    for (var action in serverData.failureActions){
+                        //
+                    }
+                }
+                this.edit = '';
+                return true;
+            } else if (serverData.successfulActions.length) {
+                //
+                this.cart.hasErrors = false;
+                this.editPayment = false;
+                this.edit = '';
+                for (var action in serverData.successfulActions){
+                    //
+                    if (serverData.successfulActions[action].indexOf("placeOrder") != -1){
+                        //if there are no errors then redirect.
+                        this.orderPlaced = true;
+                        this.redirectExact('/order-confirmation/');
+                    }
+                }
+            }else{
+                this.edit = '';
+            }
+        });
+
+    };
+
+    //Applies a giftcard from the user account onto the payment.
+    public applyGiftCard = (giftCardCode)=>{
+        this.finding = true;
+
+        //find the code already on the account.
+        var found = false;
+        for (var giftCard in this.account.giftCards){
+            if (this.account.giftCards[giftCard].balanceAmount == 0){
+                this.account.giftCards[giftCard]['error'] = "The balance is $0.00 for this card.";
+                found = false;
+            }
+            if (this.account.giftCards[giftCard].giftCardCode == giftCardCode){
+                this.account.giftCards[giftCard].applied = true;
+                found = true;
+            }
+        }
+        if (found){
+            this.finding = false;
+            this.addGiftCardOrderPayments(false);
+        }else{
+            this.finding = false;
+            this.addGiftCardOrderPayments(true);
+        }
+
+    };
+
+    //returns the amount total of giftcards added to this account.
+    public getAppliedGiftCardTotals = ()=>{
+        //
+        var total = 0;
+        for (var payment in this.cart.orderPayments){
+            if (this.cart.orderPayments[payment].giftCardNumber != ""){
+                total = total + parseInt(this.cart.orderPayments[payment]['amount']);
+            }
+        }
+        return total;
+    };
 
 }
 export {PublicService};
