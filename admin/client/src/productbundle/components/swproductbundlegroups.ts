@@ -50,11 +50,11 @@ class SWProductBundleGroupsController{
                     }
                 }
 
-               if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'] != undefined){
+                if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'] != undefined){
                     if (this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] !== this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue']){
                         this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] = this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'];
                     }
-               }
+                }
             }
         }
     }

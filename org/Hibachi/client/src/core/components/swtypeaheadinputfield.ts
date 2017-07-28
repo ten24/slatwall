@@ -16,6 +16,7 @@ class SWTypeaheadInputFieldController {
     public propertyToShow;
     public initialEntityId:string; 
     public searchText:string;
+    public orderByList:string;
     public validateRequired:boolean;
     private collectionConfig;
     
@@ -60,6 +61,10 @@ class SWTypeaheadInputFieldController {
         if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.modelValue = this.initialEntityId;
         }
+
+        if(angular.isDefined(this.orderByList) && this.orderByList.length){
+            this.typeaheadCollectionConfig.setOrderBy(this.orderByList);
+        }
     }
     
     public addFunction = (value:any) => {
@@ -86,7 +91,8 @@ class SWTypeaheadInputField implements ng.IDirective{
         initialEntityId:"@",
         allRecords:"=?",
         validateRequired:"=?", 
-        maxRecords:"@"
+        maxRecords:"@",
+        orderByList:"@?" //of the form prop|dir,prop2|dir,...
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";

@@ -10049,6 +10049,9 @@
 	        if (angular.isDefined(this.initialEntityId) && this.initialEntityId.length) {
 	            this.modelValue = this.initialEntityId;
 	        }
+	        if (angular.isDefined(this.orderByList) && this.orderByList.length) {
+	            this.typeaheadCollectionConfig.setOrderBy(this.orderByList);
+	        }
 	    }
 	    return SWTypeaheadInputFieldController;
 	}());
@@ -10071,7 +10074,8 @@
 	            initialEntityId: "@",
 	            allRecords: "=?",
 	            validateRequired: "=?",
-	            maxRecords: "@"
+	            maxRecords: "@",
+	            orderByList: "@?" //of the form prop|dir,prop2|dir,...
 	        };
 	        this.controller = SWTypeaheadInputFieldController;
 	        this.controllerAs = "swTypeaheadInputField";
