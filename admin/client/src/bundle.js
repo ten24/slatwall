@@ -29976,6 +29976,7 @@
 	                    $scope.productBundleGroupTypes.$$adding = false;
 	                    $scope.productBundleGroupTypeSaving = false;
 	                    $scope.productBundleGroupType = {};
+	                    $scope.productBundleGroupTypeCollection = {};
 	                    if (angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)) {
 	                        var productBundleGroupType = $hibachi.newType();
 	                        var parentType = $hibachi.newType();
@@ -29983,13 +29984,13 @@
 	                        productBundleGroupType.$$setParentType(parentType);
 	                        $scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
 	                    }
-	                    $scope.productBundleGroupTypeCollection = function () {
+	                    $scope.productBundleGroupTypeInit = function () {
 	                        var collection = collectionConfigService.newCollectionConfig(("Type"));
 	                        collection.setAllRecords(true);
 	                        collection.addFilter("parentType.systemCode", "productBundleGroupType", "=");
-	                        console.log("Called");
-	                        return collection;
+	                        $scope.productBundleGroupTypeCollection = collection;
 	                    };
+	                    $scope.productBundleGroupTypeInit();
 	                    /**
 	                     * Sets the state to adding and sets the initial data.
 	                     */
