@@ -22,7 +22,7 @@
             <div class="s-input-btn" ng-class="{ 's-add' : swTypeaheadSearch.multiselectMode, 's-search' : !swTypeaheadSearch.multiselectMode}">
                 <input  data-ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
-                        placeholder="search store locations by name, city, state, or zip"
+                        placeholder="{{swTypeaheadSearch.placeholderText}}"
                         ng-model="swTypeaheadSearch.searchText"
                         ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
                         type="search"

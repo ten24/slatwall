@@ -12,6 +12,7 @@ class SWAddressFormController {
 	public showAddressBookSelect:boolean = false;
 	public showCountrySelect:boolean = true;
 	public showSubmitButton:boolean = true;
+    public showCloseButton:boolean = true;
     public address:any;
     public addressName:string;
     public param:string = "?slataction=";
@@ -123,6 +124,7 @@ class SWAddressForm implements ng.IComponentOptions {
 
     public templateUrl:string = "";
     public bindings:any;
+    public transclude = true;
     public controller:any=SWAddressFormController;
     public controllerAs:string='SwAddressForm';
     public template:string;
