@@ -16,6 +16,7 @@ class SWTypeaheadInputFieldController {
     public propertyToShow;
     public initialEntityId:string; 
     public searchText:string;
+    public orderByList:string;
     public validateRequired:boolean;
     public action:string;
     public eventListeners;
@@ -65,6 +66,10 @@ class SWTypeaheadInputFieldController {
         
         if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.modelValue = this.initialEntityId;
+        }
+        
+        if(angular.isDefined(this.orderByList) && this.orderByList.length){
+            this.typeaheadCollectionConfig.setOrderBy(this.orderByList);
         }
 
         if(this.eventListeners){
