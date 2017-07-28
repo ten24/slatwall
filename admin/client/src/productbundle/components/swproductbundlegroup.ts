@@ -179,7 +179,7 @@ class SWProductBundleGroupController {
         var savePromise = this.productBundleGroup.$$save();
         savePromise.then((response)=>{
 			this.productBundleGroup.data.$$toggleEdit();
-			console.log("This refreshes", this.refreshProductBundleGroup());
+			this.refreshProductBundleGroup();
         }).catch((data)=>{
             //error handling handled by $$save
         });

@@ -40,7 +40,6 @@ class SWProductBundleGroupsController{
     }
 
     public refreshProductBundleGroup = () =>{
-        console.log("Refreshing" , this.productBundleGroups);
         for (var pbg in this.productBundleGroups){
             if (this.productBundleGroups[pbg]['forms'] != undefined || this.productBundleGroups[pbg]['forms'][`createProductBundle${pbg}`] != undefined){
                 //updates the min and max from the raw form values instead of making another http call.
@@ -52,7 +51,6 @@ class SWProductBundleGroupsController{
                 }
 
                if (this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity'] != undefined && this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'] != undefined){
-                    console.log(this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue']);
                     if (this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] !== this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue']){
                         this.productBundleGroups[`${pbg}`]['data']['minimumQuantity'] = this.productBundleGroups[pbg]['forms'][`form.createProductBundle${pbg}`]['minimumQuantity']['$modelValue'];
                     }

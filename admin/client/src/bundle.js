@@ -24793,8 +24793,13 @@
 	            link: function (scope, element, attributes, ngModel) {
 	                ngModel.$asyncValidators.swvalidationuniqueornull = function (modelValue, viewValue) {
 	                    var currentValue = modelValue || viewValue;
-	                    var property = scope.propertyDisplay.property;
-	                    return validationService.validateUniqueOrNull(currentValue, scope.propertyDisplay.object, property);
+	                    if (scope && scope.propertyDisplay && scope.propertyDisplay.property) {
+	                        var property = scope.propertyDisplay.property;
+	                        return validationService.validateUniqueOrNull(currentValue, scope.propertyDisplay.object, property);
+	                    }
+	                    else {
+	                        return $q.resolve(); //nothing to validate yet.
+	                    }
 	                };
 	            }
 	        };
@@ -30159,7 +30164,6 @@
 	            productBundleGroup = _this.productBundleService.decorateProductBundleGroup(productBundleGroup);
 	        };
 	        this.refreshProductBundleGroup = function () {
-	            console.log("Refreshing", _this.productBundleGroups);
 	            for (var pbg in _this.productBundleGroups) {
 	                if (_this.productBundleGroups[pbg]['forms'] != undefined || _this.productBundleGroups[pbg]['forms']["createProductBundle" + pbg] != undefined) {
 	                    //updates the min and max from the raw form values instead of making another http call.
@@ -30169,7 +30173,6 @@
 	                        }
 	                    }
 	                    if (_this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity'] != undefined && _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue'] != undefined) {
-	                        console.log(_this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue']);
 	                        if (_this.productBundleGroups["" + pbg]['data']['minimumQuantity'] !== _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue']) {
 	                            _this.productBundleGroups["" + pbg]['data']['minimumQuantity'] = _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue'];
 	                        }
@@ -30353,7 +30356,7 @@
 	            var savePromise = _this.productBundleGroup.$$save();
 	            savePromise.then(function (response) {
 	                _this.productBundleGroup.data.$$toggleEdit();
-	                console.log("This refreshes", _this.refreshProductBundleGroup());
+	                _this.refreshProductBundleGroup();
 	            }).catch(function (data) {
 	                //error handling handled by $$save
 	            });
