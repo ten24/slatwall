@@ -1,4 +1,4 @@
-component extends="FW1.framework" {
+component extends="framework.one" {
 
 	// ======= START: ENVIORNMENT CONFIGURATION =======
 
@@ -106,7 +106,7 @@ component extends="FW1.framework" {
 
 	// Defaults
 	this.mappings[ "/#variables.framework.applicationKey#" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/org/Hibachi/", "");
-
+	this.mappings[ '/framework' ] = expandPath( '/#variables.framework.applicationKey#/org/Hibachi/framework' );
 	// Allow For Application Config
 	try{include "../../config/configMappings.cfm";}catch(any e){}
 	// Allow For Instance Config
@@ -179,6 +179,7 @@ component extends="FW1.framework" {
 	// =======  END: ENVIORNMENT CONFIGURATION  =======
 
 	public any function bootstrap() {
+		writedump('test');abort;
 		setupGlobalRequest();
 
 		// Announce the applicatoinRequest event
