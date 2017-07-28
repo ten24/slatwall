@@ -30158,6 +30158,25 @@
 	            productBundleGroup.$$setProductBundleSku(_this.sku);
 	            productBundleGroup = _this.productBundleService.decorateProductBundleGroup(productBundleGroup);
 	        };
+	        this.refreshProductBundleGroup = function () {
+	            console.log("Refreshing", _this.productBundleGroups);
+	            for (var pbg in _this.productBundleGroups) {
+	                if (_this.productBundleGroups[pbg]['forms'] != undefined || _this.productBundleGroups[pbg]['forms']["createProductBundle" + pbg] != undefined) {
+	                    //updates the min and max from the raw form values instead of making another http call.
+	                    if (_this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['maximumQuantity'] != undefined && _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['maximumQuantity']['$modelValue'] != undefined) {
+	                        if (_this.productBundleGroups["" + pbg]['data']['maximumQuantity'] !== _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['maximumQuantity']['$modelValue']) {
+	                            _this.productBundleGroups["" + pbg]['data']['maximumQuantity'] = _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['maximumQuantity']['$modelValue'];
+	                        }
+	                    }
+	                    if (_this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity'] != undefined && _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue'] != undefined) {
+	                        console.log(_this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue']);
+	                        if (_this.productBundleGroups["" + pbg]['data']['minimumQuantity'] !== _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue']) {
+	                            _this.productBundleGroups["" + pbg]['data']['minimumQuantity'] = _this.productBundleGroups[pbg]['forms']["form.createProductBundle" + pbg]['minimumQuantity']['$modelValue'];
+	                        }
+	                    }
+	                }
+	            }
+	        };
 	        $scope.editing = $scope.editing || true;
 	        angular.forEach(this.productBundleGroups, function (obj) {
 	            productBundleService.decorateProductBundleGroup(obj);
@@ -30334,7 +30353,7 @@
 	            var savePromise = _this.productBundleGroup.$$save();
 	            savePromise.then(function (response) {
 	                _this.productBundleGroup.data.$$toggleEdit();
-	                window.location.reload();
+	                console.log("This refreshes", _this.refreshProductBundleGroup());
 	            }).catch(function (data) {
 	                //error handling handled by $$save
 	            });
@@ -30372,6 +30391,7 @@
 	            index: "=",
 	            addProductBundleGroup: "&",
 	            removeProductBundleGroup: "&",
+	            refreshProductBundleGroup: "&",
 	            formName: "@"
 	        };
 	        this.controller = SWProductBundleGroupController;

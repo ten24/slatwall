@@ -49,7 +49,8 @@ class SWProductBundleGroupController {
 	public totalPages;
 	public skuCollectionConfig;
 	public removeProductBundleGroup;
-    public addProductBundleGroup;
+	public addProductBundleGroup;
+	public refreshProductBundleGroup;
     public productBundleGroups; 
 
     // @ngInject
@@ -61,7 +62,7 @@ class SWProductBundleGroupController {
                 private utilityService,
                 private formService,
 				private $hibachi,
-                private productBundlePartialsPath            
+				private productBundlePartialsPath    
     ){
 		this.init(); 
 	}
@@ -178,7 +179,7 @@ class SWProductBundleGroupController {
         var savePromise = this.productBundleGroup.$$save();
         savePromise.then((response)=>{
 			this.productBundleGroup.data.$$toggleEdit();
-			window.location.reload();
+			console.log("This refreshes", this.refreshProductBundleGroup());
         }).catch((data)=>{
             //error handling handled by $$save
         });
@@ -208,6 +209,7 @@ class SWProductBundleGroup implements ng.IDirective{
 		index:"=",
 		addProductBundleGroup:"&",
 		removeProductBundleGroup:"&",
+		refreshProductBundleGroup:"&",
 		formName:"@"
 	};
     
