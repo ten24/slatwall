@@ -177,7 +177,8 @@ class SWProductBundleGroupController {
     public save = () =>{
         var savePromise = this.productBundleGroup.$$save();
         savePromise.then((response)=>{
-            this.productBundleGroup.data.$$toggleEdit()
+			this.productBundleGroup.data.$$toggleEdit();
+			window.location.reload();
         }).catch((data)=>{
             //error handling handled by $$save
         });

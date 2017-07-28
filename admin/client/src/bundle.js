@@ -22066,9 +22066,6 @@
 	            _this.$log.debug(formName);
 	            //get the validations for the current element.
 	            var propertyValidations = _this.object.validations.properties[name];
-	            /*
-	            * Investigating why number inputs are not working.
-	            * */
 	            //check if the contexts match.
 	            if (angular.isObject(propertyValidations)) {
 	                //if this is a procesobject validation then the context is implied
@@ -22157,7 +22154,7 @@
 	            var acceptedFieldTypes = ['email', 'text', 'password', 'number', 'time', 'date', 'datetime', 'json', 'file'];
 	            if (acceptedFieldTypes.indexOf(_this.fieldType.toLowerCase()) >= 0) {
 	                var inputType = _this.fieldType.toLowerCase();
-	                if (_this.fieldType === 'time') {
+	                if (_this.fieldType === 'time' || _this.fieldType === 'number') {
 	                    inputType = "text";
 	                }
 	                template = currencyTitle + '<input type="' + inputType + '" class="' + _this.class + '" ' +
@@ -30337,6 +30334,7 @@
 	            var savePromise = _this.productBundleGroup.$$save();
 	            savePromise.then(function (response) {
 	                _this.productBundleGroup.data.$$toggleEdit();
+	                window.location.reload();
 	            }).catch(function (data) {
 	                //error handling handled by $$save
 	            });
