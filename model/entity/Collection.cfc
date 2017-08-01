@@ -148,6 +148,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 
 	}
+	
+	public boolean function getDirtyReadFlag(){
+		if(getApplicationValue('databaseType') eq "Oracle10g"){
+			return false;
+		}
+		return variables.dirtyReadFlag;
+	}
+	
+	public boolean function setDirtyReadFlag(required boolean flagValue){
+		if(getApplicationValue('databaseType') eq "Oracle10g"){
+			variables.dirtyReadFlag = false;
+		}else{
+			variables.dirtyReadFlag = arguments.flagValue;	
+		}
+	}
 
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
