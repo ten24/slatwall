@@ -60,7 +60,6 @@ class SWTypeaheadSearchController {
         
         this.dropdownOpen = false;
         
-       
         //populates all needed variables
         this.$transclude($scope,()=>{});
 
@@ -92,13 +91,10 @@ class SWTypeaheadSearchController {
             this.hideSearch = true;
         }
 
-        if( angular.isUndefined(this.collectionConfig)){
-            if(angular.isDefined(this.entity)){
-                this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-            } else {
-                throw("You did not pass the correct collection config data to swTypeaheadSearch");
-            }
+        if( angular.isUndefined(this.collectionConfig) && angular.isDefined(this.entity)){
+            this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
         }
+        
         if( angular.isDefined(this.collectionConfig)){
             this.primaryIDPropertyName = $hibachi.getPrimaryIDPropertyNameByEntityName(this.collectionConfig.baseEntityName);
         }

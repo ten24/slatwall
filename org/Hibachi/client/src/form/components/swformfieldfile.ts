@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWFormFieldFileController implements ng.IDirective {
+class SWFormFieldFileController  {
 	public propertyDisplay:any;
 	//@ngInject
 	constructor (public formService) {
