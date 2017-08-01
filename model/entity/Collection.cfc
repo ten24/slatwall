@@ -156,7 +156,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.dirtyReadFlag;
 	}
 	
-	public boolean function setDirtyReadFlag(required boolean flagValue){
+	public void function setDirtyReadFlag(required boolean flagValue){
 		if(getApplicationValue('databaseType') eq "Oracle10g"){
 			variables.dirtyReadFlag = false;
 		}else{
