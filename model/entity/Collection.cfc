@@ -1954,6 +1954,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'P' & uuid;
 	}
 
+	public string function replaceStringTemplateInFilterValue(required any object, required string filterValue){
+		if(getHibachiScope().getService('hibachiUtilityService').isStringTemplate(arguments.filterValue)){
+			return  getHibachiScope().getService('hibachiUtilityService').replaceStringTemplate(arguments.filterValue, arguments.object);
+		}
+		return filterValue;
+	}
+
 	private string function getPredicate(required any filter){
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
@@ -1963,6 +1970,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				filter.value = "";
 			}
 		}
+		//Session Filters
+		filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), filter.value);
+
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(arguments.filter.ormtype eq 'timestamp'){
