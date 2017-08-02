@@ -443,7 +443,7 @@
                                     </div>
                                 </div>
                                 <hr/>
-                                <div class="row">
+                                <!---<div class="row">
                                     <div class="col-xs-3">
                                         <label class="s-strong" style="margin-top: 4px;">Extra Print Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
                                     </div>
@@ -475,7 +475,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>--->
                             </div>
                         </div>
                     </div>
@@ -531,18 +531,18 @@
                                         <div class="s-title">Captured</div>
                                         <div class="s-content">{{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountCapturedTotal']|currency}}</div>
                                     </div>
-                                    <div class="col-xs-2 s-captured" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] === 0">
-                                    	<span>
+                                    <div class="col-xs-2 s-captured">
+                                    	<span ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] === 0">
 	                                        <div class="s-title">To Capture</div>
 	                                        <input type="text" class="form-control" ng-model="swFulfillmentBatchDetailController.state.capturableAmount">
 	                                        <button class="btn btn-xs btn-success">Capture</button>
                                         </span>
                                     </div>
                                     
-                                    <div class="col-xs-4" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] === 0">
+                                    <div class="col-xs-4" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
                                         <div class="btn-group s-btn-dropdown" role="group"> 
-                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">
-						                    	<span ><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled' && swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span> Fulfill</span> 
+                                            <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill(); swFulfillmentBatchDetailController.state.loading = true">
+						                    	<span><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled'">Capture &amp;</span> Fulfill</span> 
 						                    </button>
                                             <ul class="dropdown-menu" role="menu">
 												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>

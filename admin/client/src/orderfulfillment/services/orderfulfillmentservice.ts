@@ -34,7 +34,8 @@ class OrderFulfillmentService {
         
         //arrays
         accountNames:[],
-        orderDeliveryAttributes:[]
+        orderDeliveryAttributes:[],
+        loading: false
     };
 
     // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
@@ -110,18 +111,28 @@ class OrderFulfillmentService {
             
             case actions.CREATE_FULFILLMENT_REQUESTED:
                 //create all the data
+                console.log("Hit inside");
+                try{
                 this.fulfillItems(action.payload.viewState, false);
-                //Needs to set the next available fulfillment if this was successful.
+                } catch(e){
+                    console.log(e);
+                }
+                this.state.loading = false;
+                
                 return {...this.state, action}
              
              case actions.SETUP_ORDERDELIVERYATTRIBUTES:
-             
                 this.createOrderDeliveryAttributeCollection();
                 return {...this.state, action}
             
             case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                 this.deleteFulfillmentBatchItem();
                 return {...this.state, action}
+            
+            case actions.TOGGLE_LOADER:
+                this.state.loading = !this.state.loading;
+                return {...this.state, action}
+            
             default:
                 return this.state;
         }
@@ -305,6 +316,7 @@ class OrderFulfillmentService {
             
             //clear first
             this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
+            
             //then select the next.
             if (selectedRowIndex != -1){
                 //Set the next one.
@@ -314,7 +326,9 @@ class OrderFulfillmentService {
                         .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
             }
+            
         });
+        
     }
 
     /** Saves a comment. */

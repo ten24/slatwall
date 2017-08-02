@@ -49760,7 +49760,8 @@
 	            orderFulfillmentItemsCollection: undefined,
 	            //arrays
 	            accountNames: [],
-	            orderDeliveryAttributes: []
+	            orderDeliveryAttributes: [],
+	            loading: false
 	        };
 	        // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
 	        this.loggerEpic = function () {
@@ -49825,14 +49826,23 @@
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.CREATE_FULFILLMENT_REQUESTED:
 	                    //create all the data
-	                    _this.fulfillItems(action.payload.viewState, false);
-	                    //Needs to set the next available fulfillment if this was successful.
+	                    console.log("Hit inside");
+	                    try {
+	                        _this.fulfillItems(action.payload.viewState, false);
+	                    }
+	                    catch (e) {
+	                        console.log(e);
+	                    }
+	                    _this.state.loading = false;
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.SETUP_ORDERDELIVERYATTRIBUTES:
 	                    _this.createOrderDeliveryAttributeCollection();
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
 	                    _this.deleteFulfillmentBatchItem();
+	                    return __assign({}, _this.state, { action: action });
+	                case actions.TOGGLE_LOADER:
+	                    _this.state.loading = !_this.state.loading;
 	                    return __assign({}, _this.state, { action: action });
 	                default:
 	                    return _this.state;
@@ -50261,6 +50271,10 @@
 	 * This action will toggle the comment edit and allow a user to start editing or stop editing a comment.
 	 */
 	exports.TOGGLE_EDITCOMMENT = "TOGGLE_EDITCOMMENT";
+	/**
+	 * This action will toggle the page loader.
+	 */
+	exports.TOGGLE_LOADER = "TOGGLE_LOADER";
 	/**
 	 * This will toggle the batch listing to its full or half size view.
 	 */
@@ -50819,14 +50833,12 @@
 	        this.listingService = listingService;
 	        this.orderFulfillmentService = orderFulfillmentService;
 	        this.rbkeyService = rbkeyService;
-	        /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
 	        this.userViewingFulfillmentBatchDetail = function (batchID) {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: actions.SETUP_BATCHDETAIL,
 	                payload: { fulfillmentBatchId: batchID }
 	            });
 	        };
-	        /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
 	        this.userToggleFulfillmentBatchListing = function () {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: actions.TOGGLE_BATCHLISTING,
@@ -50875,7 +50887,8 @@
 	            });
 	        };
 	        this.userCaptureAndFulfill = function () {
-	            _this.state.loading = true; //will go off automatically as the state is overwritten.
+	            //request the fulfillment process.
+	            _this.state.loading = false;
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: actions.CREATE_FULFILLMENT_REQUESTED,
 	                payload: { viewState: _this.state }
@@ -50919,20 +50932,15 @@
 	        };
 	        //setup a state change listener and send over the fulfillmentBatchID
 	        this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe(function (stateChanges) {
-	            //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
-	            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == actions.SETUP_BATCHDETAIL) {
-	                //GET the state.
-	                _this.state = stateChanges;
-	            }
-	            if ((stateChanges.action && stateChanges.action.type) && stateChanges.action.type == actions.UPDATE_BATCHDETAIL) {
-	                //GET the state.
-	                _this.state = stateChanges;
-	            }
-	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.TOGGLE_EDITCOMMENT || stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED || stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED)) {
-	                //GET the state.
-	                _this.state = stateChanges;
-	            }
-	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES)) {
+	            //Handle basic requests
+	            if ((stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.TOGGLE_EDITCOMMENT ||
+	                stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED ||
+	                stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED ||
+	                stateChanges.action.type == actions.CREATE_FULFILLMENT_REQUESTED ||
+	                stateChanges.action.type == actions.UPDATE_BATCHDETAIL ||
+	                stateChanges.action.type == actions.SETUP_BATCHDETAIL ||
+	                stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
+	                stateChanges.action.type == actions.TOGGLE_LOADER)) {
 	                //GET the state.
 	                _this.state = stateChanges;
 	            }

@@ -27,6 +27,11 @@
 export const TOGGLE_EDITCOMMENT = "TOGGLE_EDITCOMMENT";
 
 /**
+ * This action will toggle the page loader.
+ */
+export const TOGGLE_LOADER = "TOGGLE_LOADER";
+
+/**
  * This will toggle the batch listing to its full or half size view.
  */
 export const TOGGLE_BATCHLISTING  = "TOGGLE_BATCHLISTING";

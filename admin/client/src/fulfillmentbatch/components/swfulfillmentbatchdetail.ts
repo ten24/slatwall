@@ -16,26 +16,23 @@ class SWFulfillmentBatchDetailController  {
        
         //setup a state change listener and send over the fulfillmentBatchID
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{
-            //There only needs to be a single check here that handles all cases. I'm using multiple for debugging only.
             
-            if (stateChanges.action && stateChanges.action.type && stateChanges.action.type == actions.SETUP_BATCHDETAIL){
-                //GET the state.
-                this.state = stateChanges;
-            }
-            if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == actions.UPDATE_BATCHDETAIL){
-                //GET the state.
-                this.state = stateChanges;
-            }
-            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.TOGGLE_EDITCOMMENT || stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED || stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED)){
-                //GET the state.
-                this.state = stateChanges;
-            }
-            if ( (stateChanges.action && stateChanges.action.type) && (stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES)){
+            //Handle basic requests
+            if ( (stateChanges.action && stateChanges.action.type) && (
+                stateChanges.action.type == actions.TOGGLE_EDITCOMMENT || 
+                stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED || 
+                stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED || 
+                stateChanges.action.type == actions.CREATE_FULFILLMENT_REQUESTED || 
+                stateChanges.action.type == actions.UPDATE_BATCHDETAIL || 
+                stateChanges.action.type == actions.SETUP_BATCHDETAIL || 
+                stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
+                stateChanges.action.type == actions.TOGGLE_LOADER)){
                 //GET the state.
                 this.state = stateChanges;
             }
 
         });
+
         //Get the attributes to display in the custom section.
         this.userViewingOrderDeliveryAttributes();
         //Dispatch the fulfillmentBatchID and setup the state.
@@ -43,7 +40,6 @@ class SWFulfillmentBatchDetailController  {
 
     }
     
-    /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
     public userViewingFulfillmentBatchDetail = (batchID) => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.SETUP_BATCHDETAIL,
@@ -51,7 +47,6 @@ class SWFulfillmentBatchDetailController  {
         });
     }
 
-    /** This is an action called thats says we need to initialize the fulfillmentBatch detail. */
     public userToggleFulfillmentBatchListing = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.TOGGLE_BATCHLISTING,
@@ -106,8 +101,9 @@ class SWFulfillmentBatchDetailController  {
     }
 
     public userCaptureAndFulfill = () => {
-         this.state.loading = true; //will go off automatically as the state is overwritten.
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+        //request the fulfillment process.
+        this.state.loading = false;
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }
         });
