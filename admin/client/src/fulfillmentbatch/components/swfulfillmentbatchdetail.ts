@@ -106,6 +106,7 @@ class SWFulfillmentBatchDetailController  {
     }
 
     public userCaptureAndFulfill = () => {
+         this.state.loading = true; //will go off automatically as the state is overwritten.
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }
