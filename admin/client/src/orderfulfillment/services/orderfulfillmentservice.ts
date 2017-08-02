@@ -111,14 +111,7 @@ class OrderFulfillmentService {
             
             case actions.CREATE_FULFILLMENT_REQUESTED:
                 //create all the data
-                console.log("Hit inside");
-                try{
                 this.fulfillItems(action.payload.viewState, false);
-                } catch(e){
-                    console.log(e);
-                }
-                this.state.loading = false;
-                
                 return {...this.state, action}
              
              case actions.SETUP_ORDERDELIVERYATTRIBUTES:
@@ -159,7 +152,7 @@ class OrderFulfillmentService {
         this.createLgOrderFulfillmentBatchItemCollection();
         this.createSmOrderFulfillmentBatchItemCollection();
         this.getOrderFulfillmentEmailTemplates();
-
+        //Select the initial table row
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
             if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED"){
@@ -307,7 +300,7 @@ class OrderFulfillmentService {
         processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
         
         this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then((result)=>{
-            if (result.orderDeliveryID != undefined){
+            if (result.orderDeliveryID != undefined && result.orderDeliveryID != ''){
                 return result;
             }
             
@@ -315,6 +308,7 @@ class OrderFulfillmentService {
             let selectedRowIndex = this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", this.state.currentSelectedFulfillmentBatchItemID);
             
             //clear first
+            this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
             this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
             
             //then select the next.
@@ -322,11 +316,19 @@ class OrderFulfillmentService {
                 //Set the next one.
                 selectedRowIndex = selectedRowIndex+1;
                 this.listingService
+                    .getListing("fulfillmentBatchItemTable1").selectionService
+                        .addSelection(this.listingService.getListing("fulfillmentBatchItemTable1").tableID, 
+                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable1")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
+           
+                
+                this.listingService
                     .getListing("fulfillmentBatchItemTable2").selectionService
                         .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
-                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
-            }
+                            this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
             
+                }
+            
+
         });
         
     }

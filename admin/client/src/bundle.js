@@ -49826,14 +49826,7 @@
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.CREATE_FULFILLMENT_REQUESTED:
 	                    //create all the data
-	                    console.log("Hit inside");
-	                    try {
-	                        _this.fulfillItems(action.payload.viewState, false);
-	                    }
-	                    catch (e) {
-	                        console.log(e);
-	                    }
-	                    _this.state.loading = false;
+	                    _this.fulfillItems(action.payload.viewState, false);
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.SETUP_ORDERDELIVERYATTRIBUTES:
 	                    _this.createOrderDeliveryAttributeCollection();
@@ -49854,6 +49847,7 @@
 	            _this.createLgOrderFulfillmentBatchItemCollection();
 	            _this.createSmOrderFulfillmentBatchItemCollection();
 	            _this.getOrderFulfillmentEmailTemplates();
+	            //Select the initial table row
 	            //get the listingDisplay store and listen for changes to the listing display state.
 	            _this.listingService.listingDisplayStore.store$.subscribe(function (update) {
 	                if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
@@ -49986,20 +49980,24 @@
 	            processObject.data['shippingAddress'] = data.shippingAddress || "";
 	            processObject.data['useShippingIntegrationForTrackingNumber'] = data.useShippingIntegrationForTrackingNumber || false;
 	            _this.$hibachi.saveEntity("OrderDelivery", '', processObject.data, "create").then(function (result) {
-	                if (result.orderDeliveryID != undefined) {
+	                if (result.orderDeliveryID != undefined && result.orderDeliveryID != '') {
 	                    return result;
 	                }
 	                //Sets the next selected value.
 	                var selectedRowIndex = _this.listingService.getSelectedBy("fulfillmentBatchItemTable1", "fulfillmentBatchItemID", _this.state.currentSelectedFulfillmentBatchItemID);
 	                //clear first
+	                _this.listingService.clearAllSelections("fulfillmentBatchItemTable1");
 	                _this.listingService.clearAllSelections("fulfillmentBatchItemTable2");
 	                //then select the next.
 	                if (selectedRowIndex != -1) {
 	                    //Set the next one.
 	                    selectedRowIndex = selectedRowIndex + 1;
 	                    _this.listingService
+	                        .getListing("fulfillmentBatchItemTable1").selectionService
+	                        .addSelection(_this.listingService.getListing("fulfillmentBatchItemTable1").tableID, _this.listingService.getListingPageRecords("fulfillmentBatchItemTable1")[selectedRowIndex][_this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
+	                    _this.listingService
 	                        .getListing("fulfillmentBatchItemTable2").selectionService
-	                        .addSelection(_this.listingService.getListing("fulfillmentBatchItemTable2").tableID, _this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][_this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable2")]);
+	                        .addSelection(_this.listingService.getListing("fulfillmentBatchItemTable2").tableID, _this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][_this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
 	                }
 	            });
 	        };
@@ -50888,7 +50886,6 @@
 	        };
 	        this.userCaptureAndFulfill = function () {
 	            //request the fulfillment process.
-	            _this.state.loading = false;
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: actions.CREATE_FULFILLMENT_REQUESTED,
 	                payload: { viewState: _this.state }
@@ -50941,7 +50938,7 @@
 	                stateChanges.action.type == actions.SETUP_BATCHDETAIL ||
 	                stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
 	                stateChanges.action.type == actions.TOGGLE_LOADER)) {
-	                //GET the state.
+	                //set the new state.
 	                _this.state = stateChanges;
 	            }
 	        });
