@@ -364,6 +364,10 @@
 			return reMatchNoCase("\${[^{(}]+}",arguments.template);
 		}
 
+		public boolean function isStringTemplate(required string value){
+			return arraylen(getTemplateKeys(value));
+		}
+
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 
@@ -378,18 +382,25 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object) && (
+				} else if (isObject(arguments.object) &&
 					(
-						arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						(
+							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+						)
 						||
 						(
-							arguments.object.isPersistent() 
+							arguments.object.isPersistent()
 							&& structKeyExists(getService('hibachiService'),'getHasAttributeByEntityNameAndPropertyIdentifier')
-							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
-							||
+							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+						)
+						||
+						(
+							!arguments.object.isPersistent() && arguments.object.hasPropertyByPropertyIdentifier(valueKey)
+						)
+						||
 						(
 							!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey)
-						)	
+						)
 					)
 				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
