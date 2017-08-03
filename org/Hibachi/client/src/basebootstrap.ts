@@ -155,7 +155,7 @@ export class BaseBootStrapper{
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
+        var urlString = this.appConfig.baseURL+'custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
 
         this.$http(
             {
