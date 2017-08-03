@@ -47,7 +47,6 @@ class OrderFulfillmentService {
      * The reducer is responsible for modifying the state of the state object into a new state.
      */
     public orderFulfillmentStateReducer:FluxStore.Reducer = (state:any, action:FluxStore.Action<any>):Object => {
-        console.log(action);
         switch(action.type) {
             case 'TOGGLE_FULFILLMENT_LISTING':
             
