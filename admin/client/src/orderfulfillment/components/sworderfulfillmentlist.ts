@@ -210,7 +210,7 @@ class SWOrderFulfillmentListController {
      }
 
      private createOrderFulfillmentCollectionWithFilterMap = (filterMap:Map<String, any>):void => {
-        console.log("Called");
+        
         delete this.orderFulfillmentCollection;
         this.view = undefined;
         
@@ -227,8 +227,7 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
         
         //Build the collection using just the correct filters.
-        console.log("Found", filterMap.keys());
-
+        
         //Check the filters for multiple true
         var hasMultipleEnabled = false;
         var filterCount = 0;
@@ -239,7 +238,6 @@ class SWOrderFulfillmentListController {
         });
 
         if (filterCount > 1){
-            console.log("True");
             hasMultipleEnabled = true;
         }
 
@@ -377,15 +375,8 @@ class SWOrderFulfillmentListController {
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
                 }
                 
-                //add the filter to the group
-                //filterGroup.push(filter);
-
-                //add the group
-                //this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
-
             }
             if (value = false){
-                console.log("False");
                 this.createOrderFulfillmentCollection();
             }
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
@@ -413,19 +404,12 @@ class SWOrderFulfillmentListController {
         
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
-            
-            //If there is only one filter group add a second. otherwise add to the second.
-            var filterGroup = [];
-            var filter = {};
-            
-                var filterMap = new Map<String, any>();
-                filterMap.set("partial", this.filters['partial']);
-                filterMap.set("available", this.filters['available']);
-                filterMap.set("unavailable", this.filters['unavailable']);
-                filterMap.set("location", this.filters['location']);
-                console.log("Map: ", filterMap.keys(), filterMap.values());
-                this.createOrderFulfillmentCollectionWithFilterMap(filterMap);
-
+            var filterMap = new Map<String, any>();
+            filterMap.set("partial", this.filters['partial']);
+            filterMap.set("available", this.filters['available']);
+            filterMap.set("unavailable", this.filters['unavailable']);
+            filterMap.set("location", this.filters['location']);
+            this.createOrderFulfillmentCollectionWithFilterMap(filterMap);
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
             console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }

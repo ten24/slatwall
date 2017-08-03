@@ -50474,7 +50474,6 @@
 	            });
 	        };
 	        this.createOrderFulfillmentCollectionWithFilterMap = function (filterMap) {
-	            console.log("Called");
 	            delete _this.orderFulfillmentCollection;
 	            _this.view = undefined;
 	            _this.orderFulfillmentCollection = _this.collectionConfigService.newCollectionConfig("OrderFulfillment");
@@ -50489,7 +50488,6 @@
 	            _this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
 	            _this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
 	            //Build the collection using just the correct filters.
-	            console.log("Found", filterMap.keys());
 	            //Check the filters for multiple true
 	            var hasMultipleEnabled = false;
 	            var filterCount = 0;
@@ -50499,7 +50497,6 @@
 	                }
 	            });
 	            if (filterCount > 1) {
-	                console.log("True");
 	                hasMultipleEnabled = true;
 	            }
 	            //Add the filters.
@@ -50615,13 +50612,8 @@
 	                    if (key == "location" && value != undefined) {
 	                        filter = _this.getCollectionByView(_this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=", "OR", false);
 	                    }
-	                    //add the filter to the group
-	                    //filterGroup.push(filter);
-	                    //add the group
-	                    //this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
 	                }
 	                if (value = false) {
-	                    console.log("False");
 	                    _this.createOrderFulfillmentCollection();
 	                }
 	            }
@@ -50646,15 +50638,11 @@
 	            }, 1);
 	            //Always keep the orderNumber filter.
 	            if (_this.getCollectionByView(_this.getView()) && _this.getCollectionByView(_this.getView()).baseEntityName == "OrderFulfillment") {
-	                //If there is only one filter group add a second. otherwise add to the second.
-	                var filterGroup = [];
-	                var filter = {};
 	                var filterMap = new Map();
 	                filterMap.set("partial", _this.filters['partial']);
 	                filterMap.set("available", _this.filters['available']);
 	                filterMap.set("unavailable", _this.filters['unavailable']);
 	                filterMap.set("location", _this.filters['location']);
-	                console.log("Map: ", filterMap.keys(), filterMap.values());
 	                _this.createOrderFulfillmentCollectionWithFilterMap(filterMap);
 	            }
 	            else if (_this.getCollectionByView(_this.getView()).baseEntityName == "OrderItem") {
