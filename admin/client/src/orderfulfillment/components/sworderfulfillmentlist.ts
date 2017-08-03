@@ -223,8 +223,6 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
-        this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
         
         //Build the collection using just the correct filters.
         
@@ -234,6 +232,7 @@ class SWOrderFulfillmentListController {
         filterMap.forEach((v, k) => {
             if (filterMap.get(k) === true){
                 filterCount++;
+                console.log("Filter count", filterCount);
             }
         });
 
@@ -246,16 +245,18 @@ class SWOrderFulfillmentListController {
             var systemCode = (k == 'available') ? 'ofisAvailable' : ((k == 'partial') ? 'ofisPartial' : ((k == 'unavailable') ? 'ofisUnAvailable' : ((k == 'location') ? 'location' : '' )));
             //handle truth   
             if (filterMap.get(k) === true){
-                
                 if (systemCode.length){
                     this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "=", (hasMultipleEnabled ? "OR" : "AND"));
+                    this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
+                    this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
                 }
             }
             //handle false
             if (filterMap.get(k) === false && filterMap.get(k) != undefined){
-                
                 if (systemCode.length){
                     this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "!=", 'AND');
+                    this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
+                    this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
                 }
             }
         });
