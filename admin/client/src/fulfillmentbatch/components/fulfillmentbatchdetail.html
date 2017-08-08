@@ -73,9 +73,10 @@
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-print"></i>
                             </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Picking List</a></li>
-                                <li><a href="#">Standard Packing List</a></li>
+                            <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresPrintList()">
+                                <li ng-repeat="printTemplate in swFulfillmentBatchDetailController.state.printCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
+                                	<a title="{{printTemplate.printTemplateName}}" class="adminentityprocessprint " target="_self" href="/?slatAction=entity.processprint&amp;printTemplateID={{printTemplate.printTemplateID}}&amp;printID=&amp;redirectAction=admin:entity.detailfulfillmentbatch&amp;processContext=addToQueue">{{printTemplate.printTemplateName}}</a>
+                                </li>
                             </ul>
                         </div>
                         
@@ -83,10 +84,12 @@
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-envelope"></i>
                             </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="##">Cancellation</a></li>
-                                <li><a href="##">Confirmation</a></li>
-                                <li><a href="##">Order Stutus</a></li>
+                             <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresEmailList()">
+                                <li ng-repeat="emailTemplate in swFulfillmentBatchDetailController.state.emailCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
+                                	<a title="{{emailTemplate.emailTemplateName}}" class="adminentitypreprocessemail  modalload-fullwidth" target="_self" href="/?slatAction=entity.preprocessemail&amp;emailTemplateID={{emailTemplate.emailTemplateID}}&amp;redirectAction=admin:entity.detailfulfillmentbatch;processContext=addToQueue" data-toggle="modal" data-target="#adminModal">
+										{{emailTemplate.emailTemplateName}}
+									</a>
+                                </li>
                             </ul>
                         </div>
                         

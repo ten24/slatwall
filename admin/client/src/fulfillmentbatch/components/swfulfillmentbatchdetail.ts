@@ -23,6 +23,8 @@ class SWFulfillmentBatchDetailController  {
                 stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED || 
                 stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED || 
                 stateChanges.action.type == actions.CREATE_FULFILLMENT_REQUESTED || 
+                stateChanges.action.type == actions.PRINT_LIST_REQUESTED || 
+                stateChanges.action.type == actions.EMAIL_LIST_REQUESTED || 
                 stateChanges.action.type == actions.UPDATE_BATCHDETAIL || 
                 stateChanges.action.type == actions.SETUP_BATCHDETAIL || 
                 stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
@@ -35,6 +37,7 @@ class SWFulfillmentBatchDetailController  {
 
         //Get the attributes to display in the custom section.
         this.userViewingOrderDeliveryAttributes();
+
         //Dispatch the fulfillmentBatchID and setup the state.
         this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);
 

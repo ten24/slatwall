@@ -50191,8 +50191,11 @@
 	            _this.state.printCollection = _this.collectionConfigService.newCollectionConfig("PrintTemplate");
 	            _this.state.printCollection.addDisplayProperty("printTemplateID");
 	            _this.state.printCollection.addDisplayProperty("printTemplateName");
+	            _this.state.printCollection.addDisplayProperty("printTemplateObject");
 	            _this.state.printCollection.addFilter("printTemplateObject", 'OrderFulfillment', "=");
-	            return _this.state.printCollection.getEntity().then(function (result) { return (result.pageRecords.length) ? result.pageRecords : []; });
+	            _this.state.printCollection.getEntity().then(function (result) {
+	                _this.state.printCollection = result.pageRecords || [];
+	            });
 	        };
 	        /**
 	         * Setup the initial email template -> orderFulfillment Collection.
@@ -50201,8 +50204,11 @@
 	            _this.state.emailCollection = _this.collectionConfigService.newCollectionConfig("EmailTemplate");
 	            _this.state.emailCollection.addDisplayProperty("emailTemplateID");
 	            _this.state.emailCollection.addDisplayProperty("emailTemplateName");
+	            _this.state.emailCollection.addDisplayProperty("emailTemplateObject");
 	            _this.state.emailCollection.addFilter("emailTemplateObject", 'OrderFulfillment', "=");
-	            return _this.state.emailCollection.getEntity().then(function (result) { return (result.pageRecords.length) ? result.pageRecords : []; });
+	            _this.state.emailCollection.getEntity().then(function (result) {
+	                _this.state.emailCollection = result.pageRecords || [];
+	            });
 	        };
 	        /**
 	         * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
@@ -51071,6 +51077,8 @@
 	                stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED ||
 	                stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED ||
 	                stateChanges.action.type == actions.CREATE_FULFILLMENT_REQUESTED ||
+	                stateChanges.action.type == actions.PRINT_LIST_REQUESTED ||
+	                stateChanges.action.type == actions.EMAIL_LIST_REQUESTED ||
 	                stateChanges.action.type == actions.UPDATE_BATCHDETAIL ||
 	                stateChanges.action.type == actions.SETUP_BATCHDETAIL ||
 	                stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||

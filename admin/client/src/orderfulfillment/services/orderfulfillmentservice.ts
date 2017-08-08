@@ -538,8 +538,12 @@ class OrderFulfillmentService {
         this.state.printCollection = this.collectionConfigService.newCollectionConfig("PrintTemplate");
         this.state.printCollection.addDisplayProperty("printTemplateID");
         this.state.printCollection.addDisplayProperty("printTemplateName");
+        this.state.printCollection.addDisplayProperty("printTemplateObject");
         this.state.printCollection.addFilter("printTemplateObject", 'OrderFulfillment', "=");
-        return this.state.printCollection.getEntity().then( (result) => {return (result.pageRecords.length)?result.pageRecords:[];} );
+        this.state.printCollection.getEntity().then( 
+            (result) => {
+                this.state.printCollection = result.pageRecords || [];
+            });
      }
 
     /**
@@ -549,8 +553,12 @@ class OrderFulfillmentService {
         this.state.emailCollection = this.collectionConfigService.newCollectionConfig("EmailTemplate");
         this.state.emailCollection.addDisplayProperty("emailTemplateID");
         this.state.emailCollection.addDisplayProperty("emailTemplateName");
+        this.state.emailCollection.addDisplayProperty("emailTemplateObject");
         this.state.emailCollection.addFilter("emailTemplateObject", 'OrderFulfillment', "=");
-        return this.state.emailCollection.getEntity().then( (result) => {return (result.pageRecords.length)?result.pageRecords:[];} );
+        this.state.emailCollection.getEntity().then( 
+            (result) => {
+                this.state.emailCollection = result.pageRecords || [];
+            });
      }
 
     /**
