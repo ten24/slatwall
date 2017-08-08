@@ -55,6 +55,7 @@ component extends="HibachiService"  accessors="true" output="false"
     property name="userUtility" type="any";
     property name="paymentService" type="any";
     property name="subscriptionService" type="any";
+    property name="hibachiCacheService" type="any";
     property name="hibachiSessionService" type="any";
     property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
@@ -1346,54 +1347,69 @@ component extends="HibachiService"  accessors="true" output="false"
     /** returns a list of state code options either for us (default) or by the passed in countryCode */
     public void function getStateCodeOptionsByCountryCode( required struct data ) {
         param name="data.countryCode" type="string" default="US";
-        
-        var country = getAddressService().getCountry(data.countryCode);
-        var stateCodeOptions = country.getStateCodeOptions();
+        var cacheKey = "PublicService.getStateCodeOptionsByCountryCode#arguments.data.countryCode#";
+        var stateCodeOptons = [];
+        if(getHibachiCacheService().hasCachedValue(cacheKey)){
+        	stateCodeOptions = getHibachiCacheService().getCachedValue(cacheKey);
+        }else{
+        	var country = getAddressService().getCountry(data.countryCode);
+        	var stateCodeOptions = country.getStateCodeOptions();
+        	getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
+        }
         
         arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
-        
+        //get the address options.
+        if (!isNull(arguments.data.countryCode)){
+        	arguments.data.ajaxResponse["addressOptions"] = getAddressOptionsByCountryCode(arguments.data);
+        }
     }
     
     /** Given a country - this returns all of the address options for that country */
-    public void function getAddressOptionsByCountryCode( required data ) {
+    public struct function getAddressOptionsByCountryCode( required data ) {
         param name="data.countryCode" type="string" default="US";
         
-        var country = getAddressService().getCountry(data.countryCode);
-        var addressOptions = {
+        var addressOptions = {};
+        var cacheKey = 'PublicService.getAddressOptionsByCountryCode#arguments.data.countryCode#';
+        if(getHibachiCacheService().hasCachedValue(cacheKey)){
+        	addressOptions = getHibachiCacheService().getCachedValue(cacheKey);
+        }else{
+        	var country = getAddressService().getCountry(data.countryCode);
+        	addressOptions = {
             
-            'streetAddressLabel' =  country.getStreetAddressLabel(),
-            'streetAddressShowFlag' =  country.getStreetAddressShowFlag(),
-            'streetAddressRequiredFlag' =  country.getStreetAddressRequiredFlag(),
-            
-            'street2AddressLabel' =  country.getStreet2AddressLabel(),
-            'street2AddressShowFlag' =  country.getStreet2AddressShowFlag(),
-            'street2AddressRequiredFlag' =  country.getStreet2AddressRequiredFlag(),
-            
-            'cityLabel' =  country.getCityLabel(),
-            'cityShowFlag' =  country.getCityShowFlag(),
-            'cityRequiredFlag' =  country.getCityRequiredFlag(),
-            
-            'localityLabel' =  country.getLocalityLabel(),
-            'localityShowFlag' =  country.getLocalityShowFlag(),
-            'localityRequiredFlag' =  country.getLocalityRequiredFlag(),
-            
-            'stateCodeLabel' =  country.getStateCodeLabel(),
-            'stateCodeShowFlag' =  country.getStateCodeShowFlag(),
-            'stateCodeRequiredFlag' =  country.getStateCodeRequiredFlag(),
-            
-            'postalCodeLabel' =  country.getPostalCodeLabel(),
-            'postalCodeShowFlag' =  country.getPostalCodeShowFlag(),
-            'postalCodeRequiredFlag' =  country.getPostalCodeRequiredFlag()
-            
-        };
-        
-        arguments.data.ajaxResponse["addressOptions"] = addressOptions;
+	            'streetAddressLabel' =  country.getStreetAddressLabel(),
+	            'streetAddressShowFlag' =  country.getStreetAddressShowFlag(),
+	            'streetAddressRequiredFlag' =  country.getStreetAddressRequiredFlag(),
+	            
+	            'street2AddressLabel' =  country.getStreet2AddressLabel(),
+	            'street2AddressShowFlag' =  country.getStreet2AddressShowFlag(),
+	            'street2AddressRequiredFlag' =  country.getStreet2AddressRequiredFlag(),
+	            
+	            'cityLabel' =  country.getCityLabel(),
+	            'cityShowFlag' =  country.getCityShowFlag(),
+	            'cityRequiredFlag' =  country.getCityRequiredFlag(),
+	            
+	            'localityLabel' =  country.getLocalityLabel(),
+	            'localityShowFlag' =  country.getLocalityShowFlag(),
+	            'localityRequiredFlag' =  country.getLocalityRequiredFlag(),
+	            
+	            'stateCodeLabel' =  country.getStateCodeLabel(),
+	            'stateCodeShowFlag' =  country.getStateCodeShowFlag(),
+	            'stateCodeRequiredFlag' =  country.getStateCodeRequiredFlag(),
+	            
+	            'postalCodeLabel' =  country.getPostalCodeLabel(),
+	            'postalCodeShowFlag' =  country.getPostalCodeShowFlag(),
+	            'postalCodeRequiredFlag' =  country.getPostalCodeRequiredFlag()
+	            
+	        };
+	        getHibachiCacheService().setCachedValue(cacheKey,addressOptions);
+        }
+     return addressOptions;
         
     }
     
     /** returns the list of country code options */
-    public void function getCountries( required struct data ) {
-        arguments.data.ajaxResponse['countryCodeOptions'] = getAddressService().getCountryCodeOptions();
+     public void function getCountries( required struct data ) {
+        arguments.data.ajaxResponse['countryCodeOptions'] = getService('HibachiCacheService').getOrCacheFunctionValue('PublicService.getCountries',getAddressService(),'getCountryCodeOptions');
     }
     
     /** Given a skuCode, returns the estimated shipping rates for that sku. */
