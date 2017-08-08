@@ -49775,7 +49775,6 @@
 	         * The reducer is responsible for modifying the state of the state object into a new state.
 	         */
 	        this.orderFulfillmentStateReducer = function (state, action) {
-	            console.log(action);
 	            switch (action.type) {
 	                case 'TOGGLE_FULFILLMENT_LISTING':
 	                    //modify the state and return it.
