@@ -57,7 +57,5 @@ Notes:
 	<cfset rc.orderFulfillmentSmartList.addOrder('order.orderOpenDateTime|desc') />
 </cfsilent>
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
-
 <sw-order-fulfillment-list></sw-order-fulfillment-list>
 
