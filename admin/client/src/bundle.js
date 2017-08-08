@@ -49758,6 +49758,8 @@
 	            currentRecordOrderDetail: undefined,
 	            commentsCollection: undefined,
 	            orderFulfillmentItemsCollection: undefined,
+	            emailCollection: undefined,
+	            printCollection: undefined,
 	            //arrays
 	            accountNames: [],
 	            orderDeliveryAttributes: [],
@@ -49832,6 +49834,12 @@
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
 	                    _this.deleteFulfillmentBatchItem();
+	                    return __assign({}, _this.state, { action: action });
+	                case actions.PRINT_LIST_REQUESTED:
+	                    _this.getPrintList();
+	                    return __assign({}, _this.state, { action: action });
+	                case actions.EMAIL_LIST_REQUESTED:
+	                    _this.getEmailList();
 	                    return __assign({}, _this.state, { action: action });
 	                case actions.TOGGLE_LOADER:
 	                    _this.state.loading = !_this.state.loading;
@@ -49950,8 +49958,8 @@
 	            }
 	            //Add the payment information
 	            if (_this.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0 && !ignoreCapture) {
-	                //data.captureAuthorizedPaymentsFlag = true;
-	                //data.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+	                data.captureAuthorizedPaymentsFlag = true;
+	                data.capturableAmount = _this.state.currentRecordOrderDetail['order_paymentAmountDue'];
 	            }
 	            //If the user input a captuable amount, use that instead.
 	            if (state.capturableAmount != undefined) {
@@ -49998,6 +50006,8 @@
 	                        .getListing("fulfillmentBatchItemTable2").selectionService
 	                        .addSelection(_this.listingService.getListing("fulfillmentBatchItemTable2").tableID, _this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][_this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
 	                }
+	                //Scroll to the quantity div.
+	                //scrollTo(orderItemQuantity_402828ee57e7a75b0157fc89b45b05c4)
 	            });
 	        };
 	        /** Saves a comment. */
@@ -50175,8 +50185,28 @@
 	            return _this.state.locationCollection.getEntity().then(function (result) { return (result.pageRecords.length) ? result.pageRecords : []; });
 	        };
 	        /**
-	        * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
-	        */
+	         * Setup the initial print template -> orderFulfillment Collection.
+	         */
+	        this.getPrintList = function () {
+	            _this.state.printCollection = _this.collectionConfigService.newCollectionConfig("PrintTemplate");
+	            _this.state.printCollection.addDisplayProperty("printTemplateID");
+	            _this.state.printCollection.addDisplayProperty("printTemplateName");
+	            _this.state.printCollection.addFilter("printTemplateObject", 'OrderFulfillment', "=");
+	            return _this.state.printCollection.getEntity().then(function (result) { return (result.pageRecords.length) ? result.pageRecords : []; });
+	        };
+	        /**
+	         * Setup the initial email template -> orderFulfillment Collection.
+	         */
+	        this.getEmailList = function () {
+	            _this.state.emailCollection = _this.collectionConfigService.newCollectionConfig("EmailTemplate");
+	            _this.state.emailCollection.addDisplayProperty("emailTemplateID");
+	            _this.state.emailCollection.addDisplayProperty("emailTemplateName");
+	            _this.state.emailCollection.addFilter("emailTemplateObject", 'OrderFulfillment', "=");
+	            return _this.state.emailCollection.getEntity().then(function (result) { return (result.pageRecords.length) ? result.pageRecords : []; });
+	        };
+	        /**
+	         * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
+	         */
 	        this.createOrderFulfillmentItemCollection = function (orderFulfillmentID) {
 	            var collection = _this.collectionConfigService.newCollectionConfig("OrderItem");
 	            collection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
@@ -50340,6 +50370,22 @@
 	exports.PRINT_PACKINGLIST_SUCCESS = "PRINT_PACKINGLIST_SUCCESS";
 	/** This action coming back from the reducer indicated that the action was a failure. */
 	exports.PRINT_PACKINGLIST_FAILURE = "PRINT_PACKINGLIST_FAILURE";
+	/**
+	 * This will return a list of print templates that are defined for fulfillment batches.
+	 */
+	exports.PRINT_LIST_REQUESTED = "PRINT_LIST_REQUESTED";
+	/** This action coming back from the reducer indicated that the action was a success. */
+	exports.PRINT_LIST_SUCCESS = "PRINT_LIST_SUCCESS";
+	/** This action coming back from the reducer indicated that the action was a failure. */
+	exports.PRINT_LIST_FAILURE = "PRINT_LIST_FAILURE";
+	/**
+	 * This will return a list of emails that are defined for orderFulfillments
+	 */
+	exports.EMAIL_LIST_REQUESTED = "EMAIL_LIST_REQUESTED";
+	/** This action coming back from the reducer indicated that the action was a success. */
+	exports.EMAIL_LIST_SUCCESS = "EMAIL_LIST_SUCCESS";
+	/** This action coming back from the reducer indicated that the action was a failure. */
+	exports.EMAIL_LIST_FAILURE = "EMAIL_LIST_FAILURE";
 
 
 /***/ }),
@@ -50977,6 +51023,20 @@
 	        this.userPrintPackingList = function () {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: actions.PRINT_PACKINGLIST_REQUESTED,
+	                payload: {}
+	            });
+	        };
+	        /** Returns a list of print templates related to fulfillment batches. */
+	        this.userRequiresPrintList = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: actions.PRINT_LIST_REQUESTED,
+	                payload: {}
+	            });
+	        };
+	        /** Returns a list of all emails related to orderfulfillments */
+	        this.userRequiresEmailList = function () {
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: actions.EMAIL_LIST_REQUESTED,
 	                payload: {}
 	            });
 	        };

@@ -110,6 +110,24 @@ export const PRINT_PACKINGLIST_SUCCESS  = "PRINT_PACKINGLIST_SUCCESS";
 /** This action coming back from the reducer indicated that the action was a failure. */
 export const PRINT_PACKINGLIST_FAILURE  = "PRINT_PACKINGLIST_FAILURE";
 
+/**
+ * This will return a list of print templates that are defined for fulfillment batches.
+ */
+export const PRINT_LIST_REQUESTED  = "PRINT_LIST_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
+export const PRINT_LIST_SUCCESS  = "PRINT_LIST_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
+export const PRINT_LIST_FAILURE  = "PRINT_LIST_FAILURE";
+
+/**
+ * This will return a list of emails that are defined for orderFulfillments
+ */
+export const EMAIL_LIST_REQUESTED  = "EMAIL_LIST_REQUESTED";
+/** This action coming back from the reducer indicated that the action was a success. */
+export const EMAIL_LIST_SUCCESS  = "EMAIL_LIST_SUCCESS";
+/** This action coming back from the reducer indicated that the action was a failure. */
+export const EMAIL_LIST_FAILURE  = "EMAIL_LIST_FAILURE";
+
 
 
 

@@ -122,6 +122,22 @@ class SWFulfillmentBatchDetailController  {
         });
     }
 
+    /** Returns a list of print templates related to fulfillment batches. */
+    public userRequiresPrintList = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.PRINT_LIST_REQUESTED,
+            payload: {}
+        });
+    }
+
+    /** Returns a list of all emails related to orderfulfillments */
+    public userRequiresEmailList = () => {
+         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.EMAIL_LIST_REQUESTED,
+            payload: {}
+        });
+    }
+
     public userEmailCancellation = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "SEND_EMAIL_CANCELLATION_ACTION",

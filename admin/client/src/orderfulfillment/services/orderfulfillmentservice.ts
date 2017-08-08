@@ -31,7 +31,9 @@ class OrderFulfillmentService {
         currentRecordOrderDetail:undefined,
         commentsCollection: undefined,
         orderFulfillmentItemsCollection:undefined,
-        
+        emailCollection:undefined,
+        printCollection:undefined,
+
         //arrays
         accountNames:[],
         orderDeliveryAttributes:[],
@@ -119,6 +121,14 @@ class OrderFulfillmentService {
             
             case actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED:
                 this.deleteFulfillmentBatchItem();
+                return {...this.state, action}
+    
+            case actions.PRINT_LIST_REQUESTED:
+                this.getPrintList();
+                return {...this.state, action}
+            
+            case actions.EMAIL_LIST_REQUESTED:
+                this.getEmailList();
                 return {...this.state, action}
             
             case actions.TOGGLE_LOADER:
@@ -264,8 +274,8 @@ class OrderFulfillmentService {
 
         //Add the payment information
         if (this.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0 && !ignoreCapture){
-            //data.captureAuthorizedPaymentsFlag = true;
-            //data.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
+            data.captureAuthorizedPaymentsFlag = true;
+            data.capturableAmount = this.state.currentRecordOrderDetail['order_paymentAmountDue'];
         }
         //If the user input a captuable amount, use that instead.
         if (state.capturableAmount != undefined){
@@ -325,8 +335,9 @@ class OrderFulfillmentService {
                         .addSelection(this.listingService.getListing("fulfillmentBatchItemTable2").tableID, 
                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
             
-                }
-            
+            }
+            //Scroll to the quantity div.
+            //scrollTo(orderItemQuantity_402828ee57e7a75b0157fc89b45b05c4)
 
         });
         
@@ -520,7 +531,29 @@ class OrderFulfillmentService {
         return this.state.locationCollection.getEntity().then( (result) => {return (result.pageRecords.length)?result.pageRecords:[];} );
      }
 
-     /**
+    /**
+     * Setup the initial print template -> orderFulfillment Collection.
+     */
+     private getPrintList = () => {
+        this.state.printCollection = this.collectionConfigService.newCollectionConfig("PrintTemplate");
+        this.state.printCollection.addDisplayProperty("printTemplateID");
+        this.state.printCollection.addDisplayProperty("printTemplateName");
+        this.state.printCollection.addFilter("printTemplateObject", 'OrderFulfillment', "=");
+        return this.state.printCollection.getEntity().then( (result) => {return (result.pageRecords.length)?result.pageRecords:[];} );
+     }
+
+    /**
+     * Setup the initial email template -> orderFulfillment Collection.
+     */
+     private getEmailList = () => {
+        this.state.emailCollection = this.collectionConfigService.newCollectionConfig("EmailTemplate");
+        this.state.emailCollection.addDisplayProperty("emailTemplateID");
+        this.state.emailCollection.addDisplayProperty("emailTemplateName");
+        this.state.emailCollection.addFilter("emailTemplateObject", 'OrderFulfillment', "=");
+        return this.state.emailCollection.getEntity().then( (result) => {return (result.pageRecords.length)?result.pageRecords:[];} );
+     }
+
+    /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
      */
      private createOrderFulfillmentItemCollection = (orderFulfillmentID):void => {
