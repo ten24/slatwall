@@ -50,18 +50,14 @@ class OrderFulfillmentService {
      */
     public orderFulfillmentStateReducer:FluxStore.Reducer = (state:any, action:FluxStore.Action<any>):Object => {
         switch(action.type) {
-            case 'TOGGLE_FULFILLMENT_LISTING':
-            
-                //modify the state and return it.
+            case actions.TOGGLE_FULFILLMENT_LISTING:
                 this.state.showFulfillmentListing = !this.state.showFulfillmentListing;
                 return {...this.state, action};
             
-            case 'ADD_BATCH':
-            
+            case actions.ADD_BATCH:
                 return {...state, action};
             
             case actions.SETUP_BATCHDETAIL:
-            
                 //Setup the detail
                 if (action.payload.fulfillmentBatchId != undefined){
                     this.state.fulfillmentBatchId = action.payload.fulfillmentBatchId;
@@ -164,7 +160,7 @@ class OrderFulfillmentService {
         //Select the initial table row
         //get the listingDisplay store and listen for changes to the listing display state.
         this.listingService.listingDisplayStore.store$.subscribe((update)=>{
-            if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED"){
+            if (update.action && update.action.type && update.action.type == actions.CURRENT_PAGE_RECORDS_SELECTED){
                 
                 /*  Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
                     Outer table, will need to toggle and set the floating cards to this data.
@@ -483,6 +479,7 @@ class OrderFulfillmentService {
      * Setup the initial orderFulfillment Collection.
      */
      private createLgOrderFulfillmentBatchItemCollection = ():void => {
+        
         this.state.lgFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
@@ -491,6 +488,7 @@ class OrderFulfillmentService {
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("fulfillmentBatchItemID");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         this.state.lgFulfillmentBatchItemCollection.addFilter("fulfillmentBatch.fulfillmentBatchID", this.state.fulfillmentBatchId, "=");
+        
      }
 
      /**

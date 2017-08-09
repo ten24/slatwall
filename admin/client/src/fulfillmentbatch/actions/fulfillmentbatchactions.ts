@@ -37,6 +37,11 @@ export const TOGGLE_LOADER = "TOGGLE_LOADER";
 export const TOGGLE_BATCHLISTING  = "TOGGLE_BATCHLISTING";
 
 /**
+ * This will toggle the fulfillment listing between fulfillment and order items on the order fulfillments list screen
+ */
+export const TOGGLE_FULFILLMENT_LISTING  = "TOGGLE_FULFILLMENT_LISTING";
+
+/**
  * This sets up all the state data on page start and should only be called once in a constructor.
  */
 export const SETUP_BATCHDETAIL  = "SETUP_BATCHDETAIL";
@@ -50,6 +55,16 @@ export const UPDATE_BATCHDETAIL  = "UPDATE_BATCHDETAIL";
  * This will refresh all of the batch detail state.
  */
 export const REFRESH_BATCHDETAIL  = "REFRESH_BATCHDETAIL";
+
+/**
+ * This will create a new batch by passing all batch data.
+ */
+export const ADD_BATCH  = "ADD_BATCH";
+
+/**
+ * This will fire when the current page records selected on a table are updated.
+ */
+export const CURRENT_PAGE_RECORDS_SELECTED  = "CURRENT_PAGE_RECORDS_SELECTED";
 
 /**
  * This setups the page that displays the order delivery custom attributes and should only be called once.

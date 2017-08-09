@@ -49780,11 +49780,10 @@
 	         */
 	        this.orderFulfillmentStateReducer = function (state, action) {
 	            switch (action.type) {
-	                case 'TOGGLE_FULFILLMENT_LISTING':
-	                    //modify the state and return it.
+	                case actions.TOGGLE_FULFILLMENT_LISTING:
 	                    _this.state.showFulfillmentListing = !_this.state.showFulfillmentListing;
 	                    return __assign({}, _this.state, { action: action });
-	                case 'ADD_BATCH':
+	                case actions.ADD_BATCH:
 	                    return __assign({}, state, { action: action });
 	                case actions.SETUP_BATCHDETAIL:
 	                    //Setup the detail
@@ -49859,7 +49858,7 @@
 	            //Select the initial table row
 	            //get the listingDisplay store and listen for changes to the listing display state.
 	            _this.listingService.listingDisplayStore.store$.subscribe(function (update) {
-	                if (update.action && update.action.type && update.action.type == "CURRENT_PAGE_RECORDS_SELECTED") {
+	                if (update.action && update.action.type && update.action.type == actions.CURRENT_PAGE_RECORDS_SELECTED) {
 	                    /*  Check for the tables we care about fulfillmentBatchItemTable1, fulfillmentBatchItemTable2
 	                        Outer table, will need to toggle and set the floating cards to this data.
 	                        on the first one being selected, go to the shrink view and set the selection on there as well.*/
@@ -50315,6 +50314,10 @@
 	 */
 	exports.TOGGLE_BATCHLISTING = "TOGGLE_BATCHLISTING";
 	/**
+	 * This will toggle the fulfillment listing between fulfillment and order items on the order fulfillments list screen
+	 */
+	exports.TOGGLE_FULFILLMENT_LISTING = "TOGGLE_FULFILLMENT_LISTING";
+	/**
 	 * This sets up all the state data on page start and should only be called once in a constructor.
 	 */
 	exports.SETUP_BATCHDETAIL = "SETUP_BATCHDETAIL";
@@ -50326,6 +50329,14 @@
 	 * This will refresh all of the batch detail state.
 	 */
 	exports.REFRESH_BATCHDETAIL = "REFRESH_BATCHDETAIL";
+	/**
+	 * This will create a new batch by passing all batch data.
+	 */
+	exports.ADD_BATCH = "ADD_BATCH";
+	/**
+	 * This will fire when the current page records selected on a table are updated.
+	 */
+	exports.CURRENT_PAGE_RECORDS_SELECTED = "CURRENT_PAGE_RECORDS_SELECTED";
 	/**
 	 * This setups the page that displays the order delivery custom attributes and should only be called once.
 	 */
@@ -51042,24 +51053,7 @@
 	                payload: {}
 	            });
 	        };
-	        this.userEmailCancellation = function () {
-	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-	                type: "SEND_EMAIL_CANCELLATION_ACTION",
-	                payload: {}
-	            });
-	        };
-	        this.userEmailConfirmation = function () {
-	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-	                type: "SEND_EMAIL_CONFIRMATION_ACTION",
-	                payload: {}
-	            });
-	        };
-	        this.userEmailOrderStatus = function () {
-	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-	                type: "SEND_EMAIL_ORDER_STATUS_ACTION",
-	                payload: {}
-	            });
-	        };
+	        /** Todo - Thiswill be for the barcode search which is currently commented out. */
 	        this.userBarcodeSearch = function () {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
 	                type: "BAR_CODE_SEARCH_ACTION",

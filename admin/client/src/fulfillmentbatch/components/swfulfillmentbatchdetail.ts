@@ -135,27 +135,7 @@ class SWFulfillmentBatchDetailController  {
         });
     }
 
-    public userEmailCancellation = () => {
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SEND_EMAIL_CANCELLATION_ACTION",
-            payload: {}
-        });
-    }
-
-    public userEmailConfirmation = () => {
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SEND_EMAIL_CONFIRMATION_ACTION",
-            payload: {}
-        });
-    }
-
-    public userEmailOrderStatus = () => {
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SEND_EMAIL_ORDER_STATUS_ACTION",
-            payload: {}
-        });
-    }
-
+    /** Todo - Thiswill be for the barcode search which is currently commented out. */
     public userBarcodeSearch = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "BAR_CODE_SEARCH_ACTION",
