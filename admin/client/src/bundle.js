@@ -30493,7 +30493,8 @@
 	 * 							callback="sure()">
 	 *   </a>
 	 *
-	 *   Note: Because the template is dynamic, the following keywords can not be used anywhere in the text for this modal.
+	 *   Note: Because the template is dynamic, the following keywords can not be used anywhere in the text for this modal as we interpolate
+	 *   those.
 	 *
 	 *   [yes] [no] [confirm] [message] [callback]
 	 *
@@ -30505,6 +30506,7 @@
 	var SWConfirm = (function () {
 	    //@ngInject
 	    function SWConfirm($hibachi, $log, $compile, $modal, partialsPath) {
+	        console.log("swConfirm Called");
 	        var buildConfirmationModal = function (simple, useRbKey, confirmText, messageText, noText, yesText) {
 	            /* Keys */
 	            var confirmKey = "[confirm]";
@@ -50982,24 +50984,18 @@
 	        //requested | failed | succeded
 	        this.userDeletingComment = function (comment) {
 	            //Only fire the event if the user agrees.
-	            var warning = _this.rbkeyService.getRBKey("entity.comment.delete.confirm");
-	            if (window.confirm(warning + "?")) {
-	                _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-	                    type: actions.DELETE_COMMENT_REQUESTED,
-	                    payload: { comment: comment }
-	                });
-	            }
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: actions.DELETE_COMMENT_REQUESTED,
+	                payload: { comment: comment }
+	            });
 	        };
 	        //Try to delete the fulfillment batch item.
 	        this.deleteFulfillmentBatchItem = function () {
 	            //Only fire the event if the user agrees.
-	            var warning = _this.rbkeyService.getRBKey("entity.comment.delete.confirm");
-	            if (window.confirm(warning + "?")) {
-	                _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-	                    type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
-	                    payload: {}
-	                });
-	            }
+	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+	                type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
+	                payload: {}
+	            });
 	        };
 	        this.userSavingComment = function (comment, commentText) {
 	            _this.orderFulfillmentService.orderFulfillmentStore.dispatch({

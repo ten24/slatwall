@@ -68,25 +68,19 @@ class SWFulfillmentBatchDetailController  {
     //requested | failed | succeded
     public userDeletingComment = (comment) => {
         //Only fire the event if the user agrees.
-        let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
-        if ( window.confirm(`${warning}?`) ) {
-            this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-                type: actions.DELETE_COMMENT_REQUESTED,
-                payload: {comment: comment}
-            });
-        }
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.DELETE_COMMENT_REQUESTED,
+            payload: {comment: comment}
+        });
     }
 
     //Try to delete the fulfillment batch item.
     public deleteFulfillmentBatchItem = () => {
         //Only fire the event if the user agrees.
-        let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
-        if ( window.confirm(`${warning}?`) ) {
-            this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-                type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
-                payload: {}
-            });
-        }
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
+            payload: {}
+        });
     }
     
     public userSavingComment = (comment, commentText) => {
