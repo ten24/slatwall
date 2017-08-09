@@ -45,7 +45,7 @@
 
 Notes:					
 */
-component entityname="SlatwallEligiblePaymentMethod" persistent="false" output="false" accessors="true" extends="Slatwall.model.transient.HibachiTransient"{
+component output="false" accessors="true" extends="Slatwall.model.transient.HibachiTransient"{
 	
 	// Properties
 	property name="maximumAmount" type="numeric";
