@@ -9,7 +9,7 @@
                                data-show-toggle-display-options="swListingControls.showToggleDisplayOptions"
          ></span>    
         <!-- DISPLAY OPTIONS -->
-        <div data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
+        <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
                 <a href class="s-close" data-ng-click="swListingControls.toggleDisplayOptions(true)">
                     <i class="fa fa-times"></i>
@@ -17,23 +17,28 @@
                 <!-- Dragable List group -->
                 <h4>Display Options</h4>
                 <sw-display-options
-                        data-columns="swListingControls.collectionConfig.columns"
-                        data-properties-list="swListingControls.filterPropertiesList"
-                        data-save-collection="swListingControls.saveCollection()"
-                        data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
-                        data-base-entity-name="swListingControls.collectionConfig.baseEntityName">
-                    <li class="list-group-item"
-                        ng-repeat="column in swListingControls.collectionConfig.columns"
-                        ng-if="swListingControls.canDisplayColumn(column)"
-                        sw-column-item
-                        data-column="column"
-                        data-columns="swListingControls.collectionConfig.columns"
-                        data-column-index="$index"
-                        data-save-collection="swListingControls.saveCollection()"
-                        data-properties-list="swListingControls.filterPropertiesList"
-                        data-order-by="swListingControls.collectionConfig.orderBy">
-                    </li>
-                </sw-display-options >
+						data-columns="swListingControls.collectionConfig.columns"
+                        data-joins="swListingControls.collectionConfig.joins"
+                        data-group-bys="swListingControls.collectionConfig.groupBys"
+						data-properties-list="swListingControls.filterPropertiesList"
+						data-save-collection="swListingControls.saveCollection()"
+						data-callbacks="swListingControls.callbacks"
+						data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
+						data-base-entity-name="swListingControls.collectionConfig.baseEntityName"
+				>
+					<li class="list-group-item"
+						ng-repeat="column in swListingControls.collectionConfig.columns"
+						ng-if="swListingControls.canDisplayColumn(column)"
+						sw-column-item
+						data-column="column"
+						data-columns="swListingControls.collectionConfig.columns"
+						data-column-index="$index"
+						data-save-collection="swListingControls.saveCollection()"
+						data-properties-list="swListingControls.filterPropertiesList"
+						data-callbacks="swListingControls.callbacks"
+						data-order-by="swListingControls.collectionConfig.orderBy"
+						></li>
+				</sw-display-options >
             </div>
         </div>
         <!-- //DISPLAY OPTIONS -->

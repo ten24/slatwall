@@ -70,6 +70,10 @@ class SWListingControlsController {
     };
 
     public canDisplayColumn = (column) =>{
+        if(!this.listingColumns.length){
+            return true;
+        }
+        
         if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
             return this.columnIsControllableMap[column.propertyIdentifier];
         }
