@@ -60,6 +60,81 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public boolean function returnFalse(){
 		return false;
 	}
+	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var accountCollectionList = request.slatwallScope.getService('HibachiService').getAccountCollectionList();
+		
+		accountCollectionList.addFilter('orders.orderID','test','IN');
+		accountCollectionList.addFilter('accountID','test','IN');
+		
+		//property Identifier that orderitem is trying to get
+		var propertyIdentifier = 'order.account.accountName';
+		
+		var filter = accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filterData = orderItemCollectionList.convertRelatedFilter(propertyIdentifier,filter);
+		assertEquals(filterData.propertyIdentifier,'_orderitem_order_account_orders.orderID');
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getManyToOnePropertiesWhereCFCEqualsNameTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		makePublic(collectionEntity,'getManyToOnePropertiesWhereCFCEqualsName');
+		var manyToONeProperties = collectionEntity.getManyToOnePropertiesWhereCFCEqualsName();
+		
+		var orderOriginFound = false;
+		for(var item in manyToONeProperties){
+			if(item.cfc == 'OrderOrigin'){
+				orderOriginFound = true;
+			}
+		}
+		assert(orderOriginFound);
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterGroupTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.orderID';
+		var filterGroup = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		
+		var convertedFilterGroup = orderItemCollectionList.convertRelatedFilterGroup(propertyIdentifier,filterGroup);
+		assert(arrayLen(convertedFilterGroup));
+		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'_orderitem_order.orderID');
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function applyRelatedFilterGroupsTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.referencedOrder.orderID';
+		var filterGroups = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		orderItemCollectionList.applyRelatedFilterGroups(propertyIdentifier,filterGroups);
+		orderItemCollectionList.getRecords();
+	}
+	
+	/**
+	* @test
+	*/
 
 	/**
 	* @test

@@ -107,6 +107,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
+	property name="permissionAppliedFlag" type="boolean" persistent="false" default="0";
+	property name="appliedRelatedFilters" type="struct" persistent="false";
+	//used to define who is requesting data
+	property name="requestAccount" type="any" persistent="false";
 
 	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
@@ -164,6 +168,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+	public any function getRequestAccount(){
+		if(!structKeyExists(variables,'requestAccount') && !isNull(getHibachiScope().getAccount())){
+			variables.requestAccount = getHibachiScope().getAccount();
+		}
+		return variables.requestAccount;
+	}
+	
+	public void function setRequestAccount(required any requestAccount){
+		variables.requestAccount = arguments.requestAccount;
+	}
+	
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
 			var parentCollectionConfigStruct = Duplicate(arguments.parentCollection.getCollectionConfigStruct());
@@ -367,8 +382,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//if so then add attribute details
 		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier) && hasAttribute){
 			filter['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
-			filter['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
-				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			filter['attributeSetObject'] = getLastEntityNameInPropertyIdentifier(
 				propertyIdentifier=arguments.propertyIdentifier
 			);
 		}
@@ -431,13 +445,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifier=arguments.displayProperty
 		);
 		//if so then add attribute details
-		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty) && hasAttribute){
+		if(!hasPropertyByPropertyIdentifier(arguments.displayProperty) && hasAttribute){
 			column['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.displayProperty,'.')).getAttributeID();
 
-			var attributeSetObject = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
-				entityName=getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()),
-				propertyIdentifier=arguments.displayProperty
-			);
+			var attributeSetObject = getLastEntityNameInPropertyIdentifier(arguments.displayProperty);
 			column['attributeSetObject'] = lcase(left(attributeSetObject,1))&right(attributeSetObject,len(attributeSetObject)-1);
 		}else{
 			column['propertyIdentifier'] = collectionConfig.baseEntityAlias & '.' & arguments.displayProperty;
@@ -490,7 +501,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if(isObject){
 			//check if count is on a one-to-many
-			var lastEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(getCollectionObject(), arguments.propertyIdentifier);
+			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.propertyIdentifier);
 			var isOneToMany = structKeyExists(getService('hibachiService').getPropertiesStructByEntityName(lastEntityName)[listLast(arguments.propertyIdentifier,'.')],'singularname');
 
 			//if is a one-to-many propertyKey then add a groupby
@@ -730,8 +741,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								dataToFilterOn = "%#dataToFilterOn#%";
 							}
 						}
+				this.addFilter(prop, dataToFilterOn, comparison);
 					
-						this.addFilter(prop, dataToFilterOn, comparison);	
 					}
 				}
 	
@@ -1582,6 +1593,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
 	}
 
+	public string function getLastEntityNameInPropertyIdentifier(required string propertyIdentifier){
+		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier); 
+		return getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			propertyIdentifier=pID
+		);
+	}
+
 	private struct function getDefaultOrderBy(){
 		var orderByStruct={};
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
@@ -1670,10 +1689,154 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		return arguments.propertyIdentifier;
 	}
+	// Used to apply filter based on record level permissions of the user
+	public void function applyPermissions(){
+		//this is used for record level permissions
+		if(!getPermissionAppliedFlag()){
+			
+			applyPermissionRecordRestrictions();
+			
+			setPermissionAppliedFlag(true);
+		}
+	}
+	
+	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
+	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
+		var logicalOperator = "";
+		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+			getCollectionConfigStruct().filterGroups = [];
+		}else if(arraylen(getCollectionConfigStruct().filterGroups)){
+			logicalOperator = 'AND';
+		}
+		
+		for(var filterGroup in arguments.relatedFilterGroups){
+			if(structKeyExists(filterGroup,'filterGroup')){
+				
+				filterGroup = {
+					'filterGroup'=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+				};
+				if(len(logicalOperator)){
+					filterGroup['logicalOperator'] = logicalOperator;
+				}
+				
+				arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+			}
+		}
+	
+	}
+	
+	public array function convertRelatedFilterGroup(required string propertyIdentifier, required array relatedFilterGroup, string filterGroupAlias){
+		var convertedFilterGroup = [];
+		for(var filterGroup in arguments.relatedFilterGroup){
+			if(structKeyExists(filterGroup,'filterGroup')){
+				filterGroup = {
+					filterGroup=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+				};
+				arrayAppend(convertedFilterGroup,filterGroup);
+			}else{
+				var filter = filterGroup;
+				filter = convertRelatedFilter(arguments.propertyIdentifier,filter);
+				arrayAppend(convertedFilterGroup,filter);
+			}
+		}
+		return convertedFilterGroup;
+	}
+	
+	public struct function convertRelatedFilter(required string propertyIdentifier, required struct relatedFilter){
+		var pid = convertALiasToPropertyIdentifier(arguments.propertyIdentifier);
+		
+		var relatedPropertyIdentifier = convertALiasToPropertyIdentifier(arguments.relatedFilter.propertyIdentifier);
+		
+		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),pid);
+		
+		if(!isObject){
+			//remove tail so that it is an object propertyIdentifier
+			pid = listDeleteAt(pid,listlen(pid,'.'),'.');
+		}
+		
+		pid &= '.'&relatedPropertyIdentifier;
+		var filterData = arguments.relatedFilter;
+		filterData.propertyIdentifier = getPropertyIdentifierAlias(pid);
+		
+		return filterData;
+			
+	}
+	
+	private array function getManyToOnePropertiesWhereCFCEqualsName(){
+		var properties = getService('HibachiService').getPropertiesByEntityName(getCollectionObject());
+		var manyToOneProperties = [];
+		for(var prop in properties){
+			if(
+				structKeyExists(prop,'fieldtype') 
+				&& prop.fieldtype == 'many-to-one' 
+				&& lcase(prop.name) == lcase(prop.cfc)
+			){
+				arrayAppend(manyToOneProperties,prop);
+			}
+		}
+		
+		return manyToOneProperties;
+	}
+	
+	//this function probably can be astracted out to the service level for Direct Object Reference Checks
+	private void function applyPermissionRecordRestrictions(){
+		var objectPermissionsList = getCollectionObject();
+		
+		var aliasMap ={};
+		if(structKeyExists(getCollectionConfigStruct(),'columns')){
+			for(var column in getCollectionConfigStruct().columns){
+				if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
+					var lastEntityName = getLastEntityNameInPropertyIdentifier(column.propertyIdentifier);
+					if(left(lastEntityName,len(getDao('hibachiDao').getApplicationKey())) == getDao('hibachiDao').getApplicationKey()){
+						lastEntityName = right(lastEntityName,len(lastEntityName) - len(getDao('hibachiDao').getApplicationKey()));
+					}
+					objectPermissionsList = listAppend(objectPermissionsList,lastEntityName);
+					aliasMap[lastEntityName] = column.propertyIdentifier;
+				}
+			}
+		}
+		var manyToOneProperties = getManyToOnePropertiesWhereCFCEqualsName();
+		for(var prop in manyToOneProperties){
+			objectPermissionsList = listAppend(objectPermissionsList,prop.cfc);
+			var baseEntityObject = getService('hibachiService').getEntityObject( prop.cfc );
+			var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
+			aliasMap[prop.cfc] = "#prop.name#.#primaryIDName#";
+		}
+		
+		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
+		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
+		permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
+		permissionRecordRestrictionCollectionList.addFilter('permission.propertyName','NULL','IS');
+		permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
+		permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#objectPermissionsList#','IN');
+		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
+		permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,restrictionConfig,permission.entityClassName');
+		
+		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+		
+		for(var permissionRecordRestriction in permissionRecordRestrictions){
+			var recordRestrictionFilterGroups = deserializeJson(permissionRecordRestriction['restrictionConfig']);
+			if(permissionRecordRestriction['permission_entityClassName'] == getCollectionObject()){
+				for(var filterGroup in recordRestrictionFilterGroups){
+					filterGroup['logicalOperator']="AND";
+					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+				} 
+			}else{
+				
+				var propertyIdentifier = aliasMap[permissionRecordRestriction['permission_entityClassName']];
+				applyRelatedFilterGroups(propertyIdentifier,recordRestrictionFilterGroups);
+			}
+		}
+	}
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
+		if(arguments.refresh){
+			clearRecordsCache();
+		}
 
+		applyPermissions();
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
 
@@ -1681,7 +1844,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else{
 			try{
 
-				if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
+				if( !structKeyExists(variables, "pageRecords")) {
 
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
@@ -1763,7 +1926,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+	private void function clearRecordsCache(){
+		structDelete(variables,'records');
+		structDelete(variables,'pageRecords');
+		structDelete(variables,'recordsCount');
+	}
+
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
+		
+		if(arguments.refresh){
+			clearRecordsCache();
+		}
+		
+		applyPermissions();		
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
 
@@ -1771,7 +1946,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else{
 			try{
 				//If we are returning only the exportable records, then check and pass through.
-				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+				if( !structKeyExists(variables, "records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
 						arguments.collectionEntity = this;
 						variables.records = getHibachiScope().getService('elasticSearchService').getRecords(argumentCollection=arguments);
@@ -1831,7 +2006,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.recordsCount = arguments.total;
 	}
 
-	public any function getRecordsCount() {
+	public any function getRecordsCount(boolean refresh=false) {
+		if(arguments.refresh){
+			clearRecordsCache();
+		}
+		
+		applyPermissions();
 		if(!structKeyExists(variables, "recordsCount")) {
 			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
 				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;

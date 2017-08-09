@@ -256,6 +256,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
+		param name="request.context" default="#structNew()#";
 		param name="request.context['messages']" default="#arrayNew(1)#";
 		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
 		var messageStruct = {};

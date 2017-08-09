@@ -14,6 +14,28 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
+	public void function postLoad(){
+		if(!this.getNewFlag() && getClassName() != 'ShortReference'){
+			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
+			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
+			entityCollectionList.setDisplayProperties(primaryIDName);
+			entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
+			var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+			//if the collection returns a record then 
+			if(!entityCollectionRecordsCount){
+				throwNoAccess();				
+			}
+		}
+	}
+	
+	private void function throwNoAccess(){
+		var context = getPageContext();
+		status = 403;
+		context.getResponse().setStatus(status, "no access");
+		throw(type="Application",message='no access');
+	}
+	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
