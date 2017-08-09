@@ -73,7 +73,7 @@
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-print"></i>
                             </button>
-                            <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresPrintList()">
+                            <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresPrintList()" ng-show="swFulfillmentBatchDetailController.state.printCollection.length">
                                 <li ng-repeat="printTemplate in swFulfillmentBatchDetailController.state.printCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
                                 	<a title="{{printTemplate.printTemplateName}}" class="adminentityprocessprint " target="_self" href="/?slatAction=entity.processprint&amp;printTemplateID={{printTemplate.printTemplateID}}&amp;printID=&redirectAction=admin:entity.detailfulfillmentbatch&processContext=addToQueue&fulfillmentBatchID={{swFulfillmentBatchDetailController.state.fulfillmentBatchId}}">{{printTemplate.printTemplateName}}</a>
                                 </li>
@@ -84,7 +84,7 @@
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-envelope"></i>
                             </button>
-                             <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresEmailList()">
+                             <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresEmailList()" ng-show="swFulfillmentBatchDetailController.state.emailCollection.length">
                                 <li ng-repeat="emailTemplate in swFulfillmentBatchDetailController.state.emailCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
                                 	<a title="{{emailTemplate.emailTemplateName}}" class="adminentitypreprocessemail  modalload-fullwidth" target="_self" href="/?slatAction=entity.preprocessemail&emailTemplateID={{emailTemplate.emailTemplateID}}&redirectAction=admin:entity.detailfulfillmentbatch&processContext=addToQueue&fulfillmentBatchID={{swFulfillmentBatchDetailController.state.fulfillmentBatchId}}&orderFulfillmentID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID']}}" data-toggle="modal" data-target="#adminModal">
 										{{emailTemplate.emailTemplateName}}
