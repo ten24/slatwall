@@ -46,21 +46,31 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.fileGroupSmartList" type="any" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" />
-		<swa:SlatwallSetting settingName="contentRenderHibachiActionInTemplate" />
-		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" />
-		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" />
-		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" />
-		<swa:SlatwallSetting settingName="contentHTMLTitleString" />
-		<swa:SlatwallSetting settingName="contentMetaDescriptionString" />
-		<swa:SlatwallSetting settingName="contentMetaKeywordsString" />
-		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds"/>
-		<swa:SlatwallSetting settingName="contentEnableTrackingFlag"/>
-	</swa:SlatwallSettingTable>
+	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.fileGroupSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createfilegroup" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.fileGroupSmartList#"
+							   recordDetailAction="admin:entity.detailfilegroup"
+							   recordEditAction="admin:entity.editfilegroup"
+							   >
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fileGroupName" />
+		<hb:HibachiListingColumn propertyIdentifier="fileGroupCode" />
+		<hb:HibachiListingColumn propertyIdentifier="fileGroupDescription" />
+		<hb:HibachiListingColumn propertyIdentifier="fileRestrictAccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="fileTrackAccessFlag" />
+	</hb:HibachiListingDisplay>
 </cfoutput>
