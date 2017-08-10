@@ -46,21 +46,22 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+<cfparam name="rc.fileGroup" type="any">
+<cfparam name="rc.edit" type="boolean">
+<cfset backAction = "admin:entity.listfilegroup" />
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" />
-		<swa:SlatwallSetting settingName="contentRenderHibachiActionInTemplate" />
-		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" />
-		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" />
-		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" />
-		<swa:SlatwallSetting settingName="contentHTMLTitleString" />
-		<swa:SlatwallSetting settingName="contentMetaDescriptionString" />
-		<swa:SlatwallSetting settingName="contentMetaKeywordsString" />
-		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds"/>
-		<swa:SlatwallSetting settingName="contentEnableTrackingFlag"/>
-	</swa:SlatwallSettingTable>
+	<hb:HibachiEntityDetailForm object="#rc.fileGroup#" edit="#rc.edit#" enctype="multipart/form-data" >
+	
+		<hb:HibachiEntityActionBar type="detail" object="#rc.fileGroup#" edit="#rc.edit#"
+								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
+								   backAction="#backAction#"/>
+		<hb:HibachiEntityDetailGroup object="#rc.filegroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/filegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
+

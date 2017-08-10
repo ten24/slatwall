@@ -46,21 +46,27 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.fileGroup" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" />
-		<swa:SlatwallSetting settingName="contentRenderHibachiActionInTemplate" />
-		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" />
-		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" />
-		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" />
-		<swa:SlatwallSetting settingName="contentHTMLTitleString" />
-		<swa:SlatwallSetting settingName="contentMetaDescriptionString" />
-		<swa:SlatwallSetting settingName="contentMetaKeywordsString" />
-		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds"/>
-		<swa:SlatwallSetting settingName="contentEnableTrackingFlag"/>
-	</swa:SlatwallSettingTable>
+	<hb:HibachiEntityDetailForm object="#rc.fileGroup#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.fileGroup#"></hb:HibachiEntityActionBar>    
+
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileGroupDescription" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileRestrictAccessFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.fileGroup#" property="fileTrackAccessFlag" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
+
