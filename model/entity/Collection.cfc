@@ -148,6 +148,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 
 	}
+	
+	public boolean function getDirtyReadFlag(){
+		if(getApplicationValue('databaseType') eq "Oracle10g"){
+			return false;
+		}
+		return variables.dirtyReadFlag;
+	}
+	
+	public void function setDirtyReadFlag(required boolean flagValue){
+		if(getApplicationValue('databaseType') eq "Oracle10g"){
+			variables.dirtyReadFlag = false;
+		}else{
+			variables.dirtyReadFlag = arguments.flagValue;	
+		}
+	}
 
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
@@ -632,7 +647,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(isValid('string',data[key])){
 				if (left(key, 3) == "fr:"){
 	
-					var prop = key.split(':')[2];
+					var prop = listToArray(key,':')[2];
 					
 					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 						var dataToFilterOn = data[key]; //value of the filter.
@@ -640,7 +655,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 						var comparison = "=";
 						try{
-							comparison = key.split(':')[3];
+							comparison = listToArray(key,':')[3];
 						}catch(any e){
 							comparison = "=";
 						}
@@ -677,14 +692,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//handle filters.
 				if (left(key, 2) == "f:"){
 	
-					var prop = key.split(':')[2];
+					var prop = listToArray(key,':')[2];
 					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 						var dataToFilterOn = data[key]; //value of the filter.
 		
 						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 						var comparison = "=";
 						try{
-							comparison = key.split(':')[3];
+							comparison = listToArray(key,':')[3];
 						}catch(any e){
 							comparison = "=";
 						}
@@ -730,15 +745,41 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var ormtype = getOrmTypeByPropertyIdentifier(prop);
 						var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
 						var filterGroupIndex = 1;
-		
+						
 						for(var i=1; i <= arraylen(rangeValues);i++){
 							var rangeValue = rangeValues[i];
-							var filterData = {
-								propertyIdentifier=prop,
-								value=replace(rangeValue,'^','-'),
-								comparisonOperator='BETWEEN',
-								ormtype=ormtype
-							};
+							var rangeArray = listToArray(rangeValue,'^');
+							var rangeLen = 0;
+							if (isArray(rangeArray)){
+								rangeLen = arrayLen(rangeArray);
+							}
+							
+							if (rangeLen > 1){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^','-'),
+									comparisonOperator='BETWEEN',
+									ormtype=ormtype
+								};
+							}else if (rangeLen == 1 && left(rangeValue, 1) == "^"){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^',''),
+									comparisonOperator='<=',
+									ormtype=ormtype
+								};
+							}else if (rangeLen == 1 && right(rangeValue, 1) == "^"){
+								var filterData = {
+									propertyIdentifier=prop,
+									value=replace(rangeValue,'^',''),
+									comparisonOperator='>=',
+									ormtype=ormtype
+								};
+							}else{
+								//can't build because there is not enough range information.
+								return;
+							}
+							
 		
 							if(i > 1){
 								filterData.logicalOperator = 'OR';
@@ -1913,6 +1954,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'P' & uuid;
 	}
 
+	public string function replaceStringTemplateInFilterValue(required any object, required string filterValue){
+		if(getHibachiScope().getService('hibachiUtilityService').isStringTemplate(arguments.filterValue)){
+			return  getHibachiScope().getService('hibachiUtilityService').replaceStringTemplate(arguments.filterValue, arguments.object);
+		}
+		return filterValue;
+	}
+
 	private string function getPredicate(required any filter){
 		var predicate = '';
 		if(!structKeyExists(filter,"value")){
@@ -1922,6 +1970,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				filter.value = "";
 			}
 		}
+		//Session Filters
+		filter.value = replaceStringTemplateInFilterValue(getHibachiScope(), filter.value);
+
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(arguments.filter.ormtype eq 'timestamp'){

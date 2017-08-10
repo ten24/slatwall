@@ -140,7 +140,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 		var result = false;
 		var smartList =  getService("EventRegistrationService").getEventRegistrationSmartList();
 		smartList.addFilter("registrantAttendanceCode",arguments.code);
-		if(smartList.getRecordsCount > 0) {
+		if(smartList.getRecordsCount() == 0) {
 			result = true;
 		}
 		return result;

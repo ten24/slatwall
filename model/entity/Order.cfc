@@ -426,7 +426,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     		&& !isNull(getShippingAddress()) 
     		&& !getShippingAddress().hasErrors()
     	  ) {
-
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
     		if(!isNull(getSaveShippingAccountAddressName())) {
@@ -510,6 +509,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 		}
 		return discountTotal;
+	}
+
+	public numeric function getOrderAndItemDiscountAmountTotal(){
+		return getItemDiscountAmountTotal() + getOrderDiscountAmountTotal();
 	}
 
 	public numeric function getFulfillmentDiscountAmountTotal() {

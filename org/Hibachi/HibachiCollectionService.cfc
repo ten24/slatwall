@@ -658,9 +658,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
-		
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-
 		if (!isNull(whiteList)){
 			var authorizedPropertyList = whiteList.split(",");
 			for(var authorizedProperty in authorizedPropertyList){
@@ -1012,30 +1010,39 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 
-		var rightIDQuery = new Query();
-		rightIDQuery.setDBType('Query');
-		rightIDQuery.setAttributes(collection2Data = collection2Data);
-		var rightIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection2Data";
-		var rightIDs = rightIDQuery.execute(sql=rightIDSql).getResult();
-		rightIDs = quotedValueList(rightIDs.primaryID);
+		if(collection2Data.recordCount > 0){
+			var rightIDQuery = new Query();
+			rightIDQuery.setDBType('Query');
+			rightIDQuery.setAttributes(collection2Data = collection2Data);
+			var rightIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection2Data";
+			var rightIDs = rightIDQuery.execute(sql=rightIDSql).getResult();
+			rightIDs = quotedValueList(rightIDs.primaryID);
+		}else{
+			rightIDs = '';
+		}
 
-		//Only needed in order to set typename for all collection1Data columns
-		var leftIDQuery = new Query();
-		leftIDQuery.setDBType('Query');
-		leftIDQuery.setAttributes(collection1Data = collection1Data);
-		var leftIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection1Data";
-		leftIDQuery.execute(sql=leftIDSql);
+		if(collection1Data.recordCount > 0){
+			//Only needed in order to set typename for all collection1Data columns
+			var leftIDQuery = new Query();
+			leftIDQuery.setDBType('Query');
+			leftIDQuery.setAttributes(collection1Data = collection1Data);
+			var leftIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection1Data";
+			leftIDQuery.execute(sql=leftIDSql);
+		}
 
-
+		if(!collection1Data.recordCount && !collection2Data.recordCount){
+			return collection1Data;
+		}
 		var mainSql = "	SELECT #getMergedColumnList(collection1Headers,collection2Headers)#
 						FROM collection1Data, collection2Data
 						WHERE collection1Data.#primaryIDPropertyName# = collection2Data.#primaryIDPropertyName#";
-		var leftSql = "	SELECT *
-						FROM collection1Data
-						WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
+		var leftSql = "	SELECT * FROM collection1Data";
+		if(len(rightIDs)){
+			leftSql &= " WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
+		}
 
 		for(var column in getCollection2UniqueColumns(collection1Headers, collection2Headers)){
-			QueryAddColumn(collection1Data, column, guessDataType(collection2Data,column),[]);
+			QueryAddColumn(collection1Data, column, 'VarChar',[]);
 		};
 
 		var joinQuery = new Query();
@@ -1044,11 +1051,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var joinSql = mainSql & " union all " & leftSql;
 		var joinResult = joinQuery.execute(sql=joinSql).getResult();
 		return joinResult;
-
-	}
-
-	public string function guessDataType(required any collectionData, required string columnName){
-		return isNumeric(collectionData[columnName][1]) ? 'integer' : 'varchar';
 	}
 
 	private string function getMergedColumnList(required string collection1Headers, required string collection2Headers){

@@ -150,6 +150,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentRequirePurchaseFlag = {fieldType="yesno",defaultValue=0},
 			contentRequireSubscriptionFlag = {fieldType="yesno",defaultValue=0},
 			contentIncludeChildContentProductsFlag = {fieldType="yesno",defaultValue=1},
+			contentRenderHibachiActionInTemplate = {fieldType="yesno", defaultValue=0}, 	
 			contentRestrictedContentDisplayTemplate = {fieldType="select"},
 			contentHTMLTitleString = {fieldType="text"},
 			contentMetaDescriptionString = {fieldType="textarea"},
@@ -370,7 +371,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
  
 	private string function extractPackageNameBySettingName (required string settingName){
-		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[a-zA-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
 		var packageName = Mid(substring,12,len(substring));
 		return packageName;
@@ -880,7 +881,7 @@ component extends="HibachiService" output="false" accessors="true" {
 					}
 					for(var i=1; i<=arrayLen(options); i++) {
 						if(isStruct(options[i])) {
-							if(options[i]['value'] == settingDetails.settingValue) {
+							if(options[i]['value'] == settingDetails.settingValue && structKeyExists(options[i], "name")) {
 								settingDetails.settingValueFormatted = options[i]['name'];
 								break;
 							}
@@ -983,25 +984,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				updateStockCalculated();
 			}
 			//reset cache by site
-			if(
-				listFindNoCase("
-					globalURLKeyBrand,
-					globalURLKeyProduct,
-					globalURLKeyProductType,
-					globalURLKeyAccount,
-					globalURLKeyAddress,
-					productDisplayTemplate,
-					productTypeDisplayTemplate,
-					brandDisplayTemplate,
-					accountDisplayTemplate
-					addressDisplayTemplate", 
-					arguments.entity.getSettingName()
-				) ||
-				left(arguments.entity.getSettingName(),7) == 'content'
-			){
-				for(var site in getSiteService().getSiteSmartList().getRecords()){
-					site.setResetSettingCache(true);
-				}
+			for(var site in getSiteService().getSiteSmartList().getRecords()){
+				site.setResetSettingCache(true);
 			}
 		}
 

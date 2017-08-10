@@ -6,7 +6,7 @@ import {AdminRequest} from "../model/transient/adminrequest";
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
 // 	loadingResourceBundle:boolean;
-// }
+// } 
 
 class HibachiService{
 

@@ -123,7 +123,7 @@
 			
 			// Verify the preProcess
 			arguments.entity.validate( context=arguments.processContext );
-			
+
 			// If we pass preProcess validation then we can try to setup the processObject if the entity has one, and validate that
 			if(!arguments.entity.hasErrors() && arguments.entity.hasProcessObject(arguments.processContext)) {
 				invokeArguments[ "processObject" ] = arguments.entity.getProcessObject(arguments.processContext);
@@ -138,7 +138,6 @@
 				}
 				
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
-				
 			}
 			
 			// if the entity still has no errors then we call call the process method
@@ -321,7 +320,7 @@
 		var columnsTotal = ArrayLen(colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
 		var columnNames = arguments.colNames;
-		var newQuery = queryNew(arrayToList(columnNames));
+		var newQuery = queryNew(arrayToList(columnNames), "VarChar"&repeatString(",VarChar", arraylen(columnNames)-1));
 		queryAddRow(newQuery, rowsTotal);
 		for (var i=1; i <= rowsTotal; i++){
 			for(var n=1; n <= columnsTotal; n++){
@@ -920,8 +919,23 @@
 				for(var beanName in serviceBeanInfo){
 					var bean = getBeanFactory().getBean(beanName);
 					var serviceMetaData = getMetaData(bean);
+					var serviceFunctions = [];
 					if(structKeyExists(serviceMetaData,'functions')){
 						for(var functionItem in serviceMetaData.functions){
+							arrayAppend(serviceFunctions, functionItem);
+						}
+					}
+
+					if(listToArray(serviceMetaData.name,'.')[2]=='custom' && 
+						structKeyExists(serviceMetaData,'extends') && 
+						listLast(serviceMetaData.extends.name,'.') == beanName && 
+						structKeyExists(serviceMetaData.extends, 'functions')){
+						for(var functionItem in serviceMetaData.extends.functions){
+							arrayAppend(serviceFunctions, functionItem);
+						}
+					}
+					if(arrayLen(serviceFunctions)){
+						for(var functionItem in serviceFunctions){
 							if(
 								(!structKeyExists(functionItem,'access') || functionItem.access == 'public')
 								&& lcase(left(functionItem.name,7))=='process'
