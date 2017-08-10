@@ -1781,6 +1781,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//this function probably can be astracted out to the service level for Direct Object Reference Checks
 	private void function applyPermissionRecordRestrictions(){
+		var excludedEntities = 'Session,PermissionGroup,Permission';
+
+		if(getRequestAccount().getSuperUserFlag() || listFind(excludedEntities, getCollectionObject())){
+			return;
+		}
+
 		var objectPermissionsList = getCollectionObject();
 		
 		var aliasMap ={};
