@@ -74,7 +74,7 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 	property name="permissionsByDetails" persistent="false"; 
 	
 	public struct function getPermissionsByDetails() {
-		if(!structKeyExists(variables, "permissionsByDetails")) {
+		if(!getService("HibachiCacheService").hasCachedValue(variables.permissionGroupID & 'permissionByDetails')) {
 			
 			// Create the start of the structure
 			variables.permissionsByDetails = {
@@ -88,7 +88,7 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 			
 			// Get all of the permissions & the arrayLen
 			var permissions = getPermissions(); 
-			var l = arrayLen(permissions);
+			var l = getPermissionsCount();
 			
 			// Loop over each permission
 			for(var p=1; p<=l; p++) {
@@ -144,8 +144,9 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 					}
 				}
 			}
+			getService("hibachiCacheService").setCachedValue(getPermissionGroupID() & 'permissionByDetails', variables.permissionsByDetails);
 		}
-		return variables.permissionsByDetails;
+		return getService("hibachiCacheService").getCachedValue(getPermissionGroupID() & 'permissionByDetails');
 	}
 	
 	public any function getPermissionByDetails(required string accessType, string entityClassName, string propertyName, string subsystem, string section, string item) {
