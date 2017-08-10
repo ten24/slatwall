@@ -109,6 +109,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!isNull(permission.getPermissionGroup()));
 		//double check that read perms are good so far
+		persistTestEntity(permissionGroup,{});
 		var canRead = variables.service.authenticateEntityCrudByAccount("read","order",peasantyAccount);
 		assert(canRead);
 		
@@ -261,6 +262,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!isNull(permission.getPermissionGroup()));
 		
 		
+		
+		
 		//set up the account so that they can read account
 		var accountPermissionData = {
 			permissionID="",
@@ -278,7 +281,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(arraylen(permissionGroup.getPermissions()),2);
 		
 		
-		
+		persistTestEntity(permissionGroup,{});
 		//double check that read perms are good so far
 		var canRead = variables.service.authenticateEntityCrudByAccount("read","order",peasantyAccount);
 		assert(canRead);
