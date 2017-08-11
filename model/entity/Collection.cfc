@@ -1779,7 +1779,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				) && (
 					(
 						lcase(prop.name) == lcase(prop.cfc)
-						&& (!structKeyExists(prop,'hb_permissionRecordRestrictionJoin') || prop.hb_permissionRecordRestrictionJoin == false)
+						&& (!structKeyExists(prop,'hb_permissionRecordRestrictionJoin') || prop.hb_permissionRecordRestrictionJoin == true)
 						
 					) || (
 						structKeyExists(prop,'hb_permissionRecordRestrictionJoin')
