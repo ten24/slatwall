@@ -1770,14 +1770,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var manyToOneProperties = [];
 		for(var prop in properties){
 			if(
-				//auto join many to ones if the propery name is the same as the cfc name 
+				//auto join many to ones if the propery name is the same as the cfc name or if they have hb_permissionRecordRestrictionJoin metadata
 				(
 					structKeyExists(prop,'fieldtype') 
 					&& prop.fieldtype == 'many-to-one' 
-					&& lcase(prop.name) == lcase(prop.cfc)
-				) || (
-					structKeyExists(prop,'hb_permissionRecordRestrictionJoin')
-					&& prop.hb_permissionRecordRestrictionJoin == true
+					
+				) && (
+					(
+						lcase(prop.name) == lcase(prop.cfc)
+					) || (
+						structKeyExists(prop,'hb_permissionRecordRestrictionJoin')
+						&& prop.hb_permissionRecordRestrictionJoin == true	
+					)
 				)
 			){
 				arrayAppend(manyToOneProperties,prop);
