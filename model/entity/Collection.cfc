@@ -72,6 +72,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// Non-Persistent Properties
 	property name="hibachiCollectionService" type="any" persistent="false";
+	property name="hibachiService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
@@ -150,6 +151,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.connection = ormGetSession().connection();
 		variables.filterGroupAliasMap = {};
 		setHibachiCollectionService(getService('hibachiCollectionService'));
+		setHibachiService(getService('HibachiService'));
 
 	}
 	
@@ -954,9 +956,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		if(!joinFound){
-			ArrayAppend(getCollectionConfigStruct().joins,arguments.join);
+			ArrayPrepend(getCollectionConfigStruct().joins,arguments.join);
 		}
-
+		getCollectionConfigStruct().joins = getService('hibachiUtilityService').arrayOfStructsSort(getCollectionConfigStruct().joins,'alias','asc');
 	}
 
 
@@ -1763,21 +1765,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 	}
 	
-	private array function getManyToOnePropertiesWhereCFCEqualsName(){
-		var properties = getService('HibachiService').getPropertiesByEntityName(getCollectionObject());
+	private array function getManyToOnePropertiesToJoin(){
+		var properties = getHibachiService().getPropertiesByEntityName(getCollectionObject());
 		var manyToOneProperties = [];
 		for(var prop in properties){
 			if(
-				structKeyExists(prop,'fieldtype') 
-				&& prop.fieldtype == 'many-to-one' 
-				&& lcase(prop.name) == lcase(prop.cfc)
+				//auto join many to ones if the propery name is the same as the cfc name 
+				(
+					structKeyExists(prop,'fieldtype') 
+					&& prop.fieldtype == 'many-to-one' 
+					&& lcase(prop.name) == lcase(prop.cfc)
+				) || (
+					structKeyExists(prop,'hb_permissionRecordRestrictionJoin')
+					&& prop.hb_permissionRecordRestrictionJoin == true
+				)
 			){
 				arrayAppend(manyToOneProperties,prop);
 			}
 		}
-		
 		return manyToOneProperties;
 	}
+	
+	
 	
 	//this function probably can be astracted out to the service level for Direct Object Reference Checks
 	private void function applyPermissionRecordRestrictions(){
@@ -1802,7 +1811,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 		}
-		var manyToOneProperties = getManyToOnePropertiesWhereCFCEqualsName();
+		var manyToOneProperties = getManyToOnePropertiesToJoin();
 		for(var prop in manyToOneProperties){
 			objectPermissionsList = listAppend(objectPermissionsList,prop.cfc);
 			var baseEntityObject = getService('hibachiService').getEntityObject( prop.cfc );
