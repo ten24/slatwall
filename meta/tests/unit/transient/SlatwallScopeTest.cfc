@@ -247,6 +247,54 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertFalse( structKeyExists(cd, "hushbuppy") );
 	}
 	
+	/**
+	* @test
+	*/
+	public void function getProductSmartListTest() {
+		var productSmartList = request.slatwallScope.getProductSmartList();
+		productSmartList.getPageRecords();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductSmartListTest_withContent() {
+		var contentData = {
+			contentID="",
+			productListingPageFlag=1
+		};
+		var contentEntity = createPersistedTestEntity('Content',contentData);
+		request.slatwallScope.setContent(contentEntity);
+		
+		var productSmartList = request.slatwallScope.getProductSmartList();
+		request.slatwallScope.getProductSmartList().getPageRecords();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductCollectionListTest() {
+		var productCollectionList = request.slatwallScope.getProductCollectionList();
+		productCollectionList.getPageRecords();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductCollectionListTest_withContent() {
+		var contentData = {
+			contentID="",
+			productListingPageFlag=1
+		};
+		var contentEntity = createPersistedTestEntity('Content',contentData);
+		
+		request.slatwallScope.setContent(contentEntity);
+		
+		var productCollectionList = request.slatwallScope.getProductCollectionList();
+		productCollectionList.getPageRecords();
+		assert(productCollectionList.getHQL() CONTAINS '_product_listingPages_content');
+	}
+	
 }
 
 
