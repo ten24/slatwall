@@ -206,7 +206,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag() && isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) && getContent().setting('contentIncludeChildContentProductsFlag')) {
 				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingPages slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.product.productID = aslatwallproduct.productID) ");
 			} else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()) {
-				variables.productSmartList.addFilter('listingPages.contentID',getContent().getContentID());
+				variables.productSmartList.addFilter('listingPages.content.contentID',getContent().getContentID());
 			}
 		}
 		return variables.productSmartList;
@@ -226,9 +226,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
 				&& getContent().setting('contentIncludeChildContentProductsFlag')
 			){
-				productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
+				productCollectionList.addFilter('listingPages.content.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
-				productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
+				productCollectionList.addFilter('listingPages.content.contentID',getContent.getContentID());
 			}
 			variables.productCollectionList = productCollectionList;
 		}
