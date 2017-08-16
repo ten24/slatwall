@@ -454,6 +454,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	public any function processSku_addBundledSku(required any sku, required any processObject){
+		var bundledSku = this.newSkuBundle();
+		bundledSku.setBundledSku(arguments.processObject.getBundleSku());
+		bundledSku.setBundledQuantity(arguments.processObject.getQuantity());
+		bundledSku.setSku(arguments.sku);
+		this.saveSkuBundle(bundledSku);
+		return sku;
+	}
+
 	// TODO [paul]: makeup / breakup
 	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
 
@@ -471,13 +480,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		makeupItem.setToStock( makeupStock );
 
 		// Loop over every bundledSku
-		for(bundledSku in arguments.entity.getBundledSkus()) {
+		for(var bundledSku in arguments.entity.getBundledSkus()) {
 
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 
 			var makeupItem = getStockService().newStockAdjustmentItem();
 			makeupItem.setStockAdjustment( stockAdjustment );
-			makeupItem.setQuantity( bundledSku.getBundledQuantity() );
+			makeupItem.setQuantity( bundledSku.getBundledQuantity() * arguments.processObject.getQuantity());
 			makeupItem.setFromStock( thisStock );
 
 		}
@@ -505,13 +514,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		breakupItem.setFromStock( breakupStock );
 
 		// Loop over every bundledSku
-		for(bundledSku in arguments.entity.getBundledSkus()) {
+		for(var bundledSku in arguments.entity.getBundledSkus()) {
 
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 
 			var breakupItem = getStockService().newStockAdjustmentItem();
 			breakupItem.setStockAdjustment( stockAdjustment );
-			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
+			breakupItem.setQuantity( bundledSku.getBundledQuantity() * arguments.processObject.getQuantity() );
 			breakupItem.setToStock( thisStock );
 
 		}
