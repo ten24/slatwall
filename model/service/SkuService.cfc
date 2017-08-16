@@ -490,7 +490,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				makeupItem.setQuantity( makeupQuantity );
 				makeupItem.setFromStock( thisStock );
 			}else{
-				arguments.sku.addError('not enough inventory at location to makeup');
+				arguments.sku.addError('stock','not enough inventory at location to makeup');
 				break;
 			}
 		}
@@ -499,9 +499,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getStockService().saveStockAdjustment(stockAdjustment);
 
 			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+			getHibachiScope().addModifiedEntity(arguments.sku);
 		}
 		
-
 		return arguments.sku;
 	}
 
@@ -533,7 +533,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 			}
 		}else{
-			arguments.sku.addError('not enough inventory at location to breakup');
+			arguments.sku.addError('stock','not enough inventory at location to breakup');
 		}
 		
 		
@@ -541,6 +541,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getStockService().saveStockAdjustment(stockAdjustment);
 
 			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+			getHibachiScope().addModifiedEntity(arguments.sku);
 		}
 		
 
