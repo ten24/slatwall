@@ -483,17 +483,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var bundledSku in arguments.entity.getBundledSkus()) {
 
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
-
-			var makeupItem = getStockService().newStockAdjustmentItem();
-			makeupItem.setStockAdjustment( stockAdjustment );
-			makeupItem.setQuantity( bundledSku.getBundledQuantity() * arguments.processObject.getQuantity());
-			makeupItem.setFromStock( thisStock );
-
+			var makeupQuantity = bundledSku.getBundledQuantity() * arguments.processObject.getQuantity();
+			if(thisStock.getQATS() >=  makeupQuantity){
+				var makeupItem = getStockService().newStockAdjustmentItem();
+				makeupItem.setStockAdjustment( stockAdjustment );
+				makeupItem.setQuantity( makeupQuantity );
+				makeupItem.setFromStock( thisStock );
+			}else{
+				arguments.sku.addError('not enough inventory at location to makeup');
+				break;
+			}
 		}
 
-		getStockService().saveStockAdjustment(stockAdjustment);
+		if(!sku.hasErrors()){
+			getStockService().saveStockAdjustment(stockAdjustment);
 
-		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		}
+		
 
 		return arguments.sku;
 	}
@@ -507,27 +514,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
 
 		var breakupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
-
-		var breakupItem = getStockService().newStockAdjustmentItem();
-		breakupItem.setStockAdjustment( stockAdjustment );
-		breakupItem.setQuantity( arguments.processObject.getQuantity() );
-		breakupItem.setFromStock( breakupStock );
-
-		// Loop over every bundledSku
-		for(var bundledSku in arguments.entity.getBundledSkus()) {
-
-			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
-
+		
+		if(breakupStock.getQATS() >= arguments.processObject.getQuantity()){
 			var breakupItem = getStockService().newStockAdjustmentItem();
 			breakupItem.setStockAdjustment( stockAdjustment );
-			breakupItem.setQuantity( bundledSku.getBundledQuantity() * arguments.processObject.getQuantity() );
-			breakupItem.setToStock( thisStock );
-
+			breakupItem.setQuantity( arguments.processObject.getQuantity() );
+			breakupItem.setFromStock( breakupStock );
+			
+			// Loop over every bundledSku
+			for(var bundledSku in arguments.entity.getBundledSkus()) {
+				
+				var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+	
+				var breakupItem = getStockService().newStockAdjustmentItem();
+				breakupItem.setStockAdjustment( stockAdjustment );
+				breakupItem.setQuantity( bundledSku.getBundledQuantity() * arguments.processObject.getQuantity() );
+				breakupItem.setToStock( thisStock );
+	
+			}
+		}else{
+			arguments.sku.addError('not enough inventory at location to breakup');
 		}
+		
+		
+		if(!arguments.sku.hasErrors()){
+			getStockService().saveStockAdjustment(stockAdjustment);
 
-		getStockService().saveStockAdjustment(stockAdjustment);
-
-		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		}
+		
 
 		return arguments.sku;
 
