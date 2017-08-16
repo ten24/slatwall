@@ -62,13 +62,28 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartlist="#rc.physicalSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.physicalSmartList#" 
 	                          recordeditaction="admin:entity.editphysical"
 							  recorddetailaction="admin:entity.detailphysical">
 	
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
 		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Physical'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editphysical"
+		record-detail-action="admin:entity.detailphysical"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="physicalName" tdclass="primary" />	
+		<sw-listing-column data-property-identifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
+		<sw-listing-column data-property-identifier="createdDateTime" />
+	</sw-listing-display>
 
 </cfoutput>

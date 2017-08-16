@@ -62,11 +62,24 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" 
 							  recordDetailAction="admin:entity.detailpermissiongroup" 
 							  recordEditAction="admin:entity.editpermissiongroup">
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+			data-collection="'PermissionGroup'"
+			data-edit="false"
+			data-has-search="true"
+			data-record-edit-action="admin:entity.editpermissiongroup"
+			data-record-detail-action="admin:entity.detailpermissiongroup"
+			data-is-angular-route="false"
+			data-angular-links="false"
+			data-has-action-bar="false"
+						>
+		<sw-listing-column data-property-identifier="permissionGroupName" tdclass="primary" />
+	</sw-listing-display>
 
 </cfoutput>

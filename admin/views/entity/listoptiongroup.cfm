@@ -62,13 +62,29 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.optionGroupSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartList="#rc.optionGroupSmartList#" 
 							   recordDetailAction="admin:entity.detailoptiongroup"
 							   recordEditAction="admin:entity.editoptiongroup"
 							   sortProperty="sortOrder">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />
 		<hb:HibachiListingColumn propertyIdentifier="optionGroupCode" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+		data-collection="'OptionGroup'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editoptiongroup"
+		record-detail-action="admin:entity.detailoptiongroup"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+		data-sortable="true"
+		data-sort-property="sortOrder"
+	>
+		<sw-listing-column data-property-identifier="optionGroupName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="optionGroupCode" />
+	</sw-listing-display>
+
 </cfoutput>

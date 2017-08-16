@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
 							   recordEditAction="admin:entity.editaccount"
 							   recordDetailAction="admin:entity.detailaccount">
 							      	      
@@ -74,6 +74,25 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="organizationFlag" />
 		
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+			data-collection="'Account'"
+			data-edit="false"
+			data-has-search="true"
+			data-record-edit-action="admin:entity.editaccount"
+			data-record-detail-action="admin:entity.detailaccount"
+			data-is-angular-route="false"
+			data-angular-links="false"
+			data-has-action-bar="false"
+						>
+		<sw-listing-column data-property-identifier="firstName" />
+		<sw-listing-column data-property-identifier="lastName" />
+		<sw-listing-column data-property-identifier="company" tdclass="primary" />
+		<sw-listing-column data-property-identifier="primaryPhoneNumber.phoneNumber" />
+		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" />
+		<sw-listing-column data-property-identifier="guestAccountFlag" />
+		<sw-listing-column data-property-identifier="organizationFlag" />
+	</sw-listing-display>
 
 </cfoutput>

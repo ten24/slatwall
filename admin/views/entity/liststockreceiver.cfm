@@ -55,13 +55,29 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityActionBar type="listing" object="#rc.stockReceiverSmartList#" showCreate="false" />
 
-<hb:HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
 						   recordDetailAction="admin:entity.detailstockreceiver"
 						   recordEditAction="admin:entity.editstockreceiver">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="packingSlipNumber" />
 	<hb:HibachiListingColumn propertyIdentifier="boxCount" />
 	<hb:HibachiListingColumn propertyIdentifier="receiverType" />
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+    <sw-listing-display
+        data-collection="'StockReceiver'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editstockreceiver"
+        record-detail-action="admin:entity.detailstockreceiver"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="packingSlipNumber" tdclass="primary" />
+        <sw-listing-column data-property-identifier="boxCount" />
+        <sw-listing-column data-property-identifier="receiverType" />
+        <sw-listing-column data-property-identifier="createdDateTime" />
+    </sw-listing-display>
 
 </cfoutput>

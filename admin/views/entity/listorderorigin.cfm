@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
 			recordEditAction="admin:entity.editorderorigin"
 			recordEditQueryString="redirectAction=admin:entity.listorderorigin"
 			recordDeleteAction="admin:entity.deleteorderorigin"
@@ -71,7 +71,24 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
 		<hb:HibachiListingColumn propertyIdentifier="orderOriginType" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+	    data-collection="'OrderOrigin'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editorderorigin"
+	    record-edit-query-string="redirectAction=admin:entity.listorderorigin"
+	    record-detail-action="admin:entity.detailorderorigon"
+	    record-detail-modal="true"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+	    <sw-listing-column data-property-identifier="unitName" tdclass="primary" />
+	    <sw-listing-column data-property-identifier="unitCode" />
+	    <sw-listing-column data-property-identifier="measurementType" />
+	</sw-listing-display>
 
 </cfoutput>
 

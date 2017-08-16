@@ -73,7 +73,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.orderItemSmartList#" showCreate="false" />
 	
-	<hb:HibachiListingDisplay smartList="#rc.orderItemSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.orderItemSmartList#"
 							   recorddetailaction="admin:entity.detailorderitem"
 							   recordeditaction="admin:entity.editorderitem">
 		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
@@ -85,5 +85,27 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="price" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
 		<hb:HibachiListingColumn propertyIdentifier="extendedPrice" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'OrderItem'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editorderitem"
+		record-detail-action="admin:entity.detailorderitem"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="account.firstName" />
+		<sw-listing-column data-property-identifier="account.lastName" />
+		<sw-listing-column data-property-identifier="orderNumber" />
+		<sw-listing-column data-property-identifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" />
+		<sw-listing-column data-property-identifier="orderOpenDateTime" />
+		<sw-listing-column data-property-identifier="sku.product.calculatedTitle" tdclass="primary" />
+		<sw-listing-column data-property-identifier="price" />
+		<sw-listing-column data-property-identifier="quantity" />
+		<sw-listing-column data-property-identifier="extendedPrice" />
+	</sw-listing-display>
+
 </cfoutput>

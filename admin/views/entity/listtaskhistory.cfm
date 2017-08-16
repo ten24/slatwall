@@ -60,12 +60,27 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.taskHistorySmartList#" showCreate="false" />
 
-	<hb:HibachiListingDisplay smartlist="#rc.taskHistorySmartList#" >
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.taskHistorySmartList#" >
 		<hb:HibachiListingColumn propertyidentifier="startTime" />
 		<hb:HibachiListingColumn propertyidentifier="endTime" />
 		<hb:HibachiListingColumn propertyidentifier="task.taskName" tdclass="primary" />
 		<hb:HibachiListingColumn propertyidentifier="successFlag" />
 		<hb:HibachiListingColumn propertyidentifier="response" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'TaskHistory'"
+		data-edit="false"
+		data-has-search="true"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="startTime" />
+		<sw-listing-column data-property-identifier="endTime" />
+		<sw-listing-column data-property-identifier="task.taskName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="successFlag" />
+		<sw-listing-column data-property-identifier="response" />
+	</sw-listing-display>
 
 </cfoutput>

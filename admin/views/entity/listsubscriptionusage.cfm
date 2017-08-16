@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false" />
 
-<hb:HibachiListingDisplay smartList="#rc.subscriptionUsageSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.subscriptionUsageSmartList#"
 						   recordDetailAction="admin:entity.detailsubscriptionUsage"
 						   recordEditAction="admin:entity.editsubscriptionUsage">
 
@@ -70,6 +70,28 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
 	<hb:HibachiListingColumn propertyIdentifier="autoPayFlag" />
 
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+			data-collection="'SubscriptionUsage'"
+			data-edit="false"
+			data-has-search="true"
+			data-record-edit-action="admin:entity.editsubscriptionUsage"
+			data-record-detail-action="admin:entity.detailsubscriptionUsage"
+			data-is-angular-route="false"
+			data-angular-links="false"
+			data-has-action-bar="false"
+						>
+		<sw-listing-column data-property-identifier="account.firstName" />
+		<sw-listing-column data-property-identifier="account.lastName" />
+		<sw-listing-column data-property-identifier="account.company" />
+		<sw-listing-column data-property-identifier="subscriptionOrderItemName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="currentStatusType" />
+		<sw-listing-column data-property-identifier="nextBillDate" />
+		<sw-listing-column data-property-identifier="expirationDate" />
+		<sw-listing-column data-property-identifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" />
+		<sw-listing-column data-property-identifier="renewalPrice" />
+		<sw-listing-column data-property-identifier="autoPayFlag" />
+	</sw-listing-display>
 
 </cfoutput>

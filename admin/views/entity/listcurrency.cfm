@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.currencySmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.currencySmartList#"
 							   recordDetailAction="admin:entity.detailcurrency"
 							   recordEditAction="admin:entity.editcurrency">
 		
@@ -70,6 +70,22 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="currencyCode" />
 		<hb:HibachiListingColumn propertyIdentifier="formattedExample" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+	    data-collection="'Currency'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editcurrency"
+	    record-detail-action="admin:entity.detailcurrency"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="currencyName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+		<sw-listing-column data-property-identifier="currencyCode" />
+		<sw-listing-column data-property-identifier="formattedExample" />
+	</sw-listing-display>
+
 </cfoutput>

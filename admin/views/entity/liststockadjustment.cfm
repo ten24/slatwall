@@ -66,7 +66,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.stockAdjustmentSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.stockAdjustmentSmartList#"
 			recordeditaction="admin:entity.editstockadjustment"
 			recorddetailaction="admin:entity.detailstockadjustment"
 			showCreate="true">
@@ -76,6 +76,23 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
 		<hb:HibachiListingColumn propertyidentifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+	    data-collection="'StockAdjustment'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editstockadjustment"
+	    record-detail-action="admin:entity.detailstockadjustment"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+	    <sw-listing-column data-property-identifier="stockAdjustmentType.typeName" filter="true" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" tdclass="primary" />
+	    <sw-listing-column data-property-identifier="stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
+	    <sw-listing-column data-property-identifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
+	    <sw-listing-column data-property-identifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
+	    <sw-listing-column data-property-identifier="createdDateTime" />
+	</sw-listing-display>
+
 </cfoutput>
