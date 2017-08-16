@@ -582,7 +582,7 @@
 			}else{
 				return "";
 			}
-			var sanitizedString = htmlEditFormat(arguments.html);
+			var sanitizedString = encodeForHTML(arguments.html);
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
