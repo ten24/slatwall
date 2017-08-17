@@ -582,7 +582,11 @@
 			}else{
 				return "";
 			}
-			var sanitizedString = encodeForHTML(arguments.html);
+			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
+				var sanitizedString = htmlEditFormat(arguments.html);
+			}else{
+				var sanitizedString = encodeForHTML(arguments.html);	
+			}
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
