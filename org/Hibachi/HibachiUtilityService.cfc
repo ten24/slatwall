@@ -567,7 +567,7 @@
 				return "";
 			}
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
-				var sanitizedString = ESAPIEncode('html',arguments.html);
+				var sanitizedString = htmlEditFormat('html',arguments.html);
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);	
 			}
