@@ -981,26 +981,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
 			}
-			//reset cache by site
-			if(
-				listFindNoCase("
-					globalURLKeyBrand,
-					globalURLKeyProduct,
-					globalURLKeyProductType,
-					globalURLKeyAccount,
-					globalURLKeyAddress,
-					productDisplayTemplate,
-					productTypeDisplayTemplate,
-					brandDisplayTemplate,
-					accountDisplayTemplate
-					addressDisplayTemplate", 
-					arguments.entity.getSettingName()
-				) ||
-				left(arguments.entity.getSettingName(),7) == 'content'
-			){
-				for(var site in getSiteService().getSiteSmartList().getRecords()){
-					site.setResetSettingCache(true);
-				}
+			
+			for(var site in getSiteService().getSiteSmartList().getRecords()){
+				site.setResetSettingCache(true);
 			}
 		}
 

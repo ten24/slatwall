@@ -757,7 +757,39 @@ component extends="FW1.framework" {
 	}
 	
 	public string function getServerInstanceIPAddress(){
-		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();
+		
+		//Check if we already have a instanceIP assigned.
+		if(getHibachiScope().hasApplicationValue("instanceIP")){
+			return getHibachiScope().getApplicationValue("instanceIP");
+		}
+		
+		//If we are not using aws, then assign the instance ip and return it.
+		if (!variables.framework.isAwsInstance){
+			var ipAddress = createObject("java", "java.net.InetAddress").localhost.getHostAddress();
+			getHibachiScope().setApplicationValue("instanceIP", ipAddress);
+			return ipAddress;
+		}
+		
+		//populate cache using AWS if available.
+		// SET AWS Instance IP Address if one exists.
+		httpService = new http();
+		httpService.setTimeout(3);
+		httpService.setMethod("get");
+		httpService.setUrl("169.254.169.254/latest/meta-data/local-ipv4");
+		result = httpService.send().getPrefix();
+		
+		if (result.fileContent != "Connection Timeout" and result.fileContent != "Connection Failure"){
+			var ipAddress = result.filecontent;
+		}
+		
+		//if result exists set cache to this and return it.
+		if (!isNull(ipAddress) && len(ipAddress)){
+			// GET AWS Instance IP, cache it and return it.
+			getHibachiScope().setApplicationValue("instanceIP", ipAddress);
+			return ipAddress;
+		}
+		
+		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();//returned but not cached.
 	}
 
 	public void function renderApiResponse(){
