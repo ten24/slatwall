@@ -940,7 +940,7 @@ component extends="FW1.framework" {
 			if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
 				location(arguments.redirectLocation, arguments.addToken);
 			}else{
-				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken)
+				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken);
 			}
 		}
 	}

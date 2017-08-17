@@ -22,13 +22,23 @@
 
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="accountAddress" edit="#rc.edit#">
+				<cfif rc.edit eq "true">
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" hint="#$.slatwall.rbkey('entity.orderfulfillment.shippingaddress.hint')#" edit="false">
+					<hr>
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="accountAddress" edit="#rc.edit#">
+					
+				<cfelse>
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" edit="#rc.edit#">	
+				</cfif>
+				
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hr />
 				<hb:HibachiDisplayToggle selector="select[name='accountAddress.accountAddressID']" showValues="" loadVisable="#isNull(rc.orderFulfillment.getAccountAddress())#">
 					<swa:SlatwallAdminAddressDisplay address="#rc.orderFulfillment.getAddress()#" fieldnameprefix="shippingAddress." edit="#rc.edit#" showPhoneNumber="true">
 				</hb:HibachiDisplayToggle>
-
+				<cfif rc.edit eq "true">
+					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="saveAccountAddressFlag" fieldtype="yesno" edit="#rc.edit#"></hb:HibachiPropertyDisplay>
+				</cfif>
 			</cfif>
 
 			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">
