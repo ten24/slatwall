@@ -470,6 +470,7 @@ component {
 
 
     private string function deduceDottedPath( string baseMapping, string basePath ) {
+    	
         if ( right( basePath, 1 ) == '/' && len( basePath ) > 1 ) {
             basePath = left( basePath, len( basePath ) - 1 );
         }
@@ -501,6 +502,7 @@ component {
             cfcPath = piece & '/' & cfcPath;
         } while ( progress );
         if ( notFound ) {
+        	writedump(var=arguments,top=2);abort;
             throw 'unable to deduce dot-relative path for: #baseMapping# (#basePath#) root #expandPath("/")#';
         }
         return dotted;

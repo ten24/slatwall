@@ -8,6 +8,10 @@ component accessors="true" output="false" persistent="false" {
 		return this;
 	}
 	
+	public any function getApplicationKey(){
+		return getBeanFactory().getBean('applicationKey');
+	}
+	
 	// @help Public method to determine if this is a persistent object (an entity)
 	public any function isPersistent() {
 		var metaData = getThisMetaData();
@@ -213,6 +217,7 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint setups an application scope value that will always be consistent
 	private any function getHibachiInstanceApplicationScopeKey() {
+		
 		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey")) {
 			var metaData = getThisMetaData();
 			do {
@@ -246,10 +251,12 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint facade method to get values from the application scope
 	public any function getApplicationValue(required any key) {
+		
 		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
 			return application[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
-		
+		writedump(var=application,top=4);
+		writedump(getHibachiInstanceApplicatonScopeKey());abort;
 		throw("You have requested a value for '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
 	}
 	

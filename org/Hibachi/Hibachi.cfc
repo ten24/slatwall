@@ -42,6 +42,8 @@ component extends="framework.one" {
 	variables.framework.generateSES = false;
 	variables.framework.SESOmitIndex = false;
 	variables.framework.suppressImplicitService = true;
+	//variables.framework.suppressServiceQueue = false; // false restores the FW/1 2.2 behavior
+	//variables.framework.enableGlobalRC = true; // true restores the FW/1 2.2 behavior
 	variables.framework.unhandledExtensions = 'cfc';
 	variables.framework.unhandledPaths = '/flex2gateway';
 	variables.framework.unhandledErrorCaught = false;
@@ -49,6 +51,7 @@ component extends="framework.one" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	variables.framework.diEngine='none';
 
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
@@ -96,6 +99,8 @@ component extends="framework.one" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 
+
+
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
@@ -106,7 +111,8 @@ component extends="framework.one" {
 
 	// Defaults
 	this.mappings[ "/#variables.framework.applicationKey#" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/org/Hibachi/", "");
-	this.mappings[ '/framework' ] = expandPath( '/#variables.framework.applicationKey#/org/Hibachi/framework' );
+	this.mappings[ '/framework' ] = replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all") & '/framework';
+
 	// Allow For Application Config
 	try{include "../../config/configMappings.cfm";}catch(any e){}
 	// Allow For Instance Config
@@ -175,11 +181,30 @@ component extends="framework.one" {
 		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
-
 	// =======  END: ENVIORNMENT CONFIGURATION  =======
+//	public void function onApplicationStart(){
+//		writedump('onApplicaitonStart');abort;
+//	}
+//
+	public void function setupApplication() {
+		
+	}
+//
+//    public void function setupEnvironment( env ) {
+//
+//    }
+//
+//    public void function setupSession() {
+//
+//    }
+//
+//    public void function setupSubsystem( module ) {
+//
+//    }
+
 
 	public any function bootstrap() {
-		writedump('test');abort;
+
 		setupGlobalRequest();
 
 		// Announce the applicatoinRequest event
@@ -200,18 +225,17 @@ component extends="framework.one" {
 	}
 
 	public void function setupGlobalRequest() {
+		//writedump(var=getBeanFactory().getBeanInfo(),top=2);abort;
 		var httpRequestData = GetHttpRequestData();
-
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
             } else {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
-
 			// Verify that the application is setup
 			verifyApplicationSetup();
-			
+
 			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
 			}else{
@@ -221,9 +245,9 @@ component extends="framework.one" {
 					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
 					serverInstance.setSettingsExpired(false);
 					getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
-				}	
+				}
 			}
-			
+
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
 
@@ -231,7 +255,7 @@ component extends="framework.one" {
 			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
 				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
 			}
-			
+
 			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
 			if(
 				structKeyExists(httpRequestData, "headers") &&
@@ -242,16 +266,16 @@ component extends="framework.one" {
 
 				var accessKey 		= httpRequestData.headers["Access-Key"];
 				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
-				
+
 				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
 				var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-				
+
 				// If an account was found, then set that account in the session for this request.  This should not persist
 				if (!isNull(accessKeyAccount)){
 					getHibachiScope().getSession().setAccount( accessKeyAccount );
 					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
 				}
-			} 
+			}
 
 			//check if we have the authorization header
 			if(len(AuthToken)){
@@ -261,18 +285,18 @@ component extends="framework.one" {
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
 				var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-				
+
 				if(jwt.verify()){
-					
+
 					var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
 					if(!isNull(jwtAccount)){
 						jwtAccount.setJwtToken(jwt);
 						getHibachiScope().getSession().setAccount( jwtAccount );
 					}
 				}
-		
+
 			}
-			
+
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -282,6 +306,7 @@ component extends="framework.one" {
 	}
 
 	public void function setupRequest() {
+
 		var status = 200;
 		setupGlobalRequest();
 		var httpRequestData = getHTTPRequestData();
@@ -344,7 +369,7 @@ component extends="framework.one" {
 		// Get the hibachiConfig out of the application scope in case any changes were made to it
 		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
-		
+
 		if(
 			!authorizationDetails.authorizedFlag
 		) {
@@ -429,7 +454,7 @@ component extends="framework.one" {
 		// Setup a $ in the request context, and the hibachiScope shortcut
 		request.context.fw = getHibachiScope().getApplicationValue("application");
 		request.context.$ = {};
-		request.context.$.Hibachi = getHibachiScope();	
+		request.context.$.Hibachi = getHibachiScope();
 		request.context.$[ variables.framework.applicationKey ] = getHibachiScope();
 		request.context.pagetitle = request.context.$[ variables.framework.applicationKey ].rbKey( request.context[ getAction() ] );
 		request.context.edit = false;
@@ -459,14 +484,14 @@ component extends="framework.one" {
 		// Announce the applicatoinRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestStart");
 	}
-	
+
 	public boolean function hasReloadKey(){
-		return structKeyExists(url, variables.framework.reload) 
+		return structKeyExists(url, variables.framework.reload)
 		&& url[variables.framework.reload] == variables.framework.password;
 	}
-	
+
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
-		
+
 		if(
 			(
 				hasReloadKey()
@@ -479,7 +504,7 @@ component extends="framework.one" {
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="600"  {
-				
+
 				// Set the request timeout to 600
 				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
 
@@ -532,13 +557,15 @@ component extends="framework.one" {
 
 					//========================= IOC SETUP ====================================
 
-					var coreBF = new DI1.ioc("/#variables.framework.applicationKey#/model", {
-						transients=["entity", "process", "transient", "report"],
-						transientPattern="Bean$"
-					});
 
-					coreBF.addBean("applicationKey", variables.framework.applicationKey);
-					coreBF.addBean("hibachiInstanceApplicationScopeKey", getHibachiInstanceApplicationScopeKey());
+					var coreBF = new framework.ioc(["/#variables.framework.applicationKey#/model"], {
+						transients=["entity", "process", "transient", "report"],
+						transientPattern="Bean$",
+						constants={
+							'applicationKey'=variables.framework.applicationKey,
+							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
+						}
+					});
 
 					// If the default singleton beans were not found in the model, add a reference to the core one in hibachi
 					if(!coreBF.containsBean("hibachiDAO")) {
@@ -620,13 +647,13 @@ component extends="framework.one" {
 
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
-						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
+						var customBF = new framework.ioc("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
 
 						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
-						var aggregateBF = new DI1.ioc("");
+						var aggregateBF = new framework.ioc("");
 
 						// Process factories, last takes precendence
 						var beanFactories = [coreBF, customBF];
@@ -652,32 +679,33 @@ component extends="framework.one" {
 					} else {
 						setBeanFactory(coreBF);
 					}
+
+
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 
 					//========================= END: IOC SETUP ===============================
 
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
-
 					//==================== START: EVENT HANDLER SETUP ========================
-
+					
 					getBeanFactory().getBean('hibachiEventService').registerEventHandlers();
 
 
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					
-					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
+
+					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup
 						&& (
-							!structKeyExists(server,'runFullUpdate') 
+							!structKeyExists(server,'runFullUpdate')
 							|| (structKeyExists(server,'runFullUpdate') && server.runFullUpdate
 						)
 					);
 					if(
-						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm') 
+						!fileExists(expandPath('/#variables.framework.applicationKey#/custom/config') & '/lastFullUpdate.txt.cfm')
 						|| (
-							structKeyExists(url, variables.framework.hibachi.fullUpdateKey) 
+							structKeyExists(url, variables.framework.hibachi.fullUpdateKey)
 							&& url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword
 						)
 						|| runFullUpdate
@@ -713,24 +741,24 @@ component extends="framework.one" {
 
 					//==================== START: JSON BUILD SETUP ========================
 
-					getBeanFactory().getBean('hibachiJsonService').createJson();
+					getBeanFactory().getBean('HibachiJsonService').createJson();
 
 					//===================== END: JSON BUILD SETUP =========================
-					
+
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
-					
+
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getServerInstanceIPAddress());						
+						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getServerInstanceIPAddress());
 					}else{
-						
+
 						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
 						serverInstance.setServerInstanceExpired(false);
 						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 					}
-					
+
 					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
-					
+
 					// Application Setup Ended
 					getHibachiScope().setApplicationValue("initialized", true);
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application Setup Complete");
@@ -757,7 +785,7 @@ component extends="framework.one" {
 			}
 		}
 	}
-	
+
 	public string function getServerInstanceIPAddress(){
 		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();
 	}
@@ -801,11 +829,11 @@ component extends="framework.one" {
 		abort;
 	}
 
-	public void function setupResponse() {
-		param name="request.context.ajaxRequest" default="false";
-		param name="request.context.ajaxResponse" default="#structNew()#";
-		param name="request.context.apiRequest" default="false";
-		param name="request.context.apiResponse.content" default="#structNew()#";
+	public void function setupResponse(rc) {
+		param name="arguments.rc.ajaxRequest" default="false";
+		param name="arguments.rc.ajaxResponse" default="#structNew()#";
+		param name="arguments.rc.apiRequest" default="false";
+		param name="arguments.rc.apiResponse.content" default="#structNew()#";
 
 		endHibachiLifecycle();
 		// Announce the applicationRequestStart event
@@ -813,47 +841,47 @@ component extends="framework.one" {
 
 
 		// Check for an API Response
-		if(request.context.apiRequest) {
+		if(arguments.rc.apiRequest) {
 			renderApiResponse();
 		}
 
 		// Check for an Ajax Response
-		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
+		if(arguments.rc.ajaxRequest && !structKeyExists(request, "exception")) {
 			populateAPIHeaders();
-			if(isStruct(request.context.ajaxResponse)){
-				if(structKeyExists(request.context, "messages")) {
-					request.context.ajaxResponse["messages"] = request.context.messages;
+			if(isStruct(arguments.rc.ajaxResponse)){
+				if(structKeyExists(arguments.rc, "messages")) {
+					arguments.rc.ajaxResponse["messages"] = arguments.rc.messages;
 				}
-  				request.context.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
-  				request.context.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
-  				if(structKeyExists(request.context, "returnJSONObjects") && len(request.context.returnJSONObjects)) {
-  					for(var item in listToArray(request.context.returnJSONObjects)) {
+  				arguments.rc.ajaxResponse["successfulActions"] = getHibachiScope().getSuccessfulActions();
+  				arguments.rc.ajaxResponse["failureActions"] = getHibachiScope().getFailureActions();
+  				if(structKeyExists(arguments.rc, "returnJSONObjects") && len(arguments.rc.returnJSONObjects)) {
+  					for(var item in listToArray(arguments.rc.returnJSONObjects)) {
   						if(structKeyExists(getHibachiScope(), "get#item#Data")) {
-			  				request.context.ajaxResponse[item] = getHibachiScope().invokeMethod("get#item#Data");
+			  				arguments.rc.ajaxResponse[item] = getHibachiScope().invokeMethod("get#item#Data");
   						}
   					}
   				}
   			}
-  			if(structKeyExists(request.context, "returnJSONKeyLCase") && isBoolean(request.context.returnJSONKeyLCase) && request.context.returnJSONKeyLCase) {
-				writeOutput( serializeJSON( getHibachiScope().getService("hibachiUtilityService").lcaseStructKeys(request.context.ajaxResponse) ) );
+  			if(structKeyExists(arguments.rc, "returnJSONKeyLCase") && isBoolean(arguments.rc.returnJSONKeyLCase) && arguments.rc.returnJSONKeyLCase) {
+				writeOutput( serializeJSON( getHibachiScope().getService("hibachiUtilityService").lcaseStructKeys(arguments.rc.ajaxResponse) ) );
 			} else {
-				writeOutput( serializeJSON(request.context.ajaxResponse) );
+				writeOutput( serializeJSON(arguments.rc.ajaxResponse) );
 			}
 			abort;
 		}
 
 	}
 
-	public void function setupView() {
-		param name="request.context.ajaxRequest" default="false";
+	public void function setupView(rc) {
+		param name="arguments.rc.ajaxRequest" default="false";
 
-		if(request.context.ajaxRequest) {
+		if(arguments.rc.ajaxRequest) {
 			setupResponse();
 		}
 
 		if(structKeyExists(url, "modal") && url.modal) {
 			request.layout = false;
-			setLayout("#getSubsystem(request.context[ getAction() ])#:modal");
+			setLayout("#getSubsystem(arguments.rc[ getAction() ])#:modal");
 		}
 	}
 
@@ -875,7 +903,7 @@ component extends="framework.one" {
 
 	// This handels all of the ORM persistece.
 	public void function endHibachiLifecycle() {
-		
+
 		if(getHibachiScope().getPersistSessionFlag()) {
 			getHibachiScope().getService("hibachiSessionService").persistSession();
 		}
@@ -1035,7 +1063,7 @@ component extends="framework.one" {
 			metaData = metaData.extends;
 		} while( structKeyExists(metaData, "extends") );
 
-		filePath = lcase(replaceNoCase(getDirectoryFromPath(replace(filePath,"\","/","all")), "/fw1/","/","all"));
+		filePath = lcase(replaceNoCase(getDirectoryFromPath(replace(filePath,"\","/","all")), "/framework/","/","all"));
 		var appKey = hash(filePath);
 
 		return appKey;

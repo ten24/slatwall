@@ -153,7 +153,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function updateIntegrationsFromDirectory() {
-		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
+		var dirList = directoryList( expandPath("/Slatwall") & '/integrationServices' );
 		var integrationList = this.listIntegration();
 		var installedIntegrationList = "";
 		
@@ -247,7 +247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 						
-						var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
+						var integrationBF = new Slatwall.org.Hibachi.framework.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
