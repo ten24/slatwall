@@ -480,7 +480,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			var propertyMeta = getPropertyMetaData( propertyName );
 
 			if(structKeyExists(propertyMeta, "hb_optionsNameProperty")) {
-				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|value");
+				collectionList.addDisplayProperty("#propertyMeta.hb_optionsNameProperty#|name");
 			} else {
 				var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
 				collectionList.addDisplayProperty("#exampleEntity.getSimpleRepresentationPropertyName()#|name");
@@ -603,19 +603,29 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
 		if(!structKeyExists(variables, cacheKey)) {
+			var propertyMetaData = getPropertyMetaData(arguments.propertyName); 
 
-			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
-			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
+			var entityService = getService("hibachiService").getServiceByEntityName( listLast(propertyMetaData.cfc,'.') );
+			var collectionList = entityService.invokeMethod("get#listLast(propertyMetaData.cfc,'.')#CollectionList");
 
 			// Create an example entity so that we can read the meta data
-			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#");
+			var exampleEntity = entityNew("#getApplicationValue('applicationKey')##listLast(propertyMetaData.cfc,'.')#");
+
 
 			// If its a one-to-many, then add filter
-			if(getPropertyMetaData( arguments.propertyName ).fieldtype == "one-to-many") {
+			if(propertyMetaData.fieldtype == "one-to-many") {
 				// Loop over the properties in the example entity to
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
-					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == propertyMetaData.fkcolumn ) {
 						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
+					}
+				}	
+			} else if(propertyMetaData.fieldtype == "many-to-many"){
+				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
+					if( structKeyExists(exampleEntity.getProperties()[i], "inversejoincolumn") && exampleEntity.getProperties()[i].inversejoincolumn == propertyMetaData.fkcolumn ) {
+						collectionList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						break; 
 					}
 				}
 			}
@@ -648,6 +658,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public numeric function getPropertyCount( required string propertyName ) {
 		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
 		return propertyCollection.getRecordsCount();
+	}
+
+	public string function getPropertyIDList( required string propertyName, string delimiter = ',' ) {
+		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
+		var records = propertyCollection.getPrimaryIDs();
+		var idList = '';
+		for(var  i = 1; i <= arraylen(records); i++){
+			idList = listAppend(idList,records[i][listFirst(StructKeyList(records[i]))],arguments.delimiter);
+		}
+		return idList;
 	}
 
 	// @hint handles encrypting a property based on conventions
@@ -808,7 +828,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 5) == "Count") {
 
 			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
+		//getXXXIDList()        Where XXX is a one-to-many or many-to-many property where we want to get the ID Lists of all related properti
+		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 6) == "IDList") {
 
+			return getPropertyIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-9) );
 		// getXXX() 			Where XXX is either and attributeID or attributeCode
 		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
 
