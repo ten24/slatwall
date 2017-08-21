@@ -29,9 +29,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			authDetails.invalidToken = true;
 		}
 		
-		// Check if the user is a super admin, if true no need to worry about security
-		//Here superuser when not logged in is still false
-		if( arguments.account.getSuperUserFlag() ) {
+		// Check if the user is a super admin 
+		if(getHibachiScope().getLoggedInFlag() && arguments.account.getSuperUserFlag() ) {
 			authDetails.authorizedFlag = true;
 			authDetails.superUserAccessFlag = true;
 			return authDetails;
