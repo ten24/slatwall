@@ -50,7 +50,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderNumber" ormtype="string";
+	property name="orderNumber" ormtype="string"  index="PI_ORDERNUMBER";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="orderOpenDateTime" ormtype="timestamp";
 	property name="orderOpenIPAddress" ormtype="string";
