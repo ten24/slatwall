@@ -976,16 +976,17 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
 			}
-			//reset cache by site
-			for(var site in getSiteService().getSiteSmartList().getRecords()){
-				site.setResetSettingCache(true);
+
+			for(var serverInstance in this.getServerInstanceSmartList().getRecords()){
+				serverInstance.setServerInstanceExpired(true);
+
 			}
 		}
 
