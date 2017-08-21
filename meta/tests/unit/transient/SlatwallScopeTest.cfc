@@ -258,7 +258,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function getProductSmartListTest() {
 		var productSmartList = request.slatwallScope.getProductSmartList();
-		productSmartList.getPageRecords();
+		productSmartList.getHQL();
 	}
 	
 	/**
@@ -273,7 +273,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.setContent(contentEntity);
 		
 		var productSmartList = request.slatwallScope.getProductSmartList();
-		request.slatwallScope.getProductSmartList().getPageRecords();
+		request.slatwallScope.getProductSmartList().getHQL();
 	}
 	
 	/**
@@ -281,7 +281,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function getProductCollectionListTest() {
 		var productCollectionList = request.slatwallScope.getProductCollectionList();
-		productCollectionList.getPageRecords();
+		productCollectionList.getHQL();
 	}
 	
 	/**
@@ -297,7 +297,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.setContent(contentEntity);
 		
 		var productCollectionList = request.slatwallScope.getProductCollectionList();
-		productCollectionList.getPageRecords();
+		productCollectionList.getHQL();
 		assert(productCollectionList.getHQL() CONTAINS '_product_listingPages_content');
 	}
 	

@@ -50,7 +50,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderNumber" ormtype="string";
+	property name="orderNumber" ormtype="string"  index="PI_ORDERNUMBER";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="orderOpenDateTime" ormtype="timestamp";
 	property name="orderOpenIPAddress" ormtype="string";
@@ -280,7 +280,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 
 			setOrderOpenDateTime( now() );
-			setOrderOpenIPAddress( CGI.REMOTE_ADDR );
+			setOrderOpenIPAddress( getRemoteAddress() );
 
 			// Loop over the order payments to setAmount = getAmount so that any null payments get explicitly defined
 			for(var orderPayment in getOrderPayments()) {
