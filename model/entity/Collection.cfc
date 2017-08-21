@@ -2475,7 +2475,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					postFilterGroup.filterGroup[1].attributeSetObject = column.attributeSetObject;
 					if (keywordCount != 0) postFilterGroup.logicalOperator = "OR";
 				}else{
-					postFilterGroup.filterGroup[1].propertyIdentifier = formatter & '(#propertyIdentifier#)';
+					if(len(formatter)){
+						postFilterGroup.filterGroup[1].propertyIdentifier = formatter & '(#propertyIdentifier#)';
+					}else{
+						postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;
+					}
 					if(keywordCount == 1){
 						postFilterGroup.logicalOperator = "OR";
 					}else{
