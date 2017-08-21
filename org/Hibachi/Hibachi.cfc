@@ -49,6 +49,7 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	variables.framework.isAwsInstance=false;
 
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
@@ -207,19 +208,18 @@ component extends="FW1.framework" {
             } else {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
-
+			getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 			// Verify that the application is setup
 			verifyApplicationSetup();
 			
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getServerInstanceIPAddress())){
+			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
 			}else{
 				//RELOAD JUST THE SETTINGS
-				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getServerInstanceIPAddress())){
+				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
 					getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
-					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
+					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 					serverInstance.setSettingsExpired(false);
-					getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 				}	
 			}
 			
@@ -720,12 +720,11 @@ component extends="FW1.framework" {
 					
 					//only run the update if it wasn't initiated by serverside cache being expired
 					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getServerInstanceIPAddress());						
+						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
 					}else{
 						
-						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getServerInstanceIPAddress(),true);
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 						serverInstance.setServerInstanceExpired(false);
-						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 					}
 					
 					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
@@ -757,9 +756,6 @@ component extends="FW1.framework" {
 		}
 	}
 	
-	public string function getServerInstanceIPAddress(){
-		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();
-	}
 
 	public void function renderApiResponse(){
 
