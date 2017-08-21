@@ -22,7 +22,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 	public any function getServerInstanceByServerInstanceIPAddress(){
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
-		if(serverInstance.getNewFlag()){
+		if(isNull(serverInstance) || serverInstance.getNewFlag()){
 			serverInstance = this.newServerInstance();
 			serverInstance.setServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress());
 			serverInstance.setServerInstanceExpired(false);
