@@ -100,7 +100,7 @@ Notes:
 			<TxRefNum>#arguments.requestBean.getOriginalChargeProviderTransactionID()#</TxRefNum>
 		</cfif>
 		<CustomerEmail>#arguments.requestBean.getAccountPrimaryEmailAddress()#</CustomerEmail>
-		<CustomerIpAddress>#CGI.REMOTE_ADDR#</CustomerIpAddress>
+		<CustomerIpAddress>#getRemoteAddress()#</CustomerIpAddress>
 	</NewOrder>
 </Request>
 </cfoutput>

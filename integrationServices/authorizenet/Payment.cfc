@@ -126,7 +126,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			requestData["x_email"] = "";
 		}
 
-		requestData["x_customer_ip"] = CGI.REMOTE_ADDR;
+		requestData["x_customer_ip"] = getRemoteAddress();
 		if(!isNull(requestBean.getOriginalProviderTransactionID()) && len(requestBean.getOriginalProviderTransactionID())) {
 			requestData["x_trans_id"] = requestBean.getOriginalProviderTransactionID();
 		}

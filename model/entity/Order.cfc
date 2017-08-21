@@ -280,7 +280,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 
 			setOrderOpenDateTime( now() );
-			setOrderOpenIPAddress( CGI.REMOTE_ADDR );
+			setOrderOpenIPAddress( getRemoteAddress() );
 
 			// Loop over the order payments to setAmount = getAmount so that any null payments get explicitly defined
 			for(var orderPayment in getOrderPayments()) {
