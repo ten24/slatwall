@@ -56,6 +56,7 @@ component entityname="SlatwallPermissionRecordRestriction" table="SwPermissionRe
 	property name="permissionRecordRestrictionName" column="permRecordRestrictionName" ormtype="string";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="restrictionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
+	property name="enforceOnDirectObjectReference" ormtype="boolean" default="false";
 	// Related Object Properties (many-to-one)
 	property name="permission" cfc="Permission" fieldtype="many-to-one" fkcolumn="permissionID";
 
@@ -79,6 +80,12 @@ component entityname="SlatwallPermissionRecordRestriction" table="SwPermissionRe
 	property name="collectionConfigStruct" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
+	public boolean function getEnforceOnDirectObjectReference(){
+		if(!structKeyExists(variables,'enforceOnDirectObjectReference')){
+			variables.enforceOnDirectObjectReference = false;
+		}
+		return variables.enforceOnDirectObjectReference;
+	}
 
 
 	public string function getCollectionConfig(){

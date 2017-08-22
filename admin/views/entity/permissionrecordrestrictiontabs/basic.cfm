@@ -8,6 +8,7 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.permissionRecordRestriction#" property="permissionRecordRestrictionName" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.permissionRecordRestriction#" property="enforceOnDirectObjectReference" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

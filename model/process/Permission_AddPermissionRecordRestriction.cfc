@@ -54,6 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="permissionRecordRestrictionName";
 	property name="permissionRecordRestriction";
+	property name="enforceOnDirectObjectReference"  hb_formFieldType="yesno" default=0;;
 	
 	// Chached Properties
 	public any function getPermissionRecordRestriction() {
