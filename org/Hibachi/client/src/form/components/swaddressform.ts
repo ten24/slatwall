@@ -4,14 +4,14 @@
 declare var hibachiConfig:any;
 
 class SWAddressFormController {
-	public slatwallScope:any;
-	public slatwall:any;
-	public action:any;
-	public customPartial:any;
-	public fieldList:string;
-	public showAddressBookSelect:boolean = false;
-	public showCountrySelect:boolean = true;
-	public showSubmitButton:boolean = true;
+    public slatwallScope:any;
+    public slatwall:any;
+    public action:any;
+    public customPartial:any;
+    public fieldList:string;
+    public showAddressBookSelect:boolean = false;
+    public showCountrySelect:boolean = true;
+    public showSubmitButton:boolean = true;
     public showCloseButton:boolean = true;
     public address:any;
     public addressName:string;
@@ -20,29 +20,29 @@ class SWAddressFormController {
     public eventListeners:any;
     public submitOnEnter:boolean;
 
-	//@ngInject
+    //@ngInject
     constructor(
         private $scope,
         private $log,
         private observerService,
         private $rootScope) {
-		//if exists, just name it slatwall.
-		if (angular.isDefined(this.slatwallScope)){
-			this.slatwall = this.slatwallScope;
-		}
+        //if exists, just name it slatwall.
+        if (angular.isDefined(this.slatwallScope)){
+            this.slatwall = this.slatwallScope;
+        }
 
-		if (this.fieldList == undefined) {
-	        this.fieldList = "countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode";
-		}
-		if (this.showAddressBookSelect == undefined) {
-			this.showAddressBookSelect = false;
-		}
-		if (this.showCountrySelect == undefined) {
-			this.showCountrySelect = true;
-		}
-		if (this.action == undefined) {
-			this.showSubmitButton = false;
-		}
+        if (this.fieldList == undefined) {
+            this.fieldList = "countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode";
+        }
+        if (this.showAddressBookSelect == undefined) {
+            this.showAddressBookSelect = false;
+        }
+        if (this.showCountrySelect == undefined) {
+            this.showCountrySelect = true;
+        }
+        if (this.action == undefined) {
+            this.showSubmitButton = false;
+        }
         if($rootScope.slatwall && !$scope.slatwall){
             $scope.slatwall = $rootScope.slatwall;
         }
@@ -92,24 +92,24 @@ class SWAddressFormController {
         }
     }
 
-	public getAction = () => {
-		if (!angular.isDefined(this.action)){
-			this.action="addAddress";
-		}
+    public getAction = () => {
+        if (!angular.isDefined(this.action)){
+            this.action="addAddress";
+        }
 
-		if (this.action.indexOf(":") != -1 && this.action.indexOf(this.param) == -1){
-			this.action = this.param + this.action;
+        if (this.action.indexOf(":") != -1 && this.action.indexOf(this.param) == -1){
+            this.action = this.param + this.action;
 
-		}
-		return this.action;
-	}
+        }
+        return this.action;
+    }
 
-	public hasField = (field) => {
-		if (this.fieldList.indexOf(field) != -1) {
-			return true;
-		}
-		return false;
-	}
+    public hasField = (field) => {
+        if (this.fieldList.indexOf(field) != -1) {
+            return true;
+        }
+        return false;
+    }
 
     public submitKeyCheck = (event) => {
         if(event.form.$name == this.addressName &&
@@ -122,7 +122,6 @@ class SWAddressFormController {
 
 class SWAddressForm implements ng.IComponentOptions {
 
-    public templateUrl:string = "";
     public bindings:any;
     public transclude = true;
     public controller:any=SWAddressFormController;
@@ -166,9 +165,23 @@ class SWAddressForm implements ng.IComponentOptions {
         return directive;
     }
 
+    public templateUrl = (elem,attrs) =>{
+        if(attrs.customPartial){
+            if(attrs.customPartial === "true"){
+                return hibachiConfig.customPartialsPath + "addressform.html";
+            }else{
+                return hibachiConfig.customPartialsPath + attrs.customPartial;
+            }
+        }
+        else{
+            return this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "addressform.html";
+        }
+    }
+
     // @ngInject
     constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "addressform.html";
+
     }
+
 }
 export {SWAddressFormController, SWAddressForm};

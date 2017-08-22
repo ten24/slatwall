@@ -56,10 +56,11 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	property name="fileName" ormtype="string";
 	property name="fileDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="urlTitle" ormType="string";
-		
+	
 	// Calculated Properties    
 	
 	// Related Object Properties (many-to-one)    
+	property name="fileGroup" cfc="FileGroup" fieldtype="many-to-one" fkcolumn="fileGroupID"; //This is the file type that can be tracked and secured.
 	    
 	// Related Object Properties (one-to-many)
 	property name="fileRelationships" singularname="FileRelationship" cfc="FileRelationship" type="array" fieldtype="one-to-many" fkcolumn="fileID" inverse="true" fetch="join" cascade="all-delete-orphan";    
@@ -123,6 +124,24 @@ component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeFile( this );
+	}
+	
+	// File Group (many-to-one)
+	public void function setFileGroup(required any fileGroup) {
+		variables.fileGroup = arguments.fileGroup;
+		if(isNew() or !arguments.fileGroup.hasFile( this )) {
+			arrayAppend(arguments.fileGroup.getFiles(), this);
+		}
+	}
+	public void function removeFileGroup(any fileGroup) {
+		if(!structKeyExists(arguments, "fileGroup")) {
+			arguments.fileGroup = variables.fileGroup;
+		}
+		var index = arrayFind(arguments.fileGroup.getFiles(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.fileGroup.getFiles(), index);
+		}
+		structDelete(variables, "fileGroup");
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================    

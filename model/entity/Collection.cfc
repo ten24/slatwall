@@ -162,7 +162,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public boolean function getCheckDORPermissions(){
 		return variables.checkDORPermissions;
 	}
-	
+	 
 	public void function setCheckDORPermissions(required boolean checkDORPermissionsFlag){
 		variables.checkDORPermissions = arguments.checkDORPermissionsFlag;
 	}
@@ -1974,7 +1974,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-				variables.pageRecords = [{'failedCollection'='failedCollection'}];
+				variables.pageRecords = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
@@ -2066,7 +2066,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 			catch(any e){
-				variables.records = [{'failedCollection'='failedCollection'}];
+				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
 			}
@@ -2129,8 +2129,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getPrimaryIDs(numeric recordCount=0){
 		
-		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
-		var primaryIDName = baseEntityObject.getPrimaryIDPropertyName();
+		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
 		
 		return getPropertyNameValues(primaryIDName, arguments.recordCount);
 	}
@@ -2574,7 +2573,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 				}
 			}//<--end if build select
-			if(
+			if(!this.getNonPersistentColumn() &&
 				(
 					( structKeyExists(variables, "groupByRequired") &&
 					  variables.groupByRequired &&

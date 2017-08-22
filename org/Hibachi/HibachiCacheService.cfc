@@ -20,6 +20,19 @@ component accessors="true" output="false" extends="HibachiService" {
 		return super.init();
 	}
 	
+	public any function getServerInstanceByServerInstanceIPAddress(){
+		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
+		if(isNull(serverInstance) || serverInstance.getNewFlag()){
+			serverInstance = this.newServerInstance();
+			serverInstance.setServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress());
+			serverInstance.setServerInstanceExpired(false);
+			serverInstance.setSettingsExpired(false);
+			
+			this.saveServerInstance(serverInstance); 
+		}
+		return serverInstance;
+	}
+	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
 	}
@@ -50,25 +63,11 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
 		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-		if(isNull(serverInstance)){
-			serverInstance = this.newServerInstance();
-			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-			serverInstance.setServerInstanceExpired(false);
-			this.saveServerInstance(serverInstance); 
-		}
-		
 		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
 	}
 	
 	public void function updateServerInstanceSettingsCache(required string serverInstanceIPAddress){
 		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-		if(isNull(serverInstance)){
-			serverInstance = this.newServerInstance();
-			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-			serverInstance.setSettingsExpired(false);
-			this.saveServerInstance(serverInstance); 
-		}
-		
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	

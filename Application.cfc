@@ -96,9 +96,10 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function onUpdateRequest() {
-		// Setup Default Data... Not called on soft reloads.
-		getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
-		
+		if(!getHibachiScope().getApplicationValue('skipDbData')){
+			// Setup Default Data... Not called on soft reloads.
+			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
+		}
 		// Setup Default Data.. Not called on soft reloads
 		getBeanFactory().getBean('integrationService').loadDataFromIntegrations();
 		
@@ -113,7 +114,9 @@ component extends="org.Hibachi.Hibachi" output="false" {
         	writeLog(file="Slatwall", text="General Log - Setting Meta cache has been cleared because of updated request");
 		
 		// Run Scripts
-		getBeanFactory().getBean("updateService").runScripts();
+		if( !getHibachiScope().getApplicationValue('skipDbData')){
+			getBeanFactory().getBean("updateService").runScripts();
+		}
 		writeLog(file="Slatwall", text="General Log - Update Service Scripts Have been Run");
 		
 	}
