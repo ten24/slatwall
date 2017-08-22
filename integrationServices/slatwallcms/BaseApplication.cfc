@@ -73,7 +73,7 @@ Notes:
 		if(structKeyExists(form, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(form.slatAction)) {
-				arguments.slatwallScope.doAction( action, request.context);
+				arguments.actionResult = arguments.slatwallScope.doAction( action, request.context);
 				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
@@ -81,7 +81,7 @@ Notes:
 		} else if (structKeyExists(url, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(url.slatAction)) {
-				var actionResult = arguments.slatwallScope.doAction( action, request.context);
+				arguments.actionResult = arguments.slatwallScope.doAction( action, request.context);
 				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
