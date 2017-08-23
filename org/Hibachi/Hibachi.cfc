@@ -575,7 +575,7 @@ component extends="framework.one" {
 
 					//========================= IOC SETUP ====================================
 
-					var coreBF = new framework..aop("/#variables.framework.applicationKey#/model", {
+					var coreBF = new framework.aop("/#variables.framework.applicationKey#/model", {
 						transients=["entity", "process", "transient", "report"],
 						transientPattern="Bean$",
 						constants={
