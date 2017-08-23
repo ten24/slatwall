@@ -652,7 +652,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
 		var propertyCountName = '#arguments.propertyName#Count';
 		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
-		return propertyCollection.getRecords()[1][propertyCountName];;
+		var records = propertyCollection.getRecords();
+		if(arraylen(records)){
+			return records[1][propertyCountName];
+		}else{
+			return 0;
+		}
 	}
 
 	// @hint handles encrypting a property based on conventions
