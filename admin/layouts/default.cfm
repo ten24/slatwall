@@ -50,6 +50,16 @@ Notes:
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
+	<cfset test = "#ORMExecuteQuery("
+FROM SlatwallSku as _sku 
+left join _sku.product as _sku_product  
+left join _sku_product.defaultSku as _sku_product_defaultSku 
+ where   (  _sku_product.productID = '5846559f5ac83dec015d3d4d176f1ef5' ) 
+ORDER BY _sku.createdDateTime desc 
+GROUP BY _sku
+")#"/>
+	<cfdump var="#test#" top=2>
+	
 	<cfset test = "#ORMExecuteQuery("SELECT _sku 
 FROM SlatwallSku as _sku 
 left join _sku.product as _sku_product  
