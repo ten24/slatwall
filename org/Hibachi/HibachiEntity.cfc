@@ -646,11 +646,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var propertyCollection = this.invokeMethod('get#getClassName()#CollectionList');
-		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDPropertyValue());
-		propertyCollection.setDisplayProperties(getPrimaryIDPropertyValue());
-		propertyCollection.setDisplayProperties(arguments.propertyName,'COUNT','propertyCount');
-		return propertyCollection.getRecords()[1]['propertyCount'];
+		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
+		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
+		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
+		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		var propertyCountName = '#arguments.propertyName#Count';
+		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
+		return propertyCollection.getRecords()[1][propertyCountName];;
 	}
 
 	// @hint handles encrypting a property based on conventions
