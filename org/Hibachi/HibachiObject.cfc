@@ -225,10 +225,10 @@ component accessors="true" output="false" persistent="false" {
 	// ========================= START: APPLICATION VAUES ===========================================
 	
 	// @hint setups an application scope value that will always be consistent
-	private any function getHibachiInstanceApplicationScopeKey() {
-		
-		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey")) {
+	public any function getHibachiInstanceApplicationScopeKey() {
+		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey") || isNull(variables.hibachiInstanceApplicationScopeKey)) {
 			var metaData = getThisMetaData();
+			
 			do {
 				var filePath = metaData.path;
 				metaData = metaData.extends;
@@ -239,6 +239,7 @@ component accessors="true" output="false" persistent="false" {
 			
 			variables.hibachiInstanceApplicationScopeKey = appKey;	
 		}
+		
 		return variables.hibachiInstanceApplicationScopeKey;
 	}
 	
