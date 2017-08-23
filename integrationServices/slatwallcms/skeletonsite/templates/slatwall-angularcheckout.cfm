@@ -218,7 +218,7 @@
 									    <sw-action-caller
 									        data-type="button"
 									        data-class="button blue"
-									        data-text="{{(slatwall.getRequestByAction('placeOrder').loading ? 'LOADING...' : 'Place Order')}}"
+									        data-text="{{((slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')) ? 'LOADING...' : 'Place Order')}}"
 									        data-event-listeners="{placeOrderFailure:slatwall.placeOrderFailure}">
 									    </sw-action-caller>
 									</div>

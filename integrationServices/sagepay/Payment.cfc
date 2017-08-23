@@ -92,7 +92,7 @@ component accessors="true" output="false" displayname="SagePay" implements="Slat
 		requestData["cardType"]=UCase(arguments.requestBean.getCreditCardType());
 		requestData["customerName"]=arguments.requestBean.getAccountFirstName();
 		requestData["customerEmail"]=arguments.requestBean.getAccountPrimaryEmailAddress();
-		requestData["clientIPAddress"]=CGI.REMOTE_ADDR;
+		requestData["clientIPAddress"]=getRemoteAddress();
 	
 		//Billing & Delivery
 		requestData["billingFirstnames"]=arguments.requestBean.getAccountFirstName();

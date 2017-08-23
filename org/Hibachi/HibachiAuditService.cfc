@@ -715,7 +715,7 @@ component extends="HibachiService" accessors="true" {
 	public any function newAudit() {
 		var audit = this.new('Audit');
 		audit.setAuditDateTime(now());
-		audit.setSessionIPAddress(CGI.REMOTE_ADDR);
+		audit.setSessionIPAddress(getRemoteAddress());
 		if( !getHibachiScope().getAccount().getNewFlag() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 			audit.setSessionAccountID(getHibachiScope().getAccount().getAccountID());
 			audit.setSessionAccountFullName(getHibachiScope().getAccount().getFullName());

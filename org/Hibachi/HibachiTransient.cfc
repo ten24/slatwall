@@ -506,6 +506,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// =======================  END:  POPULATION & VALIDATION =======================================
 	// ======================= START: PROPERTY INTROSPECTION ========================================
 
+	public any function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
+
+		if(isNull(object) || isSimpleValue(object)) {
+			return false;
+		}
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		return object.hasProperty(propertyName);
+	}
+
 	// @hint Public method to retrieve a value based on a propertyIdentifier string format
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );

@@ -60,6 +60,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public boolean function returnFalse(){
 		return false;
 	}
+
+	/**
+	* @test
+	*/
+	public void function sessionBasedFiltersTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName');
+		collectionEntity.addFilter('firstName', '${account.firstName}');
+
+		collectionEntity.getPageRecords();
+		var collectionParams = collectionEntity.getHqlParams();
+		assert( collectionParams[listFirst(StructKeyList(collectionParams))] ==  'BigBoy');
+	}
 	
 	/**
 	* @test

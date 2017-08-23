@@ -227,14 +227,14 @@ Notes:
 		
 		arguments.contentPath = contentPath;
 
-		arguments.renderActionInTemplate = arguments.hibachiScope.getContent().setting('contentRenderHibachiActionInTemplate');	
+		arguments.renderActionInTemplate = arguments.slatwallScope.getContent().setting('contentRenderHibachiActionInTemplate');	
  		
 		
 		var templateData = buildRenderedContent(argumentCollection=arguments);
 		if(arguments.renderActionInTemplate && structKeyExists(arguments, "actionResult")){
  			var hibachiView = {}; 
  			hibachiView['contentBody'] = arguments.actionResult;
- 			templateBody = arguments.hibachiScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,hibachiView);
+ 			templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,hibachiView);
  		} 
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);

@@ -919,8 +919,23 @@
 				for(var beanName in serviceBeanInfo){
 					var bean = getBeanFactory().getBean(beanName);
 					var serviceMetaData = getMetaData(bean);
+					var serviceFunctions = [];
 					if(structKeyExists(serviceMetaData,'functions')){
 						for(var functionItem in serviceMetaData.functions){
+							arrayAppend(serviceFunctions, functionItem);
+						}
+					}
+
+					if(listToArray(serviceMetaData.name,'.')[2]=='custom' && 
+						structKeyExists(serviceMetaData,'extends') && 
+						listLast(serviceMetaData.extends.name,'.') == beanName && 
+						structKeyExists(serviceMetaData.extends, 'functions')){
+						for(var functionItem in serviceMetaData.extends.functions){
+							arrayAppend(serviceFunctions, functionItem);
+						}
+					}
+					if(arrayLen(serviceFunctions)){
+						for(var functionItem in serviceFunctions){
 							if(
 								(!structKeyExists(functionItem,'access') || functionItem.access == 'public')
 								&& lcase(left(functionItem.name,7))=='process'

@@ -183,7 +183,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var integrationPath = expandPath('/Slatwall') & "/integrationServices/#integrationData['integrationPackage']#";
 			if(directoryExists(integrationPath)){
 				var integrationDbDataPath = integrationPath & '/config/dbdata';
-				if(directoryExists(integrationDbDataPath)){
+				if(directoryExists(integrationDbDataPath) && !getApplicationValue('skipDbData')){
 					getService("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = integrationDbDataPath);
 				}
 			}
