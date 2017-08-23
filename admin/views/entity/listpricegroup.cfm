@@ -62,13 +62,28 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.priceGroupSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartList="#rc.priceGroupSmartList#" 
 								recordDetailAction="admin:entity.detailpricegroup"
 								recordEditAction="admin:entity.editpricegroup">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
 		<hb:HibachiListingColumn propertyIdentifier="priceGroupCode" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'PriceGroup'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editpricegroup"
+		record-detail-action="admin:entity.detailpricegroup"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="priceGroupName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="priceGroupCode" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>
 
 </cfoutput>

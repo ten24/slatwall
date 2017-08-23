@@ -64,7 +64,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.loyaltySmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.loyaltySmartList#"
 							   recorddetailaction="admin:entity.detailloyalty"
 							   recordEditAction="admin:entity.editloyalty">
 
@@ -72,6 +72,22 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+			data-collection="'Loyalty'"
+			data-edit="false"
+			data-has-search="true"
+			data-record-edit-action="admin:entity.editloyalty"
+			data-record-detail-action="admin:entity.detailloyalty"
+			data-is-angular-route="false"
+			data-angular-links="false"
+			data-has-action-bar="false"
+						>
+		<sw-listing-column data-property-identifier="loyaltyName" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="modifiedDateTime" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>
 
 </cfoutput>

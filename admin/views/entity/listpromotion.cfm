@@ -65,7 +65,7 @@ Notes:
 	</hb:HibachiEntityActionBar>
 
 	
-	<hb:HibachiListingDisplay smartList="#rc.promotionSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.promotionSmartList#"
 							   recorddetailaction="admin:entity.detailpromotion"
 							   recordEditAction="admin:entity.editpromotion">
 
@@ -74,6 +74,23 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Promotion'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editpromotion"
+		record-detail-action="admin:entity.detailpromotion"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="promotionName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="modifiedDateTime" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+		<sw-listing-column data-property-identifier="currentFlag" sort="false" search="false" range="false" filter="false" />
+	</sw-listing-display>
 
 </cfoutput>

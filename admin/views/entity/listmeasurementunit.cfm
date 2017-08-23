@@ -56,11 +56,26 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
 
-<hb:HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
+<!--- <hb:HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />
 	<hb:HibachiListingColumn propertyIdentifier="unitCode" />
 	<hb:HibachiListingColumn propertyIdentifier="measurementType" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+    <sw-listing-display
+        data-collection="'MeasurementUnit'"
+        data-edit="false"
+        data-has-search="true"
+        record-detail-action="admin:entity.detailmeasurementunit"
+        record-detail-modal="true"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="unitName" tdclass="primary" />
+        <sw-listing-column data-property-identifier="unitCode" />
+        <sw-listing-column data-property-identifier="measurementType" />
+    </sw-listing-display>
 
 </cfoutput>
 

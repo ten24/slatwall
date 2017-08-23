@@ -62,11 +62,24 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
 							  recorddetailaction="admin:entity.detailschedule" 
 	                          recordeditaction="admin:entity.editschedule">
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Schedule'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editschedule"
+		record-detail-action="admin:entity.detailschedule"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="scheduleName" search="true" tdclass="primary" />
+	</sw-listing-display>
 
 </cfoutput>

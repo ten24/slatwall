@@ -56,7 +56,7 @@ Notes:
 
 	<hb:HibachiEntityActionBar type="listing" object="#rc.stockSmartList#" showCreate="false" />
 
-	<hb:HibachiListingDisplay smartList="#rc.stockSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.stockSmartList#"
 			recordEditAction="admin:entity.editstock"
 			recorddetailaction="admin:entity.detailstock">
 
@@ -69,6 +69,27 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQOH" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Stock'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editstock"
+		record-detail-action="admin:entity.detailstock"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="sku.skuCode" tdclass="primary" />
+		<sw-listing-column data-property-identifier="sku.product.productName" />
+		<sw-listing-column data-property-identifier="sku.product.productCode" />
+		<sw-listing-column data-property-identifier="sku.product.productType.productTypeName" />
+		<sw-listing-column data-property-identifier="sku.product.brand.brandName" />
+		<sw-listing-column data-property-identifier="location.locationName" />
+		<sw-listing-column data-property-identifier="calculatedQOH" />
+		<sw-listing-column data-property-identifier="calculatedQNC" />
+		<sw-listing-column data-property-identifier="calculatedQATS" />
+	</sw-listing-display>
 
 </cfoutput>

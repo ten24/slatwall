@@ -60,7 +60,7 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<hb:HibachiListingDisplay smartList="#rc.vendorSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.vendorSmartList#"
 						   recordEditAction="admin:entity.editvendor"
 						   recordDetailAction="admin:entity.detailvendor">
 	
@@ -68,5 +68,21 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="accountNumber" search="true" />
 	<hb:HibachiListingColumn propertyIdentifier="vendorWebsite" search="true" />
 	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" search="true" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
 
+<sw-listing-display
+		data-collection="'Vendor'"
+		data-edit="false"
+		data-has-search="true"
+		data-record-edit-action="admin:entity.editvendor"
+		data-record-detail-action="admin:entity.detailvendor"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+					>
+	<sw-listing-column data-property-identifier="loyaltyTermName" />
+	<sw-listing-column data-property-identifier="vendorName" search="true" tdclass="primary" />
+	<sw-listing-column data-property-identifier="accountNumber" search="true" />
+	<sw-listing-column data-property-identifier="vendorWebsite" search="true" />
+	<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" search="true" />
+</sw-listing-display>

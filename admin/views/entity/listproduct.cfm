@@ -70,7 +70,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.productSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.productSmartList#"
 			recordEditAction="admin:entity.editproduct"
 			recorddetailaction="admin:entity.detailproduct"
 			showCreate="false">
@@ -83,6 +83,26 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+		data-collection="'Product'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editproduct"
+		record-detail-action="admin:entity.detailproduct"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="productType.productTypeName" />
+		<sw-listing-column data-property-identifier="brand.brandName" />
+		<sw-listing-column data-property-identifier="productName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="productCode" />
+		<sw-listing-column data-property-identifier="defaultSku.price" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+		<sw-listing-column data-property-identifier="publishedFlag" />
+		<sw-listing-column data-property-identifier="calculatedQATS" />
+	</sw-listing-display>
+
 </cfoutput>

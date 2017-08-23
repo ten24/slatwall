@@ -60,11 +60,27 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
 
 
-<hb:HibachiListingDisplay smartList="#rc.orderFulfillmentSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.orderFulfillmentSmartList#"
 		recorddetailaction="admin:entity.detailorderfulfillment"
 		recordeditaction="admin:entity.editorderfulfillment">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
 	<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
 	<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
 	<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'OrderFulfillment'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editorderfulfillment"
+		record-detail-action="admin:entity.detailorderfulfillment"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="order.account.fullName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" />
+		<sw-listing-column data-property-identifier="order.orderNumber" />
+		<sw-listing-column data-property-identifier="order.orderOpenDateTime" />
+	</sw-listing-display>

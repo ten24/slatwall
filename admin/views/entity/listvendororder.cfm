@@ -65,7 +65,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 		
-	<hb:HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
 							   recordDetailAction="admin:entity.detailvendororder"
 							   recordEditAction="admin:entity.editvendororder">
 		
@@ -76,6 +76,25 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="total" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+		data-collection="'VendorOrder'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editvendororder"
+		record-detail-action="admin:entity.detailvendororder"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="vendor.vendorName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="vendorOrderNumber" />
+		<sw-listing-column data-property-identifier="vendorOrderType.typeName" />
+		<sw-listing-column data-property-identifier="estimatedReceivalDateTime" />
+		<sw-listing-column data-property-identifier="vendorOrderStatusType.typeName" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="total" />
+	</sw-listing-display>
+
 </cfoutput>

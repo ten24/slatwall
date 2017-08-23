@@ -61,10 +61,24 @@ Notes:
 </hb:HibachiEntityActionBar>
 
 
-<hb:HibachiListingDisplay smartList="#rc.addresszoneSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.addresszoneSmartList#"
 						   recordDetailAction="admin:entity.detailaddresszone"
 						   recordEditAction="admin:entity.editaddresszone"
 						   recordDeleteAction="admin:entity.deleteaddresszone">
 
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+<sw-listing-display
+    data-collection="'AddressZone'"
+    data-edit="false"
+    data-has-search="true"
+    record-edit-action="admin:entity.editaddresszone"
+    record-detail-action="admin:entity.detailaddresszone"
+    record-delete-action="admin:entity.deleteaddresszone"
+    data-is-angular-route="false"
+    data-angular-links="false"
+    data-has-action-bar="false"
+>
+	<sw-listing-column data-property-identifier="addresszoneName" search="true" tdclass="primary" />
+</sw-listing-display>

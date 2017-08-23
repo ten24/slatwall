@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.termSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.termSmartList#"
 							   recordEditAction="admin:entity.editterm"
 							   recordEditQueryString="redirectAction=admin:entity.listterm"
 							   recordEditModal="true"
@@ -71,7 +71,22 @@ Notes:
 							      
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
 		
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Term'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editterm"
+		record-detail-action="admin:entity.detailterm"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+		data-sort-property="sortOrder"
+	>
+		<sw-listing-column data-property-identifier=propertyIdentifier="termName" tdclass="primary" />
+	</sw-listing-display>
+
 
 </cfoutput>
 
