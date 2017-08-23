@@ -260,12 +260,10 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint facade method to get values from the application scope
 	public any function getApplicationValue(required any key) {
-		
 		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
 			return application[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
-		writedump(var=application,top=4);
-		writedump(getHibachiInstanceApplicatonScopeKey());abort;
+		
 		throw("You have requested a value for '#arguments.key#' from the core hibachi application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet");
 	}
 	

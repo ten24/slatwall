@@ -54,8 +54,8 @@ Notes:
 	<cfset local.errorNotifyEmailAddresses = '' />
 	
 	<cfif structKeyExists(request, "slatwallScope")>
-		<cfset local.errorDisplayFlag = request.slatwallScope.getApplicationValue('errorDisplayFlag') />
-		<cfset local.errorNotifyEmailAddresses = request.slatwallScope.getApplicationValue('errorNotifyEmailAddresses') />
+		<cfset local.errorDisplayFlag = true />
+		<cfset local.errorNotifyEmailAddresses = 'test' />
 	</cfif>
 	
 	<cfif local.errorDisplayFlag>

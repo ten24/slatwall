@@ -52,6 +52,7 @@ component extends="framework.one" {
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
 	variables.framework.diEngine='none';
+	variables.framework.diOverrideAllowed=true;
 	variables.framework.isAwsInstance=false;
 
 	/* TODO: add solution to api routing for Rest api*/
@@ -201,29 +202,24 @@ component extends="framework.one" {
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
 	// =======  END: ENVIORNMENT CONFIGURATION  =======
-//	public void function onApplicationStart(){
-//		writedump('onApplicaitonStart');abort;
-//	}
-//
+	
 	public void function setupApplication() {
 		
 	}
-//
-//    public void function setupEnvironment( env ) {
-//
-//    }
-//
-//    public void function setupSession() {
-//
-//    }
-//
-//    public void function setupSubsystem( module ) {
-//
-//    }
+    public void function setupEnvironment( env ) {
+
+    }
+
+    public void function setupSession() {
+
+    }
+
+    public void function setupSubsystem( module ) {
+
+    }
 
 
 	public any function bootstrap() {
-
 		setupGlobalRequest();
 
 		// Announce the applicatoinRequest event
@@ -244,90 +240,92 @@ component extends="framework.one" {
 	}
 
 	public void function setupGlobalRequest() {
-		//writedump(var=getBeanFactory().getBeanInfo(),top=2);abort;
+		
 		var httpRequestData = GetHttpRequestData();
+        getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
+		// Verify that the application is setup
+		verifyApplicationSetup();
+
+		if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+			verifyApplicationSetup(reloadByServerInstance=true);
+		}else{
+			//RELOAD JUST THE SETTINGS
+			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+				getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
+				var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+				serverInstance.setSettingsExpired(false);
+			}
+		}
+
+		// Verify that the session is setup
+		getHibachiScope().getService("hibachiSessionService").setProperSession();
+
+		var AuthToken = "";
+		if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+			AuthToken = GetHttpRequestData().Headers['Auth-Token'];
+		}
+
+		// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
+		if(
+			structKeyExists(httpRequestData, "headers") &&
+			structKeyExists(httpRequestData.headers, "Access-Key") &&
+			len(httpRequestData.headers["Access-Key"]) &&
+			structKeyExists(httpRequestData.headers, "Access-Key-Secret") &&
+			len(httpRequestData.headers["Access-Key-Secret"])) {
+
+			var accessKey 		= httpRequestData.headers["Access-Key"];
+			var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
+
+			// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
+			var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
+
+			// If an account was found, then set that account in the session for this request.  This should not persist
+			if (!isNull(accessKeyAccount)){
+				getHibachiScope().getSession().setAccount( accessKeyAccount );
+				AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
+			}
+		}
+
+		//check if we have the authorization header
+		if(len(AuthToken)){
+
+			var authorizationHeader = AuthToken;
+			var prefix = 'Bearer ';
+			//get token by stripping prefix
+			var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+			var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
+
+			if(jwt.verify()){
+
+				var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+				if(!isNull(jwtAccount)){
+					jwtAccount.setJwtToken(jwt);
+					getHibachiScope().getSession().setAccount( jwtAccount );
+				}
+			}
+
+		}
+
+		// Call the onEveryRequest() Method for the parent Application.cfc
+		onEveryRequest();
+		if(structKeyExists(request,'context')){
+			getHibachiScope().getService("HibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
+		}
+	}
+
+	public void function setupRequest() {
+
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
             } else {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
-            getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
-			// Verify that the application is setup
-			verifyApplicationSetup();
-
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-				verifyApplicationSetup(reloadByServerInstance=true);
-			}else{
-				//RELOAD JUST THE SETTINGS
-				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-					getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
-					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-					serverInstance.setSettingsExpired(false);
-				}
-			}
-
-			// Verify that the session is setup
-			getHibachiScope().getService("hibachiSessionService").setProperSession();
-
-			var AuthToken = "";
-			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
-				AuthToken = GetHttpRequestData().Headers['Auth-Token'];
-			}
-
-			// If there is no account on the session, then we can look for an Access-Key, Access-Key-Secret, to setup that account for this one request.
-			if(
-				structKeyExists(httpRequestData, "headers") &&
-				structKeyExists(httpRequestData.headers, "Access-Key") &&
-				len(httpRequestData.headers["Access-Key"]) &&
-				structKeyExists(httpRequestData.headers, "Access-Key-Secret") &&
-				len(httpRequestData.headers["Access-Key-Secret"])) {
-
-				var accessKey 		= httpRequestData.headers["Access-Key"];
-				var accessKeySecret = httpRequestData.headers["Access-Key-Secret"];
-
-				// Attempt to find an account by accessKey & accessKeySecret and set a default JWT if found.
-				var accessKeyAccount = getHibachiScope().getService("AccountService").getAccountByAccessKeyAndSecret( accessKey=accessKey, accessKeySecret=accessKeySecret );
-
-				// If an account was found, then set that account in the session for this request.  This should not persist
-				if (!isNull(accessKeyAccount)){
-					getHibachiScope().getSession().setAccount( accessKeyAccount );
-					AuthToken = 'Bearer '& getHibachiScope().getService('HibachiJWTService').createToken();
-				}
-			}
-
-			//check if we have the authorization header
-			if(len(AuthToken)){
-
-				var authorizationHeader = AuthToken;
-				var prefix = 'Bearer ';
-				//get token by stripping prefix
-				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-				var jwt = getHibachiScope().getService('HibachiJWTService').getJwtByToken(token);
-
-				if(jwt.verify()){
-
-					var jwtAccount = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-					if(!isNull(jwtAccount)){
-						jwtAccount.setJwtToken(jwt);
-						getHibachiScope().getSession().setAccount( jwtAccount );
-					}
-				}
-
-			}
-
-			// Call the onEveryRequest() Method for the parent Application.cfc
-			onEveryRequest();
-		}
-		if(structKeyExists(request,'context')){
-			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
-		}
-	}
-
-	public void function setupRequest() {
+        }
 
 		var status = 200;
 		setupGlobalRequest();
+		
 		var httpRequestData = getHTTPRequestData();
 
 		//Set an account before checking auth in case the user is trying to login via the REST API
@@ -510,7 +508,6 @@ component extends="framework.one" {
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
-
 		if(
 			(
 				hasReloadKey()
@@ -561,6 +558,7 @@ component extends="framework.one" {
 
 					// Application Setup Started
 					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
+					
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
 
 					//Add application name to ckfinder
@@ -577,8 +575,7 @@ component extends="framework.one" {
 
 					//========================= IOC SETUP ====================================
 
-
-					var coreBF = new framework.ioc(["/#variables.framework.applicationKey#/model"], {
+					var coreBF = new framework..aop("/#variables.framework.applicationKey#/model", {
 						transients=["entity", "process", "transient", "report"],
 						transientPattern="Bean$",
 						constants={
@@ -667,13 +664,12 @@ component extends="framework.one" {
 
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
-						var customBF = new framework.ioc("/#variables.framework.applicationKey#/custom/model", {
+						var customBF = new framework.aop("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
-
 						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
-						var aggregateBF = new framework.ioc("");
+						var aggregateBF = new framework.aop("");
 
 						// Process factories, last takes precendence
 						var beanFactories = [coreBF, customBF];
@@ -694,7 +690,6 @@ component extends="framework.one" {
 								}
 							}
 						}
-
 						setBeanFactory(aggregateBF);
 					} else {
 						setBeanFactory(coreBF);
@@ -771,7 +766,6 @@ component extends="framework.one" {
 					if(!arguments.reloadByServerInstance){
 						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
 					}else{
-
 						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 						serverInstance.setServerInstanceExpired(false);
 					}
@@ -1073,17 +1067,8 @@ component extends="framework.one" {
 
 	// @hint setups an application scope value that will always be consistent
 	public any function getHibachiInstanceApplicationScopeKey() {
-		var metaData = getMetaData( this );
-		do {
-			var filePath = metaData.path;
-			metaData = metaData.extends;
-		} while( structKeyExists(metaData, "extends") );
-
-		filePath = lcase(replaceNoCase(getDirectoryFromPath(replace(filePath,"\","/","all")), "/fw1/","/","all"));
-		var appKey = hash(filePath);
-
-		return appKey;
-	}
+		return getHibachiScope().getHibachiInstanceApplicationScopeKey();
+	} 
 
 	public void function onError(any exception, string event){
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors

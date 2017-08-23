@@ -1,6 +1,6 @@
 component {
-    variables._fw1_version = "4.5.0-SNAPSHOT";
-    variables._di1_version = variables._fw1_version;
+    variables._fw1_version = "4.1.0";
+    variables._di1_version = "1.3.0";
 /*
     Copyright (c) 2010-2017, Sean Corfield
 
@@ -470,7 +470,6 @@ component {
 
 
     private string function deduceDottedPath( string baseMapping, string basePath ) {
-    	
         if ( right( basePath, 1 ) == '/' && len( basePath ) > 1 ) {
             basePath = left( basePath, len( basePath ) - 1 );
         }
@@ -502,7 +501,6 @@ component {
             cfcPath = piece & '/' & cfcPath;
         } while ( progress );
         if ( notFound ) {
-        	writedump(var=arguments,top=2);abort;
             throw 'unable to deduce dot-relative path for: #baseMapping# (#basePath#) root #expandPath("/")#';
         }
         return dotted;

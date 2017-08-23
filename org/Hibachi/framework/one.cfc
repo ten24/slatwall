@@ -1,5 +1,5 @@
 component {
-    variables._fw1_version = "4.5.0-SNAPSHOT";
+    variables._fw1_version = "4.1.0";
     /*
       Copyright (c) 2009-2017, Sean Corfield, Marcin Szczepanski, Ryan Cogswell
 
@@ -46,7 +46,6 @@ component {
             variables.framework = { };
         }
         structAppend( variables.framework, config );
-        
         return this;
     }
 
@@ -724,7 +723,6 @@ component {
      * super.onApplicationStart() first
      */
     public any function onApplicationStart() {
-    	
         setupRequestDefaults();
         setupApplicationWrapper();
     }
@@ -963,7 +961,6 @@ component {
      * super.onRequestStart() first
      */
     public any function onRequestStart( string targetPath ) {
-    	
         setupRequestDefaults();
 
         if ( !isFrameworkInitialized() ) {
@@ -991,7 +988,6 @@ component {
         } else {
             setupRequestWrapper( true );
         }
-        
     }
 
     /*
@@ -1001,7 +997,6 @@ component {
      * super.onSessionStart() first
      */
     public any function onSessionStart() {
-    	
         setupRequestDefaults();
         setupSessionWrapper();
     }
@@ -1992,7 +1987,7 @@ component {
         return segments;
     }
 
-    private string function parseViewOrLayoutPath( string path, string type ) {
+    public string function parseViewOrLayoutPath( string path, string type ) {
         var folder = type;
         switch ( folder ) {
         case 'layout':
@@ -2396,7 +2391,6 @@ component {
     }
 
     private void function setupApplicationWrapper() {
-    	
         if ( structKeyExists( request._fw1, "appWrapped" ) ) return;
         request._fw1.appWrapped = true;
         request._fw1.theApp = {
@@ -2409,6 +2403,7 @@ component {
             subsystems = { },
             subsystemFactories = { }
         };
+
         switch ( variables.framework.diEngine ) {
         case "aop1":
         case "di1":
@@ -2416,7 +2411,6 @@ component {
                 variables.framework.diLocations,
                 variables.framework.diConfig
             );
-            
             ioc.addBean( "fw", this ); // alias for controller constructor compatibility
             setBeanFactory( ioc );
             break;
