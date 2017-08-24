@@ -1132,7 +1132,8 @@
 			displayProperties = listAppend(displayProperties,primaryIDName&'|value');
 			displayProperties = listAppend(displayProperties,simpleRepresentationName&'|name');
 			optionsCollectionList.setDisplayProperties(displayProperties);
-			optionsCollectionList.addOrderBy(simpleRepresentationName);
+			optionsCollectionList.setOrderBy(simpleRepresentationName);
+			optionsCollectionList.setApplyOrderBysToGroupBys(false);
 			return optionsCollectionList;
 		}
 		
@@ -1172,7 +1173,7 @@
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
 				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier&'.'&primaryIDName,'Count','count');
-				entityCollectionList.addOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
 			}else if(structKeyExists(propertyMetaData,'ormtype')) {
 				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
 					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
@@ -1190,8 +1191,9 @@
 				entityCollectionList.setDisplayProperties(displayProperties);
 				
 				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier,'Count','count');
-				entityCollectionList.addOrderBy(arguments.propertyIdentifier);
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
 			}
+			entityCollectionList.setApplyOrderBysToGroupBys(false);
 			return entityCollectionList;
 		}
 		
