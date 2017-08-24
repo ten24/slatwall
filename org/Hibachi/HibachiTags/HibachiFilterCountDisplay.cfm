@@ -1,9 +1,16 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
-	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="thistag.filterCountGroups" type="array" default="#arrayNew(1)#" />	
+	<cfif !structKeyExists(attributes,'hibachiScope')>
+		<cfset attributes.hibachiScope = request.context.fw.getHibachiScope()/>
+	</cfif>
+	<cfparam name="attributes.collectionList" type="any" default="" />
+	<cfparam name="attributes.template" type="any" default="" />
+	<cfparam name="thistag.filterCountGroups" type="array" default="#arrayNew(1)#" />
 	
 <cfelse>
+	
+	
+		
 	
 	<cfoutput>
 		<div class="widget shop-categories">

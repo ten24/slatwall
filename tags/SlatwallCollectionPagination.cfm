@@ -48,9 +48,16 @@ Notes:
     tabDirectory is the name of the tab directory without the path. It is assumed it lives in the custom/admin/views/entity/tabDirectory/customtabs/tabsName file.
     tabName is both the name of the tab file without the file extention as well as the name that displays on the tab.
 --->
+
+<cffunction name="getHTML">
+	<cfargument name="attributes">
+	<cfinclude template="#attributes.template#"/>
+</cffunction>
+
 <cfimport prefix="swa" taglib="../tags" />
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.collection" type="any" />
+<cfparam name="attributes.template" type="any" default="./tagtemplates/slatwallcollectionpagination.cfm"/>
 <cfparam name="attributes.slatwallScope" type="any" />
 <cfparam name="attributes.first" type="string" default="&laquo;"/>
 <cfparam name="attributes.previous" type="string" default="&lsaquo; "/>
@@ -58,60 +65,13 @@ Notes:
 <cfparam name="attributes.last" type="string"default="&raquo;" />
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
-		
+		<cfset lastPage = attributes.collection.getTotalPages()>
+	    <cfset currentPage = attributes.collection.getCurrentPageDeclaration()>
+	    <cfset nextPage = currentPage+1>
+	    <cfset previousPage = (currentPage GT 1) ? currentPage-1 : 1>
+	    <cfset maxPage = nextPage + 3>
 		<cfif !isNull(attributes.collection) AND attributes.collection.getTotalPages() GT 1>
-			<!---<cfdump var="#attributes.collection#" top="2">--->
-			<nav>
-				<cfset lastPage = attributes.collection.getTotalPages()>
-                <cfset currentPage = attributes.collection.getCurrentPageDeclaration()>
-                <cfset nextPage = currentPage+1>
-                <cfset previousPage = (currentPage GT 1) ? currentPage-1 : 1>
-                <cfset maxPage = nextPage + 3>
-	            <ul class="pagination">
-	            	
-	            	<!--- First --->
-	            	<li><a href="#attributes.slatwallScope.getService('hibachiCollectionService').buildURL( 'p:current=1' )#" <cfif currentPage EQ 1>disabled="disabled" title="First Page" </cfif>>
-	            		#attributes.first#
-	            		</a></li>
-	                
-	                <!--- Previous --->
-	                <li><a href="#attributes.slatwallScope.getService('hibachiCollectionService').buildURL( 'p:current='&previousPage )#" <cfif currentPage EQ 1>disabled="disabled" title="Previous Page #currentPage-1#" </cfif>>
-	                	#attributes.previous#
-	                	</a>
-	                </li>
-	                
-	                <!--- Show previous pages if they exist --->
-	                <cfif nextPage GT 2>
-		                <cfloop index="page" from="1" to="#nextPage#">
-		                	<cfif page LT currentPage>	
-			                <li><a href="#attributes.slatwallScope.getService('hibachiCollectionService').buildURL( 'p:current=#page#' )#">#page#</a></li>
-		                	</cfif>
-		                </cfloop>
-	                </cfif>
-	                
-	                <!--- Self --->
-	                <li 
-	                	<cfif attributes.collection.getPageRecordsStart() EQ attributes.collection.getCurrentPageDeclaration()>
-	                		class="active"
-	                	</cfif>><a href="##">#attributes.collection.getCurrentPageDeclaration()#</a>
-	                </li>
-	                
-	                <!--- Show next 4 pages if they exist minus the ones shown before the current page. --->
-	                <cfloop condition="nextPage LTE lastPage AND nextPage LTE currentPage+4">
-		                <li><a href="#attributes.slatwallScope.getService('hibachiCollectionService').buildURL( 'p:current=#nextPage#' )#">#nextPage#</a></li>
-		                <cfset nextPage+=1>
-	                </cfloop>
-	                
-	                <!--- Next --->
-	                <li><a href="#attributes.slatwallScope.getService('hibachiCollectionService').buildURL( 'p:current=#currentPage+1#' )#" title="Next Page #currentPage+1#">
-	                	#attributes.next#
-	                </a></li>
-	                <!--- Last --->
-	                <li><a href="#attributes.slatwallScope.getService('hibachiCollectionService').buildURL( 'p:current='&lastPage )#" title="Last Page #lastPage#">
-	                	#attributes.last#
-	                	</a></li>
-	            </ul>
-	        </nav>
+			<cfoutput>#getHTML(attributes)#</cfoutput>
         </cfif>
 	</cfoutput>
 </cfif>
