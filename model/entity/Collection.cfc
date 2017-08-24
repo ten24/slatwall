@@ -632,7 +632,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
 
 	*/
-	public void function applyData(required any data=url){
+	public void function applyData(required any data=url, string excludesList=""){
 		var filterKeyList = "";
 		var hibachiBaseEntity = "";
 		hibachiBaseEntity = this.getCollectionObject();
@@ -695,7 +695,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if (left(key, 2) == "f:"){
 	
 					var prop = listToArray(key,':')[2];
-					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
+					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop) && listFind(trim(arguments.excludesList),trim(prop)) == 0 ){
 						var dataToFilterOn = data[key]; //value of the filter.
 		
 						dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
@@ -743,7 +743,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var ranges = listToArray(value);
 					var filterParts = "#listToArray(key, ':')#";
 					var prop = filterParts[2];//property
-					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
+					if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop) && listFind(trim(arguments.excludesList),trim(prop)) == 0){
 						var ormtype = getOrmTypeByPropertyIdentifier(prop);
 						var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
 						var filterGroupIndex = 1;
@@ -1584,6 +1584,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),pID);
 	}
 
+	public string function getLastEntityNameInPropertyIdentifier(required string propertyIdentifier){
+		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier); 
+		return getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			propertyIdentifier=pID
+		);
+	}
+
 	private struct function getDefaultOrderBy(){
 		var orderByStruct={};
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
@@ -1671,6 +1679,86 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			arguments.propertyIdentifier = right(arguments.propertyIdentifier,len(arguments.propertyIdentifier)-len(getCollectionConfigStruct().baseEntityAlias)-1);
 		}
 		return arguments.propertyIdentifier;
+	}
+
+	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
+	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
+		var logicalOperator = "";
+		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+			getCollectionConfigStruct().filterGroups = [];
+		}else if(arraylen(getCollectionConfigStruct().filterGroups)){
+			logicalOperator = 'AND';
+		}
+		
+		for(var filterGroup in arguments.relatedFilterGroups){
+			if(structKeyExists(filterGroup,'filterGroup')){
+				
+				filterGroup = {
+					'filterGroup'=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+				};
+				if(len(logicalOperator)){
+					filterGroup['logicalOperator'] = logicalOperator;
+				}
+				
+				arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+			}
+		}
+	
+	}
+	
+	public array function convertRelatedFilterGroup(required string propertyIdentifier, required array relatedFilterGroup, string filterGroupAlias){
+		var convertedFilterGroup = [];
+		for(var filterGroup in arguments.relatedFilterGroup){
+			if(structKeyExists(filterGroup,'filterGroup')){
+				filterGroup = {
+					filterGroup=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
+				};
+				arrayAppend(convertedFilterGroup,filterGroup);
+			}else{
+				var filter = filterGroup;
+				filter = convertRelatedFilter(arguments.propertyIdentifier,filter);
+				arrayAppend(convertedFilterGroup,filter);
+			}
+		}
+		return convertedFilterGroup;
+	}
+	
+	public struct function convertRelatedFilter(required string propertyIdentifier, required struct relatedFilter){
+		var pid = convertALiasToPropertyIdentifier(arguments.propertyIdentifier);
+		
+		var relatedPropertyIdentifier = convertALiasToPropertyIdentifier(arguments.relatedFilter.propertyIdentifier);
+		
+		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),pid);
+		
+		
+		if(!isObject){
+			//remove tail so that it is an object propertyIdentifier
+			pid = listDeleteAt(pid,listlen(pid,'.'),'.');
+		}
+		
+		pid &= '.'&relatedPropertyIdentifier;
+		var filterData = arguments.relatedFilter;
+		filterData.propertyIdentifier = getPropertyIdentifierAlias(pid);
+		
+		return filterData;
+			
+	}
+	
+	private array function getManyToOnePropertiesWhereCFCEqualsName(){
+		var properties = getService('HibachiService').getPropertiesByEntityName(getCollectionObject());
+		var manyToOneProperties = [];
+		for(var prop in properties){
+			if(
+				structKeyExists(prop,'fieldtype') 
+				&& prop.fieldtype == 'many-to-one' 
+				&& lcase(prop.name) == lcase(prop.cfc)
+			){
+				arrayAppend(manyToOneProperties,prop);
+			}
+		}
+		
+		return manyToOneProperties;
 	}
 
 	// Paging Methods
