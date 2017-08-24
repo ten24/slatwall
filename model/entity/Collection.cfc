@@ -108,6 +108,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
+	property name="filterDataApplied" type="boolean" persistent="false" default="0";
 
 	property name="parentFilterMerged" type="boolean" persistent="false" default="false";
 	property name="groupBys" type="string" persistent="false";
@@ -146,9 +147,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.dirtyReadFlag = false;
 		variables.connection = ormGetSession().connection();
 		variables.filterGroupAliasMap = {};
+		variables.filterDataApplied = false;
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 
 
+	}
+	
+	public void function setFilterDataApplied(required filterDataAppliedflag){
+		variables.filterDataApplied = arguments.filterDataAppliedflag;
+	}
+	
+	public boolean function getFilterDataApplied(){
+		return variables.filterDataApplied;
+	}
+	
+	public boolean function hasFilterDataApplied(){
+		return getFilterDataApplied();
 	}
 	
 	public boolean function getDirtyReadFlag(){
@@ -617,34 +631,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return this;
 	}
 
-	/**
-		Examples of each type of filter:
-		?p:show=50
-		?p:current=1
-		?r:calculatedsaleprice=20^50
-		?r:calculatedSalePrice=^50 (does 0 to 50)
-		?r:calculatedSalePrice=50^ (does more than 50 to 10000)
-		?f:accountName:eq=someName  - adds the filter.
-		?fr:accountName:eq=someName - removes the filter
-		?orderby=someKey|direction
-		?orderBy=someKey|direction,someOtherKey|direction ...
-
-		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
-
-	*/
-	public void function applyData(required any data=url, string excludesList=""){
-		var filterKeyList = "";
-		var hibachiBaseEntity = "";
-		hibachiBaseEntity = this.getCollectionObject();
-
-		if(!isStruct(data) && isSimpleValue(data)) {
-			data = getHibachiScope().getService('hibachiUtilityService').convertNVPStringToStruct(data);
-			filterKeyList = structKeyList(data);
-		}
-
-		//Simple Filters
-		for (var key in data){
-			
+	public void function applyDataForFilters(required any data, string excludesList="", string key){
 			//handle filters.
 			if(isValid('string',data[key])){
 				if (left(key, 3) == "fr:"){
@@ -734,6 +721,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					
 						this.addFilter(prop, dataToFilterOn, comparison);	
+					setFilterDataApplied(true);
 					}
 				}
 	
@@ -794,7 +782,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							filterData['filterGroupAlias'] = "range#prop#";
 							filterData['filterGroupLogicalOperator'] = "AND";
 							this.addFilter(argumentCollection=filterData);
-		
+						setFilterDataApplied(true);
 							//get the data value for the range. for example 20^40, ^40 (0 to 40), 100^ (more than 100)
 		
 							//;
@@ -802,6 +790,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 			}
+	}
+
+	/**
+		Examples of each type of filter:
+		?p:show=50
+		?p:current=1
+		?r:calculatedsaleprice=20^50
+		?r:calculatedSalePrice=^50 (does 0 to 50)
+		?r:calculatedSalePrice=50^ (does more than 50 to 10000)
+		?f:accountName:eq=someName  - adds the filter.
+		?fr:accountName:eq=someName - removes the filter
+		?orderby=someKey|direction
+		?orderBy=someKey|direction,someOtherKey|direction ...
+
+		Using coldfusion operator versions - gt,lt,gte,lte,eq,neq,like
+
+	*/
+	public void function applyData(required any data=url, string excludesList=""){
+		var filterKeyList = "";
+		var hibachiBaseEntity = "";
+		hibachiBaseEntity = this.getCollectionObject();
+
+		if(!isStruct(data) && isSimpleValue(data)) {
+			data = getHibachiScope().getService('hibachiUtilityService').convertNVPStringToStruct(data);
+			filterKeyList = structKeyList(data);
+		}
+
+		//Simple Filters
+		for (var key in data){
+			
+			applyDataForFilters(arguments.data,arguments.excludesList,key);
 			//OrderByList
 			var orderBys = data[key];
 			if (left(key,7)=='orderBy'){

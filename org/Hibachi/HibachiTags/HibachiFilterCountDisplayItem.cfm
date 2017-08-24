@@ -12,7 +12,16 @@
 
 <cfif thisTag.executionMode is "start">
 	<!--- Core Attributes --->
-	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
+	<cfset THISTAG.Parent = GetBaseTagData( "cf_HibachiFilterCountDisplay" ) />
+	<cfparam name="attributes.hibachiScope" type="any" default="#THISTAG.Parent.attributes.hibachiScope#"/>
+	<cfif structKeyExists(THISTAG.Parent.attributes,'collectionlist') && isObject(THISTAG.Parent.attributes.collectionlist)>
+		<cfset attributes.collectionList = THISTAG.Parent.attributes.collectionList/> 
+	</cfif>
+	<cfif structKeyExists(THISTAG.Parent.attributes,'template') && len(THISTAG.Parent.attributes.template)>
+		<cfset attributes.template = THISTAG.Parent.attributes.template/> 
+	</cfif>
+			
+
 	<!--- object collection list will be based on if you want an implied list --->
 	<cfparam name="attributes.entityName" default=""/>
 	<!--- what property are we counting --->
@@ -24,7 +33,8 @@
 	<!--- filter type related to the buildurl filtertype look at collection API under applydata function --->
 	<cfparam name="attributes.filterType" default="f"/>
 	<!--- defaults to entity name rbkey plural but you can override it --->
-	<cfparam name="attributes.title" default="#attributes.hibachiScope.rbKey('entity.#attributes.entityName#_plural')#"/>
+	
+	<cfparam name="attributes.title" default=""/>
 	<!--- template override --->
 	<cfparam name="attributes.template" default="./tagtemplates/hibachifiltercountdisplayitem.cfm"/>
 	
@@ -54,7 +64,9 @@
 		<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
 			lastEntityName
 		)[listLast(attributes.propertyIdentifier, ".")]/>
-		<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#propertyMetaData.cfc#_plural')/>
+		<cfif !len(attributes.title)>
+			<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#propertyMetaData.cfc#_plural')/>
+		</cfif>
 		<cfset primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc)/>
 		
 		<cfset filterIdentifier = attributes.propertyIdentifier & '.' & primaryIDName/>
@@ -62,7 +74,9 @@
 		<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
 			lastEntityName
 		)[listLast(attributes.propertyIdentifier, ".")]/>
-		<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#lastEntityName#.#propertyMetaData.name#')/>
+		<cfif !len(attributes.title)>
+			<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#lastEntityName#.#propertyMetaData.name#')/>
+		</cfif>
 		<cfset filterIdentifier = attributes.propertyIdentifier/>
 	</cfif>
 	
