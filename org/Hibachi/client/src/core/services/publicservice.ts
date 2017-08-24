@@ -284,10 +284,8 @@ class PublicService {
             let address = this.account.accountAddresses[key].address
             address.accountAddressID = this.account.accountAddresses[key].accountAddressID;
             for(let property in address){
-                console.log("PROPERTY: ",property);
                 for(let form in this.orderPaymentObject['forms']){
                     form = this.orderPaymentObject['forms'][form];
-                    console.log(form['newOrderPayment.billingAddress.'+property])
                     if(form['newOrderPayment.billingAddress.'+property] != undefined){
                         form['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
                     }
