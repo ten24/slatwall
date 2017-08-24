@@ -21,9 +21,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
-        if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getCart"){
+        if ( structKeyExists(arguments.rc, "context") && url contains "getCart"){
             publicService.invokeMethod("getCartData", {data=arguments.rc});
-        }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getAccount"){
+        }else if ( structKeyExists(arguments.rc, "context") && url contains "getAccount"){
             publicService.invokeMethod("getAccountData", {data=arguments.rc});
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
             publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
@@ -34,12 +34,12 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         param name="arguments.rc.context" default="save";
         var publicService = getService('PublicService');
 
-        if (arguments.rc.context != "get" && arguments.rc.url contains "process"){
+        if (arguments.rc.context != "get" && url contains "process"){
             publicService.doProcess(rc);
-        }else if (arguments.rc.url contains "getCart"){
+        }else if (url contains "getCart"){
             rc.context = "getCartData";
             this.get(rc);
-        }else if(arguments.rc.url contains "getAccount"){
+        }else if(url contains "getAccount"){
             rc.context = "getAccountData";
             this.get(rc);
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
