@@ -890,16 +890,18 @@ component extends="framework.one" {
 	}
 
 	public void function setupView(rc) {
+		
 		param name="arguments.rc.ajaxRequest" default="false";
 
 		if(arguments.rc.ajaxRequest) {
-			setupResponse();
+			setupResponse(rc);
 		}
 
 		if(structKeyExists(url, "modal") && url.modal) {
 			request.layout = false;
 			setLayout("#getSubsystem(arguments.rc[ getAction() ])#:modal");
 		}
+		
 	}
 
 	// Allows for custom views to be created for the admin, frontend or public subsystems
