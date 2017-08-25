@@ -87,16 +87,6 @@ class SWListingSearchController {
         }
     }
 
-    // private addSearchFilter=()=>{
-    //     if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
-
-    //     var keywords = this.searchText.split(" ");
-    //
-
-    //     this.searchText = '';
-    //     this.collectionConfig.setKeywords(this.searchText);
-    //     this.paginator.setCurrentPage(1);
-    // };
 
 
 }
@@ -143,19 +133,6 @@ class SWListingSearch  implements ng.IDirective{
         return directive;
     }
 
-    public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        // if(angular.isUndefined(scope.swListingSearch.collectionConfig) && this.scopeService.hasParentScope(scope, "swListingDisplay")){
-        //     var listingDisplayScope = this.scopeService.getRootParentScope(scope, "swListingDisplay")["swListingDisplay"];
-        //     if(listingDisplayScope.collectionConfig != null){
-        //         scope.swListingSearch.collectionConfig = listingDisplayScope.collectionConfig;
-        //     }
-        //     if(listingDisplayScope.paginator != null){
-        //         scope.swListingSearch.paginator = listingDisplayScope.paginator;
-        //     }
-        //     scope.swListingSearch.listingId = listingDisplayScope.tableID;
-        // }
-        // scope.swListingSearch.backupColumnsConfig =  scope.swListingSearch.collectionConfig.getColumns();
-    }
 }
 
 export{
