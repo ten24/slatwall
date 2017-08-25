@@ -11,14 +11,16 @@
 			
 		</cfif>
 		<cfif attributes.timespan eq 0>
-			<cfcache action="flush" id="#attributes.cacheKey#">
+			<cfcache action="flush" id="#attributes.cacheKey#" >
 		</cfif>
+		
 		<!--- used to clear template cache --->
 		<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
 		<cfcache action="flush" expireURL="#expireUrl#">
 		<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
 		
 		<cfif !isNull(cacheContent)>
+		
 			<cfsavecontent variable="hibachiTagContent" >
 				<cfoutput>#cacheContent#</cfoutput>
 			</cfsavecontent>
@@ -26,7 +28,6 @@
 			<cfexit>
 		</cfif>
 	</cfif>
-	
 </cfif>
 
 <cfif thisTag.executionMode is 'end'>

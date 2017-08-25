@@ -220,6 +220,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listfilegroup" type="list">
 									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
 										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
 									</cfif>

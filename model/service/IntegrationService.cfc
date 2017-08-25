@@ -167,14 +167,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Turn off the installed and ready flags on any previously setup integration entities
-		for(var integrationEntity in integrationList) {
-			if(!listFindNoCase(installedIntegrationList, integrationEntity.getIntegrationPackage())) {
-				integrationEntity.setInstalledFlag(0);
-				integrationEntity.setActiveFlag(0);
-				
-				getHibachiDAO().flushORMSession();
-			}
-		}
+		ORMExecuteQuery("UPDATE #getDao('hibachiDao').getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
+		getHibachiDAO().flushORMSession();
 		
 		return getBeanFactory();
 	}
@@ -189,7 +183,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var integrationPath = expandPath('/Slatwall') & "/integrationServices/#integrationData['integrationPackage']#";
 			if(directoryExists(integrationPath)){
 				var integrationDbDataPath = integrationPath & '/config/dbdata';
-				if(directoryExists(integrationDbDataPath)){
+				if(directoryExists(integrationDbDataPath) && !getApplicationValue('skipDbData')){
 					getService("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = integrationDbDataPath);
 				}
 			}

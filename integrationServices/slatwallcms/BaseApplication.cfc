@@ -226,8 +226,16 @@ Notes:
 		}
 		
 		arguments.contentPath = contentPath;
+
+		arguments.renderActionInTemplate = arguments.slatwallScope.getContent().setting('contentRenderHibachiActionInTemplate');	
+ 		
 		
 		var templateData = buildRenderedContent(argumentCollection=arguments);
+		if(arguments.renderActionInTemplate && structKeyExists(arguments, "actionResult")){
+ 			var hibachiView = {}; 
+ 			hibachiView['contentBody'] = arguments.actionResult;
+ 			templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,hibachiView);
+ 		} 
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(templateData,arguments.slatwallScope.getContent());
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(template=templateBody,object=this);
 		

@@ -29,6 +29,18 @@
 			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ].hb_parentPropertyName;
 		}
 		
+		public any function getParentPropertyByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			var lastEntityName = attributes.hibachiScope.getService('HibachiService').getLastEntityNameInPropertyIdentifier(
+				attributes.entityName,
+				attributes.propertyIdentifier
+			);
+			
+			var propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
+				lastEntityName
+			)[listLast(attributes.propertyIdentifier, ".")];
+			return propertyMetaData.hb_parentPropertyName;
+		}
+		
 		public string function getSimpleRepresentationPropertyNameByEntityName(required string entityName){
 			var example = this.new(arguments.entityName);
 			var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
@@ -123,7 +135,7 @@
 			
 			// Verify the preProcess
 			arguments.entity.validate( context=arguments.processContext );
-			
+
 			// If we pass preProcess validation then we can try to setup the processObject if the entity has one, and validate that
 			if(!arguments.entity.hasErrors() && arguments.entity.hasProcessObject(arguments.processContext)) {
 				invokeArguments[ "processObject" ] = arguments.entity.getProcessObject(arguments.processContext);
@@ -138,7 +150,6 @@
 				}
 				
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
-				
 			}
 			
 			// if the entity still has no errors then we call call the process method
@@ -920,8 +931,23 @@
 				for(var beanName in serviceBeanInfo){
 					var bean = getBeanFactory().getBean(beanName);
 					var serviceMetaData = getMetaData(bean);
+					var serviceFunctions = [];
 					if(structKeyExists(serviceMetaData,'functions')){
 						for(var functionItem in serviceMetaData.functions){
+							arrayAppend(serviceFunctions, functionItem);
+						}
+					}
+
+					if(listToArray(serviceMetaData.name,'.')[2]=='custom' && 
+						structKeyExists(serviceMetaData,'extends') && 
+						listLast(serviceMetaData.extends.name,'.') == beanName && 
+						structKeyExists(serviceMetaData.extends, 'functions')){
+						for(var functionItem in serviceMetaData.extends.functions){
+							arrayAppend(serviceFunctions, functionItem);
+						}
+					}
+					if(arrayLen(serviceFunctions)){
+						for(var functionItem in serviceFunctions){
 							if(
 								(!structKeyExists(functionItem,'access') || functionItem.access == 'public')
 								&& lcase(left(functionItem.name,7))=='process'
@@ -1063,6 +1089,157 @@
 			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
 			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
 		}
+		
+		
+		public array function getOptionsByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier){
+			var entityCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+			return entityCollectionList.getRecords();
+		}
+		
+		public struct function getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(required any collectionList, required string entityName, required string propertyIdentifier, required string discriminatorProperty, required string inversePropertyIdentifier){
+			var propertyMetaData = {};
+			
+			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier & '.' & discriminatorProperty);
+			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
+			var relatedEntity = arguments.discriminatorProperty;
+			propertyMetaData = propsStruct[relatedEntity];
+			var discriminatorRecords = getOptionsByEntityName(propertyMetaData.cfc);
+			var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+			var optionData = {};
+			for(var record in discriminatorRecords){
+				var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+				
+				optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
+				optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+				var optionsCollectionRecords = optionsCollectionList.getRecords();
+				
+				optionData[record['name']] = optionsCollectionRecords;
+			}
+			
+			return optionData;
+			
+		}
+		
+		private array function getOptionsByEntityName(required string entityName){
+			return getOptionsCollectionListByEntityName(arguments.entityName).getRecords();
+		}
+		
+		private any function getOptionsCollectionListByEntityName(required string entityName){
+			var optionsCollectionList = this.getCollectionList(arguments.entityName);
+			var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName);
+			var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(arguments.entityName);
+			var displayProperties = "";
+			displayProperties = listAppend(displayProperties,primaryIDName&'|value');
+			displayProperties = listAppend(displayProperties,simpleRepresentationName&'|name');
+			optionsCollectionList.setDisplayProperties(displayProperties);
+			optionsCollectionList.setOrderBy(simpleRepresentationName);
+			optionsCollectionList.setApplyOrderBysToGroupBys(false);
+			return optionsCollectionList;
+		}
+		
+		
+		
+		public any function getOptionsCollectionListByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier, required string inversePropertyIdentifier){
+			var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
+			
+			var displayProperties = '';
+			var propertyMetaData = {};
+			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
+			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
+			var relatedEntity = listLast(arguments.propertyIdentifier,'.');
+			propertyMetaData = propsStruct[relatedEntity];
+			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+				var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+				var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+			}
+			
+			var displayProperties = "";
+			if(structKeyExists(propertyMetaData,'fieldtype')){
+				//applyfilters by inversePropertyIdentifier
+				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+					entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
+				}
+				
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
+				switch(propertyMetaData.fieldtype){
+					case 'many-to-one':
+						break;
+					case 'one-to-many':
+						
+						break;
+					case 'many-to-many':
+						break;
+				}
+				entityCollectionList.setDisplayProperties(displayProperties);
+				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier&'.'&primaryIDName,'Count','count');
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
+			}else if(structKeyExists(propertyMetaData,'ormtype')) {
+				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
+				}
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
+				switch(propertyMetaData.ormtype){
+					case 'big_decimal':
+						break;
+					case 'string':
+						break;
+					case 'integer':
+						break;
+				}
+				entityCollectionList.setDisplayProperties(displayProperties);
+				
+				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier,'Count','count');
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
+			}
+			entityCollectionList.setApplyOrderBysToGroupBys(false);
+			return entityCollectionList;
+		}
+		
+		public array function getOptionsByEntityNameAndPropertyIdentifierAndRangeData(required any collectionList, required string entityName, required string propertyIdentifier, required array rangeData){
+			var options = [];
+			var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName); 
+			for(var range in rangeData){
+				
+				var option = {};
+				option['name'] = "";
+				option['value'] = "";
+				
+				if(structKeyExists(range,'minValue')){
+					option['name'] &= range.minValue;
+					option['value'] &= range.minValue;
+				}
+				option['name'] &= '-';
+				option['value'] &= '^';
+				if(structKeyExists(range,'maxValue')){
+					option['name'] &= range.maxValue;
+					option['value'] &= range.maxValue;
+				}
+				
+				if(structKeyExists(range,'displayValue')){
+					option['name'] = range['displayValue'];
+				}
+				
+				var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
+				
+				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
+				}
+				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+				if(structKeyExists(range,'minValue')){
+					entityCollectionList.addFilter(arguments.propertyIdentifier,range.minValue,'>=');
+				}
+				if(structKeyExists(range,'maxValue')){
+					entityCollectionList.addFilter(arguments.propertyIdentifier,range.maxValue,'<=');
+				}
+				option['count'] = entityCollectionList.getRecordsCount();
+				arrayAppend(options,option);
+			}
+			
+			return options;
+		}
+		
 		
 	</cfscript>
 </cfcomponent>

@@ -132,7 +132,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
 	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
-	property name="slatwallAuthenticationExistsFlag" persistent="false";
+	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
@@ -292,18 +292,24 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return getPrimaryPhoneNumber().getPhoneNumber();
 	}
 
-	public boolean function getSlatwallAuthenticationExistsFlag() {
-		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
-			variables.slatwallAuthenticationExistsFlag = false;
+	public boolean function getNonIntegrationAuthenticationExistsFlag() {
+		if(!structKeyExists(variables, "nonIntegrationAuthenticationExistsFlag")) {
+			variables.nonIntegrationAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(auth in authArray) {
-				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
-					variables.slatwallAuthenticationExistsFlag = true;
+			for(var auth in authArray) {
+				if(
+					(
+						!getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration')
+						|| isNull(auth.getIntegration())
+					)
+					&& !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() 
+				) {
+					variables.nonIntegrationAuthenticationExistsFlag = true;
 					break;
 				}
 			}
 		}
-		return variables.slatwallAuthenticationExistsFlag;
+		return variables.nonIntegrationAuthenticationExistsFlag;
 	}
 	
 	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){

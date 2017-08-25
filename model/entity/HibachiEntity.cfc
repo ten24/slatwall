@@ -273,19 +273,24 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			if (
 				getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute) 
 			){
+
 				var propertyStruct = getService("hibachiService").getPropertiesStructByEntityName(getClassName(),arguments.attribute);
-				if(structkeyExists(propertyStruct,'hb_formFieldType')
+				if(!structkeyExists(propertyStruct,'hb_formFieldType')
 					|| (
 						structkeyExists(propertyStruct,'hb_formFieldType')
 						&& propertyStruct['hb_formFieldType'] != 'file'
 					)
 				){
+
 					if(arguments.value != "") {
+
 						invokeMethod("set#arguments.attribute#", {1=arguments.value});
+
 					} else {
 						var thisMethod = this["set" & arguments.attribute];
 						thisMethod(javacast('null',''));
 					}
+
 					return '';
 				}
 				

@@ -11,7 +11,7 @@
 			<sw-property-display
 								style="display:none"
 								data-object="product.data.skus[0]"
-								data-property="skuID"
+								data-property-identifier="skuID"
 								data-editing="true"
 								data-editable="true"
 
@@ -19,7 +19,7 @@
 			<sw-property-display
 								style="display:none"
 								data-object="product.data.skus[0]"
-								data-property="skuCode"
+								data-property-identifier="skuCode"
 								data-editing="true"
 								data-editable="true"
 								data-is-dirty="true"

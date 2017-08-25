@@ -680,7 +680,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 	/**
 	* @test
 	*/
-	public void function getSlatwallAuthenticationExistsFlag_WithPassword_Test() {
+	public void function getNonIntegrationAuthenticationExistsFlag_WithPassword_Test() {
 		//testing the authentication w/ Password only, authz flag should be true
 		var accountData2 = {
 			accountID = "",
@@ -695,13 +695,13 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2HasPassword);
-		var resultWithPassword = mockAccount2.getSlatwallAuthenticationExistsFlag();		
+		var resultWithPassword = mockAccount2.getNonIntegrationAuthenticationExistsFlag();		
 		assertTrue(resultWithPassword);
 	}
 	/**
 	* @test
 	*/
-	public void function getSlatwallAuthenticationExistsFlag_WithIntegration_Test() {
+	public void function getNonIntegrationAuthenticationExistsFlag_WithIntegration_Test() {
 		//testing the authentictions w/ Integration only, shoule be false
 		var accountData3 = {
 			accountID = "",
@@ -718,14 +718,14 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications3 = createPersistedTestEntity('AccountAuthentication', authzData3HasIntegration);
-		var resultWithIntegration = mockAccount3.getSlatwallAuthenticationExistsFlag();
+		var resultWithIntegration = mockAccount3.getNonIntegrationAuthenticationExistsFlag();
 		assertFalse(resultWithIntegration);	
 	}
 	
 	/**
 	* @test
 	*/
-	public void function getSlatwallAuthenticationExistsFlag_WithPwdAndIntegration_Test() {
+	public void function getNonIntegrationAuthenticationExistsFlag_WithPwdAndIntegration_Test() {
 		//testing tue authentication w/ Integration and w/ Passoword, should be false
 		var accountData4 = {
 			accountID = "",
@@ -742,14 +742,14 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications4 = createPersistedTestEntity('AccountAuthentication', authzData4PwdIntegration);
-		var resultPwdIntegration = mockAccount4.getSlatwallAuthenticationExistsFlag();
+		var resultPwdIntegration = mockAccount4.getNonIntegrationAuthenticationExistsFlag();
 		assertFalse(resultPwdIntegration);		
 	}
 	
 	/**
 	* @test
 	*/
-	public void function getSlatwallAuthenticationExistsFlag_TrueActiveFlag_Test() {
+	public void function getNonIntegrationAuthenticationExistsFlag_TrueActiveFlag_Test() {
 		//Under condition that if the first logical connectives returns true;		
 		//testing normal case, activeFlag is true
 		var accountData1 = {
@@ -766,13 +766,13 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications1 = createPersistedTestEntity('AccountAuthentication', authzData1);		
-		var resultTrueFlag = mockAccount1.getSlatwallAuthenticationExistsFlag();
+		var resultTrueFlag = mockAccount1.getNonIntegrationAuthenticationExistsFlag();
 		assertTrue(resultTrueFlag);
 	}
 	/**
 	* @test
 	*/
-	public void function getSlatwallAuthenticationExistsFlag_FalseActiveFlag_Test() {
+	public void function getNonIntegrationAuthenticationExistsFlag_FalseActiveFlag_Test() {
 		//Under condition that if the first logical connectives returns true;
 		//testing when activeFlag is false
 		var accountData2 = {
@@ -789,13 +789,13 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 			}
 		};
 		var mockAccountAuthentications2 = createPersistedTestEntity('AccountAuthentication', authzData2);		
-		var resultFalseFlag = mockAccount2.getSlatwallAuthenticationExistsFlag();
+		var resultFalseFlag = mockAccount2.getNonIntegrationAuthenticationExistsFlag();
 		assertFalse(resultFalseFlag);
 	}
 	/**
 	* @test
 	*/
-	public void function getSlatwallAuthenticationExistsFlag_NullActiveFlag_Test() {
+	public void function getNonIntegrationAuthenticationExistsFlag_NullActiveFlag_Test() {
 		//Under condition that if the first logical connectives returns true
 		//testing when activeFlag is null
 		var accountData3 = {
@@ -817,7 +817,7 @@ public void function getPrimaryEmailAddressesNotInUseFlagTest() {
 		} catch (any e) {
 			throw ("The null activeFlag is undefined in this boolearn type");
 		}
-		var resultNullFlag = mockAccount3.getSlatwallAuthenticationExistsFlag();
+		var resultNullFlag = mockAccount3.getNonIntegrationAuthenticationExistsFlag();
 		assertFalse(resultNullFlag);
 		
 	}

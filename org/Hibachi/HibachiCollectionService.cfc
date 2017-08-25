@@ -665,15 +665,18 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
-		
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-
 		if (!isNull(whiteList)){
 			var authorizedPropertyList = whiteList.split(",");
 			for(var authorizedProperty in authorizedPropertyList){
 				collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
 		}
+
+		if(structKeyExists(arguments.data, "restRequestFlag") && arguments.data.restRequestFlag){
+			collectionEntity.applyData(); 
+ 		} 
+	
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){

@@ -69,7 +69,7 @@ Notes:
 					<h2>An error occurred</h2>
 					Template: http://#cgi.server_name##cgi.script_name#?#cgi.query_string#<br />
 					Time: #dateFormat(now(), "short")# #timeFormat(now(), "short")#<br />
-					Remote IP Address: #cgi.REMOTE_ADDR#<br />
+					Remote IP Address: #getHibachiScope().getRemoteAddress()#<br />
 					<cfdump var="#request.exception#" label="Error">				
 					</cfoutput>
 				</cfsavecontent>

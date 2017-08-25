@@ -53,11 +53,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function downloadFile(required string fileID) {
 		var file = this.getFile(arguments.fileID, true);
-
 		if (!file.getNewFlag() && fileExists(file.getFilePath())) {
 			// Download file
 			try {
+				//log the file access as needed.
+				if (!isNull(file.getFileGroup()) && file.getFileGroup().getFileTrackAccessFlag() == true && getHibachiScope().getLoggedInFlag() == true){
+					getService("AccessService").logFileAccess(file);
+				}
 				getService("hibachiUtilityService").downloadFile(fileName=file.getURLTitle()&'.'&file.getFileType(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
+				
 			} catch (any error) {
 				file.addError("fileDownload", rbKey("entity.file.download.fileDownloadError"));
 			}
@@ -199,6 +203,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		return deleteOK;
+	}
+	
+	public boolean function allowAccountToAccessFile(required any fileGroup, required boolean loggedInFlag){
+		//If the filegroup is restricted but the user is logged in, then allow access.
+		if (!isNull(arguments.fileGroup.getFileRestrictAccessFlag()) && arguments.fileGroup.getFileRestrictAccessFlag() == "Yes" && arguments.loggedInFlag == true){
+			return true;
+		}
+		
+		//If the file group is not restricted, allow access
+		if  (arguments.fileGroup.getFileRestrictAccessFlag() == "No"){
+		 	return true;
+		}
+		
+		//Otherwise, they are not allowed access.
+		return false;
 	}
 
 	// =====================  END: Delete Overrides ===========================

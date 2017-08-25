@@ -57,11 +57,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
 		var shippingMethodRatesSmartList = shippingMethod.getShippingMethodRatesSmartList();
 		shippingMethodRatesSmartList.addFilter('activeFlag',1);
-		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) <= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) >= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) <= #arguments.orderFulfillment.getTotalShippingWeight()#');
-		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
-		return shippingMethodRatesSmartList.getRecords(); 
+		
+		var subTotalAfterDiscounts = arguments.orderFulfillment.getSubtotalAfterDiscounts();
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) <= #subTotalAfterDiscounts#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) >= #subTotalAfterDiscounts#');
+		
+		var totalShippingWeight = arguments.orderFulfillment.getTotalShippingWeight(); 
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) <= #totalShippingWeight#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #totalShippingWeight#');
+		
+		var totalShippingQuantity = arguments.orderFulfillment.getTotalShippingQuantity();
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentQuantity,0) <= #totalShippingQuantity#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentQuantity,100000000) >= #totalShippingQuantity#');
+		
+		var records = shippingMethodRatesSmartList.getRecords();
+		
+		return records; 
 	}
 
 	public boolean function getOrderFulfillmentCanBeSplitShipped(required any orderFulfillment, required numeric splitShipmentWeight){
@@ -228,16 +239,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	){
 		var priceGroups = [];
 		if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
-			priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+			var priceGroupsSmartList = arguments.orderFulfillment.getOrder().getAccount().getPriceGroupsSmartList();
+			priceGroupsSmartList.addFilter('shippingMethodRates.shippingMethodRateID',arguments.shippingMethodRate.getShippingMethodRateID()); 
+			priceGroups = priceGroupsSmartList.getRecords();
 		}
 		// check to make sure that this rate applies to the current orderFulfillment
 		if(
 			isShippingMethodRateUsable(
 				arguments.shippingMethodRate, 
 				arguments.orderFulfillment.getShippingAddress(), 
-				arguments.orderFulfillment.getTotalShippingWeight(), 
-				arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
-				arguments.orderFulfillment.getTotalShippingQuantity(), 
 				priceGroups
 			)
 		) {
@@ -322,9 +332,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if (isShippingMethodRateUsable(
 						shippingMethodRate,
 						arguments.orderFulfillment.getShippingAddress(), 
-						arguments.orderFulfillment.getTotalShippingWeight(), 
-						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
-						arguments.orderFulfillment.getTotalShippingQuantity(), 
 						priceGroups)){
 							
 							var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
@@ -370,9 +377,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if (isShippingMethodRateUsable(
 						shippingMethodRate,
 						arguments.orderFulfillment.getShippingAddress(), 
-						arguments.orderFulfillment.getTotalShippingWeight(), 
-						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
-						arguments.orderFulfillment.getTotalShippingQuantity(), 
 						priceGroups)){
 							
 							var qualifiedRateOption = newQualifiedRateOption(
@@ -413,10 +417,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
 			var qualifiedRateOptions = [];
-			var priceGroups = [];
-			if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
-				priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
-			}
+			
 			
 			var qualifiedRateOptions = getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
 				arguments.orderFulfillment,
@@ -528,7 +529,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Now if there is no method yet selected, and one shippingMethod exists as an option, we can automatically just select it.
-		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) >= 1) {
+		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
 
 			// Set the method
 			arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
@@ -574,53 +575,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity, any accountPriceGroups) {
-		// Make sure that the rate is active
-		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
-			return false;
-		}
-
-		if(!isNull(shippingMethodRate.getSplitShipmentWeight())){
-			return true; 
-		} 
-
-		// Make sure that the orderFulfillment Item Price is within the min and max of rate
-		var lowerPrice = 0;
-		var higherPrice = 100000000;
-		if(!isNull(arguments.shippingMethodRate.getMinimumShipmentItemPrice())) {
-			lowerPrice = arguments.shippingMethodRate.getMinimumShipmentItemPrice();
-		}
-		if(!isNull(arguments.shippingMethodRate.getMaximumShipmentItemPrice())) {
-			higherPrice = arguments.shippingMethodRate.getMaximumShipmentItemPrice();
-		}
-		if(shipmentItemPrice lt lowerPrice || shipmentItemPrice gt higherPrice) {
-			return false;
-		}
-
-		// Make sure that the orderFulfillment Total Weight is within the min and max of rate
-		var lowerWeight = 0;
-		var higherWeight = 100000000;
-		if(!isNull(arguments.shippingMethodRate.getMinimumShipmentWeight())) {
-			lowerWeight = arguments.shippingMethodRate.getMinimumShipmentWeight();
-		}
-		if(!isNull(arguments.shippingMethodRate.getMaximumShipmentWeight())) {
-			higherWeight = arguments.shippingMethodRate.getMaximumShipmentWeight();
-		}
-		if(shipmentWeight lt lowerWeight || shipmentWeight gt higherWeight) {
-			return false;
-		}
-
-        // Make sure that the orderFulfillment Total Quantity is within the min and max of rate
-        var lowerQuantity = 0;
-        var higherQuantity = 100000000;
-        if(!isNull(arguments.shippingMethodRate.getMinimumShipmentQuantity())) {
-            lowerQuantity = arguments.shippingMethodRate.getMinimumShipmentQuantity();
-        }
-        if(!isNull(arguments.shippingMethodRate.getMaximumShipmentQuantity())) {
-            higherQuantity = arguments.shippingMethodRate.getMaximumShipmentQuantity();
-        }
-        if(shipmentItemQuantity < lowerQuantity || shipmentItemQuantity gt higherQuantity) {
-            return false;
-        }
+		
         
         // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
         //If this rate has price groups assigned but the user does not, then fail.

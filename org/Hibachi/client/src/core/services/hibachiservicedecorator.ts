@@ -82,8 +82,10 @@ class HibachiServiceDecorator{
 
                     if(angular.element(document.body).injector().has(serviceName)){
                         var entityService = angular.element(document.body).injector().get(serviceName);
-
-                        return entityService['new'+entity.className]();
+                        
+                        if(entityService['new'+entity.className]){
+                            return entityService['new'+entity.className]();
+                        }
                     }
 
                     return $delegate.newEntity(entity.className);

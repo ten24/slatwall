@@ -15,7 +15,7 @@ class SWActionCallerController{
     public disabled:boolean;
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
-
+    public eventListeners:any;
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
@@ -30,6 +30,7 @@ class SWActionCallerController{
         public $timeout,
         private corePartialsPath,
         private utilityService,
+        private observerService,
         private $hibachi,
         private rbkeyService,
         hibachiPathBuilder
@@ -66,7 +67,7 @@ class SWActionCallerController{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
 
-//			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+//            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
         if(angular.isDefined(this.titleRbKey)){
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
@@ -88,38 +89,43 @@ class SWActionCallerController{
                 });
 
             }
-//			this.actionItem = this.getActionItem();
-//			this.actionItemEntityName = this.getActionItemEntityName();
-//			this.text = this.getText();
-//			if(this.getDisabled()){
-//				this.getDisabledText();
-//			}else if(this.getConfirm()){
-//				this.getConfirmText();
-//			}
+//            this.actionItem = this.getActionItem();
+//            this.actionItemEntityName = this.getActionItemEntityName();
+//            this.text = this.getText();
+//            if(this.getDisabled()){
+//                this.getDisabledText();
+//            }else if(this.getConfirm()){
+//                this.getConfirmText();
+//            }
 //
-//			if(this.modalFullWidth && !this.getDisabled()){
-//				this.class = this.class + " modalload-fullwidth";
-//			}
+//            if(this.modalFullWidth && !this.getDisabled()){
+//                this.class = this.class + " modalload-fullwidth";
+//            }
 //
-//			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-//				this.class = this.class + " modalload";
-//			}
+//            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
+//                this.class = this.class + " modalload";
+//            }
 
         /*need authentication lookup by api to disable
         <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
             <cfset attributes.class &= " disabled" />
         </cfif>
         */
-
+        if(this.eventListeners){
+            for(var key in this.eventListeners){
+                this.observerService.attach(this.eventListeners[key], key)
+            }
+        }
 
     }
 
     public submit = () => {
         this.$timeout(()=>{
-            if(this.form.$valid){
+            if(!this.form){
+                this.$scope.$root.slatwall.doAction(this.action);
+            }else if(this.form.$valid){
                 this.formController.submit(this.action);
             }
-            this.form.$submitted = true;
         });
     }
 
@@ -288,7 +294,8 @@ class SWActionCaller implements ng.IDirective{
         modal:"=",
         modalFullWidth:"=",
         id:"@",
-        isAngularRoute:"=?"
+        isAngularRoute:"=?",
+        eventListeners:'=?'
     };
     public require={formController:"^?swForm",form:"^?form"};
     public controller=SWActionCallerController;
