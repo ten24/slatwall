@@ -1023,7 +1023,8 @@ component extends="framework.one" {
 	        controllers = [ ],
 	        requestDefaultsInitialized = false,
 	        services = [ ],
-	        trace = [ ]
+	        trace = [ ],
+	        doTrace=false
 	    };
 
 		savecontent variable="response" {
