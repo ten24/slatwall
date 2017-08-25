@@ -153,7 +153,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			requestData.setRefTransID(requestBean.getOriginalProviderTransactionID());
 		}
 
-		var createTransactionRequest = getTransient('AuthorizeNetCreateTransactionRequest').init(setting('loginID'), setting('transKey'));
+		var createTransactionRequest = getTransient('AuthorizeNetCreateTransactionRequest', {loginID=setting('loginID'), transKey=setting('transKey')});
 		createTransactionRequest.setTransactionRequest(requestData);
 		return createTransactionRequest.getData();
 	}
@@ -288,7 +288,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			requestData.setEmail(requestBean.getAccountPrimaryEmailAddress());
 		}
 
-		var createCustomerProfileRequest = getTransient('AuthorizeNetCreateCustomerProfileRequest').init(setting('loginID'), setting('transKey'));
+		var createCustomerProfileRequest = getTransient('AuthorizeNetCreateCustomerProfileRequest', {loginID=setting('loginID'), transKey=setting('transKey')});
 		createCustomerProfileRequest.setCustomerProfile(requestData);
 
 		return createCustomerProfileRequest.getData();
