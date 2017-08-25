@@ -220,6 +220,14 @@ component extends="framework.one" {
 
 
 	public any function bootstrap() {
+		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
+            if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
+                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
+            } else {
+                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
+            }
+        }
+		
 		setupGlobalRequest();
 
 		// Announce the applicatoinRequest event
@@ -322,7 +330,6 @@ component extends="framework.one" {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
         }
-
 		var status = 200;
 		setupGlobalRequest();
 		
