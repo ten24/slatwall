@@ -1018,6 +1018,7 @@ component extends="framework.one" {
 		}
 
 		request._fw1 = {
+			cgiPathInfo=CGI.PATH_INFO,
 	        cgiScriptName = CGI.SCRIPT_NAME,
 	        cgiRequestMethod = CGI.REQUEST_METHOD,
 	        controllers = [ ],
