@@ -574,7 +574,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity, any accountPriceGroups) {
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, any accountPriceGroups) {
 		
         
         // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
