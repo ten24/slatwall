@@ -43,7 +43,14 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         var pathArrayLen = arrayLen(pathArray);
         
         //Make sure this isn't a call to the api, if it is, return without using CMS logic
-		if(pathArrayLen && pathArray[1] == 'api' || (structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender'))){
+		if(
+			(
+				structKeyExists(url,'slatAction') && getDao('hibachiDao').getApplicationValue('application').getSubsystem(url.slatAction) == 'api'
+			) 
+			|| pathArrayLen && pathArray[1] == 'api' 
+			|| (
+				structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender'))
+			){
         		return;
         }
         //try to get a site form the domain name
