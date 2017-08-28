@@ -1750,48 +1750,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
-	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
-	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
-		var logicalOperator = "";
-		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
-			getCollectionConfigStruct().filterGroups = [];
-		}else if(arraylen(getCollectionConfigStruct().filterGroups)){
-			logicalOperator = 'AND';
-		}
-		
-		for(var filterGroup in arguments.relatedFilterGroups){
-			if(structKeyExists(filterGroup,'filterGroup')){
-				
-				filterGroup = {
-					'filterGroup'=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
-				};
-				if(len(logicalOperator)){
-					filterGroup['logicalOperator'] = logicalOperator;
-				}
-				
-				arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
-			}
-		}
-	
-	}
-	
-	public array function convertRelatedFilterGroup(required string propertyIdentifier, required array relatedFilterGroup, string filterGroupAlias){
-		var convertedFilterGroup = [];
-		for(var filterGroup in arguments.relatedFilterGroup){
-			if(structKeyExists(filterGroup,'filterGroup')){
-				filterGroup = {
-					filterGroup=convertRelatedFilterGroup(arguments.propertyIdentifier,filterGroup.filterGroup)
-				};
-				arrayAppend(convertedFilterGroup,filterGroup);
-			}else{
-				var filter = filterGroup;
-				filter = convertRelatedFilter(arguments.propertyIdentifier,filter);
-				arrayAppend(convertedFilterGroup,filter);
-			}
-		}
-		return convertedFilterGroup;
-	}
-	
 	public struct function convertRelatedFilter(required string propertyIdentifier, required struct relatedFilter){
 		
 		var relatedPropertyIdentifier = convertALiasToPropertyIdentifier(arguments.relatedFilter.propertyIdentifier);
@@ -1962,6 +1920,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	}
 	
+	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
+	
 	public array function convertRelatedFilterGroup(required string propertyIdentifier, required array relatedFilterGroup, string filterGroupAlias){
 		var convertedFilterGroup = [];
 		for(var filterGroup in arguments.relatedFilterGroup){
@@ -1979,27 +1939,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return convertedFilterGroup;
 	}
 	
-	public struct function convertRelatedFilter(required string propertyIdentifier, required struct relatedFilter){
-		var pid = convertALiasToPropertyIdentifier(arguments.propertyIdentifier);
-		
-		var relatedPropertyIdentifier = convertALiasToPropertyIdentifier(arguments.relatedFilter.propertyIdentifier);
-		
-		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
-			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),pid);
-		
-		
-		if(!isObject){
-			//remove tail so that it is an object propertyIdentifier
-			pid = listDeleteAt(pid,listlen(pid,'.'),'.');
-		}
-		
-		pid &= '.'&relatedPropertyIdentifier;
-		var filterData = arguments.relatedFilter;
-		filterData.propertyIdentifier = getPropertyIdentifierAlias(pid);
-		
-		return filterData;
-			
-	}
+	
 	
 	private array function getManyToOnePropertiesWhereCFCEqualsName(){
 		var properties = getService('HibachiService').getPropertiesByEntityName(getCollectionObject());
