@@ -194,7 +194,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
-		writeDump("SUCK IT NERD")
+
 		// Make sure that the currencyCode gets set for this order
 		if(isNull(arguments.order.getCurrencyCode())) {
 			arguments.order.setCurrencyCode( arguments.processObject.getCurrencyCode() );
