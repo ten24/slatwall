@@ -1219,6 +1219,7 @@ component extends="HibachiService"  accessors="true" output="false"
 
             this.addErrors(data, orderPayment.getErrors());
 
+            getHibachiScope().setORMHasErrors(true);
             getHibachiScope().addActionResult( "public:cart.addOrderPayment", true);
             return;
           }
