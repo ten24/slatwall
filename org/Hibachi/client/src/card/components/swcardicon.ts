@@ -12,29 +12,33 @@ class SWCardIconController {
 
 } 
 
-class SWCardIcon implements ng.IComponentOptions {
+class SWCardIcon implements ng.IDirective {
     public controller:any=SWCardIconController;
     public controllerAs:string = 'SwCardIconController';
-    public bindings:{[key: string]:string} = {
+    public scope = {};
+    public bindToController:{[key: string]:string} = {
         iconName: "@?",
         iconMultiplier: "@?"
     };
     public transclude:boolean = true;
     public require:string = "^SWCardView";
-    public template:string = `
-    <div class="col-xs-1 col-sm-1 col-md-2 col-lg-2 s-icon" ng-transclude>
-        <i ng-class="{'fa fa-shopping-cart fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'shopping-cart'}"></i>
-        <i ng-class="{'fa fa-user fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'user'}"></i>
-        <i ng-class="{'fa fa-calendar fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'calendar'}"></i>
-        <i ng-class="{'fa fa-building fa-{{SwCardIconController.iconMultiplier}}':SwCardIconController.iconName == 'building'}"></i>
-    </div>
-            `;
-    constructor() {}
+    /**
+     * This is a wrapper class for the card components that allow you to define the columns.
+     */
+    public templateUrl:string = "";
+    
+    //@ngInject
+    constructor(cardPartialsPath, hibachiPathBuilder) { 
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(cardPartialsPath + '/cardicon.html');
+    }
+    
     /**
      * Handles injecting the partials path into this class
      */
     public static Factory(){
-        return new SWCardIcon();
+        var component:ng.IDirectiveFactory=(cardPartialsPath,hibachiPathBuilder)=>new SWCardIcon(cardPartialsPath, hibachiPathBuilder);
+        component.$inject = ['cardPartialsPath','hibachiPathBuilder']
+        return component;
     }
 }
 export {SWCardIconController, SWCardIcon};

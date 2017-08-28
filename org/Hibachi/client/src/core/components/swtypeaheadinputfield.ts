@@ -65,10 +65,13 @@ class SWTypeaheadInputFieldController {
     }
     
     public addFunction = (value:any) => {
-        this.typeaheadService.notifyObservers({
-            name: this.fieldName || "",
-            data: value[this.propertyToSave] || ""
-        });
+        this.typeaheadService.typeaheadStore.dispatch({
+            "type": "TYPEAHEAD_USER_SELECTION",
+            "payload":{
+                name: this.fieldName || "",
+                data: value[this.propertyToSave] || ""
+            }
+        })
         this.modelValue = value[this.propertyToSave]; 
     }
 }

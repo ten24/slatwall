@@ -116,42 +116,20 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	   arguments.pickWave.removeFulfillmentBatch(this);
 	}
 	
-	// Location (many-to-many - owner)
-	public void function addLocation(required any location) {
-		if(arguments.location.isNew() or !hasLocation(arguments.location)) {
-			arrayAppend(variables.locations, arguments.location);
-		}
-		if(isNew() or !arguments.location.hasFulfillmentBatch( this )) {
-			arrayAppend(arguments.location.getFulfillmentBatches(), this);
-		}
-	}
-	
-	public void function removeLocation(required any location) {
-		var thisIndex = arrayFind(variables.locations, arguments.location);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.locations, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.location.getFulfillmentBatches(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.location.getFulfillmentBatches(), thatIndex);
-		}
-	}
-
-	
 	//The total number of fulfillments in this batch.
 	public any function getTotalQuantityOnBatch() {
 		var totalQuantityOnBatch = 0;
 		for (fulfillmentItem in getFulfillmentBatchItems() ){
-			totalQuantityOnBatch += fulfillmentItem.getQuantityOnBatch();
+			totalQuantityOnBatch += (fulfillmentItem.getOrderFulfillment().getQuantityUnDelivered()+fulfillmentItem.getOrderFulfillment().getQuantityDelivered());
 		}
 		return totalQuantityOnBatch;
 	}
 	
 	//The total number of fulfillments in this batch.
-	public any function getTotalQuantityOnBatchCompleted() {
+	public any function getFulfillmentsCompletedTotal() {
 		var totalQuantityOnBatchCompleted = 0;
 		for (fulfillmentItem in getFulfillmentBatchItems() ){
-			totalQuantityOnBatchCompleted += fulfillmentItem.getQuantityCompleted();
+			totalQuantityOnBatchCompleted += fulfillmentItem.getOrderFulfillment().getQuantityDelivered();
 		}
 		return totalQuantityOnBatchCompleted;
 	}

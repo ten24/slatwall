@@ -45,7 +45,6 @@ class HibachiServiceDecorator{
                     }
                 }
 
-
                 $delegate['get'+entity.className] = function(options){
                     var entityInstance = $delegate.newEntity(entity.className);
                     var entityDataPromise = $delegate.getEntity(entity.className,options);
@@ -82,10 +81,11 @@ class HibachiServiceDecorator{
 
                     if(angular.element(document.body).injector().has(serviceName)){
                         var entityService = angular.element(document.body).injector().get(serviceName);
-
-                        return entityService['new'+entity.className]();
+                        let functionObj = entityService['new'+entity.className];
+                        if (entityService['new'+entity.className] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
+                            return entityService['new'+entity.className]();
+                        }
                     }
-
                     return $delegate.newEntity(entity.className);
                 };
 
@@ -255,7 +255,7 @@ class HibachiServiceDecorator{
                         }
                     });
                 });
-
+                
                 angular.forEach(entity,function(property){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
                         //if(angular.isUndefined(property.persistent)){

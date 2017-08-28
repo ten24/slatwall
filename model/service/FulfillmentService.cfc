@@ -77,18 +77,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.fulfillmentBatch.setAssignedAccount(processObject.getAssignedAccount());
 		}
 		
-		//Add the locations
-		if (!arrayLen(fulfillmentBatch.getLocations())){
-			var locations = processObject.getLocations();
-			for (var location in locations){
-				if (!isNull(location) && !fulfillmentBatch.hasLocation(location)){
-					arguments.fulfillmentBatch.addLocation(location);
-				}
-			}
-		}
 		//Set the description
 		if (isNull(fulfillmentBatch.getDescription())){
 			arguments.fulfillmentBatch.setDescription(processObject.getDescription());
+		}
+		
+		//Set the name of the batch
+		if (isNull(fulfillmentBatch.getFulfillmentBatchName())){
+			arguments.fulfillmentBatch.setFulfillmentBatchName(processObject.getFulfillmentBatchName());
 		}
 		
 		//If they are trying to pass fulfillments for the fulfillment batch.
@@ -118,6 +114,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Generate the next fulfillmentBatch number
 		arguments.fulfillmentBatch.setFulfillmentBatchNumber(this.getMaxFulfillmentBatchNumber());
 		
+		//Add the locations
+		if (!isNull(processObject.getLocations()) ){
+			var locations = processObject.getLocations();
+			for (var location in locations){
+				arguments.fulfillmentBatch.addLocation(location);
+			}
+		}
+		
+		//Save the batch so we can add a many to many.
+		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
+		
+		//Add the locations
+		if (!isNull(processObject.getLocations()) ){
+			var locations = processObject.getLocations();
+			for (var location in locations){
+				arguments.fulfillmentBatch.addLocation(location);
+			}
+		}
+		
+		//Save the batch and return it.
 		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
 		
 		return arguments.fulfillmentBatch;

@@ -351,7 +351,17 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 		return uncaptured;
 	}
+	
+	public numeric function getAmountCaptured() {
+		var captured = 0;
 
+		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
+			captured = getService('HibachiUtilityService').precisionCalculate(getAmountReceived());
+		}
+
+		return captured;
+	}
+	
 	public numeric function getAmountUnreceived() {
 		var unreceived = 0;
 

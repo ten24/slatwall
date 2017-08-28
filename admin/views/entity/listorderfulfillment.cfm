@@ -46,18 +46,7 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfparam name="rc.orderFulfillmentSmartList" type="any" />
-
-<cfsilent>
-	<cfset rc.orderFulfillmentSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled') />
-	<cfset rc.orderFulfillmentSmartList.addOrder('order.orderOpenDateTime|desc') />
-</cfsilent>
-
-<hb:HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
-
+<!--- Order Fulfillment List --->
 <sw-order-fulfillment-list></sw-order-fulfillment-list>
 

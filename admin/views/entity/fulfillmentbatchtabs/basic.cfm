@@ -16,7 +16,8 @@
 		data-has-action-bar="true" 
 		data-persisted-collection-config="true" 
 		data-multiselect-field-name="fulfillmentBatchItemID" 
-		data-name="fulfillmentBatchItemTable">
+		data-name="fulfillmentBatchItemTable" 
+		data-multi-slot="true">
 		
 		<!--- Filters --->
 		<sw-listing-filter data-property-identifier="fulfillmentBatch.fulfillmentBatchID" data-comparison-operator="=" data-comparison-value="#rc.fulfillmentBatch.getFulfillmentBatchID()#"></sw-listing-column>

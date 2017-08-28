@@ -34,6 +34,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getAttributeModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
+    this.publicMethods=listAppend(this.publicMethods, 'authenticateAction');
 
     this.secureMethods='';
     this.secureMethods=listAppend(this.secureMethods, 'getFormResponses');
@@ -95,6 +96,12 @@ component output="false" accessors="true" extends="HibachiController" {
     	response.setHeader('Content-Type',"application/json");
     	
     	writeOutput(responseValue);abort;
+    }
+    
+    public void function authenticateAction(required struct rc){
+    	var account = getHibachiScope().account();
+    	var authenticateActionResult = getHibachiScope().authenticateAction(rc.permissionaction);
+    	writeOutput(authenticateActionResult);abort;
     }
 
     public void function getInstantiationKey(required struct rc){
