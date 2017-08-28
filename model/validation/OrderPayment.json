@@ -42,9 +42,9 @@
 		    {"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}
 		],
-		"termPaymentAccount":	[{"contexts":"save","required":true,"conditions":"paymentTypeTermPayment"}]
-	},
-	"giftCardNumberEncrypted": [{"contexts":"save","conditions":"paymentTypeGiftCard","method":"giftCardNotAppliedToOrder"}],
+		"termPaymentAccount":	[{"contexts":"save","required":true,"conditions":"paymentTypeTermPayment"}],
+        "giftCardNumberEncrypted": [{"contexts":"save","conditions":"paymentTypeGiftCard","method":"giftCardNotAppliedToOrder"}]
+    },
 	"populatedPropertyValidation":{
 	    "billingAddress":[
 	    	{"conditions":"paymentTypeCreditCard,paymentTypeTermPayment","validate":"full"}

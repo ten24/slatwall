@@ -27,6 +27,7 @@
 
 		public any function list( string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
+			
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
