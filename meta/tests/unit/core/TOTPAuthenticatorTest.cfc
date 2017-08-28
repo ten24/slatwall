@@ -54,7 +54,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.totpAuthenticator = new Slatwall.org.hibachi.marcins.TOTPAuthenticator();
 		
 		// During development only
-		variables.slatwallFW1Application.setBeanFactory(variables.slatwallFW1Application.getConfiguredBeanFactoryInstance());
+		//variables.slatwallFW1Application.setBeanFactory(variables.slatwallFW1Application.getConfiguredBeanFactoryInstance());
 		variables.integrationService =  request.slatwallScope.getBean("integrationService");
 	}
 	
