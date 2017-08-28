@@ -58,7 +58,6 @@ Notes:
 	<cfset totalFulfilled = rc.fulfillmentBatch.getFulfillmentsCompletedTotal()>
 	<cfset totalOnBatch = rc.fulfillmentBatch.getTotalQuantityOnBatch()>
 	<cfset totalFulfillments = arrayLen( rc.fulfillmentBatch.getFulfillmentBatchItems())>
-	
 	<cfif totalFulfilled gt 0>
 			<cfset totalPercentFulfilled = (totalFulfilled/totalOnBatch)*100 >
 	<cfelse>

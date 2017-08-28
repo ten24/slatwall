@@ -7,8 +7,9 @@ import {collectionmodule} from "../../../../org/Hibachi/client/src/collection/co
 import {CollectionConfig} from "../../../../org/Hibachi/client/src/collection/services/collectionconfigservice";
 import {orderfulfillmentmodule} from "./orderfulfillment.module";
 import {OrderFulfillmentService} from "./services/orderfulfillmentservice";
+import * as actions from '../fulfillmentbatch/actions/fulfillmentbatchactions';
 
-describe('fulfillmentService Test',()=>{
+describe('FulfillmentService Test Suite',()=>{
 	var orderFulfillmentService:OrderFulfillmentService;
     var $httpBackend:ng.IHttpBackendService;
 	var collectionConfigService:any;
@@ -28,24 +29,72 @@ describe('fulfillmentService Test',()=>{
     });
 	
 	//This service is observable so need to test those methods.
-    it('observable test', ()=>{
-	   var messageTest = false;
-	   var mockObserver = {
-		   recieveNotification: function(message){ messageTest = message; }
+    it('Toggle Fulfillment Listing Action Test', ()=>{
+	   var testState = {
+			expandedFulfillmentBatchListing: ""
 	   };
-	   orderFulfillmentService.registerObserver(mockObserver);
-	   orderFulfillmentService.notifyObservers("This is a test message");
-	   expect(orderFulfillmentService.observers.length).toBe(1);
-       expect(messageTest).toEqual("This is a test message"); //This proves the register and notify have been called.
+	   
+	   //Subscribe to state changes.
+	   orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{       
+            //Handle basic requests
+            if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == actions.TOGGLE_BATCHLISTING){
+                //set the new state.
+                testState = stateChanges;
+            }
 
-	   //Now remove the observer.
-	   var messageTest = false;
-	   orderFulfillmentService.removeObserver(mockObserver);
-	   orderFulfillmentService.notifyObservers("This is a test message"); //Won't get called because no observers exist.
-	   expect(messageTest).not.toEqual("This is a test message"); //This proves the remove removed the observer.
-	   expect(orderFulfillmentService.observers.length).toBe(0);
+	   });
+	
+	   //Toggle the listing via the action and then check the state
+	   orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.TOGGLE_BATCHLISTING,
+            payload: {}
+       });
+	   
+	   expect(testState.expandedFulfillmentBatchListing).toBe(false); //Default is true so toggle should cause it to be false.
+	   
+	   orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.TOGGLE_BATCHLISTING,
+            payload: {}
+	   });
+	   
+	   expect(testState.expandedFulfillmentBatchListing).toBe(true); //Was toggled to  false so expect true.
 
-    });
+	});
+	
+	//This service is observable so need to test those methods.
+    it('Toggle Loader Test', ()=>{
+	   var testState = {
+			loading: ""
+	   };
+	   
+	   //Subscribe to state changes.
+	   orderFulfillmentService.orderFulfillmentStore.store$.subscribe((stateChanges)=>{       
+            //Handle basic requests
+            if ( (stateChanges.action && stateChanges.action.type) && stateChanges.action.type == actions.TOGGLE_LOADER){
+                //set the new state.
+                testState = stateChanges;
+            }
+
+	   });
+	
+	   //Toggle the listing via the action and then check the state
+	   orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.TOGGLE_LOADER,
+            payload: {}
+       });
+	   
+	   expect(testState.loading).toBe(true); //Default is false so toggle should cause it to be true.
+	   
+	   orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.TOGGLE_LOADER,
+            payload: {}
+	   });
+	   
+	   expect(testState.loading).toBe(false); //Was toggled to true so expect false.
+
+	});
+
+
 	//This is the main method that saves the batch so its important to test
     it('addBatch test', ()=>{
 	   var processObject = $hibachi.newFulfillmentBatch_Create();

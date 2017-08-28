@@ -72,7 +72,7 @@
 																						
 																						    </sw-collection-config>
 																							
-																							    <i class="fa fa-map-marker icon-left fa-2x"></i>
+																							    
 																							    <span sw-typeahead-search-line-item data-property-identifier="calculatedLocationPathName"></span><br>
 																							    	
 																						</sw-typeahead-input-field>
@@ -179,7 +179,6 @@
 																		
 																		    </sw-collection-config>
 																			
-																			    <i class="fa fa-user icon-left fa-2x"></i>
 																			    <span sw-typeahead-search-line-item data-property-identifier="lastName"></span><br>
 																			    	
 																		</sw-typeahead-input-field>
@@ -204,10 +203,10 @@
 							                                </div>
 							                            </div>
 							                        </div>
-								                </div>
-								                <div class="modal-footer">
-								                    <a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-								                    <button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0">Add Batch</button> 
+							                        <div class="modal-footer">
+								                    	<a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
+								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0">Add Batch</button> 
+								                	</div>
 								                </div>
 								            </div>
 								        </div>
@@ -290,7 +289,7 @@
 									
 									    </sw-collection-config>
 										
-										    <i class="fa fa-map-marker icon-left fa-2x"></i>
+										    
 										    <span sw-typeahead-search-line-item data-property-identifier="calculatedLocationPathName"></span><br>
 										    	
 									</sw-typeahead-input-field>
@@ -439,7 +438,7 @@
 			    </div>
 			</div>
 			
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.refreshFlag != true">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						
@@ -466,7 +465,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items && swOrderFulfillmentListController.refreshFlag != true">	
+			
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items">	
 				<div class="col-xs-12">
 					<div class="s-detail-body">
 						

@@ -181,8 +181,9 @@ class SWOrderFulfillmentListController {
      }
     
      private createOrderFulfillmentCollectionWithStatus = (status):void => {
-        console.log("Creating ", status);
-
+        delete this.orderFulfillmentCollection;
+        this.view = undefined;
+        
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
@@ -190,20 +191,84 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
         
         if (status){
-            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=");
+            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=", "OR");
         }
-        this.collections[0] = this.orderFulfillmentCollection;
+
         this.orderFulfillmentCollection.getEntity().then((result)=>{ 
-            console.log("Updates collection");
+            //refreshes the page.
+            this.collections[0] = this.orderFulfillmentCollection;
+            this.view = this.views.Fulfillments;
         });
-         this.$timeout(()=>{
-            this.refreshFlag = true;
-        }, 1);
+
+         
+     }
+
+     private createOrderFulfillmentCollectionWithFilterMap = (filterMap:Map<String, any>):void => {
+        
+        delete this.orderFulfillmentCollection;
+        this.view = undefined;
+        
+        this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
+        this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
+        this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
+        
+        //Build the collection using just the correct filters.
+        
+        //Check the filters for multiple true
+        var hasMultipleEnabled = false;
+        var filterCount = 0;
+        filterMap.forEach((v, k) => {
+            if (filterMap.get(k) === true){
+                filterCount++;
+                console.log("Filter count", filterCount);
+            }
+        });
+
+        if (filterCount > 1){
+            hasMultipleEnabled = true;
+        }
+
+        //Add the filters.
+        filterMap.forEach((v, k) => {
+            var systemCode = (k == 'available') ? 'ofisAvailable' : ((k == 'partial') ? 'ofisPartial' : ((k == 'unavailable') ? 'ofisUnAvailable' : ((k == 'location') ? 'location' : '' )));
+            //handle truth   
+            if (filterMap.get(k) === true){
+                if (systemCode.length){
+                    this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "=", (hasMultipleEnabled ? "OR" : "AND"));
+                    this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
+                    this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
+                }
+            }
+            //handle false
+            if (filterMap.get(k) === false && filterMap.get(k) != undefined){
+                if (systemCode.length){
+                    this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "!=", 'AND');
+                    this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
+                    this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
+                }
+            }
+        });
+           
+
+        this.orderFulfillmentCollection.getEntity().then((result)=>{ 
+            //refreshes the page.
+            this.collections[0] = this.orderFulfillmentCollection;
+            this.view = this.views.Fulfillments;
+        });
+
+         
      }
 
     /**
@@ -226,7 +291,12 @@ class SWOrderFulfillmentListController {
      */
     public toggleFilter = (filterName):void => {
         this.filters[filterName] = !this.filters[filterName];
-        this.addFilter(filterName, this.filters[filterName]);
+        console.log(`${filterName} now ${this.filters[filterName]}`);
+        if (this.filters[filterName]){
+            this.addFilter(filterName, true);
+            return;
+        }
+        this.removeFilter(filterName, false);
     }
 
     /**
@@ -283,7 +353,7 @@ class SWOrderFulfillmentListController {
         this.$timeout(()=>{
             this.refreshFlag = true;
         }, 1);
-        this.refreshFlag = true;
+        
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
             
@@ -306,17 +376,41 @@ class SWOrderFulfillmentListController {
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
                 }
                 
-                //add the filter to the group
-                //filterGroup.push(filter);
-
-                //add the group
-                //this.getCollectionByView(this.getView()).addFilterGroup(filterGroup);
-
             }
             if (value = false){
-                console.log("False");
                 this.createOrderFulfillmentCollection();
             }
+        }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
+            console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
+        }
+        //Calls to auto refresh the collection since a filter was added.
+        let refreshedCollection = this.orderFulfillmentCollection;
+        this.orderFulfillmentCollection = undefined;
+        this.orderFulfillmentCollection = refreshedCollection; 
+        this.collections[0] = this.orderFulfillmentCollection;
+        this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
+       
+    }
+
+    /**
+     * Adds one of the status type filters into the collectionConfigService
+     * @param key: FulfillmentsList.CollectionFilterValues {'partial' | 'available' | 'unavailable' | 'location'}
+     * @param Vvalue: boolean: {true|false}
+     */
+    
+    public removeFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
+        this.$timeout(()=>{
+            this.refreshFlag = true;
+        }, 1);
+        
+        //Always keep the orderNumber filter.
+        if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
+            var filterMap = new Map<String, any>();
+            filterMap.set("partial", this.filters['partial']);
+            filterMap.set("available", this.filters['available']);
+            filterMap.set("unavailable", this.filters['unavailable']);
+            filterMap.set("location", this.filters['location']);
+            this.createOrderFulfillmentCollectionWithFilterMap(filterMap);
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
             console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }

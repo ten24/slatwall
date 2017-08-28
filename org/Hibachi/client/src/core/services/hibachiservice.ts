@@ -418,6 +418,7 @@ class HibachiService{
 
 		return request.promise;
 	};
+
 	getExistingCollectionsByBaseEntity= (entityName) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;

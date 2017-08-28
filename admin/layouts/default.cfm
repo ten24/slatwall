@@ -145,8 +145,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
+									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">

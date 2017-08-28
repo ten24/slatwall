@@ -23,6 +23,8 @@ class SWFulfillmentBatchDetailController  {
                 stateChanges.action.type == actions.SAVE_COMMENT_REQUESTED || 
                 stateChanges.action.type == actions.DELETE_COMMENT_REQUESTED || 
                 stateChanges.action.type == actions.CREATE_FULFILLMENT_REQUESTED || 
+                stateChanges.action.type == actions.PRINT_LIST_REQUESTED || 
+                stateChanges.action.type == actions.EMAIL_LIST_REQUESTED || 
                 stateChanges.action.type == actions.UPDATE_BATCHDETAIL || 
                 stateChanges.action.type == actions.SETUP_BATCHDETAIL || 
                 stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
@@ -35,6 +37,7 @@ class SWFulfillmentBatchDetailController  {
 
         //Get the attributes to display in the custom section.
         this.userViewingOrderDeliveryAttributes();
+
         //Dispatch the fulfillmentBatchID and setup the state.
         this.userViewingFulfillmentBatchDetail(this.fulfillmentBatchId);
 
@@ -65,25 +68,19 @@ class SWFulfillmentBatchDetailController  {
     //requested | failed | succeded
     public userDeletingComment = (comment) => {
         //Only fire the event if the user agrees.
-        let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
-        if ( window.confirm(`${warning}?`) ) {
-            this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-                type: actions.DELETE_COMMENT_REQUESTED,
-                payload: {comment: comment}
-            });
-        }
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.DELETE_COMMENT_REQUESTED,
+            payload: {comment: comment}
+        });
     }
 
     //Try to delete the fulfillment batch item.
     public deleteFulfillmentBatchItem = () => {
         //Only fire the event if the user agrees.
-        let warning = this.rbkeyService.getRBKey("entity.comment.delete.confirm");
-        if ( window.confirm(`${warning}?`) ) {
-            this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-                type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
-                payload: {}
-            });
-        }
+        this.orderFulfillmentService.orderFulfillmentStore.dispatch({
+            type: actions.DELETE_FULFILLMENTBATCHITEM_REQUESTED,
+            payload: {}
+        });
     }
     
     public userSavingComment = (comment, commentText) => {
@@ -122,27 +119,23 @@ class SWFulfillmentBatchDetailController  {
         });
     }
 
-    public userEmailCancellation = () => {
+    /** Returns a list of print templates related to fulfillment batches. */
+    public userRequiresPrintList = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SEND_EMAIL_CANCELLATION_ACTION",
+            type: actions.PRINT_LIST_REQUESTED,
             payload: {}
         });
     }
 
-    public userEmailConfirmation = () => {
+    /** Returns a list of all emails related to orderfulfillments */
+    public userRequiresEmailList = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SEND_EMAIL_CONFIRMATION_ACTION",
+            type: actions.EMAIL_LIST_REQUESTED,
             payload: {}
         });
     }
 
-    public userEmailOrderStatus = () => {
-         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
-            type: "SEND_EMAIL_ORDER_STATUS_ACTION",
-            payload: {}
-        });
-    }
-
+    /** Todo - Thiswill be for the barcode search which is currently commented out. */
     public userBarcodeSearch = () => {
          this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: "BAR_CODE_SEARCH_ACTION",
