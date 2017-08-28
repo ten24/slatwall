@@ -1,4 +1,4 @@
-/*
+﻿/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -48,12 +48,26 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess" {
 
-	// Injected Property
+	// Injected Entity
 	property name="account";
 
 	// Data Properties
-	property name="emailAddress";
-	property name="password";
-	property name="authenticationCode";
+	property name="authenticationCode" hb_rbKey="entity.account.authenticationCode_confirm";
+	property name="totpSecretKey";
+	property name="otpUri";
 	
+	// Cached Properties
+	
+	public string function getTotpSecretKey() {
+		if (!structKeyExists(variables, "totpSecretKey")) {
+			// Random salt is automatically generated for seed
+			variables.totpSecretKey = getService("hibachiAuthenticationService").generateTOTPSecretKey(seed=getAccount().getAccountID());
+		}
+		
+		return variables.totpSecretKey;
+	}
+	
+	public string function getOtpUri() {
+		return getService("HibachiUtilityService").buildOTPUri(email=getAccount().getEmailAddress(), secretKey=getTotpSecretKey());
+	}
 }

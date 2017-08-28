@@ -56,6 +56,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
+	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
+	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
 	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";
@@ -135,6 +137,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
+	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
@@ -332,6 +335,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		termAccountAvailableCredit = val(precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance()));
 
 		return termAccountAvailableCredit;
+	}
+	
+	public string function getTwoFactorAuthenticationFlag() {
+		return !isNull(getTotpSecretKey()) && len(getTotpSecretKey());
 	}
 	
 	public numeric function getOrderPaymentAmount(){

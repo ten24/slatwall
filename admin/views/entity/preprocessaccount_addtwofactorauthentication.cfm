@@ -1,4 +1,4 @@
-/*
+﻿<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,15 +45,39 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Property
-	property name="account";
 
-	// Data Properties
-	property name="emailAddress";
-	property name="password";
-	property name="authenticationCode";
+<cfparam name="rc.account" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.editaccount">
 	
-}
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiFormField fieldName="totpSecretKey" value="#rc.processObject.getTotpSecretKey()#" fieldType="hidden" />
+	
+	<p>#$.slatwall.rbKey('admin.entity.preprocessaccount_addtwofactorauthentication.app_installation_instructions')#</p>
+	
+	<!--- Display QR Code --->
+	<style>
+		##qrcode img { margin: auto; }
+	</style>
+	<div id="qrcode" class="text-center"></div>
+    <script>new QRCode(document.getElementById('qrcode'), {text: "#rc.processObject.getOtpUri()#", width: 160, height: 160});</script>
+	<hr>
+	
+	<!--- Display secret code for manual configuration --->
+	<p class="text-center">#$.slatwall.rbKey('admin.entity.preprocessaccount_addtwofactorauthentication.manual_configuration')#<br>
+	#rc.processObject.getTotpSecretKey()#</p>
+	<hr>
+	
+	<!--- Confirmation instructions --->
+	<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationCode" edit="#rc.edit#" fieldAttributes="placeholder='#$.slatwall.rbKey('entity.account.authenticationCode_confirm_placeholder')#'">
+</hb:HibachiEntityProcessForm>
+</cfoutput>
