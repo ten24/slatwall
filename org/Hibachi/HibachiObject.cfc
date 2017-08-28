@@ -43,8 +43,8 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
-	public any function getBean(required string beanName) {
-		return getBeanFactory().getBean( arguments.beanName );
+	public any function getBean(required string beanName, struct constructorArgs = { }) {
+		return getBeanFactory().getBean( arguments.beanName, arguments.constructorArgs);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
@@ -81,8 +81,8 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	// @hint returns a new transient bean
-	public any function getTransient(required string transientName) {
-		return getBean(arguments.transientName);
+	public any function getTransient(required string transientName, struct constructorArgs = { } ) {
+		return getBean(arguments.transientName, arguments.constructorArgs);
 	}
 	
 	// @hint returns an application specfic virtual filesystem
