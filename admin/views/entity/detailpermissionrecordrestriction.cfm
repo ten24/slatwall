@@ -50,20 +50,19 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.permissionGroup" type="any" />
+<cfparam name="rc.permissionRecordRestriction" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.editEntityName" type="string" default="" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
+	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionRecordRestriction#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionRecordRestriction#" edit="#rc.edit#"
+			backAction="entity.detailpermission" backQueryString="permissionID=#rc.permissionRecordRestriction.getPermission().getPermissionID()#"
+			deleteQueryString="permissionID=#rc.permissionRecordRestriction.getPermission().getPermissionID()#&sRedirectAction=entity.detailpermission"
+		></hb:HibachiEntityActionBar>
+		<hb:HibachiEntityDetailGroup object="#rc.permissionRecordRestriction#">
+			<hb:HibachiEntityDetailItem view="admin:entity/permissionrecordrestrictiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/permissionrecordrestrictiontabs/restrictionconfig" open="true"  showOnCreateFlag=true />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>

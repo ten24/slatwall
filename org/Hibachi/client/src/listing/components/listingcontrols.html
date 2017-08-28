@@ -9,7 +9,7 @@
                                data-show-toggle-display-options="swListingControls.showToggleDisplayOptions"
          ></span>    
         <!-- DISPLAY OPTIONS -->
-        <div data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
+        <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
                 <a href class="s-close" data-ng-click="swListingControls.toggleDisplayOptions(true)">
                     <i class="fa fa-times"></i>
@@ -17,23 +17,28 @@
                 <!-- Dragable List group -->
                 <h4>Display Options</h4>
                 <sw-display-options
-                        data-columns="swListingControls.collectionConfig.columns"
-                        data-properties-list="swListingControls.filterPropertiesList"
-                        data-save-collection="swListingControls.saveCollection()"
-                        data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
-                        data-base-entity-name="swListingControls.collectionConfig.baseEntityName">
-                    <li class="list-group-item"
-                        ng-repeat="column in swListingControls.collectionConfig.columns"
-                        ng-if="swListingControls.canDisplayColumn(column)"
-                        sw-column-item
-                        data-column="column"
-                        data-columns="swListingControls.collectionConfig.columns"
-                        data-column-index="$index"
-                        data-save-collection="swListingControls.saveCollection()"
-                        data-properties-list="swListingControls.filterPropertiesList"
-                        data-order-by="swListingControls.collectionConfig.orderBy">
-                    </li>
-                </sw-display-options >
+						data-columns="swListingControls.collectionConfig.columns"
+                        data-joins="swListingControls.collectionConfig.joins"
+                        data-group-bys="swListingControls.collectionConfig.groupBys"
+						data-properties-list="swListingControls.filterPropertiesList"
+						data-save-collection="swListingControls.saveCollection()"
+						data-callbacks="swListingControls.callbacks"
+						data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
+						data-base-entity-name="swListingControls.collectionConfig.baseEntityName"
+				>
+					<li class="list-group-item"
+						ng-repeat="column in swListingControls.collectionConfig.columns"
+						ng-if="swListingControls.canDisplayColumn(column)"
+						sw-column-item
+						data-column="column"
+						data-columns="swListingControls.collectionConfig.columns"
+						data-column-index="$index"
+						data-save-collection="swListingControls.saveCollection()"
+						data-properties-list="swListingControls.filterPropertiesList"
+						data-callbacks="swListingControls.callbacks"
+						data-order-by="swListingControls.collectionConfig.orderBy"
+						></li>
+				</sw-display-options >
             </div>
         </div>
         <!-- //DISPLAY OPTIONS -->
@@ -41,13 +46,39 @@
         <div data-collapse="swListingControls.filtersClosed" id="j-advanced-filter">
             <span>&nbsp;</span>
             <div
+            	ng-if="swListingControls.simple"
                 sw-filter-groups
                 data-collection-config="swListingControls.collectionConfig"
                 data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
                 data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
                 data-filter-properties-list="swListingControls.filterPropertiesList"
                 data-save-collection="swListingControls.saveCollection()"
-                data-simple="true">
+                data-simple="swListingControls.simple">
+            </div>
+            <div ng-if="!swListingControls.simple">
+            	<div class="s-setting-options">
+					<div class="row s-setting-options-body">
+						<!-- Start Filter Group -->
+						<div class="col-xs-12 s-filters-selected">
+							<div class="row">
+								<!--filterGroups gets taken apart here -->
+								<ul class="s-filter-list list-unstyled"
+                sw-filter-groups
+                data-collection-config="swListingControls.collectionConfig"
+                data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
+                data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
+                data-filter-properties-list="swListingControls.filterPropertiesList"
+	                                data-simple="swListingControls.simple"
+	                                
+                data-save-collection="swListingControls.saveCollection()"
+									>
+								</ul>
+							</div>
+							<!-- //New Filter Panel -->
+						</div>
+						<!-- //End Filter Group -->
+					</div>
+				</div>
             </div>
         </div>
         <!--  //ADD FILTER -->

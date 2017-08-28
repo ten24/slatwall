@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,26 +45,91 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-
-<cfparam name="rc.permissionGroup" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-<cfparam name="rc.editEntityName" type="string" default="" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
-		</hb:HibachiEntityDetailGroup>
+	// @hint put things in here that you want to run befor EACH test	
+	public void function setUp() {
+		super.setup();
+		variables.entityService = "accountService";
+		variables.entity = request.slatwallScope.getService( variables.entityService ).newPermissionRecordRestriction();
+	}
 		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+	/**
+	* @test
+	*/
+	public void function setCollectionConfigTest_applyToRestrictionConfig(){
+		var permissionRecordRestriction = createTestEntity('PermissionRecordRestriction');
+		
+		var filterGroups = [
+			{
+				"filterGroup":[
+					{
+						"propertyIdentifier":"",
+						"comparisonOperator":"",
+						"value":""
+					},
+					{
+						"logicalOperator":"AND",
+						"propertyIdentifier":"",
+						"comparisonOperator":"",
+						"value":""
+					}
+				]
+
+			},
+			{
+				"filterGroup":[
+					{
+						"propertyIdentifier":"",
+						"comparisonOperator":"",
+						"value":""
+					}
+				]
+
+			}
+		];
+		
+		var collectionConfig = {
+			"baseEntityName":"SlatwallAccount",
+			"baseEntityAlias":"Account",
+			"columns":[
+				{
+					"propertyIdentifier":""
+				},
+				{
+					"propertyIdentifier":"Account.firstName"
+				}
+			],
+			"joins":[
+				{
+					"associationName":"orders",
+					"alias":"Account_orders"
+				}
+			],
+			"orderBy":[
+				{
+					"propertyIdentifier":"Account.firstName",
+					"direction":"DESC"
+				}
+			],
+			"groupBy":[
+				{
+					"propertyIdentifier":"accountID"
+				}
+			]
+		};
+		
+		collectionConfig['filterGroups'] = filterGroups;
+		
+		permissionRecordRestriction.setCollectionConfig(
+			serializeJson(collectionConfig)
+		);
+		
+		assertEquals(permissionRecordRestriction.getRestrictionConfig(),serializeJson(filterGroups));
+		
+		
+	}
+}
+
+

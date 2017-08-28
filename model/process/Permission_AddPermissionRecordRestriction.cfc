@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,26 +45,22 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="permission";
 
-<cfparam name="rc.permissionGroup" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-<cfparam name="rc.editEntityName" type="string" default="" />
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
-			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+	// Data Properties
+	property name="permissionRecordRestrictionName";
+	property name="permissionRecordRestriction";
+	property name="enforceOnDirectObjectReference"  hb_formFieldType="yesno" default=0;;
+	
+	// Chached Properties
+	public any function getPermissionRecordRestriction() {
+		if(!structKeyExists(variables, "permissionRecordRestriction")) {
+			variables.permissionRecordRestriction = getService("accountService").newPermissionRecordRestriction();
+		}
+		return variables.permissionRecordRestriction;
+	}
+}

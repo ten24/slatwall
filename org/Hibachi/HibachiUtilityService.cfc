@@ -74,6 +74,13 @@
 			return currentThread.getThreadGroup().getName() == "cfthread";
 		}
 
+		public string function obfuscateValue(required string value){
+			if(len(value)){
+				return lcase(rereplace(CreateUUID(), '[^A-Z]', '', 'ALL'));
+			}
+			return '';
+		}
+
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
 			for(var key in data){
