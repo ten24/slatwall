@@ -23,11 +23,13 @@ component extends="FW1.framework" {
 
 	// FW1 Setup
 	variables.framework=structNew();
+	variables.framework.applicationEnvironment = 'production';
 	variables.framework.applicationKey = 'Hibachi';
 	variables.framework.action = 'action';
+	variables.framework.basePath = replaceNoCase(replace(replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , expandPath('/'), '/' ), '\', '/', 'all'),'/org/Hibachi/','');
 	variables.framework.baseURL = replaceNoCase(replace(replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , expandPath('/'), '/' ), '\', '/', 'all'),'/org/Hibachi/','');
-	variables.framework.base = variables.framework.baseURL;
-	variables.framework.basecfc = variables.framework.baseURL;
+	variables.framework.base = variables.framework.basePath;
+	variables.framework.basecfc = variables.framework.basePath;
 	variables.framework.usingSubsystems = true;
 	variables.framework.defaultSubsystem = 'admin';
 	variables.framework.defaultSection = 'main';
@@ -96,11 +98,22 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 
+	variables.framework.hibachi.developmentUrlPattern = ""; // To set dev or local env: developmentUrlPattern = "(\.devsite\.com|\.local)$"
+
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
 
+	//	'\.ten24dev\.com$'
+	//
+
+	public string function getEnvironment() {
+		if(len(variables.framework.hibachi.developmentUrlPattern) && REFindNoCase(variables.framework.hibachi.developmentUrlPattern,cgi.server_name)){
+			return  'development';
+		}
+		return 'production';
+	}
 
 	// =============== configMappings
 
@@ -490,6 +503,7 @@ component extends="FW1.framework" {
 					applicationInitData["initialized"] = 				false;
 					applicationInitData["instantiationKey"] =			createUUID();
 					applicationInitData["application"] = 				this;
+					applicationInitData["applicationEnvironment"] = 	getEnvironment();
 					applicationInitData["applicationKey"] = 			variables.framework.applicationKey;
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
@@ -501,7 +515,7 @@ component extends="FW1.framework" {
 					applicationInitData["gzipJavascript"] = 			variables.framework.hibachi.gzipJavascript;
 					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
 					applicationInitData["errorNotifyEmailAddresses"] =	variables.framework.hibachi.errorNotifyEmailAddresses;
-					applicationInitData["baseURL"] = 					variables.framework.baseURL;
+					applicationInitData["baseURL"] = 					variables.framework.basePath;
 					applicationInitData["action"] = 					variables.framework.action;
 					applicationInitData["hibachiConfig"] =				variables.framework.hibachi;
 					applicationInitData["lineBreakStyle"] =				variables.framework.hibachi.lineBreakStyle;
@@ -910,7 +924,7 @@ component extends="FW1.framework" {
 			if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
 				location(arguments.redirectLocation, arguments.addToken);
 			}else{
-				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken)
+				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken);
 			}
 		}
 	}
@@ -1050,6 +1064,8 @@ component extends="FW1.framework" {
 		response.setStatus(500);
 		super.onError(arguments.exception,arguments.event);
 	}
+
+
 
 	// THESE METHODS ARE INTENTIONALLY LEFT BLANK
 	public void function onEveryRequest() {}

@@ -85,6 +85,7 @@ class OrderBy{
 class CollectionConfig {
     public collection: any;
     public filterGroupAliasMap:any = {};
+    public apiAction;
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -227,6 +228,9 @@ class CollectionConfig {
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
+        }
+        if(angular.isDefined(this.apiAction)){
+            options['apiAction'] = this.apiAction;
         }
         return options;
     };
@@ -455,6 +459,9 @@ class CollectionConfig {
         if(isKeywordFilter){
             this.keywordFilterGroups[0].filterGroup.push(filter);
         }
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -485,6 +492,9 @@ class CollectionConfig {
         );
 
         this.filterGroups[0].filterGroup.push(filter);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -796,6 +806,10 @@ class CollectionConfig {
     public setColumns=(columns)=>{
         this.columns = columns;
         return this;
+    }
+
+    public setApiAction=(action)=>{
+        this.apiAction = action;
     }
 
 }

@@ -37,6 +37,7 @@ class SWDisplayOptions{
 
         return{
             restrict: 'E',
+            require:{swListingDisplay:"?^swListingDisplay"},
             transclude:true,
             scope:{
                 orderBy:"=",
@@ -46,10 +47,13 @@ class SWDisplayOptions{
                 propertiesList:"=",
                 saveCollection:"&",
                 baseEntityAlias:"=?",
-                baseEntityName:"=?"
+                baseEntityName:"=?",
+                listingName:"@?"
             },
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
-            controller: ['$scope','$element','$attrs',function($scope,$element,$attrs){
+            controller: ['$scope','$element','$attrs','observerService',function($scope,$element,$attrs,observerService){
+                
+
                 $log.debug('display options initialize');
 
                 $scope.breadCrumbs = [ {
@@ -211,6 +215,7 @@ class SWDisplayOptions{
 
 
                             $scope.saveCollection();
+                            observerService.notify('swListingAction',{type:'getRecords',payload:{'listingName':$scope.listingName}});
                             if(angular.isDefined(closeDialog) && closeDialog === true){
                                 $scope.addDisplayDialog.toggleDisplayDialog();
                                 $scope.selectBreadCrumb(0);
@@ -279,7 +284,13 @@ class SWDisplayOptions{
                  $("select").selectBoxIt();
                  unbindBaseEntityAlaisWatchListener();
                  });*/
-            }]
+            }],
+            link:(scope,element,attrs,controllers)=>{
+                if(controllers.swListingDisplay){
+                    
+                    scope.getCollection = controllers.swListingDisplay.getCollection;
+                }
+            }
         }
     }
 }

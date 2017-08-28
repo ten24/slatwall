@@ -192,10 +192,12 @@ class ListingService{
             var pageRecord = pageRecords[j]; 
             if(pageRecord[primaryIDPropertyName] == null || pageRecordToCompare[primaryIDPropertyName] == null){
                 //check fallback property options
-                var fallbackPropertiesToCompare = this.getFallbackPropertiesToCompare(listingID).split(',');
-                for(var k = 0; k < fallbackPropertiesToCompare.length; k++){
-                    if(pageRecord[fallbackPropertiesToCompare[k]] == pageRecordToCompare[fallbackPropertiesToCompare[k]]){
-                        return j;
+                if(this.getFallbackPropertiesToCompare(listingID) != null){
+                    var fallbackPropertiesToCompare = this.getFallbackPropertiesToCompare(listingID).split(',');
+                    for(var k = 0; k < fallbackPropertiesToCompare.length; k++){
+                        if(pageRecord[fallbackPropertiesToCompare[k]] == pageRecordToCompare[fallbackPropertiesToCompare[k]]){
+                            return j;
+                        }
                     }
                 }
             } else if( pageRecord[primaryIDPropertyName] == pageRecordToCompare[primaryIDPropertyName] ){
@@ -422,11 +424,21 @@ class ListingService{
    
 
     public addColumn = (listingID:string, column) =>{
+        
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
             column.propertyIdentifier = '_' + this.getListingBaseEntityName(listingID).toLowerCase() + '.' + column.propertyIdentifier;
         }
+        
+        if(column.ormtype == null){
+            var lastProperty = column.propertyIdentifier.split('.').pop(); 
+            var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.getListingBaseEntityName(listingID),column.propertyIdentifier));
+            if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
+                column.ormtype = lastEntity.metaData[lastProperty].ormtype;
+            }
+        }
+
         if(this.getListingColumnIndexByPropertyIdentifier(listingID, column.propertyIdentifier) === -1){
             if(column.aggregate){
                 this.getListing(listingID).aggregates.push(column.aggregate);
@@ -443,7 +455,8 @@ class ListingService{
             collectionConfig != null
         ){
             if(collectionConfig.columns == null){
-                collectionConfig.getEntity().then(
+                //let get entity populate columns
+                collectionConfig.getEntity().then().finally(
                     ()=>{
                         for(var j=0; j < collectionConfig.columns.length; j++){
                             var column = collectionConfig.columns[j]; 
@@ -451,9 +464,6 @@ class ListingService{
                                 this.getListing(listingID).columns.push(column);
                             }
                         }
-                    }, 
-                    ()=>{
-                        throw("listing display couldn't initiate no columns");
                     }
                 ); 
             } else { 
@@ -740,8 +750,8 @@ class ListingService{
                 this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
                 if(this.getListing(listingID).multiSlot){
-                	this.getListing(listingID).getEntity().then(
-                    (data)=>{
+                	this.getListing(listingID).collectionConfig.getEntity().then(
+                    (data:any)=>{
                         this.getListing(listingID).collectionData = data;
                         this.setupDefaultCollectionInfo(listingID);
                         this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
@@ -753,7 +763,7 @@ class ListingService{
                 );
                 }else{
                 	this.getListing(listingID).collectionPromise.then(
-                    (data)=>{
+                    (data:any)=>{
                         this.getListing(listingID).collectionData = data;
                         this.setupDefaultCollectionInfo(listingID);
                         this.getListing(listingID).collectionData.pageRecords = data.pageRecords || data.records;
@@ -885,7 +895,7 @@ class ListingService{
 
     //Disable Row Functions
     public getKeyOfMatchedDisableRule = (listingID:string, pageRecord)=>{
-        var disableRuleMatchedKey = -1; 
+        var disableRuleMatchedKey = -1;
         if(angular.isDefined(this.getListing(listingID).disableRules)){   
             angular.forEach(this.getListing(listingID).disableRules, (rule, key)=>{
                 if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){ 
@@ -934,7 +944,7 @@ class ListingService{
                         var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
                     }
                     if(this.filterService.filterMatch(pageRecordValue, rule.filterComparisonOperator, rule.filterComparisonValue)){
-                        expandableRuleMatchedKey = key; 
+                        expandableRuleMatchedKey = key;
                     }
                     if(expandableRuleMatchedKey != -1){
                         return expandableRuleMatchedKey;
@@ -980,7 +990,7 @@ class ListingService{
         if(keyOfExpandableRuleMet != -1){
            var childCollectionConfig = this.getListing(listingID).expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig.clone();
            angular.forEach(childCollectionConfig.filterGroups[0], (filterGroup, key)=>{ 
-                angular.forEach(filterGroup, (filter,key)=>{
+                angular.forEach(filterGroup, (filter:any,key)=>{
                     if(angular.isString(filter.value) 
                         && filter.value.length 
                         && filter.value.charAt(0) == '$'

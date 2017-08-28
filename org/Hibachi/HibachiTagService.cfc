@@ -180,4 +180,37 @@
 		
 		<cfreturn returnContent />
 	</cffunction>
+
+	<cffunction name="readSpreadSheet" access="public" output="false" returntype="any">
+		<cfargument name="src" type="string" required="true" />
+		<cfargument name="excludeHeaderRow" type="boolean" default="false" />
+		<cfargument name="format" type="string" default="" />
+		<cfargument name="headerrow" type="numeric" required="false" />
+		<cfargument name="returnFormat" type="string" default="object" />
+		<cfargument name="rows" type="string" required="false" />
+		<cfargument name="sheet" type="numeric" default="1" />
+		<cfargument name="sheetname" type="string" default="" />
+
+		<cfset var tagAttributes = duplicate(arguments) />
+		<cfset var retSpreadSheet = "" />
+		<cfset tagAttributes.action = "read" />
+		<cfif !listFindNoCase("CSV,HTML",tagAttributes.format)>
+			<cfset structDelete( tagAttributes,"format" ) />
+		</cfif>
+		<cfif tagAttributes.returnFormat eq "object">
+			<cfset tagAttributes.name = "retSpreadSheet" />
+			<cfelseif tagAttributes.returnFormat eq "query">
+			<cfset tagAttributes.query = "retSpreadSheet" />
+		</cfif>
+		<cfset structDelete(tagAttributes,"returnFormat") />
+
+		<cfif len( tagAttributes.sheetname ) gt 0>
+			<cfset structDelete(tagAttributes,"sheet") />
+		<cfelse>
+			<cfset structDelete(tagAttributes,"sheetname") />
+		</cfif>
+		<cfspreadsheet attributecollection="#tagAttributes#" />
+		<cfreturn retSpreadSheet />
+
+	</cffunction>
 </cfcomponent>

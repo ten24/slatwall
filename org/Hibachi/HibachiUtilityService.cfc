@@ -4,6 +4,17 @@
 
 	<cfscript>
 
+		public string function getDatabaseUUID(){
+			switch(getHibachiScope().getApplicationValue('databaseType')){
+				case 'Oracle10g':
+					return 'LOWER(SYS_GUID())';
+				case 'MySQL':
+					return "LOWER(REPLACE(UUID(),'-',''))";
+				case 'MicrosoftSQLServer':
+					return "LOWER(REPLACE(newid(),'-',''))";
+			}
+		}
+
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
@@ -72,6 +83,13 @@
 			var currentThread = ThreadAPI.currentThread();
 
 			return currentThread.getThreadGroup().getName() == "cfthread";
+		}
+
+		public string function obfuscateValue(required string value){
+			if(len(value)){
+				return lcase(rereplace(CreateUUID(), '[^A-Z]', '', 'ALL'));
+			}
+			return '';
 		}
 
 		// @hint this method will sanitize a struct of data
@@ -364,6 +382,10 @@
 			return reMatchNoCase("\${[^{(}]+}",arguments.template);
 		}
 
+		public boolean function isStringTemplate(required string value){
+			return arraylen(getTemplateKeys(value));
+		}
+
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 
@@ -378,14 +400,21 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object) && (
+				} else if (isObject(arguments.object) &&
 					(
-						arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						(
+							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+						)
 						||
 						(
 							arguments.object.isPersistent() 
 							&& structKeyExists(getService('hibachiService'),'getHasAttributeByEntityNameAndPropertyIdentifier')
-							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+						)
+						||
+						(
+							!arguments.object.isPersistent() && arguments.object.hasPropertyByPropertyIdentifier(valueKey)
+						)
 							||
 						(
 							!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey)

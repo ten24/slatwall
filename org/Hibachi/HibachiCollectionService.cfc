@@ -69,7 +69,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			var enArr = listToArray(structKeyList(emd));
 			arraySort(enArr,"text");
 			variables.ObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
-			for(var i=1; i<=arrayLen(enArr); i++) {
+			var enArrCount = arrayLen(enArr);
+			for(var i=1; i<=enArrCount; i++) {
 				arrayAppend(variables.ObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
 			}
 		}
@@ -78,7 +79,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public any function getEntityNameColumnProperties( required string EntityName ) {
 		var returnArray = getentityNameProperties( arguments.entityName );
-		for(var i=arrayLen(returnArray); i>=1; i--) {
+		var returnArrayCount = arrayLen(returnArray);
+		for(var i=returnArrayCount; i>=1; i--) {
 			if(listFindNoCase('one-to-many,many-to-many', returnArray[i].fieldType)) {
 				arrayDeleteAt(returnArray, i);
 			}
@@ -96,8 +98,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		var sortArray = [];
 		var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
 		var properties = getPropertiesStructByEntityName(arguments.entityName);
-
-		for(var attributeCode in listToArray(attributeCodesList)) {
+		var attributeCodesArray = listToArray(attributeCodesList);
+		for(var attributeCode in attributeCodesArray) {
 			arrayAppend(sortArray, attributeCode);
 			arraySort(sortArray, "textnocase");
 
@@ -228,9 +230,11 @@ component output="false" accessors="true" extends="HibachiService" {
 	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers, any collectionEntity){
 		//validate columns against entities default property identifiers
 		var formattedObjectRecords = [];
-		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
+		var objectRecordCount = arrayLen(arguments.objectRecords);
+		for(var i=1; i<=objectRecordCount; i++) {
 			var thisRecord = {};
-			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
+			var propertyIdentifierCount = arrayLen(arguments.propertyIdentifiers);
+			for(var p=1; p<=propertyIdentifierCount; p++) {
 				if(arguments.propertyIdentifiers[p] neq 'pageRecords'){
 					structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p],arguments.collectionEntity));
 				}
@@ -473,7 +477,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		if(findNoCase("?", arguments.currentURL)) {
 			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
-			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
+			var queryStringCount = listLen(oldQueryString, "&");
+			for(var i=1; i<=queryStringCount; i++) {
 				var keyValuePair = listGetAt(oldQueryString, i, "&");
 				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
 			}
@@ -481,7 +486,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		// Turn the added query string to a struct
 		var newQueryKeys = {};
-		for(var i=1; i<=listLen(arguments.queryAddition, "&"); i++) {
+		var queryAdditionCount = listLen(arguments.queryAddition, "&");
+		for(var i=1; i<=queryAdditionCount; i++) {
 			var keyValuePair = listGetAt(arguments.queryAddition, i, "&");
 			newQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
 		}
@@ -496,7 +502,8 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
 						structDelete(newQueryKeys, key);
 					} else if(arguments.appendValues) {
-						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
+						var newQueryKeysCount = listLen(newQueryKeys[key], variables.valueDelimiter);
+						for(var i=1; i<=newQueryKeysCount; i++) {
 							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
 							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
 							if(findCount) {
@@ -762,6 +769,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			if(structKeyExists(collectionOptions,'columnsConfig') && len(collectionOptions.columnsConfig)){
 				collectionEntity.getCollectionConfigStruct().columns = deserializeJson(collectionOptions.columnsConfig);
+collectionEntity.setCollectionConfig(serializeJSON(collectionEntity.getCollectionConfigStruct()));
 				//look for non persistent columns
 				for(var column in collectionEntity.getCollectionConfigStruct().columns){
 					if(structKeyExists(column,'persistent') && column.persistent == false){
@@ -774,8 +782,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			if(structKeyExists(collectionOptions,'joinsConfig') && len(collectionOptions.joinsConfig)){
 				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(collectionOptions.joinsConfig);
-
-				for(var currentJoin = 1; currentJoin <= arraylen(collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
+				var joinsCount = arraylen(collectionEntity.getCollectionConfigStruct().joins);
+				for(var currentJoin = 1; currentJoin <= joinsCount; currentJoin++){
 
 					var currentJoinParts = ListToArray(collectionEntity.getCollectionConfigStruct().joins[currentJoin]['associationName'], '.');
 					var current_object = getService('hibachiService').getPropertiesStructByEntityName(arguments.collectionEntity.getCollectionObject());
@@ -816,8 +824,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			} 
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
-
-			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
+			var propertyIdentifiersCount = arrayLen(defaultPropertyIdentifiers);
+			for(var p=1; p<=propertyIdentifiersCount; p++) {
 				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
 
@@ -896,7 +904,8 @@ component output="false" accessors="true" extends="HibachiService" {
 	public string function getPropertyIdentifiersList(required any entityProperties){
 		// Lets figure out the properties that need to be returned
 		var propertyIdentifiers = "";
-		for(var i=1; i<=arrayLen(arguments.entityProperties); i++) {
+		var entityPropertiesCount = arrayLen(arguments.entityProperties);
+		for(var i=1; i<=entityPropertiesCount; i++) {
 			propertyIdentifiers = listAppend(propertyIdentifiers, arguments.entityProperties[i].name);
 		}
 		return propertyIdentifiers;
@@ -1040,8 +1049,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(len(rightIDs)){
 			leftSql &= " WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
 		}
-
-		for(var column in getCollection2UniqueColumns(collection1Headers, collection2Headers)){
+		var uniqueColumns = getCollection2UniqueColumns(collection1Headers, collection2Headers);
+		for(var column in uniqueColumns){
 			QueryAddColumn(collection1Data, column, 'VarChar',[]);
 		};
 
@@ -1055,7 +1064,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	private string function getMergedColumnList(required string collection1Headers, required string collection2Headers){
 		var collection2Columns = '';
-		for(var column in getCollection2UniqueColumns(arguments.collection1Headers, arguments.collection2Headers)){
+		var uniqueColumns = getCollection2UniqueColumns(arguments.collection1Headers, arguments.collection2Headers);
+		for(var column in uniqueColumns){
 			collection2Columns = listAppend(collection2Columns, 'collection2Data.#column#',',');
 		};
 		var collection1Columns = '';

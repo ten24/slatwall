@@ -14,6 +14,31 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
+	public void function postLoad(){
+		if(!this.getNewFlag() && !listFind('ShortReference,Session,PermissionGroup,Permission,',getClassName())){
+			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
+			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
+			entityCollectionList.setDisplayProperties(primaryIDName);
+			entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
+			entityCollectionList.setCheckDORPermissions(true);
+
+			var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+			//if the collection returns a record then 
+			if(!entityCollectionRecordsCount){
+				throwNoAccess();				
+			}
+
+		}
+	}
+	
+	private void function throwNoAccess(){
+		var context = getPageContext();
+		status = 403;
+		context.getResponse().setStatus(status, "no access");
+		throw(type="Application",message='no access to #getClassName()#');
+	}
+	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
@@ -662,6 +687,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return propertyCollection.getRecordsCount();
 	}
 
+	public string function getPropertyIDList( required string propertyName, string delimiter = ',' ) {
+		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
+		var records = propertyCollection.getPrimaryIDs();
+		var idList = '';
+		for(var  i = 1; i <= arraylen(records); i++){
+			idList = listAppend(idList,records[i][listFirst(StructKeyList(records[i]))],arguments.delimiter);
+		}
+		return idList;
+	}
+
 	// @hint handles encrypting a property based on conventions
 	public void function encryptProperty(required string propertyName) {
 		var generatorValue = createHibachiUUID();
@@ -820,7 +855,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 5) == "Count") {
 
 			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
+		//getXXXIDList()        Where XXX is a one-to-many or many-to-many property where we want to get the ID Lists of all related properti
+		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 6) == "IDList") {
 
+			return getPropertyIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-9) );
 		// getXXX() 			Where XXX is either and attributeID or attributeCode
 		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
 

@@ -21,6 +21,7 @@
                     data-get-collection="swListingDisplay.getCollection"
                     data-paginator="swListingDisplay.paginator"
                     data-show-filters="swListingDisplay.showFilters"
+                    data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
             </sw-listing-controls>
@@ -108,6 +109,9 @@
                                 </span>
                             </th>
                             <th class="s-detail-hidden-content">
+                                <span ng-if="swListingDisplay.administrativeColumnHeaderText && swListingDisplay.administrativeColumnHeaderText.length"
+                                      ng-bind="swListingDisplay.administrativeColumnHeaderText">
+                                </span>
                             </th>
                         </tr>
                     </thead>

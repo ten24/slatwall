@@ -438,10 +438,13 @@ class SWEditFilterItem{
 
                         $log.debug(selectedFilterProperty);
                         $log.debug(filterItem);
-                        observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex});
-                        $timeout(function(){
+                        var timeoutpromise = $timeout(function(){
                             callback();
                         });
+                        timeoutpromise.then(()=>{
+                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});                            
+                        });
+                       
 
                         $log.debug('saveFilter end');
                     }

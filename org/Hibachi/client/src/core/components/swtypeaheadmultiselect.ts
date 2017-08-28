@@ -27,6 +27,7 @@ class SWTypeaheadMultiselectController {
     public listingId:string; 
     public disabled:boolean; 
     public primaryIDName:string; 
+    public startingTabIndex:number;
       
     // @ngInject
 	constructor(private $scope, 
@@ -116,6 +117,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
         ,rightContentPropertyIdentifier:"@?"
         ,selectionFieldName:"@?"
         ,disabled:"=?"
+        ,startingTabIndex:"=?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;

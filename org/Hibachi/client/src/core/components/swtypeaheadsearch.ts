@@ -3,7 +3,8 @@
 
 class SWTypeaheadSearchController {
 
-	public collectionConfig:any; 
+    public collectionConfig:any; 
+    public currentListItem:any; 
     public disabled:boolean; 
 	public entity:string;
 	public properties:string;
@@ -40,6 +41,19 @@ class SWTypeaheadSearchController {
     public initialEntityId:string;
     public initialEntityCollectionConfig:any; 
     public dropdownOpen:boolean;
+    public startingTabIndex:number; 
+
+    public keyCodes = {
+        BACKSPACE : 8,
+        TABKEY : 9,
+        RETURNKEY : 13,
+        ESCAPE : 27,
+        SPACEBAR : 32,
+        LEFTARROW : 37,
+        UPARROW : 38,
+        RIGHTARROW : 39,
+        DOWNARROW : 40,
+    };
 
 	private _timeoutPromise;
     
@@ -113,6 +127,10 @@ class SWTypeaheadSearchController {
             this.placeholderText = this.rbkeyService.getRBKey('define.search');
         }
 
+        if( angular.isUndefined(this.startingTabIndex)){
+            this.startingTabIndex = 0; 
+        }
+
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
@@ -180,7 +198,7 @@ class SWTypeaheadSearchController {
     }
 
     public toggleOptions = () =>{
-        if(this.hideSearch && (this.searchText && !this.searchText.length)){
+        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
             this.search(this.searchText);
         }
         this.hideSearch = !this.hideSearch;
@@ -212,6 +230,13 @@ class SWTypeaheadSearchController {
             }).finally(()=>{
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
+                this.$timeout(
+                    
+                    () => { 
+                      this.currentListItem = $('[tabindex=' + this.startingTabIndex + ']');
+                      this.currentListItem.focus();
+                    }
+                );
             });
 
         }, 500);
@@ -298,6 +323,38 @@ class SWTypeaheadSearchController {
         return this.typeaheadService.getData(this.typeaheadDataKey);
     }
 
+    public onKeydown = (item, $event) =>{
+
+        var e = $event;
+        var $target = $(e.target);
+        var nextTab;
+        switch (e.keyCode) {
+            case this.keyCodes.ESCAPE:
+                this.closeThis(undefined);
+                break;
+            case this.keyCodes.UPARROW:
+                nextTab = - 1;
+                break;
+            case this.keyCodes.RETURNKEY: 
+                e.preventDefault();
+                this.addOrRemoveItem(item);
+                nextTab = 0; 
+                break; 
+            case this.keyCodes.DOWNARROW:
+                nextTab = 1;
+                break;
+        }
+        if (nextTab != undefined) {
+           
+           this.$timeout(
+                () => {
+                    this.currentListItem = $('[tabindex=' + (parseInt($target.attr("tabindex")) + nextTab) + ']');
+                    this.currentListItem.focus();
+                }
+            );
+        }
+    }
+
 }
 
 class SWTypeaheadSearch implements ng.IDirective{
@@ -335,10 +392,12 @@ class SWTypeaheadSearch implements ng.IDirective{
         initialEntityId:"@",
         multiselectMode:"=?",
         typeaheadDataKey:"@?",
-        rightContentPropertyIdentifier:"@?"
+        rightContentPropertyIdentifier:"@?",
+        startingTabIndex:"=?"
 	};
 	public controller=SWTypeaheadSearchController;
-	public controllerAs="swTypeaheadSearch";
+    public controllerAs="swTypeaheadSearch";
+    
     
     // @ngInject
 	constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
@@ -364,11 +423,11 @@ class SWTypeaheadSearch implements ng.IDirective{
                 
 				var target = element.find(".dropdown-menu");
                 var listItemTemplateString = `
-                    <li ng-repeat="item in swTypeaheadSearch.results" ng-class="{'s-selected':item.selected}"></li>
+                    <li ng-repeat="item in swTypeaheadSearch.results track by $index" ng-class="{'s-selected':item.selected}"></li>
                 `;
 
                 var anchorTemplateString = `
-                    <a ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
+                    <a tabIndex="{{($index + swTypeaheadSearch.startingTabIndex + 1)}}" ng-keydown="swTypeaheadSearch.onKeydown(item, $event)" ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
                 `
 
                 if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){

@@ -85,12 +85,15 @@ class SWListingDisplayController{
     public baseEntity:any;
     public baseEntityName:string;
     public baseEntityID:string;
+    public administrativeColumnHeaderText:string; 
 
     public selections;
     public multiselectCount;
     public isCurrentPageRecordsSelected;
     public allSelected;
     public name;
+    private apiEndpoint;
+    private hideButtons;
     //@ngInject
     constructor(
         public $scope,
@@ -161,7 +164,7 @@ class SWListingDisplayController{
             ).finally(
                 ()=>{
                     if(angular.isUndefined(this.getCollection)){
-                        this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+                        this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID, this.apiEndpoint);
                     }
     
                     this.paginator.getCollection = this.getCollection;
@@ -221,13 +224,23 @@ class SWListingDisplayController{
                 case 'upsertFilterGroup':
                     this.collectionConfig.upsertFilterGroup(state.payload.filterGroupName, state.payload.filterGroup);
                     break;
+                case 'setAPIAction':
+                    this.collectionConfig.setApiAction(state.payload.action);
+                    break;
+                case 'hideActionButtons':
+                    this.hideButtons = state.payload.hideButtons;
+                    break;
             }
-            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+            this.collectionData = undefined;
+            this.getCollection = this.collectionConfig.getEntity().then((data:any)=>{
                 this.collectionData = data;
+                var collectionConfigStruct = angular.fromJson(data.collectionConfig);
+                if(collectionConfigStruct.columns){
+                    this.columns = collectionConfigStruct.columns;
+                }
                 data['paginatorUUID'] = this.paginator.uuid;
                 this.observerService.notify('swPaginationUpdate',data);
             });
-
         }
 
     }
@@ -261,11 +274,10 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(angular.isDefined(this.name)){
-            this.tableID = this.name;
-        } else {
-            this.tableID = 'LD'+this.utilityService.createID();
+        if(angular.isUndefined(this.name)){
+            this.name = 'LD'+this.utilityService.createID();
         }
+        this.tableID = this.name;
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -277,6 +289,9 @@ class SWListingDisplayController{
             this.administrativeCount = parseInt(this.administrativeCount);
         } else {
 	        this.administrativeCount = 0;
+        }
+        if(angular.isDefined(this.administrativeColumnHeaderText)){
+            this.administrativeColumnHeaderText = ''; 
         }
         if(this.recordDetailAction && this.recordDetailAction.length){
             this.administrativeCount++;
@@ -554,6 +569,7 @@ class SWListingDisplay implements ng.IDirective{
             /*Admin Actions*/
             actions:"<?",
             administrativeCount:"@?",
+            administrativeColumnHeaderText:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
             recordEditQueryString:"@?",
@@ -629,6 +645,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showSimpleListingControls:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",
@@ -640,7 +657,9 @@ class SWListingDisplay implements ng.IDirective{
             hasSearch:"<?",
             hasActionBar:"<?",
             multiSlot:"<?",
-            customListingControls:"<?"
+            customListingControls:"<?",
+
+            apiEndpoint: "@?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";
