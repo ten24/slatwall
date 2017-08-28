@@ -197,6 +197,10 @@ component accessors="true" output="false" persistent="false" {
 		return getService("hibachiUtilityService").decryptValue(argumentcollection=arguments);
 	}
 	
+	public string function getIdentityHashCode() {
+		return getService("hibachiUtilityService").getIdentityHashCode(this);
+	}
+	
 	public void function logHibachi(required string message, boolean generalLog=false){
 		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
 	}
@@ -282,20 +286,25 @@ component accessors="true" output="false" persistent="false" {
 		}
 	}
 	
-	// @hint facade method to check the application scope for a value
+	// @hint facade method to check the session scope for a value
+	public void function clearSessionValue(required any key) {
+		getHibachiScope().clearSessionValue(arguments.key);
+	}
+	
+	// @hint facade method to check the session scope for a value
 	public boolean function hasSessionValue(required any key) {
-		getHibachiScope().hasSessionValue(arguments.key);
+		return getHibachiScope().hasSessionValue(arguments.key);
 	}
 	
-	// @hint facade method to get values from the application scope
+	// @hint facade method to get values from the session scope
 	public any function getSessionValue(required any key) {
-		getHibachiScope().getSessionValue(arguments.key);
+		return getHibachiScope().getSessionValue(arguments.key);
 	}
 	
-	// @hint facade method to set values in the application scope 
+	// @hint facade method to set values in the session scope 
 	public void function setSessionValue(required any key, required any value) {
 		getHibachiScope().setSessionValue(arguments.key,arguments.value);
 	}
 	
-	// ========================= START: APPLICATION VAUES ===========================================
+	// ========================= END: APPLICATION VAUES ===========================================
 }
