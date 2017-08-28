@@ -404,7 +404,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 	
 			// Call save on the account now that it is all setup
-			arguments.account = this.saveAccount(arguments.account);
+			if(!arguments.account.hasErrors()){
+				arguments.account = this.saveAccount(arguments.account);
+			}
 			
 			// if all validation passed and setup accounts subscription benefits based on access 
 			if(!arguments.account.hasErrors() && !isNull(access)) {
@@ -1315,9 +1317,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountPaymentMethod;
 	}
 
+	public any function processPermission_addPermissionRecordRestriction(required any permission, required any processObject){
+		
+		arguments.processObject.getPermissionRecordRestriction().setPermissionRecordRestrictionName(arguments.processObject.getPermissionRecordRestrictionName());
+		arguments.processObject.getPermissionRecordRestriction().setEnforceOnDirectobjectReference(arguments.processObject.getEnforceOnDirectobjectReference());
+		arguments.permission.addPermissionRecordRestriction(arguments.processObject.getPermissionRecordRestriction());
+		arguments.permission = this.savePermission(arguments.permission);
+		
+		return arguments.permission;
+	}
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+	
+	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
+		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
+		if(!arguments.permissionRecordRestriction.hasErrors()){
+			getService("HibachiCacheService").resetCachedKeyByPrefix("Collection.getPermissionRecordRestrictions");
+		}
+		
+		return arguments.permissionRecordRestriction;
+		
+	}
 	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true";
@@ -1571,6 +1593,23 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 	// =====================  END: Delete Overrides ===========================
+
+	public any function getAccountAttributePropertylist(){
+		var propertyList = '';
+		if(structKeyExists(getService('AttributeService').getAttributeModel(),'Account')){
+			var accountAttributeModel = getService('AttributeService').getAttributeModel().Account;
+			if(!isNull(accountAttributeModel)){
+				for(var attributeSetName in accountAttributeModel){
+					var attributeSet = accountAttributeModel[attributeSetName];
+					for(var attribute in attributeSet.attributes){
+						propertyList = listAppend(propertyList, attribute, ',');
+					}
+				}
+			}
+		}
+		
+		return propertyList;
+	}
 
 	// ===================== START: Private Helper Functions ==================
 

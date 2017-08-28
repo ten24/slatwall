@@ -84,7 +84,7 @@ Notes:
 				if( len(local.getAddress.city) ) {
 					local.name = listAppend(local.name, " #local.getAddress.city#" );
 				}
-				if( len(local.getAddress.statecode) ) {
+				if( len(local.getAddress.stateCode) ) {
 					local.name = listAppend(local.name, " #local.getAddress.StateCode#" );
 				}
 				if( len(local.getAddress.postalCode) ) {

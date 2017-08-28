@@ -629,6 +629,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showSimpleListingControls:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",

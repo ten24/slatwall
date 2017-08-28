@@ -455,6 +455,9 @@ class CollectionConfig {
         if(isKeywordFilter){
             this.keywordFilterGroups[0].filterGroup.push(filter);
         }
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -485,6 +488,9 @@ class CollectionConfig {
         );
 
         this.filterGroups[0].filterGroup.push(filter);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -515,7 +521,10 @@ class CollectionConfig {
 
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         this.filterGroups[0].filterGroup.push(this.formatFilterGroup(filterGroup));
-        return this;
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+		});
+		return this;
     };
 
     public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {
@@ -572,6 +581,9 @@ class CollectionConfig {
 
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -624,6 +636,9 @@ class CollectionConfig {
                 readOnly
             )
         );
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
     //orderByList in this form: "property|direction" concrete: "skuName|ASC"

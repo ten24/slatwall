@@ -53,7 +53,6 @@ globalEncryptionKeySize
 component extends="HibachiService" output="false" accessors="true" {
 
 	property name="settingDAO" type="any";
-
 	property name="hibachiEventService" type="any";
 	property name="contentService" type="any";
 	property name="currencyService" type="any";
@@ -157,7 +156,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentMetaKeywordsString = {fieldType="textarea"},
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
-
+			contentEnableTrackingFlag = {fieldType="yesno",defaultValue=0},
+			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
 			emailToAddress = {fieldType="text", defaultValue=""},
@@ -189,6 +189,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
 
 			// Global
+			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
@@ -370,7 +371,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
  
 	private string function extractPackageNameBySettingName (required string settingName){
-		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[a-zA-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
 		var packageName = Mid(substring,12,len(substring));
 		return packageName;
@@ -682,7 +683,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
 		}
-
 		// Get the setting details using the cacheKey to try and get it from cache first
 		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
 	}
@@ -975,33 +975,17 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
-			getHibachiCacheService().updateServerInstanceSettingsCache(createObject("java", "java.net.InetAddress").localhost.getHostAddress());
+			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
 			}
-			//reset cache by site
-			if(
-				listFindNoCase("
-					globalURLKeyBrand,
-					globalURLKeyProduct,
-					globalURLKeyProductType,
-					globalURLKeyAccount,
-					globalURLKeyAddress,
-					productDisplayTemplate,
-					productTypeDisplayTemplate,
-					brandDisplayTemplate,
-					accountDisplayTemplate
-					addressDisplayTemplate", 
-					arguments.entity.getSettingName()
-				) ||
-				left(arguments.entity.getSettingName(),7) == 'content'
-			){
-				for(var site in getSiteService().getSiteSmartList().getRecords()){
-					site.setResetSettingCache(true);
-				}
+
+			for(var serverInstance in this.getServerInstanceSmartList().getRecords()){
+				serverInstance.setServerInstanceExpired(true);
+
 			}
 		}
 
