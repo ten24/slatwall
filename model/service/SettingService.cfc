@@ -189,6 +189,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
 
 			// Global
+			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
