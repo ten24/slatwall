@@ -41,6 +41,7 @@
 /// <reference path="../src/collection/components/swfiltergroupitem.ts" />
 /// <reference path="../src/collection/components/swfiltergroups.ts" />
 /// <reference path="../src/collection/components/swfilteritem.ts" />
+/// <reference path="../src/collection/components/swrestrictionconfig.ts" />
 /// <reference path="../src/collection/controllers/collections.ts" />
 /// <reference path="../src/collection/controllers/confirmationcontroller.ts" />
 /// <reference path="../src/collection/controllers/createcollection.ts" />
