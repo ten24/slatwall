@@ -192,14 +192,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public boolean function getDirtyReadFlag(){
-		if(getApplicationValue('databaseType') eq "Oracle10g"){
+		if(!hasApplicationValue('databaseType') || getApplicationValue('databaseType') == "Oracle10g"){
 			return false;
 		}
 		return variables.dirtyReadFlag;
 	}
 	
 	public void function setDirtyReadFlag(required boolean flagValue){
-		if(getApplicationValue('databaseType') eq "Oracle10g"){
+		if(!hasApplicationValue('databaseType') || getApplicationValue('databaseType') == "Oracle10g"){
 			variables.dirtyReadFlag = false;
 		}else{
 			variables.dirtyReadFlag = arguments.flagValue;	
