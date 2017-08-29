@@ -84,6 +84,11 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+    
+    
+    get collectionConfigString():string {
+        return angular.toJson(this.getCollectionConfig());
+    }
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -192,6 +197,8 @@ class CollectionConfig {
             orderBy:this.orderBy
         };
     };
+    
+    
 
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);

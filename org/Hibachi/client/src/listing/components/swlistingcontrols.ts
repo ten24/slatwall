@@ -19,6 +19,7 @@ class SWListingControlsController {
     private getCollection;
     private tableId;
     private columnIsControllableMap = {};
+    public simple:boolean;
 
     //@ngInject
     constructor(
