@@ -315,7 +315,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var inventory3 = createPersistedTestEntity('Inventory',inventoryData3);
 		
 		averageCost = variables.dao.getAverageCost(sku.getSkuID());
-		assertEquals(12.3333333333,averageCost);
+		assertEquals(12.3333333333,left(averageCost,13));
 	}
 	
 	public void function getAverageLandedCostTest(){

@@ -623,8 +623,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		stock2.addInventory(inventory2);
 		
 		assertEquals(sku.getQOH(),12,'(5+7)=12');		
-		assertEquals(sku.getAverageCost(),9.6428571425,'((100/7)+(25/5))/2');
-		assertEquals(sku.getCurrentAssetValue(),9.6428571425 * 12,'9.6428571425 * 12');
+		assertEquals(sku.getAverageCost(),9.64285714286,'((100/7)+(25/5))/2');
+		assertEquals(sku.getCurrentAssetValue(),9.64285714286 * 12,'9.64285714286 * 12');
 	}
 }
 
