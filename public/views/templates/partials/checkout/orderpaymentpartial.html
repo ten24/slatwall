@@ -1,12 +1,12 @@
 <!-- Add Shipping Address -->
-<span ng-init="slatwall.saveShippingAsBilling = undefined"></span>
-<span ng-init="slatwall.creditCardPayment = slatwall.$hibachi.newOrder_AddOrderPayment(); slatwall.creditCardPayment.newOrderPayment = {billingAddress:{},paymentMethod:{paymentMethodID:SWFDirective.variables.paymentMethodID}}"></span>
+<span ng-init="paymentMethodID = '444df303dedc6dab69dd7ebcc9b8036a'"></span>
+
 <swf-directive partial-name="savedcreditcards"></swf-directive>
 <sw-form
 	ng-if="!slatwall.savedPaymentMethod.accountPaymentMethodID"
-    data-object="slatwall.creditCardPayment"
+    data-object="slatwall.orderPaymentObject"
     data-class="new_address"
-    data-name="addOrderPayment"
+    data-name="addCreditCardPayment"
     data-submit-on-enter="true"
     data-event-announcers="keyup"
     data-action="addOrderPayment"
@@ -14,6 +14,10 @@
 
 	<!--- The form without shipping address block --->
 	<swf-directive partial-name="orderpaymentformfull"></swf-directive>
+
+	<!--- Hidden fields --->
+	<swf-directive partial-name="orderpaymentaddressfields"></swf-directive>
+	<input type="text" class="hidden" ng-model="paymentMethodID" name="newOrderPayment.paymentMethod.paymentMethodID">
 
 	<!--- Pleace Order / Review Order / Save Buttons --->
 	<div class="form-group">

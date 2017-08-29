@@ -44,7 +44,7 @@ class SWListingSearchController {
 
         this.configureSearchableColumns(this.selectedSearchColumn);
     }
-
+ 
     public selectSearchColumn = (column?)=>{
         this.selectedSearchColumn = column;
         this.configureSearchableColumns(column);
