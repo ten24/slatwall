@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {PublicRequest} from "../model/transient/publicrequest";
 
 class SWTypeaheadSearchController {
 
@@ -41,6 +42,7 @@ class SWTypeaheadSearchController {
     public initialEntityCollectionConfig:any; 
     public dropdownOpen:boolean;
     public searchEndpoint;
+    public titleText;
 
     private _timeoutPromise;
     
@@ -55,11 +57,13 @@ class SWTypeaheadSearchController {
                 private rbkeyService, 
                 private collectionConfigService,
                 private typeaheadService,
-                private $http
+                private $http,
+                private requestService
      ){
         
         this.dropdownOpen = false;
         
+           this.requestService = requestService;
         //populates all needed variables
         this.$transclude($scope,()=>{});
 
@@ -91,10 +95,13 @@ class SWTypeaheadSearchController {
             this.hideSearch = true;
         }
 
-        if( angular.isUndefined(this.collectionConfig) && angular.isDefined(this.entity)){
-            this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+        if( angular.isUndefined(this.collectionConfig)){
+            if(angular.isDefined(this.entity)){
+                this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+            } else {
+                throw("You did not pass the correct collection config data to swTypeaheadSearch");
+            }
         }
-        
         if( angular.isDefined(this.collectionConfig)){
             this.primaryIDPropertyName = $hibachi.getPrimaryIDPropertyNameByEntityName(this.collectionConfig.baseEntityName);
         }
@@ -205,18 +212,18 @@ class SWTypeaheadSearchController {
         this._timeoutPromise = this.$timeout(()=>{
             var promise;
             if(this.searchEndpoint){
-                promise = this.$http({
-                    url:'/' + this.searchEndpoint,
-                    method:'POST',
-                    headers: {
-                       'Content-Type': 'application/JSON'
-                    },
-                    data:{
+                promise = this.requestService.newPublicRequest(
+                    '/' + this.searchEndpoint,
+                    {
                         search:search,
                         options:this.collectionConfig.getOptions(),
                         entityName:this.collectionConfig.baseEntityName
+                    },
+                    'post',
+                    {
+                       'Content-Type': 'application/json'
                     }
-                });
+                ).promise
             }else{
                 promise = this.collectionConfig.getEntity();
             }
@@ -227,6 +234,7 @@ class SWTypeaheadSearchController {
             }).finally(()=>{
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
+                console.log(this.results, this.hideSearch);
             });
 
         }, 500);
@@ -351,7 +359,8 @@ class SWTypeaheadSearch implements ng.IDirective{
         multiselectMode:"=?",
         typeaheadDataKey:"@?",
         rightContentPropertyIdentifier:"@?",
-        searchEndpoint:"@?"
+        searchEndpoint:"@?",
+        titleText:'@?'
     };
     public controller=SWTypeaheadSearchController;
     public controllerAs="swTypeaheadSearch";
