@@ -3,24 +3,24 @@
 
 class SWTypeaheadSearchController {
 
-	public collectionConfig:any; 
+    public collectionConfig:any; 
     public disabled:boolean; 
-	public entity:string;
-	public properties:string;
-	public propertiesToDisplay:string;
-	public filterGroupsConfig:any;
-	public allRecords:boolean;
-	public maxRecords:number; 
-	public searchText:string;
-	public results:any[] = [];
+    public entity:string;
+    public properties:string;
+    public propertiesToDisplay:string;
+    public filterGroupsConfig:any;
+    public allRecords:boolean;
+    public maxRecords:number; 
+    public searchText:string;
+    public results:any[] = [];
     public validateRequired:boolean; 
     public columns:any[] = [];
     public filters:any[] = [];
     public addFunction;
     public removeFunction;
-	public addButtonFunction;
+    public addButtonFunction;
     public viewFunction;
-	public hideSearch:boolean;
+    public hideSearch:boolean;
     public resultsPromise;
     public resultsDeferred;
     public multiselectMode:boolean; 
@@ -31,7 +31,7 @@ class SWTypeaheadSearchController {
     public showViewButton:boolean;
     public typeaheadDataKey:string; 
     public primaryIDPropertyName:string;
-	public propertyToShow:string; 
+    public propertyToShow:string; 
     public propertyToCompare:string; 
     public fallbackPropertiesToCompare:string; 
     public fallbackPropertyArray:any[] = [];
@@ -40,11 +40,12 @@ class SWTypeaheadSearchController {
     public initialEntityId:string;
     public initialEntityCollectionConfig:any; 
     public dropdownOpen:boolean;
+    public searchEndpoint;
 
-	private _timeoutPromise;
+    private _timeoutPromise;
     
     // @ngInject
-	constructor(private $scope, 
+    constructor(private $scope, 
                 private $q,
                 private $transclude, 
                 private $hibachi, 
@@ -53,12 +54,12 @@ class SWTypeaheadSearchController {
                 private observerService, 
                 private rbkeyService, 
                 private collectionConfigService,
-                private typeaheadService
+                private typeaheadService,
+                private $http
      ){
         
         this.dropdownOpen = false;
         
-       
         //populates all needed variables
         this.$transclude($scope,()=>{});
 
@@ -90,13 +91,10 @@ class SWTypeaheadSearchController {
             this.hideSearch = true;
         }
 
-        if( angular.isUndefined(this.collectionConfig)){
-            if(angular.isDefined(this.entity)){
-                this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-            } else {
-                throw("You did not pass the correct collection config data to swTypeaheadSearch");
-            }
+        if( angular.isUndefined(this.collectionConfig) && angular.isDefined(this.entity)){
+            this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
         }
+        
         if( angular.isDefined(this.collectionConfig)){
             this.primaryIDPropertyName = $hibachi.getPrimaryIDPropertyNameByEntityName(this.collectionConfig.baseEntityName);
         }
@@ -129,14 +127,14 @@ class SWTypeaheadSearchController {
         }); 
 
         if( angular.isUndefined(this.allRecords)){
-			this.allRecords = this.collectionConfig.allRecords;
-		}
+            this.allRecords = this.collectionConfig.allRecords;
+        }
 
         this.collectionConfig.setAllRecords(this.allRecords);
-		
-		if( angular.isDefined(this.maxRecords)){
-			this.collectionConfig.setPageShow(this.maxRecords);
-		}
+        
+        if( angular.isDefined(this.maxRecords)){
+            this.collectionConfig.setPageShow(this.maxRecords);
+        }
 
         if( angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
@@ -165,7 +163,9 @@ class SWTypeaheadSearchController {
         this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
 
         this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
-	}
+
+        this.$http = $http;
+    }
 
     public clearSearch = () =>{
         this.searchText = "";
@@ -180,30 +180,46 @@ class SWTypeaheadSearchController {
     }
 
     public toggleOptions = () =>{
-        if(this.hideSearch && !this.searchText.length){
+        if(this.hideSearch && (this.searchText && !this.searchText.length)){
             this.search(this.searchText);
         }
         this.hideSearch = !this.hideSearch;
         
     };
 
-	public search = (search:string)=>{
+    public search = (search:string)=>{
         if(this._timeoutPromise){
-			this.$timeout.cancel(this._timeoutPromise);
-		}
 
+            this.$timeout.cancel(this._timeoutPromise);
+        }
+        
         this.collectionConfig.setKeywords(search);
-
+        
         if(angular.isDefined(this.filterGroupsConfig)){
             //allows for filtering on search text
             var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
             filterConfig = filterConfig.trim();
             this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
-
+        
         this._timeoutPromise = this.$timeout(()=>{
-
-            var promise = this.collectionConfig.getEntity();
+            var promise;
+            if(this.searchEndpoint){
+                promise = this.$http({
+                    url:'/' + this.searchEndpoint,
+                    method:'POST',
+                    headers: {
+                       'Content-Type': 'application/JSON'
+                    },
+                    data:{
+                        search:search,
+                        options:this.collectionConfig.getOptions(),
+                        entityName:this.collectionConfig.baseEntityName
+                    }
+                });
+            }else{
+                promise = this.collectionConfig.getEntity();
+            }
 
             promise.then( (response) =>{
                 this.results = response.pageRecords || response.records; 
@@ -214,7 +230,7 @@ class SWTypeaheadSearchController {
             });
 
         }, 500);
-	};
+    };
 
    public updateSelections = () =>{
        this.typeaheadService.updateSelections(this.typeaheadDataKey);
@@ -234,13 +250,13 @@ class SWTypeaheadSearchController {
         //probably need to refetch the collection
     }
 
-	public addOrRemoveItem = (item)=>{
+    public addOrRemoveItem = (item)=>{
         var remove = item.selected || false; 
 
-		if(!this.hideSearch && !this.multiselectMode){
-			this.hideSearch = true;
-		}
-
+        if(!this.hideSearch && !this.multiselectMode){
+            this.hideSearch = true;
+        }
+        
         if(!this.multiselectMode){
             if( angular.isDefined(this.propertyToShow) ){
                 this.searchText = item[this.propertyToShow];
@@ -253,9 +269,9 @@ class SWTypeaheadSearchController {
             } 
         }
 
-		if(!remove && angular.isDefined(this.addFunction)){
-			this.addFunction()(item);
-		}
+        if(!remove && angular.isDefined(this.addFunction)){
+            this.addFunction()(item);
+        }
 
         if(remove && angular.isDefined(this.removeFunction)){
             this.removeFunction()(item.selectedIndex); 
@@ -264,34 +280,34 @@ class SWTypeaheadSearchController {
         }
 
         this.updateSelections();
-	};
+    };
 
-	public addButtonItem = ()=>{
+    public addButtonItem = ()=>{
 
-		if(!this.hideSearch){
-			this.hideSearch = true;
-		}
+        if(!this.hideSearch){
+            this.hideSearch = true;
+        }
 
-		if(angular.isDefined(this.addButtonFunction)){
-			this.addButtonFunction()(this.searchText);
-		}
-	};
+        if(angular.isDefined(this.addButtonFunction)){
+            this.addButtonFunction()(this.searchText);
+        }
+    };
 
     public viewButtonClick = () =>{
         this.viewFunction()();
     };
 
-	public closeThis = (clickOutsideArgs) =>{
+    public closeThis = (clickOutsideArgs) =>{
 
-		this.hideSearch = true;
+        this.hideSearch = true;
 
-		if(angular.isDefined(clickOutsideArgs)){
-			for(var callBackAction in clickOutsideArgs.callBackActions){
-				clickOutsideArgs.callBackActions[callBackAction]();
-			}
-		}
+        if(angular.isDefined(clickOutsideArgs)){
+            for(var callBackAction in clickOutsideArgs.callBackActions){
+                clickOutsideArgs.callBackActions[callBackAction]();
+            }
+        }
 
-	};
+    };
 
     public getSelections = () =>{
         return this.typeaheadService.getData(this.typeaheadDataKey);
@@ -301,48 +317,49 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
-	public templateUrl;
+    public templateUrl;
     public transclude=true; 
-	public restrict = "EA";
-	public scope = {};
+    public restrict = "EA";
+    public scope = {};
 
-	public bindToController = {
+    public bindToController = {
         collectionConfig:"=?",
-		entity:"@?",
-		properties:"@?",
-		propertiesToDisplay:"@?",
-		filterGroupsConfig:"@?",
-		placeholderText:"@?",
+        entity:"@?",
+        properties:"@?",
+        propertiesToDisplay:"@?",
+        filterGroupsConfig:"@?",
+        placeholderText:"@?",
         placeholderRbKey:"@?",
         propertyToCompare:"@?",
         fallbackPropertiesToCompare:"@?",
-		searchText:"=?",
-		results:"=?",
-		addFunction:"&?",
+        searchText:"=?",
+        results:"=?",
+        addFunction:"&?",
         removeFunction:"&?",
-		addButtonFunction:"&?",
+        addButtonFunction:"&?",
         viewFunction:"&?",
         showAddButton:"=?",
         showViewButton:"=?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
-		propertyToShow:"=?",
-		hideSearch:"=?",
-		allRecords:"=?",
-		maxRecords:"=?",
+        propertyToShow:"=?",
+        hideSearch:"=?",
+        allRecords:"=?",
+        maxRecords:"=?",
         disabled:"=?",
         initialEntityId:"@",
         multiselectMode:"=?",
         typeaheadDataKey:"@?",
-        rightContentPropertyIdentifier:"@?"
-	};
-	public controller=SWTypeaheadSearchController;
-	public controllerAs="swTypeaheadSearch";
+        rightContentPropertyIdentifier:"@?",
+        searchEndpoint:"@?"
+    };
+    public controller=SWTypeaheadSearchController;
+    public controllerAs="swTypeaheadSearch";
     
     // @ngInject
-	constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
-		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
-	}
+    constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
+    }
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -361,7 +378,7 @@ class SWTypeaheadSearch implements ng.IDirective{
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
-				var target = element.find(".dropdown-menu");
+                var target = element.find(".dropdown-menu");
                 var listItemTemplateString = `
                     <li ng-repeat="item in swTypeaheadSearch.results" ng-class="{'s-selected':item.selected}"></li>
                 `;
@@ -369,7 +386,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var anchorTemplateString = `
                     <a ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
                 `
-                
+
                 if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){
                     var rightContentTemplateString = `<span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>`
                 } else {
@@ -377,7 +394,6 @@ class SWTypeaheadSearch implements ng.IDirective{
                 }
 
                 anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
-                
                 var listItemTemplate = angular.element(listItemTemplateString);
                 var anchorTemplate = angular.element(anchorTemplateString);
                
@@ -391,25 +407,25 @@ class SWTypeaheadSearch implements ng.IDirective{
         };
     }
 
-	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
+    public static Factory(){
+        var directive:ng.IDirectiveFactory = (
             $compile
             ,typeaheadService
-			,corePartialsPath
+            ,corePartialsPath
             ,hibachiPathBuilder
 
-		)=> new SWTypeaheadSearch(
+        )=> new SWTypeaheadSearch(
             $compile
             ,typeaheadService
-			,corePartialsPath
+            ,corePartialsPath
             ,hibachiPathBuilder
-		);
-		directive.$inject = ["$compile","typeaheadService","corePartialsPath",
-			'hibachiPathBuilder'];
-		return directive;
-	}
+        );
+        directive.$inject = ["$compile","typeaheadService","corePartialsPath",
+            'hibachiPathBuilder'];
+        return directive;
+    }
 }
 export{
-	SWTypeaheadSearch,
-	SWTypeaheadSearchController
+    SWTypeaheadSearch,
+    SWTypeaheadSearchController
 }

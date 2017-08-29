@@ -11,7 +11,8 @@ class SWOrderItems{
 			formService,
 			orderItemPartialsPath,
 			slatwallPathBuilder,
-			paginationService
+			paginationService,
+			observerService
 		)=> new SWOrderItems(
 			$log,
 			$timeout,
@@ -21,7 +22,8 @@ class SWOrderItems{
 			formService,
 			orderItemPartialsPath,
 			slatwallPathBuilder,
-			paginationService
+			paginationService,
+			observerService
 		);
 		directive.$inject = [
 			'$log',
@@ -32,7 +34,8 @@ class SWOrderItems{
 			'formService',
 			'orderItemPartialsPath',
 			'slatwallPathBuilder',
-			'paginationService'
+			'paginationService',
+			'observerService'
 		];
 		return directive;
 	}
@@ -46,7 +49,8 @@ class SWOrderItems{
 		formService,
 		orderItemPartialsPath,
 		slatwallPathBuilder,
-		paginationService
+		paginationService,
+		observerService
 	){
 		return {
 			restrict: 'E',
@@ -114,7 +118,9 @@ class SWOrderItems{
                          ,orderReturn.returnLocation.primaryAddress.address.postalCode
 						 ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
                          ,sku.subscriptionBenefits
-                         ,sku.product.productType.systemCode,sku.options,sku.locations
+						 ,sku.product.productType.systemCode
+						 ,sku.options
+						 ,sku.locations
  						 ,sku.subscriptionTerm.subscriptionTermName
  						 ,sku.imageFile
                          ,stock.location.locationName`
@@ -209,6 +215,9 @@ class SWOrderItems{
                     scope.orderItems = undefined;
                     scope.getCollection();
                 });
+
+				observerService.attach(scope.getCollection,'swPaginationAction');
+
 			}//<--End link
 		};
 	}

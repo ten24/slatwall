@@ -54,6 +54,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" />
+		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
 		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
 		<swa:SlatwallSetting settingName="skuCurrency" />
@@ -72,7 +73,6 @@ Notes:
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" />
 		<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" />
-		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<swa:SlatwallSetting settingName="skuShippingWeight" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />
 		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" />

@@ -2,7 +2,8 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	property name="hibachiService" type="any";
 	property name="hibachiSessionService" type="any";
-
+	property name="totpAuthenticator" type="any";
+	
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================
 	
 	public boolean function authenticateActionByAccount(required string action, required any account) {
@@ -29,9 +30,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			authDetails.invalidToken = true;
 		}
 		
-		// Check if the user is a super admin, if true no need to worry about security
-		//Here superuser when not logged in is still false
-		if( arguments.account.getSuperUserFlag() ) {
+		// Check if the user is a super admin 
+		if(getHibachiScope().getLoggedInFlag() && arguments.account.getSuperUserFlag() ) {
 			authDetails.authorizedFlag = true;
 			authDetails.superUserAccessFlag = true;
 			return authDetails;
@@ -185,6 +185,27 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		// If for some reason not of the above were meet then just return false
 		return false;
+	}
+	
+	public any function getTOTPAuthenticator() {
+		if(!structKeyExists(variables,"totpAuthenticator")) {
+			variables.totpAuthenticator = new Slatwall.org.hibachi.marcins.TOTPAuthenticator();
+		}
+		
+		return variables.totpAuthenticator;
+	}
+	
+	/**
+		@return generated key that can also be encoded as a QR code
+	*/
+	public string function generateTOTPSecretKey(required string seed) {
+		// Random salt is automatically generated for seed
+		return getTotpAuthenticator().generateKey(arguments.seed);
+	}
+	
+	public boolean function verifyTOTPToken(required string secretKey, required string tokenValue) {
+		// Uses grace parameter of 1 so previous token and current token are valid
+		return getTotpAuthenticator().verifyGoogleToken(arguments.secretKey, arguments.tokenValue, 1);
 	}
 	
 	public boolean function isInternalRequest(){

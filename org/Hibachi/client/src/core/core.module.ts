@@ -109,7 +109,6 @@ var coremodule = angular.module('hibachi.core',[
     }
     $logProvider.debugEnabled( appConfig.debugFlag );
     
-    $compileProvider.debugInfoEnabled(appConfig.debugFlag);
      $filterProvider.register('likeFilter',function(){
          return function(text){
              if(angular.isDefined(text) && angular.isString(text)){

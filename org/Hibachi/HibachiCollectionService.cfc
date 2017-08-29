@@ -240,7 +240,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return formattedObjectRecords;
 	}
 
-	public any function getBadCollectionInfo(required any collectionEntity){
+	public any function getBadCollectionInfo(required any collectionEntity, string failedCollectionMessage){
 		formattedPageRecords[ "pageRecords" ] = [];
 
 		formattedPageRecords[ "recordsCount" ] = 0;
@@ -251,6 +251,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 		formattedPageRecords['failed'] = true;
+		var context = getPageContext();
+		var status = 500;
+		var statusMessage = "collection failed";
+		if(getApplicationValue('errorDisplayFlag')){
+			statusMessage &= ":#failedCollectionMessage#";
+		}
+		context.getResponse().setStatus(status, statusMessage);
 	}
 
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
@@ -258,7 +265,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var formattedPageRecords = {};
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords(formatRecords=false);
 		if(ArrayLen(paginatedCollectionOfEntities) == 1 && structKeyExists(paginatedCollectionOfEntities[1],'failedCollection')){
-			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity);
+			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity,paginatedCollectionOfEntities[1]['failedCollection']);
 		}else{
 
 			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);
@@ -658,15 +665,18 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
-		
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-
 		if (!isNull(whiteList)){
 			var authorizedPropertyList = whiteList.split(",");
 			for(var authorizedProperty in authorizedPropertyList){
 				collectionEntity.addAuthorizedProperty(authorizedProperty);
 			}
 		}
+
+		if(structKeyExists(arguments.data, "restRequestFlag") && arguments.data.restRequestFlag){
+			collectionEntity.applyData(); 
+ 		} 
+	
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -830,12 +840,18 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 						ArrayAppend(collectionPropertyIdentifiers,piAlias);
 					}
+
 					//add all aggregates by alias
 					if(structKeyExists(column,'aggregate')){
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
-					//add all attributes by alias
 
+					//add all columns with custom alias
+					if(structKeyExists(column,'alias')){
+						ArrayAppend(collectionPropertyIdentifiers,column.alias);
+					}
+
+					//add all attributes by alias
 					if(structKeyExists(column,'attributeID')){
 						ArrayAppend(attributePropertyIdentifierArray,piAlias);
 					}
@@ -940,12 +956,26 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			];
 			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+		
+		}else if(!isnull(collectionEntity.getParentCollection())){
+			var filterGroupArray = [];
+			if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
+				filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
+			}
+			var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
+			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
+				collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+				if(structKeyExists(parentCollectionStruct, 'joins')){
+					collectionEntity.mergeJoins(parentCollectionStruct.joins);
+				}
+			}
 		}
-
 		if(!isNull(collectionEntity.getMergeCollection())){
 			var collectionData = getMergedCollectionData(collectionEntity, data);
-			var headers = getHeadersListByCollection(collectionEntity);
-			getHibachiService().export( collectionData, headers, headers, collectionEntity.getCollectionObject(), "csv" );
+			var headers1 = getHeadersListByCollection(collectionEntity);
+			var headers2 = getHeadersListByCollection(collectionEntity.getMergeCollection());
+			var mergedHeaders = ListRemoveDuplicates(listAppend(headers1, headers2));
+			getHibachiService().export( collectionData, mergedHeaders, mergedHeaders, collectionEntity.getCollectionObject(), "csv" );
 			return;
 		}
 		var exportCollectionConfigData = {};
@@ -987,30 +1017,39 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 
-		var rightIDQuery = new Query();
-		rightIDQuery.setDBType('Query');
-		rightIDQuery.setAttributes(collection2Data = collection2Data);
-		var rightIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection2Data";
-		var rightIDs = rightIDQuery.execute(sql=rightIDSql).getResult();
-		rightIDs = quotedValueList(rightIDs.primaryID);
+		if(collection2Data.recordCount > 0){
+			var rightIDQuery = new Query();
+			rightIDQuery.setDBType('Query');
+			rightIDQuery.setAttributes(collection2Data = collection2Data);
+			var rightIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection2Data";
+			var rightIDs = rightIDQuery.execute(sql=rightIDSql).getResult();
+			rightIDs = quotedValueList(rightIDs.primaryID);
+		}else{
+			rightIDs = '';
+		}
 
-		//Only needed in order to set typename for all collection1Data columns
-		var leftIDQuery = new Query();
-		leftIDQuery.setDBType('Query');
-		leftIDQuery.setAttributes(collection1Data = collection1Data);
-		var leftIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection1Data";
-		leftIDQuery.execute(sql=leftIDSql);
+		if(collection1Data.recordCount > 0){
+			//Only needed in order to set typename for all collection1Data columns
+			var leftIDQuery = new Query();
+			leftIDQuery.setDBType('Query');
+			leftIDQuery.setAttributes(collection1Data = collection1Data);
+			var leftIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection1Data";
+			leftIDQuery.execute(sql=leftIDSql);
+		}
 
-
+		if(!collection1Data.recordCount && !collection2Data.recordCount){
+			return collection1Data;
+		}
 		var mainSql = "	SELECT #getMergedColumnList(collection1Headers,collection2Headers)#
 						FROM collection1Data, collection2Data
 						WHERE collection1Data.#primaryIDPropertyName# = collection2Data.#primaryIDPropertyName#";
-		var leftSql = "	SELECT *
-						FROM collection1Data
-						WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
+		var leftSql = "	SELECT * FROM collection1Data";
+		if(len(rightIDs)){
+			leftSql &= " WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
+		}
 
 		for(var column in getCollection2UniqueColumns(collection1Headers, collection2Headers)){
-			QueryAddColumn(collection1Data, column, guessDataType(collection2Data,column),[]);
+			QueryAddColumn(collection1Data, column, 'VarChar',[]);
 		};
 
 		var joinQuery = new Query();
@@ -1019,11 +1058,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var joinSql = mainSql & " union all " & leftSql;
 		var joinResult = joinQuery.execute(sql=joinSql).getResult();
 		return joinResult;
-
-	}
-
-	public string function guessDataType(required any collectionData, required string columnName){
-		return isNumeric(collectionData[columnName][1]) ? 'integer' : 'varchar';
 	}
 
 	private string function getMergedColumnList(required string collection1Headers, required string collection2Headers){

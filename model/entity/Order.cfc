@@ -50,7 +50,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderNumber" ormtype="string";
+	property name="orderNumber" ormtype="string"  index="PI_ORDERNUMBER";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="orderOpenDateTime" ormtype="timestamp";
 	property name="orderOpenIPAddress" ormtype="string";
@@ -280,7 +280,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 
 			setOrderOpenDateTime( now() );
-			setOrderOpenIPAddress( CGI.REMOTE_ADDR );
+			setOrderOpenIPAddress( getRemoteAddress() );
 
 			// Loop over the order payments to setAmount = getAmount so that any null payments get explicitly defined
 			for(var orderPayment in getOrderPayments()) {
@@ -426,7 +426,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     		&& !isNull(getShippingAddress()) 
     		&& !getShippingAddress().hasErrors()
     	  ) {
-
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
     		if(!isNull(getSaveShippingAccountAddressName())) {
@@ -510,6 +509,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 		}
 		return discountTotal;
+	}
+
+	public numeric function getOrderAndItemDiscountAmountTotal(){
+		return getItemDiscountAmountTotal() + getOrderDiscountAmountTotal();
 	}
 
 	public numeric function getFulfillmentDiscountAmountTotal() {
@@ -958,7 +961,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		return saleQuantity;
 	}
 	
-	/** returns the sum of all deposits required on the order. we can
+	/** returns the sum of all deposits required on the order with tax. we can
  	 *  tell if a deposit is required because a setting will indicate that they can pay a fraction
  	 *  of the whole. Returns the total deposit amount rounded to two decimal places IE. 3.495 becomes 3.50.
  	 */
@@ -969,7 +972,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  				if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") == 0){
  					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')) * getOrderItems()[i].getExtendedPrice()")) ;	
  				}else if (getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder") > 0){
- 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')/100) * getOrderItems()[i].getExtendedPrice() ")) ;
+ 					totalDepositAmount += val(precisionEvaluate("(getOrderItems()[i].getSku().setting('skuMinimumPercentageAmountRecievedRequiredToPlaceOrder')/100) * (getOrderItems()[i].getExtendedPrice() + getOrderItems()[i].getTaxAmount()) ")) ;
  				}	
  			}
  		}

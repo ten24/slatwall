@@ -61,6 +61,151 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		return false;
 	}
 	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var accountCollectionList = request.slatwallScope.getService('HibachiService').getAccountCollectionList();
+		
+		accountCollectionList.addFilter('orders.orderID','test','IN');
+		accountCollectionList.addFilter('accountID','test','IN');
+		
+		//property Identifier that orderitem is trying to get
+		var propertyIdentifier = 'order.account.accountName';
+		
+		var filter = accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		var filterData = orderItemCollectionList.convertRelatedFilter(propertyIdentifier,filter);
+		assertEquals(filterData.propertyIdentifier,'_orderitem_order_account_orders.orderID');
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getManyToOnePropertiesToJoinTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		makePublic(collectionEntity,'getManyToOnePropertiesToJoin');
+		
+		
+		var manyToONeProperties = collectionEntity.getManyToOnePropertiesToJoin();
+		
+		var orderOriginFound = false;
+		for(var item in manyToONeProperties){
+			if(item.cfc == 'OrderOrigin'){
+				orderOriginFound = true;
+			}
+		}
+		assert(orderOriginFound);
+	}
+	/**
+	* @test
+	*/
+	public void function getManyToOnePropertiesToJoinTest_bymetadata(){
+		var collectionEntity = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		makePublic(collectionEntity,'getManyToOnePropertiesToJoin');
+		
+		var hibachiService = createObject('Slatwall.model.service.HibachiService');
+		hibachiService.getPropertiesByEntityName=function(){
+			return [
+				{
+					cfc="Account",
+					fieldtype="many-to-one",
+					fkcolumn="assignedAccountID",
+					name="assignedAccount",
+					hb_permissionRecordRestrictionJoin="true"
+				}
+			];
+			
+		};
+		
+		collectionEntity.setHibachiService(hibachiService);
+		
+		var manyToONeProperties = collectionEntity.getManyToOnePropertiesToJoin();
+		
+		
+		assertEquals(manyToOneProperties[1].name,hibachiService.getPropertiesByEntityName()[1].name);
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function convertRelatedFilterGroupTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.orderID';
+		var filterGroup = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		
+		var convertedFilterGroup = orderItemCollectionList.convertRelatedFilterGroup(propertyIdentifier,filterGroup);
+		assert(arrayLen(convertedFilterGroup));
+		assertEquals(convertedFilterGroup[1].filterGroup[1].propertyIdentifier,'_orderitem_order.orderID');
+		
+	}
+	
+	/**
+	* @test
+	*/
+	public void function applyRelatedFilterGroupsTest(){
+		var orderItemCollectionList = request.slatwallScope.getService('HibachiService').getOrderItemCollectionList();
+		
+		var orderCollectionList = request.slatwallScope.getService('HibachiService').getOrderCollectionList();
+		
+		orderCollectionList.addFilter('orderID','test','IN');
+		
+		var propertyIdentifier = 'order.referencedOrder.orderID';
+		var filterGroups = orderCollectionList.getCollectionConfigStruct().filterGroups;
+		orderItemCollectionList.applyRelatedFilterGroups(propertyIdentifier,filterGroups);
+		orderItemCollectionList.getRecords();
+	}
+	
+	/**
+	* @test
+	*/
+
+	/**
+	* @test
+	*/
+	public void function sessionBasedFiltersTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName');
+		collectionEntity.addFilter('firstName', '${account.firstName}');
+
+		collectionEntity.getPageRecords();
+		var collectionParams = collectionEntity.getHqlParams();
+		assert( collectionParams[listFirst(StructKeyList(collectionParams))] ==  'BigBoy');
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getCollectionReportTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName');
+		collectionEntity.addDisplayAggregate('firstName',"COUNT",'itemCount');
+		collectionEntity.addOrderBy('firstName');
+		
+		var pageRecords = collectionEntity.getPageRecords();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getLeafNodesOnlyTest(){
+		//TODO: setup up heirarchy with leaf nodes to assert
+		
+		var productTypeCollectionList = request.slatwallScope.getService('hibachiService').getProductTypeCollectionList();
+		productTypeCollectionList.setFilterByLeafNodesFlag(true);
+		debug(productTypeCollectionList.getHQL());
+		debug(productTypeCollectionList.getPageRecords());
+		
+		assert(productTypeCollectionList.getFilterByLeafNodesFlag());
+	}
+	
 	//test that if we trun enforce auth off but also aren't authenticated that only 1st level props are available
 	/**
 	* @test
@@ -255,9 +400,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
-		assertEquals(filter.comparisonOperator,'BETWEEN');
-		assertEquals(filter.value,'20-');
-		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		assertEquals(filter.comparisonOperator,'>=');
+		assertEquals(filter.value,'20');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price >= ');
 		
 	}
 	/**
@@ -271,9 +416,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
-		assertEquals(filter.comparisonOperator,'BETWEEN');
-		assertEquals(filter.value,'-100');
-		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		assertEquals(filter.comparisonOperator,'<=');
+		assertEquals(filter.value,'100');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price <= ');
 	}
 	/**
 	* @test
@@ -304,6 +449,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		//make sure filter was removed
 		assertFalse(arrayLen(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup));
+	}
+	/**
+	* @test
+	*/
+	public void function displayPropertyAliasTest(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName|MyFirstName,lastName|MyLastName');
+
+		var collectionRecords = collectionEntity.getPageRecords();
+		assert( structKeyExists(collectionRecords[1], 'MyFirstName'));
+		assert( structKeyExists(collectionRecords[1], 'MyLastName'));
+
 	}
 	/**
 	* @test
@@ -1332,7 +1489,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "Account.firstName";
+		var propertyIdentifier = "firstName";
 		var aggregate = {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
@@ -1340,7 +1497,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
 		//addToDebug(aggregateHQL);
-		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
+		assertFalse(Compare("COUNT( firstName) as Account_firstName",trim(aggregateHQL)));
+	}
+	
+	/**
+	* @test
+	*/
+	
+	public void function getAggregateHQLTest_hasObject(){
+		makePublic(variables.entity,"getAggregateHQL");
+		var propertyIdentifier = "accountAuthentications";
+		var aggregate = {
+			aggregateFunction = "count",
+			aggregateAlias = "Account_accountAuthentications"
+		};
+		//addToDebug(lcase(replace(createUUID(),'-','')));
+		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		debug(aggregateHQL);
+		//addToDebug(aggregateHQL);
+		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
 	}
 
 	/**

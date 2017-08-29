@@ -1,6 +1,7 @@
 component output="false" accessors="true" extends="HibachiTransient" {
 
 	property name="account" type="any";
+	property name="content" type="any";
 	property name="session" type="any";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
@@ -17,6 +18,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
 	property name="hibachiAuthenticationService" type="any";
+	property name="isAWSInstance" type="boolean" default="0";
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -35,6 +37,41 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return super.init();
 	}
 	
+	public string function getServerInstanceIPAddress(){
+		
+		//Check if we already have a instanceIP assigned.
+		if(hasApplicationValue("instanceIP")){
+			return getApplicationValue("instanceIP");
+		}
+		//If we are not using aws, then assign the instance ip and return it.
+		if (!getHibachiScope().getIsAwsInstance()){
+			var ipAddress = createObject("java", "java.net.InetAddress").localhost.getHostAddress();
+			setApplicationValue("instanceIP", ipAddress);
+			return ipAddress;
+		}
+		
+		//populate cache using AWS if available.
+		// SET AWS Instance IP Address if one exists.
+		httpService = new http();
+		httpService.setTimeout(3);
+		httpService.setMethod("get");
+		httpService.setUrl("169.254.169.254/latest/meta-data/local-ipv4");
+		result = httpService.send().getPrefix();
+		
+		if (result.fileContent != "Connection Timeout" and result.fileContent != "Connection Failure"){
+			var ipAddress = result.filecontent;
+		}
+		
+		//if result exists set cache to this and return it.
+		if (!isNull(ipAddress) && len(ipAddress)){
+			// GET AWS Instance IP, cache it and return it.
+			setApplicationValue("instanceIP", ipAddress);
+			return ipAddress;
+		}
+		
+		return createObject("java", "java.net.InetAddress").localhost.getHostAddress();//returned but not cached.
+	}
+	
 	public any function getHibachiAuthenticationService(){
 		if(!structKeyExists(variables,'hibachiAuthenticationService')){
 			variables.hibachiAuthenticationService = getService('hibachiAuthenticationService');	
@@ -47,6 +84,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	// @hint facade method to check the application scope for a value
+	public void function clearSessionValue(required any key) {
+		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
+			structDelete(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key);
+		}
+	}
+	
+	// @hint facade method to check the session scope for a value
 	public boolean function hasSessionValue(required any key) {
 		param name="session" default="#structNew()#";
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
@@ -56,16 +100,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return false;
 	}
 	
-	// @hint facade method to get values from the application scope
+	// @hint facade method to get values from the session scope
 	public any function getSessionValue(required any key) {
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
 			return session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
 		
-		throw("You have requested a value for '#arguments.key#' from the core application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
+		throw("You have requested a value for '#arguments.key#' from the session that does not exist.");
 	}
 	
-	// @hint facade method to set values in the application scope 
+	// @hint facade method to set values in the session scope 
 	public void function setSessionValue(required any key, required any value) {
 		var sessionKey = "";
 		if(structKeyExists(COOKIE, "JSESSIONID")) {
@@ -255,6 +299,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
+		param name="request.context" default="#structNew()#";
 		param name="request.context['messages']" default="#arrayNew(1)#";
 		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
 		var messageStruct = {};

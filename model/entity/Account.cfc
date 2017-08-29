@@ -56,6 +56,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
+	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
+	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
 	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";
@@ -132,9 +134,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
 	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
-	property name="slatwallAuthenticationExistsFlag" persistent="false";
+	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
+	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
@@ -292,18 +295,24 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return getPrimaryPhoneNumber().getPhoneNumber();
 	}
 
-	public boolean function getSlatwallAuthenticationExistsFlag() {
-		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
-			variables.slatwallAuthenticationExistsFlag = false;
+	public boolean function getNonIntegrationAuthenticationExistsFlag() {
+		if(!structKeyExists(variables, "nonIntegrationAuthenticationExistsFlag")) {
+			variables.nonIntegrationAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(auth in authArray) {
-				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
-					variables.slatwallAuthenticationExistsFlag = true;
+			for(var auth in authArray) {
+				if(
+					(
+						!getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration')
+						|| isNull(auth.getIntegration())
+					)
+					&& !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() 
+				) {
+					variables.nonIntegrationAuthenticationExistsFlag = true;
 					break;
 				}
 			}
 		}
-		return variables.slatwallAuthenticationExistsFlag;
+		return variables.nonIntegrationAuthenticationExistsFlag;
 	}
 	
 	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){
@@ -326,6 +335,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		termAccountAvailableCredit = val(precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance()));
 
 		return termAccountAvailableCredit;
+	}
+	
+	public string function getTwoFactorAuthenticationFlag() {
+		return !isNull(getTotpSecretKey()) && len(getTotpSecretKey());
 	}
 	
 	public numeric function getOrderPaymentAmount(){

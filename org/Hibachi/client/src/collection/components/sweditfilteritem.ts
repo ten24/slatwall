@@ -203,6 +203,9 @@ class SWEditFilterItem{
 
                 scope.addFilterItem = function(){
                     collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
+                    this.observerService.notify('collectionConfigUpdated', {
+                        collectionConfig: collectionService
+                    });
                 };
 
                 scope.cancelFilterItem = function(){
@@ -299,7 +302,7 @@ class SWEditFilterItem{
 
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value.toString();
                                 //if has a pattern then we need to evaluate where to add % for like statement
 							    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
                                     filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
@@ -438,10 +441,13 @@ class SWEditFilterItem{
 
                         $log.debug(selectedFilterProperty);
                         $log.debug(filterItem);
-                        observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex});
-                        $timeout(function(){
+                        var timeoutpromise = $timeout(function(){
                             callback();
                         });
+                        timeoutpromise.then(()=>{
+                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});                            
+                        });
+                       
 
                         $log.debug('saveFilter end');
                     }

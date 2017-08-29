@@ -55,6 +55,7 @@ Notes:
 	<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />

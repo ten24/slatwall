@@ -67,7 +67,7 @@
 	                        <div class="form-group form-group-sm">
 	                            <sw-property-display
 	                                data-object="swWorkflowTaskActions.workflowTaskActions.selectedTaskAction"
-	                                data-property="actionType"
+	                                data-property-identifier="actionType"
 	                                data-editable="true"
 	                                data-editing="true"
 	                                data-options-arguments="{property:'actionType'}"
@@ -134,7 +134,7 @@
                                             <div class="input-group">
                                                 <div class="s-input-btn">
                                                     <!-- Need to display the workflow event name if it exists -->
-                                                    <input type="search" class="form-control" placeholder="Search&hellip;" data-ng-model="swWorkflowTaskActions.searchProcess.name" data-ng-focus="swWorkflowTaskActions.searchProcess.name = ''" data-ng-change="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject)">
+                                                    <input type="search" class="form-control" name="processMethod" placeholder="Search&hellip;" data-ng-model="swWorkflowTaskActions.searchProcess.name" data-ng-focus="swWorkflowTaskActions.searchProcess.name = ''" data-ng-change="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject)">
                                                     <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
                                                     <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
 

@@ -36,7 +36,7 @@
 										<div class="form-group">
 											<sw-property-display
 												data-object="workflowTasks.selectedTask"
-												data-property="taskName"
+												data-property-identifier="taskName"
 												data-editable="true"
 												data-editing="true"
 												data-is-dirty="true"	
@@ -47,7 +47,7 @@
 										<div class="form-group">
 											<sw-property-display
 												data-object="workflowTasks.selectedTask"
-												data-property="activeFlag"
+												data-property-identifier="activeFlag"
 												data-editable="true"
 												data-editing="true"	
 												data-is-dirty="true"										
@@ -80,6 +80,7 @@
 											<sw-filter-groups
 													ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups.length"
 													data-collection-config="workflowTasks.selectedTask.data.taskConditionsConfig"
+													data-save-collection="workflowTasks.selectedTask.$$save()"
 													data-filter-group="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0]"
 							                		data-filter-group-item="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0].filterGroup"
 							                		data-filter-properties-list="filterPropertiesList"
@@ -92,7 +93,7 @@
 							<span style="display:none"
                                   sw-property-display
                                   data-object="workflowTasks.selectedTask"
-                                  data-property="taskConditionsConfig"
+                                  data-property-identifier="taskConditionsConfig"
                                   data-editing="true"
                                   data-editable="true"
                                   data-is-dirty="true"

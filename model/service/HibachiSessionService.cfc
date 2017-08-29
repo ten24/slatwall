@@ -75,7 +75,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			}
 			
 		}
-		
+		this.saveSession(getHibachiScope().getSession());
 		// Force persistance
 		getHibachiDAO().flushORMSession();
 		
@@ -89,7 +89,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public void function setProperSession() {
-		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), cgi.remote_addr)) {
+		if(len(getHibachiScope().setting('globalNoSessionIPRegex')) && reFindNoCase(getHibachiScope().setting('globalNoSessionIPRegex'), getRemoteAddress())) {
 			getHibachiScope().setPersistSessionFlag( false );
 		} else if (getHibachiScope().setting('globalNoSessionPersistDefault')) {
 			getHibachiScope().setPersistSessionFlag( false );
