@@ -27,6 +27,7 @@
 
 		public any function list( string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
+			
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
@@ -98,13 +99,13 @@
 	    	entityReload(arguments.entity);
 	    }
 
-	    public void function flushORMSession() {
+	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
 	    	// Initate the first flush
 	    	ormFlush();
 
 	    	// Loop over the modifiedEntities to call updateCalculatedProperties
 	    	for(var entity in getHibachiScope().getModifiedEntities()){
-	    		entity.updateCalculatedProperties();
+	    		entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
 	    	}
 
 	    	// flush again to persist any changes done during ORM Event handler

@@ -64,5 +64,44 @@ component extends="HibachiDAO" accessors="true" {
 	   return qs.execute().getResult();
 	}
 	
+	public any function getAverageCost(required string productTypeID){
+				
+		return ORMExecuteQuery(
+			'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+			LEFT JOIN stock.sku sku
+			LEFT JOIN sku.proudct product
+			WHERE product.productType.productTypeID=:productTypeID
+			',
+			{productTypeID=arguments.productTypeID},
+			true
+		);
+	}
+	
+	public any function getAverageLandedCost(required string productTypeID){
+		
+		return ORMExecuteQuery(
+			'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+			LEFT JOIN stock.sku sku
+			LEFT JOIN sku.proudct product
+			WHERE product.productType.productTypeID=:productTypeID
+			',
+			{productTypeID=arguments.productTypeID},
+			true
+		);
+	}
+	
+	public numeric function getCurrentMargin(required string productTypeID){
+			return ORMExecuteQuery('
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(productType.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallSku sku
+				LEFT JOIN sku.product product
+				WHERE product.productType.productTypeID=:productTypeID
+			',{productTypeID=arguments.productTypeID},true);
+		}
+	
 }
 

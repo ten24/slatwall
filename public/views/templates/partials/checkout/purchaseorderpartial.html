@@ -1,8 +1,8 @@
-<span ng-init="purchaseOrder = {newOrderPayment:{paymentMethod:{paymentMethodID:'2c9280845a8b1033015a8b13656e0008'},requireBillingAddress:0}}"></span>
+<span ng-init="paymentMethodID = '2c9280845a8b1033015a8b13656e0008'"></span>
 <sw-form
-	data-object="purchaseOrder"
+	data-object="slatwall.orderPaymentObject"
 	data-action="addOrderPayment"
-	data-name="purchaseOrder"
+	data-name="addPurchaseOrderPayment"
 	data-event-announcers="keyup">
 	<div class="form-group">
 		<swf-property-display
@@ -15,22 +15,11 @@
 			data-required="true">
 		</swf-property-display>
 	</div>
-	<div class="form-group">
-		<swf-property-display
-			data-name="paymentMethodID"
-			data-field-type="text"
-			data-property-identifier="newOrderPayment.paymentMethod.paymentMethodID"
-			data-class="hidden"
-			data-required="true">
-		</swf-property-display>
-		<swf-property-display
-			data-name="requireBillingAddress"
-			data-field-type="text"
-			data-property-identifier="newOrderPayment.requireBillingAddress"
-			data-class="hidden"
-			data-required="true">
-		</swf-property-display>
-	</div>
+
+	<input type="text" class="hidden" ng-model="paymentMethodID" name="newOrderPayment.paymentMethod.paymentMethodID">
+
+	<swf-directive partial-name="orderpaymentaddressfields"></swf-directive>
+
 	<div class="form-group">
 		<sw-action-caller
 	        data-type="button"

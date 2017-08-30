@@ -131,10 +131,14 @@ $(document).ready(function(e){
 						"<td><a href='?slatAction=entity.liststockadjustmentitem&F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID="+invData.skuID+"'>"+invData.QNROSA+"</a></td>",
 						"<td>"+invData.QC+"</td>",
 						"<td>"+invData.QE+"</td>",
-						"<td>"+invData.QNC+"</td>",
-						"<td>"+invData.QATS+"</td>",
+						"<td>"+invData.QNC+"</td>"];
+					if(invData.MQATSBOM != undefined){
+						newTR.push("<td>"+invData.MQATSBOM+"</td>");
+					}
+					newTR.push.apply(newTR,["<td>"+invData.QATS+"</td>",
 						"<td>"+invData.QIATS+"</td>",
-					"</tr>"].join('\n');
+					"</tr>"]);
+					newTR = newTR.join('\n');
 					$(currentTableRow).after(newTR);
 				}
 			}

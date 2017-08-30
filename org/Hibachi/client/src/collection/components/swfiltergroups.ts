@@ -5,23 +5,27 @@ class SWFilterGroups{
 		var directive = (
 			$log,
 			collectionPartialsPath,
-			hibachiPathBuilder
+			hibachiPathBuilder,
+			observerService
 		)=> new SWFilterGroups(
 			$log,
 			collectionPartialsPath,
-			hibachiPathBuilder
+			hibachiPathBuilder,
+			observerService
 		);
 		directive.$inject = [
 			'$log',
 			'collectionPartialsPath',
-			'hibachiPathBuilder'
+			'hibachiPathBuilder',
+			'observerService'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
 		collectionPartialsPath,
-		hibachiPathBuilder
+		hibachiPathBuilder,
+		observerService
 	){
 		return {
 			restrict: 'EA',
