@@ -72,7 +72,19 @@
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></p>
 								<cfelseif structKeyExists(attributes,'valueOptionsCollectionList') >
 									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
-										
+										<cfset scopeVariableID = 'valueOptionsCollectionList#rereplace(createUUID(),'-','','all')#'/>
+										<span ng-init="
+											#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(attributes.valueOptionsCollectionList,'"',"'",'all')#);
+											#scopeVariableID#.addFilter($root.hibachiScope.$injector.get('$hibachi').getPrimaryIDPropertyNameByEntityName(#scopeVariableID#.baseEntityName),'#attributes.value#','IN');
+										"></span>
+										<sw-listing-display
+											ng-if="#scopeVariableID#.collectionConfigString"
+										    data-collection-config="#scopeVariableID#"
+										    has-action-bar="false"
+										    data-has-search="false"
+										    edit="true"
+										>
+										</sw-listing-display>
 									</p>
 								</cfif>
 							<cfelse>
