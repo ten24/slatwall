@@ -146,6 +146,19 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 
+	public any function getAverageCost(){
+		return getDao('productDao').getAverageCost(this.getProductID());
+	}
+	
+	public any function getAverageLandedCost(){
+		return getDao('productDao').getAverageLandedCost(this.getProductID());
+	}
+	
+	public numeric function getCurrentMargin(){
+		return getDao('productDao').getCurrentMargin(this.getProductID());
+	}
+	
+
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
@@ -170,6 +183,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.availableToPurchaseFlag;
+	}
+
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
 	}
 
 	public any function getProductTypeOptions( string baseProductType ) {
@@ -702,7 +719,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -711,7 +728,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		// If this is a calculated quantity, then we can just return it
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
 			return variables[ arguments.quantityType ];
 		}
 
@@ -890,6 +907,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public numeric function getQATS() {
 		return getQuantity("QATS");
+	}
+
+	public numeric function getQOH(){
+		return getQuantity("QOH");
 	}
 
 	public numeric function getAllowBackorderFlag() {

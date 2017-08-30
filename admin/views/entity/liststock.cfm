@@ -69,6 +69,8 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQOH" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+    <hb:HibachiListingColumn propertyIdentifier="calculatedAverageCost" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedAverageLandedCost" />
 	</hb:HibachiListingDisplay> --->
 
 	<sw-listing-display
@@ -90,6 +92,9 @@ Notes:
 		<sw-listing-column data-property-identifier="calculatedQOH" />
 		<sw-listing-column data-property-identifier="calculatedQNC" />
 		<sw-listing-column data-property-identifier="calculatedQATS" />
+    <sw-listing-column data-property-identifier="calculatedAverageCost" />
+    <sw-listing-column data-property-identifier="calculatedAverageLandedCost" />
 	</sw-listing-display>
+
 
 </cfoutput>

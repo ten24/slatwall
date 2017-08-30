@@ -67,6 +67,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="decryptValueInAdminFlag" ormtype="boolean";
 	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
 	property name="maxFileSize" hb_populateEnabled="public" ormtype="integer";
+	property name="relatedObjectCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 
 	// Calculated Properties
 
@@ -100,6 +101,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="relatedObjectOptions" persistent="false";
 	property name="typeSetOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
+	property name="relatedObjectCollectionConfigStruct" persistent="false";
 
 	// Deprecated Properties
 	property name="attributeType" persistent="false";
@@ -109,6 +111,26 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public struct function getRelatedObjectCollectionConfigStruct(){
+		if(!structKeyExists(variables,'relatedObjectCollectionConfigStruct')){
+			variables.relatedObjectCollectionConfigStruct = deserializeJson(getRelatedObjectCollectionConfig());
+		}
+		return variables.relatedObjectCollectionConfigStruct;
+	}
+	
+	public string function getRelatedObjectCollectionConfig(){
+		if(!structKeyExists(variables,'relatedObjectCollectionConfig')){
+			var entityCollectionList = getService('HibachiService').getCollectionList(getRelatedObject());
+			
+			variables.relatedObjectCollectionConfig = serializeJson(entityCollectionList.getCollectionConfigStruct());
+		}
+		return variables.relatedObjectCollectionConfig;
+	}
+	
+	public void function setRelatedObjectCollectionConfig(string relatedObjectCollectionConfig){
+		variables.relatedObjectCollectionConfig = arguments.relatedObjectCollectionConfig;
+	}
 
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
 		if(!structKeyExists(arguments,"orderby")) {

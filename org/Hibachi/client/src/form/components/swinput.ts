@@ -159,7 +159,6 @@ class SWInputController{
 		this.$log.debug(form);
 
 		angular.forEach(validations,(validation,key)=>{
-			console.log('validation ' , validation);
 			if(validation.contexts && this.utilityService.listFind(validation.contexts.toLowerCase(),this.swForm.context.toLowerCase()) !== -1){
 				this.$log.debug("Validations for context");
 				this.$log.debug(validation);
@@ -319,7 +318,6 @@ class SWInputController{
 		}
 
 		this.edit = this.edit || true;
-		console.log(this.fieldType)
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";
