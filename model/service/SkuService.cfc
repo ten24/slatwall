@@ -57,6 +57,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="settingService" type="any";
 	property name="typeService" type="any";
+	property name="measurementService" type="any";
 	
 	public string function getSkuDefinitionBySkuIDAndBaseProductTypeID(required string skuID, required string baseProductTypeID){
 		var skuDefinition = "";
@@ -458,6 +459,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var bundledSku = this.newSkuBundle();
 		bundledSku.setBundledSku(arguments.processObject.getBundleSku());
 		bundledSku.setBundledQuantity(arguments.processObject.getQuantity());
+
+		if(!isNull(arguments.processObject.getMeasurementUnit())){
+			bundledSku.setMeasurementUnit(this.getMeasurementUnitByUnitCode(arguments.processObject.getMeasurementUnit()));
+		}
+
 		bundledSku.setSku(arguments.sku);
 		this.saveSkuBundle(bundledSku);
 		return sku;
@@ -479,25 +485,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		makeupItem.setQuantity( arguments.processObject.getQuantity() );
 		makeupItem.setToStock( makeupStock );
 
+		var makeupItemCost = 0;
 		// Loop over every bundledSku
 		for(var bundledSku in arguments.entity.getBundledSkus()) {
 
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
-			var makeupQuantity = bundledSku.getBundledQuantity() * arguments.processObject.getQuantity();
+			var makeupQuantity = bundledSku.getNativeUnitQuantityFromBundledQuantity() * arguments.processObject.getQuantity();
+
 			if(thisStock.getQATS() >=  makeupQuantity){
-				var makeupItem = getStockService().newStockAdjustmentItem();
-				makeupItem.setStockAdjustment( stockAdjustment );
-				makeupItem.setQuantity( makeupQuantity );
-				makeupItem.setFromStock( thisStock );
+
+				var bundleItem = getStockService().newStockAdjustmentItem();
+				bundleItem.setStockAdjustment( stockAdjustment );
+				bundleItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity() );
+				bundleItem.setCost(bundledSku.getBundledSku().getAverageCost());
+				bundleItem.setFromStock( thisStock );
+
+				makeupItemCost += bundleItem.getCost() * bundleItem.getQuantity();
 			}else{
 				arguments.sku.addError('stock','not enough inventory at location to makeup');
 				break;
 			}
 		}
 
+		makeupItem.setCost(makeupItemCost);
+
 		if(!sku.hasErrors()){
 			getStockService().saveStockAdjustment(stockAdjustment);
-
 			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
 			getHibachiScope().addModifiedEntity(arguments.sku);
 		}
@@ -526,10 +539,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
 	
-				var breakupItem = getStockService().newStockAdjustmentItem();
-				breakupItem.setStockAdjustment( stockAdjustment );
-				breakupItem.setQuantity( bundledSku.getBundledQuantity() * arguments.processObject.getQuantity() );
-				breakupItem.setToStock( thisStock );
+				var bundleItem = getStockService().newStockAdjustmentItem();
+				bundleItem.setStockAdjustment( stockAdjustment );
+				bundleItem.setQuantity( bundledSku.getNativeUnitQuantityFromBundledQuantity() * arguments.processObject.getQuantity() );
+				bundleItem.setToStock( thisStock );
 	
 			}
 		}else{
@@ -539,7 +552,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(!arguments.sku.hasErrors()){
 			getStockService().saveStockAdjustment(stockAdjustment);
-
 			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
 			getHibachiScope().addModifiedEntity(arguments.sku);
 		}
@@ -547,6 +559,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.sku;
 
+	}
+
+	public any function processSku_createBOM(required any sku, required any processObject){
+		arguments.sku.setBundleFlag(1);
+		this.saveSku(arguments.sku);
+		return sku;
 	}
 
 
