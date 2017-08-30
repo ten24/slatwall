@@ -17,6 +17,7 @@
 	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#true#" />
 	<!---
 		attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
@@ -211,30 +212,32 @@
 		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
-				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
-					<cfloop array="#attributes.valueOptions#" index="option">
-						<cfset thisOptionName = "" />
-						<cfset thisOptionValue = "" />
-						<cfset thisOptionData = "" />
-						<cfif isSimpleValue(option)>
-							<cfset thisOptionName = option />
-							<cfset thisOptionValue = option />
-						<cfelse>
-							<cfloop collection="#option#" item="key">
-								<cfif structkeyExists(option,key)>
-									<cfif key eq "name">
-										<cfset thisOptionName = option[ key ] />
-									<cfelseif key eq "value">
-										<cfset thisOptionValue = option[ key ] />
-									<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-										<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
+					<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
+						<cfloop array="#attributes.valueOptions#" index="option">
+							<cfset thisOptionName = "" />
+							<cfset thisOptionValue = "" />
+							<cfset thisOptionData = "" />
+							<cfif isSimpleValue(option)>
+								<cfset thisOptionName = option />
+								<cfset thisOptionValue = option />
+							<cfelse>
+								<cfloop collection="#option#" item="key">
+									<cfif structkeyExists(option,key)>
+										<cfif key eq "name">
+											<cfset thisOptionName = option[ key ] />
+										<cfelseif key eq "value">
+											<cfset thisOptionValue = option[ key ] />
+										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
+											<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+										</cfif>
 									</cfif>
-								</cfif>
-							</cfloop>
-						</cfif>
-						<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
-					</cfloop>
-				</select>
+								</cfloop>
+							</cfif>
+							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
+						</cfloop>
+					</select>
+				</cfif>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="text">

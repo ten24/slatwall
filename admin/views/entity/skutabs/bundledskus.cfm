@@ -64,6 +64,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="bundledQuantity" />
+		<hb:HibachiListingColumn propertyIdentifier="measurementUnit.unitCode" title="Measurement Unit"/>
 		
 	</hb:HibachiListingDisplay>	
 	

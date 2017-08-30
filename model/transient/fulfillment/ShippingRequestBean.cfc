@@ -211,7 +211,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			if(isNumeric(getShippingItemRequestBeans()[i].getWeight())) {
 				var itemWeight = getShippingItemRequestBeans()[i].getWeight();
 				if(arguments.unitCode neq getShippingItemRequestBeans()[i].getWeightUnitOfMeasure()) {
-					itemWeight = getService("measurementService").convertWeight(weight=getShippingItemRequestBeans()[i].getWeight(), originalUnitCode=getShippingItemRequestBeans()[i].getWeightUnitOfMeasure(), convertToUnitCode=arguments.unitCode);
+					itemWeight = getService("measurementService").convertUnits(amount=getShippingItemRequestBeans()[i].getWeight(), originalUnitCode=getShippingItemRequestBeans()[i].getWeightUnitOfMeasure(), convertToUnitCode=arguments.unitCode);
 				}
 				totalWeight = getService('HibachiUtilityService').precisionCalculate(totalWeight + (itemWeight * getShippingItemRequestBeans()[i].getQuantity()));
 			}
