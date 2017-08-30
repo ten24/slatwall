@@ -1258,13 +1258,10 @@ class PublicService {
         return attributeValues;
     }
 
-    //Use with bind, assigning 'this' as the temporary order item
-    //a.k.a. slatwall.bind(tempOrderItem,slatwall.copyOrderItem,originalOrderItem);
-    //gets you tempOrderItem.orderItem == originalOrderItem;
-    public copyOrderItem(orderItem){
-        this.orderItem = {orderItemID:orderItem.orderItemID,
+    public copyOrderItem(orderItemCopy,orderItem){
+        orderItemCopy.orderItem = {orderItemID:orderItem.orderItemID,
             quantity:orderItem.quantity};
-        return this;
+        return orderItemCopy;
     }
 
     public binder = (self, fn, ...args)=>{

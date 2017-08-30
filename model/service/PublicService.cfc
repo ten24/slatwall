@@ -570,9 +570,9 @@ component extends="HibachiService"  accessors="true" output="false"
             var order = getHibachiScope().getCart();
 
             for(var fulfillment in order.getOrderFulfillments()){
-              if(data.fulfillmentID && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+              if(!isNull(data.fulfillmentID) && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
-              }else if(!data.fulfillmentID){
+              }else if(isNull(data.fulfillmentID)){
               	orderFulfillment.setShippingAddress(accountAddress.getAddress());
              	getService("OrderService").saveOrderFulfillment(orderFulfillment);
               }
