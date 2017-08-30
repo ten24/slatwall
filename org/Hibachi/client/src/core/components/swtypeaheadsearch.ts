@@ -234,7 +234,6 @@ class SWTypeaheadSearchController {
             }).finally(()=>{
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
-                console.log(this.results, this.hideSearch);
             });
 
         }, 500);

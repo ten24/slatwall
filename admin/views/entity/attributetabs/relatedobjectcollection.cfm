@@ -6,7 +6,7 @@
 <cfoutput>
 	<span ng-init="relatedObjectCollectionConfig=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(rc.attribute.getRelatedObjectCollectionConfig(),'"',"'",'all')#)"></span>
 	<sw-listing-display
-		ng-if="relatedObjectCollectionConfig"
+		ng-if="relatedObjectCollectionConfig.collectionConfigString"
 	    data-collection-config="relatedObjectCollectionConfig"
 	    data-has-search="true"
 	    data-has-action-bar="false"

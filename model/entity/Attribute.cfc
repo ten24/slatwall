@@ -122,6 +122,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public string function getRelatedObjectCollectionConfig(){
 		if(!structKeyExists(variables,'relatedObjectCollectionConfig')){
 			var entityCollectionList = getService('HibachiService').getCollectionList(getRelatedObject());
+			
 			variables.relatedObjectCollectionConfig = serializeJson(entityCollectionList.getCollectionConfigStruct());
 		}
 		return variables.relatedObjectCollectionConfig;

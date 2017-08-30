@@ -47,7 +47,8 @@ class SWDisplayOptions{
                 propertiesList:"=",
                 saveCollection:"&",
                 baseEntityAlias:"=?",
-                baseEntityName:"=?"
+                baseEntityName:"=?",
+                listingName:"@?"
             },
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
             controller: ['$scope','$element','$attrs','observerService',function($scope,$element,$attrs,observerService){
@@ -214,7 +215,7 @@ class SWDisplayOptions{
 
 
                             $scope.saveCollection();
-                            observerService.notify('swListingAction',{type:'getRecords',payload:{'name':''}});
+                            observerService.notify('swListingAction',{type:'getRecords',payload:{'listingName':$scope.listingName}});
                             if(angular.isDefined(closeDialog) && closeDialog === true){
                                 $scope.addDisplayDialog.toggleDisplayDialog();
                                 $scope.selectBreadCrumb(0);

@@ -21,6 +21,7 @@ class SWListingControlsController {
     private columnIsControllableMap = {};
     public simple:boolean;
 
+
     //@ngInject
     constructor(
         public $hibachi,

@@ -87,8 +87,9 @@ class CollectionConfig {
     
     
     get collectionConfigString():string {
-        return angular.toJson(this.getCollectionConfig());
+        return angular.toJson(this.getCollectionConfig(false));
     }
+    
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -177,8 +178,10 @@ class CollectionConfig {
         return this;
     };
 
-    public getCollectionConfig= ():any =>{
-        this.validateFilter(this.filterGroups);
+    public getCollectionConfig= (validate=true):any =>{
+        if(validate){
+            this.validateFilter(this.filterGroups);            
+        }
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
