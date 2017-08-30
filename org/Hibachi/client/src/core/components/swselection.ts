@@ -57,7 +57,7 @@ class SWSelectionController{
             }else{
                 this.selectionService.removeSelection(selectionid,selection);
             }
-//        }
+        }
     }
 }
 
