@@ -925,10 +925,11 @@ class PublicService {
     /** Returns errors from addBillingAddress request. */
     public addBillingAddressError = () =>{
         if(this.loadingThisRequest('addOrderPayment',{},false)) return false;
-
+        if(this.errors && this.errors.copied) return this.addBillingAddressErrors;
+        
         this.addBillingAddressErrors = this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
 
-        if(!this.billingAddressEditFormIndex && this.errors && !this.errors.copied && this.hasFailureAction('addBillingAddress')){
+        if(!this.billingAddressEditFormIndex && this.errors && this.hasFailureAction('addBillingAddress')){
             let addressProperties = this.$hibachi.newAddress().data;
             for(let property in this.errors){
                 if(addressProperties.hasOwnProperty(property)){
@@ -942,7 +943,8 @@ class PublicService {
             }
             this.errors.copied = 1;
         }
-        return this.addBillingAddressErrors
+        
+        return this.addBillingAddressErrors;
     }
 
     /** Returns errors from addGiftCard request. */
