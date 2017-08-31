@@ -150,9 +150,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
         }
      }
-}])
-//filters
-
+])
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 
 ;

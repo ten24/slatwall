@@ -53,7 +53,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
 	
-	public boolean function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
+	public any function runWorkflowByEventTrigger(required any workflowTrigger, required any entity){
 		var successFlag = false;
 		if(arguments.workflowTrigger.getStartDateTime() > now() || (!isNull(arguments.workflowTrigger.getEndDateTime()) && arguments.workflowTrigger.getEndDateTime() < now())){
 			continue;
