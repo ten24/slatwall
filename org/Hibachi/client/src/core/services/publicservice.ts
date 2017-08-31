@@ -928,7 +928,7 @@ class PublicService {
 
         this.addBillingAddressErrors = this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
 
-        if(!this.billingAddressEditFormIndex && this.errors && this.hasFailureAction('addBillingAddress')){
+        if(!this.billingAddressEditFormIndex && this.errors && !this.errors.copied && this.hasFailureAction('addBillingAddress')){
             let addressProperties = this.$hibachi.newAddress().data;
             for(let property in this.errors){
                 if(addressProperties.hasOwnProperty(property)){
@@ -940,6 +940,7 @@ class PublicService {
                     })
                 }
             }
+            this.errors.copied = 1;
         }
         return this.addBillingAddressErrors
     }
