@@ -34,7 +34,6 @@ class SWFDirective implements ng.IDirective {
         if(!hibachiConfig){
             hibachiConfig = {};    
         }
-        console.log('customPartialspath', hibachiConfig.customPartialsPath);
         if (!hibachiConfig.customPartialsPath) {
             hibachiConfig.customPartialsPath = 'custom/client/src/frontend/';
         }

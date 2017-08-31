@@ -71,6 +71,7 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 	property name="permissionGroup" cfc="PermissionGroup" fieldtype="many-to-one" fkcolumn="permissionGroupID";
 	
 	// Related Object Properties (one-to-many)
+	property name="permissionRecordRestrictions" singularname="permissionRecordRestriction" type="array" cfc="PermissionRecordRestriction" fieldtype="one-to-many" fkcolumn="permissionID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -117,6 +118,14 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 		structDelete(variables, "permissionGroup");    
 	}
 	
+	// Permission Record Restriction (one-to-many)    
+	public void function addPermissionRecordRestriction(required any permissionRecordRestriction) {    
+		arguments.permissionRecordRestriction.setPermission( this );    
+	}    
+	public void function removePermissionRecordRestriction(required any permissionRecordRestriction) {    
+		arguments.permissionRecordRestriction.removePermission( this );    
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
@@ -128,6 +137,17 @@ component entityname="SlatwallPermission" table="SwPermission" persistent="true"
 	// ===============  END: Custom Formatting Methods =====================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentation(){
+		var simpleRep = "";
+		if(!isNull(getPermissionGroup())){
+			simpleRep &= getPermissionGroup().getPermissionGroupName() & ' - ';
+		}
+		if(getAccessType()=='entity'){
+			simpleRep &= getEntityClassName();
+		}
+		return simpleRep;
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

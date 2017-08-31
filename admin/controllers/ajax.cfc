@@ -354,6 +354,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
 			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
 			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			if(sku.getBundleFlag()){
+				thisData["MQATSBOM"] = sku.getQuantity('MQATSBOM',location.getLocationID());
+			}
 			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
 			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
 			ArrayAppend(thisDataArr,thisData);
