@@ -141,7 +141,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
-	
+		//CUSTOM PROPERTIES BEGIN
+	property name="remoteControl" ormtype="string" ;
+		//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
