@@ -169,10 +169,8 @@ class HibachiService{
                 if(propertyIdentifier.charAt(0)==='.'){
                     propertyIdentifier = propertyIdentifier.slice(1);
                 }
-                console.log(propertyIdentifier);
 				var propertyIdentifierArray = propertyIdentifier.split('.');
 				var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
-                console.log(propertyIdentifierKey);
 				var currentEntity = entity;
 				angular.forEach(propertyIdentifierArray,(property,key)=>{
 					if(key === propertyIdentifierArray.length-1){
@@ -221,15 +219,18 @@ class HibachiService{
 		}
 	};
 	newEntity= (entityName) =>{
-		var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
-
-
-		if(angular.element(document.body).injector().has(entityServiceName)){
-			var entityService = angular.element(document.body).injector().get(entityServiceName);
-
-			return entityService['new'+entityName]();
+		if (entityName != undefined){
+			var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
+			if(angular.element(document.body).injector().has(entityServiceName)){
+				var entityService = angular.element(document.body).injector().get(entityServiceName);
+				let functionObj = entityService['new'+entityName];
+				if (entityService['new'+entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
+					return entityService['new'+entityName]();
+				}
+			}
+			return new this._jsEntities[entityName];	
 		}
-		return new this._jsEntities[entityName];
+	
 	};
 	getEntityDefinition= (entityName) =>{
 		return this._jsEntities[entityName];
@@ -417,6 +418,7 @@ class HibachiService{
 
 		return request.promise;
 	};
+
 	getExistingCollectionsByBaseEntity= (entityName) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;

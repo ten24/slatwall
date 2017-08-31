@@ -665,7 +665,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var comparison = "=";
 				try{
 					comparison = key.split(':')[3];
-				}catch(var e){
+				}catch(any e){
 					comparison = "=";
 				}
 				if (!isNull(comparison)){
@@ -935,12 +935,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
 		setHasDisplayAggregate(true);
 		var aggregateFunction = '';
-		switch(arguments.aggregate.aggregateFunction){
+		switch(lCase(arguments.aggregate.aggregateFunction)){
 
 			case "count":
 				aggregateFunction = "COUNT";
 			break;
 			case "avg":
+			case "average":
 				aggregateFunction = "AVG";
 			break;
 			case "sum":
@@ -954,8 +955,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			break;
 		}
 
-		var distinct = (aggregateFunction == 'COUNT') ? 'DISTINCT':'';
-		return " #aggregateFunction#(#distinct# #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+
+		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM'){
+			return " #aggregateFunction#(COALESCE(#arguments.propertyIdentifier#,0)) as #arguments.aggregate.aggregateAlias#";
+		}else{
+			var distinct = (aggregateFunction == 'COUNT') ? 'DISTINCT':'';
+			return " #aggregateFunction#(#distinct# #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+		}
+
 
 	}
 
@@ -1038,6 +1045,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
+	public boolean function isAggregateFunction(required string propertyIdentifier){
+		return refindNoCase('^(count|sum|avg|min|max)\(', propertyIdentifier);
+	}
 
 	public any function mergeCollectionFilter(required any baseCollection, required any currentCollection) {
 		var totalFilterGroups = arrayLen(currentCollection);
@@ -1404,7 +1414,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
 				for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
-					if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0) continue;
+					if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
 					groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
 				}
 			}else{
@@ -2034,7 +2044,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return listLast(column.propertyIdentifier,'.');
 		}else{
 			if(structKeyExists(column,'aggregate')){
-				return arguments.aggregate.aggregateAlias;
+				return column.aggregate.aggregateAlias;
 			}else{
 				var currentAlias = '';
 				var currentAliasStepped = '';

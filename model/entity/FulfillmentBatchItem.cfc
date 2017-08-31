@@ -64,6 +64,7 @@ component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBa
 	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
 	
 	// Related Object Properties (one-to-many)
+	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchItemID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	
@@ -192,6 +193,14 @@ component displayname="Fulfillment Batch Item" entityname="SlatwallFulfillmentBa
 			arrayDeleteAt(arguments.account.getFulfillmentBatchItems(), index);
 		}
 		structDelete(variables, "stock");
+	}
+	
+	// Comments (one-to-many)
+	public void function addComment(required any comment) {
+		arguments.comment.setFulfillmentBatchItem( this );
+	}
+	public void function removeComment(required any comment) {
+		arguments.comment.removeFulfillmentBatchItem( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

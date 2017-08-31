@@ -58,7 +58,6 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	
 	// Related Object Properties (one-to-many)
-	property name="comments" singularname="comment" cfc="Comment" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" cfc="FulfillmentBatchItem" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	property name="pickWaves" singularname="pickWave" cfc="PickWave" fieldtype="one-to-many" fkcolumn="fulfillmentBatchID" cascade="all-delete-orphan" inverse="true";
 	
@@ -101,14 +100,6 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 		structDelete(variables, "OrderDeliveryItem");
 	}
 	
-	// Comments (one-to-many)
-	public void function addComment(required any comment) {
-		arguments.comment.setFulfillmentBatch( this );
-	}
-	public void function removeComment(required any comment) {
-		arguments.comment.removeFulfillmentBatch( this );
-	}
-	
 	// Fulfillment Batch Items (one-to-many)
 	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
 		arguments.fulfillmentBatchItem.setFulfillmentBatch( this );
@@ -124,7 +115,7 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	public void function removePickWave(required any pickWave) {
 	   arguments.pickWave.removeFulfillmentBatch(this);
 	}
-	
+
 	// Location (many-to-many - inverse)
 	public void function addLocation(required any location) {
 		arguments.location.addFulfillmentBatch( this );
@@ -132,21 +123,21 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 	public void function removelocation(required any location) {
 		arguments.location.removeFulfillmentBatch( this );
 	}
-	
+
 	//The total number of fulfillments in this batch.
 	public any function getTotalQuantityOnBatch() {
 		var totalQuantityOnBatch = 0;
 		for (fulfillmentItem in getFulfillmentBatchItems() ){
-			totalQuantityOnBatch += fulfillmentItem.getQuantityOnBatch();
+			totalQuantityOnBatch += (fulfillmentItem.getOrderFulfillment().getQuantityUnDelivered()+fulfillmentItem.getOrderFulfillment().getQuantityDelivered());
 		}
 		return totalQuantityOnBatch;
 	}
 	
 	//The total number of fulfillments in this batch.
-	public any function getTotalQuantityOnBatchCompleted() {
+	public any function getFulfillmentsCompletedTotal() {
 		var totalQuantityOnBatchCompleted = 0;
 		for (fulfillmentItem in getFulfillmentBatchItems() ){
-			totalQuantityOnBatchCompleted += fulfillmentItem.getQuantityCompleted();
+			totalQuantityOnBatchCompleted += fulfillmentItem.getOrderFulfillment().getQuantityDelivered();
 		}
 		return totalQuantityOnBatchCompleted;
 	}

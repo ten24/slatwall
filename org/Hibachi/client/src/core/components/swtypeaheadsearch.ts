@@ -161,6 +161,7 @@ class SWTypeaheadSearchController {
         this.typeaheadService.setTypeaheadState(this.typeaheadDataKey, this);
 
         this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
+
 	}
 
     public clearSearch = () =>{
@@ -179,7 +180,27 @@ class SWTypeaheadSearchController {
         
     };
 
+    /**
+     * The actionCreator function for searching.
+     */
+    public rSearch = (search:string) => {
+        /**
+         * Fire off an action that a search is happening.
+         * Example action function. The dispatch takes a function, that sends data in a payload
+         * to the reducer.
+         */
+        this.typeaheadService.typeaheadStore.dispatch({
+                "type": "TYPEAHEAD_QUERY",
+                "payload": {
+                    "searchText": search
+                }
+            }
+        )
+    }
+    
+
 	public search = (search:string)=>{
+        this.rSearch(search);
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
 		}

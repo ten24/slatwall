@@ -177,6 +177,28 @@ class UtilityService extends BaseService{
     }
     };
 
+    /**
+     * Removes a substring from a string.
+     * str: The original string.
+     * subStr: The string to remove.
+     * returns the modified string.
+     */
+     public listRemove = (str:string, substring:string) => {
+        if (str.indexOf(substring) != -1){
+            //remove it cause its no longer selected.
+            str = str.replace(substring, "");
+            str = str.replace(",,", "");
+            if (str == ","){
+                str = "";
+            }
+            if (str.substring(0, 1) == ',') { 
+                str = str.substring(1);
+            }
+            str = str.substring(0, str.length-1);
+        }
+
+        return str;
+    }
 
     public formatValue=(value,formatType,formatDetails,entityInstance)=>{
         if(angular.isUndefined(formatDetails)){
@@ -440,9 +462,30 @@ class UtilityService extends BaseService{
             return returnArray;
     };
 
-        public minutesOfDay = (m):number=>{
-            return m.getMinutes() + m.getHours() * 60;
-        };
+    public minutesOfDay = (m):number=>{
+        return m.getMinutes() + m.getHours() * 60;
+    };
+    
+    /**
+     * Returns true if the current page is running in single page mode.
+     */
+    public isSinglePageMode = ():boolean =>{
+        var vars:any = {};
+        var parts:any = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, (m:any,key:string,value:string):any=> {
+            vars[key] = value;
+        });
+
+        if(vars.ng){
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Returns true if the current page is running in multi-page mode.
+     */
+    public isMultiPageMode = ():boolean => {
+        return !this.isSinglePageMode();
+    }
 }
 export {
     UtilityService

@@ -1,8 +1,14 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+
+import {Subject, Observable} from 'rxjs';
+import * as Store from '../../../../../../org/hibachi/client/src/core/prototypes/swstore';
+
 class ListingService{
     
     private listingDisplays = {};
+    private state = {};
+    public listingDisplayStore: Store.IStore;
 
     //@ngInject
     constructor(private $timeout,
@@ -14,10 +20,35 @@ class ListingService{
                 private rbkeyService, 
                 private selectionService,
                 private utilityService, 
-                private $hibachi
-    ){
-
+                private $hibachi){
+        //Setup a store so that controllers can listing for state changes and fire action requests.
+        //To create a store, we instantiate it using the object that holds the state variables,
+        //and the reducer. We can also add a middleware to the end if you need.
+        this.listingDisplayStore = new Store.IStore( this.state, this.listingDisplayStateReducer );
+        
     }
+
+    /**
+     * The reducer is responsible for modifying the state of the state object into a new state for listeners.
+     */
+    public listingDisplayStateReducer:Store.Reducer = (state:any, action:Store.Action<number>):Object => {
+        switch(action.type) {
+            case 'LISTING_PAGE_RECORDS_UPDATE':
+                return {
+                    ...state, action
+                };
+            case 'CURRENT_PAGE_RECORDS_SELECTED':
+                return {
+                    ...state, action
+                };
+            case 'ADD_SELECTION':
+                return {
+                    ...state, action
+                };
+            default:
+                return state;
+        }
+    } 
 
     //Event Functions
     public getListingPageRecordsUpdateEventString = (listingID:string) => {
@@ -33,6 +64,12 @@ class ListingService{
     }
 
     public notifyListingPageRecordsUpdate = (listingID:string) =>{
+        //This is how we would dispatch so that controllers can get the updated state.
+        this.listingDisplayStore.dispatch({
+            type: "LISTING_PAGE_RECORDS_UPDATE",
+            payload: {listingID: listingID, listingPageRecordsUpdateEventString: this.getListingPageRecordsUpdateEventString(listingID) }
+        });
+
         this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID), listingID);
     }
 
@@ -211,10 +248,22 @@ class ListingService{
     };
 
     public getPageRecordValueByColumn = (pageRecord, column) =>{
-        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)];
-        if( ( angular.isUndefined(pageRecordValue) || 
-            ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
-              angular.isDefined(column.fallbackPropertyIdentifiers)
+        var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)] || "";
+        
+        //try to find the property again if we need to...
+        if (pageRecordValue == ""){
+            for (var property in pageRecord){
+                if (property.indexOf(this.getPageRecordKey(column.propertyIdentifier).trim()) != -1){
+                    //use this record
+                    pageRecordValue = pageRecord[property];
+                }
+            }
+        }
+        //last change to find the value
+        if( angular.isUndefined(pageRecordValue) || 
+            (angular.isString(pageRecordValue) && 
+                pageRecordValue.trim().length == 0 && 
+                angular.isDefined(column.fallbackPropertyIdentifiers))
         ){
             var fallbackPropertyArray = column.fallbackPropertyIdentifiers.replace('.','_').split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){
@@ -239,6 +288,19 @@ class ListingService{
             }
         }
     };
+
+    /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
+    public getSelectedBy = (listingID, propertyName, value) => {
+        if (!listingID || !propertyName || !value){ return -1;};
+        return this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value});
+    }
+
+    public clearAllSelections = (listingID) => {
+        if (!listingID) return -1;
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        }
+    }
 
     public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
         var classObjectString = "{"; 
@@ -677,16 +739,17 @@ class ListingService{
         }
     };
     
-    
-
     public setupDefaultGetCollection = (listingID:string) =>{
+        
         if(this.getListing(listingID).collectionConfigs.length == 0){
+            console.log("=>",this.getListing(listingID));
             this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
             
             return () =>{
                 this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
                 this.getListing(listingID).collectionConfig.getEntity().then(
+
                     (data)=>{
                         this.getListing(listingID).collectionData = data;
                         this.setupDefaultCollectionInfo(listingID);

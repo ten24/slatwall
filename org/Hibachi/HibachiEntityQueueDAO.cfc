@@ -46,8 +46,14 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDao" persistent="false" accessors="true" output="false" {
-	
+component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
+
+	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, required any integration, required string entityQueueData){
+		return ORMExecuteQuery('SELECT eq FROM SlatwallEntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration AND entityQueueData=:entityQueueData',
+			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration,entityQueueData=arguments.entityQueueData}
+			
+		);
+	}
 	
 	// ===================== START: Logical Methods ===========================
 	

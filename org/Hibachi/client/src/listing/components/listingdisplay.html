@@ -50,6 +50,12 @@
                                         <a href data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
                                     </li>
                                     <li>
+                                        <a href data-ng-click="swListingDisplay.printCurrentList()">Print</a>
+                                    </li>
+                                    <li>
+                                        <a href data-ng-click="swListingDisplay.emailCurrentList()">Email</a>
+                                    </li>
+                                    <li>
                                         <a href
                                            data-ng-click="swListingDisplay.exportCurrentList(true)"
                                            data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
@@ -184,16 +190,14 @@
                                     data-record-index="pageRecordKey"
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
-                                    data-expandable-rules="swListingDisplay.expandableRules"
-                                    
-                            >
+                                    data-expandable-rules="swListingDisplay.expandableRules">
+                 
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-page-record="pageRecord"
                                     data-cell-view="{{column.cellView}}"
-                                    data-expandable-rules="swListingDisplay.expandableRules"
-                            	>
+                                    data-expandable-rules="swListingDisplay.expandableRules">
                             	</sw-listing-display-cell>
 							</td>
 

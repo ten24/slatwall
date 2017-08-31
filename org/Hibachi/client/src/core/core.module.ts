@@ -100,11 +100,16 @@ var coremodule = angular.module('hibachi.core',[
   alertmodule.name,
   dialogmodule.name
 ])
-.config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
+    if(!appConfig.debugFlag){
+        appConfig.debugFlag = false;    
+    }
     $logProvider.debugEnabled( appConfig.debugFlag );
+    
+    $compileProvider.debugInfoEnabled(appConfig.debugFlag);
      $filterProvider.register('likeFilter',function(){
          return function(text){
              if(angular.isDefined(text) && angular.isString(text)){
@@ -166,6 +171,10 @@ var coremodule = angular.module('hibachi.core',[
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
    // $provide.decorator('$hibachi',
    $httpProvider.interceptors.push('hibachiInterceptor');
+   
+   //Pulls seperate http requests into a single digest cycle.
+   $httpProvider.useApplyAsync(true);
+
 }])
 .run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
