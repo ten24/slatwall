@@ -1357,53 +1357,53 @@ component extends="HibachiService"  accessors="true" output="false"
         	getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
         }
         
-        arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
+         arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
         //get the address options.
         if (!isNull(arguments.data.countryCode)){
-        	arguments.data.ajaxResponse["addressOptions"] = getAddressOptionsByCountryCode(arguments.data);
+          getAddressOptionsByCountryCode(arguments.data);
         }
     }
     
     /** Given a country - this returns all of the address options for that country */
-    public struct function getAddressOptionsByCountryCode( required data ) {
+    public void function getAddressOptionsByCountryCode( required data ) {
         param name="data.countryCode" type="string" default="US";
         
         var addressOptions = {};
         var cacheKey = 'PublicService.getAddressOptionsByCountryCode#arguments.data.countryCode#';
         if(getHibachiCacheService().hasCachedValue(cacheKey)){
-        	addressOptions = getHibachiCacheService().getCachedValue(cacheKey);
+          addressOptions = getHibachiCacheService().getCachedValue(cacheKey);
         }else{
-        	var country = getAddressService().getCountry(data.countryCode);
-        	addressOptions = {
+          var country = getAddressService().getCountry(data.countryCode);
+          addressOptions = {
             
-	            'streetAddressLabel' =  country.getStreetAddressLabel(),
-	            'streetAddressShowFlag' =  country.getStreetAddressShowFlag(),
-	            'streetAddressRequiredFlag' =  country.getStreetAddressRequiredFlag(),
-	            
-	            'street2AddressLabel' =  country.getStreet2AddressLabel(),
-	            'street2AddressShowFlag' =  country.getStreet2AddressShowFlag(),
-	            'street2AddressRequiredFlag' =  country.getStreet2AddressRequiredFlag(),
-	            
-	            'cityLabel' =  country.getCityLabel(),
-	            'cityShowFlag' =  country.getCityShowFlag(),
-	            'cityRequiredFlag' =  country.getCityRequiredFlag(),
-	            
-	            'localityLabel' =  country.getLocalityLabel(),
-	            'localityShowFlag' =  country.getLocalityShowFlag(),
-	            'localityRequiredFlag' =  country.getLocalityRequiredFlag(),
-	            
-	            'stateCodeLabel' =  country.getStateCodeLabel(),
-	            'stateCodeShowFlag' =  country.getStateCodeShowFlag(),
-	            'stateCodeRequiredFlag' =  country.getStateCodeRequiredFlag(),
-	            
-	            'postalCodeLabel' =  country.getPostalCodeLabel(),
-	            'postalCodeShowFlag' =  country.getPostalCodeShowFlag(),
-	            'postalCodeRequiredFlag' =  country.getPostalCodeRequiredFlag()
-	            
-	        };
-	        getHibachiCacheService().setCachedValue(cacheKey,addressOptions);
+              'streetAddressLabel' =  country.getStreetAddressLabel(),
+              'streetAddressShowFlag' =  country.getStreetAddressShowFlag(),
+              'streetAddressRequiredFlag' =  country.getStreetAddressRequiredFlag(),
+              
+              'street2AddressLabel' =  country.getStreet2AddressLabel(),
+              'street2AddressShowFlag' =  country.getStreet2AddressShowFlag(),
+              'street2AddressRequiredFlag' =  country.getStreet2AddressRequiredFlag(),
+              
+              'cityLabel' =  country.getCityLabel(),
+              'cityShowFlag' =  country.getCityShowFlag(),
+              'cityRequiredFlag' =  country.getCityRequiredFlag(),
+              
+              'localityLabel' =  country.getLocalityLabel(),
+              'localityShowFlag' =  country.getLocalityShowFlag(),
+              'localityRequiredFlag' =  country.getLocalityRequiredFlag(),
+              
+              'stateCodeLabel' =  country.getStateCodeLabel(),
+              'stateCodeShowFlag' =  country.getStateCodeShowFlag(),
+              'stateCodeRequiredFlag' =  country.getStateCodeRequiredFlag(),
+              
+              'postalCodeLabel' =  country.getPostalCodeLabel(),
+              'postalCodeShowFlag' =  country.getPostalCodeShowFlag(),
+              'postalCodeRequiredFlag' =  country.getPostalCodeRequiredFlag()
+              
+          };
+          getHibachiCacheService().setCachedValue(cacheKey,addressOptions);
         }
-     return addressOptions;
+        arguments.data.ajaxResponse["addressOptions"] = addressOptions;
         
     }
     
