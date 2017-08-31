@@ -124,7 +124,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
 					thisRecord[ piArray[p] ] = value & " ";
 				} else {
-					thisRecord[ piArray[p] ] = value;
+					thisRecord[ piArray[p] ] = getService("HibachiUtilityService").hibachiHTMLEditFormat(value);
 				}
 			}
 			
@@ -354,6 +354,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
 			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
 			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			if(sku.getBundleFlag()){
+				thisData["MQATSBOM"] = sku.getQuantity('MQATSBOM',location.getLocationID());
+			}
 			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
 			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
 			ArrayAppend(thisDataArr,thisData);

@@ -39,7 +39,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   fulfillmentbatchdetailmodule.name,
   productmodule.name,
   productbundlemodule.name,
-  skumodule.name, 
+  skumodule.name,
   workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
@@ -55,7 +55,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
 
-     
+
 
 
      // route provider configuration
@@ -82,15 +82,15 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //controllers
-.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',function($scope:any, $compile) {
+.controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
     var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
-    
+
     $scope.totalAmountToApply = 0; //Default value to show on new form
     $scope.paymentTypeName = $.slatwall.rbKey('define.charge'); //Default payment type
     $scope.paymentTypeLock = true; //Used to lock down the order payment type dropdowns
     $scope.amount = 0;
-    
+
     $scope.updatePaymentType = function() {
         //Change all order payment types here
         angular.forEach($scope.appliedOrderPayment, function(obj, key) {
@@ -98,7 +98,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             if($scope.paymentType!=paymentType.aptAdjustment)
                 obj.paymentType=$scope.paymentType;
         });
-        
+
         if($scope.paymentType==paymentType.aptCharge) {
             $scope.paymentTypeName = $.slatwall.rbKey('define.charge');
             $scope.paymentTypeLock = true;
@@ -110,14 +110,14 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             $scope.paymentTypeName = $.slatwall.rbKey('define.adjustment');
             $scope.amount = 0;
         }
-        
+
         //Update the subtotal now that we changed the payment type
         $scope.updateSubTotal();
     }
 
     $scope.updateSubTotal = function() {
         $scope.totalAmountToApply = 0; //Reset the subtotal before we loop
-        
+
         //Loop through all the amount fields and create a running subtotal
         angular.forEach($scope.appliedOrderPayment, function(obj, key) {
             //Don't count the field if its undefied or not a number
@@ -142,15 +142,19 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         //The amount not applied to an order
         $scope.amountUnapplied = (Math.round(($scope.amount - $scope.totalAmountToApply+ $scope.amountUnassigned) * 100) / 100);
         $scope.accountBalanceChange = parseFloat($scope.amount);
-        
+
         //Switch the account balance display amount to a negative if you are doing a charge
         if($scope.paymentType==paymentType.aptCharge)
             $scope.accountBalanceChange = parseFloat(($scope.accountBalanceChange * -1).toString()); //If charge, change to neg since we are lowering account balance
         else if($scope.paymentType==paymentType.aptAdjustment)
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
+
         }
      }
 ])
+
+//filters
+
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 
 ;

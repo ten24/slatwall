@@ -45,6 +45,7 @@
 	
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="true" /> 		<!--- If set to false, will hide select box if no options are available --->
 	<!---
 		attributes.fieldType have the following options:
 		

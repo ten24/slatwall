@@ -73,7 +73,14 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 	
  	// Non-persistent properties
 	property name="currentFlag" type="boolean" persistent="false"; 
+ 	property name="isDeletableFlag" type="boolean" persistent="false"; 
  	
+ 	public boolean function getIsDeletableFlag(){
+ 		if (getCurrentFlag() == true && getPromotion().getPromotionAppliedOrdersCount() > 0){
+ 			return false;
+ 		}
+		return true;
+ 	}
  	
  	public boolean function hasMaximumAccountUseCount(){
  		return !isNull(this.getMaximumAccountUseCount()) && this.getMaximumAccountUseCount() gt 0;

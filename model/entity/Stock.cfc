@@ -61,9 +61,11 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
 	
 	//Calculated Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
-	property name="calculatedQNC" ormtype="integer";
+	property name="calculatedQATS" ormtype="float";
+	property name="calculatedQOH" ormtype="float";
+	property name="calculatedQNC" ormtype="float";
+	property name="calculatedAverageCost" ormtype="big_decimal";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -75,6 +77,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+
+	property name="averageCost" persistent="false";
+	property name="averageLandedCost" persistent="false";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -88,7 +93,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		if( !structKeyExists(variables, arguments.quantityType) ) {
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -97,8 +102,27 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return variables[ arguments.quantityType ];
 	}
 
-
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getCurrentMargin(){
+		return getDao('stockDao').getCurrentMargin(this.getStockID());
+	}
+	
+	public numeric function getCurrentLandedMargin(){
+		return getDao('stockDao').getCurrentLandedMargin(this.getStockID());
+	}
+	
+	public numeric function getAverageCost(){
+		return getDao('stockDao').getAverageCost(this.getStockID());
+	}
+	
+	public numeric function getAverageLandedCost(){
+		return getDao('stockDao').getAverageLandedCost(this.getStockID());
+	}
+
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
+	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");

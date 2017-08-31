@@ -156,6 +156,24 @@ component  extends="HibachiService" accessors="true" {
 		return atributeName;
 	}
 
+	public any function copyAttributeValue(required any attributeValue, saveNewAttributeValue=false) {
+		var attributeValueCopy = this.newAttributeValue();
+
+		attributeValueCopy.setAttributeValue(arguments.attributeValue.getAttributeValue());
+		attributeValueCopy.setAttributeValueEncrypted(arguments.attributeValue.getAttributeValueEncrypted());
+		attributeValueCopy.setAttributeValueEncryptedDateTime(arguments.attributeValue.getAttributeValueEncryptedDateTime());
+		attributeValueCopy.setAttributeValueEncryptedGenerator(arguments.attributeValue.getAttributeValueEncryptedGenerator());
+		attributeValueCopy.setAttributeValueType(arguments.attributeValue.getAttributeValueType());
+		attributeValueCopy.setAttribute(arguments.attributeValue.getAttribute());
+		attributeValueCopy.setAttributeValueOption(arguments.attributeValue.getAttributeValueOption());
+		
+		if(arguments.saveNewAttributeValue) {
+			attributeValueCopy = this.saveAccount(attributeValueCopy);
+		}
+		
+		return attributeValueCopy;
+	}
+
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

@@ -13,9 +13,12 @@ class SWValidationUniqueOrNull{
             link : function(scope, element, attributes, ngModel) {
                 ngModel.$asyncValidators.swvalidationuniqueornull =  (modelValue, viewValue)=> {
                     var currentValue = modelValue || viewValue;
-                    var property = scope.propertyDisplay.property;
-
-                    return validationService.validateUniqueOrNull(currentValue,scope.propertyDisplay.object,property);
+                    if (scope && scope.propertyDisplay && scope.propertyDisplay.property){
+                        var property = scope.propertyDisplay.property;
+                        return validationService.validateUniqueOrNull(currentValue,scope.propertyDisplay.object,property);
+                    }else{
+                        return $q.resolve(); //nothing to validate yet.
+                    }
                 };
 
             }

@@ -57,6 +57,39 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
+	public void function removeOrderTest(){
+		var smartlist = request.slatwallScope.getSmartList('Product');
+		smartlist.addOrder('productName|ASC');
+		smartlist.addOrder('productDescription|DESC');
+
+
+		assertEquals(smartlist.getOrders()[1]['property'],'aslatwallproduct.productName');
+
+		assertEquals(arraylen(smartlist.getOrders()),2);
+
+		smartlist.removeOrder('productName|ASC');
+
+		assertEquals(arraylen(smartlist.getOrders()),1);
+
+	}
+
+	/**
+	* @test
+	*/
+	public void function removeOrderTest_relatedProperty(){
+		var smartlist = request.slatwallScope.getSmartList('Product');
+		smartlist.addOrder('brand.brandName|ASC');
+
+		assertEquals(smartlist.getOrders()[1]['property'],'aslatwallbrand.brandName');
+		assertEquals(arraylen(smartlist.getOrders()),1);
+		smartlist.removeOrder('brand.brandName|ASC');
+		assertEquals(arraylen(smartlist.getOrders()),0);
+
+	}
+
+	/**
+	* @test
+	*/
 	public void function getFilterOptionsTest(){
 		
 		var parentCategoryData = {

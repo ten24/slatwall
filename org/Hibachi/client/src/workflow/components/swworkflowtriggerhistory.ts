@@ -3,25 +3,29 @@
 class SWWorkflowTriggerHistory{
     public static Factory(){
         var directive=(
-            $log, $location, $hibachi, formService, workflowPartialsPath,
-            hibachiPathBuilder, $rootScope
+            workflowPartialsPath,
+            hibachiPathBuilder,
+            $rootScope,
+            collectionConfigService
         )=>new SWWorkflowTriggerHistory(
-            $log, $location, $hibachi, formService, workflowPartialsPath,
-            hibachiPathBuilder, $rootScope
+            workflowPartialsPath,
+            hibachiPathBuilder,
+            $rootScope,
+            collectionConfigService
         );
         directive.$inject = [
-            '$log',
-            '$location',
-            '$hibachi',
-            'formService',
             'workflowPartialsPath',
             'hibachiPathBuilder',
-            '$rootScope'
+            '$rootScope',
+            'collectionConfigService'
         ];
         return directive;
     }
-    constructor($log, $location, $hibachi, formService, workflowPartialsPath,
-                hibachiPathBuilder, $rootScope){
+    constructor(
+            workflowPartialsPath,
+            hibachiPathBuilder,
+            $rootScope,
+            collectionConfigService){
 
         return {
             restrict : 'A',
@@ -31,6 +35,14 @@ class SWWorkflowTriggerHistory{
             templateUrl : hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggerhistory.html",
             link : function(scope, element, attrs) {
                 $rootScope.workflowID = scope.workflow.data.workflowID;
+                //Build the history collection.
+                scope.workflowTriggerHistoryCollection = collectionConfigService.newCollectionConfig("WorkflowTriggerHistory");
+                scope.workflowTriggerHistoryCollection.addFilter("workflowTrigger.workflow.workflowID", $rootScope.workflowID ,"=")
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("workflowTrigger.triggerType");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("response");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("endTime");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("startTime");
+                scope.workflowTriggerHistoryCollection.addDisplayProperty("successFlag");
             }
         };
     }

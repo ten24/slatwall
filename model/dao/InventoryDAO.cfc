@@ -49,11 +49,29 @@ Notes:
 <cfcomponent extends="HibachiDAO">
 	
 	<cfscript>
+		 
+		public array function getQOHbyProductTypeID(required string productTypeID){
+			var params = [arguments.productTypeID];
+			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH)
+						FROM
+							SlatwallInventory inventory
+							LEFT JOIN inventory.stock stock
+							LEFT JOIN stock.sku sku
+							LEFT JOIN stock.location location
+						WHERE
+							sku.product.productType.productTypeID = ?
+						GROUP BY
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+
+			return ormExecuteQuery(hql, params);
+		}
 		
 		// Quantity on hand. Physically at any location
 		public array function getQOH(required string productID, string productRemoteID) {
 			var params = [arguments.productID];
-			
 			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
 							sku.skuID as skuID, 
 							stock.stockID as stockID, 
@@ -71,7 +89,7 @@ Notes:
 							stock.stockID,
 							location.locationID,
 							location.locationIDPath";
-			
+
 			return ormExecuteQuery(hql, params);
 		}
 		
@@ -185,12 +203,6 @@ Notes:
 			
 			
 			return QNDOO;	
-		}
-		
-		// Quantity not delivered on return vendor order 
-		public numeric function getQNDORVO(required string productID, string productRemoteID) {
-			// TODO: Impliment this later when we add return vendor orders
-			return 0;
 		}
 		
 		//Quantity delivered on stock adjustment
@@ -388,6 +400,116 @@ Notes:
 			}
 			
 			return QNRORO;
+		}
+		
+		public array function getQDORVO(required string productID, string productRemoteID){
+			var hql = "SELECT NEW MAP(
+							coalesce( sum(vendorOrderDeliveryItem.quantity), 0 ) as QDORVO, 
+							sku.skuID as skuID, 
+							stock.stockID as stockID, 
+							location.locationID as locationID,
+							location.locationIDPath as locationIDPath)
+						FROM
+							SlatwallVendorOrderItem vendorOrderItem
+						  LEFT JOIN
+					  		vendorOrderItem.vendorOrderDeliveryItems vendorOrderDeliveryItem
+					  	  LEFT JOIN
+					  	  	vendorOrderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.sku sku
+					  	  LEFT JOIN 
+					  	  	stock.location location
+						WHERE
+							vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('vostPartiallyReceived','vostNew')
+						  AND
+						  	vendorOrderItem.vendorOrder.vendorOrderType = 'votReturn'
+						  AND 
+							vendorOrderItem.stock.sku.product.productID = :productID
+						GROUP BY
+							sku.skuID,
+							stock.stockID,
+							location.locationID,
+							location.locationIDPath";
+			var QDORVO = ormExecuteQuery(hql, {productID=arguments.productID});	
+			return QDORVO;
+		}
+		
+		public array function getQORVO(required string productID, string productRemoteID){
+			var params = { productID = arguments.productID };
+			var hql = "
+						SELECT NEW MAP(
+							COALESCE(sum(vendorOrderItem.quantity),0) as QORVO,
+							sku.skuID as skuID, 
+							stock.stockID as stockID,
+							location.locationID as locationID,
+							location.locationIDPath as locationIDPath
+						)
+						FROM SlatwallVendorOrderItem vendorOrderItem
+					  	  LEFT JOIN
+					  	  	vendorOrderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.sku sku
+					  	  LEFT JOIN 
+					  	  	stock.location location
+					  	  WHERE 
+					  	  		vendorOrderItem.vendorOrder.vendorOrderType.systemCode = 'votReturnOrder'
+					  	  	AND
+					  	  		vendorOrderItem.vendorOrder.vendorOrderStatusType.systemCode NOT IN ('vostClosed','vostPartiallyReceived')
+					  	  	AND
+					  	  		sku.product.productID = :productID
+					  	  GROUP BY
+					  	  	sku.skuID,
+					  	  	stock.stockID,
+					  	  	location.locationID,
+					  	  	location.locationIDPath
+					  	 ";
+			var QORVO = ORMExecuteQuery(hql,params);	
+			return QORVO;
+		}
+		
+		// Quantity not delivered on return vendor order 
+		public array function getQNDORVO(required string productID, string productRemoteID) {
+			// TODO: Impliment this later when we add return vendor orders
+			var QNDORVO = [];
+			
+			var params = { productID = arguments.productID };
+			
+			var QDORVO = getQDORVO(productID=arguments.productID);
+			var QDORVOHashMap = {};
+			for(var i=1;i <= arrayLen(QDORVO);i++){
+				QDORVOHashMap["#QDORVO[i]['skuID']#"] = QDORVO[i]; 
+			}
+			
+			var QORVO = getQORVO(productID=arguments.productID);
+			
+			for(var QORVOData in QORVO){
+				var record = {};
+				record['skuID'] = QORVOData['skuID'];
+				if(structKeyExists(QORVOData,'stockID')){
+					record['stockID'] = QORVOData['stockID'];
+				}else{
+					record['stockID'] = javacast('null','');
+				}
+				if(structKeyExists(QORVOData,'locationID')){
+					record['locationID'] = QORVOData['locationID'];	
+				}else{
+					record['locationID'] = javacast('null','');
+				}
+				if(structKeyExists(QORVOData,'locationIDPath')){
+					record['locationIDPath'] = QORVOData['locationIDPath'];
+				}else{
+					record['locationIDPath'] = javacast('null','');
+				}
+				var quantityDelivered = 0;
+				if(structKeyExists(QDORVOHashMap,'#QORVOData['skuID']#')){
+					quantityDelivered = QDORVOHashMap['#QORVOData['skuID']#']['QDORVO'];
+				}
+				record['QNDORVO'] = QORVOData['QORVO'] - quantityDelivered;
+				arrayAppend(QNDORVO,record);
+			}
+			
+			
+			return QNDORVO;
 		}
 		
 		public array function getQROVO(required string productID, string productRemoteID){

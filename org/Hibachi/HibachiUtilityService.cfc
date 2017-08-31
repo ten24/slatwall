@@ -88,6 +88,13 @@
 			return currentThread.getThreadGroup().getName() == "cfthread";
 		}
 
+		public string function obfuscateValue(required string value){
+			if(len(value)){
+				return lcase(rereplace(CreateUUID(), '[^A-Z]', '', 'ALL'));
+			}
+			return '';
+		}
+
 		// @hint this method will sanitize a struct of data
 		public void function sanitizeData(required any data){
 			for(var key in data){
@@ -199,7 +206,17 @@
 
 			while(!unique) {
 				addon++;
-				returnTitle = "#urlTitle#-#addon#";
+				//check to inc the addon.
+				var idx = len(addon)+1;//+1 for dash
+				if (right(returnTitle, idx) == "-#addon#"){
+					addon++;
+					//increase the addon index and then replace the last two chars instead of appending.
+					var removedLast = Left(returnTitle, len(returnTitle)-idx);
+					returnTitle = "#removedLast#-#addon#";
+				}else{
+					returnTitle = "#urlTitle#-#addon#";	
+				}
+				
 				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
 			}
 
@@ -241,6 +258,20 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
+  		
+	  	/**
+	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
+	    * Resources: 
+	    * 	https://github.com/google/google-authenticator/wiki/Conflicting-Accounts
+	    * 	https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+	    *
+	    * @param email the email address of the user account
+	    * @param key the Base32 encoded secret key to use in the code
+	    */
+	    public string function buildOTPUri(required string email, required string secretKey)
+	    {
+	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
+	    }
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
@@ -260,6 +291,7 @@
 				return;
 			}
 			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+
 			if(!isNull(object) && isObject(object)) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";
@@ -280,8 +312,12 @@
 
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
-						data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-						data[thisProperty][i]["errors"] = object[i].getErrors();
+						try{
+							data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+							data[thisProperty][i]["errors"] = object[i].getErrors();
+							}catch(any e){
+								writeDump(var=object[i],top=1);abort;
+							}
 					}
 
 					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
@@ -363,6 +399,10 @@
 			return reMatchNoCase("\${[^{(}]+}",arguments.template);
 		}
 
+		public boolean function isStringTemplate(required string value){
+			return arraylen(getTemplateKeys(value));
+		}
+
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 
@@ -377,18 +417,25 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object) && (
+				} else if (isObject(arguments.object) &&
 					(
-						arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						(
+							arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+						)
 						||
 						(
-							arguments.object.isPersistent() 
+							arguments.object.isPersistent()
 							&& structKeyExists(getService('hibachiService'),'getHasAttributeByEntityNameAndPropertyIdentifier')
-							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
-							||
+							&& getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey)
+						)
+						||
+						(
+							!arguments.object.isPersistent() && arguments.object.hasPropertyByPropertyIdentifier(valueKey)
+						)
+						||
 						(
 							!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey)
-						)	
+						)
 					)
 				) {
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
@@ -551,8 +598,12 @@
 
 		// helper method for downloading a file
 		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
-			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#");
+			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
+		}
+		
+		public string function getIdentityHashCode(required any value) {
+			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
 
 		public string function encryptValue(required string value, string salt="") {
@@ -562,8 +613,21 @@
 			}
 		}
 
-		public string function hibachiHTMLEditFormat(required string html){
-			var sanitizedString = htmlEditFormat(arguments.html);
+
+		public string function hibachiHTMLEditFormat(required any html=""){
+			//If its something that can be turned into a string, make sure its a string.
+			if (isSimpleValue(arguments.html)){
+				arguments.html = "#arguments.html#";
+			//Otherwise, it can't be passed into htmlEditFormat
+			}else{
+				return "";
+			}
+			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
+				var sanitizedString = htmlEditFormat(arguments.html);
+			}else{
+				var sanitizedString = encodeForHTML(arguments.html);	
+			}
+
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
@@ -839,6 +903,61 @@
 
 			return linebreak;
 		}
+
+		public string function trimList(required string originalList, string delimiter = ","){
+			return REReplace(trim(originalList),"\s*#delimiter#\s*",delimiter,"ALL");
+		}
+
+
+		public void function queryToCsvFile(required string filePath, required query queryData, boolean includeHeaderRow = true, string delimiter = ",", string columnNames = "", string columnTitles = ""){
+
+			var newLine     = (chr(13) & chr(10));
+			var buffer      = CreateObject('java','java.lang.StringBuffer').Init();
+
+			if(!listLen(arguments.columnNames)){
+				arguments.columnNames = arguments.queryData.columnlist;
+			}
+
+			if(!listLen(arguments.columnTitles)){
+				arguments.columnTitles = arguments.columnNames;
+			}
+
+			// Check if we should include a header row
+			if(arguments.includeHeaderRow){
+				//Create the file with the headers
+				fileWrite(arguments.filePath,"#ListQualify(arguments.columnTitles,'"',',','all')##newLine#");
+			}else{
+				//Create the file
+				fileWrite(arguments.filePath,"");
+			}
+
+			var colArray = listToArray(arguments.columnNames);
+			var dataFile = fileOpen(filePath,"append");
+
+			// Loop over query and build csv rows
+			for(var i=1; i <= arguments.queryData.recordcount; i++){
+				// this individual row
+				var thisRow = [];
+				// loop over column list
+				for(var j=1; j <= arrayLen(colArray); j=j+1){
+					// create our row
+					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+				}
+				// Append new row to csv output
+				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
+				if(i mod 1000 EQ 0){
+					fileWriteLine(dataFile,buffer.toString());
+					buffer.setLength(0);
+				}else{
+					buffer.append(JavaCast('string', newLine));
+				}
+			}
+			if(buffer.length()){
+				fileWriteLine(dataFile,buffer.toString());
+				buffer.setLength(0);
+			}
+			fileClose(dataFile);
+		};
 
 	</cfscript>
 
@@ -1218,6 +1337,26 @@
 		<cfreturn mac.doFinal() />
 	</cffunction>
 
+	<cffunction name="HMAC_SHA256" returntype="binary" access="public" output="false">
+		<cfargument name="signKey" type="string" required="true" />
+		<cfargument name="signMessage" type="string" required="true" />
+
+		<cfset var jMsg = JavaCast("string",arguments.signMessage).getBytes("iso-8859-1") />
+		<cfset var jKey = JavaCast("string",arguments.signKey).getBytes("iso-8859-1") />
+
+		<cfset var key = createObject("java","javax.crypto.spec.SecretKeySpec") />
+		<cfset var mac = createObject("java","javax.crypto.Mac") />
+
+		<cfset key = key.init(jKey,"HmacSHA256") />
+
+		<cfset mac = mac.getInstance(key.getAlgorithm()) />
+		<cfset mac.init(key) />
+		<cfset mac.update(jMsg) />
+
+		<cfreturn mac.doFinal() />
+
+	</cffunction>
+
 	<cffunction name="createS3Signature" returntype="string" access="public" output="false">
 		<cfargument name="stringToSign" type="string" required="true" />
 		<cfargument name="awsSecretAccessKey" type="string" required="true">
@@ -1261,7 +1400,7 @@
 		<cfset cs = "PUT\n\n#arguments.contentType#\n#dateTimeString#\nx-amz-acl:#arguments.acl#\nx-amz-storage-class:#arguments.storageClass#\n/#arguments.bucketName#/#arguments.keyName#">
 		
 		<cfset signature = createS3Signature(cs,awsSecretAccessKey)>
-		
+		 
 		<cffile action="readBinary" file="#arguments.uploadDir##arguments.fileName#" variable="binaryFileData">
 		
 		<cfhttp method="PUT" url="http://s3.amazonaws.com/#arguments.bucketName#/#arguments.keyName#" timeout="#arguments.HTTPtimeout#">

@@ -5,7 +5,6 @@ class CollectionController{
 	//@ngInject
 	constructor(
 		$scope,
-		$location,
 		$log,
 		$timeout,
 		$hibachi,
@@ -14,7 +13,8 @@ class CollectionController{
 		selectionService,
 		paginationService,
 		collectionConfigService,
-        appConfig
+        appConfig,
+        observerService
 	){
 		//init values
 		//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
@@ -43,7 +43,18 @@ class CollectionController{
 		    return query_string;
 		} ();
 		//get url param to retrieve collection listing
+
+		//set up defaults
 		$scope.collectionID = QueryString.collectionID;
+		if(!$scope.entityName){
+			$scope.entityName = 'collection';
+		}
+		if($scope.entityID){
+			$scope.collectionID = $scope.entityID;
+		}
+		if(!$scope.propertyName){
+			$scope.propertyName = 'collectionConfig';
+		}
 
 		$scope.paginator = paginationService.createPagination();
 
@@ -54,7 +65,7 @@ class CollectionController{
 					$scope.autoScrollDisabled = true;
 					$scope.autoScrollPage++;
 
-					var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.autoScrollPage, pageShow:50});
+					var collectionListingPromise = $hibachi.getEntity($scope.entityName, {id:$scope.collectionID, currentPage:$scope.paginator.autoScrollPage, pageShow:50});
 					collectionListingPromise.then(function(value){
 						$scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
 						$scope.autoScrollDisabled = false;
@@ -80,14 +91,12 @@ class CollectionController{
 				$scope.loadingCollection = true;
 			}, 500);
 		};
+        
+        
 
-		$scope.getCollection = function(){
-			var pageShow = 50;
-			if($scope.paginator.getPageShow() !== 'Auto'){
-				pageShow = $scope.paginator.getPageShow();
-			}
+		$scope.getCollection = function(action){
 //			$scope.currentPage = $scope.pagination.getCurrentPage();
-			var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
+			var collectionListingPromise = $hibachi.getEntity($scope.entityName, {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:$scope.paginator.getPageShow(), keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 				$scope.paginator.setPageRecordsInfo($scope.collection);
@@ -95,7 +104,7 @@ class CollectionController{
 				if(angular.isUndefined($scope.collectionConfig)){
 
                     var test = collectionConfigService.newCollectionConfig();
-					test.loadJson(value.collectionConfig);
+					test.loadJson(value[$scope.propertyName]);
                     $scope.collectionConfig = test.getCollectionConfig();
 				}
 
@@ -117,6 +126,8 @@ class CollectionController{
 		};
 		$scope.paginator.getCollection = $scope.getCollection;
 		$scope.getCollection();
+        
+        observerService.attach($scope.getCollection,'swPaginationAction');
 
 		var unbindCollectionObserver = $scope.$watch('collection',function(newValue,oldValue){
 			if(newValue !== oldValue){
@@ -181,10 +192,8 @@ class CollectionController{
 
 		$scope.saveCollection = function(){
 			$timeout(function(){
-				$log.debug('saving Collection');
-				var entityName = 'collection';
+				var entityName = $scope.entityName;
 				var collection = $scope.collection;
-				$log.debug($scope.collectionConfig);
 				if(isFormValid($scope.collectionForm)){
                     if(angular.isDefined($scope.collectionConfig)
                         && angular.isDefined($scope.collectionConfig.groupBys)
@@ -279,7 +288,6 @@ class CollectionController{
                 "ids":selectionService.getSelections('collectionSelection'),
                 "keywords":$scope.keywords
                };
-            console.log('exportData',data);
             var target="downloadCollection";
             $('body').append('<form action="'+url+'" method="post" target="'+target+'" id="postToIframe"></form>');
             $.each(data,function(n,v){

@@ -67,6 +67,8 @@ component displayname="ServerInstance" entityname="SlatwallServerInstance" table
 	// Remote properties
 
 	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 
 	// Non Persistent
 	

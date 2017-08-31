@@ -54,6 +54,7 @@ component displayname="Content Access" entityname="SlatwallContentAccess" table=
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
+	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="accountContentAccess" cfc="AccountContentAccess" fieldtype="many-to-one" fkcolumn="accountContentAccessID";
 	property name="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" fieldtype="many-to-one" fkcolumn="subscriptionUsageBenefitID";
 	

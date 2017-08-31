@@ -114,8 +114,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 	property name="totalWeight" persistent="false";
-
-
+	property name="quantityHasChanged" persistent="false" default="0";
+ 
+ 	public boolean function getQuantityHasChanged(){
+		return variables.quantityHasChanged;
+	}
+ 	
 	public numeric function getNumberOfUnassignedGiftCards(){
 
 		if(!this.isGiftCardOrderItem()){
@@ -179,6 +183,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 
+ 	public boolean function getQuantityHasChangedOrOrderNotPlaced(){
+ 		if (getOrder().getStatusCode() == "ostNotPlaced" || getQuantityHasChanged()){
+ 			return true;
+ 		}
+ 		return false;
+ 	}
+ 	
     public boolean function hasQuantityWithinMaxOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
         	var quantity = 0;
@@ -442,6 +453,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public void function setQuantity(required numeric quantity){
+		if (structKeyExists(variables, "quantity") && arguments.quantity != variables.quantity){
+ 			variables.quantityHasChanged = true; //a dirty check flag for validation.
+ 		}		
 		variables.quantity = arguments.quantity;
 		if(this.isRootOrderItem()){
 			for(var childOrderItem in this.getChildOrderItems()){

@@ -36,16 +36,16 @@
 class SWConfirm{
     public static Factory(){
         var directive = (
-            $hibachi, $log, $compile, $modal, partialsPath
+            $log, $modal
         ) => new SWConfirm(
-            $hibachi, $log, $compile, $modal, partialsPath
+            $log, $modal
         );
-        directive.$inject = ['$hibachi', '$log', '$compile', '$modal', 'partialsPath'];
+        directive.$inject = [ '$log',  '$modal'];
         return directive;
     }
     //@ngInject
-    constructor($hibachi, $log, $compile, $modal, partialsPath){
-        console.log("swConfirm Called");
+
+    constructor( $log,  $modal){
         var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText){
 
         /* Keys */

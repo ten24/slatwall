@@ -138,13 +138,13 @@ component accessors="true" output="false" extends="HibachiService" {
 					var xmlRaw = FileRead(dirList[i]);
 
 					try{
-						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 3) {
+						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 6) {
 							retryCount += 1;
 							runPopulation = true;
 						}
 					} catch (any e) {
-						// If we haven't retried 3 times, then incriment the retry counter and re-run the population
-						if(retryCount <= 3) {
+						// If we haven't retried 6 times, then incriment the retry counter and re-run the population
+						if(retryCount <= 6) {
 							retryCount += 1;
 							runPopulation = true;
 						} else {

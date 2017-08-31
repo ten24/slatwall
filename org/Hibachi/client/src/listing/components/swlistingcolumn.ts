@@ -2,11 +2,15 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingColumnController{
+    public propertyIdentifier:string; 
     public editable:boolean;
     public cellView:string;
     public hasCellView:boolean=false;
     public headerView:string; 
     public hasHeaderView:boolean=false;
+    public action:string; 
+    public queryString:string; 
+    public isVisible:boolean; 
     //@ngInject
     constructor(
         public $injector
@@ -16,6 +20,10 @@ class SWListingColumnController{
     }
 
     public init = () =>{
+
+        if(angular.isUndefined(this.isVisible)){
+             this.isVisible = true;
+        }
         
         this.editable = this.editable || false;
         //did a cellView get suggested, if so does it exist
@@ -55,7 +63,9 @@ class SWListingColumn implements ng.IDirective{
         buttonGroup:"=?",
         cellView:"@?",
         headerView:"@?",
-        fallbackPropertyIdentifiers:"@?"
+        fallbackPropertyIdentifiers:"@?",
+        action:"@?",
+        queryString:"@?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
@@ -102,7 +112,9 @@ class SWListingColumn implements ng.IDirective{
             buttonGroup:scope.swListingColumn.buttonGroup,
             hasCellView:scope.swListingColumn.hasCellView,
             hasHeaderView:scope.swListingColumn.hasHeaderView, 
-            isVisible:scope.swListingColumn.isVisible || true
+            isVisible:scope.swListingColumn.isVisible || true,
+            action:scope.swListingColumn.action, 
+            queryString:scope.swListingColumn.queryString
         };
 
         if(scope.swListingColumn.hasCellView){

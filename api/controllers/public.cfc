@@ -21,9 +21,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
     public any function get( required struct rc ) {
         var publicService = getService('PublicService');
-        if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getCart"){
+        if ( structKeyExists(arguments.rc, "context") && arguments.rc.context == "getCart"){
             publicService.invokeMethod("getCartData", {data=arguments.rc});
-        }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getAccount"){
+        }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.context == "getAccount"){
             publicService.invokeMethod("getAccountData", {data=arguments.rc});
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
             publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
@@ -34,12 +34,12 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         param name="arguments.rc.context" default="save";
         var publicService = getService('PublicService');
 
-        if (arguments.rc.context != "get" && arguments.rc.url contains "process"){
+        if (arguments.rc.context != "get" && arguments.rc.context == "process"){
             publicService.doProcess(rc);
-        }else if (arguments.rc.url contains "getCart"){
+        }else if (arguments.rc.context == "getCart"){
             rc.context = "getCartData";
             this.get(rc);
-        }else if(arguments.rc.url contains "getAccount"){
+        }else if(arguments.rc.context == "getAccount"){
             rc.context = "getAccountData";
             this.get(rc);
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
@@ -54,7 +54,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 //iterate through all the actions calling the method.
                 for (var eachAction in actions){
                     //Make sure there are no errors if we have multiple.
-                    if (!arguments.rc.$.slatwall.cart().hasErrors() && !arguments.rc.$.slatwall.account().hasErrors()){
+                    if (!arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].cart().hasErrors() && !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].account().hasErrors()){
                           getHibachiScope().flushORMSession();
                           publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
                     }else{

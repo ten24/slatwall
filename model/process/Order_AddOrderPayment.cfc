@@ -248,10 +248,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
 			for(var paymentDetail in epmDetails) {
 				arrayAppend(variables.paymentMethodIDOptions, {
-					name = paymentDetail.paymentMethod.getPaymentMethodName(),
-					value = paymentDetail.paymentMethod.getPaymentMethodID(),
-					paymentmethodtype = paymentDetail.paymentMethod.getPaymentMethodType(),
-					allowsaveflag = paymentDetail.paymentMethod.getAllowSaveFlag()
+					name = paymentDetail.getPaymentMethod().getPaymentMethodName(),
+					value = paymentDetail.getPaymentMethod().getPaymentMethodID(),
+					paymentmethodtype = paymentDetail.getPaymentMethod().getPaymentMethodType(),
+					allowsaveflag = paymentDetail.getPaymentMethod().getAllowSaveFlag()
 					});
 			}
 		}
@@ -326,6 +326,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		} 
         
         return false; 	
+	}
+
+	public boolean function giftCardNotAlreadyApplied(){
+		if(this.hasGiftCard()){
+			var cardID = this.getGiftCard().getGiftCardID();
+			for(var payment in this.getOrder().getOrderPayments()){
+				if(!isNull(payment.getGiftCard()) && payment.getGiftCard().getGiftCardID() == cardID){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public boolean function giftCardCurrencyMatches(){
