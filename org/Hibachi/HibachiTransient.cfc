@@ -284,11 +284,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				// (ONE-TO-MANY) Do this logic if this property is a one-to-many or many-to-many relationship, and the data passed in is of type array
 				} else if ( structKeyExists(currentProperty, "fieldType") && (currentProperty.fieldType == "one-to-many" or currentProperty.fieldType == "many-to-many") && isArray( arguments.data[ currentProperty.name ] ) ) {
 
+					// Find the primaryID column Name for the related object
+					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
+
 					// Set the data of this One-To-Many relationship into it's own local array
 					var oneToManyArrayData = arguments.data[ currentProperty.name ];
 
-					// Find the primaryID column Name for the related object
-					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
+					//Filter invalid indices
+					oneToManyArrayData = arrayFilter(oneToManyArrayData,function(value){
+						return !isNull(value);
+					});
 
 					// Loop over the array of objects in the data... Then load, populate, and validate each one
 					for(var a=1; a<=arrayLen(oneToManyArrayData); a++) {
