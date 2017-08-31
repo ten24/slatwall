@@ -16,6 +16,9 @@ component extends="FW1.framework" {
 	try{include "../../config/configApplication.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configApplication.cfm";}catch(any e){} 
+	try{include "../../../../configApplication.cfm";}catch(any e){} 
 
 	// =============== configFramework
 
@@ -104,10 +107,10 @@ component extends="FW1.framework" {
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
-	// Allow For Dev Ops Config for Stand Alone
-	try{include "../../../../config/configFramework.cfm";}catch(any e){}
-	// Allow For Dev Ops Config for Mura
-	try{include "../../../../../config/configFramework.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configFramework.cfm";}catch(any e){} 
+	try{include "../../../../configFramework.cfm";}catch(any e){} 
+	
 
 
 	if(structKeyExists(url, variables.framework.hibachi.runDbDataKey)){
@@ -123,6 +126,9 @@ component extends="FW1.framework" {
 	try{include "../../config/configMappings.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configMappings.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configMapping.cfm";}catch(any e){} 
+	try{include "../../../../configMapping.cfm";}catch(any e){} 
 
 
 	// =============== configCustomTags
@@ -157,6 +163,9 @@ component extends="FW1.framework" {
 	try{include "../../config/configORM.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configORM.cfm";}catch(any e){} 
+	try{include "../../../../configORM.cfm";}catch(any e){} 
 
 	// ==================== START: PRE UPDATE SCRIPTS ======================
 	if(
