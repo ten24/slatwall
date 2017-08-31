@@ -1,6 +1,9 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+
+
+
 class SWListingDisplayController{
     /* local state variables */
     public  actions = [];
@@ -32,6 +35,8 @@ class SWListingDisplayController{
     public expandableRules = [];
     public exampleEntity:any = "";
     public exportAction;
+    public emailAction;
+    public printAction;
     public filters = [];
     public filterGroups = [];
     public isAngularRoute:boolean;
@@ -106,26 +111,27 @@ class SWListingDisplayController{
         public rbkeyService
     ){
 
+        //Invariant - We must have some way to instantiate. Everything can't be optional.
+        if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+            return;
+        }
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
-
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+            
             //not sure why we have two properties for this
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-             this.$timeout(()=>{
-                this.collection = this.collectionConfig;
-                this.columns = this.collectionConfig.columns;
-            });
             this.multipleCollectionDeffered.reject();
         }
+
+
 		this.initializeState();
-		
 		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
 		        
         if(angular.isDefined(this.collectionPromise)){
@@ -136,11 +142,12 @@ class SWListingDisplayController{
         if(this.collectionConfig != null){
             this.multipleCollectionDeffered.reject();
         }
-
+        
         this.listingService.setListingState(this.tableID, this);
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
+
         
 		if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
@@ -151,7 +158,8 @@ class SWListingDisplayController{
                 ()=>{
                     //now do the intial setup
                     this.listingService.setupInMultiCollectionConfigMode(this.tableID);
-                }
+             }
+
             ).catch(
                 ()=>{
                     //do the initial setup for single collection mode
@@ -170,6 +178,8 @@ class SWListingDisplayController{
                 }
             );
         }else if(this.multiSlot == false){
+
+
 
         	this.setupCollectionPromise();
             
@@ -220,6 +230,7 @@ class SWListingDisplayController{
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
         this.listingService.getCollection(this.tableID);
+
     }
 
     private getCollectionObserver=(param)=> {
@@ -304,6 +315,14 @@ class SWListingDisplayController{
         //setup export action
         if(angular.isDefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
+        }
+        //setup print action
+        if(angular.isDefined(this.printAction)){
+            this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
+        }
+        //setup email action
+        if(angular.isDefined(this.emailAction)){
+            this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
         }
         this.paginator = this.paginationService.createPagination();
         this.hasCollectionPromise = false;
@@ -412,6 +431,12 @@ class SWListingDisplayController{
                 this.isCurrentPageRecordsSelected = false;
                 break;
         }
+        
+        //dispatch the update to the store.
+        this.listingService.listingDisplayStore.dispatch({
+            type: "CURRENT_PAGE_RECORDS_SELECTED",
+            payload: {listingID: this.tableID, selectionCount: this.multiselectCount, values: this.multiselectValues }
+        });
     };
 
 
@@ -434,6 +459,14 @@ class SWListingDisplayController{
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
+    };
+
+    public getPrintAction = ():string =>{
+        return this.printAction + this.collectionID;
+    };
+
+    public getEmailAction = ():string =>{
+        return this.emailAction + this.collectionID;
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
@@ -500,47 +533,47 @@ class SWListingDisplay implements ng.IDirective{
     };
     public bindToController={
 
-            isRadio:"<?",
-            angularLinks:"<?",
-            isAngularRoute:"<?",
+            isRadio:"=?",
+            angularLinks:"=?",
+            isAngularRoute:"=?",
             name:"@?",
 
             /*required*/
-            collection:"<?",
-            collectionConfig:"<?",
+            collection:"=?",
+            collectionConfig:"=?",
             getCollection:"&?",
-            collectionPromise:"<?",
-            edit:"<?",
+            collectionPromise:"=?",
+            edit:"=?",
 
             /*Optional*/
-            title:"<?",
+            title:"@?",
             childPropertyName:"@?",
-            baseEntity:"<?",
+            baseEntity:"=?",
             baseEntityName:"@?",
             baseEntityId:"@?",
 
             /*Admin Actions*/
-            actions:"<?",
+            actions:"=?",
             administrativeCount:"@?",
             recordEditAction:"@?",
             recordEditActionProperty:"@?",
             recordEditQueryString:"@?",
-            recordEditModal:"<?",
-            recordEditDisabled:"<?",
+            recordEditModal:"=?",
+            recordEditDisabled:"=?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
             recordDetailQueryString:"@?",
-            recordDetailModal:"<?",
+            recordDetailModal:"=?",
             recordDeleteAction:"@?",
             recordDeleteActionProperty:"@?",
             recordDeleteQueryString:"@?",
             recordAddAction:"@?",
             recordAddActionProperty:"@?",
             recordAddQueryString:"@?",
-            recordAddModal:"<?",
-            recordAddDisabled:"<?",
+            recordAddModal:"=?",
+            recordAddDisabled:"=?",
 
-            recordProcessesConfig:"<?",
+            recordProcessesConfig:"=?",
             /* record processes config is an array of actions. Example:
             [
             {
@@ -559,14 +592,14 @@ class SWListingDisplay implements ng.IDirective{
             /*Hierachy Expandable*/
             parentPropertyName:"@?",
             //booleans
-            expandable:"<?",
-            expandableOpenRoot:"<?",
+            expandable:"=?",
+            expandableOpenRoot:"=?",
 
             /*Searching*/
-            searchText:"<?",
+            searchText:"=?",
 
             /*Sorting*/
-            sortable:"<?",
+            sortable:"=?",
             sortableFieldName:"@?",
             sortProperty:"@?",
             sortContextIDColumn:"@?",
@@ -590,6 +623,7 @@ class SWListingDisplay implements ng.IDirective{
             adminattributes:"@?",
 
             /* Settings */
+
             showheader:"<?",
             showOrderBy:"<?",
             showTopPagination:"<?",
@@ -598,16 +632,16 @@ class SWListingDisplay implements ng.IDirective{
             showSimpleListingControls:"<?",
 
             /* Basic Action Caller Overrides*/
-            createModal:"<?",
+            createModal:"=?",
             createAction:"@?",
             createQueryString:"@?",
             exportAction:"@?",
 
-            getChildCount:"<?",
-            hasSearch:"<?",
-            hasActionBar:"<?",
-            multiSlot:"<?",
-            customListingControls:"<?"
+            getChildCount:"=?",
+            hasSearch:"=?",
+            hasActionBar:"=?",
+            multiSlot:"=?",
+            customListingControls:"=?"
     };
     public controller:any=SWListingDisplayController;
     public controllerAs="swListingDisplay";

@@ -104,7 +104,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
-	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
@@ -1188,10 +1187,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getSkuDefinition() {
 		if(!structKeyExists(variables, "skuDefinition")) {
 			variables.skuDefinition = getSkuDefinitionByBaseProductType(getBaseProductType());
-
-			if(variables.skuDefinition == "" && !isNull(getSkuName())){
-				variables.skuDefinition = getSkuName();
-			}
 		}
 		return trim(variables.skuDefinition);
 	}

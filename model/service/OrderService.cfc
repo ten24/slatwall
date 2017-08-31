@@ -295,7 +295,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 					}
-
+					
+					//Sets the status type
+					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
@@ -1358,6 +1360,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 							arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 						}
+
 	
 						// Generate the order requirements list, to see if we still need action to be taken
 						var orderRequirementsList = getOrderRequirementsList( arguments.order );
@@ -1452,6 +1455,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate() );
 									}
 								}
+
 	
 								// Update the order status
 								order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostNew") );
@@ -1492,6 +1496,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
+
 				}
 
 			} else {
@@ -1732,7 +1737,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
-
+		
+		//Update the inventory Status Type
+		orderFulfillment.setOrderFulfillmentInvStatusType(orderFulfillment.getOrderFulfillmentInvStatusType());
+		
 		if(!orderFulfillment.hasErrors()) {
 			arguments.order = this.saveOrder(arguments.order);
 		} else {
@@ -2417,15 +2425,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// If there was one or more accountContentAccess associated with the referenced orderItem then we need to remove them.
-			if(!isnull(stockReceiverItem.getOrderItem().getReferencedOrderItem())){
-				var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
-				accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
-				var accountContentAccesses = accountContentAccessSmartList.getRecords();
-				for (var accountContentAccess in accountContentAccesses){
+			var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
+			accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
+			var accountContentAccesses = accountContentAccessSmartList.getRecords();
+			for (var accountContentAccess in accountContentAccesses){
 
-    				getAccountService().deleteAccountContentAccess( accountContentAccess );
+    			getAccountService().deleteAccountContentAccess( accountContentAccess );
 
-				}
 			}
 		}
 
@@ -2785,24 +2791,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function saveOrderFulfillment(required any orderFulfillment, struct data={}, string context="save") {
-		//if we have a new account address then override shippingaddress data. This must happen before populate
-		if(
-			(
-				structKeyExists(arguments.data,'accountAddress.accountAddressID')
-				&& len(arguments.data['accountAddress.accountAddressID']) 
-			)
-			&& (
-				isNull(arguments.orderFulfillment.getShippingAddress())
-				|| arguments.data['accountAddress.accountAddressID'] != arguments.orderFulfillment.getShippingAddress().getAddressID()
-			)
-		) {
-			var keyPrefix = 'shippingAddress';
-			for(var key in arguments.data){
-				if((left(key,len(keyPrefix)) == keyPrefix)){
-					structDelete(arguments.data,key);
-				}
-			}
-		}
 
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);

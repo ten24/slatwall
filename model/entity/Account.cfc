@@ -98,7 +98,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="subscriptionUsages" singularname="subscriptionUsage" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="termAccountOrderPayments" singularname="termAccountOrderPayment" cfc="OrderPayment" type="array" fieldtype="one-to-many" fkcolumn="termPaymentAccountID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="ownerAccountID" cascade="all" inverse="true";
-
+	property name="fulfillmentBatches" singularname="fulfillmentBatch" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="FulfillmentBatch" inverse="true";
+	property name="pickWaves" singularname="pickWave" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="PickWave" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="accountID" inversejoincolumn="priceGroupID";
 	property name="permissionGroups" singularname="permissionGroup" cfc="PermissionGroup" fieldtype="many-to-many" linktable="SwAccountPermissionGroup" fkcolumn="accountID" inversejoincolumn="permissionGroupID";
@@ -142,7 +144,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
-	
+		//CUSTOM PROPERTIES BEGIN
+property name="remoteControl" ormtype="string" ;
+	//CUSTOM PROPERTIES END
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
@@ -671,7 +675,23 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function removeGiftCard(required any giftCard){
 		arguments.giftCard.removeOwnerAccount( this );
 	}
-
+	
+	// Fulfillment Batches (one-to-many)
+	public void function addFulfillmentBatch(required any fulfillmentBatch) {
+	   arguments.fulfillmentBatch.setAssignedAccount(this);
+	}
+	public void function removeFulfillmentBatch(required any fulfillmentBatch) {
+	   arguments.fulfillmentBatch.removeAssignedAccount(this);
+	}
+	
+	// Pick Wave (one-to-many)
+	public void function addPickWave(required any pickWave) {
+	   arguments.pickWave.setAssignedAccount(this);
+	}
+	public void function removePickWave(required any pickWave) {
+	   arguments.pickWave.removeAssignedAccount(this);
+	}
+	
 	// Price Groups (many-to-many - owner)
 	public void function addPriceGroup(required any priceGroup) {
 		if(arguments.priceGroup.isNew() or !hasPriceGroup(arguments.priceGroup)) {

@@ -171,6 +171,7 @@ class SWTypeaheadSearchController {
 
         this.observerService.attach(this.clearSearch, this.typeaheadDataKey + 'clearSearch');
 
+
         this.$http = $http;
     }
 
@@ -193,6 +194,7 @@ class SWTypeaheadSearchController {
         this.hideSearch = !this.hideSearch;
         
     };
+
 
     public search = (search:string)=>{
         if(this._timeoutPromise){

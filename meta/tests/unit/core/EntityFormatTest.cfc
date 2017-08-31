@@ -111,7 +111,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entitiesThatDontHaveAuditPropertiesArray = [];
 
 		// Exception Entities with no properties
-		var entitiesWithNoAuditPropsRequired = "SlatwallDatabaseCache,SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript,SlatwallServerInstance";
+		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript,SlatwallServerInstance";
 
 		// Exception Entities that only require the createdByAccountID & createdDateTime
 		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallShippingMethodOptionSplitShipment,SlatwallStockReceiverItem,SlatwallEmailBounce";
@@ -253,7 +253,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
 			if(len(getMetaData(entity).table) > 30) {
-				addToDebug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
+				debug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 				pass = false;
 			}
 		}

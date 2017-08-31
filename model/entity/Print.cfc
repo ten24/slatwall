@@ -50,7 +50,7 @@ component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors
 	
 	// Persistent Properties
 	property name="printID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="printContent" ormtype="string" length="8000";
+	property name="printContent" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	
@@ -70,7 +70,7 @@ component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors
 	
 	// ============ START: Non-Persistent Property Methods =================
 	public boolean function getLogPrintFlag() {
-		if(!this.getNewFlag() && !structKeyExists(variables, "logPrintFlag")) {
+		if(!structKeyExists(variables, "logPrintFlag")) {
 			variables.logPrintFlag = false;
 		}
 		return variables.logPrintFlag;

@@ -543,14 +543,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
 		var object = getService('HibachiService').getEntityObject(entityName);
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
-		if(
-			!isNull(object) 
-			&& !isSimpleValue(object)
-			&& structKeyExists(object.getPropertyMetaData( propertyName ),'ormtype')
-		) {
+		
+		if(!isNull(object) && !isSimpleValue(object)) {
 			return object.getPropertyMetaData( propertyName ).ormtype;
 		}
-		return "";
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {

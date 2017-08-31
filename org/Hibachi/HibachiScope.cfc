@@ -310,7 +310,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	
 	// ========================== HELPER DELIGATION METHODS ===============================
 	
-	public string function hibachiHTMLEditFormat(required any html){
+	public string function hibachiHTMLEditFormat(required string html){
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(arguments.html);
 	}
 	

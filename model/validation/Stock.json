@@ -1,5 +1,0 @@
-{
-	"properties":{
-		"location":			[{"contexts":"save","method":"getLocationIsLeafNode"}]
-	}
-}

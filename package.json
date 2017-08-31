@@ -20,6 +20,7 @@
     "gulp-inject": "^4.2.0",
     "gulp-util": "^3.0.8",
     "jasmine": "^2.5.2",
+    "jasmine-core": "^2.5.2",
     "json-loader": "^0.5.4",
     "less": "*",
     "ng-annotate-webpack-plugin": "*",

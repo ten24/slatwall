@@ -48,4 +48,5 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiCacheDAO" {
 	
+
 }

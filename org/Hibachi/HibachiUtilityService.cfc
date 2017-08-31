@@ -4,6 +4,20 @@
 
 	<cfscript>
 
+		//antisamy setup
+		variables.antisamyConfig = {
+			policyFile = ExpandPath("org/Hibachi/antisamy/antisamy-slashdot-1.4.1.xml"),
+			jarArray = [
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-bin.1.4.1.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/batik-css.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/batik-util.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/nekohtml.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/xercesImpl.jar")
+			]
+		};
+		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
+		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
+		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
@@ -599,6 +613,7 @@
 			}
 		}
 
+
 		public string function hibachiHTMLEditFormat(required any html=""){
 			//If its something that can be turned into a string, make sure its a string.
 			if (isSimpleValue(arguments.html)){
@@ -612,6 +627,7 @@
 			}else{
 				var sanitizedString = encodeForHTML(arguments.html);	
 			}
+
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}

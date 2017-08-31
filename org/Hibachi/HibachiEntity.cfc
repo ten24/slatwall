@@ -100,19 +100,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
                 // Look for any that start with the calculatedXXX naming convention
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
-					//prior to invoking we should remove any first level caching that would cause a stale calculation
-					var nonPersistentProperty = right(property.name, len(property.name)-10);
-					if(listFindNoCase('Product,Sku,Stock',this.getClassName())){
-						var inventoryProperties = listToArray('QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QC,QE,QNC,QATS,QIATS');
-						for(var inventoryProperty in inventoryProperties){
-							if(structKeyExists(variables,inventoryProperty)){
-								structDelete(variables,inventoryProperty);
-							}
-						}
-					}
-					
-                    var value = this.invokeMethod("get#nonPersistentProperty#");
-                    
+
+                    var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
                     if(!isNull(value)) {
                         variables[ property.name ] = value;
                     }
@@ -740,26 +729,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint handles decrypting a property based on conventions
 	public string function decryptProperty(required string propertyName) {
 		var encryptedPropertyValue = "";
-		
-		var isAttributeProperty = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(getClassName(),arguments.propertyName);
-		
-		var generatorName = "";
-		var entity = this;
-		if(isAttributeProperty){
-			generatorName = "AttributeValue";
-			entity = this.getAttributeValue(arguments.propertyName,true);
-		}else{
-			generatorName = arguments.propertyName;	
-		}
-		var generatorValue = entity.invokeMethod("get#generatorName#EncryptedGenerator");;
+		var generatorValue = this.invokeMethod("get#arguments.propertyName#EncryptedGenerator");
 		param name="generatorValue" default="";
 
 		// Determine the appropriate property to retrieve the encrytped value from
-		if (entity.hasProperty("#generatorName#Encrypted")) {
-			encryptedPropertyValue = entity.invokeMethod("get#generatorName#Encrypted");
+		if (this.hasProperty("#arguments.propertyName#Encrypted")) {
+			encryptedPropertyValue = this.invokeMethod("get#arguments.propertyName#Encrypted");
 		} else {
 			encryptedPropertyValue = variables['#arguments.propertyName#'];
 		}
+
 		return decryptValue(encryptedPropertyValue, generatorValue);
 	}
 

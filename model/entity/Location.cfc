@@ -95,18 +95,11 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		return (arraylen(getchildLocations()) > 0);
 	}
 	
-	public numeric function getChildLocationCount(){
-		return getService('locationService').getChildLocationCount(this);
-	}
-	
 	public any function getPrimaryAddress() {
-		if(!isNull(variables.primaryAddress)) {
-			return variables.primaryAddress;
-		} else if (arrayLen(getLocationAddresses())) {
-			variables.primaryAddress = getLocationAddresses()[1];
-			return variables.primaryAddress;
-		} else {
+		if(isNull(variables.primaryAddress)) {
 			return getService("locationService").newLocationAddress();
+		} else {
+			return variables.primaryAddress;
 		}
 	}
 	
@@ -119,6 +112,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	public any function getLocationPathName() {
 		if(!structKeyExists(variables, "locationPathName")) {
+			
 			variables.locationPathName = "";
 			
 			//Add each of the parents in the chain to the string.
@@ -134,6 +128,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
 			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
 		}
+		
 		return variables.locationPathName;
 	}
 	

@@ -94,7 +94,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></script>
 		<!--- Trigger Print Window --->
-		<cfif listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
+		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
 			</script>
@@ -146,8 +146,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
+									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">

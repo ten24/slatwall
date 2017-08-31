@@ -115,7 +115,6 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public struct function getAllSettingMetaData() {
-		
 		var allSettingMetaData = {
 
 			// Account
@@ -196,8 +195,6 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
-			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
-			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
@@ -378,16 +375,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
 
 		};
-		
+
 		var integrationSettingMetaData = getIntegrationService().getAllSettingMetaData();
 
 		structAppend(allSettingMetaData, integrationSettingMetaData, false);
-
-		//need to persist globalClientSecret
-		var globalClientSecretSetting = this.getSettingBySettingName('globalClientSecret');
-		if(isNull(globalClientSecretSetting)){
-			getDao('settingDao').insertSetting('globalClientSecret',allSettingMetaData.globalClientSecret.defaultValue);
-		}
 
 		return allSettingMetaData;
 	}
@@ -693,10 +684,8 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingMetaData(required string settingName) {
-		
 		var allSettingMetaData = getHibachiCacheService().getOrCacheFunctionValue("settingService_allSettingMetaData", this, "getAllSettingMetaData");
 
-		
 		if(structKeyExists(allSettingMetaData, arguments.settingName)) {
 			return allSettingMetaData[ arguments.settingName ];
 		}
@@ -1025,7 +1014,9 @@ component extends="HibachiService" output="false" accessors="true" {
  
 			//wait for thread to finish because admin depends on getting the savedID
 			getHibachiCacheService().resetCachedKeyByPrefix('setting_#arguments.entity.getSettingName()#',true);
+
 			getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress());
+
 			getHibachiDAO().flushORMSession();
 			
 			// If calculation is needed, then we should do it

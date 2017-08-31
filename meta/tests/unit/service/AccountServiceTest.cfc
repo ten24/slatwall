@@ -57,50 +57,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function ableToDeleteAccountPaymentMethodWithoutDeletingOrderPayments(){
-		var accountData = {
-			accountID=""
-		};
-		var account = createPersistedTestEntity('account',accountData);
-		
-		var accountPaymentMethodData = {
-			accountPaymentMethodID="",
-			account={
-				accountID=account.getAccountID()
-			}
-		};
-		var accountPaymentMethod = createPersistedTestEntity('accountPaymentMEthod',accountPaymentMethodData);
-		
-		
-		var orderPaymentData = {
-			orderPaymentID=""
-		};
-		var orderPayment = createPersistedTestEntity('orderPayment',orderPaymentData);
-		
-		accountPaymentMethod.addOrderPayment(orderPayment);
-		orderPayment.setAccountPaymentMethod(accountPaymentMethod);
-		
-		assert(!isNull(orderPayment.getAccountPaymentMethod()),'need accountPayment');
-		assertEquals(arraylen(accountPaymentMethod.getOrderPayments()),1,'need orderPayments');
-		
-		
-		var orderPaymentID = orderPayment.getOrderPaymentID();
-		
-		var deleteOK = variables.service.deleteAccountPaymentMethod(accountPaymentMethod);
-		
-		assert(deleteOK);
-		
-		request.slatwallScope.flushOrmSesssion();
-		
-		var oldorderPayment = request.slatwallScope.getService('orderService').getOrderPaymentByOrderPaymentID(orderPaymentID);
-		assert(!isNull(oldorderPayment));
-		
-		
-	}
-		
-	/**
-	* @test
-	*/
 	public void function defaults_are_correct() {
 		assertTrue( isObject(variables.service.getEmailService()) );
 	}
@@ -536,6 +492,155 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertFalse(account.hasErrors());
 	}
+	/**
+	* @test
+	*/
+	public void function processAccount_CreateTest_accountCodeRequiredForOrganizations(){
+		
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID=""
+		};
+		var account = createTestEntity('Account',accountData);
+		
+		var data = {
+			organizationFlag=1,
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		
+		
+		account = variables.service.processAccount(account,data,'create');
+		assert(structKeyExists(account.getErrors(),'accountCode'));		
+		
+	}
+	/**
+	* @test
+	*/
+	public void function processAccount_CreateTest_addParentAndChildAccounts(){
+		
+		var childAccountData = {
+			accountID="",
+			firstName="Bob"
+		};
+		var childAccount = createPersistedTestEntity('Account',childAccountData);
+		
+		var parentAccountData = {
+			accountID="",
+			firstName="jimmy"
+		};
+		var parentAccount = createPersistedTestEntity('Account',parentAccountData);
+		
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID=""
+		};
+		var account = createTestEntity('Account',accountData);
+		
+		var data = {
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0,
+			parentAccountID=parentAccount.getAccountID(),
+			childAccountID=childAccount.getAccountID()
+		};
+		
+		account = variables.service.processAccount(account,data,'create');
+		
+		assert(arraylen(account.getParentAccountRelationships()));
+		assert(arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
+		assertEquals(account.getFirstName(),account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()[1].getChildAccount().getFirstName());
+		assertEquals(1,arraylen(account.getParentAccountRelationships()[1].getParentAccount().getChildAccountRelationships()));
+		assert(arraylen(account.getChildAccountRelationships()));
+	}
+	/**
+	* @test
+	*/
+	public void function processAccount_CreateTest_accountCodeCreatedBasedOnCompany(){
+		var companyName = "testCompanyName"&createUUID();
+		//case tests if organization flag is flipped that account code is required
+		var accountData = {
+			accountID="",
+			organizationFlag=1,
+			company=companyName,
+			accountCode=lcase(companyName),
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+		
+		var accountData2 = {
+			accountID=""
+		};
+		var account2 = createTestEntity('Account',accountData2);
+		var data2 = {
+			organizationFlag=1,
+			company=companyName,
+			firstName='testName',
+			lastName="testLastName",
+			createAuthenticationFlag=0
+		};
+		
+		account = variables.service.processAccount(account2,data2,'create');
+		
+		assertEquals(companyName&'-1',account2.getAccountCode());
+	}
+	/**
+	* @test
+	*/
+	public void function deleteAccountTest_slatwallScopeOwnerTest(){
+		request.slatwallScope.getAccount().setSuperUserFlag(false);
+		var childAccountData = {
+			accountID=""
+		};
+		
+		var childAccount = createPersistedTestEntity('account',childAccountData);
+		childAccount.setOwnerAccount(request.slatwallScope.getAccount());
+		var deleteOK = variables.service.deleteAccount(childAccount);
+		request.slatwallScope.getAccount().setSuperUserFlag(true);
+	}
+	/**
+	* @test
+	*/
+	public void function deleteAccountTest_ifyouareOwner(){
+		request.slatwallScope.getAccount().setSuperUserFlag(false);
+		
+		
+		var ownerAccountData ={
+			accountID="",
+			primaryEmailAddress={
+				accountEmailAddressID="",
+				emailAddress="test"&createUUID()&"@aol.com"
+			}
+		};
+		var ownerAccount = createPersistedTestEntity('account',ownerAccountData);
+		
+		var childAccountData2 = {
+			accountID="",
+			
+			primaryEmailAddress={
+				accountEmailAddressID="",
+				emailAddress="test"&createUUID()&"@aol.com"
+			}
+		};
+		
+		var childAccount2 = createPersistedTestEntity('account',childAccountData2);
+		childAccount2.setOwnerAccount(ownerAccount);
+		
+		var accountRelationshipData = {
+			accountRelationshipID=""
+			
+		};
+		var accountRelationship = createPersistedTestEntity('accountRelationship',accountRelationshipData);
+		deleteOK = variables.service.deleteAccount(childAccount2);
+		assertFalse(deleteOK);
+		assert(structKeyExists(childAccount2.getErrors(),'ownerAccount'));
+		request.slatwallScope.getAccount().setSuperUserFlag(true);
+	}
+	
+	
 	
 }
 

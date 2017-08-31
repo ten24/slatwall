@@ -49,7 +49,7 @@ Notes:
 <cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
 	<cfproperty name="hibachiCacheService" type="any" />
-	
+
 	<cffunction name="insertSetting" output="false" returntype="void">
 		<cfargument name="settingName" type="string" required="true" />
 		<cfargument name="settingValue" />
@@ -67,7 +67,7 @@ Notes:
 		<cfset getHibachiCacheService().updateServerInstanceSettingsCache(getHibachiScope().getServerInstanceIPAddress())/>
 		
 	</cffunction>
-	
+
 	<cffunction name="getSettingRecordExistsFlag" output="false" returntype="boolean">
 		<cfargument name="settingName" type="string" required="true" />
 		<cfargument name="settingValue" />

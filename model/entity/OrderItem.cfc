@@ -52,14 +52,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
-	// Calculated Properties
-	property name="calculatedExtendedPrice" ormtype="big_decimal";
-	property name="calculatedExtendedUnitPrice" ormtype="big_decimal";
-	property name="calculatedExtendedPriceAfterDiscount" column="calcExtendedPriceAfterDiscount" ormtype="big_decimal";
-	property name="calculatedExtendedUnitPriceAfterDiscount" column="calcExtdUnitPriceAfterDiscount" ormtype="big_decimal";
-	property name="calculatedTaxAmount" ormtype="big_decimal";
-	property name="calculatedItemTotal" ormtype="big_decimal";
-	property name="calculatedDiscountAmount" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
@@ -86,7 +78,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
+	
 	// Related Object Properties (many-to-many)
 
 	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
@@ -106,9 +99,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="activeEventRegistrations" persistent="false";
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
-	property name="extendedUnitPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
-	property name="extendedUnitPriceAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="orderStatusCode" persistent="false";
 	property name="quantityDelivered" persistent="false";
 	property name="quantityUndelivered" persistent="false";
@@ -173,21 +164,21 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var maxQTY = 0;
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
-			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
+			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
-				} else if(getSku().getQATS() <= maxQTY) {
-					
-					maxQTY = getSku().getQATS();
+				} else if(getSku().getQuantity('QATS') <= maxQTY) {
+					maxQTY = getSku().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
 				}
 			}
 		}
+
 		return maxQTY;
 	}
 
@@ -431,24 +422,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return getService('HibachiUtilityService').precisionCalculate(getExtendedPrice() - getDiscountAmount());
 	}
 
-	public numeric function getExtendedUnitPrice() {
-		if(!isNull(getQuantity()) && getQuantity() > 0){
-			return val(precisionEvaluate(getExtendedPrice() / getQuantity()));	
-		}else{
-			return 0;
-		}
-		
-	}
-
-	public numeric function getExtendedUnitPriceAfterDiscount() {
-		if(!isNull(getQuantity()) && getQuantity() > 0){
-			return val(precisionEvaluate(getExtendedPriceAfterDiscount() / getQuantity()));
-		}else{
-			return 0;
-		}
-		
-	}
-
 	public any function getActiveEventRegistrations() {
 		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
 			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
@@ -534,7 +507,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getItemTotal() {
-		return val(getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount()));
+		return getService('HibachiUtilityService').precisionCalculate(getTaxAmount() + getExtendedPriceAfterDiscount());
 	}
 
 	public any function getSalePrice() {
@@ -760,6 +733,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
 		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
+	
+	// Fulfillment Batches (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.setOrderItem(this);
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.removeOrderItem(this);
+	}
+	
 
 	// ShippingMethodOptionSplitShipment (many-to-many - owner)
 	public void function addShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {

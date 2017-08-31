@@ -292,7 +292,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			var newSession = this.newSession();
 			
 			//if the settings are set for copying the cart over, then copy it.
-			if ( len(getHibachiScope().setting('globalCopyCartToNewSessionOnLogout')) &&  getHibachiScope().setting('globalCopyCartToNewSessionOnLogout') && !isNull(oldSession.getOrder())){
+			if (getHibachiScope().setting('globalCopyCartToNewSessionOnLogout') && !isNull(oldSession.getOrder())){
 				getHibachiDAO().save( oldSession.getOrder() );
 				if (!oldSession.getOrder().hasErrors()){
 					newSession.setOrder(oldSession.getOrder());

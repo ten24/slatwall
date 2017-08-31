@@ -246,11 +246,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// Print
-	public string function getPrintQueue() {
-		if(!structKeyExists(cookie,'printQueue')){
-			getService('HibachiTagService').cfCookie('printQueue','');
+	public array function getPrintQueue() {
+		if(!hasSessionValue('printQueue')) {
+			setSessionValue('printQueue', []);
 		}
-		return cookie.printQueue;
+		return getSessionValue('printQueue');
 	}
 	
 	// Adds a PrintID to the print queue.
@@ -262,12 +262,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// Clear Email & Print
 	public void function clearPrintQueue() {
-		getService('HibachiTagService').cfCookie('printQueue','');
+		setSessionValue('printQueue', []);
 	}
 	
 	public void function clearEmailAndPrintQueue() {
 		variables.emailQueue = [];
-		clearPrintQueue();
+		setSessionValue('printQueue', []);
 	}
 	
 	// =================== JS helper methods  ===========================

@@ -2,6 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
+
 class SWTypeaheadInputFieldController {
     
     public fieldName:string; 
@@ -28,6 +29,7 @@ class SWTypeaheadInputFieldController {
     constructor(private $scope,
                 private $transclude,
                 private collectionConfigService,
+                private typeaheadService,
                 private $rootScope,
                 private observerService
     ){
@@ -77,7 +79,15 @@ class SWTypeaheadInputFieldController {
     
     public addFunction = (value:any) => {
 
-        this.modelValue = value[this.propertyToSave];
+        this.typeaheadService.typeaheadStore.dispatch({
+            "type": "TYPEAHEAD_USER_SELECTION",
+            "payload":{
+                name: this.fieldName || "",
+                data: value[this.propertyToSave] || ""
+            }
+        })
+        this.modelValue = value[this.propertyToSave]; 
+
         if(this.action){
             var data = {};
             if(this.variables){
@@ -86,8 +96,8 @@ class SWTypeaheadInputFieldController {
             data['value'] = this.modelValue;
             this.$root.slatwall.doAction(this.action, data);
         }
-    }
 
+    }
 }
 
 class SWTypeaheadInputField implements ng.IDirective{

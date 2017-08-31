@@ -337,7 +337,7 @@ component extends="HibachiService"  accessors="true" output="false"
       * @param emailAddress {string}
       * @ProcessMethod AccountEmailAddress_Delete
       **/
-    public any function deleteAccountEmailAddress() {
+    public void function deleteAccountEmailAddress() {
         param name="data.accountEmailAddressID" default="";
         
         var accountEmailAddress = getAccountService().getAccountEmailAddress( data.accountEmailAddressID );

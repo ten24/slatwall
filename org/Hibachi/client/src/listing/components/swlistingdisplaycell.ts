@@ -30,7 +30,6 @@ class SWListingDisplayCellController{
         this.listingPartialPath = listingPartialPath;
         this.$scope = $scope;
         this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
-        
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
@@ -45,7 +44,7 @@ class SWListingDisplayCellController{
         }
 
         if(this.cellView){
-
+            console.log("Cellview?", this.cellView);
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
             this.template = htmlCellView;
             

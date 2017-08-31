@@ -48,20 +48,43 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-
-
+<cflog file="Slatwall" text="General Log - Running update script v5_0 ">
 <cftry>
+  <!--- Get All Existing Location --->
+	<cfquery name="local.locations">
+		SELECT locationID, locationIDPath FROM SwLocation WHERE calculatedLocationPathName is null
+	</cfquery>
+	<cfloop query="locations">
+		<cfset local.nameList="">
+		
+		<!--- Get all the locationIDPaths --->
+		<cfquery name="local.names">
+			SELECT locationName FROM SwLocation WHERE locationID IN (<cfqueryparam value="#locationIDPath#" list="yes" />)
+		</cfquery>
+		
+		<!--- Create the name list --->
+		<cfloop query="names">
+			<cfset nameList = listAppend(nameList, locationName, "»")>
+		</cfloop>
+		<cfset nameList = rereplace(nameList,'»',' » ','all')/>
+		
+		<!--- Update the calculatedLocationPathName --->
+		<cfif !isNull(nameList) AND len(nameList)>
+			<cflog file="Slatwall" text="UPDATING Setting calculatedLocationPathName = #nameList#">
+			<cfquery name="local.update">
+				UPDATE SwLocation SET calculatedLocationPathName = '#nameList#' where locationID = '#locationID#'
+			</cfquery>
+		</cfif>
+	</cfloop>
 
 	<cfquery name="local.updateWorkflowTriggerTimeouts"> 
 		update SwWorkflowTrigger set timeout=90 where timeout is null
 	</cfquery> 
 
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - ">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update calculatedLocationPathName has an issue.">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-
-
 </cftry>
 
 <cfif local.scriptHasErrors>

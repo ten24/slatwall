@@ -337,7 +337,9 @@ component extends="framework.one" {
             } else {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
+
         }
+
 		var status = 200;
 		setupGlobalRequest();
 		
@@ -517,6 +519,7 @@ component extends="framework.one" {
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestStart");
 	}
 
+
 	public boolean function hasReloadKey(){
 		return structKeyExists(url, variables.framework.reload)
 		&& url[variables.framework.reload] == variables.framework.password;
@@ -525,7 +528,8 @@ component extends="framework.one" {
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
 		if(
 			(
-				hasReloadKey()
+				structKeyExists(url, variables.framework.reload) 
+				&& url[variables.framework.reload] == variables.framework.password
 			) || reloadByServerInstance
 		) {
 			getHibachiScope().setApplicationValue("initialized", false);
@@ -537,7 +541,7 @@ component extends="framework.one" {
 			lock scope="Application" timeout="600"  {
 
 				// Set the request timeout to 600
-				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
+				createObject("Slatwall.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
 
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {

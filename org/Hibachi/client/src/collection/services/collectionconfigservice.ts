@@ -516,7 +516,6 @@ class CollectionConfig {
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
         var join = propertyIdentifier.split('.').length > 1;
-
         //create filter group
         var filter = new Filter(
             this.formatPropertyIdentifier(propertyIdentifier, join),
@@ -529,10 +528,11 @@ class CollectionConfig {
         );
         return filter;
     };
-
+    
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         var group = {
-            filterGroup:[]
+            filterGroup:[],
+            logicalOperator: 'AND'
         };
         for(var i =  0; i < filterGroup.length; i++){
             var filter = this.createFilter(

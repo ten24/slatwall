@@ -99,6 +99,7 @@ class SWImageDetailModalLauncherController{
         data.append('slatAction', "admin:entity.processProduct");
         data.append('processContext',"uploadDefaultImage");
         data.append('sRedirectAction',"admin:entity.detailProduct");
+
         data.append('preprocessDisplayedFlag',"1");
         data.append('ajaxRequest', "1");
 

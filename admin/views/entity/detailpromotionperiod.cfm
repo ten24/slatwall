@@ -73,6 +73,7 @@ Notes:
 							backQueryString="promotionID=#rc.promotion.getPromotionID()#"
 							cancelAction="admin:entity.detailpromotion"
 							cancelQueryString="promotionID=#rc.promotion.getPromotionID()#"								   
+
 							deleteQueryString="promotionID=#rc.promotion.getPromotionID()#&redirectAction=admin:entity.detailpromotion">
 			<!--- Duplicate --->
 			<hb:HibachiProcessCaller action="admin:entity.preProcessPromotionPeriod" entity="#rc.promotionperiod#" processContext="duplicatePromotionPeriod" type="list" modal="true" />

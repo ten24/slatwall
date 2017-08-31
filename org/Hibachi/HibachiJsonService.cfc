@@ -55,11 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		config[ 'modelConfig' ] = getModel();
 		json['data'] = config;
 		json = serializeJson(json);
-		var configDirectoryPath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/';
-		if(!directoryExists(configDirectoryPath)){
-			directoryCreate(configDirectoryPath);
-		}
-		var filePath = configDirectoryPath & 'config.json';
+		var filePath = expandPath('/Slatwall') & '/custom/config/config.json';
 		fileWrite(filePath,json);
     }
 
@@ -107,11 +103,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	if(DirectoryExists(rbpath)){
     		directorylisting = directorylist(rbpath,false,"name","*.properties");
     	}
+
     	
     	var customrbpath = expandPath('/#getDAO("hibachiDAO").getApplicationKey()#') & "/custom/config/resourceBundles";
     	if(!directoryExists(customrbpath)){
         	directoryCreate(customrbpath);
         }
+
     	if(DirectoryExists(customrbpath)){
     		var customDirectoryListing = directorylist(customrbpath,false,"name","*.properties");
     		for(var item in customDirectoryListing){
@@ -132,7 +130,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	            data[lcase(key)] = resourceBundle[key];
 	        }
 	        var json = serializeJson(data);
+
 			var filePath = customrbpath & '/#locale#.json';
+
 	        fileWrite(filePath,json);
     	}
         
