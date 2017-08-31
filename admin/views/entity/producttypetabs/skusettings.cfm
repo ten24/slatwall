@@ -56,6 +56,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.productType#" />
@@ -76,6 +77,18 @@ Notes:
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
 		<cfelseif  rc.productType.getBaseProductType() eq "event">
 			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.productType#" />
+		</cfif>
+		<cfif rc.productType.getBaseProductType() neq "gift-card">
+			<swa:SlatwallSetting settingName="skuExpenseLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuRevenueLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuCogsLedgerAccount" settingObject="#rc.productType#"/>
+			<swa:SlatwallSetting settingName="skuAssetLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount" settingObject="#rc.productType#"/>
+		</cfif>
+		<cfif rc.productType.getBaseProductType() eq "subscription">
+			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.productType#"/>
 		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

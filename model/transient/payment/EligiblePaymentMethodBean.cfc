@@ -43,34 +43,14 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-Notes:
-
+Notes:					
 */
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO" persistent="false" accessors="true" output="false" {
+component output="false" accessors="true" extends="Slatwall.model.transient.HibachiTransient"{
 	
-	
-	// ===================== START: Logical Methods ===========================
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
+	// Properties
+	property name="maximumAmount" type="numeric";
+	// Related Object Properties (many-to-one)
+	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID";
+	property name="paymentTerm" cfc="PaymentTerm" fieldType="many-to-one" fkcolumn="paymentTermID";
 }
+

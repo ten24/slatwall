@@ -20,11 +20,12 @@ class SWTypeaheadInputFieldController {
     public action:string;
     public eventListeners;
     public variables;
+    public titleText;
     private collectionConfig;
     private $root;
     
     // @ngInject
-	constructor(private $scope,
+    constructor(private $scope,
                 private $transclude,
                 private collectionConfigService,
                 private $rootScope,
@@ -91,12 +92,12 @@ class SWTypeaheadInputFieldController {
 
 class SWTypeaheadInputField implements ng.IDirective{
 
-	public templateUrl;
+    public templateUrl;
     public transclude=true; 
-	public restrict = "EA";
-	public scope = {};
+    public restrict = "EA";
+    public scope = {};
 
-	public bindToController = {
+    public bindToController = {
         fieldName:"@",
         entityName:"@",
         typeaheadCollectionConfig:"=?",
@@ -110,30 +111,33 @@ class SWTypeaheadInputField implements ng.IDirective{
         maxRecords:"@",
         action:"@",
         variables:'&?',
-        eventListeners:'=?'
-	};
-	public controller=SWTypeaheadInputFieldController;
-	public controllerAs="swTypeaheadInputField";
+        eventListeners:'=?',
+        placeholderText:'@?',
+        searchEndpoint:'@?',
+        titleText:'@?'
+    };
+    public controller=SWTypeaheadInputFieldController;
+    public controllerAs="swTypeaheadInputField";
 
     // @ngInject
-	constructor(private corePartialsPath,hibachiPathBuilder){
-		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
-	}
+    constructor(private corePartialsPath,hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
+    }
 
-	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
-			corePartialsPath
-            ,hibachiPathBuilder
-
-		)=> new SWTypeaheadInputField(
+    public static Factory(){
+        var directive:ng.IDirectiveFactory = (
             corePartialsPath
             ,hibachiPathBuilder
-		);
-		directive.$inject = ["corePartialsPath",'hibachiPathBuilder'];
-		return directive;
-	}
+
+        )=> new SWTypeaheadInputField(
+            corePartialsPath
+            ,hibachiPathBuilder
+        );
+        directive.$inject = ["corePartialsPath",'hibachiPathBuilder'];
+        return directive;
+    }
 }
 export{
-	SWTypeaheadInputField,
-	SWTypeaheadInputFieldController
+    SWTypeaheadInputField,
+    SWTypeaheadInputFieldController
 }

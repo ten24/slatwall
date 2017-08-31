@@ -244,7 +244,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return formattedObjectRecords;
 	}
 
-	public any function getBadCollectionInfo(required any collectionEntity){
+	public any function getBadCollectionInfo(required any collectionEntity, string failedCollectionMessage){
 		formattedPageRecords[ "pageRecords" ] = [];
 
 		formattedPageRecords[ "recordsCount" ] = 0;
@@ -255,6 +255,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 		formattedPageRecords['failed'] = true;
+		var context = getPageContext();
+		var status = 500;
+		var statusMessage = "collection failed";
+		if(getApplicationValue('errorDisplayFlag')){
+			statusMessage &= ":#failedCollectionMessage#";
+		}
+		context.getResponse().setStatus(status, statusMessage);
 	}
 
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
@@ -262,7 +269,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var formattedPageRecords = {};
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords(formatRecords=false);
 		if(ArrayLen(paginatedCollectionOfEntities) == 1 && structKeyExists(paginatedCollectionOfEntities[1],'failedCollection')){
-			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity);
+			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity,paginatedCollectionOfEntities[1]['failedCollection']);
 		}else{
 
 			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);

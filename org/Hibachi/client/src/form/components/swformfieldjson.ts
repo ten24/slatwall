@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class SWFormFieldJsonController implements ng.IDirective {
+class SWFormFieldJsonController {
     public propertyDisplay:any;
 	//@ngInject
     constructor (formService) {

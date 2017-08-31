@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -43,14 +43,26 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-Notes:					
-*/
-component entityname="SlatwallEligiblePaymentMethod" persistent="false" output="false" accessors="true" extends="Slatwall.model.transient.HibachiTransient"{
+Notes:
+
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.physical" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" sRedirectAction="admin:entity.detailphysical">
 	
-	// Properties
-	property name="maximumAmount" type="numeric";
-	// Related Object Properties (many-to-one)
-	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID";
-	property name="paymentTerm" cfc="PaymentTerm" fieldType="many-to-one" fkcolumn="paymentTermID";
-}
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.physical#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="expenseLedgerAccountID" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
 

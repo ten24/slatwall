@@ -203,6 +203,9 @@ class SWEditFilterItem{
 
                 scope.addFilterItem = function(){
                     collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
+                    this.observerService.notify('collectionConfigUpdated', {
+                        collectionConfig: collectionService
+                    });
                 };
 
                 scope.cancelFilterItem = function(){

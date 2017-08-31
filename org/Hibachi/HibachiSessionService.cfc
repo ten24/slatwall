@@ -202,7 +202,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
-		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
+		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
 	}
 	
@@ -283,7 +283,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		currentSession.setLastRequestDateTime( now() );
-		currentSession.setLastRequestIPAddress( CGI.REMOTE_ADDR );
+		currentSession.setLastRequestIPAddress( getRemoteAddress() );
 		
 		if (arguments.softLogout == false){
 			

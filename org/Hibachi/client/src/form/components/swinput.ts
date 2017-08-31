@@ -133,9 +133,6 @@ class SWInputController{
 		//get the validations for the current element.
 		var propertyValidations = this.object.validations.properties[name];
 
-		/*
-		* Investigating why number inputs are not working.
-		* */
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
 			//if this is a procesobject validation then the context is implied
@@ -162,7 +159,6 @@ class SWInputController{
 		this.$log.debug(form);
 
 		angular.forEach(validations,(validation,key)=>{
-			console.log('validation ' , validation);
 			if(validation.contexts && this.utilityService.listFind(validation.contexts.toLowerCase(),this.swForm.context.toLowerCase()) !== -1){
 				this.$log.debug("Validations for context");
 				this.$log.debug(validation);
@@ -248,10 +244,12 @@ class SWInputController{
 		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json','file'];
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-			 var inputType = this.fieldType.toLowerCase();
-            if(this.fieldType === 'time'){
+			var inputType = this.fieldType.toLowerCase();
+			
+			if(this.fieldType === 'time' || this.fieldType === 'number'){
                 inputType="text";
-            }
+			}
+			
 			template = currencyTitle + '<input type="' + inputType + '" class="' + this.class + '" '+
 				'ng-model="swInput.value" '+
 				'ng-disabled="swInput.editable === false" '+
@@ -320,7 +318,6 @@ class SWInputController{
 		}
 
 		this.edit = this.edit || true;
-		console.log(this.fieldType)
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";

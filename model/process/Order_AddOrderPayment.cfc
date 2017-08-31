@@ -248,10 +248,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
 			for(var paymentDetail in epmDetails) {
 				arrayAppend(variables.paymentMethodIDOptions, {
-					name = paymentDetail.paymentMethod.getPaymentMethodName(),
-					value = paymentDetail.paymentMethod.getPaymentMethodID(),
-					paymentmethodtype = paymentDetail.paymentMethod.getPaymentMethodType(),
-					allowsaveflag = paymentDetail.paymentMethod.getAllowSaveFlag()
+					name = paymentDetail.getPaymentMethod().getPaymentMethodName(),
+					value = paymentDetail.getPaymentMethod().getPaymentMethodID(),
+					paymentmethodtype = paymentDetail.getPaymentMethod().getPaymentMethodType(),
+					allowsaveflag = paymentDetail.getPaymentMethod().getAllowSaveFlag()
 					});
 			}
 		}

@@ -186,6 +186,75 @@ Notes:
 		return skus;
 	}
 	
+	public any function getAverageCost(required string skuID){
+			
+		return ORMExecuteQuery(
+			'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+			LEFT JOIN stock.sku sku
+			WHERE sku.skuID=:skuID
+			',
+			{skuID=arguments.skuID},
+			true
+		);
+	}
+	
+	public any function getAverageLandedCost(required string skuID){
+		
+		return ORMExecuteQuery(
+			'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+			LEFT JOIN stock.sku sku
+			WHERE sku.skuID = :skuID
+			',
+			{skuID=arguments.skuID},
+			true
+		);
+	}
+	
+	public numeric function getCurrentMargin(required string skuID){
+		return ORMExecuteQuery("
+			SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+			FROM SlatwallSku sku
+			WHERE sku.skuID=:skuID
+		",{skuID=arguments.skuID},true);
+	}
+	
+	public numeric function getCurrentLandedMargin(required string skuID){
+		return ORMExecuteQuery("
+			SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageLandedCost,0)) / COALESCE(sku.price,0),0)
+			FROM SlatwallSku sku
+			WHERE sku.skuID=:skuID
+		",{skuID=arguments.skuID},true);
+	}
+	
+	public numeric function getAveragePriceSold(required string skuID){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						  LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID},true);	
+		if(QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalEarned']/QDOODetails['QDOO']);
+		return averagePriceSold;
+	}
+
 	</cfscript>
 
 	<cffunction name="getSortedProductSkusID">

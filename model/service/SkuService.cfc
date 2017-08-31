@@ -57,6 +57,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="settingService" type="any";
 	property name="typeService" type="any";
+	property name="measurementService" type="any";
 	
 	public string function getSkuDefinitionBySkuIDAndBaseProductTypeID(required string skuID, required string baseProductTypeID){
 		var skuDefinition = "";
@@ -454,6 +455,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	}
 
+	public any function processSku_addBundledSku(required any sku, required any processObject){
+		var bundledSku = this.newSkuBundle();
+		bundledSku.setBundledSku(arguments.processObject.getBundleSku());
+		bundledSku.setBundledQuantity(arguments.processObject.getQuantity());
+
+		if(!isNull(arguments.processObject.getMeasurementUnit())){
+			bundledSku.setMeasurementUnit(this.getMeasurementUnitByUnitCode(arguments.processObject.getMeasurementUnit()));
+		}
+
+		bundledSku.setSku(arguments.sku);
+		this.saveSkuBundle(bundledSku);
+		return sku;
+	}
+
 	// TODO [paul]: makeup / breakup
 	public any function processSku_MakeupBundledSkus(required any sku, required any processObject) {
 
@@ -470,22 +485,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		makeupItem.setQuantity( arguments.processObject.getQuantity() );
 		makeupItem.setToStock( makeupStock );
 
+		var makeupItemCost = 0;
 		// Loop over every bundledSku
-		for(bundledSku in arguments.entity.getBundledSkus()) {
+		for(var bundledSku in arguments.entity.getBundledSkus()) {
 
 			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+			var makeupQuantity = bundledSku.getNativeUnitQuantityFromBundledQuantity() * arguments.processObject.getQuantity();
 
-			var makeupItem = getStockService().newStockAdjustmentItem();
-			makeupItem.setStockAdjustment( stockAdjustment );
-			makeupItem.setQuantity( bundledSku.getBundledQuantity() );
-			makeupItem.setFromStock( thisStock );
+			if(thisStock.getQATS() >=  makeupQuantity){
 
+				var bundleItem = getStockService().newStockAdjustmentItem();
+				bundleItem.setStockAdjustment( stockAdjustment );
+				bundleItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity() );
+				bundleItem.setCost(bundledSku.getBundledSku().getAverageCost());
+				bundleItem.setFromStock( thisStock );
+
+				makeupItemCost += bundleItem.getCost() * bundleItem.getQuantity();
+			}else{
+				arguments.sku.addError('stock','not enough inventory at location to makeup');
+				break;
+			}
 		}
 
-		getStockService().saveStockAdjustment(stockAdjustment);
+		makeupItem.setCost(makeupItemCost);
 
-		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
-
+		if(!sku.hasErrors()){
+			getStockService().saveStockAdjustment(stockAdjustment);
+			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+			getHibachiScope().addModifiedEntity(arguments.sku);
+		}
+		
 		return arguments.sku;
 	}
 
@@ -498,30 +527,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
 
 		var breakupStock = getStockService().getStockBySkuAndLocation( sku=arguments.sku, location=arguments.processObject.getLocation() );
-
-		var breakupItem = getStockService().newStockAdjustmentItem();
-		breakupItem.setStockAdjustment( stockAdjustment );
-		breakupItem.setQuantity( arguments.processObject.getQuantity() );
-		breakupItem.setFromStock( breakupStock );
-
-		// Loop over every bundledSku
-		for(bundledSku in arguments.entity.getBundledSkus()) {
-
-			var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
-
+		
+		if(breakupStock.getQATS() >= arguments.processObject.getQuantity()){
 			var breakupItem = getStockService().newStockAdjustmentItem();
 			breakupItem.setStockAdjustment( stockAdjustment );
-			breakupItem.setQuantity( bundledSku.getBundledQuantity() );
-			breakupItem.setToStock( thisStock );
-
+			breakupItem.setQuantity( arguments.processObject.getQuantity() );
+			breakupItem.setFromStock( breakupStock );
+			
+			// Loop over every bundledSku
+			for(var bundledSku in arguments.entity.getBundledSkus()) {
+				
+				var thisStock = getStockService().getStockBySkuAndLocation( sku=bundledSku.getBundledSku(), location=arguments.processObject.getLocation() );
+	
+				var bundleItem = getStockService().newStockAdjustmentItem();
+				bundleItem.setStockAdjustment( stockAdjustment );
+				bundleItem.setQuantity( bundledSku.getNativeUnitQuantityFromBundledQuantity() * arguments.processObject.getQuantity() );
+				bundleItem.setToStock( thisStock );
+	
+			}
+		}else{
+			arguments.sku.addError('stock','not enough inventory at location to breakup');
 		}
-
-		getStockService().saveStockAdjustment(stockAdjustment);
-
-		stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+		
+		
+		if(!arguments.sku.hasErrors()){
+			getStockService().saveStockAdjustment(stockAdjustment);
+			stockAdjustment = getStockService().processStockAdjustment( stockAdjustment, {}, 'processAdjustment' );
+			getHibachiScope().addModifiedEntity(arguments.sku);
+		}
+		
 
 		return arguments.sku;
 
+	}
+
+	public any function processSku_createBOM(required any sku, required any processObject){
+		arguments.sku.setBundleFlag(1);
+		this.saveSku(arguments.sku);
+		return sku;
 	}
 
 

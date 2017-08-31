@@ -14,7 +14,7 @@ class SWListingSearchController {
     private newFilterPosition;
     private itemInUse;
     private getCollection;
-    private listingId;
+    private listingId; 
     public swListingDisplay;
     public searchableOptions;
 
@@ -44,6 +44,14 @@ class SWListingSearchController {
         this.configureSearchableColumns(this.selectedSearchColumn);
     }
 
+    public $onInit=()=>{
+        //snapshot searchable options in the beginning
+        this.searchableOptions = angular.copy(this.swListingDisplay.collectionConfig.columns);
+        this.selectedSearchColumn={title:'All'};
+
+        this.configureSearchableColumns(this.selectedSearchColumn);
+    }
+ 
     public selectSearchColumn = (column?)=>{
         this.selectedSearchColumn = column;
         this.configureSearchableColumns(column);
@@ -52,19 +60,37 @@ class SWListingSearchController {
         }
     };
 
-
-
     private search =()=>{
         if(this.searchText.length > 0 ){
             this.listingService.setExpandable(this.listingId, false);
         } else {
             this.listingService.setExpandable(this.listingId, true);
         }
-
         this.collectionConfig.setKeywords(this.searchText);
-        this.paginator.setCurrentPage(1);
-
+		this.paginator.setCurrentPage(1);
     };
+
+    private configureSearchableColumns=(column)=>{
+
+        var searchableColumn = "";
+        if(column.propertyIdentifier){
+            searchableColumn = column.propertyIdentifier;
+        //default to All columns
+        }
+
+        for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
+            if(searchableColumn.length){
+                if(searchableColumn === this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier){
+                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
+                }else{
+                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
+                }
+            }else{
+                this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
+            }
+        }
+    }
+>>>>>>> origin/develop
 
     private configureSearchableColumns=(column)=>{
 

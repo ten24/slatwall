@@ -28,7 +28,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			if(!entityCollectionRecordsCount){
 				throwNoAccess();				
 			}
-
 		}
 	}
 	
@@ -79,9 +78,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public string function getFileUrlByPropertyName(required string propertyName){
 		return getURLFromPath(invokeMethod('get#arguments.propertyName#UploadDirectory')) & invokeMethod('get#arguments.propertyName#');
 	}
+	
+	public boolean function getCalculatedUpdateRunFlag(){
+		if(structKeyExists(variables,'calculatedUpdateRunFlag')){
+			return variables.calculatedUpdateRunFlag;	
+		}
+		return false;
+	}
+	
+	public void function setCalculatedUpdateRunFlag(boolean calculatedUpdateRunFlagValue){
+		variables.calculatedUpdateRunFlag = arguments.calculatedUpdateRunFlagValue;
+	}
 
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(any runAgain=false) {
+	public void function updateCalculatedProperties(boolean runAgain=false) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;
@@ -683,8 +693,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var propertyCollection = this.invokeMethod('get#arguments.propertyName#CollectionList');
-		return propertyCollection.getRecordsCount();
+		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
+		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
+		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
+		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		var propertyCountName = '#arguments.propertyName#Count';
+		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
+		var records = propertyCollection.getRecords();
+		if(arraylen(records)){
+			return records[1][propertyCountName];
+		}else{
+			return 0;
+		}
 	}
 
 	public string function getPropertyIDList( required string propertyName, string delimiter = ',' ) {

@@ -695,6 +695,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
 
 			if(!isNull(accountAddress)) {
+				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
 			}
 		}
@@ -738,6 +739,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         
         if(!newOrderPayment.hasErrors()){
 			// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
+			getHibachiScope().flushORMSession();
 			arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
 			// Save the newOrderPayment

@@ -86,6 +86,12 @@ class CollectionConfig {
     public collection: any;
     public filterGroupAliasMap:any = {};
     public apiAction;
+    
+    
+    get collectionConfigString():string {
+        return angular.toJson(this.getCollectionConfig(false));
+    }
+    
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -174,8 +180,10 @@ class CollectionConfig {
         return this;
     };
 
-    public getCollectionConfig= ():any =>{
-        this.validateFilter(this.filterGroups);
+    public getCollectionConfig= (validate=true):any =>{
+        if(validate){
+            this.validateFilter(this.filterGroups);            
+        }
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -194,6 +202,8 @@ class CollectionConfig {
             orderBy:this.orderBy
         };
     };
+    
+    
 
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);
@@ -525,6 +535,9 @@ class CollectionConfig {
 
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         this.filterGroups[0].filterGroup.push(this.formatFilterGroup(filterGroup));
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -582,6 +595,9 @@ class CollectionConfig {
 
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -634,6 +650,9 @@ class CollectionConfig {
                 readOnly
             )
         );
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
     //orderByList in this form: "property|direction" concrete: "skuName|ASC"

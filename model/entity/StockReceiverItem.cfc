@@ -50,7 +50,7 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	
 	// Persistent Properties
 	property name="stockReceiverItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer";
+	property name="quantity" ormtype="float";
 	property name="cost" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	
@@ -64,6 +64,52 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	//nonpersistent properties
+	
+	
+	public any function getLandedCost(){
+		if(!isNull(getVendorOrderItem())){
+			var cost = 0;
+			if(!isNull(getCost())){
+				cost = getCost();
+			}
+			return cost + getLandingAmount();	
+		}
+		return 0;
+	}
+	
+	public any function getLandingAmount(){
+		
+		if(
+			!isNull(getVendorOrderItem()) 
+			&& !isNull(getVendorOrderItem().getVendorOrder())
+			&& !isNull(getVendorOrderItem().getVendorOrder().getCostDistributionType())
+		){
+			switch(getVendorOrderItem().getVendorOrder().getCostDistributionType()){
+				case "quantity":
+					return getLandingAmountByQuantity();
+				case "cost":
+					return getLandingAmountByCost();
+				case "weight":
+					return getLandingAmountByWeight();
+			}
+		}
+		
+		return 0;
+	}
+	
+	public numeric function getLandingAmountByQuantity(){
+		return getVendorOrderItem().getLandingAmountByQuantity();
+	}
+	
+	public numeric function getLandingAmountByCost(){
+		return getVendorOrderItem().getLandingAmountByCost();
+	}
+	
+	public numeric function getLandingAmountByWeight(){
+		return getVendorOrderItem().getLandingAmounByWeight();
+	}
 	
 	private boolean function hasOneAndOnlyOneRelatedItem() {
     	var relationshipCount = 0;
@@ -167,6 +213,7 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 		}
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
+		
 	}
 	
 	public void function preUpdate(Struct oldData){
