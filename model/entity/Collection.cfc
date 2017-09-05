@@ -1965,9 +1965,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		applyPermissions();
 		if(arguments.formatRecords){
-			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
-
-			variables.pageRecords =	formattedRecords;
+			//If we are caching this (someone set setCacheable(true) on the collectionList)
+			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue("pageRecords-#getCacheName()#")){
+				variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-#getCacheName()#");
+			
+			} else {
+				
+				var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
+				variables.pageRecords =	formattedRecords;
+				
+				//If this is cacheable but we don't have a cached value, then set one.
+				if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-#getCacheName()#")){
+					getService("hibachiCacheService").setCachedValue("pageRecords-#getCacheName()#", variables.pageRecords);
+				}
+			}
 		}else{
 			try{
 
@@ -2132,6 +2143,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 								variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 							}
+							
 							//If we are caching this (someone set setCacheable(true) on the collectionList)
 							if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
 								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
@@ -2144,6 +2156,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
 								}
 							}
+							
 							if( getDirtyReadFlag() ) {
 								variables.connection.setTransactionIsolation(currentTransactionIsolation);
 							}
