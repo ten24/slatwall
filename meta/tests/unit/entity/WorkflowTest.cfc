@@ -74,10 +74,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		createPersistedTestEntity('product', productData);
 	}
 
+
+
 	/**
 	* @test
 	*/
-	public void function setupWorkflow() {
+	public void function ScheduledWorkflowAndEntityQueueProcessingTest() {
+
+
+		// Mock process Method
+		request.slatwallScope.getService("skuService").processSku_workflowtest = function(required any Sku, required struct data){
+			writedump('AHAHAH!');
+		};
 
 		// Mock Workflow Data;
 		var workflowData = {
@@ -89,12 +97,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				workflowTaskID = '',
 				activeFlag = true,
 				taskName = 'Dummy Task',
-				taskConditionsConfig = '',
+				taskConditionsConfig = '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"Sku","baseEntityName":"Sku"}',
 				workflowTaskActions = [{
 					workflowTaskActionID = '',
-					actionType = '',
-					updateData = '',
-					processMethod = '',
+					actionType = 'process',
+					processMethod = 'processSku_workflowtest',
 					emailTemplate = ''
 				}]
 			}],
@@ -106,14 +113,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(arraylen(workflow.getWorkflowTasks()));
 
 
-		// Mock Workflow Trigger Data;
+		// Mock Workflow Trigger Data to run now.
 		var workflowTriggerData = {
 			workflowTriggerID = '',
-			triggerType = '',
+			triggerType = 'Schedule',
 			objectPropertyIdentifier = '',
 			triggerEvent = '',
 			triggerEventTitle = '',
-			startDateTime = DateAdd("d", -1, Now())
+			startDateTime = DateAdd("d", -1, Now()),
+			nextRunDateTime = dateAdd('n', -1, now())
 		};
 		// Create Workflow Trigger Object
 		var workflowTrigger = createPersistedTestEntity('WorkflowTrigger', workflowTriggerData);
@@ -132,9 +140,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var schedule = createPersistedTestEntity('Schedule', scheduleData);
 		workflowTrigger.setSchedule(schedule);
 
-		// set workflow trigger to run now
-		workflowTrigger.setNextRunDateTime(dateAdd('n', -1, now()));
-
 		var collection = request.slatwallScope.getService("skuService").getSkuCollectionList();
 
 		var uniqueProductDescription = createUUID();
@@ -145,10 +150,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//Add Filter By our new product
 		collection.setDisplayProperties('skuID');
 		collection.addFilter('product.productDescription', uniqueProductDescription);
-		collection.setCollectionConfig(serializeJSON(collection.getCollectioNConfigStruct()));
 
 		//Assert Sku was created
 		assert(collection.getRecordsCount() == 50);
+
+		var collectionData = {
+			collectionID = '',
+			collectionName = 'Dummy Collection',
+			collectionObject = 'Sku',
+			collectionConfig = serializeJSON(collection.getCollectionConfigStruct())
+		};
+
+		// Create Collection Object
+		var collection = createPersistedTestEntity('Collection', collectionData);
 
 		//set the collection to
 		workflowTrigger.setScheduleCollection(collection);
@@ -158,6 +172,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//Asset Workflow Triggers
 		assert(arraylen(workflow.getWorkflowTriggers()));
+
+		request.slatwallScope.getService("workflowService").runWorkflowTriggerById(workflowTrigger.getWorkflowTriggerID());
+
+
+
+		// START QUEUE PROCESSING LOGIC
+
 
 
 

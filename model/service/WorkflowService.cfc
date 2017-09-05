@@ -190,52 +190,58 @@ component extends="HibachiService" accessors="true" output="false" {
 			var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
 			//execute Collection and return only the IDs
 			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
+			var triggerCollectionResultCount =  ArrayLen(triggerCollectionResult);
+
+
 
 			//Loop Collection Data
-			for(var i=1; i <= ArrayLen(triggerCollectionResult); i++){
-				//get current ObjectID
+			for(var i=1; i <= triggerCollectionResultCount; i++) {
+
 				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
 				var currentObjectID = triggerCollectionResult[i][currentObjectPrimaryIDName];
-				var currentThreadName = "thread_#right(workflowTriggerID, 6)&i#";
 
-				thread action="run" name="#currentThreadName#" currentObjectName="#currentObjectName#" currentObjectID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#"{
-					//load Objects by id
+				if(currentObjectName != 'EntityQueue'){
+					//If not EntityQueue Workflow, add to the Queue
+					var queueObject = this.newEntityQueue();
+					queueObject.setBaseObject(currentObjectName);
+					queueObject.setBaseID(triggerCollectionResult[i][currentObjectPrimaryIDName]);
+					//Change to type?
+					queueObject.setEntityQueueType('workflow');
+					queueObject.setEntityQueueDateTime(now());
+					queueObject.setLogHistoryFlag(workflowTrigger.getSaveTriggerHistoryFlag());
+					queueObject.setWorkflowTrigger(arguments.workflowTrigger);
+					this.saveEntityQueue(queueObject);
 
-					var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
-					var processData = {
-						entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
-						workflowTrigger = workflowTrigger
-					};
+				}else{
+					//Otherwise process Queue
+					thread action="run" currentQueueID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#" {
 
-					//Call proccess method to execute Tasks
-					this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+						var queueObject = getHibachiScope().getEntity('EntityQueue', currentQueueID);
 
-					if(processData.entity.hasErrors()) {
-						throw("error");
-						//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
+						if(!isNull(queueObject) && !queueObject.getProcessingFlag()){
+							var incrementedTries = val(queueObject.getTriesCount()) + 1;
+							ORMExecuteQuery("UPDATE #getApplicationKey()#EntityQueue queue SET processingFlag=true WHERE entityQueueID = ? AND triesCount = ?", [currentQueueID, incrementedTries]);
+							getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+
+							var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
+							var processData = {
+								entity = getHibachiScope().getEntity(queueObject.getBaseObject(), queueObject.getBaseID()),
+								workflowTrigger = workflowTrigger
+							};
+
+							//Call proccess method to execute Tasks
+							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+
+							if(!getHibachiScope().getORMHasErrors()) {
+								getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+							}
+							// Commit audit queue
+							getHibachiScope().getService("hibachiAuditService").commitAudits();
+						}
 					}
-
-					if(!getHibachiScope().getORMHasErrors()) {
-						getHibachiScope().getDAO("hibachiDAO").flushORMSession();
-					}
-					// Commit audit queue
-					getHibachiScope().getService("hibachiAuditService").commitAudits();
-				}
-				threadJoin(currentThreadName);
-
-				//if there was any errors inside of the thread, propagate to catch
-				if(structKeyExists(evaluate(currentThreadName), 'error')){
-					writedump(evaluate(currentThreadName).error);
-					throw(evaluate(currentThreadName).error.message);
-					break;
 				}
 			}
 
-			if(!isNull(workflowTriggerHistory)){
-				// Update the workflowTriggerHistory
-				workflowTriggerHistory.setSuccessFlag( true );
-				workflowTriggerHistory.setResponse( "" );
-			}
 
 		} catch(any e){
 			if(!isNull(workflowTriggerHistory)) {
