@@ -2902,7 +2902,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public struct function getStateStruct() {
 		var stateStruct = {};
 		//TODO:change what the state variables are, evaluate the value of them
-		stateStruct.collectionConfig = duplicate(variables.collectionConfig);
+		stateStruct.collectionConfig = duplicate(variables.collectionConfigStruct);
 		stateStruct.keywords = duplicate(variables.keywords);
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
 
