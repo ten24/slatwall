@@ -214,7 +214,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				}else{
 					//Otherwise process Queue
-					thread action="run" currentQueueID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#" {
+					thread action="run" name="thread_#right(workflowTriggerID, 6)##i#" currentQueueID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#" {
 
 						var queueObject = getHibachiScope().getEntity('EntityQueue', currentQueueID);
 
