@@ -63,8 +63,8 @@ Notes:
 
 		public void function updateChildrenProductTypeNamePaths(required array productTypeIDs, required string previousProductTypeNamePath, required string newProductTypeNamePath ){
 			var queryService = new query();
-			arguments.contentIDs = listQualify(arguments.productTypeIDs,"'",",");
-			var sql = "UPDATE SwProductType pt SET productTypeNamePath=REPLACE(pt.productTypeNamePath,'#arguments.previousProductTypeNamePath#','#arguments.newProductTypeNamePath#') Where s.productTypeIDs IN (#arguments.productTypeIDs#) ";
+			arguments.productTypeIDsList = listQualify(arrayToList(arguments.productTypeIDs, ","),"'",",");
+			var sql = "UPDATE SwProductType pt SET productTypeNamePath=REPLACE(pt.productTypeNamePath,'#arguments.previousProductTypeNamePath#','#arguments.newProductTypeNamePath#') Where pt.productTypeID IN (#arguments.productTypeIDsList#) ";
 			queryService.execute(sql=sql);
 		}
 		
