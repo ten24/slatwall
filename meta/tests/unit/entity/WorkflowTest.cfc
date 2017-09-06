@@ -179,6 +179,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		// START QUEUE PROCESSING LOGIC
 
+			request.slatwallScope.getService("workflowService").runWorkflowTriggerById('');
+
 
 
 
