@@ -59,6 +59,7 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	property name="logHistoryFlag" ormtype="boolean" default="0";
 	property name="processingFlag" ormtype="boolean" default="0";
 	property name="triesCount" ormtype="integer" default="0";
+	property name="startProcessingDateTime" ormtype="timestamp";
 
 	// Related Object Properties (many-to-one)
 	
@@ -88,6 +89,14 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+
+	public void function success(){
+
+	}
+
+	public void function failed(){
+
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

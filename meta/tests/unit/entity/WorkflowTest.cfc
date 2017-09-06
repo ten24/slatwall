@@ -81,10 +81,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function ScheduledWorkflowAndEntityQueueProcessingTest() {
 
+		var finalUUID = createUUID();
+
 
 		// Mock process Method
-		request.slatwallScope.getService("skuService").processSku_workflowtest = function(required any Sku, required struct data){
-			writedump('AHAHAH!');
+		request.slatwallScope.getService("skuService").processSku_workflowtest = function(required any sku, required struct data = {}){
+			sku.setSkuCode(finalUUID);
+			return sku;
 		};
 
 		// Mock Workflow Data;
@@ -178,10 +181,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 		// START QUEUE PROCESSING LOGIC
-
-			request.slatwallScope.getService("workflowService").runWorkflowTriggerById('');
-
-
+		request.slatwallScope.getService("workflowService").runWorkflowTriggerById('0089415672933e4687bbb92af51cbd04');
 
 
 	}

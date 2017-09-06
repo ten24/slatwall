@@ -183,22 +183,30 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 
-		try{
+		//try{
 
 			//get workflowTriggers Object
 			var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 			var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
-			//execute Collection and return only the IDs
-			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(arguments.workflowTrigger.getCollectionFetchSize());
+			var collectionFetchSize = val(arguments.workflowTrigger.getCollectionFetchSize());
+
+
+			var triggerCollectionResult = [];
+			if(currentObjectName != 'EntityQueue') {
+				triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(collectionFetchSize);
+			}else{
+				if(collectionFetchSize > 0) {
+					arguments.workflowTrigger.getScheduleCollection().setPageRecordsShow(collectionFetchSize);
+					triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPageRecords(formatRecords = false);
+				}else{
+					triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getRecords(formatRecords=false);
+				}
+			}
+
 			var triggerCollectionResultCount =  ArrayLen(triggerCollectionResult);
-
-
 
 			//Loop Collection Data
 			for(var i=1; i <= triggerCollectionResultCount; i++) {
-
-				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
-				var currentObjectID = triggerCollectionResult[i][currentObjectPrimaryIDName];
 
 				if(currentObjectName != 'EntityQueue'){
 					//If not EntityQueue Workflow, add to the Queue
@@ -214,43 +222,76 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				}else{
 					//Otherwise process Queue
-					thread action="run" name="thread_#right(workflowTriggerID, 6)##i#" currentQueueID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#" {
 
-						var queueObject = getHibachiScope().getEntity('EntityQueue', currentQueueID);
+					if(!triggerCollectionResult[i]['processingFlag'] && triggerCollectionResult[i]['entityQueueType'] == 'workflow'){
 
-						if(!isNull(queueObject) && !queueObject.getProcessingFlag()){
-							var incrementedTries = val(queueObject.getTriesCount()) + 1;
-							ORMExecuteQuery("UPDATE #getApplicationKey()#EntityQueue queue SET processingFlag=true WHERE entityQueueID = ? AND triesCount = ?", [currentQueueID, incrementedTries]);
-							getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+						var queueObject = getHibachiScope().getEntity('EntityQueue', triggerCollectionResult[i][currentObjectPrimaryIDName]);
+						queueObject.setProcessingFlag(true);
+						queueObject.setStartProcessingDateTime(now());
+						queueObject.setTriesCount(val(queueObject.getTriesCount()) + 1);
+						getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 
-							var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
-							var processData = {
-								entity = getHibachiScope().getEntity(queueObject.getBaseObject(), queueObject.getBaseID()),
-								workflowTrigger = workflowTrigger
-							};
+						//thread action="run" name="thread_#right(queueObject.getEntityQueueID(), 6)&i#" currentObjectName="#queueObject.getBaseObject()#" currentObjectID="#queueObject.getBaseID()#" workflowTriggerID="#queueObject.getWorkflowTrigger().getWorkflowTriggerID()#" entityQueueID="#queueObject.getEntityQueueID()#"{
+						var entityQueueID = queueObject.getEntityQueueID();
+						var currentObjectID = queueObject.getBaseID();
+						var currentObjectName = queueObject.getBaseObject();
+						var workflowTriggerID = queueObject.getWorkflowTrigger().getWorkflowTriggerID();
+							//try{
+								var currentQueue = getHibachiScope().getEntity('EntityQueue', entityQueueID);
+								var currentWorkflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
+								var processData = {
+									entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
+									workflowTrigger = currentWorkflowTrigger
+								};
 
-							//Call proccess method to execute Tasks
-							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+								//Call proccess method to execute Tasks
+								this.processWorkflow(currentWorkflowTrigger.getWorkflow(), processData, 'execute');
 
-							if(!getHibachiScope().getORMHasErrors()) {
-								getHibachiScope().getDAO("hibachiDAO").flushORMSession();
-							}
-							// Commit audit queue
-							getHibachiScope().getService("hibachiAuditService").commitAudits();
-						}
+								if(!getHibachiScope().getORMHasErrors()) {
+									//Refactor
+									var entityQueueHistory = this.newEntityQueueHistory();
+									entityQueueHistory.setEntityQueueType(currentQueue.getEntityQueueType());
+									entityQueueHistory.setBaseObject(currentQueue.getBaseObject());
+									entityQueueHistory.setBaseID(currentQueue.getBaseID());
+									entityQueueHistory.setEntityQueueHistoryDateTime(currentQueue.getEntityQueueDateTime());
+									entityQueueHistory.setSuccessFlag(true);
+									entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
+
+									this.deleteEntityQueue(currentQueue);
+
+									getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+								}
+								// Commit audit queue
+								getHibachiScope().getService("hibachiAuditService").commitAudits();
+
+							//}catch(any e){
+								//queueObject.setProcessingFlag(false);
+								//queueObject = this.saveEntityQueue(queueObject);
+								////Refactor
+								//var entityQueueHistory = this.newEntityQueueHistory();
+								//entityQueueHistory.setEntityQueueType(currentQueue.getEntityQueueType());
+								//entityQueueHistory.setBaseObject(currentQueue.getBaseObject());
+								//entityQueueHistory.setBaseID(currentQueue.getBaseID());
+								//entityQueueHistory.setEntityQueueHistoryDateTime(currentQueue.getEntityQueueDateTime());
+								//entityQueueHistory.setSuccessFlag(false);
+								//entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
+							//}
+						//}
+					}else if(triggerCollectionResult[i]['processingFlag'] && ){
+
 					}
 				}
 			}
 
 
-		} catch(any e){
-			if(!isNull(workflowTriggerHistory)) {
-				// Update the workflowTriggerHistory
-				workflowTriggerHistory.setSuccessFlag(false);
-				workflowTriggerHistory.setResponse(e.Message);
-				workflowTrigger.setWorkflowTriggerException(e);
-			}
-		}
+		//} catch(any e){
+			//if(!isNull(workflowTriggerHistory)) {
+				//// Update the workflowTriggerHistory
+				//workflowTriggerHistory.setSuccessFlag(false);
+				//workflowTriggerHistory.setResponse(e.Message);
+				//workflowTrigger.setWorkflowTriggerException(e);
+			//}
+		//}
 
 		//Change WorkflowTrigger runningFlag to FALSE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);

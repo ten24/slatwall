@@ -71,6 +71,19 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 		this.deleteEntityQueue(entityQueue);
 	}
 
+	public void function deQueue(required any entityQueue, required boolean success){
+		var entityQueueHistory = this.newEntityQueueHistory();
+		entityQueueHistory.setEntityQueueType(arguments.entityQueue.getEntityQueueType());
+		entityQueueHistory.setBaseObject(arguments.entityQueue.getBaseObject());
+		entityQueueHistory.setBaseID(arguments.entityQueue.getBaseID());
+		entityQueueHistory.setEntityQueueHistoryDateTime(arguments.entityQueue.getEntityQueueDateTime());
+		entityQueueHistory.setSuccessFlag(arguments.success);
+		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
+		if(success){
+			this.deleteEntityQueue(entityQueue);
+		}
+	}
+
 	public any function processEntityQueue_executeQueue(required any entityQueue, any processObject) {
 		//call process from Queued Entity
 		var entityService = getServiceByEntityName( entityName=arguments.entityQueue.getBaseObject());

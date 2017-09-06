@@ -56,9 +56,11 @@ component entityname="SlatwallEntityQueueHistory" table="SwEntityQueueHistory" p
 	property name="entityQueueData" ormtype="string" length="8000";
 	property name="entityQueueHistoryDateTime" ormtype="timestamp";
 	property name="successFlag" ormtype="boolean";
+	property name="triesCount" ormtype="integer" default="0";
 	// Related Object Properties (many-to-one)
 	
 	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	property name="workflowTrigger" hb_populateEnabled="public" cfc="WorkflowTrigger" fieldtype="many-to-one" fkcolumn="workflowTriggerID";
 
 	// Related Object Properties (one-to-many)
 
