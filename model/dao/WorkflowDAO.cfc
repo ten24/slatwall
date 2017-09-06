@@ -106,6 +106,20 @@ Notes:
 			</cfif> 
 		</cfquery>
 	</cffunction>
+
+
+	<cffunction name="setProcessingQueue">
+		<cfargument name="entityQueueIDs" required="true" type="string" />
+
+		<cfquery name="local.rs">
+			UPDATE SwEntityQueue
+			SET
+				processingFlag = true,
+				triesCount = COALESCE(triesCount, 0) + 1,
+				startProcessingDateTime = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
+			WHERE entityQueueID IN ( <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.entityQueueIDs#" list="true"> )
+		</cfquery>
+	</cffunction>
 	
 </cfcomponent>
 

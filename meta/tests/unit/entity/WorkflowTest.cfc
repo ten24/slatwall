@@ -81,12 +81,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function ScheduledWorkflowAndEntityQueueProcessingTest() {
 
-		var finalUUID = createUUID();
-
-
 		// Mock process Method
 		request.slatwallScope.getService("skuService").processSku_workflowtest = function(required any sku, required struct data = {}){
-			sku.setSkuCode(finalUUID);
 			return sku;
 		};
 
@@ -179,10 +175,34 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.slatwallScope.getService("workflowService").runWorkflowTriggerById(workflowTrigger.getWorkflowTriggerID());
 
 
+		var queueCollection = request.slatwallScope.getService("hibachiEntityQueueService").getEntityQueueCollectionList();
+		queueCollection.addFilter('workflowTrigger.workflowTriggerID', workflowTrigger.getWorkflowTriggerID());
+
+		// Should have 50 items in the queue
+		assert(queueCollection.getRecordsCount() == 50);
+
 
 		// START QUEUE PROCESSING LOGIC
+
+		var totalQueueCollection = request.slatwallScope.getService("hibachiEntityQueueService").getEntityQueueCollectionList();
+		queueCollection.addFilter('processingFlag', false);
+		var totalQueueBeforeRun = totalQueueCollection.getRecordsCount();
+
+
+		var queueHistoryCollection = request.slatwallScope.getService("hibachiEntityQueueService").getEntityQueueHistoryCollectionList();
+		var historyQueueBeforeRun = queueHistoryCollection.getRecordsCount();
+
 		request.slatwallScope.getService("workflowService").runWorkflowTriggerById('0089415672933e4687bbb92af51cbd04');
 
+		threadjoin();
+
+		//Make sure 5 items was removed from QUEUE
+		var totalQueueAfterRun = totalQueueCollection.getRecordsCount(true);
+		assert(totalQueueBeforeRun - totalQueueAfterRun == 5);
+
+		//Make Sure 5 Items was added to Queue History
+		var historyQueueAfterRun = queueHistoryCollection.getRecordsCount(true);
+		assert(historyQueueAfterRun - historyQueueBeforeRun == 5);
 
 	}
 

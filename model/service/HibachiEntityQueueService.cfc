@@ -78,6 +78,13 @@ component extends="Slatwall.org.Hibachi.HibachiEntityQueueService" persistent="f
 		entityQueueHistory.setBaseID(arguments.entityQueue.getBaseID());
 		entityQueueHistory.setEntityQueueHistoryDateTime(arguments.entityQueue.getEntityQueueDateTime());
 		entityQueueHistory.setSuccessFlag(arguments.success);
+		entityQueueHistory.setTriesCount(val(entityQueue.getTriesCount()));
+		if(!isNull(entityQueue.getWorkflowTrigger())){
+			entityQueueHistory.setWorkflowTrigger(entityQueue.getWorkflowTrigger());
+		}
+		if(!isNull(entityQueue.getIntegration())){
+			entityQueueHistory.setIntegration(entityQueue.getIntegration());
+		}
 		entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
 		if(success){
 			this.deleteEntityQueue(entityQueue);

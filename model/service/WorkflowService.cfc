@@ -181,34 +181,22 @@ component extends="HibachiService" accessors="true" output="false" {
 			getHibachiDAO().flushORMSession();
 		}
 
-
-
 		//try{
 
 			//get workflowTriggers Object
-			var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
-			var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
-			var collectionFetchSize = val(arguments.workflowTrigger.getCollectionFetchSize());
-
-
-			var triggerCollectionResult = [];
-			if(currentObjectName != 'EntityQueue') {
-				triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(collectionFetchSize);
-			}else{
-				if(collectionFetchSize > 0) {
-					arguments.workflowTrigger.getScheduleCollection().setPageRecordsShow(collectionFetchSize);
-					triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPageRecords(formatRecords = false);
-				}else{
-					triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getRecords(formatRecords=false);
-				}
+			if(isnull( arguments.workflowTrigger.getScheduleCollection())){
+				throw('No Collection Found!');
 			}
+			var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 
-			var triggerCollectionResultCount =  ArrayLen(triggerCollectionResult);
+			if(currentObjectName != 'EntityQueue') {
+				var currentObjectPrimaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(currentObjectName);
+				var collectionFetchSize = val(arguments.workflowTrigger.getCollectionFetchSize());
+				var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs(collectionFetchSize);
+				var triggerCollectionResultCount =  ArrayLen(triggerCollectionResult);
 
-			//Loop Collection Data
-			for(var i=1; i <= triggerCollectionResultCount; i++) {
-
-				if(currentObjectName != 'EntityQueue'){
+				//Loop Collection Data
+				for(var i=1; i <= triggerCollectionResultCount; i++) {
 					//If not EntityQueue Workflow, add to the Queue
 					var queueObject = this.newEntityQueue();
 					queueObject.setBaseObject(currentObjectName);
@@ -220,67 +208,9 @@ component extends="HibachiService" accessors="true" output="false" {
 					queueObject.setWorkflowTrigger(arguments.workflowTrigger);
 					this.saveEntityQueue(queueObject);
 
-				}else{
-					//Otherwise process Queue
-
-					if(!triggerCollectionResult[i]['processingFlag'] && triggerCollectionResult[i]['entityQueueType'] == 'workflow'){
-
-						var queueObject = getHibachiScope().getEntity('EntityQueue', triggerCollectionResult[i][currentObjectPrimaryIDName]);
-						queueObject.setProcessingFlag(true);
-						queueObject.setStartProcessingDateTime(now());
-						queueObject.setTriesCount(val(queueObject.getTriesCount()) + 1);
-						getHibachiScope().getDAO("hibachiDAO").flushORMSession();
-
-						//thread action="run" name="thread_#right(queueObject.getEntityQueueID(), 6)&i#" currentObjectName="#queueObject.getBaseObject()#" currentObjectID="#queueObject.getBaseID()#" workflowTriggerID="#queueObject.getWorkflowTrigger().getWorkflowTriggerID()#" entityQueueID="#queueObject.getEntityQueueID()#"{
-						var entityQueueID = queueObject.getEntityQueueID();
-						var currentObjectID = queueObject.getBaseID();
-						var currentObjectName = queueObject.getBaseObject();
-						var workflowTriggerID = queueObject.getWorkflowTrigger().getWorkflowTriggerID();
-							//try{
-								var currentQueue = getHibachiScope().getEntity('EntityQueue', entityQueueID);
-								var currentWorkflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
-								var processData = {
-									entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
-									workflowTrigger = currentWorkflowTrigger
-								};
-
-								//Call proccess method to execute Tasks
-								this.processWorkflow(currentWorkflowTrigger.getWorkflow(), processData, 'execute');
-
-								if(!getHibachiScope().getORMHasErrors()) {
-									//Refactor
-									var entityQueueHistory = this.newEntityQueueHistory();
-									entityQueueHistory.setEntityQueueType(currentQueue.getEntityQueueType());
-									entityQueueHistory.setBaseObject(currentQueue.getBaseObject());
-									entityQueueHistory.setBaseID(currentQueue.getBaseID());
-									entityQueueHistory.setEntityQueueHistoryDateTime(currentQueue.getEntityQueueDateTime());
-									entityQueueHistory.setSuccessFlag(true);
-									entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
-
-									this.deleteEntityQueue(currentQueue);
-
-									getHibachiScope().getDAO("hibachiDAO").flushORMSession();
-								}
-								// Commit audit queue
-								getHibachiScope().getService("hibachiAuditService").commitAudits();
-
-							//}catch(any e){
-								//queueObject.setProcessingFlag(false);
-								//queueObject = this.saveEntityQueue(queueObject);
-								////Refactor
-								//var entityQueueHistory = this.newEntityQueueHistory();
-								//entityQueueHistory.setEntityQueueType(currentQueue.getEntityQueueType());
-								//entityQueueHistory.setBaseObject(currentQueue.getBaseObject());
-								//entityQueueHistory.setBaseID(currentQueue.getBaseID());
-								//entityQueueHistory.setEntityQueueHistoryDateTime(currentQueue.getEntityQueueDateTime());
-								//entityQueueHistory.setSuccessFlag(false);
-								//entityQueueHistory = this.saveEntityQueueHistory(entityQueueHistory);
-							//}
-						//}
-					}else if(triggerCollectionResult[i]['processingFlag'] && ){
-
-					}
 				}
+			}else{
+				runQueuedWorkflow(arguments.workflowTrigger);
 			}
 
 
@@ -320,6 +250,63 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
 		return workflowTrigger;
+	}
+
+	private void function runQueuedWorkflow(required any workflowTrigger) {
+
+		var triggerCollectionResult = [];
+		var collectionFetchSize = val(arguments.workflowTrigger.getCollectionFetchSize());
+		if (collectionFetchSize > 0) {
+				arguments.workflowTrigger.getScheduleCollection().setPageRecordsShow(collectionFetchSize);
+			triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPageRecords(formatRecords = false);
+		} else {
+			triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getRecords(formatRecords = false);
+		}
+		var triggerCollectionResultCount =  ArrayLen(triggerCollectionResult);
+		var processingQueueIDs = '';
+		var processingQueues = [];
+
+
+		for (var i = 1; i <= triggerCollectionResultCount; i++) {
+			if (!structKeyExists(triggerCollectionResult[i], 'processingFlag') || !triggerCollectionResult[i]['processingFlag']) {
+				processingQueueIDs = listAppend(processingQueueIDs, triggerCollectionResult[i]['entityQueueID']);
+				arrayAppend(processingQueues, triggerCollectionResult[i]);
+			}
+		}
+
+		if(!listLen(processingQueueIDs)){
+			return;
+		}
+		//Set processingFlag
+		getWorkflowDAO().setProcessingQueue(processingQueueIDs);
+
+		for(var currentQueue in processingQueues){
+
+			thread action="run" name="thread_#right(currentQueue['entityQueueID'], 6)&i#" entityQueueID="#currentQueue['entityQueueID']#"{
+				try{
+					var currentQueue = getHibachiScope().getEntity('EntityQueue', entityQueueID);
+					var workflowTriggerID = currentQueue.getWorkflowTrigger().getWorkflowTriggerID();
+					var currentWorkflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
+					var processData = {
+						entity = getHibachiScope().getEntity(currentQueue.getBaseObject(), currentQueue.getBaseID()),
+						workflowTrigger = currentWorkflowTrigger
+					};
+
+					//Call proccess method to execute Tasks
+					this.processWorkflow(currentWorkflowTrigger.getWorkflow(), processData, 'execute');
+					getHibachiScope().getService("HibachiEntityQueueService").deQueue(currentQueue, true);
+
+				}catch(any e){
+					getHibachiScope().getService("HibachiEntityQueueService").deQueue(currentQueue, false);
+				}
+				if (!getHibachiScope().getORMHasErrors()) {
+					getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+				}
+				// Commit audit queue
+				getHibachiScope().getService("hibachiAuditService").commitAudits();
+			}
+		}
+
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, required any entity, required string type){
