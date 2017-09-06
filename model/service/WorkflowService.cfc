@@ -181,7 +181,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			getHibachiDAO().flushORMSession();
 		}
 
-		//try{
+		try{
 
 			//get workflowTriggers Object
 			if(isnull( arguments.workflowTrigger.getScheduleCollection())){
@@ -214,14 +214,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 
-		//} catch(any e){
-			//if(!isNull(workflowTriggerHistory)) {
-				//// Update the workflowTriggerHistory
-				//workflowTriggerHistory.setSuccessFlag(false);
-				//workflowTriggerHistory.setResponse(e.Message);
-				//workflowTrigger.setWorkflowTriggerException(e);
-			//}
-		//}
+		} catch(any e){
+			if(!isNull(workflowTriggerHistory)) {
+				// Update the workflowTriggerHistory
+				workflowTriggerHistory.setSuccessFlag(false);
+				workflowTriggerHistory.setResponse(e.Message);
+				workflowTrigger.setWorkflowTriggerException(e);
+			}
+		}
 
 		//Change WorkflowTrigger runningFlag to FALSE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
