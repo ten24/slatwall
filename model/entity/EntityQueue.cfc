@@ -90,14 +90,6 @@ component entityname="SlatwallEntityQueue" table="SwEntityQueue" persistent="tru
 
 	// ================== START: Overridden Methods ========================
 
-	public void function success(){
-
-	}
-
-	public void function failed(){
-
-	}
-
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
