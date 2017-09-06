@@ -156,7 +156,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		} while (runPopulation);
 
-		FileWrite(expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm', variables.insertedData);
+		FileWrite(expandPath('/#getHibachiScope().getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm', variables.insertedData);
 
 		return true;
 	}
