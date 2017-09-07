@@ -77,8 +77,48 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// ================= Overrides =================================
 	
-	public any function getCurrentRequestSite() {
-		var domain = listFirst(cgi.HTTP_HOST,':');
+	public any function getCurrentRequestSite(required string httpHost=cgi.HTTP_HOST) {
+		var domain = listFirst(arguments.httpHost,':');
+		var urlArray = listToArray(listFirst(listFirst(arguments.httpHost,'/'),':'),'.'); 
+		var www = ''; 
+		var subdomain = ''; 
+		var domainName = ''; 
+		var topLevelDomain = urlArray[arrayLen(urlArray)]; 
+		
+		if(lcase(urlArray[1]) == "www"){
+			www = 'www';	
+			if(arrayLen(urlArray) == 3){ 
+				//www.domainname.com
+				domainName = urlArray[2];	
+			} else if(arrayLen(urlArray) == 4){ 
+				//www.subdomain.domainname.com
+				subdomain = urlArray[2]; 
+				domainName = urlArray[3]; 
+			}   
+		} else {
+			//domainName (local)  
+			//subdomain.domainname (local) 
+			//subdomain.domainname.com
+			if(arrayLen(urlArray) >= 2){
+				subdomain = urlArray[1]; 	
+				domainName = urlArray[2]; 
+			} else { 
+				domainName = urlArray[1]; 
+			}
+		} 
+
+		if(len(subdomain) > 0){
+			domain = domainName; 
+			//topLevelDomain will be absent for local sites
+			if(topLeveldomain != domainName){ 
+				domain &= '.' & topLevelDomain;
+			} 	
+ 			var subdomainSite = getService('siteService').getDAO('siteDAO').getSiteBySubdomainNameAndDomainName(subdomain, domain);
+ 			if(!isNull(subdomainSite)){ 
+ 				return subdomainSite; 
+ 			}	
+ 		}
+		
 		return getDAO('siteDAO').getSiteByDomainName(domain);
 	}
 

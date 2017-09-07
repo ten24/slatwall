@@ -252,6 +252,69 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertFalse( structKeyExists(cd, "hushbuppy") );
 	}
+		
+	/**
+	* @test
+	*/
+	public void function getCurrentRequestSite_with_and_without_subdomain() { 
+		var integration = request.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('slatwallcms');
+		
+		var appData = {
+			appID ='',
+			appName='cms',
+			appCode="cms#createUuid()#",
+			integration={
+				integrationID=integration.getIntegrationID()
+			}
+		};
+	
+		var app = createTestEntity(entityName="app",data=appData,saveWithService=true);
+		request.slatwallScope.saveEntity( app, appData );
+		
+		var subdomainSiteData = {
+			siteid='',
+			siteName="#createUuid()#",
+			siteCode="#createUuid()#",
+			domainNames="domainName.com",
+			subdomainName="subdomain",
+			app={
+				appID=app.getAppID()
+			}
+		};
+		var subdomainSite = createTestEntity(entityName="site",data=subdomainSiteData,saveWithService=true);	
+
+		var siteData = {
+			siteid='',
+			siteName="#createUuid()#",
+			siteCode="#createUuid()#",
+			domainNames="domainName.com",
+			app={
+				appID=app.getAppID()
+			}
+		};	
+		var site = createTestEntity(entityName="site",data=siteData,saveWithService=true);
+	
+		var localSiteData = {
+			siteid='',
+			siteName="#createUuid()#",
+			siteCode="#createUuid()#",
+			domainNames="domainName",
+			app={
+				appID=app.getAppID()
+			}
+		};
+		var localSite = createTestEntity(entityName="site",data=localSiteData,saveWithService=true);	
+	
+		var test1 = request.slatwallScope.getCurrentRequestSite('subdomain.domainName.com/path/to/something');
+		var test2 = request.slatwallScope.getCurrentRequestSite('www.domainName.com/path/to/something');
+		var test3 = request.slatwallScope.getCurrentRequestSite('domainName:8900/path/to/something'); 
+
+		assertEquals(subdomainSite.getSiteID(), test1.getSiteID()); 
+		assertEquals(site.getSiteID(), test2.getSiteID()); 
+		assertEquals(localSite.getSiteID(), test3.getSiteID());
+
+		directoryDelete(site.getApp().getAppPath(),true);
+	} 
 	
 	/**
 	* @test
