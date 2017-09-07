@@ -49,8 +49,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			) 
 			|| pathArrayLen && pathArray[1] == 'api' 
 			|| (
-				structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender'))
-			){
+				structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender')
+			)
+		){
         		return;
         }
         //try to get a site form the domain name
@@ -106,17 +107,22 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				}
 			//if we are not using apps path
 			}else if(pathArrayLen && pathArray[1] != 'apps'){
-					
-				var urlTitlePathStartPosition = 1;
+				
+				var indexOffset = 0;
+				if(arguments.slatwallScope.getCurrentRequestSitePathType() == 'sitecode'){
+					indexOffset = 1;
+				}
+				
+				var urlTitlePathStartPosition = 1+indexOffset;
         		if(
-        			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[1]
-        			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[1]
-        			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[1]
+        			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[1+indexOffset]
+        			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[1+indexOffset]
+        			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[1+indexOffset]
         		){
-        			arguments.entityUrl = pathArray[1];
-        			urlTitlePathStartPosition = 2;
+        			arguments.entityUrl = pathArray[1+indexOffset];
+        			urlTitlePathStartPosition = 2+indexOffset;
         		}else{
-        			urlTitlePathStartPosition = 1;
+        			urlTitlePathStartPosition = 1+indexOffset;
         		}
         		arguments.contenturlTitlePath = '';
         		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
@@ -126,6 +132,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         				arguments.contenturlTitlePath &= pathArray[i] & '/';
         			}
         		}
+        		
 				var app = domainNameSite.getApp();
 				var site = domainNameSite;
        		}else{
