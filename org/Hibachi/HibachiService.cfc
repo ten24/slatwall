@@ -132,7 +132,7 @@
 			
 			// Announce the processContext specific  event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
-			
+
 			// Verify the preProcess
 			arguments.entity.validate( context=arguments.processContext );
 
@@ -1160,6 +1160,8 @@
 					entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
 				}
 				
+				
+				entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
 				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
 				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
 				switch(propertyMetaData.fieldtype){
@@ -1172,11 +1174,13 @@
 						break;
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
+				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier&'.'&primaryIDName);
 				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier&'.'&primaryIDName,'Count','count');
 				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
 			}else if(structKeyExists(propertyMetaData,'ormtype')) {
 				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
 					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
+					entityCollectionList.removeFilter(arguments.propertyIdentifier);
 				}
 				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
 				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
@@ -1189,7 +1193,7 @@
 						break;
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
-				
+				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
 				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier,'Count','count');
 				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
 			}
@@ -1227,17 +1231,87 @@
 					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
 				}
 				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+				var filterGroupIndex = arraylen(entityCollectionList.getCollectionConfigStruct().filterGroups);
+				entityCollectionList.setDisplayProperties('productID');
+				entityCollectionList.removeFilter(propertyIdentifier=arguments.propertyIdentifier,filterGroupIndex=filterGroupIndex);
 				if(structKeyExists(range,'minValue')){
 					entityCollectionList.addFilter(arguments.propertyIdentifier,range.minValue,'>=');
 				}
 				if(structKeyExists(range,'maxValue')){
 					entityCollectionList.addFilter(arguments.propertyIdentifier,range.maxValue,'<=');
 				}
+				//calling getRecords until getRecordsCount behaves correctly aka knowing when to group by
+				entityCollectionList.getRecords();
 				option['count'] = entityCollectionList.getRecordsCount();
 				arrayAppend(options,option);
 			}
 			
 			return options;
+		}
+		
+		public array function getSelectedOptionsByApplyData(required string entityName, required string propertyIdentifier){
+			var applyData = {};
+			for(var key in url){
+				if(key contains arguments.propertyIdentifier){
+					if(left(key,2)=='r:'){
+						var options = [];
+						
+						return options;
+					}
+					
+					var optionValues = url[key];
+					var entityCollectionList = getService('HibachiService').getCollectionList(arguments.entityName);
+					applyData[key] = url[key];
+					entityCollectionList.applyData(applyData);
+					entityCollectionList.setDistinct(true);
+					var displayProperties = '';
+					var propertyMetaData = {};
+					var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
+					var propsStruct = getPropertiesStructByEntityName(lastEntityName);
+					var relatedEntity = listLast(arguments.propertyIdentifier,'.');
+					propertyMetaData = propsStruct[relatedEntity];
+					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+						var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+						var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+					}
+					
+					var displayProperties = "";
+					if(structKeyExists(propertyMetaData,'fieldtype')){
+						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
+						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
+						switch(propertyMetaData.fieldtype){
+							case 'many-to-one':
+								break;
+							case 'one-to-many':
+								
+								break;
+							case 'many-to-many':
+								break;
+						}
+						entityCollectionList.setDisplayProperties(displayProperties);
+						entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
+						
+					}else if(structKeyExists(propertyMetaData,'ormtype')) {
+						
+						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
+						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
+						switch(propertyMetaData.ormtype){
+							case 'big_decimal':
+								break;
+							case 'string':
+								break;
+							case 'integer':
+								break;
+						}
+						entityCollectionList.setDisplayProperties(displayProperties);
+						entityCollectionList.setOrderBy(arguments.propertyIdentifier);
+						entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+					}
+					
+					return entityCollectionList.getRecords();
+				}
+			}
+			return [];
 		}
 		
 		

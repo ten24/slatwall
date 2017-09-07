@@ -101,7 +101,7 @@ Notes:
 
 		<cfif listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', attribute.getAttributeInputType())>
 
-			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
+			<cfset fdAttributes.valueOptionsCollectionList = attribute.getRelatedObjectCollectionConfig()/>
 
 			<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
 				<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />

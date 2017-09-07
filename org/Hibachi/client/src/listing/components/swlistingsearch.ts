@@ -7,14 +7,15 @@ class SWListingSearchController {
     private collectionConfig;
     private paginator;
     private searchText;
+    private backupColumnsConfig;
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
-    private showToggleFilters:boolean;
-    private showToggleDisplayOptions:boolean;
+    private showToggleFilters:boolean; 
+    private showToggleDisplayOptions:boolean; 
     private newFilterPosition;
     private itemInUse;
     private getCollection;
-    private listingId;
+    private listingId; 
     public swListingDisplay;
     public searchableOptions;
 
@@ -22,7 +23,7 @@ class SWListingSearchController {
     constructor(
         public $hibachi,
         public metadataService,
-        public listingService,
+        public listingService, 
         public collectionService,
         public observerService
     ) {
@@ -30,7 +31,7 @@ class SWListingSearchController {
             this.showToggleFilters = true;
         }
         if(angular.isUndefined(this.showToggleDisplayOptions)){
-            this.showToggleDisplayOptions = true;
+            this.showToggleDisplayOptions = true; 
         }
 
 
@@ -43,7 +44,7 @@ class SWListingSearchController {
 
         this.configureSearchableColumns(this.selectedSearchColumn);
     }
-
+ 
     public selectSearchColumn = (column?)=>{
         this.selectedSearchColumn = column;
         this.configureSearchableColumns(column);
@@ -53,7 +54,6 @@ class SWListingSearchController {
     };
 
 
-
     private search =()=>{
         if(this.searchText.length > 0 ){
             this.listingService.setExpandable(this.listingId, false);
@@ -61,8 +61,8 @@ class SWListingSearchController {
             this.listingService.setExpandable(this.listingId, true);
         }
 
-        this.collectionConfig.setKeywords(this.searchText);
-        this.paginator.setCurrentPage(1);
+            this.collectionConfig.setKeywords(this.searchText);
+            this.paginator.setCurrentPage(1);
 
     };
 
@@ -88,7 +88,6 @@ class SWListingSearchController {
     }
 
 
-
 }
 
 class SWListingSearch  implements ng.IDirective{
@@ -112,7 +111,7 @@ class SWListingSearch  implements ng.IDirective{
 
     //@ngInject
     constructor(
-        public scopeService,
+        public scopeService, 
         public collectionPartialsPath,
         public hibachiPathBuilder
     ){
@@ -125,7 +124,7 @@ class SWListingSearch  implements ng.IDirective{
             listingPartialPath,
             hibachiPathBuilder
         )=> new SWListingSearch(
-            scopeService,
+            scopeService, 
             listingPartialPath,
             hibachiPathBuilder
         );

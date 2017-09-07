@@ -84,6 +84,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	// @hint facade method to check the application scope for a value
+	public void function clearSessionValue(required any key) {
+		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
+			structDelete(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key);
+		}
+	}
+	
+	// @hint facade method to check the session scope for a value
 	public boolean function hasSessionValue(required any key) {
 		param name="session" default="#structNew()#";
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
@@ -93,16 +100,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return false;
 	}
 	
-	// @hint facade method to get values from the application scope
+	// @hint facade method to get values from the session scope
 	public any function getSessionValue(required any key) {
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
 			return session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
 		
-		throw("You have requested a value for '#arguments.key#' from the core application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
+		throw("You have requested a value for '#arguments.key#' from the session that does not exist.");
 	}
 	
-	// @hint facade method to set values in the application scope 
+	// @hint facade method to set values in the session scope 
 	public void function setSessionValue(required any key, required any value) {
 		var sessionKey = "";
 		if(structKeyExists(COOKIE, "JSESSIONID")) {
@@ -229,9 +236,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
 	}
 	
-	public void function flushORMSession(){
+	public void function flushORMSession(boolean runCalculatedPropertiesAgain=false){
 		if(!getORMHasErrors()) {
-			getDAO( "hibachiDAO" ).flushORMSession();
+			getDAO( "hibachiDAO" ).flushORMSession(argumentCollection=arguments);
 		}
 	}
 	
@@ -292,6 +299,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
+		param name="request.context" default="#structNew()#";
 		param name="request.context['messages']" default="#arrayNew(1)#";
 		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
 		var messageStruct = {};

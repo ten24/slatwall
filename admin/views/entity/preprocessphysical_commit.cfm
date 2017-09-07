@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,24 @@
 
 Notes:
 
-*/
-component extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO" persistent="false" accessors="true" output="false" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfparam name="rc.physical" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+
+<hb:HibachiEntityProcessForm entity="#rc.physical#" edit="#rc.edit#" sRedirectAction="admin:entity.detailphysical">
 	
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.physical#">
+	</hb:HibachiEntityActionBar>
 	
-	// ===================== START: Logical Methods ===========================
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="expenseLedgerAccountID" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+</hb:HibachiEntityProcessForm>
+

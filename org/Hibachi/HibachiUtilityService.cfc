@@ -9,6 +9,15 @@
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
 		}
 		
+		public string function lowerCaseToTitleCase(required string stringValue){
+			return REReplace(arguments.stringValue, "\b(\S)(\S*)\b", "\u\1\L\2", "all");
+		}
+		
+		public string function snakeCaseToTitleCase(required string stringValue){
+			arguments.stringValue = REReplace(stringValue,'-',' ','all');
+			return lowerCaseToTitleCase(arguments.stringValue);
+		}
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*
@@ -72,6 +81,13 @@
 			var currentThread = ThreadAPI.currentThread();
 
 			return currentThread.getThreadGroup().getName() == "cfthread";
+		}
+
+		public string function obfuscateValue(required string value){
+			if(len(value)){
+				return lcase(rereplace(CreateUUID(), '[^A-Z]', '', 'ALL'));
+			}
+			return '';
 		}
 
 		// @hint this method will sanitize a struct of data
@@ -237,6 +253,20 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
+  		
+	  	/**
+	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
+	    * Resources: 
+	    * 	https://github.com/google/google-authenticator/wiki/Conflicting-Accounts
+	    * 	https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+	    *
+	    * @param email the email address of the user account
+	    * @param key the Base32 encoded secret key to use in the code
+	    */
+	    public string function buildOTPUri(required string email, required string secretKey)
+	    {
+	        return "otpauth://totp/#getApplicationValue('applicationKey')#:#arguments.email#?secret=#arguments.secretKey#&issuer=#getApplicationValue('applicationKey')#";
+	    }
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};
@@ -565,6 +595,10 @@
 		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
+		}
+		
+		public string function getIdentityHashCode(required any value) {
+			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
 
 		public string function encryptValue(required string value, string salt="") {
