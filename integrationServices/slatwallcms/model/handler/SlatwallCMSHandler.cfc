@@ -58,6 +58,11 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		var domainNameSite = arguments.slatwallScope.getCurrentRequestSite();
       
        	if(!isNull(domainNameSite)){
+       		var indexOffset = 0;
+			if(arguments.slatwallScope.getCurrentRequestSitePathType() == 'sitecode'){
+				indexOffset = 1;
+			}
+       		
    			//render site via apps route
 	        if(pathArrayLen && pathArray[1] == 'apps'){
 	        	
@@ -106,12 +111,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 					}
 				}
 			//if we are not using apps path
-			}else if(pathArrayLen && pathArray[1] != 'apps'){
+			}else if(pathArrayLen - indexOffset && pathArray[1] != 'apps'){
 				
-				var indexOffset = 0;
-				if(arguments.slatwallScope.getCurrentRequestSitePathType() == 'sitecode'){
-					indexOffset = 1;
-				}
+				
 				
 				var urlTitlePathStartPosition = 1+indexOffset;
         		if(
