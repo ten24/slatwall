@@ -1118,14 +1118,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getCacheName() {
-		// Take the stateStruct, serialize it, and turn that list it into a an array
-		var valueArray = listToArray(serializeJSON(getStateStruct()));
-
-		// Sort the array so that the values always end up the same
-		arraySort(valueArray,"text");
-
-		// Turn the array back into a list, lcase, and hash for the name
-		return hash(lcase(arrayToList(valueArray,",")));
+		//If this is cacheable then check if the cachename has been set...
+		if (getCacheable()){
+			if (!structKeyExists(variables, "cacheName")){
+				
+				// Take the stateStruct, serialize it, and turn that list it into a an array
+				var valueArray = listToArray(serializeJSON(getStateStruct()));
+		
+				// Sort the array so that the values always end up the same
+				arraySort(valueArray,"text");
+				
+				// Turn the array back into a list, lcase, and hash for the name
+				variables.cacheName = hash(lcase(arrayToList(valueArray,",")));
+			}
+			return variables.cacheName;
+		}
+		return "";
 	}
 
 	//restrict allowed operators to prevent sql injection
@@ -1959,10 +1967,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
-		if (getCacheable()){
-			var cacheName = getCacheName();
-		}
-		
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
@@ -1970,8 +1974,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		applyPermissions();
 		if(arguments.formatRecords){
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
-			if (getCacheable() && !isNull(cacheName) && getService("hibachiCacheService").hasCachedValue("pageRecords-#cacheName#")){
-				variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-#cacheName#");
+			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue("pageRecords-#getCacheName()#")){
+				variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-#getCacheName()#");
 			
 			} else {
 				
@@ -1979,8 +1983,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.pageRecords =	formattedRecords;
 				
 				//If this is cacheable but we don't have a cached value, then set one.
-				if (getCacheable() && !isNull(cacheName) && !getService("hibachiCacheService").hasCachedValue("pageRecords-#cacheName#")){
-					getService("hibachiCacheService").setCachedValue("pageRecords-#cacheName#", variables.pageRecords);
+				if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-#getCacheName()#")){
+					getService("hibachiCacheService").setCachedValue("pageRecords-#getCacheName()#", variables.pageRecords);
 				}
 			}
 		}else{
@@ -2002,7 +2006,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL = 'SELECT DISTINCT(#entityAlias#) ' & getHQL(excludeGroupBy=true);
 							HQLParams = getHQLParams();
-							var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#cacheName#"});
+							var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
 
 							for(var entity in entities){
@@ -2036,19 +2040,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 							
 							//If we are caching this (someone set setCacheable(true) on the collectionList)
-							if (getCacheable() && !isNull(cacheName) && getService("hibachiCacheService").hasCachedValue(cacheName)){
-								variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-" & cacheName);
+							if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
+								variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-" & getCacheName());
 							
 							} else {
 								//Get the pageRecords
-								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#cacheName#"});	
+								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});	
 								
 								//If this is cacheable but we don't have a cached value yet, then set one.
-								if (getCacheable() && !isNull(cacheName) && !getService("hibachiCacheService").hasCachedValue("pageRecords-" & cacheName)){
-									getService("hibachiCacheService").setCachedValue("pageRecords-" & cacheName, variables.pageRecords);
+								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-" & getCacheName())){
+									getService("hibachiCacheService").setCachedValue("pageRecords-" & getCacheName(), variables.pageRecords);
 								}
 							}
-							variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#cacheName#"});
+							variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 							
 							if( getDirtyReadFlag() ) {
 								variables.connection.setTransactionIsolation(currentTransactionIsolation);
@@ -2095,22 +2099,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			clearRecordsCache();
 		}
 		
-		if (getCacheable()){
-			var cacheName = getCacheName();
-		}
-		
 		applyPermissions();		
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
-			if (getCacheable() && !isNull(cacheName) && getService("hibachiCacheService").hasCachedValue(cacheName)){
-				variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&cacheName);
+			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
+				variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 			} else {
 				//Get the pageRecords
 				variables.records =	formattedRecords;
 				//If this is cacheable but we don't have a cached value yet, then set one.
-				if (getCacheable() && !isNull(cacheName) && !getService("hibachiCacheService").hasCachedValue("records-" & cacheName)){
-					getService("hibachiCacheService").setCachedValue("records-" & cacheName, variables.records);
+				if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
+					getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
 				}
 			}
 		}else{
@@ -2127,7 +2127,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							variables.records = [];
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
-							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#cacheName#"});
+							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
 								var record = {};
@@ -2153,15 +2153,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 							
 							//If we are caching this (someone set setCacheable(true) on the collectionList)
-							if (getCacheable() && !isNull(cacheName) && getService("hibachiCacheService").hasCachedValue(cacheName)){
-								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&cacheName);
+							if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
+								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 							} else {
 								//Get the pageRecords
-								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#cacheName#"});
+								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 							
 								//If this is cacheable but we don't have a cached value yet, then set one.
-								if (getCacheable() && !isNull(cacheName) && !getService("hibachiCacheService").hasCachedValue("records-" & cacheName)){
-									getService("hibachiCacheService").setCachedValue("records-" & cacheName, variables.records);
+								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
+									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
 								}
 							}
 							
