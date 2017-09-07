@@ -72,14 +72,61 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="currentContent";
 	property name="currentProduct";
 	property name="currentProductType";
+	property name="currentDomain";
+	property name="currentRequestSite";
+	property name="currentRequestSitePathType" default="domain"; //enums: domain,sitecode
 	
 	property name="currentProductSmartList";
 	
 	// ================= Overrides =================================
 	
 	public any function getCurrentRequestSite() {
-		var domain = listFirst(cgi.HTTP_HOST,':');
-		return getDAO('siteDAO').getSiteByDomainName(domain);
+		
+		if(!structKeyExists(variables,'currentRequestSite')){
+			if ( len( getContextRoot() ) ) {
+				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+			} else {
+				var cgiScriptName = CGI.SCRIPT_NAME;
+				var cgiPathInfo = CGI.PATH_INFO;
+			}
+			var pathInfo = cgiPathInfo;
+			 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+	            // canonicalize for IIS:
+	            pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
+	        } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
+	            // pathInfo is bogus so ignore it:
+	            pathInfo = '';
+	        }
+	        //take path and  parse it
+	        var pathArray = listToArray(pathInfo,'/');
+	        var pathArrayLen = arrayLen(pathArray);
+    		
+    		if(pathArrayLen){
+    			
+    			variables.currentRequestSite = getService('siteService').getSiteBySiteCode(pathArray[1]);
+    		}
+        		
+			if(isNull(variables.currentRequestSite)){
+				var domain = getCurrentDomain();
+				variables.currentRequestSite = getDAO('siteDAO').getSiteByDomainName(domain);
+				setCurrentRequestSitePathType('domain');	
+			}else{
+				setCurrentRequestSitePathType('sitecode');
+			}
+		}
+		if(isNull(variables.currentRequestSite)){
+			return;
+		}
+		return variables.currentRequestSite;
+	}
+	
+	public string function getCurrentRequestSitePathType(){
+		return variables.currentRequestSitePathType;
+	}
+	
+	public void function setCurrentRequestSitePathType(required string currentRequestSitePathType){
+		variables.currentRequestSitePathType = arguments.currentRequestSitePathType;
 	}
 
 	public any function getCurrentDomain() {

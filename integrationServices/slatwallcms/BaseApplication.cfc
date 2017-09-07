@@ -228,7 +228,6 @@ Notes:
 		arguments.contentPath = contentPath;
 
 		arguments.renderActionInTemplate = arguments.slatwallScope.getContent().setting('contentRenderHibachiActionInTemplate');	
- 		
 		
 		var templateData = buildRenderedContent(argumentCollection=arguments);
 		if(arguments.renderActionInTemplate && structKeyExists(arguments, "actionResult")){
