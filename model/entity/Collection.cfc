@@ -2091,7 +2091,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables,'records');
 		structDelete(variables,'pageRecords');
 		structDelete(variables,'recordsCount');
-		if (getCachable()){
+		if (getCacheable()){
 			structDelete(variables,'cacheName');
 		}
 		
