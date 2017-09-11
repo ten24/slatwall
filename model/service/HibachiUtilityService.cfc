@@ -80,30 +80,6 @@ Notes:
 			return arguments.value & " " & getSettingService().getSettingValue("globalWeightUnitCode");
 		}
 
-		private string function getEncryptionKeyLocation() {
-			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
-			if(len(keyLocation)) {
-				if(right(keyLocation, 1) eq '/' or right(keyLocation, 1) eq '\') {
-					return keyLocation;
-				}
-
-				return keyLocation & '/';
-			}
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
-		}
-
-		public string function getLegacyEncryptionAlgorithm() {
-			return getSettingService().getSettingValue("globalEncryptionAlgorithm");
-		}
-
-		public string function getLegacyEncryptionEncoding() {
-			return getSettingService().getSettingValue("globalEncryptionEncoding");
-		}
-
-		public string function getLegacyEncryptionKeySize() {
-			return getSettingService().getSettingValue("globalEncryptionKeySize");
-		}
-
 	</cfscript>
 	<!---
 	QueryTreeSort takes a query and efficiently (O(n)) resorts it hierarchically (parent-child), adding a Depth column that can then be used when displaying the data.
