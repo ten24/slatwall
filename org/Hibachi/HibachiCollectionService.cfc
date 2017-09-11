@@ -1,5 +1,8 @@
 component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiService" type="any";
+	property name="aliasMap" type="struct";
+	
+	
 
 	// ===================== START: Logical Methods ===========================
 	public string function getCollectionObjectByCasing(required collection, required string casing){

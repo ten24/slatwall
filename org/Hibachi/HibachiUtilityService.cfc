@@ -23,6 +23,15 @@
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
 		}
 		
+		public string function lowerCaseToTitleCase(required string stringValue){
+			return REReplace(arguments.stringValue, "\b(\S)(\S*)\b", "\u\1\L\2", "all");
+		}
+		
+		public string function snakeCaseToTitleCase(required string stringValue){
+			arguments.stringValue = REReplace(stringValue,'-',' ','all');
+			return lowerCaseToTitleCase(arguments.stringValue);
+		}
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*

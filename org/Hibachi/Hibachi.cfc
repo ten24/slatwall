@@ -105,9 +105,6 @@ component extends="framework.one" {
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
 	
-
-
-
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
@@ -116,8 +113,6 @@ component extends="framework.one" {
 	try{include "../../../configFramework.cfm";}catch(any e){} 
 	try{include "../../../../configFramework.cfm";}catch(any e){} 
 	
-
-
 	if(structKeyExists(url, variables.framework.hibachi.runDbDataKey)){
 		variables.framework.hibachi.skipDbData = false;
 	}
