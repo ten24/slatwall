@@ -1209,13 +1209,13 @@ component extends="HibachiService"  accessors="true" output="false"
         if(data.newOrderPayment.requireBillingAddress || data.newOrderPayment.saveShippingAsBilling){
           if(!structKeyExists(data.newOrderPayment, 'billingAddress')){
 
-            //Validate to get all errors
             var orderPayment = this.newOrderPayment();
             orderPayment.populate(data.newOrderPayment);
             orderPayment.setOrder(getHibachiScope().getCart());
-            orderPayment.validate('save');
             //Add billing address error
             orderPayment.addError('addBillingAddress','Billing address is required.');
+            //Validate to get all errors
+            orderPayment.validate('save');
 
             this.addErrors(data, orderPayment.getErrors());
 
