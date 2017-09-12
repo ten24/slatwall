@@ -4,31 +4,22 @@ class SWCollectionTable{
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-			$http,
-			$compile,
 			$log,
 			hibachiPathBuilder,
 			collectionPartialsPath,
-			paginationService,
 			selectionService,
 			$hibachi
 		) => new SWCollectionTable(
-			$http,
-            $compile,
             $log,
             hibachiPathBuilder,
             collectionPartialsPath,
-            paginationService,
             selectionService,
             $hibachi
 		);
 		directive.$inject = [
-			'$http',
-            '$compile',
             '$log',
             'hibachiPathBuilder',
             'collectionPartialsPath',
-            'paginationService',
             'selectionService',
             '$hibachi'
 		];
@@ -36,12 +27,9 @@ class SWCollectionTable{
 	}
 	//@ngInject
 	constructor(
-		$http,
-        $compile,
         $log,
         hibachiPathBuilder,
         collectionPartialsPath,
-        paginationService,
         selectionService,
         $hibachi
 	){
@@ -60,7 +48,12 @@ class SWCollectionTable{
                 if(angular.isUndefined(scope.angularLinks)){
                     scope.angularLinks = false;
                 }
+
+				if(scope.collection.collectionObject){
                 scope.collectionObject = $hibachi['new'+scope.collection.collectionObject]();
+				}else if(scope.collectionConfig.baseEntityName){
+					scope.collectionObject = scope.collectionConfig.baseEntityName;
+				}
 
                 var escapeRegExp = function(str) {
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAPIAccessKey" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,clone,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAPIAccessKey" {
 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -56,6 +56,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
+	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
+	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
 	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";
@@ -77,9 +79,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 
 	// Related Object Properties (one-to-many)
-	property name="childAccountRelationships" singularname="childAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
-	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldType="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
-	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
+	property name="childAccountRelationships" singularname="childAccountRelationship" fieldtype="one-to-many" type="array" fkcolumn="parentAccountID" cfc="AccountRelationship";
+	property name="parentAccountRelationships" singularname="parentAccountRelationship" fieldtype="one-to-many" type="array" fkcolumn="childAccountID"   cfc="AccountRelationship";
+	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldtype="one-to-many" type="array" fkcolumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
 	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
@@ -134,9 +136,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
 	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
-	property name="slatwallAuthenticationExistsFlag" persistent="false";
+	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
+	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
@@ -294,18 +297,24 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return getPrimaryPhoneNumber().getPhoneNumber();
 	}
 
-	public boolean function getSlatwallAuthenticationExistsFlag() {
-		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
-			variables.slatwallAuthenticationExistsFlag = false;
+	public boolean function getNonIntegrationAuthenticationExistsFlag() {
+		if(!structKeyExists(variables, "nonIntegrationAuthenticationExistsFlag")) {
+			variables.nonIntegrationAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(auth in authArray) {
-				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
-					variables.slatwallAuthenticationExistsFlag = true;
+			for(var auth in authArray) {
+				if(
+					(
+						!getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration')
+						|| isNull(auth.getIntegration())
+					)
+					&& !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() 
+				) {
+					variables.nonIntegrationAuthenticationExistsFlag = true;
 					break;
 				}
 			}
 		}
-		return variables.slatwallAuthenticationExistsFlag;
+		return variables.nonIntegrationAuthenticationExistsFlag;
 	}
 	
 	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){
@@ -329,21 +338,81 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		return termAccountAvailableCredit;
 	}
+	
+	public string function getTwoFactorAuthenticationFlag() {
+		return !isNull(getTotpSecretKey()) && len(getTotpSecretKey());
+	}
+	
+	public numeric function getOrderPaymentAmount(){
+		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		var orderPaymentAmount = 0;
+		for(var orderPayment in orderPayments){
+			orderPaymentAmount += orderPayment.getOrder().getPaymentAmountTotal();
+		}
+		return orderPaymentAmount;
+	}
+	
+	public numeric function getOrderPaymentUnRecieved(){
+		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		var orderPaymentUnReceived=0;
+		for(var orderPayment in orderPayments){
+			orderPaymentUnReceived += orderPayment.getOrder().getPaymentAmountDue();
+		}
+		return orderPaymentUnReceived;
+	}
+	
+	public numeric function getOrderPaymentRecieved(){
+		var orderpayments = this.getTermOrderPaymentsByDueDateSmartList().getRecords();
+		var orderPaymentReceived=0;
+		for(var orderPayment in orderPayments){
+			orderPaymentReceived += orderPayment.getOrder().getPaymentAmountReceivedTotal();
+		}
+		return orderPaymentReceived;
+	}
+	
+	
+	public numeric function getAmountUnassigned(){
+		var amountUnassigned = 0;
+		amountUnassigned -= getOrderPaymentRecieved();
+		for(var accountPayment in getAccountPayments()) {
+			
+				
+			for(var paymentTransaction in accountPayment.getPaymentTransactions()){
+				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + paymentTransaction.getAmountReceived());
+				amountUnassigned = getService('HibachiUtilityService').precisionCalculate(amountUnassigned + paymentTransaction.getAmountCredited());	
+			}
+			
+			
+		}
+		return amountUnassigned;
+	}
+	
+	public numeric function getAmountUnreceived(){
+		var amountUnreceived = 0;
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			if(!termAccountOrderPayment.getNewFlag()){
+				amountUnreceived = getService('HibachiUtilityService').precisionCalculate(amountUnreceived + termAccountOrderPayment.getAmountUnreceived());
+			}
+		}
+		return amountUnreceived;
+	}
+	
+	public numeric function getAmountCredited(){
+		var amountCredited = 0;
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			if(!termAccountOrderPayment.getNewFlag()){
+				amountCredited = getService('HibachiUtilityService').precisionCalculate(amountCredited + termAccountOrderPayment.getAmountCredited());
+			}
+		}
+		return amountCredited;
+	}
 
 	public numeric function getTermAccountBalance() {
 		var termAccountBalance = 0;
-
 		// First look at all the unreceived open order payment
-		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
-			if(!termAccountOrderPayment.getNewFlag()){
-				termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
-			}
-		}
-
+		
 		// Now look for the unassigned payment amount
-		for(var accountPayment in getAccountPayments()) {
-			termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - accountPayment.getAmountUnassigned());
-		}
+		termAccountBalance = getService('HibachiUtilityService').precisionCalculate(termAccountBalance - getAmountUnassigned() + getAmountUnreceived());
 
 		return termAccountBalance;
 	}

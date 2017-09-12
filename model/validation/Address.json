@@ -23,7 +23,6 @@
         "country":          [{"contexts":"save,billing,full","required":true}],
         "name":             [{"contexts":"billing,full","required":true}],
         "streetAddress":        [{"contexts":"billing,full,location","conditions":"streetAddressRequired","required":true}],
-        "street2Address":   [{"contexts":"billing,full,location","conditions":"street2AddressRequired","required":true}],
         "locality":         [{"contexts":"billing,full,location","conditions":"localityRequired","required":true}],
         "city":             [{"contexts":"billing,full,location","conditions":"cityRequired","required":true}],
         "stateCode":        [{"contexts":"billing,full,location","conditions":"stateCodeRequired","required":true}],

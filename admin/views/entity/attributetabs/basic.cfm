@@ -17,15 +17,18 @@
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.attribute.isNew()#">
-			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.attribute.getAttributeInputType()))#">
-				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="relatedObject" edit="#rc.edit#">
+			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', rc.attribute.getAttributeInputType()))#">
+				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="relatedObject" edit="#rc.edit#" fieldAttributes="#rc.attribute.getNewFlag() ? '':'disabled'#">
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('typeSelect', rc.attribute.getAttributeInputType()))#">
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="typeSet" edit="#rc.edit#">
 			</hb:HibachiDisplayToggle>
 			<cfif !isNull(rc.attribute.getForm())>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="formEmailConfirmationFlag" edit="#rc.edit#">
- 			</cfif> 
+ 			</cfif>
+ 			<cfif rc.attribute.getAttributeInputType() EQ 'File'>
+ 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="maxFileSize" edit="#rc.edit#">
+ 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

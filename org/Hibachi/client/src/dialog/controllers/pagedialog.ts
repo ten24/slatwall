@@ -5,9 +5,7 @@ class PageDialogController{
 	constructor(
 		$scope,
 		$location,
-		$log,
 		$anchorScroll,
-		$hibachi,
 		dialogService
 	){
 		$scope.$id = 'pageDialogController';

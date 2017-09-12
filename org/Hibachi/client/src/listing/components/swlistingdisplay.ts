@@ -151,46 +151,79 @@ class SWListingDisplayController{
         this.$transclude(this.$scope,()=>{});
         
 		if(this.multiSlot){
-        this.singleCollectionPromise.then(()=>{
-            this.multipleCollectionDeffered.reject();
-        });
-
-        this.multipleCollectionPromise.then(
-            ()=>{
-                //now do the intial setup
-                this.listingService.setupInMultiCollectionConfigMode(this.tableID);
-            }
-        ).catch(
-            ()=>{
-                //do the initial setup for single collection mode
-                this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope);
-            }
-        ).finally(
-            ()=>{
-                if(angular.isUndefined(this.getCollection)){
-                    this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+            this.singleCollectionPromise.then(()=>{
+                this.multipleCollectionDeffered.reject();
+            });
+    
+            this.multipleCollectionPromise.then(
+                ()=>{
+                    //now do the intial setup
+                    this.listingService.setupInMultiCollectionConfigMode(this.tableID);
                 }
-
-                this.paginator.getCollection = this.getCollection;
-
-                var getCollectionEventID = this.tableID;
-        		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
-            }
-        );
+            ).catch(
+                ()=>{
+                    //do the initial setup for single collection mode
+                    this.listingService.setupInSingleCollectionConfigMode(this.tableID,this.$scope);
+                }
+            ).finally(
+                ()=>{
+                    if(angular.isUndefined(this.getCollection)){
+                        this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+                    }
+    
+                    this.paginator.getCollection = this.getCollection;
+    
+                    var getCollectionEventID = this.tableID;
+            		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+                }
+            );
         }else if(this.multiSlot == false){
 
         	this.setupCollectionPromise();
+            
         }
-
+        
+        if (this.collectionObject){
+             this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
+        }
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+    }
+    
+    public getCollectionByPagination = (state) =>{
+        if(state.type){
+            switch(state.type){
+                case 'setCurrentPage':
+                    this.collectionConfig.currentPage = state.payload;
+                    break;
+                case 'nextPage':
+                    this.collectionConfig.currentPage = state.payload;
+                    break;
+                case 'prevPage':
+                    this.collectionConfig.currentPage = state.payload;
+                    break;
+                case 'setPageShow':
+                    this.collectionConfig.currentPage = 1;
+                    this.collectionConfig.setPageShow(state.payload);
+                    break;
+            }
+            this.getCollection = this.collectionConfig.getEntity().then((data)=>{
+                this.collectionData = data;
+                this.observerService.notify('swPaginationUpdate',data);
+            });
+            
+        }
+        
     }
     
     private setupCollectionPromise=()=>{
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
+            
+            
         }
 
         this.paginator.getCollection = this.getCollection;
-
+        
         var getCollectionEventID = this.tableID;
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
@@ -198,7 +231,6 @@ class SWListingDisplayController{
     }
 
     private getCollectionObserver=(param)=> {
-        console.warn("getCollectionObserver", param)
         this.collectionConfig.loadJson(param.collectionConfig);
         this.collectionData = undefined;
         this.$timeout(
@@ -593,6 +625,7 @@ class SWListingDisplay implements ng.IDirective{
             showTopPagination:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showSimpleListingControls:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",

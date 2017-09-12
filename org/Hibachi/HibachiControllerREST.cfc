@@ -660,6 +660,8 @@ component output="false" accessors="true" extends="HibachiController" {
  			arguments.rc.dirtyReadFlag = getService("SettingService").getSettingValue("globalAPIDirtyRead"); 
  		} 
         
+		arguments.rc.restRequestFlag = true;  
+
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
             arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
@@ -672,7 +674,6 @@ component output="false" accessors="true" extends="HibachiController" {
                 //should be able to add select and where filters here
                 var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
 																								 arguments.rc);
-
                 structAppend(arguments.rc.apiResponse.content,result);
             }else{
 				
@@ -732,7 +733,10 @@ component output="false" accessors="true" extends="HibachiController" {
 	            entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
 	        // DELETE
 	        } else if (arguments.rc.context eq 'delete') {
-	            var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+	            getService('HibachiValidationService').validate(entity, 'delete');
+                if(!entity.hasErrors()){
+                  entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
+                }
 	        // PROCESS
 	        } else {
 	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});

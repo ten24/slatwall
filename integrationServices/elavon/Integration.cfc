@@ -67,6 +67,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			pin = {fieldType="password", encryptValue=true},
 			pinTemplate = {fieldType="text"},
 			liveModeFlag = {fieldType="yesno", defaultValue="0"},
+			debugModeFlag = {fieldType="yesno", defaultValue="0"},
 			liveGatewayURL = {fieldType="text", defaultValue="https://www.myvirtualmerchant.com/VirtualMerchant/process.do"},
 			testGatewayURL = {fieldType="text", defaultValue="https://api.demo.convergepay.com/VirtualMerchantDemo/process.do"}
 		};

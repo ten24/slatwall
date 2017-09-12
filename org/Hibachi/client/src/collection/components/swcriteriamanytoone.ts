@@ -5,18 +5,14 @@ class SWCriteriaManyToOne{
 		var directive = (
 			$log,
 			$hibachi,
-			$filter,
 			collectionPartialsPath,
-			collectionService,
 			metadataService,
 			hibachiPathBuilder,
             rbkeyService
 		) => new SWCriteriaManyToOne(
 			$log,
 			$hibachi,
-			$filter,
 			collectionPartialsPath,
-			collectionService,
 			metadataService,
 			hibachiPathBuilder,
             rbkeyService
@@ -24,9 +20,7 @@ class SWCriteriaManyToOne{
 		directive.$inject = [
 			'$log',
 			'$hibachi',
-			'$filter',
 			'collectionPartialsPath',
-			'collectionService',
 			'metadataService',
 			'hibachiPathBuilder',
             'rbkeyService'
@@ -36,9 +30,7 @@ class SWCriteriaManyToOne{
 	constructor(
 		$log,
 		$hibachi,
-		$filter,
 		collectionPartialsPath,
-		collectionService,
 		metadataService,
 		hibachiPathBuilder,
         rbkeyService

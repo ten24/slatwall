@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" {
+component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="paymentTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

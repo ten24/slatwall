@@ -6,7 +6,7 @@ import {AdminRequest} from "../model/transient/adminrequest";
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
 // 	loadingResourceBundle:boolean;
-// }
+// } 
 
 class HibachiService{
 
@@ -160,7 +160,7 @@ class HibachiService{
 		var hibachiService = this;
 		angular.forEach(collectionData, (collectionItemData, key)=>{
 			//create base Entity
-			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace(this.appConfig.applicationKey,'')]();
 			//populate entity with data based on the collectionConfig
 			angular.forEach(collectionConfig.columns, (column, key)=>{
 				//get objects base properties
@@ -219,6 +219,7 @@ class HibachiService{
 		}
 	};
 	newEntity= (entityName) =>{
+
 		if (entityName != undefined){
 			var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
 			if(angular.element(document.body).injector().has(entityServiceName)){
@@ -229,6 +230,7 @@ class HibachiService{
 				}
 			}
 			return new this._jsEntities[entityName];	
+
 		}
 	
 	};

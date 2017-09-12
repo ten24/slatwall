@@ -87,3 +87,8 @@ Notes:
 	UPDATE SwAccountAuthentication SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
+<!--- Options --->
+<cfquery name="local.activeFlag">
+	UPDATE SwOption SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+

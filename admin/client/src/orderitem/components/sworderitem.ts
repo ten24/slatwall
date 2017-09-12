@@ -240,6 +240,42 @@ class SWOrderItem{
 						"propertyIdentifier":"_orderitem.quantity",
 						"isVisible":true,
 						"isDeletable":true
+					    },
+						{
+						"title":"Order Return ID",
+						"propertyIdentifier":"_orderitem.orderReturn.orderReturnID",
+						"isVisible":true,
+						"isDeletable":true
+						},
+						{
+						"title":"Return Street Address",
+						"propertyIdentifier":"_orderitem.orderReturn.returnLocation.primaryAddress.address.streetAddress",
+						"isVisible":true,
+						"isDeletable":true
+						},
+						{
+						"title":"Return Street Address 2",
+						"propertyIdentifier":"_orderitem.orderReturn.returnLocation.primaryAddress.address.street2Address",
+						"isVisible":true,
+						"isDeletable":true
+						},
+						{
+						"title":"Return City",
+						"propertyIdentifier":"_orderitem.orderReturn.returnLocation.primaryAddress.address.city",
+						"isVisible":true,
+						"isDeletable":true
+						},
+						{
+						"title":"Return State",
+						"propertyIdentifier":"_orderitem.orderReturn.returnLocation.primaryAddress.address.stateCode",
+						"isVisible":true,
+						"isDeletable":true
+						},
+						{
+						"title":"Return Postal Code",
+						"propertyIdentifier":"_orderitem.orderReturn.returnLocation.primaryAddress.address.postalCode",
+						"isVisible":true,
+						"isDeletable":true
 						},
 						{
 						"title":"Fulfillment Method Name",
@@ -390,8 +426,10 @@ class SWOrderItem{
 					$log.debug("Deleting");
 					$log.debug(scope.orderItem);
 					var deletePromise = scope.orderItem.$$delete();
-					deletePromise.then(function(){
-						delete scope.orderItem;
+					deletePromise.then(function(result){
+ 						if(!result.errors || !Object.keys(result.errors).length){
+ 							delete scope.orderItem;
+ 						}
                         scope.paginator.getCollection();
 					});
 

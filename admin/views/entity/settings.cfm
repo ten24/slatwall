@@ -70,6 +70,7 @@ Notes:
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/image" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/locationConfiguration" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/paymentmethod" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/physical" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/producttype" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/product" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/site" />

@@ -39,10 +39,9 @@ class SWListingDisplayCellController{
                 action:this.column.action
             }
             if(this.column.queryString){
-                this.actionCaller.action.queryString=this.swListingDisplay.replaceStringWithProperties(this.column.queryString,this.pageRecord);
+                this.actionCaller.queryString=this.utilityService.replaceStringWithProperties(this.column.queryString,this.pageRecord);
             }
         }
-
 
         if(this.cellView){
             console.log("Cellview?", this.cellView);
@@ -62,7 +61,9 @@ class SWListingDisplayCellController{
                 this.templateVariables["columnPropertyIdentifier"] = this.column.propertyIdentifier;
             }
             this.templateVariables["listingDisplayID"] = this.swListingDisplay.tableID; 
-        }else{
+        
+        }else if(!this.hasActionCaller){
+            
             this.templateUrl = this.getDirectiveTemplate();
         }
 
@@ -111,9 +112,10 @@ class SWListingDisplayCell {
         <div ng-if="swListingDisplayCell.templateUrl" ng-include src="swListingDisplayCell.templateUrl"></div>
         <sw-action-caller ng-if="swListingDisplayCell.hasActionCaller"
                     data-action="{{swListingDisplayCell.actionCaller.action}}"
-                    data-query-string="{{swListingDisplayCell.actionCaller.action.queryString}}"
+                    data-query-string="{{swListingDisplayCell.actionCaller.queryString}}"
                     data-text="{{swListingDisplayCell.value}}"
                     data-tooltip-text="{{swListingDisplayCell.popover}}"
+                    data-is-angular-route="false"
 
         >
         </sw-action-caller>

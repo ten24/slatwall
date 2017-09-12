@@ -1,4 +1,4 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
 	<!--- Implicit --->
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
@@ -55,6 +55,7 @@
 	<cfparam name="attributes.tableattributes" type="string" default="" />  <!--- Pass in additional html attributes for the table --->
 	<cfparam name="attributes.tableclass" type="string" default="" />  <!--- Pass in additional classes for the table --->
 	<cfparam name="attributes.adminattributes" type="string" default="" />
+	<cfparam name="attributes.recordAlias" type="string" default="" /> <!--- Optional record alias for process object injection --->
 
 	<!--- Settings --->
 	<cfparam name="attributes.showheader" type="boolean" default="true" /> <!--- Setting to false will hide the table header with search and filters --->
@@ -426,7 +427,7 @@
 									#column.title#
 								<cfelse>
 									<div class="dropdown">
-										<a href="##" class="dropdown-toggle">#column.title# <i class="fa fa-sort"></i></a>
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title# <i class="fa fa-sort"></i></a>
 										<ul class="dropdown-menu nav scrollable">
 											<hb:HibachiDividerHider>
 												<cfif column.sort and not thistag.expandable>
@@ -487,8 +488,13 @@
 						<!--- If there is a recordProcessEntity then find the processObject and inject the necessary values --->
 						<cfif isObject(attributes.recordProcessEntity)>
 							<cfset injectValues = structNew() />
-							<cfset injectValues[ "#record.getClassName()#" ] = record />
-							<cfset injectValues[ "#record.getPrimaryIDPropertyName()#" ] = record.getPrimaryIDValue() />
+							<cfif len(attributes.recordAlias)>
+								<cfset injectValues[ "#attributes.recordAlias#" ] = record />
+								<cfset injectValues[ "#attributes.recordAlias#ID" ] = record.getPrimaryIDValue() />
+							<cfelse>
+								<cfset injectValues[ "#record.getClassName()#" ] = record />
+								<cfset injectValues[ "#record.getPrimaryIDPropertyName()#" ] = record.getPrimaryIDValue() />
+							</cfif>
 							<cfset attributes.recordProcessEntity.clearProcessObject( attributes.recordProcessContext ) />
 							<cfset thisRecordProcessObject = attributes.recordProcessEntity.getProcessObject( attributes.recordProcessContext, injectValues ) />
 						</cfif>
@@ -592,8 +598,12 @@
 											<cfset processActionProperty=listlast(attributes.recordProcessActionProperty,'.')>
 											<cfset processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordProcessActionProperty)>
 										<cfelse>
-											<cfset processActionProperty=record.getPrimaryIDPropertyName()>
-											<cfset processActionPropertyValue=record.getPrimaryIDValue()>
+											<cfif len(attributes.recordAlias)>
+												<cfset processActionProperty=attributes.recordAlias & 'ID' />
+											<cfelse>
+												<cfset processActionProperty=record.getPrimaryIDPropertyName() />
+											</cfif>
+											<cfset processActionPropertyValue=record.getPrimaryIDValue() />
 										</cfif>
 										<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
 										<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />

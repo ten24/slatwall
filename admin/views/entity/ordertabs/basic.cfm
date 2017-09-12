@@ -23,6 +23,11 @@
 			<!--- Order Type --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="#rc.edit#">
 
+			<!--- Short Refenece, Quote Number --->
+			<cfif rc.order.getShortReferenceID(false) neq "">
+				<hb:HibachiFieldDisplay title="#$.slatwall.rbkey('entity.order.quoteNumber')#" value="#rc.order.getShortReferenceID(false)#" edit="false" displayType="dl">
+			</cfif>
+
 			<!--- Default Stock Location --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
 

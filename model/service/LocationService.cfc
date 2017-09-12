@@ -68,19 +68,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public array function getLocationOptions( string locationID ) {
 		var locationOptions = [];
 		var smartList = this.getLocationSmartList();
+		smartlist.addSelect('calculatedLocationPathName','name');
+		smartlist.addSelect('locationID','value');
 		if(structKeyExists(arguments,"locationID")) {
 			smartList.addFilter("locationID",arguments.locationID);
 		}
 		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
 		smartList.addOrder("locationIDPath");
-		var locations = smartList.getRecords();
-		
-		for(var i=1;i<=arrayLen(locations);i++) {
-			var locationOption = {};
-			locationOption['name'] = locations[i].getSimpleRepresentation();
-			locationOption['value'] = locations[i].getLocationID();
-			arrayAppend(locationOptions, locationOption);
-		}
+		var locationOptions = smartList.getRecords();
 		
 		return locationOptions;
 	}
@@ -142,15 +137,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.location = super.save(arguments.location, arguments.data);
 		
 		if(!location.hasErrors()){
-			
+			var isNew = arguments.location.isNew();
 			// We need to persist the state here, so that we can have the locationID in the database
 			getHibachiDAO().flushORMSession();
 			
 			// If this location has any stocks then we need to update them
-			if( !isNull(arguments.location.getParentLocation()) && arguments.location.getParentLocation().getStocksCount() ) {
+			if( isNew && !isNull(arguments.location.getParentLocation()) && arguments.location.getParentLocation().getStocksCount() ) {
 				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
 			}
-		} 
+		}
 		
 		return arguments.location;
 	}

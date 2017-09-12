@@ -100,11 +100,15 @@ var coremodule = angular.module('hibachi.core',[
   alertmodule.name,
   dialogmodule.name
 ])
-.config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
+    if(!appConfig.debugFlag){
+        appConfig.debugFlag = false;    
+    }
     $logProvider.debugEnabled( appConfig.debugFlag );
+    
      $filterProvider.register('likeFilter',function(){
          return function(text){
              if(angular.isDefined(text) && angular.isString(text)){

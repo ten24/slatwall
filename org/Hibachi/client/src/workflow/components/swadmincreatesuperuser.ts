@@ -3,18 +3,15 @@
 class SWAdminCreateSuperUser{
 	public static Factory(){
 		var directive = (
-			$log,
 			$hibachi,
 			workflowPartialsPath,
 			hibachiPathBuilder
 		)=> new SWAdminCreateSuperUser(
-			$log,
 			$hibachi,
 			workflowPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log',
 			'$hibachi',
 			'workflowPartialsPath',
 			'hibachiPathBuilder'
@@ -22,7 +19,6 @@ class SWAdminCreateSuperUser{
 		return directive;
 	}
 	constructor(
-		$log,
 		$hibachi,
 		workflowPartialsPath,
 			hibachiPathBuilder

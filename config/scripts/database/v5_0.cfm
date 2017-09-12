@@ -75,10 +75,23 @@ Notes:
 			</cfquery>
 		</cfif>
 	</cfloop>
+	
 <cfcatch>
 	<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update calculatedLocationPathName has an issue.">
 	<cfset local.scriptHasErrors = true />
 </cfcatch>
+</cftry>
+
+<cftry>
+	<cfquery name="local.updateWorkflowTriggerTimeouts"> 
+		update SwWorkflowTrigger set timeout=90 where timeout is null
+	</cfquery> 
+
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - ">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+
 </cftry>
 
 <cfif local.scriptHasErrors>

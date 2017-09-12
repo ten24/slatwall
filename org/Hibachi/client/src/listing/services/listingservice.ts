@@ -260,10 +260,10 @@ class ListingService{
             }
         }
         //last change to find the value
-        if( angular.isUndefined(pageRecordValue) || 
-            (angular.isString(pageRecordValue) && 
-                pageRecordValue.trim().length == 0 && 
-                angular.isDefined(column.fallbackPropertyIdentifiers))
+
+        if( ( angular.isUndefined(pageRecordValue) || 
+            ( angular.isString(pageRecordValue) && pageRecordValue.trim().length == 0) ) && 
+              angular.isDefined(column.fallbackPropertyIdentifiers)
         ){
             var fallbackPropertyArray = column.fallbackPropertyIdentifiers.replace('.','_').split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){
@@ -669,12 +669,14 @@ class ListingService{
 
         if(this.getListing(listingID).multiselectValues && this.getListing(listingID).multiselectValues.length){
             //select all owned ids
-            angular.forEach(this.getListing(listingID).multiselectValues,(value)=>{
+            var multiSelectValuesArray = this.getListing(listingID).multiselectValues.split(',');
+            angular.forEach(multiSelectValuesArray,(value)=>{
                 this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,value);
             });
         }
 
         if(this.getListing(listingID).multiselectIdPaths && this.getListing(listingID).multiselectIdPaths.length){
+            
             angular.forEach(this.getListing(listingID).multiselectIdPaths.split(','),(value)=>{
                 var id = this.getListing(listingID).utilityService.listLast(value,'/');
                 this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,id);

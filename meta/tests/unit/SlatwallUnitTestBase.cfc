@@ -64,6 +64,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		variables.slatwallFW1Application.bootstrap();
 		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
+		request.slatwallScope.getAccount().setFirstName('BigBoy');
 
 		// Setup a debugging output array
 		variables.debugArray = [];

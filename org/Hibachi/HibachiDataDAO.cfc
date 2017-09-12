@@ -74,7 +74,7 @@ Notes:
 	<cffunction name="getInsertedDataFile">
 		<cfset var returnFile = "" />
 		
-		<cfset var filePath = expandPath('/Slatwall/custom/config/') & 'insertedData.txt.cfm' />
+		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm' />
 		
 		<cfif !fileExists(filePath)>
 			<cffile action="write" file="#filePath#" output="" addnewline="false" /> 
@@ -88,7 +88,7 @@ Notes:
 	<cffunction name="updateInsertedDataFile">
 		<cfargument name="idKey" type="string" required="true" />
 		
-		<cfset var filePath = expandPath('/Slatwall/custom/config/') & 'insertedData.txt.cfm' />
+		<cfset var filePath = expandPath('/#getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm' />
 		
 		<cffile action="append" file="#filePath#" output=",#arguments.idKey#" addnewline="false" />
 	</cffunction>
@@ -108,7 +108,7 @@ Notes:
 			SELECT
 				shortReferenceID
 			FROM
-				SwShortReference
+				#getTableNameByEntityName('ShortReference')#
 			WHERE
 				referenceObjectID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />
 			  AND
@@ -152,7 +152,7 @@ Notes:
 		<cfset var newShortReferenceID = 1 />
 			
 		<cfquery name="rs">
-			SELECT MAX(shortReferenceID) as shortReferenceID FROM SwShortReference
+			SELECT MAX(shortReferenceID) as shortReferenceID FROM #getTableNameByEntityName('ShortReference')#
 		</cfquery>
 		
 		<cfif rs.shortReferenceID neq "" and isNumeric(rs.shortReferenceID)>
@@ -160,7 +160,7 @@ Notes:
 		</cfif>
 		
 		<cfquery name="rs">
-			INSERT INTO SwShortReference (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
+			INSERT INTO #getTableNameByEntityName('ShortReference')# (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
 		</cfquery>
 		
 		<cfreturn newShortReferenceID />

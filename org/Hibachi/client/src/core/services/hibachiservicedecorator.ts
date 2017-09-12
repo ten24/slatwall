@@ -32,7 +32,7 @@ class HibachiServiceDecorator{
                 defaultValues = appConfig.modelConfig.defaultValues;
 
             angular.forEach(entities,function(entity){
-                if(attributeMetaData[entity.className]){
+                if(attributeMetaData && attributeMetaData[entity.className]){
                     var relatedAttributes = attributeMetaData[entity.className];
                     for(var attributeSetCode in relatedAttributes){
                         var attributeSet = relatedAttributes[attributeSetCode];
@@ -44,6 +44,7 @@ class HibachiServiceDecorator{
                         }
                     }
                 }
+
 
                 $delegate['get'+entity.className] = function(options){
                     var entityInstance = $delegate.newEntity(entity.className);
@@ -81,11 +82,12 @@ class HibachiServiceDecorator{
 
                     if(angular.element(document.body).injector().has(serviceName)){
                         var entityService = angular.element(document.body).injector().get(serviceName);
-                        let functionObj = entityService['new'+entity.className];
-                        if (entityService['new'+entity.className] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
+                        
+                        if(entityService['new'+entity.className]){
                             return entityService['new'+entity.className]();
                         }
                     }
+
                     return $delegate.newEntity(entity.className);
                 };
 
@@ -178,7 +180,7 @@ class HibachiServiceDecorator{
 
                     angular.forEach(entity,function(property){
                         if(angular.isObject(property) && angular.isDefined(property.name)){
-                            if(angular.isDefined(defaultValues[entity.className][property.name])){
+                            if(defaultValues && defaultValues[entity.className] && defaultValues[entity.className][property.name] != null){
                                 jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
                             }else{
                                 jsEntity.data[property.name] = undefined;
@@ -255,7 +257,7 @@ class HibachiServiceDecorator{
                         }
                     });
                 });
-                
+
                 angular.forEach(entity,function(property){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
                         //if(angular.isUndefined(property.persistent)){
@@ -394,6 +396,10 @@ class HibachiServiceDecorator{
                                     }
 
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
+
+                                    if(!property.singularname){
+                                        throw('need to define a singularname for ' +property.fieldtype);
+                                    }
                                     _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
                                         if(angular.isUndefined(entityInstance)){
@@ -581,6 +587,7 @@ class HibachiServiceDecorator{
             angular.forEach(_jsEntities,function(jsEntity:any){
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
+
             });
 
             $delegate.setJsEntityInstances(_jsEntityInstances);

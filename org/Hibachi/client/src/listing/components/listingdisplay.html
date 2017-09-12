@@ -21,6 +21,7 @@
                     data-get-collection="swListingDisplay.getCollection"
                     data-paginator="swListingDisplay.paginator"
                     data-show-filters="swListingDisplay.showFilters"
+                    data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
             </sw-listing-controls>
@@ -77,6 +78,7 @@
                 </sw-pagination-bar>
             </div>
             <div class="table-responsive" sw-loading="swListingDisplay.collectionData">
+
                 <table class="table table-bordered s-detail-content-table">
                     <thead>
                         <tr>
@@ -87,7 +89,7 @@
                             <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
-                            <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}" data-ng-value="swListingDisplay.multiselectValues.toString()" />
+                            <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" data-ng-value="swListingDisplay.multiselectValues" />
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
                                     <input type="checkbox" 
@@ -158,7 +160,7 @@
                                         data-is-radio="swListingDisplay.isRadio"
                                         data-selectionid="{{swListingDisplay.tableID}}"
                                         data-selection="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
-                                        data-name="{{swListingDisplay.multiselectFieldName+'selection'}}"
+                                        data-name="{{swListingDisplay.multiselectFieldName}}"
                                         data-disabled="swListingDisplay.edit === false">
                                 </sw-selection>
                             </td>

@@ -10,9 +10,7 @@ class SWConditionCriteria{
 			$log,
 			$hibachi,
 			$filter,
-			workflowPartialsPath,
 			collectionPartialsPath,
-			collectionService,
 			metadataService,
 			hibachiPathBuilder
 		)=>new SWConditionCriteria(
@@ -22,9 +20,7 @@ class SWConditionCriteria{
 			$log,
 			$hibachi,
 			$filter,
-			workflowPartialsPath,
 			collectionPartialsPath,
-			collectionService,
 			metadataService,
 			hibachiPathBuilder
 		);
@@ -35,14 +31,13 @@ class SWConditionCriteria{
 			'$log',
 			'$hibachi',
 			'$filter',
-			'workflowPartialsPath',
 			'collectionPartialsPath',
-			'collectionService',
 			'metadataService',
 			'hibachiPathBuilder'
 		];
 		return directive;
 	}
+    //@ngInject
 	constructor(
 		$http,
 		$compile,
@@ -50,9 +45,7 @@ class SWConditionCriteria{
 		$log,
 		$hibachi,
 		$filter,
-		workflowPartialsPath,
 		collectionPartialsPath,
-		collectionService,
 		metadataService,
 		hibachiPathBuilder
 	){
@@ -652,8 +645,8 @@ class SWConditionCriteria{
 								scope.conditionOptions = getDateOptions();
 								scope.today = function() {
 									if (angular.isDefined(scope.selectedFilterProperty)) {
-										scope.selectedFilterProperty.criteriaRangeStart = new Date();
-										scope.selectedFilterProperty.criteriaRangeEnd = new Date();
+										scope.selectedFilterProperty.criteriaRangeStart = new Date().getTime();
+										scope.selectedFilterProperty.criteriaRangeEnd = new Date().getTime();
 									}
 								};
 

@@ -1,6 +1,6 @@
 
 <span   ng-repeat='(key, value) in swErrorDisplay.form[swErrorDisplay.name].$error'
-		ng-show="swErrorDisplay.form[swErrorDisplay.name].$touched || swErrorDisplay.form.$submitted"
+		ng-show="swErrorDisplay.form[swErrorDisplay.name].$touched &&  !swErrorDisplay.form.$submitted"
 >
 	<span ng-show="key === 'swvalidationrequired'" class="error help-block" sw-Rbkey="'validation.define.required'"></span><br ng-show="key === 'swvalidationrequired'">
 	<span ng-show="key === 'swvalidationemail'" class="error help-block" sw-Rbkey="'validation.define.emailrequired'"></span><br ng-show="key === 'swvalidationemail'">

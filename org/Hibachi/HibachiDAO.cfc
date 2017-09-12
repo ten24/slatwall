@@ -27,6 +27,7 @@
 
 		public any function list( string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
+			
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
@@ -88,19 +89,23 @@
 
 			return ormExecuteQuery("SELECT count(*) FROM #arguments.entityName#",true);
 		}
+		
+		public string function getTableNameByEntityName(required string entityName){
+			return getService('HibachiService').getTableNameByEntityName(arguments.entityName);
+		}
 
 
 		public void function reloadEntity(required any entity) {
 	    	entityReload(arguments.entity);
 	    }
 
-	    public void function flushORMSession() {
+	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
 	    	// Initate the first flush
 	    	ormFlush();
 
 	    	// Loop over the modifiedEntities to call updateCalculatedProperties
 	    	for(var entity in getHibachiScope().getModifiedEntities()){
-	    		entity.updateCalculatedProperties();
+	    		entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
 	    	}
 
 	    	// flush again to persist any changes done during ORM Event handler
@@ -327,7 +332,14 @@
 							#arguments.tableName#
 						SET
 							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-								<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+ 								<cfif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
+										arguments.updateData[ listGetAt(keyList, i)].value eq true>
+ 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="1">
+ 								<cfelseif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
+										arguments.updateData[ listGetAt(keyList, i)].value eq false>
+
+ 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="0">
+ 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 								<cfelse>
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">

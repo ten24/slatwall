@@ -71,9 +71,13 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 			var opSmartList = arguments.requestBean.getOrder().getOrderPaymentsSmartList();
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
-			if(arrayLen(opSmartList.getRecords())) {
-				if(isNull(opSmartList.getRecords()[1].getCompanyPaymentMethodFlag()) || !opSmartList.getRecords()[1].getCompanyPaymentMethodFlag())  {
-					taxForce = true;
+			
+			if(arrayLen(opSmartList.getRecords(refresh=true))) {
+				for(var i = 1; i <= arrayLen(opSmartList.getRecords()); i++){
+					if(opSmartList.getRecords()[i].getAmount() > 0 && (isNull(opSmartList.getRecords()[i].getCompanyPaymentMethodFlag()) || !opSmartList.getRecords()[i].getCompanyPaymentMethodFlag()))  {
+						taxForce = true;
+						break;
+					}
 				}
 			}
 			

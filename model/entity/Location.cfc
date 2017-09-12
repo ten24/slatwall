@@ -123,13 +123,17 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			variables.locationPathName = "";
 			
 			//Add each of the parents in the chain to the string.
-			var	parentLocation = this.getParentLocation();
+			var parentLocation = this.getParentLocation();
 			while (!isNull(parentLocation)){
-				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "/");
+				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "»");
+				if(isNull(parentLocation.getParentLocation())){
+					break;
+				}
 				parentLocation = parentLocation.getParentLocation();
 			}
 			//Add this location name to the end.
-			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "/");
+			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
+			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
 		}
 		
 		return variables.locationPathName;
@@ -211,21 +215,27 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
-		return getLocationPathName();
+
+		if(!isNull(getCalculatedLocationPathName())){
+			return getCalculatedLocationPathName();
+		}else{
+			return getLocationPathName();
+		}
 	}
 	
 	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
-	
 	public void function preInsert(){
 		setLocationIDPath( buildIDPathList( "parentLocation" ) );
+		setCalculatedLocationPathName( getLocationPathName() );
 		super.preInsert();
 	}
 	
 	public void function preUpdate(struct oldData){
 		setLocationIDPath( buildIDPathList( "parentLocation" ) );
+		setCalculatedLocationPathName( getLocationPathName() );
 		super.preUpdate(argumentcollection=arguments);
 	}
 	

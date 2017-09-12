@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class Column{
+class Column{ 
     constructor(
         public propertyIdentifier:string,
         public title:string,
@@ -84,6 +84,12 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+    
+    
+    get collectionConfigString():string {
+        return angular.toJson(this.getCollectionConfig(false));
+    }
+    
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -172,8 +178,10 @@ class CollectionConfig {
         return this;
     };
 
-    public getCollectionConfig= ():any =>{
-        this.validateFilter(this.filterGroups);
+    public getCollectionConfig= (validate=true):any =>{
+        if(validate){
+            this.validateFilter(this.filterGroups);            
+        }
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -192,6 +200,8 @@ class CollectionConfig {
             orderBy:this.orderBy
         };
     };
+    
+    
 
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);
@@ -253,12 +263,13 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-
+            
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
@@ -267,6 +278,7 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
+        
         return _propertyIdentifier;
     };
 
@@ -454,6 +466,9 @@ class CollectionConfig {
         if(isKeywordFilter){
             this.keywordFilterGroups[0].filterGroup.push(filter);
         }
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -484,6 +499,9 @@ class CollectionConfig {
         );
 
         this.filterGroups[0].filterGroup.push(filter);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -528,11 +546,17 @@ class CollectionConfig {
         }
 
         this.filterGroups[0].filterGroup.push(group);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -585,6 +609,9 @@ class CollectionConfig {
                 readOnly
             )
         );
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
     //orderByList in this form: "property|direction" concrete: "skuName|ASC"
