@@ -476,13 +476,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 
-	public void function setDisplayProperties(string displayPropertiesList=""){
+	public void function setDisplayProperties(string displayPropertiesList="", struct columnConfig = {}){
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig["columns"] = [];
 		this.setCollectionConfigStruct(collectionConfig);
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty.trim());
+			addDisplayProperty(displayProperty=displayProperty.trim(), columnConfig=columnConfig);
 		}
 	}
 
@@ -504,7 +504,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
-	public void function addDisplayProperty(required string displayProperty){
+	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}){
 		var collectionConfig = this.getCollectionConfigStruct();
 
 		var column = {};
@@ -535,6 +535,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			){
 				column['persistent'] = false;
 			}
+		}
+
+		column['isDeletable'] = false;
+		column['isVisible'] = false;
+		column['isSearchable'] = false;
+		column['isExportable'] = false;
+
+		if(structKeyExists(arguments, 'title')){
+			column['title'] = arguments.title;
+		}
+		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
+			column['isDeletable'] = arguments.columnConfig['isDeletable'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'isVisible')){
+			column['isVisible'] = arguments.columnConfig['isVisible'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'isSearchable')){
+			column['isSearchable'] = arguments.columnConfig['isSearchable'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'isExportable')){
+			column['isExportable'] = arguments.columnConfig['isExportable'];
 		}
 
 		addColumn(column);
