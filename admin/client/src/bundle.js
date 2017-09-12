@@ -3369,7 +3369,7 @@
 	var basebootstrap_1 = __webpack_require__(15);
 	var slatwalladmin_module_1 = __webpack_require__(470);
 	//custom bootstrapper
-	var bootstrapper = (function (_super) {
+	var bootstrapper = /** @class */ (function (_super) {
 	    __extends(bootstrapper, _super);
 	    function bootstrapper() {
 	        var _this = this;
@@ -3393,7 +3393,7 @@
 	var core_module_1 = __webpack_require__(16);
 	var md5 = __webpack_require__(440);
 	//generic bootstrapper
-	var BaseBootStrapper = (function () {
+	var BaseBootStrapper = /** @class */ (function () {
 	    function BaseBootStrapper(myApplication) {
 	        var _this = this;
 	        this._resourceBundle = {};
@@ -3821,7 +3821,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var HibachiInterceptor = (function () {
+	var HibachiInterceptor = /** @class */ (function () {
 	    //@ngInject
 	    function HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
 	        var _this = this;
@@ -3965,7 +3965,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var HibachiPathBuilder = (function () {
+	var HibachiPathBuilder = /** @class */ (function () {
 	    //@ngInject
 	    function HibachiPathBuilder() {
 	        var _this = this;
@@ -4000,7 +4000,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var CacheService = (function () {
+	var CacheService = /** @class */ (function () {
 	    //@ngInject
 	    function CacheService(localStorageService) {
 	        var _this = this;
@@ -4085,7 +4085,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var PublicService = (function () {
+	var PublicService = /** @class */ (function () {
 	    ///index.cfm/api/scope/
 	    //@ngInject
 	    function PublicService($http, $q, $window, $location, $hibachi, $injector, requestService, accountService, cartService, orderService, observerService, appConfig) {
@@ -4866,7 +4866,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
-	var AccountService = (function (_super) {
+	var AccountService = /** @class */ (function (_super) {
 	    __extends(AccountService, _super);
 	    //@ngInject
 	    function AccountService($injector, $hibachi, utilityService) {
@@ -4902,7 +4902,7 @@
 	var baseobject_1 = __webpack_require__(23);
 	var Entities = __webpack_require__(24);
 	var Processes = __webpack_require__(33);
-	var BaseEntityService = (function (_super) {
+	var BaseEntityService = /** @class */ (function (_super) {
 	    __extends(BaseEntityService, _super);
 	    //@ngInject
 	    function BaseEntityService($injector, $hibachi, utilityService, baseObjectName, objectName) {
@@ -4971,7 +4971,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	__webpack_require__(2);
-	var BaseObject = (function () {
+	var BaseObject = /** @class */ (function () {
 	    //@ngInject
 	    function BaseObject($injector) {
 	        var _this = this;
@@ -5038,7 +5038,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
-	var Account = (function (_super) {
+	var Account = /** @class */ (function (_super) {
 	    __extends(Account, _super);
 	    function Account($injector) {
 	        var _this = _super.call(this, $injector) || this;
@@ -5075,7 +5075,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var basetransient_1 = __webpack_require__(27);
-	var BaseEntity = (function (_super) {
+	var BaseEntity = /** @class */ (function (_super) {
 	    __extends(BaseEntity, _super);
 	    function BaseEntity($injector) {
 	        return _super.call(this, $injector) || this;
@@ -5104,7 +5104,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseobject_1 = __webpack_require__(23);
-	var BaseTransient = (function (_super) {
+	var BaseTransient = /** @class */ (function (_super) {
 	    __extends(BaseTransient, _super);
 	    function BaseTransient($injector) {
 	        var _this = _super.call(this, $injector) || this;
@@ -5287,7 +5287,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
-	var Address = (function (_super) {
+	var Address = /** @class */ (function (_super) {
 	    __extends(Address, _super);
 	    function Address($injector) {
 	        return _super.call(this, $injector) || this;
@@ -5316,7 +5316,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
-	var Cart = (function (_super) {
+	var Cart = /** @class */ (function (_super) {
 	    __extends(Cart, _super);
 	    //deprecated
 	    function Cart($injector) {
@@ -5377,7 +5377,7 @@
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var baseentity_1 = __webpack_require__(26);
-	var OrderItem = (function (_super) {
+	var OrderItem = /** @class */ (function (_super) {
 	    __extends(OrderItem, _super);
 	    function OrderItem($injector) {
 	        return _super.call(this, $injector) || this;
@@ -5395,7 +5395,7 @@
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var OrderPayment = (function () {
+	var OrderPayment = /** @class */ (function () {
 	    function OrderPayment() {
 	    }
 	    return OrderPayment;
@@ -5422,7 +5422,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentity_1 = __webpack_require__(26);
-	var Sku = (function (_super) {
+	var Sku = /** @class */ (function (_super) {
 	    __extends(Sku, _super);
 	    function Sku($injector) {
 	        var _this = _super.call(this, $injector) || this;
@@ -5470,7 +5470,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseprocess_1 = __webpack_require__(35);
-	var Order_AddOrderPayment = (function (_super) {
+	var Order_AddOrderPayment = /** @class */ (function (_super) {
 	    __extends(Order_AddOrderPayment, _super);
 	    function Order_AddOrderPayment($injector) {
 	        var _this = _super.call(this, $injector) || this;
@@ -5501,7 +5501,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var basetransient_1 = __webpack_require__(27);
-	var BaseProcess = (function (_super) {
+	var BaseProcess = /** @class */ (function (_super) {
 	    __extends(BaseProcess, _super);
 	    function BaseProcess($injector) {
 	        return _super.call(this, $injector) || this;
@@ -5528,7 +5528,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
-	var CartService = (function (_super) {
+	var CartService = /** @class */ (function (_super) {
 	    __extends(CartService, _super);
 	    //@ngInject
 	    //@ngInject
@@ -5552,7 +5552,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var DraggableService = (function () {
+	var DraggableService = /** @class */ (function () {
 	    //ngInject
 	    function DraggableService() {
 	        this.isDropAllowed = function (event) {
@@ -5593,7 +5593,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
 	var baseservice_1 = __webpack_require__(39);
-	var UtilityService = (function (_super) {
+	var UtilityService = /** @class */ (function (_super) {
 	    __extends(UtilityService, _super);
 	    //@ngInject
 	    function UtilityService($parse) {
@@ -6055,7 +6055,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var BaseService = (function () {
+	var BaseService = /** @class */ (function () {
 	    function BaseService() {
 	    }
 	    return BaseService;
@@ -6083,7 +6083,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseservice_1 = __webpack_require__(39);
-	var SelectionService = (function (_super) {
+	var SelectionService = /** @class */ (function (_super) {
 	    __extends(SelectionService, _super);
 	    //@ngInject
 	    function SelectionService(observerService) {
@@ -6212,7 +6212,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseservice_1 = __webpack_require__(39);
-	var ObserverService = (function (_super) {
+	var ObserverService = /** @class */ (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
 	    function ObserverService($timeout, historyService, utilityService) {
@@ -6368,7 +6368,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
-	var OrderService = (function (_super) {
+	var OrderService = /** @class */ (function (_super) {
 	    __extends(OrderService, _super);
 	    //@ngInject
 	    function OrderService($injector, $hibachi, utilityService) {
@@ -6405,7 +6405,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
-	var OrderPaymentService = (function (_super) {
+	var OrderPaymentService = /** @class */ (function (_super) {
 	    __extends(OrderPaymentService, _super);
 	    //@ngInject
 	    function OrderPaymentService($injector, $hibachi, utilityService) {
@@ -6428,7 +6428,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var Form = (function () {
+	var Form = /** @class */ (function () {
 	    //@ngInject
 	    function Form(name, object, editing) {
 	        this.$addControl = function (control) { };
@@ -6446,7 +6446,7 @@
 	    }
 	    return Form;
 	}());
-	var FormService = (function () {
+	var FormService = /** @class */ (function () {
 	    function FormService($log) {
 	        var _this = this;
 	        this.$log = $log;
@@ -6506,9 +6506,9 @@
 	        this._forms = {};
 	        this._pristinePropertyValue = {};
 	    }
+	    FormService.$inject = ['$log'];
 	    return FormService;
 	}());
-	FormService.$inject = ['$log'];
 	exports.FormService = FormService;
 
 
@@ -6518,7 +6518,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var FilterService = (function () {
+	var FilterService = /** @class */ (function () {
 	    //ngInject
 	    function FilterService() {
 	        this.filterMatch = function (valueToCompareAgainst, comparisonOperator, comparisonValue) {
@@ -6581,7 +6581,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var ExpandableService = (function () {
+	var ExpandableService = /** @class */ (function () {
 	    //ngInject
 	    function ExpandableService() {
 	        var _this = this;
@@ -6626,7 +6626,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var MetaDataService = (function () {
+	var MetaDataService = /** @class */ (function () {
 	    //@ngInject
 	    function MetaDataService($filter, $log) {
 	        var _this = this;
@@ -6759,12 +6759,12 @@
 	        this._propertiesList = {};
 	        this._orderBy = $filter('orderBy');
 	    }
+	    MetaDataService.$inject = [
+	        '$filter',
+	        '$log'
+	    ];
 	    return MetaDataService;
 	}());
-	MetaDataService.$inject = [
-	    '$filter',
-	    '$log'
-	];
 	exports.MetaDataService = MetaDataService;
 
 
@@ -6776,7 +6776,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var RbKeyService = (function () {
+	var RbKeyService = /** @class */ (function () {
 	    //@ngInject
 	    function RbKeyService($http, $q, appConfig, resourceBundles) {
 	        var _this = this;
@@ -6895,7 +6895,7 @@
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var TypeaheadStore = __webpack_require__(50);
-	var TypeaheadService = (function () {
+	var TypeaheadService = /** @class */ (function () {
 	    //@ngInject
 	    function TypeaheadService($timeout, observerService) {
 	        var _this = this;
@@ -7120,7 +7120,7 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var rxjs_1 = __webpack_require__(51);
-	var IStore = (function () {
+	var IStore = /** @class */ (function () {
 	    function IStore(initialState, reducer, middleware) {
 	        var _this = this;
 	        this.initialState = initialState;
@@ -23763,6 +23763,10 @@
 	process.removeListener = noop;
 	process.removeAllListeners = noop;
 	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+
+	process.listeners = function (name) { return [] }
 
 	process.binding = function (name) {
 	    throw new Error('process.binding is not supported');
@@ -27189,7 +27193,7 @@
 	//     loadedResourceBundle:boolean;
 	// 	loadingResourceBundle:boolean;
 	// }
-	var HibachiService = (function () {
+	var HibachiService = /** @class */ (function () {
 	    //@ngInject
 	    function HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, requestService, utilityService, formService, rbkeyService, appConfig, _config, _jsEntities, _jsEntityInstances) {
 	        var _this = this;
@@ -27599,7 +27603,7 @@
 	    return HibachiService;
 	}());
 	exports.HibachiService = HibachiService;
-	var $Hibachi = (function () {
+	var $Hibachi = /** @class */ (function () {
 	    //@ngInject
 	    function $Hibachi(appConfig) {
 	        var _this = this;
@@ -27651,7 +27655,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var HistoryService = (function () {
+	var HistoryService = /** @class */ (function () {
 	    //ngInject
 	    function HistoryService() {
 	        var _this = this;
@@ -27688,7 +27692,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var LocalStorageService = (function () {
+	var LocalStorageService = /** @class */ (function () {
 	    //@ngInject
 	    function LocalStorageService($window) {
 	        var _this = this;
@@ -27737,7 +27741,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var HibachiServiceDecorator = (function () {
+	var HibachiServiceDecorator = /** @class */ (function () {
 	    //@ngInject
 	    function HibachiServiceDecorator($delegate, $http, $timeout, $log, $rootScope, $location, $anchorScroll, $q, utilityService, formService, rbkeyService, appConfig, observerService, hibachiValidationService, attributeMetaData) {
 	        var _deferred = {};
@@ -28519,7 +28523,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var HibachiScope = (function () {
+	var HibachiScope = /** @class */ (function () {
 	    //@ngInject
 	    function HibachiScope(appConfig) {
 	        var _this = this;
@@ -28553,7 +28557,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var adminrequest_1 = __webpack_require__(408);
 	var publicrequest_1 = __webpack_require__(410);
-	var RequestService = (function () {
+	var RequestService = /** @class */ (function () {
 	    //@ngInject
 	    function RequestService($injector, observerService) {
 	        var _this = this;
@@ -28600,7 +28604,7 @@
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var request_1 = __webpack_require__(409);
-	var AdminRequest = (function (_super) {
+	var AdminRequest = /** @class */ (function (_super) {
 	    __extends(AdminRequest, _super);
 	    function AdminRequest(url, data, method, headers, $injector, observerService) {
 	        if (method === void 0) { method = "post"; }
@@ -28648,7 +28652,7 @@
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var basetransient_1 = __webpack_require__(27);
-	var Request = (function (_super) {
+	var Request = /** @class */ (function (_super) {
 	    __extends(Request, _super);
 	    function Request(url, data, method, headers, $injector) {
 	        var _this = _super.call(this, $injector) || this;
@@ -28791,7 +28795,7 @@
 	/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var request_1 = __webpack_require__(409);
-	var PublicRequest = (function (_super) {
+	var PublicRequest = /** @class */ (function (_super) {
 	    __extends(PublicRequest, _super);
 	    function PublicRequest(url, data, method, headers, $injector, observerService) {
 	        if (headers === void 0) { headers = { 'Content-Type': "application/x-www-form-urlencoded" }; }
@@ -28834,7 +28838,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var ScopeService = (function () {
+	var ScopeService = /** @class */ (function () {
 	    //ngInject
 	    function ScopeService() {
 	        var _this = this;
@@ -28883,7 +28887,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
-	var SkuService = (function (_super) {
+	var SkuService = /** @class */ (function (_super) {
 	    __extends(SkuService, _super);
 	    //@ngInject
 	    function SkuService($injector, $hibachi, utilityService) {
@@ -28906,7 +28910,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var HibachiValidationService = (function () {
+	var HibachiValidationService = /** @class */ (function () {
 	    //@ngInject
 	    function HibachiValidationService($log) {
 	        var _this = this;
@@ -29205,7 +29209,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var baseentityservice_1 = __webpack_require__(22);
-	var EntityService = (function (_super) {
+	var EntityService = /** @class */ (function (_super) {
 	    __extends(EntityService, _super);
 	    //@ngInject
 	    function EntityService($injector, $hibachi, utilityService) {
@@ -29228,7 +29232,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var GlobalSearchController = (function () {
+	var GlobalSearchController = /** @class */ (function () {
 	    //@ngInject
 	    function GlobalSearchController($scope, $log, $window, $timeout, $hibachi, rbkeyService) {
 	        $scope.keywords = '';
@@ -29377,7 +29381,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var PercentageFilter = (function () {
+	var PercentageFilter = /** @class */ (function () {
 	    function PercentageFilter() {
 	    }
 	    PercentageFilter.Factory = function () {
@@ -29403,7 +29407,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var EntityRBKey = (function () {
+	var EntityRBKey = /** @class */ (function () {
 	    function EntityRBKey() {
 	    }
 	    //@ngInject
@@ -29429,7 +29433,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWTrim = (function () {
+	var SWTrim = /** @class */ (function () {
 	    function SWTrim() {
 	    }
 	    //@ngInject
@@ -29470,7 +29474,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWUnique = (function () {
+	var SWUnique = /** @class */ (function () {
 	    function SWUnique() {
 	    }
 	    //@ngInject
@@ -29519,7 +29523,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var DateFilter = (function () {
+	var DateFilter = /** @class */ (function () {
 	    function DateFilter() {
 	    }
 	    //@ngInject
@@ -29541,7 +29545,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWActionCallerController = (function () {
+	var SWActionCallerController = /** @class */ (function () {
 	    //@ngInject
 	    function SWActionCallerController($scope, $element, $templateRequest, $compile, $timeout, corePartialsPath, utilityService, $hibachi, rbkeyService, hibachiPathBuilder) {
 	        var _this = this;
@@ -29771,7 +29775,7 @@
 	    return SWActionCallerController;
 	}());
 	exports.SWActionCallerController = SWActionCallerController;
-	var SWActionCaller = (function () {
+	var SWActionCaller = /** @class */ (function () {
 	    function SWActionCaller(partialsPath, utiltiyService, $hibachi) {
 	        this.partialsPath = partialsPath;
 	        this.utiltiyService = utiltiyService;
@@ -29829,7 +29833,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWTypeaheadSearchController = (function () {
+	var SWTypeaheadSearchController = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadSearchController($scope, $q, $transclude, $hibachi, $timeout, utilityService, observerService, rbkeyService, collectionConfigService, typeaheadService) {
 	        var _this = this;
@@ -30056,7 +30060,7 @@
 	    return SWTypeaheadSearchController;
 	}());
 	exports.SWTypeaheadSearchController = SWTypeaheadSearchController;
-	var SWTypeaheadSearch = (function () {
+	var SWTypeaheadSearch = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadSearch($compile, typeaheadService, corePartialsPath, hibachiPathBuilder) {
 	        var _this = this;
@@ -30156,7 +30160,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWTypeaheadInputFieldController = (function () {
+	var SWTypeaheadInputFieldController = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadInputFieldController($scope, $transclude, collectionConfigService, typeaheadService) {
 	        var _this = this;
@@ -30208,7 +30212,7 @@
 	    return SWTypeaheadInputFieldController;
 	}());
 	exports.SWTypeaheadInputFieldController = SWTypeaheadInputFieldController;
-	var SWTypeaheadInputField = (function () {
+	var SWTypeaheadInputField = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadInputField(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
@@ -30250,7 +30254,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWTypeaheadMultiselectController = (function () {
+	var SWTypeaheadMultiselectController = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadMultiselectController($scope, $transclude, $hibachi, listingService, typeaheadService, utilityService, collectionConfigService) {
 	        var _this = this;
@@ -30305,7 +30309,7 @@
 	    return SWTypeaheadMultiselectController;
 	}());
 	exports.SWTypeaheadMultiselectController = SWTypeaheadMultiselectController;
-	var SWTypeaheadMultiselect = (function () {
+	var SWTypeaheadMultiselect = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadMultiselect($compile, scopeService, typeaheadService, corePartialsPath, hibachiPathBuilder) {
 	        var _this = this;
@@ -30392,13 +30396,13 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWTypeaheadSearchLineItemController = (function () {
+	var SWTypeaheadSearchLineItemController = /** @class */ (function () {
 	    function SWTypeaheadSearchLineItemController() {
 	    }
 	    return SWTypeaheadSearchLineItemController;
 	}());
 	exports.SWTypeaheadSearchLineItemController = SWTypeaheadSearchLineItemController;
-	var SWTypeaheadSearchLineItem = (function () {
+	var SWTypeaheadSearchLineItem = /** @class */ (function () {
 	    //@ngInject
 	    function SWTypeaheadSearchLineItem($compile) {
 	        this.$compile = $compile;
@@ -30440,7 +30444,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWTypeaheadRemoveSelectionController = (function () {
+	var SWTypeaheadRemoveSelectionController = /** @class */ (function () {
 	    function SWTypeaheadRemoveSelectionController($scope, listingService, scopeService, typeaheadService, utilityService) {
 	        var _this = this;
 	        this.$scope = $scope;
@@ -30468,7 +30472,7 @@
 	    return SWTypeaheadRemoveSelectionController;
 	}());
 	exports.SWTypeaheadRemoveSelectionController = SWTypeaheadRemoveSelectionController;
-	var SWTypeaheadRemoveSelection = (function () {
+	var SWTypeaheadRemoveSelection = /** @class */ (function () {
 	    // @ngInject
 	    function SWTypeaheadRemoveSelection(scopeService, corePartialsPath, hibachiPathBuilder) {
 	        var _this = this;
@@ -30514,7 +30518,7 @@
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCollectionConfigController = (function () {
+	var SWCollectionConfigController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCollectionConfigController($transclude, $q, collectionConfigService) {
 	        this.$transclude = $transclude;
@@ -30534,7 +30538,7 @@
 	    return SWCollectionConfigController;
 	}());
 	exports.SWCollectionConfigController = SWCollectionConfigController;
-	var SWCollectionConfig = (function () {
+	var SWCollectionConfig = /** @class */ (function () {
 	    // @ngInject
 	    function SWCollectionConfig(collectionConfigService, listingService, scopeService, $q) {
 	        var _this = this;
@@ -30681,13 +30685,13 @@
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCollectionFilterController = (function () {
+	var SWCollectionFilterController = /** @class */ (function () {
 	    function SWCollectionFilterController() {
 	    }
 	    return SWCollectionFilterController;
 	}());
 	exports.SWCollectionFilterController = SWCollectionFilterController;
-	var SWCollectionFilter = (function () {
+	var SWCollectionFilter = /** @class */ (function () {
 	    //@ngInject
 	    function SWCollectionFilter(scopeService, utilityService) {
 	        var _this = this;
@@ -30743,13 +30747,13 @@
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCollectionOrderByController = (function () {
+	var SWCollectionOrderByController = /** @class */ (function () {
 	    function SWCollectionOrderByController() {
 	    }
 	    return SWCollectionOrderByController;
 	}());
 	exports.SWCollectionOrderByController = SWCollectionOrderByController;
-	var SWCollectionOrderBy = (function () {
+	var SWCollectionOrderBy = /** @class */ (function () {
 	    //@ngInject
 	    function SWCollectionOrderBy(scopeService) {
 	        var _this = this;
@@ -30793,13 +30797,13 @@
 	"use strict";
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCollectionColumnController = (function () {
+	var SWCollectionColumnController = /** @class */ (function () {
 	    function SWCollectionColumnController() {
 	    }
 	    return SWCollectionColumnController;
 	}());
 	exports.SWCollectionColumnController = SWCollectionColumnController;
-	var SWCollectionColumn = (function () {
+	var SWCollectionColumn = /** @class */ (function () {
 	    //@ngInject
 	    function SWCollectionColumn(scopeService, utilityService) {
 	        var _this = this;
@@ -30886,7 +30890,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWActionCallerDropdownController = (function () {
+	var SWActionCallerDropdownController = /** @class */ (function () {
 	    function SWActionCallerDropdownController() {
 	        this.title = this.title || '';
 	        this.icon = this.icon || 'plus';
@@ -30898,7 +30902,7 @@
 	    return SWActionCallerDropdownController;
 	}());
 	exports.SWActionCallerDropdownController = SWActionCallerDropdownController;
-	var SWActionCallerDropdown = (function () {
+	var SWActionCallerDropdown = /** @class */ (function () {
 	    function SWActionCallerDropdown(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
 	        this.restrict = 'E';
@@ -30936,7 +30940,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWColumnSorter = (function () {
+	var SWColumnSorter = /** @class */ (function () {
 	    //@ngInject
 	    function SWColumnSorter($log, observerService, corePartialsPath, hibachiPathBuilder) {
 	        return {
@@ -31015,7 +31019,7 @@
 	 *<------------------------------------------------------------------------------------------------------------------------------------->
 	 */
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWConfirm = (function () {
+	var SWConfirm = /** @class */ (function () {
 	    //@ngInject
 	    function SWConfirm($hibachi, $log, $compile, $modal, partialsPath) {
 	        console.log("swConfirm Called");
@@ -31137,7 +31141,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWDraggableController = (function () {
+	var SWDraggableController = /** @class */ (function () {
 	    //@ngInject
 	    function SWDraggableController() {
 	        if (angular.isUndefined(this.draggable)) {
@@ -31146,7 +31150,7 @@
 	    }
 	    return SWDraggableController;
 	}());
-	var SWDraggable = (function () {
+	var SWDraggable = /** @class */ (function () {
 	    //@ngInject
 	    function SWDraggable(corePartialsPath, utilityService, draggableService, hibachiPathBuilder) {
 	        var _this = this;
@@ -31230,7 +31234,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWDraggableContainerController = (function () {
+	var SWDraggableContainerController = /** @class */ (function () {
 	    //@ngInject
 	    function SWDraggableContainerController(draggableService) {
 	        this.draggableService = draggableService;
@@ -31240,7 +31244,7 @@
 	    }
 	    return SWDraggableContainerController;
 	}());
-	var SWDraggableContainer = (function () {
+	var SWDraggableContainer = /** @class */ (function () {
 	    //@ngInject
 	    function SWDraggableContainer($timeout, corePartialsPath, utilityService, listingService, observerService, draggableService, hibachiPathBuilder) {
 	        var _this = this;
@@ -31360,7 +31364,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWEntityActionBarController = (function () {
+	var SWEntityActionBarController = /** @class */ (function () {
 	    //@ngInject
 	    function SWEntityActionBarController(rbkeyService) {
 	        var _this = this;
@@ -31374,7 +31378,7 @@
 	    }
 	    return SWEntityActionBarController;
 	}());
-	var SWEntityActionBar = (function () {
+	var SWEntityActionBar = /** @class */ (function () {
 	    //@ngInject
 	    function SWEntityActionBar(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
@@ -31432,12 +31436,12 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWEntityActionBarButtonGroupController = (function () {
+	var SWEntityActionBarButtonGroupController = /** @class */ (function () {
 	    function SWEntityActionBarButtonGroupController() {
 	    }
 	    return SWEntityActionBarButtonGroupController;
 	}());
-	var SWEntityActionBarButtonGroup = (function () {
+	var SWEntityActionBarButtonGroup = /** @class */ (function () {
 	    //@ngInject
 	    function SWEntityActionBarButtonGroup(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
@@ -31470,7 +31474,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWExpandableRecordController = (function () {
+	var SWExpandableRecordController = /** @class */ (function () {
 	    //@ngInject
 	    function SWExpandableRecordController($timeout, $hibachi, utilityService, collectionConfigService, expandableService, listingService, observerService) {
 	        var _this = this;
@@ -31576,7 +31580,7 @@
 	    }
 	    return SWExpandableRecordController;
 	}());
-	var SWExpandableRecord = (function () {
+	var SWExpandableRecord = /** @class */ (function () {
 	    //@ngInject
 	    function SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, expandableService, hibachiPathBuilder) {
 	        var _this = this;
@@ -31678,7 +31682,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var md5 = __webpack_require__(440);
-	var SWGravatarController = (function () {
+	var SWGravatarController = /** @class */ (function () {
 	    // @ngInject
 	    function SWGravatarController() {
 	        this.gravatarURL = "http://www.gravatar.com/avatar/" + md5(this.emailAddress.toLowerCase().trim());
@@ -31686,7 +31690,7 @@
 	    return SWGravatarController;
 	}());
 	exports.SWGravatarController = SWGravatarController;
-	var SWGravatar = (function () {
+	var SWGravatar = /** @class */ (function () {
 	    function SWGravatar() {
 	        this.template = "<img src='{{swGravatar.gravatarURL}}' />";
 	        this.transclude = false;
@@ -31705,10 +31709,10 @@
 	        directive.$inject = [];
 	        return directive;
 	    };
+	    SWGravatar.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
+	        'hibachiPathBuilder'];
 	    return SWGravatar;
 	}());
-	SWGravatar.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-	    'hibachiPathBuilder'];
 	exports.SWGravatar = SWGravatar;
 
 
@@ -32054,7 +32058,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWLoginController = (function () {
+	var SWLoginController = /** @class */ (function () {
 	    //@ngInject
 	    function SWLoginController($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiScope) {
 	        var _this = this;
@@ -32085,7 +32089,7 @@
 	    }
 	    return SWLoginController;
 	}());
-	var SWLogin = (function () {
+	var SWLogin = /** @class */ (function () {
 	    //@ngInject
 	    function SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
 	        this.$route = $route;
@@ -32129,7 +32133,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWModalLauncherController = (function () {
+	var SWModalLauncherController = /** @class */ (function () {
 	    // @ngInject
 	    function SWModalLauncherController() {
 	        var _this = this;
@@ -32176,7 +32180,7 @@
 	    return SWModalLauncherController;
 	}());
 	exports.SWModalLauncherController = SWModalLauncherController;
-	var SWModalLauncher = (function () {
+	var SWModalLauncher = /** @class */ (function () {
 	    // @ngInject
 	    function SWModalLauncher($compile, corePartialsPath, hibachiPathBuilder) {
 	        this.$compile = $compile;
@@ -32236,7 +32240,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWModalWindowController = (function () {
+	var SWModalWindowController = /** @class */ (function () {
 	    // @ngInject
 	    function SWModalWindowController() {
 	        if (angular.isUndefined(this.modalName)) {
@@ -32247,7 +32251,7 @@
 	    return SWModalWindowController;
 	}());
 	exports.SWModalWindowController = SWModalWindowController;
-	var SWModalWindow = (function () {
+	var SWModalWindow = /** @class */ (function () {
 	    // @ngInject
 	    function SWModalWindow($compile, corePartialsPath, hibachiPathBuilder) {
 	        this.$compile = $compile;
@@ -32298,7 +32302,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWNumbersOnly = (function () {
+	var SWNumbersOnly = /** @class */ (function () {
 	    function SWNumbersOnly() {
 	        this.restrict = "A";
 	        this.require = "ngModel";
@@ -32356,7 +32360,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWLoading = (function () {
+	var SWLoading = /** @class */ (function () {
 	    function SWLoading($log, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -32391,7 +32395,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWScrollTrigger = (function () {
+	var SWScrollTrigger = /** @class */ (function () {
 	    function SWScrollTrigger($rootScope, $window, $timeout) {
 	        return {
 	            link: function (scope, elem, attrs) {
@@ -32482,7 +32486,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWTabGroupController = (function () {
+	var SWTabGroupController = /** @class */ (function () {
 	    // @ngInject
 	    function SWTabGroupController(utilityService, rbkeyService, observerService) {
 	        var _this = this;
@@ -32529,7 +32533,7 @@
 	    return SWTabGroupController;
 	}());
 	exports.SWTabGroupController = SWTabGroupController;
-	var SWTabGroup = (function () {
+	var SWTabGroup = /** @class */ (function () {
 	    // @ngInject
 	    function SWTabGroup($compile, corePartialsPath, hibachiPathBuilder) {
 	        this.$compile = $compile;
@@ -32569,7 +32573,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWTabContentController = (function () {
+	var SWTabContentController = /** @class */ (function () {
 	    // @ngInject
 	    function SWTabContentController($scope, $q, $transclude, $hibachi, $timeout, utilityService, rbkeyService, collectionConfigService) {
 	        this.$scope = $scope;
@@ -32600,7 +32604,7 @@
 	    return SWTabContentController;
 	}());
 	exports.SWTabContentController = SWTabContentController;
-	var SWTabContent = (function () {
+	var SWTabContent = /** @class */ (function () {
 	    // @ngInject
 	    function SWTabContent($compile, scopeService, observerService, corePartialsPath, hibachiPathBuilder) {
 	        var _this = this;
@@ -32656,7 +32660,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWTooltipController = (function () {
+	var SWTooltipController = /** @class */ (function () {
 	    // @ngInject
 	    function SWTooltipController(rbkeyService) {
 	        var _this = this;
@@ -32678,7 +32682,7 @@
 	    return SWTooltipController;
 	}());
 	exports.SWTooltipController = SWTooltipController;
-	var SWTooltip = (function () {
+	var SWTooltip = /** @class */ (function () {
 	    // @ngInject
 	    function SWTooltip($document, corePartialsPath, hibachiPathBuilder) {
 	        this.$document = $document;
@@ -32739,7 +32743,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWRbKey = (function () {
+	var SWRbKey = /** @class */ (function () {
 	    function SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) {
 	        return {
 	            restrict: 'A',
@@ -32782,7 +32786,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWOptions = (function () {
+	var SWOptions = /** @class */ (function () {
 	    function SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'AE',
@@ -32852,7 +32856,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWSelectionController = (function () {
+	var SWSelectionController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSelectionController(selectionService, observerService) {
 	        var _this = this;
@@ -32904,7 +32908,7 @@
 	    }
 	    return SWSelectionController;
 	}());
-	var SWSelection = (function () {
+	var SWSelection = /** @class */ (function () {
 	    function SWSelection(collectionPartialsPath, hibachiPathBuilder) {
 	        this.collectionPartialsPath = collectionPartialsPath;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -32928,9 +32932,9 @@
 	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
+	    SWSelection.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	    return SWSelection;
 	}());
-	SWSelection.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	exports.SWSelection = SWSelection;
 
 
@@ -32942,7 +32946,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWClickOutside = (function () {
+	var SWClickOutside = /** @class */ (function () {
 	    //@ngInject
 	    function SWClickOutside($document, $timeout, utilityService) {
 	        var _this = this;
@@ -32992,7 +32996,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDirective = (function () {
+	var SWDirective = /** @class */ (function () {
 	    //@ngInject
 	    function SWDirective($compile, utilityService) {
 	        return {
@@ -33050,7 +33054,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWExportAction = (function () {
+	var SWExportAction = /** @class */ (function () {
 	    //@ngInject
 	    function SWExportAction($log, corePartialsPath, hibachiPathBuilder) {
 	        return {
@@ -33083,7 +33087,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWHref = (function () {
+	var SWHref = /** @class */ (function () {
 	    function SWHref() {
 	        return {
 	            restrict: 'A',
@@ -33116,7 +33120,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWProcessCallerController = (function () {
+	var SWProcessCallerController = /** @class */ (function () {
 	    //@ngInject
 	    function SWProcessCallerController(rbkeyService, $templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, hibachiPathBuilder) {
 	        var _this = this;
@@ -33150,7 +33154,7 @@
 	    }
 	    return SWProcessCallerController;
 	}());
-	var SWProcessCaller = (function () {
+	var SWProcessCaller = /** @class */ (function () {
 	    function SWProcessCaller(corePartialsPath, utilityService) {
 	        this.corePartialsPath = corePartialsPath;
 	        this.utilityService = utilityService;
@@ -33189,9 +33193,9 @@
 	        ];
 	        return directive;
 	    };
+	    SWProcessCaller.$inject = ['corePartialsPath', 'utilityService'];
 	    return SWProcessCaller;
 	}());
-	SWProcessCaller.$inject = ['corePartialsPath', 'utilityService'];
 	exports.SWProcessCaller = SWProcessCaller;
 
 
@@ -33203,7 +33207,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWSortable = (function () {
+	var SWSortable = /** @class */ (function () {
 	    function SWSortable(expression, compiledElement) {
 	        return function (linkElement) {
 	            var scope = this;
@@ -33259,7 +33263,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWOrderByControlsController = (function () {
+	var SWOrderByControlsController = /** @class */ (function () {
 	    // @ngInject
 	    function SWOrderByControlsController(listingService, observerService, utilityService) {
 	        var _this = this;
@@ -33345,7 +33349,7 @@
 	    return SWOrderByControlsController;
 	}());
 	exports.SWOrderByControlsController = SWOrderByControlsController;
-	var SWOrderByControls = (function () {
+	var SWOrderByControls = /** @class */ (function () {
 	    // @ngInject
 	    function SWOrderByControls($compile, scopeService, listingService, corePartialsPath, hibachiPathBuilder) {
 	        var _this = this;
@@ -33426,7 +33430,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var AlertController = (function () {
+	var AlertController = /** @class */ (function () {
 	    //@ngInject
 	    function AlertController($scope, alertService) {
 	        $scope.$id = "alertController";
@@ -33447,7 +33451,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	//import Alert = require('../model/alert');
 	var alert_1 = __webpack_require__(466);
-	var AlertService = (function () {
+	var AlertService = /** @class */ (function () {
 	    function AlertService($timeout, alerts) {
 	        var _this = this;
 	        this.$timeout = $timeout;
@@ -33503,11 +33507,11 @@
 	        };
 	        this.alerts = [];
 	    }
+	    AlertService.$inject = [
+	        '$timeout'
+	    ];
 	    return AlertService;
 	}());
-	AlertService.$inject = [
-	    '$timeout'
-	];
 	exports.AlertService = AlertService;
 
 
@@ -33520,7 +33524,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
 	//model
-	var Alert = (function () {
+	var Alert = /** @class */ (function () {
 	    function Alert(msg, type, fade, dismissable) {
 	        this.fade = false;
 	        this.dismissable = false;
@@ -33560,7 +33564,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var DialogService = (function () {
+	var DialogService = /** @class */ (function () {
 	    function DialogService(hibachiPathBuilder) {
 	        var _this = this;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -33589,11 +33593,11 @@
 	        this._pageDialogs = [];
 	        this.hibachiPathBuilder = hibachiPathBuilder;
 	    }
+	    DialogService.$inject = [
+	        'hibachiPathBuilder'
+	    ];
 	    return DialogService;
 	}());
-	DialogService.$inject = [
-	    'hibachiPathBuilder'
-	];
 	exports.DialogService = DialogService;
 
 
@@ -33605,7 +33609,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var PageDialogController = (function () {
+	var PageDialogController = /** @class */ (function () {
 	    //@ngInject
 	    function PageDialogController($scope, $location, $log, $anchorScroll, $hibachi, dialogService) {
 	        $scope.$id = 'pageDialogController';
@@ -33942,7 +33946,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardLayoutController = (function () {
+	var SWCardLayoutController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardLayoutController($log) {
 	        this.$log = $log;
@@ -33953,7 +33957,7 @@
 	    return SWCardLayoutController;
 	}());
 	exports.SWCardLayoutController = SWCardLayoutController;
-	var SWCardLayout = (function () {
+	var SWCardLayout = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardLayout(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardLayoutController;
@@ -33992,7 +33996,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardViewController = (function () {
+	var SWCardViewController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardViewController($log) {
 	        this.$log = $log;
@@ -34001,7 +34005,7 @@
 	    return SWCardViewController;
 	}());
 	exports.SWCardViewController = SWCardViewController;
-	var SWCardView = (function () {
+	var SWCardView = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardView(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardViewController;
@@ -34043,7 +34047,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardHeaderController = (function () {
+	var SWCardHeaderController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardHeaderController($log) {
 	        this.$log = $log;
@@ -34053,7 +34057,7 @@
 	    return SWCardHeaderController;
 	}());
 	exports.SWCardHeaderController = SWCardHeaderController;
-	var SWCardHeader = (function () {
+	var SWCardHeader = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardHeader(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardHeaderController;
@@ -34091,7 +34095,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardBodyController = (function () {
+	var SWCardBodyController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardBodyController($log) {
 	        this.$log = $log;
@@ -34101,7 +34105,7 @@
 	    return SWCardBodyController;
 	}());
 	exports.SWCardBodyController = SWCardBodyController;
-	var SWCardBody = (function () {
+	var SWCardBody = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardBody(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardBodyController;
@@ -34137,7 +34141,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardIconController = (function () {
+	var SWCardIconController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardIconController($log) {
 	        this.$log = $log;
@@ -34148,7 +34152,7 @@
 	    return SWCardIconController;
 	}());
 	exports.SWCardIconController = SWCardIconController;
-	var SWCardIcon = (function () {
+	var SWCardIcon = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardIcon(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardIconController;
@@ -34187,7 +34191,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardProgressBarController = (function () {
+	var SWCardProgressBarController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardProgressBarController($log) {
 	        this.$log = $log;
@@ -34199,7 +34203,7 @@
 	    return SWCardProgressBarController;
 	}());
 	exports.SWCardProgressBarController = SWCardProgressBarController;
-	var SWCardProgressBar = (function () {
+	var SWCardProgressBar = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardProgressBar(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardProgressBarController;
@@ -34239,7 +34243,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCardListItemController = (function () {
+	var SWCardListItemController = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardListItemController($log) {
 	        this.$log = $log;
@@ -34250,7 +34254,7 @@
 	    return SWCardListItemController;
 	}());
 	exports.SWCardListItemController = SWCardListItemController;
-	var SWCardListItem = (function () {
+	var SWCardListItem = /** @class */ (function () {
 	    //@ngInject
 	    function SWCardListItem(cardPartialsPath, hibachiPathBuilder) {
 	        this.controller = SWCardListItemController;
@@ -34367,7 +34371,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var Column = (function () {
+	var Column = /** @class */ (function () {
 	    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
 	        if (isVisible === void 0) { isVisible = true; }
 	        if (isDeletable === void 0) { isDeletable = true; }
@@ -34387,7 +34391,7 @@
 	    return Column;
 	}());
 	exports.Column = Column;
-	var Filter = (function () {
+	var Filter = /** @class */ (function () {
 	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue, hidden, pattern) {
 	        if (hidden === void 0) { hidden = false; }
 	        this.propertyIdentifier = propertyIdentifier;
@@ -34402,7 +34406,7 @@
 	    return Filter;
 	}());
 	exports.Filter = Filter;
-	var CollectionFilter = (function () {
+	var CollectionFilter = /** @class */ (function () {
 	    function CollectionFilter(propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
 	        if (readOnly === void 0) { readOnly = false; }
 	        this.propertyIdentifier = propertyIdentifier;
@@ -34416,7 +34420,7 @@
 	    return CollectionFilter;
 	}());
 	exports.CollectionFilter = CollectionFilter;
-	var Join = (function () {
+	var Join = /** @class */ (function () {
 	    function Join(associationName, alias) {
 	        this.associationName = associationName;
 	        this.alias = alias;
@@ -34424,7 +34428,7 @@
 	    return Join;
 	}());
 	exports.Join = Join;
-	var OrderBy = (function () {
+	var OrderBy = /** @class */ (function () {
 	    function OrderBy(propertyIdentifier, direction) {
 	        this.propertyIdentifier = propertyIdentifier;
 	        this.direction = direction;
@@ -34432,7 +34436,7 @@
 	    return OrderBy;
 	}());
 	exports.OrderBy = OrderBy;
-	var CollectionConfig = (function () {
+	var CollectionConfig = /** @class */ (function () {
 	    // @ngInject
 	    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, keywordColumns, filterGroups, keywordFilterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, dirtyRead, isDistinct) {
 	        if (keywordColumns === void 0) { keywordColumns = []; }
@@ -35036,7 +35040,7 @@
 	})();
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var baseentityservice_1 = __webpack_require__(22);
-	var CollectionService = (function (_super) {
+	var CollectionService = /** @class */ (function (_super) {
 	    __extends(CollectionService, _super);
 	    //@ngInject
 	    function CollectionService($injector, $hibachi, utilityService, $filter, $log) {
@@ -35245,7 +35249,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var CollectionController = (function () {
+	var CollectionController = /** @class */ (function () {
 	    //@ngInject
 	    function CollectionController($scope, $location, $log, $timeout, $hibachi, collectionService, metadataService, selectionService, paginationService, collectionConfigService, appConfig) {
 	        //init values
@@ -35526,7 +35530,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var CreateCollection = (function () {
+	var CreateCollection = /** @class */ (function () {
 	    //@ngInject
 	    function CreateCollection($scope, $log, $timeout, $hibachi, collectionService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService, rbkeyService, $window) {
 	        $window.scrollTo(0, 0);
@@ -35734,7 +35738,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var ConfirmationController = (function () {
+	var ConfirmationController = /** @class */ (function () {
 	    //@ngInject
 	    function ConfirmationController($scope, $log, $modalInstance) {
 	        $scope.deleteEntity = function (entity) {
@@ -35772,7 +35776,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var CollectionCreateController = (function () {
+	var CollectionCreateController = /** @class */ (function () {
 	    //@ngInject
 	    function CollectionCreateController($scope, collectionConfigService) {
 	        var _this = this;
@@ -35808,7 +35812,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCollection = (function () {
+	var SWCollection = /** @class */ (function () {
 	    //@ngInject
 	    function SWCollection($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService) {
 	        return {
@@ -35854,7 +35858,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWAddFilterButtons = (function () {
+	var SWAddFilterButtons = /** @class */ (function () {
 	    //@ngInject
 	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
@@ -35901,7 +35905,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDisplayOptions = (function () {
+	var SWDisplayOptions = /** @class */ (function () {
 	    //@ngInject
 	    function SWDisplayOptions($log, $hibachi, hibachiPathBuilder, collectionPartialsPath, rbkeyService) {
 	        return {
@@ -36142,7 +36146,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDisplayItem = (function () {
+	var SWDisplayItem = /** @class */ (function () {
 	    //@ngInject
 	    function SWDisplayItem($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
 	        return {
@@ -36205,7 +36209,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDisplayItemAggregate = (function () {
+	var SWDisplayItemAggregate = /** @class */ (function () {
 	    //@ngInject
 	    function SWDisplayItemAggregate($hibachi, collectionPartialsPath, metadataService, hibachiPathBuilder) {
 	        return {
@@ -36281,7 +36285,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCollectionTable = (function () {
+	var SWCollectionTable = /** @class */ (function () {
 	    //@ngInject
 	    function SWCollectionTable($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi) {
 	        return {
@@ -36345,7 +36349,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWColumnItem = (function () {
+	var SWColumnItem = /** @class */ (function () {
 	    function SWColumnItem($log, hibachiPathBuilder, collectionPartialsPath) {
 	        return {
 	            restrict: 'A',
@@ -36545,7 +36549,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWConditionCriteria = (function () {
+	var SWConditionCriteria = /** @class */ (function () {
 	    function SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        /* Template info begin*/
 	        var getTemplate = function (selectedFilterProperty) {
@@ -37443,7 +37447,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCriteria = (function () {
+	var SWCriteria = /** @class */ (function () {
 	    function SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -37486,7 +37490,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaBoolean = (function () {
+	var SWCriteriaBoolean = /** @class */ (function () {
 	    function SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -37586,7 +37590,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaDate = (function () {
+	var SWCriteriaDate = /** @class */ (function () {
 	    function SWCriteriaDate($log, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -38054,7 +38058,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaManyToMany = (function () {
+	var SWCriteriaManyToMany = /** @class */ (function () {
 	    function SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
@@ -38197,7 +38201,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaManyToOne = (function () {
+	var SWCriteriaManyToOne = /** @class */ (function () {
 	    function SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
@@ -38360,7 +38364,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaNumber = (function () {
+	var SWCriteriaNumber = /** @class */ (function () {
 	    function SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -38541,7 +38545,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaOneToMany = (function () {
+	var SWCriteriaOneToMany = /** @class */ (function () {
 	    function SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
@@ -38691,7 +38695,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaRelatedObject = (function () {
+	var SWCriteriaRelatedObject = /** @class */ (function () {
 	    function SWCriteriaRelatedObject($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
@@ -38787,7 +38791,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCriteriaString = (function () {
+	var SWCriteriaString = /** @class */ (function () {
 	    function SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -38969,7 +38973,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWEditFilterItem = (function () {
+	var SWEditFilterItem = /** @class */ (function () {
 	    function SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService) {
 	        return {
 	            require: '^swFilterGroups',
@@ -39345,7 +39349,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWFilterGroups = (function () {
+	var SWFilterGroups = /** @class */ (function () {
 	    function SWFilterGroups($log, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'EA',
@@ -39443,7 +39447,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWFilterItem = (function () {
+	var SWFilterItem = /** @class */ (function () {
 	    function SWFilterItem($log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -39510,7 +39514,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWFilterGroupItem = (function () {
+	var SWFilterGroupItem = /** @class */ (function () {
 	    function SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -39640,7 +39644,7 @@
 	};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var Store = __webpack_require__(510);
-	var ListingService = (function () {
+	var ListingService = /** @class */ (function () {
 	    //@ngInject
 	    function ListingService($timeout, $q, collectionConfigService, filterService, historyService, observerService, rbkeyService, selectionService, utilityService, $hibachi) {
 	        var _this = this;
@@ -40506,7 +40510,7 @@
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var rxjs_1 = __webpack_require__(51);
-	var IStore = (function () {
+	var IStore = /** @class */ (function () {
 	    function IStore(initialState, reducer, middleware) {
 	        var _this = this;
 	        this.initialState = initialState;
@@ -40536,7 +40540,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingDisplayController = (function () {
+	var SWListingDisplayController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingDisplayController($scope, $transclude, $timeout, $q, $hibachi, utilityService, collectionConfigService, listingService, paginationService, selectionService, observerService, rbkeyService) {
 	        var _this = this;
@@ -40895,7 +40899,7 @@
 	    }
 	    return SWListingDisplayController;
 	}());
-	var SWListingDisplay = (function () {
+	var SWListingDisplay = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingDisplay(listingPartialPath, hibachiPathBuilder) {
 	        this.listingPartialPath = listingPartialPath;
@@ -41044,7 +41048,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingDisplayCellController = (function () {
+	var SWListingDisplayCellController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingDisplayCellController(listingPartialPath, hibachiPathBuilder, listingService, utilityService, $scope) {
 	        var _this = this;
@@ -41112,7 +41116,7 @@
 	    }
 	    return SWListingDisplayCellController;
 	}());
-	var SWListingDisplayCell = (function () {
+	var SWListingDisplayCell = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingDisplayCell() {
 	        this.restrict = 'E';
@@ -41146,7 +41150,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingControlsController = (function () {
+	var SWListingControlsController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingControlsController($hibachi, metadataService, collectionService, listingService, observerService) {
 	        var _this = this;
@@ -41247,7 +41251,7 @@
 	    }
 	    return SWListingControlsController;
 	}());
-	var SWListingControls = (function () {
+	var SWListingControls = /** @class */ (function () {
 	    function SWListingControls(collectionPartialsPath, hibachiPathBuilder) {
 	        this.collectionPartialsPath = collectionPartialsPath;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -41271,9 +41275,9 @@
 	        directive.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
+	    SWListingControls.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
 	    return SWListingControls;
 	}());
-	SWListingControls.$inject = ['listingPartialPath', 'hibachiPathBuilder'];
 	exports.SWListingControls = SWListingControls;
 
 
@@ -41285,7 +41289,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingAggregateController = (function () {
+	var SWListingAggregateController = /** @class */ (function () {
 	    function SWListingAggregateController() {
 	        var _this = this;
 	        this.init = function () {
@@ -41295,7 +41299,7 @@
 	    }
 	    return SWListingAggregateController;
 	}());
-	var SWListingAggregate = (function () {
+	var SWListingAggregate = /** @class */ (function () {
 	    function SWListingAggregate() {
 	        this.restrict = 'EA';
 	        this.scope = true;
@@ -41333,7 +41337,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingColorFilterController = (function () {
+	var SWListingColorFilterController = /** @class */ (function () {
 	    function SWListingColorFilterController() {
 	        this.init = function () {
 	        };
@@ -41341,7 +41345,7 @@
 	    }
 	    return SWListingColorFilterController;
 	}());
-	var SWListingColorFilter = (function () {
+	var SWListingColorFilter = /** @class */ (function () {
 	    function SWListingColorFilter(utilityService) {
 	        var _this = this;
 	        this.utilityService = utilityService;
@@ -41391,7 +41395,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingColumnController = (function () {
+	var SWListingColumnController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingColumnController($injector) {
 	        var _this = this;
@@ -41423,7 +41427,7 @@
 	    }
 	    return SWListingColumnController;
 	}());
-	var SWListingColumn = (function () {
+	var SWListingColumn = /** @class */ (function () {
 	    function SWListingColumn(listingService, scopeService, utilityService) {
 	        var _this = this;
 	        this.listingService = listingService;
@@ -41502,9 +41506,9 @@
 	        ];
 	        return directive;
 	    };
+	    SWListingColumn.$inject = ['utilityService'];
 	    return SWListingColumn;
 	}());
-	SWListingColumn.$inject = ['utilityService'];
 	exports.SWListingColumn = SWListingColumn;
 
 
@@ -41519,14 +41523,14 @@
 	/* SwListingDisableRule
 	 * defines a filter, by which to determine what rows will be disabled
 	 */
-	var SWListingDisableRuleController = (function () {
+	var SWListingDisableRuleController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingDisableRuleController($q) {
 	        this.$q = $q;
 	    }
 	    return SWListingDisableRuleController;
 	}());
-	var SWListingDisableRule = (function () {
+	var SWListingDisableRule = /** @class */ (function () {
 	    function SWListingDisableRule(scopeService, $q) {
 	        var _this = this;
 	        this.scopeService = scopeService;
@@ -41582,7 +41586,7 @@
 	 * defines a filter, by which to determine what will be expanded
 	 * supplies the collection config and any other necessary rules for what will be loaded and displayed
 	 */
-	var SWListingExpandableRuleController = (function () {
+	var SWListingExpandableRuleController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingExpandableRuleController($q) {
 	        this.$q = $q;
@@ -41593,7 +41597,7 @@
 	    }
 	    return SWListingExpandableRuleController;
 	}());
-	var SWListingExpandableRule = (function () {
+	var SWListingExpandableRule = /** @class */ (function () {
 	    function SWListingExpandableRule(scopeService, $q) {
 	        var _this = this;
 	        this.scopeService = scopeService;
@@ -41654,7 +41658,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingFilterController = (function () {
+	var SWListingFilterController = /** @class */ (function () {
 	    function SWListingFilterController() {
 	        this.init = function () {
 	        };
@@ -41662,7 +41666,7 @@
 	    }
 	    return SWListingFilterController;
 	}());
-	var SWListingFilter = (function () {
+	var SWListingFilter = /** @class */ (function () {
 	    function SWListingFilter() {
 	        this.restrict = 'EA';
 	        this.scope = true;
@@ -41712,7 +41716,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingFilterGroupController = (function () {
+	var SWListingFilterGroupController = /** @class */ (function () {
 	    function SWListingFilterGroupController($scope, $transclude) {
 	        this.$scope = $scope;
 	        this.$transclude = $transclude;
@@ -41722,7 +41726,7 @@
 	    }
 	    return SWListingFilterGroupController;
 	}());
-	var SWListingFilterGroup = (function () {
+	var SWListingFilterGroup = /** @class */ (function () {
 	    function SWListingFilterGroup() {
 	        this.restrict = 'EA';
 	        this.transclude = true;
@@ -41736,9 +41740,9 @@
 	        directive.$inject = [];
 	        return directive;
 	    };
+	    SWListingFilterGroup.$inject = [];
 	    return SWListingFilterGroup;
 	}());
-	SWListingFilterGroup.$inject = [];
 	exports.SWListingFilterGroup = SWListingFilterGroup;
 
 
@@ -41750,7 +41754,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingOrderByController = (function () {
+	var SWListingOrderByController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingOrderByController() {
 	        this.init = function () {
@@ -41759,7 +41763,7 @@
 	    }
 	    return SWListingOrderByController;
 	}());
-	var SWListingOrderBy = (function () {
+	var SWListingOrderBy = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingOrderBy(utilityService) {
 	        this.utilityService = utilityService;
@@ -41797,7 +41801,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingRowSaveController = (function () {
+	var SWListingRowSaveController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingRowSaveController(listingService) {
 	        var _this = this;
@@ -41808,7 +41812,7 @@
 	    }
 	    return SWListingRowSaveController;
 	}());
-	var SWListingRowSave = (function () {
+	var SWListingRowSave = /** @class */ (function () {
 	    function SWListingRowSave(hibachiPathBuilder, listingPartialPath, utilityService, scopeService) {
 	        var _this = this;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -41846,9 +41850,9 @@
 	        ];
 	        return directive;
 	    };
+	    SWListingRowSave.$inject = ['utilityService'];
 	    return SWListingRowSave;
 	}());
-	SWListingRowSave.$inject = ['utilityService'];
 	exports.SWListingRowSave = SWListingRowSave;
 
 
@@ -41860,7 +41864,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingSearchController = (function () {
+	var SWListingSearchController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingSearchController($hibachi, metadataService, listingService, collectionService, observerService) {
 	        var _this = this;
@@ -41924,7 +41928,7 @@
 	    }
 	    return SWListingSearchController;
 	}());
-	var SWListingSearch = (function () {
+	var SWListingSearch = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingSearch(scopeService, collectionPartialsPath, hibachiPathBuilder) {
 	        var _this = this;
@@ -41978,7 +41982,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWListingGlobalSearchController = (function () {
+	var SWListingGlobalSearchController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingGlobalSearchController($timeout) {
 	        var _this = this;
@@ -41999,7 +42003,7 @@
 	    }
 	    return SWListingGlobalSearchController;
 	}());
-	var SWListingGlobalSearch = (function () {
+	var SWListingGlobalSearch = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingGlobalSearch(utilityService, listingPartialPath, hibachiPathBuilder) {
 	        this.utilityService = utilityService;
@@ -42109,7 +42113,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var OtherWiseController = (function () {
+	var OtherWiseController = /** @class */ (function () {
 	    //@ngInject
 	    function OtherWiseController($scope) {
 	        $scope.$id = "otherwiseController";
@@ -42127,7 +42131,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var RouterController = (function () {
+	var RouterController = /** @class */ (function () {
 	    //@ngInject
 	    function RouterController($scope, $routeParams, $location, $log, partialsPath, baseURL, utilityService) {
 	        $scope.$id = "routerController";
@@ -42158,7 +42162,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDetailTabs = (function () {
+	var SWDetailTabs = /** @class */ (function () {
 	    function SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -42191,7 +42195,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDetail = (function () {
+	var SWDetail = /** @class */ (function () {
 	    function SWDetail($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -42265,7 +42269,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWList = (function () {
+	var SWList = /** @class */ (function () {
 	    function SWList($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -42334,7 +42338,7 @@
 	/// <reference path="../../../typings/hibachiTypescript.d.ts" />
 	/*collection service is used to maintain the state of the ui*/
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var Pagination = (function () {
+	var Pagination = /** @class */ (function () {
 	    //@ngInject
 	    function Pagination(observerService, uuid) {
 	        var _this = this;
@@ -42483,7 +42487,7 @@
 	    return Pagination;
 	}());
 	exports.Pagination = Pagination;
-	var PaginationService = (function () {
+	var PaginationService = /** @class */ (function () {
 	    //@ngInject
 	    function PaginationService(utilityService, observerService) {
 	        var _this = this;
@@ -42517,7 +42521,7 @@
 	//import pagination = require('../services/paginationservice');
 	//var PaginationService = pagination.PaginationService;
 	//'use strict';
-	var SWPaginationBarController = (function () {
+	var SWPaginationBarController = /** @class */ (function () {
 	    //@ngInject
 	    function SWPaginationBarController(paginationService) {
 	        this.paginationService = paginationService;
@@ -42528,7 +42532,7 @@
 	    return SWPaginationBarController;
 	}());
 	exports.SWPaginationBarController = SWPaginationBarController;
-	var SWPaginationBar = (function () {
+	var SWPaginationBar = /** @class */ (function () {
 	    //@ngInject
 	    function SWPaginationBar(hibachiPathBuilder, partialsPath) {
 	        this.restrict = 'E';
@@ -42605,7 +42609,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var FileService = (function () {
+	var FileService = /** @class */ (function () {
 	    //@ngInject
 	    function FileService($q, observerService) {
 	        var _this = this;
@@ -42651,7 +42655,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWInputController = (function () {
+	var SWInputController = /** @class */ (function () {
 	    //@ngInject
 	    function SWInputController($timeout, $scope, $log, $compile, $hibachi, $injector, listingService, utilityService, rbkeyService, observerService, metadataService) {
 	        var _this = this;
@@ -42919,7 +42923,7 @@
 	    }
 	    return SWInputController;
 	}());
-	var SWInput = (function () {
+	var SWInput = /** @class */ (function () {
 	    //ngInject
 	    function SWInput($compile, $timeout, $parse, fileService) {
 	        var _this = this;
@@ -43063,7 +43067,7 @@
 	/**
 	    * Property Display Controller handles the logic for this directive.
 	    */
-	var SWFFormFieldController = (function () {
+	var SWFFormFieldController = /** @class */ (function () {
 	    //@ngInject
 	    function SWFFormFieldController($scope, $element, $compile, utilityService) {
 	        this.$scope = $scope;
@@ -43075,16 +43079,16 @@
 	        this.$element = $element;
 	        this.$compile = $compile;
 	    }
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    SWFFormFieldController.$inject = ['$scope', '$element', '$compile', 'utilityService'];
 	    return SWFFormFieldController;
 	}());
 	/**
-	    * Handles the logic for the frontend version of the property display.
-	    */
-	SWFFormFieldController.$inject = ['$scope', '$element', '$compile', 'utilityService'];
-	/**
 	    * This class handles configuring formFields for use in process forms on the front end.
 	    */
-	var SWFFormField = (function () {
+	var SWFFormField = /** @class */ (function () {
 	    function SWFFormField(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "E";
 	        this.require = { swfPropertyDisplayCtrl: "^?swfPropertyDisplay", form: "^?form" };
@@ -43130,7 +43134,7 @@
 	/**
 	* Form Controller handles the logic for this directive.
 	*/
-	var SWFormController = (function () {
+	var SWFormController = /** @class */ (function () {
 	    /**
 	     * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
 	     */
@@ -43372,7 +43376,7 @@
 	    return SWFormController;
 	}());
 	exports.SWFormController = SWFormController;
-	var SWForm = (function () {
+	var SWForm = /** @class */ (function () {
 	    // @ngInject
 	    function SWForm(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.coreFormPartialsPath = coreFormPartialsPath;
@@ -43431,7 +43435,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWFormFieldController = (function () {
+	var SWFormFieldController = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormFieldController($injector, $scope, $timeout, $log, $hibachi, observerService, utilityService) {
 	        var _this = this;
@@ -43621,7 +43625,7 @@
 	    return SWFormFieldController;
 	}());
 	exports.SWFormFieldController = SWFormFieldController;
-	var SWFormField = (function () {
+	var SWFormField = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "EA";
@@ -43696,7 +43700,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWFormFieldFileController = (function () {
+	var SWFormFieldFileController = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormFieldFileController(formService) {
 	        this.formService = formService;
@@ -43707,7 +43711,7 @@
 	    }
 	    return SWFormFieldFileController;
 	}());
-	var SWFormFieldFile = (function () {
+	var SWFormFieldFile = /** @class */ (function () {
 	    function SWFormFieldFile(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        this.require = "^form";
@@ -43743,14 +43747,14 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWFormFieldJsonController = (function () {
+	var SWFormFieldJsonController = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormFieldJsonController(formService) {
 	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 	    }
 	    return SWFormFieldJsonController;
 	}());
-	var SWFormFieldJson = (function () {
+	var SWFormFieldJson = /** @class */ (function () {
 	    function SWFormFieldJson(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        this.require = "^form";
@@ -43785,7 +43789,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWFormFieldSearchSelect = (function () {
+	var SWFormFieldSearchSelect = /** @class */ (function () {
 	    function SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
@@ -43906,7 +43910,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWFormRegistrar = (function () {
+	var SWFormRegistrar = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
@@ -43975,7 +43979,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWErrorDisplayController = (function () {
+	var SWErrorDisplayController = /** @class */ (function () {
 	    //@ngInject
 	    function SWErrorDisplayController($injector) {
 	        this.$injector = $injector;
@@ -44005,7 +44009,7 @@
 	    return SWErrorDisplayController;
 	}());
 	exports.SWErrorDisplayController = SWErrorDisplayController;
-	var SWErrorDisplay = (function () {
+	var SWErrorDisplay = /** @class */ (function () {
 	    // @ngInject
 	    function SWErrorDisplay(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.coreFormPartialsPath = coreFormPartialsPath;
@@ -44050,7 +44054,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWAddressFormController = (function () {
+	var SWAddressFormController = /** @class */ (function () {
 	    //@ngInject
 	    function SWAddressFormController($log) {
 	        var _this = this;
@@ -44094,7 +44098,7 @@
 	    return SWAddressFormController;
 	}());
 	exports.SWAddressFormController = SWAddressFormController;
-	var SWAddressForm = (function () {
+	var SWAddressForm = /** @class */ (function () {
 	    // @ngInject
 	    function SWAddressForm(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.coreFormPartialsPath = coreFormPartialsPath;
@@ -44139,7 +44143,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWPropertyDisplayController = (function () {
+	var SWPropertyDisplayController = /** @class */ (function () {
 	    //@ngInject
 	    function SWPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService, listingService) {
 	        var _this = this;
@@ -44325,7 +44329,7 @@
 	    return SWPropertyDisplayController;
 	}());
 	exports.SWPropertyDisplayController = SWPropertyDisplayController;
-	var SWPropertyDisplay = (function () {
+	var SWPropertyDisplay = /** @class */ (function () {
 	    //@ngInject
 	    function SWPropertyDisplay($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath) {
 	        var _this = this;
@@ -44439,9 +44443,9 @@
 	        directive.$inject = ['$compile', 'scopeService', 'coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
+	    SWPropertyDisplay.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	    return SWPropertyDisplay;
 	}());
-	SWPropertyDisplay.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	exports.SWPropertyDisplay = SWPropertyDisplay;
 
 
@@ -44464,7 +44468,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var swpropertydisplay_1 = __webpack_require__(546);
-	var SWFPropertyDisplayController = (function (_super) {
+	var SWFPropertyDisplayController = /** @class */ (function (_super) {
 	    __extends(SWFPropertyDisplayController, _super);
 	    //@ngInject
 	    function SWFPropertyDisplayController($filter, utilityService, $injector, metadataService, observerService) {
@@ -44480,7 +44484,7 @@
 	    return SWFPropertyDisplayController;
 	}(swpropertydisplay_1.SWPropertyDisplayController));
 	exports.SWFPropertyDisplayController = SWFPropertyDisplayController;
-	var SWFPropertyDisplay = (function (_super) {
+	var SWFPropertyDisplay = /** @class */ (function (_super) {
 	    __extends(SWFPropertyDisplay, _super);
 	    //@ngInject
 	    function SWFPropertyDisplay($compile, scopeService, coreFormPartialsPath, hibachiPathBuilder, swpropertyPartialPath) {
@@ -44507,7 +44511,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWFormSubscriberController = (function () {
+	var SWFormSubscriberController = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormSubscriberController($log, $compile, $hibachi, utilityService, rbkeyService, $injector) {
 	        var _this = this;
@@ -44544,7 +44548,7 @@
 	    }
 	    return SWFormSubscriberController;
 	}());
-	var SWFormSubscriber = (function () {
+	var SWFormSubscriber = /** @class */ (function () {
 	    //ngInject
 	    function SWFormSubscriber() {
 	        this.restrict = "A";
@@ -44654,7 +44658,7 @@
 	// angular.module('slatwalladmin').directive('swValidate',
 	Object.defineProperty(exports, "__esModule", { value: true });
 	// [ '$log','$hibachi', function($log, $hibachi) {
-	var SWValidate = (function () {
+	var SWValidate = /** @class */ (function () {
 	    function SWValidate($log, $hibachi) {
 	        return {
 	            restrict: "A",
@@ -45033,7 +45037,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationMinLength = (function () {
+	var SWValidationMinLength = /** @class */ (function () {
 	    function SWValidationMinLength($log, validationService) {
 	        return {
 	            restrict: "A",
@@ -45066,7 +45070,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationDataType = (function () {
+	var SWValidationDataType = /** @class */ (function () {
 	    //@ngInject
 	    function SWValidationDataType(validationService) {
 	        return {
@@ -45097,7 +45101,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationEq = (function () {
+	var SWValidationEq = /** @class */ (function () {
 	    //@ngInject
 	    function SWValidationEq(validationService) {
 	        return {
@@ -45129,7 +45133,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationGte = (function () {
+	var SWValidationGte = /** @class */ (function () {
 	    function SWValidationGte(validationService) {
 	        return {
 	            restrict: "A",
@@ -45158,7 +45162,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationLte = (function () {
+	var SWValidationLte = /** @class */ (function () {
 	    function SWValidationLte(validationService) {
 	        return {
 	            restrict: "A",
@@ -45187,7 +45191,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationMaxLength = (function () {
+	var SWValidationMaxLength = /** @class */ (function () {
 	    function SWValidationMaxLength(validationService) {
 	        return {
 	            restrict: "A",
@@ -45220,7 +45224,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationMaxValue = (function () {
+	var SWValidationMaxValue = /** @class */ (function () {
 	    function SWValidationMaxValue(validationService) {
 	        return {
 	            restrict: "A",
@@ -45252,7 +45256,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationMinValue = (function () {
+	var SWValidationMinValue = /** @class */ (function () {
 	    function SWValidationMinValue(validationService) {
 	        return {
 	            restrict: "A",
@@ -45284,7 +45288,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationNeq = (function () {
+	var SWValidationNeq = /** @class */ (function () {
 	    function SWValidationNeq(validationService) {
 	        return {
 	            restrict: "A",
@@ -45313,7 +45317,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationNumeric = (function () {
+	var SWValidationNumeric = /** @class */ (function () {
 	    function SWValidationNumeric(validationService) {
 	        return {
 	            restrict: "A",
@@ -45342,7 +45346,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationRegex = (function () {
+	var SWValidationRegex = /** @class */ (function () {
 	    function SWValidationRegex(validationService) {
 	        return {
 	            restrict: "A",
@@ -45372,7 +45376,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationRequired = (function () {
+	var SWValidationRequired = /** @class */ (function () {
 	    //@ngInject
 	    function SWValidationRequired(validationService) {
 	        return {
@@ -45408,7 +45412,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationUnique = (function () {
+	var SWValidationUnique = /** @class */ (function () {
 	    //@ngInject
 	    function SWValidationUnique($http, $q, $hibachi, $log, validationService) {
 	        return {
@@ -45440,7 +45444,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWValidationUniqueOrNull = (function () {
+	var SWValidationUniqueOrNull = /** @class */ (function () {
 	    //@ngInject
 	    function SWValidationUniqueOrNull($http, $q, $hibachi, $log, validationService) {
 	        return {
@@ -45474,7 +45478,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var ValidationService = (function () {
+	var ValidationService = /** @class */ (function () {
 	    //@ngInject
 	    function ValidationService($hibachi, $q) {
 	        var _this = this;
@@ -45671,7 +45675,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var WorkflowCondition = (function () {
+	var WorkflowCondition = /** @class */ (function () {
 	    function WorkflowCondition() {
 	        this.propertyIdentifer = "";
 	        this.comparisonOperator = "";
@@ -45684,14 +45688,14 @@
 	    return WorkflowCondition;
 	}());
 	exports.WorkflowCondition = WorkflowCondition;
-	var WorkflowConditionGroupItem = (function () {
+	var WorkflowConditionGroupItem = /** @class */ (function () {
 	    function WorkflowConditionGroupItem() {
 	        this.workflowConditionGroup = [];
 	    }
 	    return WorkflowConditionGroupItem;
 	}());
 	exports.WorkflowConditionGroupItem = WorkflowConditionGroupItem;
-	var WorkflowConditionService = (function () {
+	var WorkflowConditionService = /** @class */ (function () {
 	    function WorkflowConditionService($log, $hibachi, alertService) {
 	        var _this = this;
 	        this.$log = $log;
@@ -45714,9 +45718,9 @@
 	            group.push(groupItem);
 	        };
 	    }
+	    WorkflowConditionService.$inject = ["$log", "$hibachi", "alertService"];
 	    return WorkflowConditionService;
 	}());
-	WorkflowConditionService.$inject = ["$log", "$hibachi", "alertService"];
 	exports.WorkflowConditionService = WorkflowConditionService;
 
 
@@ -45739,7 +45743,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var baseentityservice_1 = __webpack_require__(22);
-	var ScheduleService = (function (_super) {
+	var ScheduleService = /** @class */ (function (_super) {
 	    __extends(ScheduleService, _super);
 	    //@ngInject
 	    function ScheduleService($injector, $hibachi, utilityService) {
@@ -45836,7 +45840,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWAdminCreateSuperUser = (function () {
+	var SWAdminCreateSuperUser = /** @class */ (function () {
 	    function SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -45870,7 +45874,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowBasic = (function () {
+	var SWWorkflowBasic = /** @class */ (function () {
 	    function SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -45907,7 +45911,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowCondition = (function () {
+	var SWWorkflowCondition = /** @class */ (function () {
 	    function SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -46029,7 +46033,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowConditionGroupItem = (function () {
+	var SWWorkflowConditionGroupItem = /** @class */ (function () {
 	    function SWWorkflowConditionGroupItem($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -46063,7 +46067,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowConditionGroups = (function () {
+	var SWWorkflowConditionGroups = /** @class */ (function () {
 	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -46112,7 +46116,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowTask = (function () {
+	var SWWorkflowTask = /** @class */ (function () {
 	    function SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -46164,7 +46168,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWWorkflowTaskActionsController = (function () {
+	var SWWorkflowTaskActionsController = /** @class */ (function () {
 	    //@ngInject
 	    function SWWorkflowTaskActionsController($scope, $log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, observerService) {
 	        var _this = this;
@@ -46402,7 +46406,7 @@
 	    }
 	    return SWWorkflowTaskActionsController;
 	}());
-	var SWWorkflowTaskActions = (function () {
+	var SWWorkflowTaskActions = /** @class */ (function () {
 	    function SWWorkflowTaskActions(workflowPartialsPath, hibachiPathBuilder) {
 	        this.workflowPartialsPath = workflowPartialsPath;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -46422,9 +46426,9 @@
 	        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
+	    SWWorkflowTaskActions.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	    return SWWorkflowTaskActions;
 	}());
-	SWWorkflowTaskActions.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
@@ -46439,7 +46443,7 @@
 	/**
 	 * Handles adding, editing, and deleting Workflows Tasks.
 	 */
-	var SWWorkflowTasks = (function () {
+	var SWWorkflowTasks = /** @class */ (function () {
 	    function SWWorkflowTasks($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -46628,7 +46632,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowTrigger = (function () {
+	var SWWorkflowTrigger = /** @class */ (function () {
 	    function SWWorkflowTrigger($http, $hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, utilityService) {
 	        return {
 	            restrict: 'A',
@@ -46726,7 +46730,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowTriggers = (function () {
+	var SWWorkflowTriggers = /** @class */ (function () {
 	    function SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout) {
 	        return {
 	            restrict: 'E',
@@ -47004,7 +47008,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowTriggerHistory = (function () {
+	var SWWorkflowTriggerHistory = /** @class */ (function () {
 	    function SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) {
 	        return {
 	            restrict: 'A',
@@ -47043,12 +47047,12 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSchedulePreviewController = (function () {
+	var SWSchedulePreviewController = /** @class */ (function () {
 	    function SWSchedulePreviewController() {
 	    }
 	    return SWSchedulePreviewController;
 	}());
-	var SWSchedulePreview = (function () {
+	var SWSchedulePreview = /** @class */ (function () {
 	    function SWSchedulePreview(workflowPartialsPath, hibachiPathBuilder) {
 	        this.workflowPartialsPath = workflowPartialsPath;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -47066,9 +47070,9 @@
 	        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
+	    SWSchedulePreview.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	    return SWSchedulePreview;
 	}());
-	SWSchedulePreview.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	exports.SWSchedulePreview = SWSchedulePreview;
 
 
@@ -47080,7 +47084,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWSaveAndFinishController = (function () {
+	var SWSaveAndFinishController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSaveAndFinishController($hibachi, dialogService, alertService, rbkeyService, $log) {
 	        var _this = this;
@@ -47152,7 +47156,7 @@
 	    return SWSaveAndFinishController;
 	}());
 	exports.SWSaveAndFinishController = SWSaveAndFinishController;
-	var SWSaveAndFinish = (function () {
+	var SWSaveAndFinish = /** @class */ (function () {
 	    //@ngInject
 	    function SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder) {
 	        this.hibachiPartialsPath = hibachiPartialsPath;
@@ -47220,7 +47224,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWContentBasic = (function () {
+	var SWContentBasic = /** @class */ (function () {
 	    function SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: 'EA',
@@ -47296,7 +47300,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWContentEditor = (function () {
+	var SWContentEditor = /** @class */ (function () {
 	    function SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: 'EA',
@@ -47356,7 +47360,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWContentListController = (function () {
+	var SWContentListController = /** @class */ (function () {
 	    //@ngInject
 	    function SWContentListController($scope, $log, $timeout, $hibachi, paginationService, observerService, collectionConfigService, localStorageService) {
 	        var _this = this;
@@ -47557,7 +47561,7 @@
 	    }
 	    return SWContentListController;
 	}());
-	var SWContentList = (function () {
+	var SWContentList = /** @class */ (function () {
 	    //@ngInject
 	    function SWContentList(contentPartialsPath, observerService, slatwallPathBuilder) {
 	        this.restrict = 'E';
@@ -47595,7 +47599,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWContentNode = (function () {
+	var SWContentNode = /** @class */ (function () {
 	    function SWContentNode($log, $compile, $hibachi, contentPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -47737,7 +47741,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWAssignedProductsController = (function () {
+	var SWAssignedProductsController = /** @class */ (function () {
 	    //@ngInject
 	    function SWAssignedProductsController(collectionConfigService, utilityService) {
 	        this.collectionConfigService = collectionConfigService;
@@ -47752,7 +47756,7 @@
 	    return SWAssignedProductsController;
 	}());
 	exports.SWAssignedProductsController = SWAssignedProductsController;
-	var SWAssignedProducts = (function () {
+	var SWAssignedProducts = /** @class */ (function () {
 	    //@ngInject
 	    function SWAssignedProducts($http, $hibachi, paginationService, contentPartialsPath, slatwallPathBuilder) {
 	        this.$http = $http;
@@ -47798,7 +47802,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWSiteSelectorController = (function () {
+	var SWSiteSelectorController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSiteSelectorController(collectionConfigService, listingService, localStorageService, typeaheadService, utilityService) {
 	        var _this = this;
@@ -47871,7 +47875,7 @@
 	    return SWSiteSelectorController;
 	}());
 	exports.SWSiteSelectorController = SWSiteSelectorController;
-	var SWSiteSelector = (function () {
+	var SWSiteSelector = /** @class */ (function () {
 	    //@ngInject
 	    function SWSiteSelector($http, $hibachi, listingService, scopeService, contentPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
@@ -47962,7 +47966,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWFormResponseListingController = (function () {
+	var SWFormResponseListingController = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormResponseListingController($filter, $http, $hibachi, paginationService, requestService) {
 	        var _this = this;
@@ -48022,7 +48026,7 @@
 	    return SWFormResponseListingController;
 	}());
 	exports.SWFormResponseListingController = SWFormResponseListingController;
-	var SWFormResponseListing = (function () {
+	var SWFormResponseListing = /** @class */ (function () {
 	    //@ngInject
 	    function SWFormResponseListing($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder) {
 	        this.$http = $http;
@@ -48101,7 +48105,7 @@
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var OrderItemGiftRecipientControl = (function () {
+	var OrderItemGiftRecipientControl = /** @class */ (function () {
 	    //@ngInject
 	    function OrderItemGiftRecipientControl($scope, $hibachi) {
 	        var _this = this;
@@ -48134,9 +48138,9 @@
 	        this.searchText = "";
 	        var count = 1;
 	    }
+	    OrderItemGiftRecipientControl.$inject = ["$scope", "$hibachi"];
 	    return OrderItemGiftRecipientControl;
 	}());
-	OrderItemGiftRecipientControl.$inject = ["$scope", "$hibachi"];
 	exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
 
 
@@ -48149,7 +48153,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var giftrecipient_1 = __webpack_require__(594);
-	var SWAddOrderItemRecipientController = (function () {
+	var SWAddOrderItemRecipientController = /** @class */ (function () {
 	    //@ngInject
 	    function SWAddOrderItemRecipientController($hibachi, collectionConfigService, entityService, observerService) {
 	        var _this = this;
@@ -48265,7 +48269,7 @@
 	    return SWAddOrderItemRecipientController;
 	}());
 	exports.SWAddOrderItemRecipientController = SWAddOrderItemRecipientController;
-	var SWAddOrderItemGiftRecipient = (function () {
+	var SWAddOrderItemGiftRecipient = /** @class */ (function () {
 	    function SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, slatwallPathBuilder) {
 	        this.$hibachi = $hibachi;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
@@ -48300,9 +48304,9 @@
 	        ];
 	        return directive;
 	    };
+	    SWAddOrderItemGiftRecipient.$inject = ["$hibachi"];
 	    return SWAddOrderItemGiftRecipient;
 	}());
-	SWAddOrderItemGiftRecipient.$inject = ["$hibachi"];
 	exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
 
 
@@ -48314,7 +48318,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var GiftRecipient = (function () {
+	var GiftRecipient = /** @class */ (function () {
 	    function GiftRecipient(firstName, lastName, emailAddress, giftMessage, quantity, account, editing) {
 	        var _this = this;
 	        this.reset = function () {
@@ -48342,7 +48346,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWGiftCardBalanceController = (function () {
+	var SWGiftCardBalanceController = /** @class */ (function () {
 	    function SWGiftCardBalanceController(collectionConfigService) {
 	        var _this = this;
 	        this.collectionConfigService = collectionConfigService;
@@ -48374,11 +48378,11 @@
 	        };
 	        this.init();
 	    }
+	    SWGiftCardBalanceController.$inject = ["collectionConfigService"];
 	    return SWGiftCardBalanceController;
 	}());
-	SWGiftCardBalanceController.$inject = ["collectionConfigService"];
 	exports.SWGiftCardBalanceController = SWGiftCardBalanceController;
-	var SWGiftCardBalance = (function () {
+	var SWGiftCardBalance = /** @class */ (function () {
 	    function SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
@@ -48420,7 +48424,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWGiftCardDetailController = (function () {
+	var SWGiftCardDetailController = /** @class */ (function () {
 	    function SWGiftCardDetailController(collectionConfigService) {
 	        var _this = this;
 	        this.collectionConfigService = collectionConfigService;
@@ -48435,11 +48439,11 @@
 	        };
 	        this.init();
 	    }
+	    SWGiftCardDetailController.$inject = ["collectionConfigService"];
 	    return SWGiftCardDetailController;
 	}());
-	SWGiftCardDetailController.$inject = ["collectionConfigService"];
 	exports.SWGiftCardDetailController = SWGiftCardDetailController;
-	var SWGiftCardDetail = (function () {
+	var SWGiftCardDetail = /** @class */ (function () {
 	    function SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
@@ -48478,7 +48482,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWGiftCardHistoryController = (function () {
+	var SWGiftCardHistoryController = /** @class */ (function () {
 	    //@ngInject
 	    function SWGiftCardHistoryController(collectionConfigService, $hibachi) {
 	        var _this = this;
@@ -48565,7 +48569,7 @@
 	    return SWGiftCardHistoryController;
 	}());
 	exports.SWGiftCardHistoryController = SWGiftCardHistoryController;
-	var SWGiftCardHistory = (function () {
+	var SWGiftCardHistory = /** @class */ (function () {
 	    //@ngInject
 	    function SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
@@ -48607,13 +48611,13 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWGiftCardOverviewController = (function () {
+	var SWGiftCardOverviewController = /** @class */ (function () {
 	    function SWGiftCardOverviewController() {
 	    }
 	    return SWGiftCardOverviewController;
 	}());
 	exports.SWGiftCardOverviewController = SWGiftCardOverviewController;
-	var SWGiftCardOverview = (function () {
+	var SWGiftCardOverview = /** @class */ (function () {
 	    function SWGiftCardOverview(giftCardPartialsPath, slatwallPathBuilder) {
 	        this.giftCardPartialsPath = giftCardPartialsPath;
 	        this.slatwallPathBuilder = slatwallPathBuilder;
@@ -48647,7 +48651,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWGiftCardOrderInfoController = (function () {
+	var SWGiftCardOrderInfoController = /** @class */ (function () {
 	    function SWGiftCardOrderInfoController(collectionConfigService) {
 	        var _this = this;
 	        this.collectionConfigService = collectionConfigService;
@@ -48662,11 +48666,11 @@
 	        };
 	        this.init();
 	    }
+	    SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
 	    return SWGiftCardOrderInfoController;
 	}());
-	SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
 	exports.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
-	var SWGiftCardOrderInfo = (function () {
+	var SWGiftCardOrderInfo = /** @class */ (function () {
 	    function SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, slatwallPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
@@ -48692,9 +48696,9 @@
 	        ];
 	        return directive;
 	    };
+	    SWGiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
 	    return SWGiftCardOrderInfo;
 	}());
-	SWGiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
 	exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
 
 
@@ -48706,7 +48710,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWGiftCardRecipientInfoController = (function () {
+	var SWGiftCardRecipientInfoController = /** @class */ (function () {
 	    //@ngInject
 	    function SWGiftCardRecipientInfoController($hibachi) {
 	        this.$hibachi = $hibachi;
@@ -48717,7 +48721,7 @@
 	    return SWGiftCardRecipientInfoController;
 	}());
 	exports.SWGiftCardRecipientInfoController = SWGiftCardRecipientInfoController;
-	var SWGiftCardRecipientInfo = (function () {
+	var SWGiftCardRecipientInfo = /** @class */ (function () {
 	    function SWGiftCardRecipientInfo(giftCardPartialsPath, slatwallPathBuilder) {
 	        this.giftCardPartialsPath = giftCardPartialsPath;
 	        this.slatwallPathBuilder = slatwallPathBuilder;
@@ -48751,7 +48755,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWOrderItemGiftRecipientRowController = (function () {
+	var SWOrderItemGiftRecipientRowController = /** @class */ (function () {
 	    function SWOrderItemGiftRecipientRowController() {
 	        var _this = this;
 	        this.edit = function (recipient) {
@@ -48808,7 +48812,7 @@
 	    return SWOrderItemGiftRecipientRowController;
 	}());
 	exports.SWOrderItemGiftRecipientRowController = SWOrderItemGiftRecipientRowController;
-	var SWOrderItemGiftRecipientRow = (function () {
+	var SWOrderItemGiftRecipientRow = /** @class */ (function () {
 	    function SWOrderItemGiftRecipientRow(giftCardPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
@@ -48882,7 +48886,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var optionWithGroup = (function () {
+	var optionWithGroup = /** @class */ (function () {
 	    function optionWithGroup(optionID, optionGroupID, match) {
 	        var _this = this;
 	        this.optionID = optionID;
@@ -48895,7 +48899,7 @@
 	    return optionWithGroup;
 	}());
 	exports.optionWithGroup = optionWithGroup;
-	var SWAddOptionGroupController = (function () {
+	var SWAddOptionGroupController = /** @class */ (function () {
 	    // @ngInject
 	    function SWAddOptionGroupController($hibachi, $timeout, collectionConfigService, observerService, utilityService) {
 	        var _this = this;
@@ -49005,7 +49009,7 @@
 	    return SWAddOptionGroupController;
 	}());
 	exports.SWAddOptionGroupController = SWAddOptionGroupController;
-	var SWAddOptionGroup = (function () {
+	var SWAddOptionGroup = /** @class */ (function () {
 	    // @ngInject
 	    function SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder) {
 	        this.$hibachi = $hibachi;
@@ -49050,7 +49054,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWOptionsForOptionGroupController = (function () {
+	var SWOptionsForOptionGroupController = /** @class */ (function () {
 	    // @ngInject
 	    function SWOptionsForOptionGroupController($hibachi, $timeout, collectionConfigService, observerService) {
 	        var _this = this;
@@ -49077,7 +49081,7 @@
 	    return SWOptionsForOptionGroupController;
 	}());
 	exports.SWOptionsForOptionGroupController = SWOptionsForOptionGroupController;
-	var SWOptionsForOptionGroup = (function () {
+	var SWOptionsForOptionGroup = /** @class */ (function () {
 	    // @ngInject
 	    function SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, slatwallPathBuilder) {
 	        this.$hibachi = $hibachi;
@@ -49151,7 +49155,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWChildOrderItem = (function () {
+	var SWChildOrderItem = /** @class */ (function () {
 	    function SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: "A",
@@ -49441,7 +49445,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWOrderItem = (function () {
+	var SWOrderItem = /** @class */ (function () {
 	    //@ngInject
 	    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
 	        return {
@@ -49869,7 +49873,7 @@
 	 * @module slatwalladmin
 	 * @class swOrderItemsShippingLabelStamp
 	 */
-	var SWOiShippingLabelStamp = (function () {
+	var SWOiShippingLabelStamp = /** @class */ (function () {
 	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -49912,7 +49916,7 @@
 	 * @module slatwalladmin
 	 * @class swOrderItemsShippingLabelStamp
 	 */
-	var SWOrderItemDetailStamp = (function () {
+	var SWOrderItemDetailStamp = /** @class */ (function () {
 	    function SWOrderItemDetailStamp($log, $hibachi, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -50020,7 +50024,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWOrderItems = (function () {
+	var SWOrderItems = /** @class */ (function () {
 	    //@ngInject
 	    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService) {
 	        return {
@@ -50162,7 +50166,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWResizedImage = (function () {
+	var SWResizedImage = /** @class */ (function () {
 	    function SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: 'E',
@@ -50244,7 +50248,7 @@
 	/**
 	 * Fulfillment List Controller
 	 */
-	var OrderFulfillmentService = (function () {
+	var OrderFulfillmentService = /** @class */ (function () {
 	    //@ngInject
 	    function OrderFulfillmentService($timeout, observerService, $hibachi, collectionConfigService, listingService, $rootScope) {
 	        var _this = this;
@@ -50944,7 +50948,7 @@
 	/**
 	 * Fulfillment List Controller
 	 */
-	var SWOrderFulfillmentListController = (function () {
+	var SWOrderFulfillmentListController = /** @class */ (function () {
 	    // @ngInject
 	    function SWOrderFulfillmentListController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, orderFulfillmentService) {
 	        var _this = this;
@@ -51397,7 +51401,7 @@
 	/**
 	 * This is a view helper class that uses the collection helper class.
 	 */
-	var SWOrderFulfillmentList = (function () {
+	var SWOrderFulfillmentList = /** @class */ (function () {
 	    // @ngInject
 	    function SWOrderFulfillmentList($hibachi, $timeout, collectionConfigService, observerService, orderFulfillmentPartialsPath, slatwallPathBuilder) {
 	        this.$hibachi = $hibachi;
@@ -51469,7 +51473,7 @@
 	/**
 	 * Fulfillment Batch Detail Controller
 	 */
-	var SWFulfillmentBatchDetailController = (function () {
+	var SWFulfillmentBatchDetailController = /** @class */ (function () {
 	    // @ngInject
 	    function SWFulfillmentBatchDetailController($hibachi, $timeout, collectionConfigService, observerService, utilityService, $location, $http, $window, typeaheadService, listingService, orderFulfillmentService, rbkeyService) {
 	        var _this = this;
@@ -51600,7 +51604,7 @@
 	/**
 	 * This is a view helper class that uses the collection helper class.
 	 */
-	var SWFulfillmentBatchDetail = (function () {
+	var SWFulfillmentBatchDetail = /** @class */ (function () {
 	    // @ngInject
 	    function SWFulfillmentBatchDetail($hibachi, $timeout, collectionConfigService, observerService, fulfillmentBatchDetailPartialsPath, slatwallPathBuilder) {
 	        this.$hibachi = $hibachi;
@@ -51668,7 +51672,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var ProductCreateController = (function () {
+	var ProductCreateController = /** @class */ (function () {
 	    //@ngInject
 	    function ProductCreateController($q, $scope, $element, $log, $hibachi, collectionConfigService, selectionService, rbkeyService) {
 	        var _this = this;
@@ -51771,7 +51775,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWProductListingPagesController = (function () {
+	var SWProductListingPagesController = /** @class */ (function () {
 	    //@ngInject
 	    function SWProductListingPagesController(collectionConfigService, listingService, utilityService) {
 	        this.collectionConfigService = collectionConfigService;
@@ -51787,7 +51791,7 @@
 	    return SWProductListingPagesController;
 	}());
 	exports.SWProductListingPagesController = SWProductListingPagesController;
-	var SWProductListingPages = (function () {
+	var SWProductListingPages = /** @class */ (function () {
 	    //@ngInject
 	    function SWProductListingPages($http, $hibachi, paginationService, productPartialsPath, slatwallPathBuilder) {
 	        this.$http = $http;
@@ -51864,7 +51868,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var ProductBundleService = (function () {
+	var ProductBundleService = /** @class */ (function () {
 	    //ngInject
 	    function ProductBundleService($log, $hibachi, utilityService) {
 	        var _this = this;
@@ -51949,7 +51953,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var CreateBundleController = (function () {
+	var CreateBundleController = /** @class */ (function () {
 	    //@ngInject
 	    function CreateBundleController($scope, $location, $log, $rootScope, $window, $hibachi, dialogService, alertService, productBundleService, formService, productBundlePartialsPath) {
 	        $scope.productBundlePartialsPath = productBundlePartialsPath;
@@ -52023,7 +52027,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWProductBundleGroupType = (function () {
+	var SWProductBundleGroupType = /** @class */ (function () {
 	    function SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
 	        return {
 	            restrict: 'A',
@@ -52194,7 +52198,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWProductBundleGroupsController = (function () {
+	var SWProductBundleGroupsController = /** @class */ (function () {
 	    //@ngInject
 	    function SWProductBundleGroupsController($scope, $element, $attrs, $log, productBundleService, $hibachi) {
 	        var _this = this;
@@ -52226,7 +52230,7 @@
 	    return SWProductBundleGroupsController;
 	}());
 	exports.SWProductBundleGroupsController = SWProductBundleGroupsController;
-	var SWProductBundleGroups = (function () {
+	var SWProductBundleGroups = /** @class */ (function () {
 	    function SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
 	        this.restrict = 'EA';
 	        this.scope = {
@@ -52267,7 +52271,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var CollectionFilterItem = (function () {
+	var CollectionFilterItem = /** @class */ (function () {
 	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
 	        this.name = name;
 	        this.type = type;
@@ -52280,7 +52284,7 @@
 	    }
 	    return CollectionFilterItem;
 	}());
-	var SWProductBundleGroupController = (function () {
+	var SWProductBundleGroupController = /** @class */ (function () {
 	    // @ngInject
 	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
 	        var _this = this;
@@ -52410,7 +52414,7 @@
 	    }
 	    return SWProductBundleGroupController;
 	}());
-	var SWProductBundleGroup = (function () {
+	var SWProductBundleGroup = /** @class */ (function () {
 	    // @ngInject
 	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
 	        this.$log = $log;
@@ -52459,7 +52463,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var CollectionFilterItem = (function () {
+	var CollectionFilterItem = /** @class */ (function () {
 	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
 	        this.name = name;
 	        this.type = type;
@@ -52472,7 +52476,7 @@
 	    }
 	    return CollectionFilterItem;
 	}());
-	var SWProductBundleCollectionFilterItemTypeaheadController = (function () {
+	var SWProductBundleCollectionFilterItemTypeaheadController = /** @class */ (function () {
 	    // @ngInject
 	    function SWProductBundleCollectionFilterItemTypeaheadController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
 	        var _this = this;
@@ -52757,7 +52761,7 @@
 	    return SWProductBundleCollectionFilterItemTypeaheadController;
 	}());
 	exports.SWProductBundleCollectionFilterItemTypeaheadController = SWProductBundleCollectionFilterItemTypeaheadController;
-	var SWProductBundleCollectionFilterItemTypeahead = (function () {
+	var SWProductBundleCollectionFilterItemTypeahead = /** @class */ (function () {
 	    // @ngInject
 	    function SWProductBundleCollectionFilterItemTypeahead($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
 	        this.$log = $log;
@@ -52851,7 +52855,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var DefaultSkuService = (function () {
+	var DefaultSkuService = /** @class */ (function () {
 	    //@ngInject
 	    function DefaultSkuService($hibachi, observerService) {
 	        var _this = this;
@@ -52901,7 +52905,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SkuPriceService = (function () {
+	var SkuPriceService = /** @class */ (function () {
 	    //@ngInject
 	    function SkuPriceService($http, $q, $hibachi, entityService, cacheService, collectionConfigService, observerService, utilityService) {
 	        var _this = this;
@@ -53212,7 +53216,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWPricingManagerController = (function () {
+	var SWPricingManagerController = /** @class */ (function () {
 	    //@ngInject
 	    function SWPricingManagerController(collectionConfigService) {
 	        var _this = this;
@@ -53228,7 +53232,7 @@
 	    return SWPricingManagerController;
 	}());
 	exports.SWPricingManagerController = SWPricingManagerController;
-	var SWPricingManager = (function () {
+	var SWPricingManager = /** @class */ (function () {
 	    // @ngInject
 	    function SWPricingManager($hibachi, skuPartialsPath, slatwallPathBuilder) {
 	        this.$hibachi = $hibachi;
@@ -53275,7 +53279,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWImageDetailModalLauncherController = (function () {
+	var SWImageDetailModalLauncherController = /** @class */ (function () {
 	    //@ngInject
 	    function SWImageDetailModalLauncherController(observerService, formService, fileService, collectionConfigService, utilityService, $hibachi, $http) {
 	        var _this = this;
@@ -53359,7 +53363,7 @@
 	    return SWImageDetailModalLauncherController;
 	}());
 	exports.SWImageDetailModalLauncherController = SWImageDetailModalLauncherController;
-	var SWImageDetailModalLauncher = (function () {
+	var SWImageDetailModalLauncher = /** @class */ (function () {
 	    function SWImageDetailModalLauncher(skuPartialsPath, slatwallPathBuilder) {
 	        this.restrict = 'EA';
 	        this.scope = {};
@@ -53395,7 +53399,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWAddSkuPriceModalLauncherController = (function () {
+	var SWAddSkuPriceModalLauncherController = /** @class */ (function () {
 	    //@ngInject
 	    function SWAddSkuPriceModalLauncherController($hibachi, entityService, formService, listingService, observerService, skuPriceService, utilityService) {
 	        var _this = this;
@@ -53500,7 +53504,7 @@
 	    return SWAddSkuPriceModalLauncherController;
 	}());
 	exports.SWAddSkuPriceModalLauncherController = SWAddSkuPriceModalLauncherController;
-	var SWAddSkuPriceModalLauncher = (function () {
+	var SWAddSkuPriceModalLauncher = /** @class */ (function () {
 	    function SWAddSkuPriceModalLauncher($hibachi, entityService, scopeService, collectionConfigService, skuPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
@@ -53585,7 +53589,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDeleteSkuPriceModalLauncherController = (function () {
+	var SWDeleteSkuPriceModalLauncherController = /** @class */ (function () {
 	    //@ngInject
 	    function SWDeleteSkuPriceModalLauncherController($q, $hibachi, listingService, skuPriceService, utilityService) {
 	        var _this = this;
@@ -53625,7 +53629,7 @@
 	    return SWDeleteSkuPriceModalLauncherController;
 	}());
 	exports.SWDeleteSkuPriceModalLauncherController = SWDeleteSkuPriceModalLauncherController;
-	var SWDeleteSkuPriceModalLauncher = (function () {
+	var SWDeleteSkuPriceModalLauncher = /** @class */ (function () {
 	    function SWDeleteSkuPriceModalLauncher($hibachi, scopeService, skuPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
@@ -53697,7 +53701,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuStockAdjustmentModalLauncherController = (function () {
+	var SWSkuStockAdjustmentModalLauncherController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuStockAdjustmentModalLauncherController($http, $q, $hibachi, observerService, utilityService) {
 	        var _this = this;
@@ -53798,7 +53802,7 @@
 	    return SWSkuStockAdjustmentModalLauncherController;
 	}());
 	exports.SWSkuStockAdjustmentModalLauncherController = SWSkuStockAdjustmentModalLauncherController;
-	var SWSkuStockAdjustmentModalLauncher = (function () {
+	var SWSkuStockAdjustmentModalLauncher = /** @class */ (function () {
 	    function SWSkuStockAdjustmentModalLauncher(skuPartialsPath, slatwallPathBuilder) {
 	        this.restrict = 'EA';
 	        this.scope = {};
@@ -53835,7 +53839,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWDefaultSkuRadioController = (function () {
+	var SWDefaultSkuRadioController = /** @class */ (function () {
 	    //@ngInject
 	    function SWDefaultSkuRadioController($hibachi, defaultSkuService) {
 	        this.$hibachi = $hibachi;
@@ -53867,7 +53871,7 @@
 	    return SWDefaultSkuRadioController;
 	}());
 	exports.SWDefaultSkuRadioController = SWDefaultSkuRadioController;
-	var SWDefaultSkuRadio = (function () {
+	var SWDefaultSkuRadio = /** @class */ (function () {
 	    function SWDefaultSkuRadio(skuPartialsPath, slatwallPathBuilder) {
 	        this.restrict = 'EA';
 	        this.scope = {};
@@ -53913,7 +53917,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuCurrencySelectorController = (function () {
+	var SWSkuCurrencySelectorController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuCurrencySelectorController(collectionConfigService, observerService, $hibachi) {
 	        var _this = this;
@@ -53951,7 +53955,7 @@
 	    return SWSkuCurrencySelectorController;
 	}());
 	exports.SWSkuCurrencySelectorController = SWSkuCurrencySelectorController;
-	var SWSkuCurrencySelector = (function () {
+	var SWSkuCurrencySelector = /** @class */ (function () {
 	    function SWSkuCurrencySelector(scopeService, skuPartialsPath, slatwallPathBuilder) {
 	        this.scopeService = scopeService;
 	        this.restrict = 'EA';
@@ -53988,7 +53992,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuPriceEditController = (function () {
+	var SWSkuPriceEditController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuPriceEditController(historyService, listingService, observerService, skuPriceService, utilityService, $hibachi, $filter, $timeout) {
 	        var _this = this;
@@ -54085,7 +54089,7 @@
 	    return SWSkuPriceEditController;
 	}());
 	exports.SWSkuPriceEditController = SWSkuPriceEditController;
-	var SWSkuPriceEdit = (function () {
+	var SWSkuPriceEdit = /** @class */ (function () {
 	    function SWSkuPriceEdit(observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
 	        this.observerService = observerService;
@@ -54173,7 +54177,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuCodeEditController = (function () {
+	var SWSkuCodeEditController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuCodeEditController(historyService, listingService, observerService, skuPriceService, utilityService, $hibachi, $filter, $timeout) {
 	        this.historyService = historyService;
@@ -54216,7 +54220,7 @@
 	    return SWSkuCodeEditController;
 	}());
 	exports.SWSkuCodeEditController = SWSkuCodeEditController;
-	var SWSkuCodeEdit = (function () {
+	var SWSkuCodeEdit = /** @class */ (function () {
 	    function SWSkuCodeEdit(observerService, historyService, scopeService, skuPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
 	        this.observerService = observerService;
@@ -54281,7 +54285,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuPricesEditController = (function () {
+	var SWSkuPricesEditController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuPricesEditController(observerService, collectionConfigService, utilityService, skuPriceService, $hibachi) {
 	        var _this = this;
@@ -54352,7 +54356,7 @@
 	    return SWSkuPricesEditController;
 	}());
 	exports.SWSkuPricesEditController = SWSkuPricesEditController;
-	var SWSkuPricesEdit = (function () {
+	var SWSkuPricesEdit = /** @class */ (function () {
 	    function SWSkuPricesEdit(scopeService, skuPartialsPath, slatwallPathBuilder) {
 	        this.scopeService = scopeService;
 	        this.skuPartialsPath = skuPartialsPath;
@@ -54409,7 +54413,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuPriceQuantityEditController = (function () {
+	var SWSkuPriceQuantityEditController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuPriceQuantityEditController($q, $hibachi, collectionConfigService, listingService, observerService, skuPriceService) {
 	        var _this = this;
@@ -54481,7 +54485,7 @@
 	    return SWSkuPriceQuantityEditController;
 	}());
 	exports.SWSkuPriceQuantityEditController = SWSkuPriceQuantityEditController;
-	var SWSkuPriceQuantityEdit = (function () {
+	var SWSkuPriceQuantityEdit = /** @class */ (function () {
 	    function SWSkuPriceQuantityEdit(scopeService, skuPartialsPath, slatwallPathBuilder) {
 	        var _this = this;
 	        this.scopeService = scopeService;
@@ -54545,7 +54549,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSkuThumbnailController = (function () {
+	var SWSkuThumbnailController = /** @class */ (function () {
 	    //@ngInject
 	    function SWSkuThumbnailController() {
 	        if (!angular.isDefined(this.skuData)) {
@@ -54558,7 +54562,7 @@
 	    return SWSkuThumbnailController;
 	}());
 	exports.SWSkuThumbnailController = SWSkuThumbnailController;
-	var SWSkuThumbnail = (function () {
+	var SWSkuThumbnail = /** @class */ (function () {
 	    function SWSkuThumbnail(skuPartialsPath, slatwallPathBuilder) {
 	        this.restrict = 'EA';
 	        this.scope = {};
@@ -54593,7 +54597,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var SlatwallPathBuilder = (function () {
+	var SlatwallPathBuilder = /** @class */ (function () {
 	    //@ngInject
 	    function SlatwallPathBuilder() {
 	        var _this = this;
@@ -54625,7 +54629,7 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCurrencyFormatter = (function () {
+	var SWCurrencyFormatter = /** @class */ (function () {
 	    function SWCurrencyFormatter($filter, $timeout) {
 	        var _this = this;
 	        this.$filter = $filter;
@@ -54687,7 +54691,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var SWCurrency = (function () {
+	var SWCurrency = /** @class */ (function () {
 	    function SWCurrency() {
 	    }
 	    //@ngInject
