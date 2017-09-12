@@ -97,7 +97,7 @@ class SWInputController{
 
 		if(this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(this.object,this.propertyIdentifier)){
 			this.object.validations.properties[name] = [];
-			if((this.object.metaData[this.property].requiredFlag && this.object.metaData[this.property].requiredFlag == true) || typeof this.object.metaData[this.property].requiredFlag === 'string' && this.object.metaData[this.property].requiredFlag.trim().toLowerCase()=="yes"){
+			if((this.object.metaData[this.propertyIdentifier].requiredFlag && this.object.metaData[this.propertyIdentifier].requiredFlag == true) || typeof this.object.metaData[this.propertyIdentifier].requiredFlag === 'string' && this.object.metaData[this.propertyIdentifier].requiredFlag.trim().toLowerCase()=="yes"){
 				this.object.validations.properties[name].push({
 					contexts:"save",
 					required:true
