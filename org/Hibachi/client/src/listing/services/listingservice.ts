@@ -618,7 +618,8 @@ class ListingService{
 
         if(this.getListing(listingID).multiselectValues && this.getListing(listingID).multiselectValues.length){
             //select all owned ids
-            angular.forEach(this.getListing(listingID).multiselectValues,(value)=>{
+            var multiSelectValuesArray = this.getListing(listingID).multiselectValues.split(',');
+            angular.forEach(multiSelectValuesArray,(value)=>{
                 this.getListing(listingID).selectionService.addSelection(this.getListing(listingID).tableID,value);
             });
         }

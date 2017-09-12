@@ -7,6 +7,7 @@ class SWListingSearchController {
     private collectionConfig;
     private paginator;
     private searchText;
+    private backupColumnsConfig;
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;

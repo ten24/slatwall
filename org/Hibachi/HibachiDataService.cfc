@@ -143,7 +143,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							runPopulation = true;
 						}
 					} catch (any e) {
-						// If we haven't retried 6 times, then incriment the retry counter and re-run the population
+						// If we haven't retried 6 times, then increment the retry counter and re-run the population
 						if(retryCount <= 6) {
 							retryCount += 1;
 							runPopulation = true;
@@ -155,6 +155,8 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}
 		} while (runPopulation);
+
+		FileWrite(expandPath('/#getHibachiScope().getApplicationKey()#/custom/config/') & 'insertedData.txt.cfm', variables.insertedData);
 
 		return true;
 	}
@@ -214,11 +216,17 @@ component accessors="true" output="false" extends="HibachiService" {
 				idKey = listAppend(idKey, insertData[listGetAt(idColumns, l)].value, "~");
 			}
 
-			var insertedData = getHibachiDataDAO().getInsertedDataFile();
-			var updateOnly = ignorePreviouslyInserted && listFindNoCase(insertedData, idKey);
+			if(!structKeyExists(variables, 'insertedData')){
+				variables.insertedData = getHibachiDataDAO().getInsertedDataFile();
+			}
+			var keyFound = listFindNoCase(variables.insertedData, idKey);
+
+			var updateOnly = ignorePreviouslyInserted && keyFound;
 
 			getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
-			getHibachiDataDAO().updateInsertedDataFile( idKey );
+			if(!keyFound){
+				variables.insertedData = listAppend(variables.insertedData, idKey);
+			}
 		}
 
 		return includesCircular;
