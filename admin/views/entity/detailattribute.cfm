@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.attribute" type="any" />
 
 <cfparam name="rc.edit" type="boolean" />
-
+<!--- if we find an attributeSet then this is a Standard attribute --->
 <cfif structKeyExists(rc, "attributeSet") || !isNull(rc.attribute.getAttributeSet())>
 	<cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#" />
 
@@ -79,11 +79,15 @@ Notes:
 				<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
 					<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
 				</cfif>
+				<cfif not rc.attribute.getNewFlag() and listFindNoCase( "relatedObjectSelect,relatedObjectMultiselect", rc.attribute.getAttributeInputType() )>
+					<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/relatedobjectcollection"/>
+				</cfif>
 				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
 			</hb:HibachiEntityDetailGroup>
 
 		</hb:HibachiEntityDetailForm>
 	</cfoutput>
+<!--- for Form.cfc items as they dont' have attribtues sets --->
 <cfelseif structKeyExists(rc, "form") || !isNull(rc.attribute.getForm())>
 	<cfparam name="rc.form" type="any" default="#rc.attribute.getForm()#" />
 	<cfoutput>
