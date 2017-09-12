@@ -756,7 +756,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
 			if(structKeyExists(collectionOptions,'pageShow')){
-				collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
+				if (collectionOptions.pageShow != ''){
+					collectionEntity.setPageRecordsShow(collectionOptions.pageShow);
+				}
+				
 			}
 			if(structKeyExists(collectionOptions,'keywords')){
 				collectionEntity.setKeywords(collectionOptions.keywords);

@@ -52,6 +52,7 @@ component displayname="ServerInstance" entityname="SlatwallServerInstance" table
 	property name="serverInstanceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="serverInstanceIPAddress" ormtype="string" index="PI_SERVERCACHEIPADDRESS";
 	property name="serverInstanceExpired" ormtype="boolean";
+	property name="settingsExpired" ormtype="boolean";
 	//calucluated property
 	
 	// CMS Properties
