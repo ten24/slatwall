@@ -557,7 +557,8 @@ class PublicService {
         return (
             this.cart.orderFulfillments[fulfillmentIndex] &&
             this.isShippingFulfillment(this.cart.orderFulfillments[fulfillmentIndex]) && 
-            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress &&
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress.shippingAddressID
         );
     }
 
