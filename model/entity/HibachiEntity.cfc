@@ -274,11 +274,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 				getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute) 
 			){
 
-				var propertyStruct = getService("hibachiService").getPropertiesStructByEntityName(getClassName(),arguments.attribute);
+				var propertyStruct = getService("hibachiService").getPropertiesStructByEntityName(getClassName())[arguments.attribute];
+				
 				if(!structkeyExists(propertyStruct,'hb_formFieldType')
 					|| (
 						structkeyExists(propertyStruct,'hb_formFieldType')
-						&& propertyStruct['hb_formFieldType'] != 'file'
+						&& lcase(propertyStruct.hb_formFieldType) != 'file'
 					)
 				){
 
@@ -476,8 +477,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		var attributesListArray = listToArray(getAttributesCodeList());
 		for(var attributeCode in attributesListArray){
 			var attribute = getService('attributeService').getAttributeByAttributeCode(attributeCode);
-			
+			if(!isNull(attribute)){
 			ArrayAppend(attributes,attribute);
+		}
 		}
 		return attributes;
 	}
