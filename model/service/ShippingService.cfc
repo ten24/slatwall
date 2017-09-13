@@ -246,9 +246,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// check to make sure that this rate applies to the current orderFulfillment
 		if(
 			isShippingMethodRateUsable(
-				arguments.shippingMethodRate, 
-				arguments.orderFulfillment.getShippingAddress(), 
-				priceGroups
+				shippingMethodRate=arguments.shippingMethodRate, 
+				shipToAddress=arguments.orderFulfillment.getShippingAddress(), 
+				accountPriceGroups=priceGroups
 			)
 		) {
 			return arguments.shippingMethodRate.getShippingIntegration();
@@ -330,9 +330,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
 				}
 				if (isShippingMethodRateUsable(
-						shippingMethodRate,
-						arguments.orderFulfillment.getShippingAddress(), 
-						priceGroups)){
+						shippingMethodRate=arguments.shippingMethodRate, 
+						shipToAddress=arguments.orderFulfillment.getShippingAddress(), 
+						accountPriceGroups=priceGroups)){
 							
 							var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
 							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
@@ -375,9 +375,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					// check to make sure that this rate applies to the current orderFulfillment
 					if (isShippingMethodRateUsable(
-						shippingMethodRate,
-						arguments.orderFulfillment.getShippingAddress(), 
-						priceGroups)){
+						shippingMethodRate=arguments.shippingMethodRate, 
+						shipToAddress=arguments.orderFulfillment.getShippingAddress(), 
+						accountPriceGroups=priceGroups)){
 							
 							var qualifiedRateOption = newQualifiedRateOption(
 							shippingMethodRate,
