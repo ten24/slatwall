@@ -246,9 +246,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// check to make sure that this rate applies to the current orderFulfillment
 		if(
 			isShippingMethodRateUsable(
-				shippingMethodRate=arguments.shippingMethodRate, 
-				shipToAddress=arguments.orderFulfillment.getShippingAddress(), 
-				accountPriceGroups=priceGroups
+				arguments.shippingMethodRate, 
+				arguments.orderFulfillment.getShippingAddress(), 
+				priceGroups
 			)
 		) {
 			return arguments.shippingMethodRate.getShippingIntegration();
@@ -330,9 +330,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
 				}
 				if (isShippingMethodRateUsable(
-						shippingMethodRate=shippingMethodRate, 
-						shipToAddress=arguments.orderFulfillment.getShippingAddress(), 
-						accountPriceGroups=priceGroups)){
+						shippingMethodRate,
+						arguments.orderFulfillment.getShippingAddress(), 
+						priceGroups)){
 							
 							var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
 							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
@@ -375,9 +375,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					// check to make sure that this rate applies to the current orderFulfillment
 					if (isShippingMethodRateUsable(
-						shippingMethodRate=shippingMethodRate, 
-						shipToAddress=arguments.orderFulfillment.getShippingAddress(), 
-						accountPriceGroups=priceGroups)){
+						shippingMethodRate,
+						arguments.orderFulfillment.getShippingAddress(), 
+						priceGroups)){
 							
 							var qualifiedRateOption = newQualifiedRateOption(
 							shippingMethodRate,
@@ -574,8 +574,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable( any shippingMethodRate,  any shipToAddress,  any shipmentWeight, any shipmentItemPrice, any shipmentItemQuantity, any accountPriceGroups) {
-		
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, any accountPriceGroups) {
+			
         
         // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
         //If this rate has price groups assigned but the user does not, then fail.
