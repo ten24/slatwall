@@ -573,7 +573,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	//add display Aggregate
-	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias){
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
 		var join = {};
@@ -593,6 +593,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				"aggregateAlias" = arguments.aggregateAlias
 			}
 		};
+		
+		if(structKeyExists(arguments,'isDistinct')){
+			column.isDistinct = arguments.isDistinct;
+		}
 
 		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
 			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier);
@@ -1149,10 +1153,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
-	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
+	private string function getAggregateHQL(required any column){
 		setHasDisplayAggregate(true);
 		var aggregateFunction = '';
-		switch(lCase(arguments.aggregate.aggregateFunction)){
+		switch(lCase(arguments.column.aggregate.aggregateFunction)){
 
 			case "count":
 				aggregateFunction = "COUNT";
@@ -1174,12 +1178,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 
 		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM'){
-			return " #aggregateFunction#(COALESCE(#arguments.propertyIdentifier#,0)) as #arguments.aggregate.aggregateAlias#";
+			return " #aggregateFunction#(COALESCE(#arguments.column.propertyIdentifier#,0)) as #arguments.column.aggregate.aggregateAlias#";
 		}else{
 			
 			var distinct = "";
 			if(aggregateFunction == 'COUNT'){
-				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.propertyIdentifier));
+				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(getCollectionObject(),convertAliasToPropertyIdentifier(arguments.column.propertyIdentifier));
 				//when doing a count on objects it is important to inlcude that it is Distinct
 	//			 however if we are doing a query like 
 	//			SELECT firstName,count(firstName) FROM swaccount	
@@ -1187,13 +1191,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//			then distinct doesn't make sense because we want to know how many people of each name by string and not object count
 	//			TODO: to support this level of reporting on the colleciton UI we will need to enable removal of id from collections 
 	//			and hide the show/edit button therefore there will be two types of collections report collection and entity collection
-				if(isObject){
+				
+				var isDistinct = isObject;
+				
+				if(structKeyExists(column,'isDistinct')){
+					isDistinct = column.isDistinct;
+				}
+	
+				if( isDistinct){
 					distinct = 'DISTINCT';	
 				}else{
 					setExcludeOrderBy(false);
 				}
 			}
-			return " #aggregateFunction#(#distinct# #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+			return " #aggregateFunction#(#distinct# #arguments.column.propertyIdentifier#) as #arguments.column.aggregate.aggregateAlias#";
 		}
 
 
@@ -1851,7 +1862,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//this is used for record level permissions
 		if(!getPermissionAppliedFlag()){
 			
-			//applyPermissionRecordRestrictions();
+			applyPermissionRecordRestrictions();
 			
 			setPermissionAppliedFlag(true);
 		}
@@ -2600,7 +2611,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						{
 							//if we have an aggregate then put wrap the identifier
 							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+								columnsHQL &= getAggregateHQL(column);
 							}
 							if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
 								  structKeyExists(column.aggregate, "aggregateFunction") &&
