@@ -600,10 +600,6 @@
 			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
 
-		public string function getIdentityHashCode(required any value) {
-			return createObject("java","java.lang.System").identityHashCode(arguments.value);
-		}
-
 		public string function encryptValue(required string value, string salt="") {
 			if(len(arguments.value)){
 				var passwords = getEncryptionPasswordArray();
