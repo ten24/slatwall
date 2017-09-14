@@ -1412,7 +1412,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		//addToDebug(lcase(replace(createUUID(),'-','')));
-		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
