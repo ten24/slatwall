@@ -132,26 +132,6 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		variables.relatedObjectCollectionConfig = arguments.relatedObjectCollectionConfig;
 	}
 
-	public struct function getRelatedObjectCollectionConfigStruct(){
-		if(!structKeyExists(variables,'relatedObjectCollectionConfigStruct')){
-			variables.relatedObjectCollectionConfigStruct = deserializeJson(getRelatedObjectCollectionConfig());
-		}
-		return variables.relatedObjectCollectionConfigStruct;
-	}
-	
-	public string function getRelatedObjectCollectionConfig(){
-		if(!structKeyExists(variables,'relatedObjectCollectionConfig')){
-			var entityCollectionList = getService('HibachiService').getCollectionList(getRelatedObject());
-			
-			variables.relatedObjectCollectionConfig = serializeJson(entityCollectionList.getCollectionConfigStruct());
-		}
-		return variables.relatedObjectCollectionConfig;
-	}
-	
-	public void function setRelatedObjectCollectionConfig(string relatedObjectCollectionConfig){
-		variables.relatedObjectCollectionConfig = arguments.relatedObjectCollectionConfig;
-	}
-
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
 		if(!structKeyExists(arguments,"orderby")) {
 			return variables.AttributeOptions;
