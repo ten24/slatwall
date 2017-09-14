@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class Column{
+class Column{ 
     constructor(
         public propertyIdentifier:string,
         public title:string,
