@@ -23,12 +23,14 @@
             <div class="s-input-btn" ng-class="{ 's-add' : swTypeaheadSearch.multiselectMode, 's-search' : !swTypeaheadSearch.multiselectMode}">
                 <input  data-ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
+                        tabindex="{{swTypeaheadSearch.startingTabIndex}}"
                         placeholder="{{swTypeaheadSearch.placeholderText}}"
                         data-ng-model="swTypeaheadSearch.searchText"
                         data-ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
+                        data-ng-keydown="swTypeaheadSearch.onKeydown(item, $event)"
                         type="search"
-                        class="form-control input-sm"
                         title="{{swTypeaheadSearch.titleText}}"
+                        class="form-control input-sm"
                         autocomplete="off"
                         data-ng-required="{{swTypeaheadSearch.validateRequired}}"
                         data-ng-disabled="{{swTypeaheadSearch.disabled}}"/>

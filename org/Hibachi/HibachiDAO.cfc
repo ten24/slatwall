@@ -327,19 +327,17 @@
 			<cfif checkrs.recordCount>
 				<cfif !structIsEmpty(arguments.updateData)>
 					<cfset primaryKeyValue = checkrs[arguments.primaryKeyColumn][1] />
-					<cfquery name="rs" result="sqlResult">
+
+					<cfquery name="rs" result="local.sqlResult">
 						UPDATE
 							#arguments.tableName#
 						SET
 							<cfloop from="1" to="#listLen(keyList)#" index="local.i">
- 								<cfif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
-										arguments.updateData[ listGetAt(keyList, i)].value eq true>
- 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="1">
- 								<cfelseif FindNoCase("boolean",arguments.updateData[ listGetAt(keyList, i) ].dataType) neq 0 AND 
-										arguments.updateData[ listGetAt(keyList, i)].value eq false>
-
- 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_integer" value="0">
- 								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
+								<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType EQ "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value EQ true OR lCase(arguments.updateData[ listGetAT(keyList, i)].value) EQ "true")>
+									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_boolean" value="1">
+								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].dataType EQ "boolean" AND (arguments.updateData[ listGetAt(keyList, i)].value EQ false OR lCase(arguments.updateData[ listGetAT(keyList, i)].value) EQ "false")>
+									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_boolean" value="0">
+ 								<cfelseif uCase(arguments.updateData[ listGetAt(keyList, i) ].value) EQ "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 								<cfelse>
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
@@ -356,7 +354,7 @@
 			</cfif>
 			<cfreturn primaryKeyValue />
 		<cfelse>
-			<cfquery name="rs" result="sqlResult">
+			<cfquery name="rs" result="local.sqlResult">
 				UPDATE
 					#arguments.tableName#
 				SET
@@ -390,12 +388,16 @@
 		<cfset var sqlResult = "" />
 		<cfset var i = 0 />
 
-		<cfquery name="rs" result="sqlResult">
+		<cfquery name="rs" result="local.sqlResult">
 			INSERT INTO	#arguments.tableName# (
 				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
 			) VALUES (
 				<cfloop from="1" to="#listLen(keyList)#" index="local.i">
-					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+					<cfif arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "boolean" AND (arguments.insertData[ listGetAt(keyList, i)].value EQ true OR lCase(arguments.insertData[ listGetAt(keyList, i)].value) EQ "true")>
+						<cfqueryparam cfsqltype="cf_sql_boolean" value="1">
+					<cfelseif arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "boolean" AND (arguments.insertData[ listGetAt(keyList, i)].value EQ false OR lCase(arguments.insertData[ listGetAt(keyList, i)].value) EQ "false")>
+						<cfqueryparam cfsqltype="cf_sql_boolean" value="0">
+					<cfelseif uCase(arguments.insertData[ listGetAt(keyList, i) ].value) EQ "NULL" OR arguments.insertData[ listGetAt(keyList, i) ].value EQ "">
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 					<cfelse>
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">

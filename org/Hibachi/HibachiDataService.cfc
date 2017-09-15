@@ -678,7 +678,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}catch(any e){writeDump(e);abort;}
 
-		writedump(label="time", var="#getTickcount()-start#");
+		//writedump(label="time", var="#getTickcount()-start#");
 	}
 
 	public any function getAllAttributeStruct(){

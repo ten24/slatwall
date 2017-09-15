@@ -85,6 +85,7 @@ class OrderBy{
 class CollectionConfig {
     public collection: any;
     public filterGroupAliasMap:any = {};
+    public apiAction;
     
     
     get collectionConfigString():string {
@@ -237,6 +238,9 @@ class CollectionConfig {
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
+        }
+        if(angular.isDefined(this.apiAction)){
+            options['apiAction'] = this.apiAction;
         }
         return options;
     };
@@ -821,6 +825,10 @@ class CollectionConfig {
     public setColumns=(columns)=>{
         this.columns = columns;
         return this;
+    }
+
+    public setApiAction=(action)=>{
+        this.apiAction = action;
     }
 
 }

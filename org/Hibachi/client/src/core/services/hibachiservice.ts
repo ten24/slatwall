@@ -255,7 +255,7 @@ class HibachiService{
 		var params:any= {};
 		if(typeof options === 'string') {
 
-			var urlString = this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName='+entityName+'&entityID='+options;
+			var urlString = this.getUrlWithActionPrefix() + apiSubsystemName + ':main.get&entityName='+entityName+'&entityID='+options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
@@ -270,7 +270,11 @@ class HibachiService{
 			params.allRecords = options.allRecords || false;
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
-			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
+            if(options.apiAction){
+                var urlString = this.getUrlWithActionPrefix()+ options.apiAction + '&entityName='+entityName;
+            }else{
+                var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':main.get&entityName='+entityName;
+            }
 		}
 
 		if(angular.isDefined(options.id)) {

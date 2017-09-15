@@ -43,8 +43,8 @@
 			<cfloop array="#entities#" index="entityName">
 				<cfif not structKeyExists(attributes.entityPermissionDetails[entityName], "inheritPermissionEntityName")>
 					<tr>
-							<cfset request.context.permissionFormIndex++ />
-							<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='entity', entityClassName=entityName) />
+						<cfset request.context.permissionFormIndex++ />
+						<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='entity', entityClassName=entityName) />
 							
 						<cfif attributes.edit and not len(attributes.editEntityName)>
 							
