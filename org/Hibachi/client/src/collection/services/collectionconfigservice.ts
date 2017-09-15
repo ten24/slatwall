@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class Column{
+class Column{ 
     constructor(
         public propertyIdentifier:string,
         public title:string,
@@ -85,6 +85,12 @@ class OrderBy{
 class CollectionConfig {
     public collection: any;
     public filterGroupAliasMap:any = {};
+    
+    
+    get collectionConfigString():string {
+        return angular.toJson(this.getCollectionConfig(false));
+    }
+    
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -173,8 +179,10 @@ class CollectionConfig {
         return this;
     };
 
-    public getCollectionConfig= ():any =>{
-        this.validateFilter(this.filterGroups);
+    public getCollectionConfig= (validate=true):any =>{
+        if(validate){
+            this.validateFilter(this.filterGroups);            
+        }
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -193,6 +201,8 @@ class CollectionConfig {
             orderBy:this.orderBy
         };
     };
+    
+    
 
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);

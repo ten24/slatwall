@@ -74,11 +74,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
 	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
+	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 
 	// Calculated Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
+	property name="calculatedQATS" ormtype="float";
+	property name="calculatedQOH" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
+	property name="calculatedAverageCost" ormtype="big_decimal";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -87,6 +90,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
+	property name="inventoryMeasurementUnit" cfc="MeasurementUnit" fieldType="many-to-one" fkcolumn="measurementUnitID" hint="Unit used if inventory is tracked by measurement." hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
@@ -136,6 +140,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
 	property name="availableForPurchaseFlag" persistent="false";
 	property name="availableSeatCount" persistent="false";
+	property name="averageCost" persistent="false";
+	property name="averageLandedCost" persistent="false";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -178,10 +184,34 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
+	property name="inventoryTrackByOptions" persistent="false";
+	property name="inventoryMeasurementUnitOptions" persistent="false";
+	property name="averagePriceSold" persistent="false";
 	// Deprecated Properties
 
 
 	// ==================== START: Logical Methods =========================
+	public any function getVendorSkusSmartList(){
+		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
+		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
+		return vendorSkuSmartList;
+	}
+
+	public numeric function getAveragePriceSold(){
+		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
+	}
+
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
+	}
+	
+	public numeric function getCurrentMargin(){
+		return getDao('skuDao').getCurrentMargin(this.getSkuID());
+	}
+	
+	public numeric function getCurrentLandedMargin(){
+		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID());
+	}
 
 	public array function getGiftCardExpirationTermOptions(){
 		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
@@ -219,6 +249,27 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 
 		return variables.redemptionAmountTypeOptions;
+	}
+
+	public array function getInventoryTrackByOptions(){
+		if(!structKeyExists(variables, 'inventoryTrackByOptions')){
+			variables.inventoryTrackByOptions = ['Quantity','Measurement'];
+		}
+		return variables.inventoryTrackByOptions;
+	}
+
+	public array function getInventoryMeasurementUnitOptions(){
+		if(!structKeyExists(variables,'inventoryMeasurementUnitOptions')){
+			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
+			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
+			var records = measurementUnitCollection.getRecords();
+			var recordOptions = [{'name'='','value'=''}];
+			for(var record in records){
+				arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode});
+			}
+			variables.inventoryMeasurementUnitOptions = recordOptions;
+		}
+		return variables.inventoryMeasurementUnitOptions;
 	}
 
 	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.
@@ -519,7 +570,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 		// Request for calculated quantity
-		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
 			// If this is a calculated quantity and locationID exists, then delegate
 			if( structKeyExists(arguments, "locationID") ) {
 				//Need to get location and all children of location
@@ -544,7 +595,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -1025,6 +1076,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.placedOrderItemsSmartList;
 	}
 
+	public any function getPlacedVendorOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedVendorOrderItemsSmartList")) {
+			variables.placedVendorOrderItemsSmartList = getService("VendorOrderService").getVendorOrderItemSmartList();
+			variables.placedVendorOrderItemsSmartList.addFilter('stock.sku.skuID', getSkuID());
+			variables.placedVendorOrderItemsSmartList.addInFilter('vendorOrder.vendorOrderStatusType.systemCode','vostNew,vostPartiallyReceived,vostClosed');
+		}
+
+		return variables.placedVendorOrderItemsSmartList;
+	}
+
 	public any function getQATS() {
 		return getQuantity("QATS");
 	}
@@ -1149,6 +1210,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 		}
 		return true;
+	}
+
+	public any function getAverageCost(){
+		return getDao('skuDao').getAverageCost(this.getSkuID());
+	}
+	
+	public any function getAverageLandedCost(){
+		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
 	}
 
 
@@ -1467,6 +1536,21 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+
+	public void function setInventoryTrackBy(required any trackBy){
+		variables.inventoryTrackBy = arguments.trackBy;
+		if(arguments.trackBy == "Quantity"){
+			this.setInventoryMeasurementUnit();
+		}
+	}
+
+	public void function setInventoryMeasurementUnit(any measurementUnit){
+		if(this.getInventoryTrackBy() == "Quantity" || isNull(arguments.measurementUnit) || isSimpleValue(arguments.measurementUnit)){
+			structDelete(variables,'inventoryMeasurementUnit');
+			return;
+		}
+		variables.inventoryMeasurementUnit = arguments.measurementUnit;
+	}
 
 	public string function getSimpleRepresentationPropertyName() {
     		return "skuCode";

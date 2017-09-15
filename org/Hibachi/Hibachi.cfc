@@ -16,6 +16,9 @@ component extends="framework.one" {
 	try{include "../../config/configApplication.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configApplication.cfm";}catch(any e){} 
+	try{include "../../../../configApplication.cfm";}catch(any e){} 
 
 	// =============== configFramework
 
@@ -98,24 +101,18 @@ component extends="framework.one" {
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	variables.framework.hibachi.sessionCookieDomain = "";
-	variables.framework.hibachi.sessionCookieSecure = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
 	
-
-
-
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
-	// Allow For Dev Ops Config for Stand Alone
-	try{include "../../../../config/configFramework.cfm";}catch(any e){}
-	// Allow For Dev Ops Config for Mura
-	try{include "../../../../../config/configFramework.cfm";}catch(any e){}
-
-
+	// Allow For DevOps Config
+	try{include "../../../configFramework.cfm";}catch(any e){} 
+	try{include "../../../../configFramework.cfm";}catch(any e){} 
+	
 	if(structKeyExists(url, variables.framework.hibachi.runDbDataKey)){
 		variables.framework.hibachi.skipDbData = false;
 	}
@@ -130,6 +127,9 @@ component extends="framework.one" {
 	try{include "../../config/configMappings.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configMappings.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configMapping.cfm";}catch(any e){} 
+	try{include "../../../../configMapping.cfm";}catch(any e){} 
 
 
 	// =============== configCustomTags
@@ -164,6 +164,9 @@ component extends="framework.one" {
 	try{include "../../config/configORM.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
+	// Allow For DevOps Config
+	try{include "../../../configORM.cfm";}catch(any e){} 
+	try{include "../../../../configORM.cfm";}catch(any e){} 
 
 	// ==================== START: PRE UPDATE SCRIPTS ======================
 	if(

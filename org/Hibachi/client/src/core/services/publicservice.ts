@@ -48,7 +48,7 @@ class PublicService {
     public saveShippingAsBilling:boolean;
 	public readyToPlaceOrder:boolean;
     public saveCardInfo:boolean;
-    public creditCardPayment:any;
+    public orderPaymentObject:any;
     public edit:String;
     public editPayment:boolean;
     public showCreateAccount:boolean;
@@ -278,17 +278,20 @@ class PublicService {
     }
 
     /** sets the current billing address */
-    public selectBillingAddress=(key, object, formName) => {
+    public selectBillingAddress=(key) => {
 
-        if(object && object.forms[formName]){
+        if(this.orderPaymentObject && this.orderPaymentObject.forms){
             let address = this.account.accountAddresses[key].address
             address.accountAddressID = this.account.accountAddresses[key].accountAddressID;
             for(let property in address){
-                if(object.forms[formName]['newOrderPayment.billingAddress.'+property] != undefined){
-                    object.forms[formName]['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
+                for(let form in this.orderPaymentObject['forms']){
+                    form = this.orderPaymentObject['forms'][form];
+                    if(form['newOrderPayment.billingAddress.'+property] != undefined){
+                        form['newOrderPayment.billingAddress.'+property].$setViewValue(address[property]);
+                    }
                 }
             }
-            object.newOrderPayment.billingAddress = address;
+            this.orderPaymentObject.newOrderPayment.billingAddress = address;
 
         }
     }
@@ -554,7 +557,8 @@ class PublicService {
         return (
             this.cart.orderFulfillments[fulfillmentIndex] &&
             this.isShippingFulfillment(this.cart.orderFulfillments[fulfillmentIndex]) && 
-            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress &&
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress.addressID
         );
     }
 
@@ -921,11 +925,14 @@ class PublicService {
 
     /** Returns errors from addBillingAddress request. */
     public addBillingAddressError = () =>{
+        if(this.loadingThisRequest('addOrderPayment',{},false)) return false;
+        if(this.errors && this.errors.copied) return this.addBillingAddressErrors;
+        
         this.addBillingAddressErrors = this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
+
         if(!this.billingAddressEditFormIndex && this.errors && this.hasFailureAction('addBillingAddress')){
             let addressProperties = this.$hibachi.newAddress().data;
             for(let property in this.errors){
-                
                 if(addressProperties.hasOwnProperty(property)){
 
                     this.addBillingAddressErrors = this.addBillingAddressErrors || [];
@@ -935,7 +942,10 @@ class PublicService {
                     })
                 }
             }
+            this.errors.copied = 1;
         }
+        
+        return this.addBillingAddressErrors;
     }
 
     /** Returns errors from addGiftCard request. */
@@ -1042,13 +1052,13 @@ class PublicService {
         return false;
     }
 
-    public accountAddressIsSelectedBillingAddress = (key, attachedObject) =>{
+    public accountAddressIsSelectedBillingAddress = (key) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           attachedObject &&
-           attachedObject.newOrderPayment &&
-           attachedObject.newOrderPayment.billingAddress){
-            return this.account.accountAddresses[key].accountAddressID == attachedObject.newOrderPayment.billingAddress.accountAddressID;
+           this.orderPaymentObject &&
+           this.orderPaymentObject.newOrderPayment &&
+           this.orderPaymentObject.newOrderPayment.billingAddress){
+            return this.account.accountAddresses[key].accountAddressID == this.orderPaymentObject.newOrderPayment.billingAddress.accountAddressID;
         }
         return false;
     }

@@ -97,7 +97,7 @@ class SWInputController{
 
 		if(this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(this.object,this.propertyIdentifier)){
 			this.object.validations.properties[name] = [];
-			if(this.object.metaData[this.propertyIdentifier].requiredFlag && (this.object.metaData[this.propertyIdentifier].requiredFlag.trim().toLowerCase()=="yes" || this.object.metaData[this.propertyIdentifier].requiredFlag == "true")){
+			if((this.object.metaData[this.propertyIdentifier].requiredFlag && this.object.metaData[this.propertyIdentifier].requiredFlag == true) || typeof this.object.metaData[this.propertyIdentifier].requiredFlag === 'string' && this.object.metaData[this.propertyIdentifier].requiredFlag.trim().toLowerCase()=="yes"){
 				this.object.validations.properties[name].push({
 					contexts:"save",
 					required:true
@@ -159,7 +159,6 @@ class SWInputController{
 		this.$log.debug(form);
 
 		angular.forEach(validations,(validation,key)=>{
-			console.log('validation ' , validation);
 			if(validation.contexts && this.utilityService.listFind(validation.contexts.toLowerCase(),this.swForm.context.toLowerCase()) !== -1){
 				this.$log.debug("Validations for context");
 				this.$log.debug(validation);
@@ -319,7 +318,6 @@ class SWInputController{
 		}
 
 		this.edit = this.edit || true;
-		console.log(this.fieldType)
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";

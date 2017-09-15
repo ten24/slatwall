@@ -61,6 +61,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
+	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
 	property name="validationService" type="any";
 
@@ -84,7 +85,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddress) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddress);
+		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -575,61 +581,119 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-
+	
+	public any function processAccount_addTwoFactorAuthentication(required any account, required any processObject, struct data={}) {
+		// Verify authenticationCode matches with TOTP secret key
+		if (!getHibachiAuthenticationService().verifyTOTPToken(arguments.processObject.getTotpSecretKey(), arguments.processObject.getAuthenticationCode())) {
+			arguments.processObject.addError('authenticationCodeIncorrect', rbKey('validate.account_authorizeAccount.authenticationCode.incorrect'));
+		} else {
+			arguments.account.setTOTPSecretKey(arguments.processObject.getTotpSecretKey());
+			arguments.account.setTotpSecretKeyCreatedDateTime(now());
+			
+			// Create account setting
+			this.saveAccount(arguments.account);
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_removeTwoFactorAuthentication(required any account, struct data={}) {
+		// Clear TOTP values
+		arguments.account.setTotpSecretKey(javacast('null', 0));
+		arguments.account.setTotpSecretKeyCreatedDateTime(javacast('null', 0));
+		
+		this.saveAccount(account);
+		
+		return arguments.account;
+	}
+	
 	public any function processAccount_login(required any account, required any processObject) {
-		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
-		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
-
-		if(!isNull(accountAuthentication)) {
-			//Make sure that the account is not locked
+		var emailAddress = arguments.processObject.getEmailAddress();;
+		var password = arguments.processObject.getPassword();
+		var authenticationCode = arguments.processObject.getAuthenticationCode();
+		
+		// Attempt to load the account authentication by emailAddress
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		
+		// Account exists
+		if (!isNull(accountAuthentication)) {
+			// Hash password
+			var hashedAndSaltedPassword = getHashedAndSaltedPassword(password=password, salt=accountAuthentication.getAccountAuthenticationID());
+			
+			// Verify basic authentication first
+			// Make sure that the account is not locked
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and
-				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {
-
-					//Check to see if a password reset is required
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == hashedAndSaltedPassword) {
+					// Check to see if a password reset is required
 					if(checkPasswordResetRequired(accountAuthentication, arguments.processObject)){
 						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));
-					}else{
-						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}
-
-					accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
-					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
-
-					return arguments.account;
+				// Invalid Password
+				} else {
+					// No password specific error message, as that would provide a malicious attacker with useful information
+					arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 				}
-
-				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+				
+				// Verify two-factor authentication as long as login process has not already failed before this point
+				if (!arguments.processObject.hasErrors() && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag()) {
+					// If authenticationCode populated
+					if (!isNull(authenticationCode)&& len(authenticationCode)) {
+						if (len(accountAuthentication.getAccount().getTOTPSecretKey())) {
+							// Authentication code is incorrect
+							if (!getHibachiAuthenticationService().verifyTOTPToken(accountAuthentication.getAccount().getTOTPSecretKey(), authenticationCode)) {
+								arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.incorrect'));
+							}
+						// No "totp" secret key has been generated for account
+						} else {
+							arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.nosecretkey'));
+						}
+					// Authentication code is required for account
+					} else {
+						arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.required'));
+					}
+				}
+			// Account has been locked
+			} else{
+				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
+			}
+		// Invalid email, no account authentication exists
+		} else {
+			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+		}
+		
+		// Login the account
+		if (!arguments.processObject.hasErrors()) {
+			getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+			accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
+			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+		// Login was invalid
+		} else {
+			var invalidLoginData = {emailAddress=emailAddress};
+			
+			if (!isNull(accountAuthentication)) {
 				invalidLoginData.account = accountAuthentication.getAccount();
-
-
+						
 				//Log the failed attempt to account.failedLoginAttemptCount
 				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
 				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins);
-
+			
 				//Get the max number of failed attempts before the account is locked based on account type
 				if(accountAuthentication.getAccount().getAdminAccountFlag()){
 					var maxLoginAttempts = arguments.account.setting('accountFailedAdminLoginAttemptCount');
 				}else{
 					var maxLoginAttempts = arguments.account.setting('accountFailedPublicLoginAttemptCount');
 				}
-
+				
 				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
 				if (!isNull(maxLoginAttempts) && maxLoginAttempts > 0 && failedLogins >= maxLoginAttempts){
 					this.processAccount(invalidLoginData.account, 'lock');
 				}
-
-			} else{
-				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
-		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+			
+			getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
 		}
-
-		// Login was invalid
-		getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
-
+		
 		return arguments.account;
 	}
 
@@ -1722,6 +1786,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return false;
 	}
+	
 	// =====================  END:  Private Helper Functions ==================
 
 }

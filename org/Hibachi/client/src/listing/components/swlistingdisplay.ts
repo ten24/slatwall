@@ -141,7 +141,6 @@ class SWListingDisplayController{
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
-        console.log('multislot',this.multiSlot);
         
 		if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
@@ -250,7 +249,6 @@ class SWListingDisplayController{
     }
 
     private getCollectionObserver=(param)=> {
-        console.warn("getCollectionObserver", param)
         this.collectionConfig.loadJson(param.collectionConfig);
         this.collectionData = undefined;
         this.$timeout(

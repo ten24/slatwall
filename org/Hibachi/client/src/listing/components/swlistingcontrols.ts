@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-
+ 
 class SWListingControlsController {
     private selectedSearchColumn;
     private filterPropertiesList;
@@ -19,6 +19,8 @@ class SWListingControlsController {
     private getCollection;
     private tableId;
     private columnIsControllableMap = {};
+    public simple:boolean;
+
 
     //@ngInject
     constructor(

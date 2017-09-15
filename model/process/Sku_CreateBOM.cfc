@@ -49,43 +49,6 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
-	property name="accountEmailAddress";
-
-	// Lazy / Injected Objects
+	property name="sku";
 	
-	// New Properties
-
-	// Data Properties (ID's)
-	
-	// Data Properties (Inputs)
-	property name="emailAddress";
-	property name="verificationCode";
-	
-	// Data Properties (Related Entity Populate)
-	
-	// Data Properties (Object / Array Populate)
-	
-	// Option Properties
-	
-	// Helper Properties
-	
-	// ======================== START: Defaults ============================
-	
-	// ========================  END: Defaults =============================
-
-	// =================== START: Lazy Object Helpers ======================
-	
-	// ===================  END: Lazy Object Helpers =======================
-	
-	// ================== START: New Property Helpers ======================
-	
-	// ==================  END: New Property Helpers =======================
-	
-	// ====================== START: Data Options ==========================
-	
-	// ======================  END: Data Options ===========================
-	
-	// ===================== START: Helper Methods =========================
-	
-	// =====================  END: Helper Methods ==========================
 }
