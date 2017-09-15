@@ -1108,7 +1108,6 @@
 			var optionData = {};
 			for(var record in discriminatorRecords){
 				var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
-				
 				optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
 				optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
 				var optionsCollectionRecords = optionsCollectionList.getRecords();
@@ -1158,10 +1157,10 @@
 				//applyfilters by inversePropertyIdentifier
 				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
 					entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
+					entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
 				}
 				
 				
-				entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
 				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
 				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
 				switch(propertyMetaData.fieldtype){
@@ -1175,7 +1174,7 @@
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
 				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier&'.'&primaryIDName);
-				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier&'.'&primaryIDName,'Count','count');
+				entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
 				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
 			}else if(structKeyExists(propertyMetaData,'ormtype')) {
 				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
