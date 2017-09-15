@@ -145,11 +145,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	//CUSTOM PROPERTIES BEGIN
-property name="clearance"  ormtype="boolean" default="0" hb_populateEnabled="public";
-	property name="featuredProduct" ormtype="boolean" default="0" hb_populateEnabled="public";
-	property name="itemNumber" ormtype="string" hb_populateEnabled="public";
-	property name="typeImport" ormtype="string" hb_populateEnabled="public";	//CUSTOM PROPERTIES END
+	
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase start dates not existed, or before now(), the start date is valid
