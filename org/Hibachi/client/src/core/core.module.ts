@@ -62,6 +62,7 @@ import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWExpiringSessionNotifier} from "./components/swexpiringsessionnotifier";
 import {SWGravatar} from "./components/swgravatar";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
@@ -241,6 +242,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swExpiringSessionNotifier',SWExpiringSessionNotifier.Factory())
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swDraggable',SWDraggable.Factory())
 .directive('swDraggableContainer', SWDraggableContainer.Factory())
