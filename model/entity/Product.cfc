@@ -332,7 +332,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if( !structKeyExists(variables, "optionGroupsStruct") ) {
 			variables.optionGroupsStruct = {};
 			for(var optionGroup in getOptionGroups()){
-				variables.optionGroupsStruct[optionGroup['optionGroupID']] = optionGroup;
+				variables.optionGroupsStruct[optionGroup.getOptionGroupID()] = optionGroup;
 			}
 		}
 		return variables.optionGroupsStruct;
@@ -341,14 +341,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public array function getOptionGroups() {
 		if( !structKeyExists(variables, "optionGroups") ) {
 			variables.optionGroups = [];
-			var collection = getService("OptionService").getOptionGroupCollectionList();
-			collection.setDistinct(true);
-			collection.addFilter("options.skus.product.productID",this.getProductID());
-			collection.addOrderBy("sortOrder|ASC");
-			variables.optionGroups = collection.getRecords();
+			var smartList = getService("OptionService").getOptionGroupSmartList();
+			smartList.setSelectDistinctFlag(1);
+			smartList.addFilter("options.skus.product.productID",this.getProductID());
+			smartList.addOrder("sortOrder|ASC");
+			variables.optionGroups = smartList.getRecords();
 		}
 		return variables.optionGroups;
-	}
+	}	
 
 	public any function getOptionGroupsAsList(){
 		var list = [];
