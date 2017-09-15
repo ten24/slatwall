@@ -567,13 +567,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 
 			optionCollection.addFilter('skus.skuID', skusList, 'IN'); 
-			//optionCollection.addFilter('skus.options.optionID', arguments.selectedOptionIDList, 'IN'); 
 		}
 
 		optionCollection.addOrderBy('optionGroup.sortOrder|ASC');
 		optionCollection.addOrderBy('sortOrder|ASC');
-
-		//writeDump(optionCollection.getHQL());abort;
 
 		var optionRecords = optionCollection.getRecords();
 
