@@ -1,9 +1,10 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 
 <cffunction name="getHTML">
 	<cfargument name="title"/>
 	<cfargument name="optionData"/>
 	<cfargument name="template"/>
+	<cfargument name="formatter"/>
 	<cfsavecontent variable="htmlContent" >
 		<cfinclude template="#arguments.template#" >
 	</cfsavecontent>
@@ -33,8 +34,9 @@
 	<!--- filter type related to the buildurl filtertype look at collection API under applydata function --->
 	<cfparam name="attributes.filterType" default="f"/>
 	<!--- defaults to entity name rbkey plural but you can override it --->
-	
 	<cfparam name="attributes.title" default=""/>
+	<!--- can be custom function or a string referencing a function in the hibachiUtilityService example: snakeCaseToTitleCase --->
+	<cfparam name="attributes.formatter" default=""/>
 	<!--- template override --->
 	<cfparam name="attributes.template" default="./tagtemplates/hibachifiltercountdisplayitem.cfm"/>
 	
@@ -89,21 +91,34 @@
 	<cfelseif len(attributes.discriminatorProperty)>
 		<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.discriminatorProperty,attributes.inversePropertyIdentifier)/>
 	<cfelse>
+		<cfset selectedOptions = attributes.hibachiScope.getService('hibachiService').getSelectedOptionsByApplyData(attributes.entityName,attributes.propertyIdentifier)/>
 		<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
-		<cfset optionCollectionList.applyData(data=url,excludeslist=attributes.propertyIdentifier)/>
-		
 		<cfset attributes.optionData = optionCollectionList.getRecords()/>
+		<cfloop array="#selectedOptions#" index="selectedOption">
+			<cfset found = false/>
+			<cfloop array="#attributes.optionData#" index="option">
+				<cfif selectedOption.value eq option.value>
+					<cfset found = true/>
+				</cfif>
+			</cfloop> 
+			<cfif !found>
+				<cfset selectedOption.count = 0/>
+				
+				<cfset arrayAppend(attributes.optionData,selectedOption)/>
+			</cfif>
+		</cfloop>
 	</cfif>
 	
 	<!--- create the html now that we have all the data we need --->
 	<cfset attributes.htmlContent = ""/>
 	<cfif isArray(attributes.optionData)>
-		<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template)/>
+		<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter)/>
 	<cfelseif isStruct(attributes.optionData)>
 		<cfloop collection="#attributes.optionData#" item="discriminatorName">
-			<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template)/>
+			<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter)/>
 		</cfloop>
 	</cfif>
+	
 	
 	<cfassociate basetag="cf_HibachiFilterCountDisplay" datacollection="filterCountGroups">
 	

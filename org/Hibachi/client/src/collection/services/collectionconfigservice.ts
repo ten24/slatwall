@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class Column{
+class Column{ 
     constructor(
         public propertyIdentifier:string,
         public title:string,
@@ -537,8 +537,8 @@ class CollectionConfig {
         this.filterGroups[0].filterGroup.push(this.formatFilterGroup(filterGroup));
         this.observerService.notify('collectionConfigUpdated', {
             collectionConfig: this
-        });
-        return this;
+		});
+		return this;
     };
 
     public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {

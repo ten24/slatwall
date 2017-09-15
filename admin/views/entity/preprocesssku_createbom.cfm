@@ -63,9 +63,9 @@ Notes:
 		<!--- <cfdump var="#rc.sku.getBundledSkusSmartlist()#" top=2> --->
 		<hb:HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartlist()#"
 								recordDeleteAction="admin:entity.deleteSkuBundle"
-							  	recordDeleteQueryString="sRedirectAction=admin:entity.preprocesssku%26processContext=createBOM%26skuID=#rc.sku.getSkuID#"
+							  	recordDeleteQueryString="sRedirectAction=admin:entity.preprocesssku%26processContext=createBOM%26skuID=#rc.sku.getSkuID()#"
 							  	recordEditAction="admin:entity.editSkuBundle"
-							  	recordEditQueryString="sRedirectAction=admin:entity.preprocesssku%26processContext=createBOM%26skuID=#rc.sku.getSkuID#"
+							  	recordEditQueryString="sRedirectAction=admin:entity.preprocesssku%26processContext=createBOM%26skuID=#rc.sku.getSkuID()#"
 							  	recordEditModal="true">
 			<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
 			<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuDefinition" />    

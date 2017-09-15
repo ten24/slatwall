@@ -106,10 +106,6 @@ component extends="framework.one" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
-	
-
-
-
 	variables.framework.hibachi.developmentUrlPattern = ""; // To set dev or local env: developmentUrlPattern = "(\.devsite\.com|\.local)$"
 
 	// Allow For Application Config
