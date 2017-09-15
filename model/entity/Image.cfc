@@ -78,6 +78,8 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+
+	property name="imagePath" persistent="false"; 
 	
 	public string function getImageFileUploadDirectory() {
 		return setting('globalAssetsImageFolderPath') & "/" & getDirectory();
