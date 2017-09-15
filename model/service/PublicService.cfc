@@ -852,7 +852,31 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function getAccountData(any data) {
         arguments.data.ajaxResponse = getHibachiScope().getAccountData();
     }
-    
+   
+	public void function getProductSkuOptionDetailsData( any data) {
+        param name="arguments.data.productID" default="";
+        param name="arguments.data.selectedOptionIDList" default="";
+ 
+		var product = getProductService().getProduct( arguments.data.productID );
+
+		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
+			arguments.data.ajaxResponse["skuOptionDetails"] = product.getSkuOptionDetails( arguments.data.selectedOptionIDList );
+		}
+
+		if(listLen(arguments.data.selectedOptionIDList) || product.getOptionGroupCount() == 1){
+			var skuIDs = getDAO('SkuDAO').getActiveSkuIDsBySelectedOptions(arguments.data.selectedOptionIDList, arguments.data.productID);
+			var skuIDsCount = arrayLen(skuIDs); 
+			var skuIDList = '';
+			for(var i=1; i<= skuIDsCount; i++){
+				skuIDList = listAppend(skuIDList, skuIDs[i]['skuID']); 
+			}	
+
+			var skuCollection = getSkuService().getSkuCollectionList(); 
+			skuCollection.addFilter('skuID',skuIDList, 'IN');
+			arguments.data.ajaxResponse['skus'] = skuCollection.getRecords();
+		}
+	}
+ 
     /** 
      * @http-context duplicateOrder
      * @description Duplicate - Order

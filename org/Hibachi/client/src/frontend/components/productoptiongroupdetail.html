@@ -1,0 +1,166 @@
+<form action="?s=1" method="post" sw-loading="!swProductOptionGroupDetail.loading">
+    <input type="hidden" name="slatAction" value="public:cart.addOrderItem" />
+    <input type="hidden" name="productID" value="{{swProductOptionGroupDetail.productId}}" />
+
+    <p> <span ng-if="swProductOptionGroupDetail.error">There was a problem loading options try to </span>
+        <button type="button" class="btn btn-secondary" ng-click="swProductOptionGroupDetail.reset()" ng-show="(swProductOptionGroupDetail.touched && swProductOptionGroupDetail.lockInSelections) || swProductOptionGroupDetail.error">
+            <i class="fa fa-times-circle"></i> Reset
+        </button>
+    </p>
+
+    <div ng-repeat="optionGroup in swProductOptionGroupDetail.optionGroups | orderBy:'+sortOrder'"
+         sw-loading="!swProductOptionGroupDetail.optionGroupsLoading[optionGroup.optionGroupID]">
+        <h4 ng-hide="$index > swProductOptionGroupDetail.activeOptionGroupIndex && swProductOptionGroupDetail.lockInSelections">
+            <i ng-if="swProductOptionGroupDetail.optionGroupChosen[optionGroup.optionGroupID]" class="fa fa-check"></i>
+            {{optionGroup.optionGroupName}}
+        </h4>
+
+        <select ng-if="optionGroup.optionGroupImageGroupFlag == 'No ' || (optionGroup.optionGroupImageGroupFlag != null && optionGroup.optionGroupImageGroupFlag === false)"
+                ng-hide="$index > swProductOptionGroupDetail.activeOptionGroupIndex && swProductOptionGroupDetail.lockInSelections"
+                ng-disabled="($index > swProductOptionGroupDetail.activeOptionGroupIndex && swProductOptionGroupDetail.lockInSelections) || optionGroup.options.length == 1"
+                class="form-control"
+                name="{{optionGroup.optionGroupName}}"
+                ng-model="swProductOptionGroupDetail.selectedOptionGroups[optionGroup.optionGroupID]"
+                ng-options="item as item.optionName for item in optionGroup.options track by item.optionID"
+                ng-change="swProductOptionGroupDetail.updateOptions(optionGroup.optionGroupID)"
+                >
+
+        </select>
+
+        <div class="row" ng-if="optionGroup.optionGroupImageGroupFlag == 'Yes ' || (optionGroup.optionGroupImageGroupFlag != null && optionGroup.optionGroupImageGroupFlag === true)"
+            ng-hide="$index > swProductOptionGroupDetail.activeOptionGroupIndex && swProductOptionGroupDetail.lockInSelections">
+            <div class="col-sm-6" ng-repeat="option in optionGroup.options"
+                ng-disabled="$index > swProductOptionGroupDetail.activeOptionGroupIndex && swProductOptionGroupDetail.lockInSelections"
+                ng-class="{'active':swProductOptionGroupDetail.selectedOptionGroups[optionGroup.optionGroupID].optionID === option.optionID}">
+                <sw-modal-launcher data-modal-name="o{{option.optionCode}}"
+                                    data-title="{{option.optionName}}"
+                                    data-save-action="swProductOptionGroupDetail.selectOption(option, optionGroup.optionGroupID)"
+                                    data-save-action-text="Select">
+                    <sw-modal-button>
+                        <div class="profile-img-container">
+                            <img class="img-thumbnail img-circle img-responsive" src="{{option.calculatedImagePath}}" alt="{{option.optionName}}" width="{{swProductOptionGroupDetail.imageSizePixels}}" height="{{swProductOptionGroupDetail.imageSizePixels}}" />
+                            <div class="profile-img-i-container">
+                                <i class="fa fa-search-plus"></i>
+                            </div>
+                        </div>
+                    </sw-modal-button>
+                    <sw-modal-content>
+                        <img class="img-thumbnail"
+                            src="{{option.calculatedImagePath}}"
+                            alt="{{option.optionName}}"
+                            />
+                    </sw-modal-content>
+                </sw-modal-launcher>
+                <a ng-click="swProductOptionGroupDetail.selectOption(option, optionGroup.optionGroupID)">
+                    <span class="option" ng-bind="option.optionName"></span>
+                </a>
+                <div ng-show="swProductOptionGroupDetail.selectedOptionGroups[optionGroup.optionGroupID].optionID === option.optionID">
+                    <i class="fa fa-check-circle fa-lg"></i>
+                </div>
+            </div class="col-sm-6">
+        </div>
+        <input ng-if="optionGroup.optionGroupImageGroupFlag == 'Yes ' || (optionGroup.optionGroupImageGroupFlag != null && optionGroup.optionGroupImageGroupFlag === true)"
+               type="hidden"
+               name="{{optionGroup.optionGroupName}}"
+               ng-value="swProductOptionGroupDetail.selectedOptionGroups[optionGroup.optionGroupID].optionID" />
+    </div>
+
+    <div ng-if="swProductOptionGroupDetail.selectedSku == null && swProductOptionGroupDetail.lockInSelections">
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle"></i>
+                <small>
+                    Select <span ng-bind="swProductOptionGroupDetail.optionGroups[swProductOptionGroupDetail.activeOptionGroupIndex].optionGroupName"></span>
+                    <span ng-if="swProductOptionGroupDetail.activeOptionGroupIndex + 1 < swProductOptionGroupDetail.optionGroups.length">
+                        to view
+                        <span ng-bind="swProductOptionGroupDetail.optionGroups[swProductOptionGroupDetail.activeOptionGroupIndex + 1].optionGroupName"></span>
+                        options.
+                    </span>
+                    <span ng-if="swProductOptionGroupDetail.activeOptionGroupIndex + 1 == swProductOptionGroupDetail.optionGroups.length">
+                        to add to cart.
+                    </span>
+                </small>
+            </div>
+    </div>
+
+    <div ng-if="swProductOptionGroupDetail.outOfStock">
+        <div class="alert alert-info">
+            <i class="fa fa-info-circle"></i>
+            <small>
+                Selected Combination Is Out Of Stock!
+            </small>
+        </div>
+    </div>
+
+    <div ng-if="swProductOptionGroupDetail.selectedSku != null" class="row divider">
+        <div class="col-sm-6">
+            <strong>
+                <span ng-bind-html="swProductOptionGroupDetail.selectedSku.price | swcurrency:swProductOptionGroupDetail.currencyCode"></span>
+            </strong>
+
+        </div>
+
+        <div class="col-sm-4">
+            <input type="text" name="quantity" ng-model="swProductOptionGroupDetail.quantity" placeholder="1" class="form-control">
+        </div>
+
+        <div class="col-sm-12">
+            <div ng-if="swProductOptionGroupDetail.childSkus && swProductOptionGroupDetail.childSkus.length" >
+                <h4>Extras</h4>
+                    <div class="alert alert-info" ng-repeat="childSku in swProductOptionGroupDetail.childSkus track by $index">
+
+                        <div ng-if="childSku.selected">
+                            <input type="hidden"
+                                name="childOrderItems[{{$index+1}}].sku.skuID"
+                                ng-value="childSku.skuID" />
+
+                            <input type="hidden"
+                                name="childOrderItems[{{$index+1}}].quantity"
+                                value="1" />
+
+                            <input type="hidden"
+                                name="childOrderItems[{{$index+1}}].price"
+                                ng-value="childSku.price" />
+
+                            <input type="hidden"
+                                name="childOrderItems[{{$index+1}}].parentOrderItem.orderItemID"
+                                ng-value="swProductOptionGroupDetail.selectedSku.skuID" />
+
+                            <input type="hidden"
+                                name="childOrderItems[{{$index+1}}].productBundleGroup.productBundleGroupID"
+                                ng-value="swProductOptionGroupDetail.productBundleGroupId" />
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="childOrderItems[{{$index+1}}].selected" ng-model="childSku.selected" ng-init="childSku.selected = false" />
+
+                                Add Assembly & Setup - {{childSku.price | swcurrency:swProductOptionGroupDetail.currencyCode}}
+                            </label>
+                        </div>
+                    </div>
+            </div>
+
+            <strong style="margin-bottom: 20px;" ng-if="swProductOptionGroupDetail.quantity > 1 || (swProductOptionGroupDetail.childSkus && swProductOptionGroupDetail.childSkus.length)">
+                    Total: <span ng-bind-html="swProductOptionGroupDetail.getTotal() | swcurrency:swProductOptionGroupDetail.currencyCode"></span>
+            </strong>
+
+        </div>
+        <input type="hidden" name="skuID" ng-value="swProductOptionGroupDetail.selectedSku.skuID" />
+    </div>
+
+    <input ng-disabled="!swProductOptionGroupDetail.allSelected"
+            type="submit"
+            value="Add To Cart"
+            class="btn btn-primary" />
+</form>
+
+<div ng-if="swProductOptionGroupDetail.selectedSku != null && swProductOptionGroupDetail.displaySkuCode">
+    <span class="itemNumber">
+        Item #<span ng-bind="swProductOptionGroupDetail.selectedSku.skuCode"></span>
+    </span>
+</div>
+
+<div ng-if="swProductOptionGroupDetail.selectedSku == null && swProductOptionGroupDetail.displaySkuCode && swProductOptionGroupDetail.itemNumber != null">
+    <span class="itemNumber">
+        Item #<span ng-bind="swProductOptionGroupDetail.itemNumber"></span>
+    </span>
+</div>

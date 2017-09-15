@@ -41,6 +41,7 @@ import {PercentageFilter} from "./filters/percentage";
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWTrim} from "./filters/swtrim";
 import {SWUnique} from "./filters/swunique";
+import {SWCurrency} from "./filters/swcurrency"; 
 import {DateFilter} from "./filters/datefilter";
 //directives
 //  components
@@ -224,6 +225,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swdate',['$filter',DateFilter.Factory])
 .filter('unique',[SWUnique.Factory])
+.filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())

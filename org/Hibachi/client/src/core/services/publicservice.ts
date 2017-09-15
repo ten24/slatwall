@@ -160,6 +160,11 @@ class PublicService {
         return this.countryDataPromise;
     }
 
+	public getProductSkuOptionDetails=(queryString):any =>{
+	    let urlBase = this.baseActionPath+'getProductSkuOptionDetailsData/';
+	    return this.getData(urlBase, "productSkuOptionDetailsData", queryString);
+	}
+
     /** accessors for states */
     public getStates=(countryCode:string, address:any, refresh=false):any =>  {
        if(address && address.data){
