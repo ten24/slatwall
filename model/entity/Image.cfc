@@ -54,6 +54,8 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	property name="imageDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="imageFile" ormtype="string" hb_formFieldType="file" hb_fileUpload="true" hb_fileAcceptMIMEType="image/gif,image/jpeg,image/pjpeg,image/png,image/x-png" hb_fileAcceptExtension=".jpeg,.jpg,.png,.gif";
 	property name="directory" ormtype="string";
+
+	property name="calculatedImagePath" ormtype="string"; 
 	
 	// Related Object Properties (many-to-many)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="imageID" inversejoincolumn="optionID"; 
