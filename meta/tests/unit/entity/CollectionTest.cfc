@@ -1489,13 +1489,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "firstName";
-		var aggregate = {
-			aggregateFunction = "count",
-			aggregateAlias = "Account_firstName"
+		var column={
+			propertyIdentifier = "firstName",
+			aggregate = {
+				aggregateFunction = "count",
+				aggregateAlias = "Account_firstName"
+			}
 		};
+		
 		//addToDebug(lcase(replace(createUUID(),'-','')));
-		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT( firstName) as Account_firstName",trim(aggregateHQL)));
 	}
@@ -1506,13 +1509,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function getAggregateHQLTest_hasObject(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "accountAuthentications";
-		var aggregate = {
-			aggregateFunction = "count",
-			aggregateAlias = "Account_accountAuthentications"
+		var column={
+			propertyIdentifier = "accountAuthentications",
+			aggregate = {
+				aggregateFunction = "count",
+				aggregateAlias = "Account_accountAuthentications"
+			}
 		};
+		
 		//addToDebug(lcase(replace(createUUID(),'-','')));
-		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));
