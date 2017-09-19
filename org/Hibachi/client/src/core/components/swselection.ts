@@ -27,6 +27,10 @@ class SWSelectionController{
             this.toggleValue = this.selection;
         }
 
+        if(this.isRadio && this.toggleValue){
+            this.toggleValue = this.selection;
+        }
+
         //attach observer so we know when a selection occurs
         observerService.attach(this.updateSelectValue,'swSelectionToggleSelection' + this.selectionid);
 

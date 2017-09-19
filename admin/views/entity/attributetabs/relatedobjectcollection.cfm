@@ -16,3 +16,4 @@
 	</sw-listing-display>
 	<input name="relatedObjectCollectionConfig" ng-model="relatedObjectCollectionConfig.collectionConfigString" ng-show="false"/>
 </cfoutput>
+ 
