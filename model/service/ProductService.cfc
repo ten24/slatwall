@@ -77,6 +77,10 @@ component extends="HibachiService" accessors="true" {
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
 	}
 
+	public string function getProductURLByUrlTitle(required string urlTitle){
+		return "/#getHibachiScope().setting('globalURLKeyProduct')#/#arguments.urlTitle#/";
+	}
+	
 	public any function getFormattedOptionGroups(required any product){
 		var AvailableOptions={};
 
