@@ -320,7 +320,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	public string function getListingProductURL() {
-		return getProductUrl();
+		var productUrl = getProductUrl();
+		return right(productUrl,len(productUrl)-1);
 	}
 
 	public string function getTemplate() {
