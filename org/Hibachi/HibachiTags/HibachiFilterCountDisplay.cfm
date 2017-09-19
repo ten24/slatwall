@@ -9,10 +9,17 @@
 	
 <cfelse>
 	
-	
-		
-	
 	<cfoutput>
+		<script>
+			var updateApplyHref = function(id,baseBuildUrl){
+	        	var minValue = $('##min'+id).val() || '';
+	            var maxValue = $('##max'+id).val() || '';
+	            
+//	            remove previous params
+	            var url = window.location.toString().split('?')[0]+'?'+baseBuildUrl+minValue+'^'+maxValue;
+	            $('##apply'+id).attr('href',url);
+	        }
+		</script>
 		<div class="widget shop-categories">
     		<div class="widget-content">
     			<form action="##">

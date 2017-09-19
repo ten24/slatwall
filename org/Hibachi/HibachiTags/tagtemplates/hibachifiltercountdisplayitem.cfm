@@ -10,22 +10,15 @@
 			<ul class="children active">
 				<cfloop array="#arguments.optionData#" index="option">
 					<cfif structKeyExists(option,'name') && structKeyExists(option,'value')>
-						<cfif filterType eq "f">
-							<cfset comparisonOperator = 'in'/>
-						<cfelse>
-							<cfset comparisonOperator = ''/>
-						</cfif>
-						<cfset isFilterApplied = attributes.collectionList.isFilterApplied(filterIdentifier,option['value'],filterType,comparisonOperator)/>
+						<cfset isFilterApplied = attributes.collectionList.isFilterApplied(filterIdentifier,option['value'],attributes.filterType,attributes.comparisonOperator)/>
+						
 						<cfif (option['count'] gt 0 AND len(trim(option['name']))) OR isFilterApplied>
-							<cfset fullbuildUrl = "#filterType#:#filterIdentifier#"/>
-							<cfif len(comparisonOperator)>
-								<cfset fullbuildUrl &= ":#comparisonOperator#"/>
-							</cfif>
-							<cfset fullbuildUrl &= "=#option['value']#"/>
+							
+							<cfset optionBuildUrl = attributes.baseBuildUrl & "#option['value']#"/>
 							<li>
 								
 								<a 
-									href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL('#fullbuildUrl#')#" 
+									href="#attributes.hibachiScope.getService('hibachiCollectionService').buildURL('#optionBuildUrl#')#" 
 									<cfif isFilterApplied>
 										class="remove" 
 										data-toggle="tooltip" 
@@ -49,5 +42,38 @@
 				</cfloop>
 			</ul>
 		</li>
+		<cfif attributes.filterType eq 'r'>
+			<hr class="dashed">
+			<div class="apply row">
+				<cfset rangeSearchID = rereplace(createUUID(),'-','','all')/>
+				<div class="col-3 form-group">
+	            	<input id="min#rangeSearchID#" class="form-control" type="text" placeholder="0"/>
+	            </div>
+	            <div class="col-2 form-group">
+                    <span class="sep">to</span>
+                </div>
+                <div class="col-3 form-group">
+		        	<input id="max#rangeSearchID#" class="form-control" type="text" placeholder="0"/>
+		        </div>
+	            <div class="col-4 form-group">
+	            	<a id="apply#rangeSearchID#" href="##" class="btn">APPLY</a>
+	            </div>
+	        </div>
+	        <!--- script drives applying ranges. id specific functions here. generic script in HibachiFilterCountDisplayItem--->
+	        <script>
+			
+			    (function(){
+			        //Submit search
+			        $('##min#rangeSearchID#').on('change',function (e) {
+			        	updateApplyHref('#rangeSearchID#','#replace(attributes.baseBuildUrl,':in','')#');
+			        });
+			        
+			        $('##max#rangeSearchID#').on('change',function (e) {
+			        	updateApplyHref('#rangeSearchID#','#replace(attributes.baseBuildUrl,':in','')#');
+			        });
+			        
+			    })();
+			</script>
+		</cfif>
 	</cfif>
 </cfoutput>

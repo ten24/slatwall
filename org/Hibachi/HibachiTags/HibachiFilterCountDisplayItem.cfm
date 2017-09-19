@@ -19,7 +19,8 @@
 		<cfset attributes.collectionList = THISTAG.Parent.attributes.collectionList/> 
 	</cfif>
 	<cfif structKeyExists(THISTAG.Parent.attributes,'template') && len(THISTAG.Parent.attributes.template)>
-		<cfset attributes.template = THISTAG.Parent.attributes.template/> 
+		<cfset attributes.template = THISTAG.Parent.attributes.template/>
+		
 	</cfif>
 			
 
@@ -33,6 +34,8 @@
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<!--- filter type related to the buildurl filtertype look at collection API under applydata function --->
 	<cfparam name="attributes.filterType" default="f"/>
+	<!---comparison operator realted to build url --->
+	<cfparam name="attributes.comparisonOperator" default=""/>
 	<!--- defaults to entity name rbkey plural but you can override it --->
 	<cfparam name="attributes.title" default=""/>
 	<!--- can be custom function or a string referencing a function in the hibachiUtilityService example: snakeCaseToTitleCase --->
@@ -82,12 +85,12 @@
 		<cfset filterIdentifier = attributes.propertyIdentifier/>
 	</cfif>
 	
-	<cfset filterType = 'f'/>
+	<cfset attributes.filterType = 'f'/>
 	
 	<!--- get the option data here --->
 	<cfif isArray(attributes.rangeData)>
 		<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndRangeData(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.rangeData)/>
-		<cfset filterType = 'r'/>
+		<cfset attributes.filterType = 'r'/>
 	<cfelseif len(attributes.discriminatorProperty)>
 		<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.discriminatorProperty,attributes.inversePropertyIdentifier)/>
 	<cfelse>
@@ -108,6 +111,14 @@
 			</cfif>
 		</cfloop>
 	</cfif>
+	
+	<cfset attributes.comparisonOperator = 'in'/>
+	
+	<cfset attributes.baseBuildUrl = "#attributes.filterType#:#filterIdentifier#"/>
+	<cfif len(attributes.comparisonOperator)>
+		<cfset attributes.baseBuildUrl &= ":#attributes.comparisonOperator#"/>
+	</cfif>
+	<cfset attributes.baseBuildUrl &= '='/>
 	
 	<!--- create the html now that we have all the data we need --->
 	<cfset attributes.htmlContent = ""/>
