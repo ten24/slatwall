@@ -557,8 +557,9 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
-        var accountAddressId = data.accountAddressID;
-        if (isNull(accountAddressID)){
+        if(structKeyExists(data,'accountAddressID')){
+          var accountAddressId = data.accountAddressID;
+        }else{
             this.addErrors(arguments.data, "Could not add account address. address id empty."); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
        		return;
