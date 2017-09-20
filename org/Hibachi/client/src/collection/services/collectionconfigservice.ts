@@ -515,7 +515,6 @@ class CollectionConfig {
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
         var join = propertyIdentifier.split('.').length > 1;
-
         //create filter group
         var filter = new Filter(
             this.formatPropertyIdentifier(propertyIdentifier, join),
@@ -528,7 +527,7 @@ class CollectionConfig {
         );
         return filter;
     };
-
+    
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         this.filterGroups[0].filterGroup.push(this.formatFilterGroup(filterGroup));
         this.observerService.notify('collectionConfigUpdated', {
@@ -539,7 +538,8 @@ class CollectionConfig {
 
     public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {
         var group = {
-            filterGroup:[]
+            filterGroup:[],
+            logicalOperator: 'AND'
         };
 
         if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){

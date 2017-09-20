@@ -1,6 +1,9 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+
+
+
 class SWListingDisplayController{
     /* local state variables */
     public  actions = [];
@@ -33,6 +36,8 @@ class SWListingDisplayController{
     public exampleEntity:any = "";
     public exportAction;
     public fallbackPropertiesToCompare:string; 
+    public emailAction;
+    public printAction;
     public filters = [];
     public filterGroups = [];
     public isAngularRoute:boolean;
@@ -107,13 +112,18 @@ class SWListingDisplayController{
         public rbkeyService
     ){
 
+        //Invariant - We must have some way to instantiate. Everything can't be optional.
+        if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+            return;
+        }
+
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
-
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+            
             //not sure why we have two properties for this
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
@@ -124,8 +134,8 @@ class SWListingDisplayController{
             });
             this.multipleCollectionDeffered.reject();
         }
+
 		this.initializeState();
-		
 		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
 		        
         if(angular.isDefined(this.collectionPromise)){
@@ -136,7 +146,7 @@ class SWListingDisplayController{
         if(this.collectionConfig != null){
             this.multipleCollectionDeffered.reject();
         }
-
+        
         this.listingService.setListingState(this.tableID, this);
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
@@ -331,6 +341,14 @@ class SWListingDisplayController{
         if(angular.isDefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
+        //setup print action
+        if(angular.isDefined(this.printAction)){
+            this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
+        }
+        //setup email action
+        if(angular.isDefined(this.emailAction)){
+            this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
+        }
         this.paginator = this.paginationService.createPagination();
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
@@ -438,6 +456,12 @@ class SWListingDisplayController{
                 this.isCurrentPageRecordsSelected = false;
                 break;
         }
+        
+        //dispatch the update to the store.
+        this.listingService.listingDisplayStore.dispatch({
+            type: "CURRENT_PAGE_RECORDS_SELECTED",
+            payload: {listingID: this.tableID, selectionCount: this.multiselectCount, values: this.multiselectValues }
+        });
     };
 
 
@@ -460,6 +484,14 @@ class SWListingDisplayController{
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
+    };
+
+    public getPrintAction = ():string =>{
+        return this.printAction + this.collectionID;
+    };
+
+    public getEmailAction = ():string =>{
+        return this.emailAction + this.collectionID;
     };
 
     public exportCurrentList =(selection:boolean=false)=>{

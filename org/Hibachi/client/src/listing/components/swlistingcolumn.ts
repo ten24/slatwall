@@ -20,6 +20,7 @@ class SWListingColumnController{
     }
 
     public init = () =>{
+
         if(angular.isUndefined(this.isVisible)){
              this.isVisible = true;
         }
