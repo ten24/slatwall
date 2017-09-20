@@ -253,7 +253,6 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
-  		
 	  	/**
 	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
 	    * Resources: 
