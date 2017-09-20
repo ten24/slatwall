@@ -34,7 +34,7 @@
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
-	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="true" /> 		<!--- If set to false, will hide select box if no options are available --->
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
 
 	<cfif !attributes.ignoreHTMLEditFormat>
 		<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>

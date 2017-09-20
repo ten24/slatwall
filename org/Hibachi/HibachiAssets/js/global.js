@@ -1288,6 +1288,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			data[ 'adminAttributes' ] = JSON.stringify(jQuery('#' + tableID).find('th.admin').data());
 			data[ 'savedStateID' ] = jQuery('#' + tableID).data('savedstateid');
 			data[ 'entityName' ] = jQuery('#' + tableID).data('entityname');
+			data[ 'recordAlias' ] = jQuery('#' + tableID).data('recordalias');
 	
 			var idProperty = jQuery('#' + tableID).data('idproperty');
 			var nextRowDepth = 0;
