@@ -84,6 +84,7 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+    public filterGroupAliasMap:any = {};
     
     
     get collectionConfigString():string {
@@ -263,13 +264,12 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-            
+
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
-                
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
@@ -278,7 +278,6 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
-        
         return _propertyIdentifier;
     };
 
@@ -530,10 +529,22 @@ class CollectionConfig {
     };
     
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
+        this.filterGroups[0].filterGroup.push(this.formatFilterGroup(filterGroup));
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+		});
+		return this;
+    };
+
+    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {
         var group = {
             filterGroup:[],
             logicalOperator: 'AND'
         };
+
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+            group["logicalOperator"] = filterGroupLogicalOperator;
+        }
         for(var i =  0; i < filterGroup.length; i++){
             var filter = this.createFilter(
                 filterGroup[i].propertyIdentifier,
@@ -544,11 +555,37 @@ class CollectionConfig {
             );
             group.filterGroup.push(filter);
         }
+        return group;
+    }
 
-        this.filterGroups[0].filterGroup.push(group);
-        this.observerService.notify('collectionConfigUpdated', {
-            collectionConfig: this
-        });
+    public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
+        if(!this.filterGroups){
+            this.filterGroups = [{filterGroup:[]}];
+        }
+        if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
+            this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
+        }
+        return this.filterGroupAliasMap[filterGroupAlias];
+    };
+
+    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator:string):number =>{
+        var newFilterGroup = {"filterGroup": []};
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+            newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
+        }else if (this.filterGroups[0].filterGroup.length){
+            newFilterGroup["logicalOperator"] = "AND";
+        }
+        this.filterGroups[0].filterGroup.push(newFilterGroup);
+        return this.filterGroups[0].filterGroup.length -1;
+    };
+
+    public upsertFilterGroup = (filterGroupName:string, filterGroup:any):CollectionConfig=>{
+        var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupName);
+        var logicalOperator = "";
+        if(this.filterGroups[0].filterGroup[filterGroupIndex].logicalOperator){
+            logicalOperator = this.filterGroups[0].filterGroup[filterGroupIndex].logicalOperator;
+        }
+        this.filterGroups[0].filterGroup[filterGroupIndex] = this.formatFilterGroup(filterGroup, logicalOperator);
         return this;
     };
 

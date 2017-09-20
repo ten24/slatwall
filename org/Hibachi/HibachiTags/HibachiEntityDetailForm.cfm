@@ -48,30 +48,30 @@
 			<cfif len(attributes.fRedirectQS)><input type="hidden" name="fRedirectQS" value="#attributes.fRedirectQS#" /></cfif>
 		</cfif>
 		<cfif structKeyExists(request.context, "modal") and request.context.modal>
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<a class="close" data-dismiss="modal">&times;</a>
+
+            <div class="wrapper">
+                <header class="header">
+                    <div class="col-xs-7">
 						<h3>#request.context.pageTitle#</h3>
 					</div>
-					<div class="modal-body">
+                    <div class="col-xs-5">
+                        <div class="actions clearfix">
+							<cfif attributes.edit>
+								<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> #attributes.hibachiScope.rbKey('define.save')#</button>
+							</cfif>
+                        </div>
+                    </div>
+                    <i class="fa fa-close"></i>
+                </header>
+                <div class="main-content">
+                    <div class="col-md-12">
 		</cfif>
-	</cfoutput>
-<cfelse>
-	<cfoutput>
-		<cfif structKeyExists(request.context, "modal") and request.context.modal>
-					</div>
-					<div class="modal-footer">
-						<cfif attributes.edit>
-							<div class="btn-group">
-								<button href="##" class="btn btn-default" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</button>
-								<button type="submit" class="btn btn-success"><i class="icon-ok icon-white"></i> #attributes.hibachiScope.rbKey('define.save')#</button>
-							</div>
-						</cfif>
+		</cfoutput>
+		<cfelse>
+			<cfoutput>
 					</div>
 				</div>
 			</div>
-		</cfif>
 		<cfif attributes.edit>
 			</form>
 		</cfif>

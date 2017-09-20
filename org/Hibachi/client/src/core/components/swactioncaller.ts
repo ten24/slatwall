@@ -48,7 +48,11 @@ class SWActionCallerController{
         this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
             this.$element.parent().append(template);
-            $compile(template)($scope);
+			if(angular.isDefined($scope.swActionCaller.modal) && !$scope.swActionCaller.getDisabled()){
+				$scope.swActionCaller.class += ' modalload';
+			}
+				
+			$compile(template)($scope);
             //need to perform init after promise completes
             //this.init();
         });

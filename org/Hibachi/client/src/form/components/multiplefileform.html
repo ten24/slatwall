@@ -1,0 +1,30 @@
+<div class="row"> 
+    <div class="alert" ng-if="swMultipleFileForm.uploadError">
+        There was a problem uploading the file. 
+    </div> 
+    <div class="success" ng-if="swMultipleFileForm.uploadSuccess">
+        There was a problem uploading the file. 
+    </div> 
+    <div ng-class="{'col-md-6':ajaxFileUpload}" ng-if="swMultipleFileForm.showUploadedFiles">
+        <h4>Uploaded Files</h4>
+        <div ng-repeat="file in swMultipleFileForm.files"> 
+            <!-- List File Details -->
+            <!-- Ability to remove file -->
+        </div> 
+    </div>  
+    <div class="form-group" ng-class="{'col-md-6':ajaxFileUpload}" ng-repeat="file in swMultipleFileForm.files track by $index" sw-loading="!swMultipleFileForm.uploading && !swMultipleFileForm.ajaxFileUpload">
+        <label for="files[1].file" class="control-label col-sm-4">
+            <span class="s-title"><!-- Load a defined rb here --></span>
+        </label>
+        <div class="col-sm-8">
+            <div class="s-file-upload">
+                <ul class="list-unstyled list-inline">
+                    <li><input type="file" data-sw-file-upload data-file-model="swMultipleFileForm.fileToUpload" name="filesToUpload[{{$index+1}}]" id="fileToUpload" /></li>
+                    <li ng-if="swMultipleFileForm.ajaxFileUpload"><button class="btn btn-success btn-xs" data-ng-click="swMultipleFileForm.uploadFile()" >Upload</button></li>
+                </ul>
+            </div>
+        </div>
+        <a ng-if="swMultipleFileForm.files.length > 1" class="fa fa-times" ng-click="swMultipleFileForm.removeFile($index)">Remove</a>
+    </div>
+    <button ng-click="swMultipleFileForm.addFile()" type="button">Upload Another File</button>
+</div> 
