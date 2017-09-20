@@ -28,6 +28,7 @@ class SWFormController {
     public inputAttributes:string;
     public eventListeners;
     public submitOnEnter;
+    public parseObjectErrors:boolean = true;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -101,6 +102,14 @@ class SWFormController {
 
     }
 
+    public $onInit=()=>{
+        if(this.object && this.parseObjectErrors){
+            this.$timeout(()=>{
+                this.parseErrors(this.object.errors)
+            });
+        }
+    }
+
     public isObject=()=>{
         return (angular.isObject(this.object));
     }
@@ -116,6 +125,7 @@ class SWFormController {
     public submit = (actions) =>
     {   
         actions = actions || this.action;
+        console.log('actions!', actions);
         this.clearErrors();
         this.formData = this.getFormData() || "";
         this.doActions(actions);
@@ -234,9 +244,9 @@ class SWFormController {
 
         angular.forEach(iterable, (val, key) => {
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                 if(this.object.forms[this.name][key].$modelValue){
+                 if(this.object.forms[this.name][key].$modelValue != undefined){
                     val = this.object.forms[this.name][key].$modelValue;
-                }else if(this.object.forms[this.name][key].$viewValue){
+                }else if(this.object.forms[this.name][key].$viewValue != undefined){
                     val = this.object.forms[this.name][key].$viewValue;
                 }else if(this.object.forms[this.name][key].$dirty){
                     val="";
@@ -289,7 +299,8 @@ class SWForm implements ng.IDirective {
             inputAttributes:"@?",
             eventListeners:"=?",
             eventAnnouncers:"@",
-            submitOnEnter:"@"
+            submitOnEnter:"@",
+            parseObjectErrors:"@?"
     };
 
     /**

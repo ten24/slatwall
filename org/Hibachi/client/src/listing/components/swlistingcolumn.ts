@@ -139,7 +139,7 @@ class SWListingColumn implements ng.IDirective{
         ];
         return directive;
     }
-    constructor( 
+    constructor(  
     ){
 
     }
