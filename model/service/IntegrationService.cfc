@@ -240,9 +240,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
 								var beanName = listFirst(beanCFC,'.');
 								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
-								FileCopy(modelFilePath,modelDestinationPath);
+								//FileCopy(modelFilePath,modelDestinationPath);
 								if(!beanFactory.containsBean(beanName)){
-									beanFactory.declareBean(beanName, "#getHibachiDao().getApplicationValue('applicationKey')#.model.entity.#beanName#",false);
+									beanFactory.declareBean(beanName, "#getHibachiDao().getApplicationValue('applicationKey')#.integrationServices.#integrationPackage#.model.entity.#beanName#",false);
 								}
 							}
 						}
