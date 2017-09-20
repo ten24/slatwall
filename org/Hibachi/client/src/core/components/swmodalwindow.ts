@@ -9,6 +9,9 @@ class SWModalWindowController {
     public saveAction;
     public cancelAction;
 
+    public saveActionText:string; 
+    public cancelActionText:string; 
+
     // @ngInject
     constructor(){
         if(angular.isUndefined(this.modalName)){
@@ -36,7 +39,9 @@ class SWModalWindow implements ng.IDirective{
         hasDeleteAction:"=?",
         deleteAction:"&?",
         hasCancelAction:"=?",
-        cancelAction:"&?"
+        cancelAction:"&?",
+        saveActionText:"@", 
+        cancelActionText:"@"
     };
     public controller=SWModalWindowController;
     public controllerAs="swModalWindow";
