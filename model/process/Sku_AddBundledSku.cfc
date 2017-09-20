@@ -92,7 +92,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public array function getMeasurementUnitOptions(){
 		if(!isNull(getBundleSku()) && getBundleSku().getInventoryTrackBy() == 'Measurement'){
-			// writeDump("YEAHHHHH");
 			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
 			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
 			measurementUnitCollection.addFilter('measurementType', getBundleSku().getInventoryMeasurementUnit().getMeasurementType());
@@ -102,7 +101,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				arrayAppend(recordOptions, {'name'=record.unitName,'value'=record.unitCode});
 			}
 			variables.measurementUnitOptions = recordOptions;
-			// writeDump(variables.measurementUnitOptions);abort;
 		}else{
 			return [];
 		}

@@ -147,14 +147,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						edit=true,
 						displayType='plain'
 					};
-					// writeOutput(popArray[p] & ' - ');
-					// writeOutput(structKeyExists(processObject,"get#popArray[p]#Options"));
-					// if(structKeyExists(processObject, "get#popArray[p]#Options")){
-					// 	attributes['valueOptions'] = processObject.invokeMethod("get#popArray[p]#Options");
-					// 	if(arrayLen(attributes.valueOptions)){
-					// 		// writeDump(var=attributes,top=2,abort);
-					// 	}
-					// }
+
 					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(template="./HibachiTags/HibachiPropertyDisplay.cfm", attributeCollection=attributes);
 				}
 			}

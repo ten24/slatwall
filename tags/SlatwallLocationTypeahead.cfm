@@ -56,16 +56,7 @@
 					            data-collection-config-property="typeaheadCollectionConfig"
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
-							<!--- Columns --->
-							<sw-collection-columns>
-								<sw-collection-column data-property-identifier="locationName" is-searchable="true"></sw-collection-column>
-								<sw-collection-column data-property-identifier="locationID" is-searchable="false"></sw-collection-column>
-							</sw-collection-columns>
-							
-							<!--- Order By --->
-					    	<sw-collection-order-bys>
-					        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
-					    	</sw-collection-order-bys>
+					            
 					    	<!--- Filters --->
 					    	<cfif attributes.showActiveLocationsFlag EQ true>
 						    	<sw-collection-filters>
