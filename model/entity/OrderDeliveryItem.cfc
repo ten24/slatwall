@@ -59,7 +59,8 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 
 	// Related Object Properties (one-to-many)
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderDeliveryItemID" inverse="true" cascade="all"; // Used For Returns
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderDeliveryItemID" cfc="FulfillmentBatchItem" inverse="true";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -146,6 +147,14 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 	}
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
 		arguments.referencingOrderItem.removeReferencedOrderDeliveryItem( this );
+	}
+	
+	// Fulfillment Batch Items (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.setOrderDeliveryItem( this );
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+		arguments.fulfillmentBatchItem.removeOrderDeliveryItem( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

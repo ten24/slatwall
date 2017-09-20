@@ -46,8 +46,9 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<!--- Order Fulfillment List --->
+<sw-order-fulfillment-list></sw-order-fulfillment-list>
 
 
 <cfparam name="rc.orderFulfillmentSmartList" type="any" />
@@ -84,3 +85,4 @@ Notes:
 		<sw-listing-column data-property-identifier="order.orderNumber" />
 		<sw-listing-column data-property-identifier="order.orderOpenDateTime" />
 	</sw-listing-display>
+

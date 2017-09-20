@@ -42,20 +42,21 @@
 					        data-show-add-button="true"
 					        data-show-view-button="true"
 					        data-placeholder-rb-key="#attributes.rbKey#"
+					        data-placeholder-text="Search Locations"
 					        data-multiselect-mode="false"
 					        data-filter-flag="true"
 					        data-selected-format-string="#attributes.selectedFormatString#"
 					        data-field-name="#attributes.locationPropertyName#"
 					        data-initial-entity-id="#initialEntityID#"
 					        data-max-records="#attributes.maxrecords#"
-					        data-order-by-list="locationName|ASC>
+					        data-order-by-list="locationName|ASC">
 					
 					    <sw-collection-config
 					            data-entity-name="Location"
 					            data-collection-config-property="typeaheadCollectionConfig"
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
-					
+					            
 					    	<!--- Filters --->
 					    	<cfif attributes.showActiveLocationsFlag EQ true>
 						    	<sw-collection-filters>

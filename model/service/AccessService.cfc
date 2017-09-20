@@ -87,11 +87,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return accessDetails;
 		}
 		
-		// Check the content's setting to determine if access is to be tracked so track even if not secure.
-		if( content.setting('contentTrackAccessFlag') ) {
-			accessDetails.trackAccessFlag = true;
-		}
-		
 		// Get the details of if this content requires a purchase or subscription (or both)
 		var requirePurchaseSettingDetails = content.getSettingDetails('contentRequirePurchaseFlag');
 		var requireSubscriptionSettingDetails = content.getSettingDetails('contentRequireSubscriptionFlag');

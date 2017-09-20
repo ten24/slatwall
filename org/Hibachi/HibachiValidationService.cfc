@@ -80,7 +80,11 @@ component output="false" accessors="true" extends="HibachiService" {
 						}
 					}else{
 						for(var item in arguments.customValidation[customValidationKey][ key ]) {
-							structAppend(arguments.coreValidation[customValidationKey][ key ], customValidation[customValidationKey][ key ] [item]);
+							if(structKeyExists(arguments.coreValidation[customValidationKey][ key ], item)){
+								arguments.coreValidation[customValidationKey][ key ][ item ] = customValidation[customValidationKey][ key ] [item];
+							}else{
+								structAppend(arguments.coreValidation[customValidationKey][ key ], customValidation[customValidationKey][ key ] [item]);
+							}
 						}
 					}
 				}

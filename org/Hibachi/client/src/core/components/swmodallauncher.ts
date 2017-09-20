@@ -9,6 +9,9 @@ class SWModalLauncherController {
     public hasCancelAction:boolean=false;
     public hasDeleteAction:boolean=false; 
 
+    public saveActionText:string; 
+    public cancelActionText:string; 
+
     //callbacks
     public saveAction;
     public cancelAction;
@@ -18,6 +21,12 @@ class SWModalLauncherController {
     constructor(){
         if(angular.isUndefined(this.showModal)){
             this.showModal = false; 
+        }
+        if(angular.isUndefined(this.saveActionText)){
+            this.saveActionText = "Save"; 
+        }
+        if(angular.isUndefined(this.cancelActionText)){
+            this.cancelActionText = "Cancel"; 
         }
     }
     
@@ -81,7 +90,9 @@ class SWModalLauncher implements ng.IDirective{
         title:"@",
         saveAction:"&?",
         deleteAction:"&?",
-        cancelAction:"&?"
+        cancelAction:"&?",
+        saveActionText:"@?",
+        cancelActionText:"@?"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";

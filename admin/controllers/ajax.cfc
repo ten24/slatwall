@@ -131,9 +131,15 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			// Add any process object values
 			if(arrayLen(popArray)) {
 				var processObject = getTransient("#arguments.rc.processEntity#_#arguments.rc.processContext#");
-				processObject.invokeMethod("set#record.getClassName()#", {1=record});
+				if(structKeyExists(arguments.rc, 'recordAlias')){
+					processObject.invokeMethod("set#arguments.rc.recordAlias#", {1=record});
+				}else{
+					processObject.invokeMethod("set#record.getClassName()#", {1=record});
+				}
 				processObject.invokeMethod("set#record.getPrimaryIDPropertyName()#", {1=record.getPrimaryIDValue()});
 				processObject.invokeMethod("set#rc.processEntity#", {1=processEntity});
+
+
 				for(var p=1; p<=arrayLen(popArray); p++) {
 					var attributes = {
 						object=processObject,
@@ -141,6 +147,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						edit=true,
 						displayType='plain'
 					};
+
 					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(template="./HibachiTags/HibachiPropertyDisplay.cfm", attributeCollection=attributes);
 				}
 			}

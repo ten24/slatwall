@@ -119,6 +119,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	public any function getLocationPathName() {
 		if(!structKeyExists(variables, "locationPathName")) {
+			
 			variables.locationPathName = "";
 			
 			//Add each of the parents in the chain to the string.
@@ -134,6 +135,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
 			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
 		}
+		
 		return variables.locationPathName;
 	}
 	
@@ -213,6 +215,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
+
 		if(!isNull(getCalculatedLocationPathName())){
 			return getCalculatedLocationPathName();
 		}else{
