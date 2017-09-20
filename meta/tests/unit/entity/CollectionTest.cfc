@@ -60,6 +60,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public boolean function returnFalse(){
 		return false;
 	}
+
+	/**
+	* @test
+	*/
+	public void function sessionBasedFiltersTest(){
+		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		collectionEntity.setDisplayProperties('firstName');
+		collectionEntity.addFilter('firstName', '${account.firstName}');
+
+		collectionEntity.getPageRecords();
+		var collectionParams = collectionEntity.getHqlParams();
+		assert( collectionParams[listFirst(StructKeyList(collectionParams))] ==  'BigBoy');
+	}
 	
 	/**
 	* @test
@@ -281,9 +294,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
-		assertEquals(filter.comparisonOperator,'BETWEEN');
-		assertEquals(filter.value,'20-');
-		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		assertEquals(filter.comparisonOperator,'>=');
+		assertEquals(filter.value,'20');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price >= ');
 		
 	}
 	/**
@@ -297,9 +310,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
-		assertEquals(filter.comparisonOperator,'BETWEEN');
-		assertEquals(filter.value,'-100');
-		assert(collectionEntity.getHQL() CONTAINS '_sku.price BETWEEN ');
+		assertEquals(filter.comparisonOperator,'<=');
+		assertEquals(filter.value,'100');
+		assert(collectionEntity.getHQL() CONTAINS '_sku.price <= ');
 	}
 	/**
 	* @test
@@ -1370,13 +1383,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "firstName";
-		var aggregate = {
-			aggregateFunction = "count",
-			aggregateAlias = "Account_firstName"
+		var column={
+			propertyIdentifier = "firstName",
+			aggregate = {
+				aggregateFunction = "count",
+				aggregateAlias = "Account_firstName"
+			}
 		};
+		
 		//addToDebug(lcase(replace(createUUID(),'-','')));
-		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT( firstName) as Account_firstName",trim(aggregateHQL)));
 	}
@@ -1387,13 +1403,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function getAggregateHQLTest_hasObject(){
 		makePublic(variables.entity,"getAggregateHQL");
-		var propertyIdentifier = "accountAuthentications";
-		var aggregate = {
-			aggregateFunction = "count",
-			aggregateAlias = "Account_accountAuthentications"
+		var column={
+			propertyIdentifier = "accountAuthentications",
+			aggregate = {
+				aggregateFunction = "count",
+				aggregateAlias = "Account_accountAuthentications"
+			}
 		};
+		
 		//addToDebug(lcase(replace(createUUID(),'-','')));
-		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
+		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		debug(aggregateHQL);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT accountAuthentications) as Account_accountAuthentications",trim(aggregateHQL)));

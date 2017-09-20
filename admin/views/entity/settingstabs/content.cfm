@@ -52,6 +52,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" />
+		<swa:SlatwallSetting settingName="contentRenderHibachiActionInTemplate" />
 		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" />
 		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" />
 		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" />
@@ -60,5 +61,6 @@ Notes:
 		<swa:SlatwallSetting settingName="contentMetaDescriptionString" />
 		<swa:SlatwallSetting settingName="contentMetaKeywordsString" />
 		<swa:SlatwallSetting settingName="contentTemplateCacheInSeconds"/>
+		<swa:SlatwallSetting settingName="contentEnableTrackingFlag"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>

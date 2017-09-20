@@ -19,6 +19,7 @@ class SWListingControlsController {
     private getCollection;
     private tableId;
     private columnIsControllableMap = {};
+    public simple:boolean;
 
     //@ngInject
     constructor(
@@ -41,6 +42,9 @@ class SWListingControlsController {
 
         if(angular.isDefined(this.tableId)){
             this.listingColumns = this.listingService.getListingColumns(this.tableId);
+        }
+        if(angular.isUndefined(this.simple)){
+            this.simple = true;
         }
 
 
@@ -67,6 +71,10 @@ class SWListingControlsController {
     };
 
     public canDisplayColumn = (column) =>{
+        if(!this.listingColumns.length){
+            return true;
+        }
+        
         if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
             return this.columnIsControllableMap[column.propertyIdentifier];
         }
@@ -122,7 +130,9 @@ class SWListingControlsController {
     public toggleFilters = ()=>{
         if(this.filtersClosed) {
             this.filtersClosed = false;
+            if(this.simple){
             this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+        }
         }
     };
 
@@ -132,7 +142,11 @@ class SWListingControlsController {
     };
 
     public saveCollection = ()=>{
-        this.getCollection()();
+        this.getCollection();
+        var data = {
+            collectionConfig:this.collectionConfig
+        };
+        this.observerService.notify('saveCollection',data);
     };
 
 }
@@ -151,7 +165,8 @@ class SWListingControls  implements ng.IDirective{
         getCollection : "&",
         showFilters : "=?",
         showToggleFilters : "=?",
-        showToggleDisplayOptions : "=?"
+        showToggleDisplayOptions : "=?",
+        simple:"=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';

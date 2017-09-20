@@ -141,8 +141,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			if (!isNull(getHibachiScope().getRouteEntity('Account'))) {
 				contentCacheKey &= getHibachiScope().getRouteEntity('Account').getPrimaryIDValue();
 			}
-			
-			contentCacheKey &= CGI.QUERY_STRING; 
+			contentCacheKey &= replace(CGI.QUERY_STRING,'clearTemplateCache=true',''); 
 			variables.contentCacheKey = hash(contentCacheKey,'MD5');
 		}
 		return variables.contentCacheKey;

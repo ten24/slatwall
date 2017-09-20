@@ -92,7 +92,7 @@ class SWColumnItem{
 				};
 
 				var compareByPriority = function(a,b){
-					if(angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)){
+					if(a.sorting && b.sorting && angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)){
 						if(a.sorting.priority < b.sorting.priority){
 							return -1;
 						}

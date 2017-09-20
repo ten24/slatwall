@@ -82,6 +82,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.file#" property="urlTitle" edit="#rc.edit#">
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileGroup" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		

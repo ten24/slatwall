@@ -202,7 +202,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
-		getHibachiScope().getSession().setLastRequestIPAddress( CGI.REMOTE_ADDR );
+		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
 		
 	}
 	
@@ -228,10 +228,19 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 			
 			//only set this if the use is not an admin user and we are using extended sessions.
-			if (!getHibachiScope().getAccount().getAdminAccountFlag() && getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays') && getHibachiScope().setting('globalUseExtendedSession')){
+			var globalExtendedSessionAutoLogoutInDays = getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays'); 
+			if(len(globalExtendedSessionAutoLogoutInDays) == 0){
+				globalExtendedSessionAutoLogoutInDays = 0;
+			}
+			var globalUseExtendedSession = getHibachiScope().setting('globalUseExtendedSession'); 
+			if(len(globalUseExtendedSession) == 0){
+				globalUseExtendedSession = false; 
+			}			
+	
+			if (!getHibachiScope().getAccount().getAdminAccountFlag() && globalExtendedSessionAutoLogoutInDays && globalUseExtendedSession ){
 				var cookieValue = getValueForCookie();
 				getHibachiScope().getSession().setSessionCookieExtendedPSID(cookieValue);
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#getHibachiScope().setting('globalExtendedSessionAutoLogoutInDays')#");
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-ExtendedPSID", value=getHibachiScope().getSession().getSessionCookieExtendedPSID(), expires="#globalExtendedSessionAutoLogoutInDays#");
 			}
 			
 			getHibachiScope().flushORMSession();
@@ -274,7 +283,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		currentSession.setLastRequestDateTime( now() );
-		currentSession.setLastRequestIPAddress( CGI.REMOTE_ADDR );
+		currentSession.setLastRequestIPAddress( getRemoteAddress() );
 		
 		if (arguments.softLogout == false){
 			
