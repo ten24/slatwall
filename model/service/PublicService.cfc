@@ -1211,8 +1211,11 @@ component extends="HibachiService"  accessors="true" output="false"
             var orderPayment = this.newOrderPayment();
             orderPayment.populate(data.newOrderPayment);
             orderPayment.setOrder(getHibachiScope().getCart());
+            if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment'){
+              orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+            }
             //Add billing address error
-            orderPayment.addError('addBillingAddress','Billing address is required.');
+            orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
             //Validate to get all errors
             orderPayment.validate('save');
 
