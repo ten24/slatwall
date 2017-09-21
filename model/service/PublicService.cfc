@@ -557,9 +557,9 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** Adds a shipping address to an order using an account address */
     public void function addShippingAddressUsingAccountAddress(required data){
-        var accountAddressId = data.accountAddressID;
-        if (isNull(accountAddressID)){
-            this.addErrors(arguments.data, "Could not add account address. address id empty."); //add the basic errors
+        if(structKeyExists(data,'accountAddressID')){
+          var accountAddressId = data.accountAddressID;
+        }else{
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
        		return;
         }
@@ -568,13 +568,12 @@ component extends="HibachiService"  accessors="true" output="false"
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
             var order = getHibachiScope().getCart();
-
             for(var fulfillment in order.getOrderFulfillments()){
-              if(data.fulfillmentID && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+              if(structKeyExists(data,'fulfillmentID') && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
-              }else if(!data.fulfillmentID){
-              	orderFulfillment.setShippingAddress(accountAddress.getAddress());
-             	getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              }else if(!structKeyExists(data,'fulfillmentID')){
+                orderFulfillment.setShippingAddress(accountAddress.getAddress());
+              getService("OrderService").saveOrderFulfillment(orderFulfillment);
               }
             }
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
