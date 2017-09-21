@@ -65,6 +65,7 @@
 	)/>
 	<!---derive the filter type here --->
 	<cfset filterIdentifier = ""/>
+	<cfif attributes.hibachiScope.getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
 	<cfif attributes.hibachiScope.getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
 		<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
 			lastEntityName
