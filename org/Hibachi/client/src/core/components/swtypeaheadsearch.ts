@@ -229,8 +229,6 @@ class SWTypeaheadSearchController {
                 promise = this.collectionConfig.getEntity();
             }
             
-            console.log("promise", promise);
-
             promise.then( (response) =>{
                 this.results = response.pageRecords || response.records; 
                 this.updateSelections();               

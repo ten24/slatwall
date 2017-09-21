@@ -146,7 +146,6 @@ class SWFormFieldController {
 
 		if(angular.isUndefined(this.options)){
 			if(!this.optionsArguments || !this.optionsArguments.hasOwnProperty('propertyIdentifier')){
-				console.log("setting optionArguments", this.optionsArguments);
 				this.optionsArguments={
 					'propertyIdentifier':this.propertyIdentifier
 				};
