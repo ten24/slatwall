@@ -330,7 +330,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(propertyIdentifierItem in propertyIdentifiersArray){
 			if(
-				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, propertyIdentifierItem)
+				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, propertyIdentifierItem)
 			){
 				columnStruct = {
 					propertyIdentifier = "#propertyIdentifierItem#"
