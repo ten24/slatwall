@@ -1,4 +1,4 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 
 <cffunction name="getHTML">
 	<cfargument name="title"/>
@@ -19,7 +19,8 @@
 		<cfset attributes.collectionList = THISTAG.Parent.attributes.collectionList/> 
 	</cfif>
 	<cfif structKeyExists(THISTAG.Parent.attributes,'template') && len(THISTAG.Parent.attributes.template)>
-		<cfset attributes.template = THISTAG.Parent.attributes.template/> 
+		<cfset attributes.template = THISTAG.Parent.attributes.template/>
+		
 	</cfif>
 			
 
@@ -33,8 +34,9 @@
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<!--- filter type related to the buildurl filtertype look at collection API under applydata function --->
 	<cfparam name="attributes.filterType" default="f"/>
+	<!---comparison operator realted to build url --->
+	<cfparam name="attributes.comparisonOperator" default=""/>
 	<!--- defaults to entity name rbkey plural but you can override it --->
-	
 	<cfparam name="attributes.title" default=""/>
 	<!--- can be custom function or a string referencing a function in the hibachiUtilityService example: snakeCaseToTitleCase --->
 	<cfparam name="attributes.formatter" default=""/>
@@ -63,64 +65,76 @@
 	)/>
 	<!---derive the filter type here --->
 	<cfset filterIdentifier = ""/>
-	<cfif attributes.hibachiScope.getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
-		<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
-			lastEntityName
-		)[listLast(attributes.propertyIdentifier, ".")]/>
-		<cfif !len(attributes.title)>
-			<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#propertyMetaData.cfc#_plural')/>
-		</cfif>
-		<cfset primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc)/>
-		
-		<cfset filterIdentifier = attributes.propertyIdentifier & '.' & primaryIDName/>
-	<cfelse>
-		<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
-			lastEntityName
-		)[listLast(attributes.propertyIdentifier, ".")]/>
-		<cfif !len(attributes.title)>
-			<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#lastEntityName#.#propertyMetaData.name#')/>
-		</cfif>
-		<cfset filterIdentifier = attributes.propertyIdentifier/>
-	</cfif>
-	
-	<cfset filterType = 'f'/>
-	
-	<!--- get the option data here --->
-	<cfif isArray(attributes.rangeData)>
-		<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndRangeData(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.rangeData)/>
-		<cfset filterType = 'r'/>
-	<cfelseif len(attributes.discriminatorProperty)>
-		<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.discriminatorProperty,attributes.inversePropertyIdentifier)/>
-	<cfelse>
-		<cfset selectedOptions = attributes.hibachiScope.getService('hibachiService').getSelectedOptionsByApplyData(attributes.entityName,attributes.propertyIdentifier)/>
-		<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
-		<cfset attributes.optionData = optionCollectionList.getRecords()/>
-		<cfloop array="#selectedOptions#" index="selectedOption">
-			<cfset found = false/>
-			<cfloop array="#attributes.optionData#" index="option">
-				<cfif selectedOption.value eq option.value>
-					<cfset found = true/>
-				</cfif>
-			</cfloop> 
-			<cfif !found>
-				<cfset selectedOption.count = 0/>
-		
-				<cfset arrayAppend(attributes.optionData,selectedOption)/>
+	<cfif attributes.hibachiScope.getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
+		<cfif attributes.hibachiScope.getService('HibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
+			<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
+				lastEntityName
+			)[listLast(attributes.propertyIdentifier, ".")]/>
+			<cfif !len(attributes.title)>
+				<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#propertyMetaData.cfc#_plural')/>
 			</cfif>
-		</cfloop>
+			<cfset primaryIDName = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc)/>
+			
+			<cfset filterIdentifier = attributes.propertyIdentifier & '.' & primaryIDName/>
+		<cfelse>
+		
+			<cfset propertyMetaData = attributes.hibachiScope.getService('HibachiService').getPropertiesStructByEntityName(
+				lastEntityName
+			)[listLast(attributes.propertyIdentifier, ".")]/>
+			<cfif !len(attributes.title)>
+				<cfset attributes.title = attributes.hibachiScope.rbKey('entity.#lastEntityName#.#propertyMetaData.name#')/>
+			</cfif>
+			<cfset filterIdentifier = attributes.propertyIdentifier/>
+		</cfif>
+	
+	
+		<cfset attributes.filterType = 'f'/>
+		
+		<!--- get the option data here --->
+		<cfif isArray(attributes.rangeData)>
+			<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndRangeData(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.rangeData)/>
+			<cfset attributes.filterType = 'r'/>
+		<cfelseif len(attributes.discriminatorProperty)>
+			<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndDiscriminatorProperty(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.discriminatorProperty,attributes.inversePropertyIdentifier)/>
+		<cfelse>
+			<cfset selectedOptions = attributes.hibachiScope.getService('hibachiService').getSelectedOptionsByApplyData(attributes.entityName,attributes.propertyIdentifier)/>
+			<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
+			<cfset attributes.optionData = optionCollectionList.getRecords()/>
+			<cfloop array="#selectedOptions#" index="selectedOption">
+				<cfset found = false/>
+				<cfloop array="#attributes.optionData#" index="option">
+					<cfif selectedOption.value eq option.value>
+						<cfset found = true/>
+					</cfif>
+				</cfloop> 
+				<cfif !found>
+					<cfset selectedOption.count = 0/>
+					
+					<cfset arrayAppend(attributes.optionData,selectedOption)/>
+				</cfif>
+			</cfloop>
+		</cfif>
+		
+		<cfset attributes.comparisonOperator = 'in'/>
+		
+		<cfset attributes.baseBuildUrl = "#attributes.filterType#:#filterIdentifier#"/>
+		<cfif len(attributes.comparisonOperator)>
+			<cfset attributes.baseBuildUrl &= ":#attributes.comparisonOperator#"/>
+		</cfif>
+		<cfset attributes.baseBuildUrl &= '='/>
+		
+		<!--- create the html now that we have all the data we need --->
+		<cfset attributes.htmlContent = ""/>
+		<cfif isArray(attributes.optionData)>
+			<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter)/>
+		<cfelseif isStruct(attributes.optionData)>
+			<cfloop collection="#attributes.optionData#" item="discriminatorName">
+				<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter)/>
+			</cfloop>
+		</cfif>
+		
+		
+		<cfassociate basetag="cf_HibachiFilterCountDisplay" datacollection="filterCountGroups">
 	</cfif>
-	
-	<!--- create the html now that we have all the data we need --->
-	<cfset attributes.htmlContent = ""/>
-	<cfif isArray(attributes.optionData)>
-		<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter)/>
-	<cfelseif isStruct(attributes.optionData)>
-		<cfloop collection="#attributes.optionData#" item="discriminatorName">
-			<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter)/>
-		</cfloop>
-	</cfif>
-	
-	<cfassociate basetag="cf_HibachiFilterCountDisplay" datacollection="filterCountGroups">
-	
 </cfif>
 
