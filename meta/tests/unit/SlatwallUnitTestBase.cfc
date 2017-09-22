@@ -56,7 +56,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 	public void function beforeTests(){
 		
 		// Setup Components
-		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
+		variables.slatwallFW1Application = createObject("component", "SlatwallTestHarnessApplication");
 	}
 
 	// BEFORE EACH TEST	
@@ -112,6 +112,14 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 
 	private void function addToDebug( required any output ) {
 		arrayAppend(variables.debugArray, arguments.output);
+	}
+
+	private void function logTest(message) {
+		variables.slatwallFW1Application.logTest(argumentcollection=arguments);
+	}
+
+	private any function getIdentityHashCode(object) {
+		return request.slatwallScope.getService('hibachiUtilityService').getIdentityHashCode(arguments.object);
 	}
 
 	private any function createPersistedTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=true, boolean saveWithService=false ) {
