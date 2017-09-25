@@ -994,6 +994,13 @@ class PublicService {
     }
 
     public hideBillingAddressForm = ()=>{
+        if(this.billingAddressEditFormIndex != undefined){
+            let index = this.billingAddressEditFormIndex;
+            if(this.billingAddressEditFormIndex == 'new'){
+                index = this.account.accountAddresses.length - 1;
+            }
+            this.selectBillingAddress(index);
+        }
         this.billingAddressEditFormIndex = undefined;
         this.billingAddress = {};
     }

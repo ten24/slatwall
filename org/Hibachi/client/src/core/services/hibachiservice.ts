@@ -355,7 +355,7 @@ class HibachiService{
 	getPropertyDisplayOptions = (entityName,options) => {
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayOptions&entityName='+entityName;
 		var params:any = {};
-		params.property = options.property || '';
+		params.property = options.property || options.propertyIdentifier || '';
 		if(angular.isDefined(options.argument1))  {
 			params.argument1 = options.argument1;
 		}

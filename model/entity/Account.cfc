@@ -127,6 +127,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="gravatarURL" persistent="false";
 	property name="guestAccountFlag" persistent="false" hb_formatType="yesno";
 	property name="ordersPlacedSmartList" persistent="false";
+	property name="ordersPlacedCollectionList" persistent="false";
 	property name="ordersNotPlacedSmartList" persistent="false";
 	property name="passwordResetID" persistent="false";
 	property name="phoneNumber" persistent="false";
@@ -139,7 +140,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
-	
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
@@ -259,6 +260,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		return giftCardSmartList;
 	}
+
+	public any function getOrdersPlacedCollectionList() {
+		if(!structKeyExists(variables, "ordersPlacedCollectionList")) {
+			var ocl = getService("orderService").getOrderCollectionList();
+			ocl.addFilter('account.accountID', getAccountID());
+			ocl.addFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled', 'in');
+			ocl.addOrderBy("orderOpenDateTime|DESC");
+
+			variables.ordersPlacedCollectionList = ocl;
+		}
+		return variables.ordersPlacedCollectionList;
+	}	
 
 	public any function getOrdersPlacedSmartList() {
 		if(!structKeyExists(variables, "ordersPlacedSmartList")) {

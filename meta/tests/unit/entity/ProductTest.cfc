@@ -1947,6 +1947,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//mockProduct2 XX mockSku2 -> mockOption4 -> mockOptionGroup2
 		var skuData1 = {
 			skuID = "",
+			activeFlag = true,
+			publishedFlag = true,
 			options = [
 				{
 					optionID = mockOption1.getOptionID()
@@ -1968,6 +1970,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var skuData2 = {
 			skuID = "",
+			activeFlag = true,
+			publishedFlag = true,
 			options = [
 				{
 					optionID = mockOption4.getOptionID()

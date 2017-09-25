@@ -728,6 +728,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return this;
 	}
 	
+//	see hibachicollection service for list of all params
+	public string function buildUrl(){
+		return getHibachiCollectionService().buildUrl(argumentCollection=arguments);
+	}
+	
 	public void function applyDataForFilters(required any data, string excludesList="", string key){
 		//handle filters.
 		if(isValid('string',data[key])){
