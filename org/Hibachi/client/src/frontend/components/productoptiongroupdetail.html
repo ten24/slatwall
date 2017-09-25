@@ -32,7 +32,9 @@
             <div class="col-sm-6" ng-repeat="option in optionGroup.options"
                 ng-disabled="$index > swProductOptionGroupDetail.activeOptionGroupIndex && swProductOptionGroupDetail.lockInSelections"
                 ng-class="{'active':swProductOptionGroupDetail.selectedOptionGroups[optionGroup.optionGroupID].optionID === option.optionID}">
-                <sw-modal-launcher data-modal-name="o{{option.optionCode}}"
+                
+                <sw-modal-launcher  ng-if="optionGroup.imageExists"
+                                    data-modal-name="o{{option.optionCode}}"
                                     data-title="{{option.optionName}}"
                                     data-save-action="swProductOptionGroupDetail.selectOption(option, optionGroup.optionGroupID)"
                                     data-save-action-text="Select">
@@ -51,12 +53,21 @@
                             />
                     </sw-modal-content>
                 </sw-modal-launcher>
-                <a ng-click="swProductOptionGroupDetail.selectOption(option, optionGroup.optionGroupID)">
-                    <span class="option" ng-bind="option.optionName"></span>
-                </a>
-                <div ng-show="swProductOptionGroupDetail.selectedOptionGroups[optionGroup.optionGroupID].optionID === option.optionID">
-                    <i class="fa fa-check-circle fa-lg"></i>
+
+                <div ng-if="!optionGroup.imageExists" 
+                     ng-click="swProductOptionGroupDetail.selectOption(option, optionGroup.optionGroupID)"
+                     class="profile-img-container">
+
+                    <img class="img-thumbnail img-circle img-responsive" src="{{option.calculatedImagePath}}" alt="{{option.optionName}}" width="{{swProductOptionGroupDetail.imageSizePixels}}" height="{{swProductOptionGroupDetail.imageSizePixels}}" />
+                    <div class="profile-img-i-container">
+                        <i class="fa fa-search-plus"></i>
+                    </div>
                 </div>
+
+                <label ng-click="swProductOptionGroupDetail.selectOption(option, optionGroup.optionGroupID)">
+                    <input type="radio" name="option" value="option.optionID">
+                    <span class="option" ng-bind="option.optionName"></span>
+                </label>
             </div class="col-sm-6">
         </div>
         <input ng-if="optionGroup.optionGroupImageGroupFlag == 'Yes ' || (optionGroup.optionGroupImageGroupFlag != null && optionGroup.optionGroupImageGroupFlag === true)"

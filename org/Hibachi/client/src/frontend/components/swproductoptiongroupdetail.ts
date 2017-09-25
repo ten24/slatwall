@@ -4,6 +4,8 @@ class SWProductOptionGroupDetailController {
     
         public productId:string; 
         public productBundleGroupId:string; 
+        
+        public lastOptionGroupID:string; 
 
         public optionGroups=[]; 
         public skus=[];
@@ -42,6 +44,7 @@ class SWProductOptionGroupDetailController {
         //@ngInject
         constructor(
             private collectionConfigService,
+            private fileService,
             private listingService, 
             private utilityService,
             private $rootScope,
@@ -66,16 +69,19 @@ class SWProductOptionGroupDetailController {
         }
 
         private processResponse = (response) =>{ 
+
             
             if(response['skus'] != null && response['skus'].length){
                 this.skus = response['skus']; 
                 if(this.skus.length === 1){
                     this.selectedSku = this.skus[0]; 
                 }
-            } else if(this.allSelected) { 
-                this.outOfStock = true; 
+            } 
+            if(!response['skuOptionDetails'] || (response['skus'] && response['skus'].length == 0)){
+                this.rollbackInvalidSelection(response);
+                return this.optionGroups; 
             }
-            if(!response['skuOptionDetails'] || this.allSelected){
+            if(this.allSelected){
                 return this.optionGroups;
             }
 
@@ -87,13 +93,16 @@ class SWProductOptionGroupDetailController {
             }
 
             for(var key in this.allOptionGroups){
-                
-                if(response['skuOptionDetails'][key] != null && this.selectedOptionGroups[response['skuOptionDetails'][key].optionGroupID] == null){
+                var optionGroupID = response['skuOptionDetails'][key].optionGroupID;
+
+                if( response['skuOptionDetails'][key] != null && 
+                    (this.selectedOptionGroups[optionGroupID] == null || this.selectedOptionGroups[optionGroupID].optionID.length == 0)
+                ){
                     //option group was returned use it
                     var optionGroup = response['skuOptionDetails'][key]; 
 
                     if( optionGroup.options.length > 1 &&
-                        (optionGroup.optionGroupImageGroupFlag == 'No ' || 
+                        (optionGroup.optionGroupImageGroupFlag === 'No ' || 
                         (optionGroup.optionGroupImageGroupFlag != null && optionGroup.optionGroupImageGroupFlag === false))
                     ){
                         optionGroup.options.unshift({optionID:'',optionName:'--Please Select ' + optionGroup['optionGroupName'],sortOrder:-1});
@@ -110,15 +119,28 @@ class SWProductOptionGroupDetailController {
 
                 if( optionGroup.options.length > 0 &&
                     this.selectedOptionGroups[optionGroup.optionGroupID] == null && 
-                    (   optionGroup.optionGroupImageGroupFlag == 'No ' || 
+                    (    optionGroup.optionGroupImageGroupFlag === 'No ' || 
                         (optionGroup.optionGroupImageGroupFlag != null && optionGroup.optionGroupImageGroupFlag === false)
                     )
                 ){
+                
                     this.selectedOptionGroups[optionGroup.optionGroupID] = optionGroup.options[0];
+                
+                } else if (  optionGroup.optionGroupImageGroupFlag === 'Yes ' || optionGroup.optionGroupImageGroupFlag === true ){
+                    
+                    this.fileService.imageExists(optionGroup.calculatedImagePath).then(
+                        (response)=>{
+                            optionGroup.imageExists = true; 
+                        },
+                        (reason)=>{
+                            optionGroup.imageExists = false; 
+                        }
+                    );
                 }
 
                 if( optionGroup.options.length === 1){
-                    this.updateActiveOptionGroupIndex(optionGroup.optionGroupID);
+                    this.selectedOptionGroups[optionGroup.optionGroupID] = optionGroup.options[0];
+                    this.updateActiveOptionGroupIndex(optionGroupID);
                 }
 
                 optionGroups.unshift(optionGroup); 
@@ -126,6 +148,17 @@ class SWProductOptionGroupDetailController {
             }
 
             return this.orderByFilter(optionGroups,"+sortOrder"); 
+        }
+
+        private rollbackInvalidSelection = (response) =>{
+            for(var key in this.selectedOptionGroups){
+                if(key != this.lastOptionGroupID){
+                    this.selectedOptionGroups[key] = null; 
+                    this.optionGroupChosen[key] = false; 
+                }
+            }
+            
+            this.updateOptions(); 
         }
 
         public reset = () =>{
@@ -139,31 +172,51 @@ class SWProductOptionGroupDetailController {
         }
 
         //for images
-        public selectOption = (option, optionGroupID) => {            
+        public selectOption = (option, optionGroupID, update=true) => {            
             this.selectedOptionGroups[optionGroupID] = option;
 
             this.updateActiveOptionGroupIndex(optionGroupID);
 
-            this.updateOptions(optionGroupID); 
+            if(update && !this.allSelected){
+                this.updateOptions(optionGroupID); 
+            }
         }
 
 
         public updateActiveOptionGroupIndex = (optionGroupID?) =>{
 
             if(!this.optionGroupChosen[optionGroupID] && 
-                this.activeOptionGroupIndex + 1 < this.optionGroups.length
+                this.activeOptionGroupIndex + 1 <= this.optionGroups.length
             ){
                 this.activeOptionGroupIndex++;
-            } else if(this.activeOptionGroupIndex + 1 === this.optionGroups.length){
-                this.allSelected = true;
+            } else {
+                this.allSelected = this.updateAllSelected();
             }
+
+            if(optionGroupID){
+                this.lastOptionGroupID = optionGroupID; 
+                this.optionGroupChosen[optionGroupID] = true;
+            }
+        }
+
+        public updateAllSelected = () =>{
             
-            this.optionGroupChosen[optionGroupID] = true;
+            var selectedCount = 0; 
+            for(var key in this.selectedOptionGroups){
+                selectedCount++; 
+                if(!this.selectedOptionGroups[key] || !this.selectedOptionGroups[key].optionID.length){
+                    return false; 
+                }
+            }  
+            if(selectedCount !== this.optionGroups.length){
+                return false; 
+            }
+
+            return true; 
         }
 
         //for select
         public updateOptions = (optionGroupID?) =>{
-
 
             if(optionGroupID){
                 this.touched = true; 
@@ -198,10 +251,6 @@ class SWProductOptionGroupDetailController {
             return this.$rootScope.slatwall.getProductSkuOptionDetails(queryString).then(
                 (response)=>{
                     this.optionGroups = this.processResponse(response);
-                    
-                    if(this.optionGroups.length == 1 && this.optionGroups[0].options.length == 1){
-                        this.allSelected = true; 
-                    } 
                     this.loading = false;
                 },
                 (reason)=>{
