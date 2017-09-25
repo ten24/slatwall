@@ -59,7 +59,9 @@ class SWProductBundleGroupType{
 				$scope.productBundleGroupTypes.$$adding = false;
                 $scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
-				$scope.productBundleGroupTypeCollection = {};
+				$scope.productBundleGroupTypeCollection = collectionConfigService.newCollectionConfig(("Type"));
+				$scope.productBundleGroupTypeCollection.setAllRecords(true);
+				$scope.productBundleGroupTypeCollection.addFilter("parentType.systemCode", "productBundleGroupType", "=");
 
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $hibachi.newType();
@@ -68,14 +70,6 @@ class SWProductBundleGroupType{
 					productBundleGroupType.$$setParentType(parentType);
 					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
 				}
-
-				$scope.productBundleGroupTypeInit = () => {
-					let collection = collectionConfigService.newCollectionConfig(("Type"));
-					collection.setAllRecords(true);
-					collection.addFilter("parentType.systemCode", "productBundleGroupType", "=");
-					$scope.productBundleGroupTypeCollection = collection;
-				}
-				$scope.productBundleGroupTypeInit();
 
 				/**
 				 * Sets the state to adding and sets the initial data.

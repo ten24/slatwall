@@ -188,7 +188,7 @@ class SWTypeaheadSearchController {
     }
 
     public toggleOptions = () =>{
-        if(this.hideSearch && (this.searchText && !this.searchText.length)){
+        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
             this.search(this.searchText);
         }
         this.hideSearch = !this.hideSearch;
