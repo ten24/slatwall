@@ -208,7 +208,7 @@ class SWProductOptionGroupDetailController {
                     return false; 
                 }
             }  
-            if(selectedCount !== this.optionGroups.length){
+            if(selectedCount < this.optionGroups.length){
                 return false; 
             }
 
