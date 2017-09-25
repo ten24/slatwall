@@ -553,7 +553,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		');
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
 		optionCollection.addFilter('skus.calculatedQATS',0,'>');
-		optionCollection.addFilter('skus.activeFlag',1);
+		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
+		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
