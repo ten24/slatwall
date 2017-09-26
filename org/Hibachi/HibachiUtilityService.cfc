@@ -18,6 +18,10 @@
 			return lowerCaseToTitleCase(arguments.stringValue);
 		}
 		
+		public string function camelCaseToTitleCase(required string stringValue){
+			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
+		}
+		
 		/**
 		* Sorts an array of structures based on a key in the structures.
 		*

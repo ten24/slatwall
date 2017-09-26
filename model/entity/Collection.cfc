@@ -817,29 +817,59 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if (comparison == 'neq'){
 							comparison = "!=";
 						}
-						if (comparison == 'like'){
-							dataToFilterOn = "%#dataToFilterOn#%";
-						}
 					}
-					var filter = {
-						propertyIdentifier=prop,
-						value=dataToFilterOn,
-						comparisonOperator=comparison	
-					};
 					
-					if(
-						!structKeyExists(getCollectionConfigStruct(),'filterGroups') 
-						|| !arrayLen(getCollectionConfigStruct().filterGroups) 
-						|| !hasFilterByFilterGroup(filter,getCollectionConfigStruct().filterGroups[1].filterGroup)
-					){
-						if(listFind(trim(arguments.excludesList),trim(prop)) > 0 ){
-							this.removeFilter(prop, dataToFilterOn, comparison);
-						}else{
-							this.addFilter(prop, dataToFilterOn, comparison);
+					if (comparison == 'like'){
+						var dataToFilterOnArray = listToArray(dataToFilterOn);
+						
+						for(var i=1; i <= arraylen(dataToFilterOnArray);i++){
+							var item = dataToFilterOnArray[i];
+							var filterData = {
+								propertyIdentifier=prop,
+								value='%#item#%',
+								comparisonOperator=comparison	
+							};
+							
+							if(i > 1){
+								filterData.logicalOperator = 'OR';
+							}
+		
+							if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
+								getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+							}
+		
+							filterData['filterGroupAlias'] = "like#prop#";
+							filterData['filterGroupLogicalOperator'] = "AND";
+							
+							if(!hasFilterByFilterGroup(filterData,getCollectionConfigStruct().filterGroups[getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])].filterGroup)){
+								this.addFilter(argumentCollection=filterData);
 						}
+							setFilterDataApplied(true);
+								
 					}
 						
-					setFilterDataApplied(true);
+					}else{
+						var filter = {
+							propertyIdentifier=prop,
+							value=dataToFilterOn,
+							comparisonOperator=comparison	
+						};
+						
+						if(
+							!structKeyExists(getCollectionConfigStruct(),'filterGroups') 
+							|| !arrayLen(getCollectionConfigStruct().filterGroups) 
+							|| !hasFilterByFilterGroup(filter,getCollectionConfigStruct().filterGroups[1].filterGroup)
+						){
+							if(listFind(trim(arguments.excludesList),trim(prop)) > 0 ){
+								this.removeFilter(prop, dataToFilterOn, comparison);
+							}else{
+								this.addFilter(prop, dataToFilterOn, comparison);
+							}
+						}
+							
+						setFilterDataApplied(true);
+					}
+				
 				}
 				
 				
