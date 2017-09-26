@@ -96,7 +96,8 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="sku.skuCode" tdclass="primary" />
+		<sw-listing-column data-property-identifier="skuID" data-is-visible="false" />
+		<sw-listing-column data-property-identifier="skuCode" tdclass="primary" />
 		<sw-listing-column data-property-identifier="product.productName" />
 		<sw-listing-column data-property-identifier="product.productCode" />
 		<sw-listing-column data-property-identifier="product.productType.productTypeName" />
