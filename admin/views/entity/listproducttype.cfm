@@ -91,6 +91,7 @@ Notes:
 		data-expandable="true"
 		data-parent-property-name="parentProductType"
 	>
+		<sw-listing-column data-property-identifier="productTypeName" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="productTypeName" tdclass="primary" sort="false" expandable="true" />
 		<sw-listing-column data-property-identifier="activeFlag" sort="false" />
 	</sw-listing-display>
