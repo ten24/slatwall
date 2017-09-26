@@ -241,7 +241,7 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(angular.isDefined(this.name)){
+        if(this.name!=null){
             this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
