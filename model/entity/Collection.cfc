@@ -228,8 +228,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setParentCollection(required any parentCollection){
 		if(getNewFlag()){
 			var parentCollectionConfigStruct = Duplicate(arguments.parentCollection.getCollectionConfigStruct());
-			parentCollectionConfigStruct.filterGroups = [{}];
-			parentCollectionConfigStruct.filterGroups[1]['filterGroup'] = [];
+			parentCollectionConfigStruct['filterGroups'] = [{}];
+			parentCollectionConfigStruct['filterGroups'][1]['filterGroup'] = [];
 			setCollectionConfig(serializeJson(parentCollectionConfigStruct));
 		}
 
@@ -313,7 +313,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  		}
  		//if not found right away check manually
  		var filterGroupIndex = 1;
- 		for(var filterGroup in getCollectionConfigStruct().filterGroups){
+ 		for(var filterGroup in getCollectionConfigStruct()['filterGroups']){
  			if(
  				structKeyExists(filterGroup,'filterGroupAlias')
  				&& filterGroup.filterGroupAlias == arguments.filterGroupAlias
@@ -329,13 +329,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  	public numeric function addFilterGroupWithAlias(required string filterGroupAlias, required string filterGroupLogicalOperator){
  		var collectionConfig = this.getCollectionConfigStruct();
  		var newFilterGroup = {"filterGroup"=[]};
- 		if(ArrayLen(collectionConfig.filterGroups) >= 1){
+ 		if(ArrayLen(collectionConfig['filterGroups']) >= 1){
  			newFilterGroup["logicalOperator"] = arguments.filterGroupLogicalOperator;
  			newFilterGroup["filterGroupAlias"] = arguments.filterGroupAlias;
  		}
- 		ArrayAppend(collectionConfig.filterGroups, newFilterGroup);
+ 		ArrayAppend(collectionConfig['filterGroups'], newFilterGroup);
  		this.setCollectionConfigStruct(collectionConfig);
- 		return ArrayLen(collectionConfig.filterGroups);
+ 		return ArrayLen(collectionConfig['filterGroups']);
  	}
  	
  	
@@ -469,10 +469,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  			filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(arguments.filterGroupAlias, arguments.filterGroupLogicalOperator);
  		}
 		//if we already have a filter group then we need a logicalOperator
-		if(arraylen(collectionConfig.filterGroups[filterGroupIndex].filterGroup)){
+		if(arraylen(collectionConfig['filterGroups'][filterGroupIndex]['filterGroup'])){
 			filter["logicalOperator"]=arguments.logicalOperator;
 		}
- 		arrayAppend(getCollectionConfigStruct().filterGroups[filterGroupIndex].filterGroup,filter);
+ 		arrayAppend(getCollectionConfigStruct()['filterGroups'][filterGroupIndex]['filterGroup'],filter);
 
 	}
 
@@ -835,13 +835,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							}
 		
 							if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
-								getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+								getCollectionConfigStruct()['filterGroups'] = [{"filterGroup"=[]}];
 							}
 		
 							filterData['filterGroupAlias'] = "like#prop#";
 							filterData['filterGroupLogicalOperator'] = "AND";
 							
-							if(!hasFilterByFilterGroup(filterData,getCollectionConfigStruct().filterGroups[getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])].filterGroup)){
+							if(!hasFilterByFilterGroup(filterData,getCollectionConfigStruct()['filterGroups'][getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])]['filterGroup'])){
 								this.addFilter(argumentCollection=filterData);
 						}
 							setFilterDataApplied(true);
@@ -857,8 +857,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						
 						if(
 							!structKeyExists(getCollectionConfigStruct(),'filterGroups') 
-							|| !arrayLen(getCollectionConfigStruct().filterGroups) 
-							|| !hasFilterByFilterGroup(filter,getCollectionConfigStruct().filterGroups[1].filterGroup)
+							|| !arrayLen(getCollectionConfigStruct()['filterGroups']) 
+							|| !hasFilterByFilterGroup(filter,getCollectionConfigStruct()['filterGroups'][1]['filterGroup'])
 						){
 							if(listFind(trim(arguments.excludesList),trim(prop)) > 0 ){
 								this.removeFilter(prop, dataToFilterOn, comparison);
@@ -925,7 +925,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 	
 						if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
-							getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+							getCollectionConfigStruct()['filterGroups'] = [{'filterGroup'=[]}];
 						}
 	
 						filterData['filterGroupAlias'] = "range#prop#";
@@ -933,7 +933,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						
 						
 						
-						if(!hasFilterByFilterGroup(filterData,getCollectionConfigStruct().filterGroups[getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])].filterGroup)){
+						if(!hasFilterByFilterGroup(filterData,getCollectionConfigStruct()['filterGroups'][getFilterGroupIndexByFilterGroupAlias(filterData['filterGroupAlias'])]['filterGroup'])){
 							this.addFilter(argumentCollection=filterData);
 						}
 						setFilterDataApplied(true);
@@ -1367,17 +1367,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return;
 		}
 		var parentCollectionStruct = this.getParentCollection().getCollectionConfigStruct();
-		if(isnull(parentCollectionStruct.filterGroups) || !arraylen(parentCollectionStruct.filterGroups)){
+		if(isnull(parentCollectionStruct['filterGroups']) || !arraylen(parentCollectionStruct['filterGroups'])){
 			return;
 		}
 
 		var finalFilterGroups = [];
 		var filterGroupArray = getFilterGroupArrayFromAncestors(this);
 
-		if(arraylen(parentCollectionStruct.filterGroups) == 1){
-			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups[1].filterGroup});
+		if(arraylen(parentCollectionStruct['filterGroups']) == 1){
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct['filterGroups'][1].filterGroup});
 		}else{
-			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct.filterGroups});
+			arrayAppend(finalFilterGroups, { "filterGroup" =  parentCollectionStruct['filterGroups']});
 		}
 
 		if(arraylen(filterGroupArray)){
@@ -1388,7 +1388,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 
-		this.getCollectionConfigStruct().filterGroups = finalFilterGroups;
+		this.getCollectionConfigStruct()['filterGroups'] = finalFilterGroups;
 		if(structKeyExists(parentCollectionStruct, 'joins')){
 			this.mergeJoins(parentCollectionStruct.joins);
 		}
@@ -1398,8 +1398,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
 		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
-		if(!isnull(collectionConfig.filterGroups) && arraylen(collectionConfig.filterGroups)){
-			filterGroupArray = collectionConfig.filterGroups;
+		if(!isnull(collectionConfig['filterGroups']) && arraylen(collectionConfig['filterGroups'])){
+			filterGroupArray = collectionConfig['filterGroups'];
 		}
 		return filterGroupArray;
 	}
@@ -1413,7 +1413,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		numeric filterGroupIndex=1
 	) {
 		//first do we have filters?
-		if(arraylen(collectionConfigStruct.filterGroups)){
+		if(arraylen(collectionConfigStruct['filterGroups'])){
 			//filterGroupName is used to navigate a filtergroup path. If not specified we can assume there is only the base filterGroup.
 			var selectedFilterGroup = [];
 			
@@ -1422,7 +1422,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 			
 			if(!structKeyExists(arguments,'filterGroup')){
-				selectedFilterGroup = getCollectionConfigStruct().filterGroups[arguments.filterGroupIndex].filterGroup;
+				selectedFilterGroup = getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup;
 			}
 			
 			var filterGroupCount = arraylen(selectedFilterGroup);
@@ -1463,7 +1463,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 				}
 				if(!structKeyExists(arguments,'filterGroup')){
-					getCollectionConfigStruct().filterGroups[arguments.filterGroupIndex].filterGroup = selectedFilterGroup;
+					getCollectionConfigStruct()['filterGroups'][arguments.filterGroupIndex].filterGroup = selectedFilterGroup;
 				}
 			}
 		}
@@ -1653,8 +1653,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
             }
         }
 
-        if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct.filterGroups)){
-            aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct.filterGroups));
+        if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct['filterGroups'])){
+            aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct['filterGroups']));
         }
 
         if(structKeyExists(collectionConfigStruct,'joins')) {
@@ -2031,14 +2031,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(collectionConfig, 'filterGroups')){
 					continue;
 				}
-				var recordRestrictionFilterGroups = collectionConfig.filterGroups;
+				var recordRestrictionFilterGroups = collectionConfig['filterGroups'];
 				if(permissionRecordRestriction['permission_entityClassName'] == getCollectionObject()){
 					for(var filterGroup in recordRestrictionFilterGroups){
-						if(arraylen(getCollectionConfigStruct().filterGroups) && arraylen(getCollectionConfigStruct().filterGroups[1].filterGroup)){
+						if(arraylen(getCollectionConfigStruct()['filterGroups']) && arraylen(getCollectionConfigStruct()['filterGroups'][1].filterGroup)){
 							filterGroup['logicalOperator']="AND";	
 						}
 						
-						arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);
+						arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
 					}
 				}else{
 					var propertyIdentifier = variables.permissionAliasMap[permissionRecordRestriction['permission_entityClassName']];
@@ -2052,8 +2052,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
 		var logicalOperator = "";
 		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
-			getCollectionConfigStruct().filterGroups = [];
-		}else if(arraylen(getCollectionConfigStruct().filterGroups)){
+			getCollectionConfigStruct()['filterGroups'] = [];
+		}else if(arraylen(getCollectionConfigStruct()['filterGroups'])){
 			logicalOperator = 'AND';
 		}
 		
@@ -2078,7 +2078,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					filterGroup['logicalOperator'] = logicalOperator;
 				}
 				if(!len(filterGroupAlias) || !hasFilterGroupByFilterGroupAlias(filterGroupAlias)){
-					arrayAppend(getCollectionConfigStruct().filterGroups,filterGroup);	
+					arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);	
 				}
 			}
 		}
@@ -3099,7 +3099,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setCollectionConfigStruct(required struct collectionConfigStruct){
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
 		if(structKeyExists(arguments.collectionConfigStruct,'filterGroups')){
-			for(var filter in variables.collectionConfigStruct.filterGroups[1].filterGroup){
+			for(var filter in variables.collectionConfigStruct['filterGroups'][1].filterGroup){
 				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
 			}
 		}

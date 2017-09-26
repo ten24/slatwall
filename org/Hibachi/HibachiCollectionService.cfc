@@ -366,7 +366,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	//filter
 	private void function addFiltersToCollectionConfigStructByParameters(required any collectionEntity, required string filterParameters){
 		/*if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct.filterGroups = [];
+			collectionConfigStruct['filterGroups'] = [];
 		}
 		var capitalCaseEntityName = capitalCase(arguments.entityName);
 		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
@@ -375,7 +375,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var filterGroupStruct.filterGroup = [];
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
 
-		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);*/
+		arrayAppend(collectionConfigStruct['filterGroups'],filterGroupStruct);*/
 	}
 
 	private any function getColumnsAndJoinsStructPropertyIdentifiersList(propertyIdentifiersList){
@@ -393,7 +393,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		};
 
 		if(!isnull(arguments.data.filterConfig)){
-			collectionConfigStruct.filterGroups = deserializeJson(arguments.data.filterConfig);
+			collectionConfigStruct['filterGroups'] = deserializeJson(arguments.data.filterConfig);
 		}
 
 		if(!isNull(arguments.data.joinsConfig)){
@@ -693,7 +693,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct.filterGroups = [];
+			collectionConfigStruct['filterGroups'] = [];
 		}
 		if(!structKeyExists(collectionConfigStruct,'joins')){
 			collectionConfigStruct.joins = [];
@@ -757,7 +757,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 			}
 			if(structKeyExists(collectionOptions,'filterGroupsConfig') && len(collectionOptions.filterGroupsConfig)){
-				collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(collectionOptions.filterGroupsConfig);
+				collectionEntity.getCollectionConfigStruct()['filterGroups'] = deserializeJson(collectionOptions.filterGroupsConfig);
 			}
 
 			if(structKeyExists(collectionOptions,'columnsConfig') && len(collectionOptions.columnsConfig)){
@@ -943,23 +943,23 @@ component output="false" accessors="true" extends="HibachiService" {
 				comparisonOperator = 'IN',
 				value = arguments.data.ids
 			};
-			collectionEntity.getCollectionConfigStruct().filterGroups = [
+			collectionEntity.getCollectionConfigStruct()['filterGroups'] = [
 				{
 					'filterGroup'=[
 
 					]
 				}
 			];
-			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+			arrayAppend(collectionEntity.getCollectionConfigStruct()['filterGroups'][1].filterGroup,filterGroup);
 		
 		}else if(!isnull(collectionEntity.getParentCollection())){
 			var filterGroupArray = [];
-			if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
-				filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
+			if(!isnull(collectionEntity.getCollectionConfigStruct()['filterGroups']) && arraylen(collectionEntity.getCollectionConfigStruct()['filterGroups'])){
+				filterGroupArray = collectionEntity.getCollectionConfigStruct()['filterGroups'];
 			}
 			var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
-			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
-				collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+			if (!isnull(parentCollectionStruct['filterGroups']) && arraylen(parentCollectionStruct['filterGroups'])) {
+				collectionEntity.getCollectionConfigStruct()['filterGroups'] = collectionEntity.mergeCollectionFilter(parentCollectionStruct['filterGroups'], filterGroupArray);
 				if(structKeyExists(parentCollectionStruct, 'joins')){
 					collectionEntity.mergeJoins(parentCollectionStruct.joins);
 				}
