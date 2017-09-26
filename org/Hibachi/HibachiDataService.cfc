@@ -427,7 +427,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON) {
-		var qryColumns = arguments.query.getMeta().getColumnLabels();
+		var qryColumns = arguments.query.getMetaData().getColumnLabels();
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
 
