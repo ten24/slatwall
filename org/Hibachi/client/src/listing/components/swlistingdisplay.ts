@@ -121,7 +121,7 @@ class SWListingDisplayController{
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
-            
+
             //not sure why we have two properties for this
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
@@ -130,12 +130,12 @@ class SWListingDisplayController{
                 this.collection = this.collectionConfig;
                 this.columns = this.collectionConfig.columns;
             });
+
             this.multipleCollectionDeffered.reject();
         }
 
 		this.initializeState();
-		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-		        
+
         if(angular.isDefined(this.collectionPromise)){
              this.hasCollectionPromise = true;
              this.multipleCollectionDeffered.reject();
@@ -144,17 +144,19 @@ class SWListingDisplayController{
         if(this.collectionConfig != null){
             this.multipleCollectionDeffered.reject();
         }
-        
+
         this.listingService.setListingState(this.tableID, this);
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
-        
+
+        this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
+
 		if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
             });
-    
+
             this.multipleCollectionPromise.then(
                 ()=>{
                     //now do the intial setup
@@ -170,25 +172,27 @@ class SWListingDisplayController{
                     if(angular.isUndefined(this.getCollection)){
                         this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                     }
-    
+
                     this.paginator.getCollection = this.getCollection;
-    
+
                     var getCollectionEventID = this.tableID;
             		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
                 }
             );
         }else if(this.multiSlot == false){
-
-        	this.setupCollectionPromise();
-            
+            if(this.columns && this.columns.length){
+                this.collectionConfig.columns = this.columns;
+            }
+            this.setupCollectionPromise();
+            console.log('solumn',this.columns);
         }
-        
+
         if (this.collectionObject){
              this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
     }
-    
+
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -210,20 +214,19 @@ class SWListingDisplayController{
                 this.collectionData = data;
                 this.observerService.notify('swPaginationUpdate',data);
             });
-            
+
         }
-        
+
     }
-    
+
     private setupCollectionPromise=()=>{
+
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
-            
-            
         }
 
         this.paginator.getCollection = this.getCollection;
-        
+
         var getCollectionEventID = this.tableID;
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
@@ -428,7 +431,7 @@ class SWListingDisplayController{
                 this.isCurrentPageRecordsSelected = false;
                 break;
         }
-        
+
         //dispatch the update to the store.
         this.listingService.listingDisplayStore.dispatch({
             type: "CURRENT_PAGE_RECORDS_SELECTED",

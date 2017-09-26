@@ -146,6 +146,7 @@ class SWListingColumn implements ng.IDirective{
         var listingDisplayID = scope.swListingDisplay.tableID;
 
         this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+        console.log('my',this.listingService.getListing(listingDisplayID));
     }else {
         throw("listing display scope not available to sw-listing-column or there is no table id")
     }
