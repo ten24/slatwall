@@ -56,7 +56,7 @@ component extends="HibachiDAO" {
 	}
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
-		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{masxresults=1});
+		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
 	}
 	
 	public void function updateServerInstanceCache(required any serverInstance){
