@@ -133,7 +133,7 @@ class SWListingColumn implements ng.IDirective{
         return directive;
     }
     constructor(
-        listingService
+        public listingService
     ){
 
     }
@@ -145,7 +145,7 @@ class SWListingColumn implements ng.IDirective{
     ){
         var listingDisplayID = scope.swListingDisplay.tableID;
 
-        listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+        this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
     }else {
         throw("listing display scope not available to sw-listing-column or there is no table id")
     }
