@@ -54,15 +54,15 @@ component extends="HibachiDAO" {
 		}
 		return isExpired;
 	}
-	
+
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
-		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{masxresults=1});
+		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
 	}
-	
+
 	public void function updateServerInstanceCache(required any serverInstance){
 		ORMExecuteQuery('UPDATE #getApplicationKey()#ServerInstance si SET si.serverInstanceExpired=1 where si<>:serverInstance',{serverInstance=arguments.serverInstance});
 	}
-	
+
 	public boolean function isServerInstanceSettingsCacheExpired(required serverInstanceIPAddress){
 		var isExpired = ORMExecuteQuery('SELECT si.settingsExpired FROM #getApplicationKey()#ServerInstance si WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress',{serverInstanceIPAddress=arguments.serverInstanceIPAddress},true);
 		if(isNull(isExpired)){
@@ -70,7 +70,7 @@ component extends="HibachiDAO" {
 		}
 		return isExpired;
 	}
-	
+
 	public void function updateServerInstanceSettingsCache(required any serverInstance){
 		ORMExecuteQuery('UPDATE #getApplicationKey()#ServerInstance si SET si.settingsExpired=1 where si<>:serverInstance',{serverInstance=arguments.serverInstance});
 	}

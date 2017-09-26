@@ -59,7 +59,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.orderPaymentSmartList#" showCreate="false" />
 
-	<hb:HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
 							   recorddetailaction="admin:entity.detailorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
@@ -70,5 +70,26 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'OrderPayment'"
+		data-edit="false"
+		data-has-search="true"
+		record-detail-action="admin:entity.detailorderpaymment"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="order.orderNumber" />
+		<sw-listing-column data-property-identifier="order.account.firstName" />
+		<sw-listing-column data-property-identifier="order.account.lastName" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="paymentMethod.paymentMethodName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="orderPaymentType.typeName" />
+		<sw-listing-column data-property-identifier="amount" />
+		<sw-listing-column data-property-identifier="amountReceived" />
+		<sw-listing-column data-property-identifier="amountCredited" />
+	</sw-listing-display>
+
 </cfoutput>

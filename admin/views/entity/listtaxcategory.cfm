@@ -62,13 +62,27 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
 							   recordEditAction="admin:entity.editTaxCategory"
 							   recordDetailAction="admin:entity.detailTaxCategory">
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'TaxCategory'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.edittaxcategory"
+		record-detail-action="admin:entity.detailtaxcategory"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="taxCategoryName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>
 
 </cfoutput>
 

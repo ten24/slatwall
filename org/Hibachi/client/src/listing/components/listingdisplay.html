@@ -1,5 +1,5 @@
 <div class="row s-detail-content-wrapper">
-    
+
     <!-- These will not contain any real markup -->
     <span ng-if="swListingDisplay.multiSlot">
         <div  ng-transclude="columns"></div>
@@ -8,7 +8,7 @@
         <div  ng-transclude="disableRules"></div>
     </span>
     <!-------------------------------------------->
-    
+
     <!-- The s-shrink-view class can be removed to show expanded view -->
     <div class="col-xs-12 s-results-listing">
         <div class="s-detail-body">
@@ -92,15 +92,16 @@
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" data-ng-value="swListingDisplay.multiselectValues" />
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
-                                    <input type="checkbox" 
-                                           id="exampleID" 
-                                           data-ng-model="swListingDisplay.isCurrentPageRecordsSelected" 
-                                           data-ng-click="swListingDisplay.selectCurrentPageRecords()" 
+                                    <input type="checkbox"
+                                           id="exampleID"
+                                           data-ng-model="swListingDisplay.isCurrentPageRecordsSelected"
+                                           data-ng-click="swListingDisplay.selectCurrentPageRecords()"
                                            data-ng-disabled="!swListingDisplay.edit">
                                     <label for="exampleID"></label>
                                 </div>
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
+
                             <th data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
                                 <a href data-ng-if="!(column.persistent == false) && !column.hasHeaderView && !column.hasCellView" data-ng-click="swListingDisplay.toggleOrderBy(column)" class="s-sort-arrows">
@@ -119,9 +120,9 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords" 
-                           sw-draggable-container 
-                           data-draggable="swListingDisplay.sortable" 
+                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
+                           sw-draggable-container
+                           data-draggable="swListingDisplay.sortable"
                            data-draggable-records="swListingDisplay.collectionData.pageRecords"
                            data-listing-id="{{swListingDisplay.tableID}}"
                            >
@@ -193,7 +194,7 @@
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
                                     data-expandable-rules="swListingDisplay.expandableRules">
-                 
+
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
@@ -204,12 +205,12 @@
 							</td>
 
                             <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
-                                
+
                                 <!-- Save -->
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="saveAction"></div>
                                 </span>
-                                
+
                                 <!-- Detail -->
                                 <sw-action-caller
                                         ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
@@ -222,10 +223,10 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="detailAction"></div>
-                                </span> 
+                                </span>
                                 <!--Edit-->
                                 <sw-action-caller
                                         ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
@@ -238,7 +239,7 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="editAction"></div>
                                 </span>
@@ -255,7 +256,7 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="deleteAction"></div>
                                 </span>
@@ -272,7 +273,7 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="addAction"></div>
                                 </span>

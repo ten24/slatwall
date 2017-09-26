@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay type="listing" object="#rc.eventregistrationsmartlist#" 
+	<!--- <hb:HibachiListingDisplay type="listing" object="#rc.eventregistrationsmartlist#" 
 							  smartList="#rc.eventregistrationsmartlist#" 
 							  showCreate="false"
 							  recordEditAction="admin:entity.editeventregistration"
@@ -74,6 +74,24 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+		data-collection="'EventRegistration'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editeventregistration"
+		record-detail-action="admin:entity.detaileventregistration"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="account.firstname" />
+		<sw-listing-column data-property-identifier="account.lastname" />
+		<sw-listing-column data-property-identifier="orderitem.sku.product.productName" />
+		<sw-listing-column data-property-identifier="orderitem.sku.eventStartDateTime" />
+		<sw-listing-column data-property-identifier="orderitem.sku.eventEndDateTime" />
+		<sw-listing-column data-property-identifier="orderitem.sku.skudefinition" />
+	</sw-listing-display>
+
 </cfoutput>

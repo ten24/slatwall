@@ -61,7 +61,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartlist="#rc.taskSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartlist="#rc.taskSmartList#" 
 	                          recorddetailaction="admin:entity.detailtask"
 							  recordeditaction="admin:entity.edittask">
 
@@ -69,6 +69,21 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="taskName" />
 		<hb:HibachiListingColumn propertyidentifier="runningFlag" />
 		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Task'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.edittask"
+		record-detail-action="admin:entity.detailtask"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="taskName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="runningFlag" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>
 
 </cfoutput>

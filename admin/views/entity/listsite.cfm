@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
 							   recordEditAction="admin:entity.editSite"
 							   recordDetailAction="admin:entity.detailSite">
 		
@@ -71,6 +71,23 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="domainNames" />
 		<hb:HibachiListingColumn propertyIdentifier="app.appName" />
 		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<sw-listing-display
+		data-collection="'Site'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editsite"
+		record-detail-action="admin:entity.detailsite"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="siteName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="siteCode" />
+		<sw-listing-column data-property-identifier="domainNames" />
+		<sw-listing-column data-property-identifier="app.appName" />
+		<sw-listing-column data-property-identifier="allowAdminAccessFlag" />
+	</sw-listing-display>
+
 </cfoutput>

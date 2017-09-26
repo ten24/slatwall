@@ -68,7 +68,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.stockadjustmentItemSmartList#" showCreate="false" />
 	
-	<hb:HibachiListingDisplay smartList="#rc.stockadjustmentItemSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.stockadjustmentItemSmartList#"
 							   recorddetailaction="admin:entity.detailstockadjustment"
 							   recordeditaction="admin:entity.editstockadjustment"
 							   recorddetailactionproperty="stockAdjustment.stockAdjustmentID"
@@ -83,6 +83,31 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
 	<hb:HibachiListingColumn propertyIdentifier="quantity" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+	    data-collection="'StockAdjustmentItem'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editstockadjustment"
+	    record-detail-action="admin:entity.detailstockadjustment"
+	    record-detail-action-property="stockAdjustment.stockAdjustmentID"
+	    record-edit-action-property="stockAdjustment.stockAdjustmentID"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+    	<sw-listing-column data-property-identifier="sku.skucode" tdclass="primary" />
+    	<sw-listing-column data-property-identifier="sku.product.brand.brandName" />
+    	<sw-listing-column data-property-identifier="sku.product.productName" />
+    	<sw-listing-column data-property-identifier="sku.skuDefinition" sort="false" />
+    	<sw-listing-column data-property-identifier="stockAdjustment.stockAdjustmentType.typeName" filter="true" title="#$.slatwall.rbKey('entity.StockAdjustment.stockAdjustmentType')#" />
+    	<sw-listing-column data-property-identifier="stockAdjustment.stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true" />
+    	<sw-listing-column data-property-identifier="stockAdjustment.createdDateTime" />
+    	<sw-listing-column data-property-identifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
+    	<sw-listing-column data-property-identifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
+    	<sw-listing-column data-property-identifier="quantity" />
+	</sw-listing-display>
+
 </cfoutput>
 

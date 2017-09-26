@@ -70,7 +70,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay type="listing" smartList="#rc.paymentMethodSmartList#"
+	<!--- <hb:HibachiListingDisplay type="listing" smartList="#rc.paymentMethodSmartList#"
 			recordDetailAction="admin:entity.detailpaymentmethod"
 			recordEditAction="admin:entity.editpaymentmethod"
 			sortProperty="sortOrder"
@@ -79,6 +79,19 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethodName" />
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethodType" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
-
+	<sw-listing-display
+		data-collection="'PaymentMethod'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editpaymentmethod"
+		record-detail-action="admin:entity.detailpaymentmethod"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="paymentMethodName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="paymentMethodType" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>

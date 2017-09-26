@@ -60,7 +60,7 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<hb:HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
 						   recordDetailAction="admin:entity.detailattributeset"
 						   recordEditAction="admin:entity.editattributeset"
 						   sortProperty="sortOrder">
@@ -69,5 +69,20 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="attributeSetObject" />
 	<hb:HibachiListingColumn propertyIdentifier="globalFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
 
+<sw-listing-display
+	data-collection="'AttributeSet'"
+	data-edit="false"
+	data-has-search="true"
+	record-edit-action="admin:entity.editattributeset"
+	record-detail-action="admin:entity.detailattributeset"
+	data-is-angular-route="false"
+	data-angular-links="false"
+	data-has-action-bar="false"
+>
+	<sw-listing-column data-property-identifier="attributeSetName" tdclass="primary" />
+	<sw-listing-column data-property-identifier="attributeSetObject" />
+	<sw-listing-column data-property-identifier="globalFlag" />
+	<sw-listing-column data-property-identifier="activeFlag" />
+</sw-listing-display>

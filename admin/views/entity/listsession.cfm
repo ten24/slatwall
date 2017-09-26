@@ -57,11 +57,25 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.sessionSmartList#" showCreate="false" />
 
 
-<hb:HibachiListingDisplay smartList="#rc.sessionSmartList#">
+<!--- <hb:HibachiListingDisplay smartList="#rc.sessionSmartList#">
 	<hb:HibachiListingColumn propertyIdentifier="lastRequestDateTime" />
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="lastRequestIPAddress" />
 	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
 	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
 
+    <sw-listing-display
+        data-collection="'Session'"
+        data-edit="false"
+        data-has-search="true"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="lastRequestDateTime" />
+        <sw-listing-column data-property-identifier="createdDateTime" />
+        <sw-listing-column data-property-identifier="lastRequestIPAddress" tdclass="primary" />
+        <sw-listing-column data-property-identifier="account.firstName" />
+        <sw-listing-column data-property-identifier="account.lastName" />
+    </sw-listing-display>
