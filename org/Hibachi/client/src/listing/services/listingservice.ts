@@ -519,7 +519,12 @@ class ListingService{
                 column.isVisible = true;
             }
 
+
             var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
+
+            if(metadata && angular.isDefined(metadata.persistent)){
+                column.persistent = metadata.persistent;
+            }
 
             if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
                 column.type = metadata.hb_formatType;

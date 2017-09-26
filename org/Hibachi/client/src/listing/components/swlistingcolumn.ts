@@ -22,7 +22,9 @@ class SWListingColumnController{
     public range:any;
     public buttonGroup:any;
     public aggregate:any;
+    public persistent:boolean;
     public column:any;
+
     //@ngInject
     constructor(
         public $injector,
@@ -59,7 +61,7 @@ class SWListingColumnController{
                 throw(this.headerView + ' is not an existing directive');
             }
         }
-console.log('test',this);
+
         this.column = {
             columnID: "C" + this.utilityService.createID(31),
             propertyIdentifier:this.propertyIdentifier,
@@ -77,7 +79,8 @@ console.log('test',this);
             hasHeaderView:this.hasHeaderView,
             isVisible:this.isVisible,
             action:this.action,
-            queryString:this.queryString
+            queryString:this.queryString,
+            persistent:this.persistent
         };
 
         if(this.hasCellView){

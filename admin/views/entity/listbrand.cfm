@@ -83,6 +83,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
+		<sw-listing-column data-property-identifier="brandID" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="brandName" tdclass="primary" />
 		<sw-listing-column data-property-identifier="brandWebsite" />
 		<sw-listing-column data-property-identifier="activeFlag" />

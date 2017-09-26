@@ -90,7 +90,7 @@ Notes:
 		<sw-listing-column data-property-identifier="createdDateTime" />
 		<sw-listing-column data-property-identifier="modifiedDateTime" />
 		<sw-listing-column data-property-identifier="activeFlag" />
-		<!--<sw-listing-column data-property-identifier="currentFlag" sort="false" search="false" range="false" filter="false" />-->
+		<sw-listing-column data-property-identifier="currentFlag" />
 	</sw-listing-display>
 
 </cfoutput>
