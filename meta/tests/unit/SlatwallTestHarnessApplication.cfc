@@ -124,6 +124,7 @@ component extends="Slatwall.Application" {
         // clear services and daos from application. Values get set when HibachiObject.getService() called
         getHibachiScope().clearApplicationValue("service_#arguments.beanName#");
         getHibachiScope().clearApplicationValue("service_#arguments.beanName#service");
+        getHibachiScope().clearApplicationValue("service_#arguments.beanName#Hibachi");
         getHibachiScope().clearApplicationValue("dao_#arguments.beanName#");
         getHibachiScope().clearApplicationValue("dao_#arguments.beanName#dao");
 
@@ -142,6 +143,11 @@ component extends="Slatwall.Application" {
             // Bean alias with suffix 'dao' exists when aop.config.omitDirectoryAliases=false
             if (structKeyExists(beanFactoryCacheStruct, "#arguments.beanName#dao")) {
                 structDelete(beanFactoryCacheStruct, "#arguments.beanName#dao");
+            }
+            // Bean alias with suffix 'Hibachi' exists
+            if (structKeyExists(beanFactoryCacheStruct, "#arguments.beanName#Hibachi")) {
+                structDelete(beanFactoryCacheStruct, "#arguments.beanName#Hibachi");
+                arrayAppend(deleteData, {'cacheStruct'=cacheStructName, 'key'=arguments.beanName & 'Hibachi'});
             }
         }
     }
