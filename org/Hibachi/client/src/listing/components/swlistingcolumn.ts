@@ -27,16 +27,18 @@ class SWListingColumnController{
     constructor(
         public $injector,
         public utilityService,
-        public listingService
+        public listingService,
+        public rbkeyService
 
     ){
         this.$injector = $injector;
         this.utilityService = utilityService;
         this.listingService = listingService;
+        this.rbkeyService = rbkeyService;
     }
 
     public $onInit=()=>{
-        console.log('test',this);
+
         if(angular.isUndefined(this.isVisible)){
              this.isVisible = true;
         }
@@ -57,7 +59,7 @@ class SWListingColumnController{
                 throw(this.headerView + ' is not an existing directive');
             }
         }
-
+console.log('test',this);
         this.column = {
             columnID: "C" + this.utilityService.createID(31),
             propertyIdentifier:this.propertyIdentifier,
@@ -73,7 +75,7 @@ class SWListingColumnController{
             buttonGroup:this.buttonGroup,
             hasCellView:this.hasCellView,
             hasHeaderView:this.hasHeaderView,
-            isVisible:this.isVisible || true,
+            isVisible:this.isVisible,
             action:this.action,
             queryString:this.queryString
         };
@@ -140,16 +142,16 @@ class SWListingColumn implements ng.IDirective{
 
     public link=(scope,elem,attr,listingService)=>{
         if(angular.isDefined(scope.swListingDisplay)
-        && scope.swListingDisplay.tableID
-        && scope.swListingDisplay.tableID.length
-    ){
-        var listingDisplayID = scope.swListingDisplay.tableID;
+            && scope.swListingDisplay.tableID
+            && scope.swListingDisplay.tableID.length
+        ){
+            var listingDisplayID = scope.swListingDisplay.tableID;
 
-        this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
-        console.log('my',this.listingService.getListing(listingDisplayID));
-    }else {
-        throw("listing display scope not available to sw-listing-column or there is no table id")
-    }
+            this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+            this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
+        }else {
+            throw("listing display scope not available to sw-listing-column or there is no table id")
+        }
     }
 }
 export{
