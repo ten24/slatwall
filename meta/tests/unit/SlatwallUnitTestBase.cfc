@@ -114,6 +114,18 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		arrayAppend(variables.debugArray, arguments.output);
 	}
 
+	public function getHibachiScope() {
+		if (!structKeyExists(request, "slatwallScope")) {
+			throw("Cannot call method 'getHibachiScope()' until after Slatwall's ApplicationCFC Hibachi.bootstrap() method executes within the unit test setup() method.");
+		}
+
+		return request.slatwallScope;
+	}
+
+	public function getBean(beanName) {
+		return getHibachiScope().getBeanFactory().getBean(arguments.beanName);
+	}
+
 	private void function logTest(message) {
 		variables.slatwallFW1Application.logTest(argumentcollection=arguments);
 	}

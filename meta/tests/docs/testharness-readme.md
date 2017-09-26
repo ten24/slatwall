@@ -31,13 +31,26 @@ usage: logTest("testing the logger");
 ```  
 Provides way to more easily identify formatted log messages produced within unit tests and the `SlatwallTestHarnessApplication.cfc` application. Every `UnitTest.cfc` that extends the `/meta/tests/unit/SlatwallUnitTestBase.cfc` component has a method `logTest(message)`. The testing related message is added to the output in the `Slatwall.log` file.
 
-- #### `getIdentityHashCode(instance)` Helper Method
+- #### `getIdentityHashCode(instance)`
 ```java
 // example  
 variables.orderService = request.slatwallScope.getService('OrderService');  
 writeOutput(getIdentityHashCode(orderService)); // eg. 1189221742
 ```  
 Method is useful for determining if two objects are indeed the exact same instance in memory. Hash codes will differ if they are not the same memory representation. Every `UnitTest.cfc` that extends the `/meta/tests/unit/SlatwallUnitTestBase.cfc` has the `getIdentityHashCode(instance)` method.
+
+- #### `getBean("serviceName")`
+```java
+variables.orderService = getBean('orderService');
+```  
+Method provides access to get an instance of a service or dao, etc. from the application's bean factory.
+
+- #### `getHibachiScope()`
+```java
+getHibachiScope().getValue('keyName')
+getHibachiScope().getLoggedInFlag()
+```  
+Method provides access to the `request.slatwallScope` variable created after the unit test `setup()` method executes.
 
 ---
 
@@ -67,8 +80,8 @@ Add the following snippet
 <cfset variables.testharness.beanFactoryReloadExclude = "" />
 <cfset variables.testharness.reloadKeysOnEveryRequest = "" />
 
-<!--- valid reloadKeysOnEveryRequest "reloadbf", "reloadentity", and "reloadmodel" --->
-<!--- "reloadmodel" is equivalent to "reloadbf,reloadentity") ---> 
+<!-- valid reloadKeysOnEveryRequest "reloadbf", "reloadentity", and "reloadmodel" -->
+<!-- "reloadmodel" is equivalent to "reloadbf,reloadentity") --> 
 ```
 Setting `variables.testharness.reloadKeysOnEveryRequest` is a shortcut to auto-trigger a `beanFactory` reload without having to enter `URL` paramenter `reloadbf`. Behavior of what is specifically reload depends on custom configation settings
 If `variables.testharness.beanFactoryReloadInclude = ""` is left blank, and there are no beans explicitly excluded in `variables.testharness.beanFactoryReloadExlude = ""` setting, all beans in the existing `beanFactory` are individually reloaded.

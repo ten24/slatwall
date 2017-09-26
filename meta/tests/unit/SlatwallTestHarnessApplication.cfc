@@ -147,7 +147,6 @@ component extends="Slatwall.Application" {
             // Bean alias with suffix 'Hibachi' exists
             if (structKeyExists(beanFactoryCacheStruct, "#arguments.beanName#Hibachi")) {
                 structDelete(beanFactoryCacheStruct, "#arguments.beanName#Hibachi");
-                arrayAppend(deleteData, {'cacheStruct'=cacheStructName, 'key'=arguments.beanName & 'Hibachi'});
             }
         }
     }
