@@ -679,18 +679,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, "restRequestFlag") && arguments.data.restRequestFlag){
 			collectionEntity.applyData(); 
  		} 
-	
-		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
-
-		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct.filterGroups = [];
-		}
-		if(!structKeyExists(collectionConfigStruct,'joins')){
-			collectionConfigStruct.joins = [];
-		}
-		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
-			collectionConfigStruct.isDistinct = false;
-		}
+		
 		return getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
 
 	}
@@ -731,6 +720,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
 
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions);
+		
 		var response = {};
 
 		if(arrayLen(collectionEntity.getProcessObjectArray())){
@@ -830,7 +820,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
-
+			response['collectionConfig'] = serializeJson(arguments.collectionEntity.getCollectionConfigStruct());
 			var aggregatePropertyIdentifierArray = [];
 			var attributePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
@@ -874,8 +864,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				//paginated collection struct
 				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
 			}
+			
 			structAppend(response,collectionStruct);
 		}
+		
 		return response;
 	}
 
