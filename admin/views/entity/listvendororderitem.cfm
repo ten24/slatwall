@@ -58,7 +58,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderItemSmartList#" showCreate="false" />
 
-	<hb:HibachiListingDisplay smartList="#rc.vendorOrderItemSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.vendorOrderItemSmartList#"
 							   recorddetailaction="admin:entity.detailvendororderitem"
 							   recorddetailmodal="true"
 							   recordeditaction="admin:entity.editvendororderitem"
@@ -73,7 +73,31 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.price" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-		<hb:HibachiListingColumn propertyIdentifier="cost" />
+    <hb:HibachiListingColumn propertyIdentifier="cost" />
 		
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'VendorOrderItem'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editvendororderitem"
+		record-edit-modal="true"
+		record-edit-query-string="redirectAction=admin:entity.listVendorOrderItem"
+		record-detail-action="admin:entity.detailvendororderitem"
+		record-detail-modal="true"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="vendorOrder.vendor.vendorName" />
+		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderNumber" />
+		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderStatusType.typeName" />
+		<sw-listing-column data-property-identifier="stock.sku.product.brand.brandName" />
+		<sw-listing-column data-property-identifier="stock.sku.product.calculatedTitle" tdclass="primary" />
+		<sw-listing-column data-property-identifier="stock.sku.skuCode" />
+		<sw-listing-column data-property-identifier="quantity" />
+    <sw-listing-column data-property-identifier="cost" />
+    
+	</sw-listing-display>
 </cfoutput>

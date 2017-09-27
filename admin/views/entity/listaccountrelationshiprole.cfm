@@ -62,13 +62,27 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.accountrelationshiproleSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.accountrelationshiproleSmartList#"
 							   recordEditAction="admin:entity.editaccountrelationshiprole"
 							   recordDetailAction="admin:entity.detailaccountrelationshiprole">
 							      	      
 		<hb:HibachiListingColumn propertyIdentifier="accountrelationshiproleName" />
 		<hb:HibachiListingColumn propertyIdentifier="parentAccountManagementPermissionGroup.permissionGroupName" />
 		
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+	    data-collection="'AccountRelationshipRole'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editaccountrelationshiprole"
+	    record-detail-action="admin:entity.detailaccountrelationshiprole"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="accountrelationshiproleName" />
+		<sw-listing-column data-property-identifier="parentAccountManagementPermissionGroup.permissionGroupName" />
+	</sw-listing-display>
 
 </cfoutput>

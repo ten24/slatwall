@@ -62,12 +62,27 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
+	<!--- <hb:HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="roundingruleName" />
 		<hb:HibachiListingColumn propertyIdentifier="roundingRuleExpression" />
 		<hb:HibachiListingColumn propertyIdentifier="roundingRuleDirection" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'RoundingRule'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editroundingrule"
+		record-detail-action="admin:entity.detailroundingrule"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="roundingruleName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="roundingRuleExpression" />
+		<sw-listing-column data-property-identifier="roundingRuleDirection" />
+	</sw-listing-display>
 
 </cfoutput>
 

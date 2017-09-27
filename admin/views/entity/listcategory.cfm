@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="true">
 </hb:HibachiEntityActionBar>
-<hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
 						   recordEditAction="admin:entity.editcategory"
 						   recordEditQueryString="redirectAction=admin:entity.listcategory"
@@ -63,7 +63,27 @@ Notes:
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="categoryName" />
 	<hb:HibachiListingColumn propertyIdentifier="restrictAccessFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+    <sw-listing-display
+        data-collection="'Category'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editcategory"
+        record-edit-query-string="redirectAction=admin:entity.listcategory"
+        record-detail-action="admin:entity.detailcategory"
+        record-delete-action="admin:entity.deletecategory"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+        data-expandable="true"
+        data-parent-property-name="parentCategory"
+    >
+    	<sw-listing-column data-property-identifier="categoryID" data-is-visible="false" />
+        <sw-listing-column data-property-identifier="categoryName" tdclass="primary" sort="false" expandable="true" />
+        <sw-listing-column data-property-identifier="restrictAccessFlag" sort="false" />
+        <sw-listing-column data-property-identifier="allowProductAssignmentFlag" sort="false" />
+    </sw-listing-display>
 
 </cfoutput>
 

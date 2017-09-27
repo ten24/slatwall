@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" />
 	
-	<hb:HibachiListingDisplay smartList="#rc.productReviewSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.productReviewSmartList#"
 								recordDetailAction="admin:entity.detailproductreview"
 								recordEditAction="admin:entity.editproductreview">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />
@@ -64,6 +64,26 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'ProductReview'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editproductreview"
+		record-detail-action="admin:entity.detailproductreview"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="productReviewID" data-is-visible="false" />
+		<sw-listing-column data-property-identifier="reviewTitle" tdclass="primary" />
+		<sw-listing-column data-property-identifier="reviewerName" />
+		<sw-listing-column data-property-identifier="rating" />
+		<sw-listing-column data-property-identifier="product.productName" />
+		<sw-listing-column data-property-identifier="product.defaultSku.price" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+	</sw-listing-display>
 
 </cfoutput>

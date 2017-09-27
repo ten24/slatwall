@@ -63,12 +63,25 @@ Notes:
 	</hb:HibachiEntityActionBar>
 
 	
-	<hb:HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
 							   recordDetailAction="admin:entity.detailPrintTemplate"
 							   recordEditAction="admin:entity.editPrintTemplate">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'PrintTemplate'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editPrintTemplate"
+		record-detail-action="admin:entity.detailPrintTemplate"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="printTemplateName" tdclass="primary" />
+	</sw-listing-display>
 
 </cfoutput>
 

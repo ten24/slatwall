@@ -68,7 +68,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.skuSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.skuSmartList#"
 			recordEditAction="admin:entity.editsku"
 			recorddetailaction="admin:entity.detailsku">
 			
@@ -84,6 +84,31 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Sku'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editsku"
+		record-detail-action="admin:entity.detailsku"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="skuID" data-is-visible="false" />
+		<sw-listing-column data-property-identifier="skuCode" tdclass="primary" />
+		<sw-listing-column data-property-identifier="product.productName" />
+		<sw-listing-column data-property-identifier="product.productCode" />
+		<sw-listing-column data-property-identifier="product.productType.productTypeName" />
+		<sw-listing-column data-property-identifier="product.brand.brandName" />
+		<sw-listing-column data-property-identifier="listPrice" />
+		<sw-listing-column data-property-identifier="price" />
+		<sw-listing-column data-property-identifier="renewalPrice" />
+		<sw-listing-column data-property-identifier="calculatedSkuDefinition" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+		<sw-listing-column data-property-identifier="publishedFlag" />
+		<sw-listing-column data-property-identifier="calculatedQATS" />
+	</sw-listing-display>
 
 </cfoutput>

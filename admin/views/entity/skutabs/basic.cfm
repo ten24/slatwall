@@ -71,7 +71,7 @@
 								</cfif>
 							</select>
 						<cfelse>
-							#isNull(rc.sku.getInventoryMeasurementUnit()) || rc.sku.getInventoryMeasurementUnit().getUnitName()#
+							#isNull(rc.sku.getInventoryMeasurementUnit()) ? '' : '#rc.sku.getInventoryMeasurementUnit().getUnitName()#'#
 						</cfif>
 					</div>
 				</div>

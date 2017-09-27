@@ -62,13 +62,29 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.locationSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartList="#rc.locationSmartList#" 
 							  recordDetailAction="admin:entity.detaillocation"
 							  recordEditAction="admin:entity.editlocation">
 
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" search="true" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Location'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editlocation"
+		record-detail-action="admin:entity.detaillocation"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+		data-expandable="true"
+		data-parent-property-name="parentLocation"
+	>
+		<sw-listing-column data-property-identifier="locationName" tdclass="primary" search="true" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>
 
 </cfoutput>

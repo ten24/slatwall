@@ -71,11 +71,29 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.productTypeSmartList#" 
+	<!--- <hb:HibachiListingDisplay smartList="#rc.productTypeSmartList#" 
 								recordEditAction="admin:entity.editproducttype"
 								recordDetailAction="admin:entity.detailproducttype">
 	
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productTypeName" sort="false" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" sort="false" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'ProductType'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editproducttype"
+		record-detail-action="admin:entity.detailproducttype"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+		data-expandable="true"
+		data-parent-property-name="parentProductType"
+	>
+		<sw-listing-column data-property-identifier="productTypeName" data-is-visible="false" />
+		<sw-listing-column data-property-identifier="productTypeName" tdclass="primary" sort="false" expandable="true" />
+		<sw-listing-column data-property-identifier="activeFlag" sort="false" />
+	</sw-listing-display>
+
 </cfoutput>

@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.fileGroupSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.fileGroupSmartList#"
 							   recordDetailAction="admin:entity.detailfilegroup"
 							   recordEditAction="admin:entity.editfilegroup"
 							   >
@@ -72,5 +72,23 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="fileGroupDescription" />
 		<hb:HibachiListingColumn propertyIdentifier="fileRestrictAccessFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="fileTrackAccessFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'FileGroup'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editfilegroup"
+		record-detail-action="admin:entity.detailfilegroup"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="fileGroupName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="fileGroupCode" />
+		<sw-listing-column data-property-identifier="fileGroupDescription" />
+		<sw-listing-column data-property-identifier="fileRestrictAccessFlag" />
+		<sw-listing-column data-property-identifier="fileTrackAccessFlag" />
+	</sw-listing-display>
+
 </cfoutput>

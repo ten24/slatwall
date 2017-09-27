@@ -62,13 +62,27 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
 							   recordDetailAction="admin:entity.detailemailTemplate"
 							   recordEditAction="admin:entity.editemailTemplate">
 		
 		<hb:HibachiListingColumn propertyIdentifier="emailTemplateName" />
 		<hb:HibachiListingColumn propertyIdentifier="emailTemplateObject" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+	    data-collection="'EmailTemplate'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editemailtemplate"
+	    record-detail-action="admin:entity.detailemailtemplate"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="emailTemplateName" />
+		<sw-listing-column data-property-identifier="emailTemplateObject" />
+	</sw-listing-display>
 
 </cfoutput>
 

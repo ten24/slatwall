@@ -60,10 +60,24 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<hb:HibachiListingDisplay smartList="#rc.countrySmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.countrySmartList#"
 						  recordDetailAction="admin:entity.detailcountry"
 						  recordEditAction="admin:entity.editcountry">
 	
 	<hb:HibachiListingColumn propertyIdentifier="countryName" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+<sw-listing-display
+    data-collection="'Country'"
+    data-edit="false"
+    data-has-search="true"
+    record-edit-action="admin:entity.editcountry"
+    record-detail-action="admin:entity.detailcountry"
+    data-is-angular-route="false"
+    data-angular-links="false"
+    data-has-action-bar="false"
+>
+	<sw-listing-column data-property-identifier="countryName" />
+	<sw-listing-column data-property-identifier="activeFlag" />
+</sw-listing-display>

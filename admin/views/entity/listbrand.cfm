@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.brandSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.brandSmartList#"
 							recordDetailAction="admin:entity.detailbrand"
 							recordEditAction="admin:entity.editbrand"
 							showCreate="false">
@@ -71,7 +71,23 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="brandWebsite" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Brand'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editbrand"
+		record-detail-action="admin:entity.detailbrand"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="brandID" data-is-visible="false" />
+		<sw-listing-column data-property-identifier="brandName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="brandWebsite" />
+		<sw-listing-column data-property-identifier="activeFlag" />
+	</sw-listing-display>
 
 </cfoutput>
 

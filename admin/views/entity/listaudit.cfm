@@ -57,7 +57,7 @@ Notes:
 <hb:HibachiEntityActionBar type="listing" object="#rc.auditSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
 
-<hb:HibachiListingDisplay smartList="#rc.auditSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.auditSmartList#"
 						   recordDetailAction="admin:entity.preprocessaudit"
 						   recordDetailQueryString="processContext=rollback"
 						   recordDetailModal=true>
@@ -70,5 +70,25 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="baseObject" />
 	<hb:HibachiListingColumn propertyIdentifier="baseID" />
 	
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
 
+<sw-listing-display
+	data-collection="'Audit'"
+	data-edit="false"
+	data-has-search="true"
+	record-detail-action="admin:entity.preprocessaudit"
+	record-detail-query-string="processContext=rollback"
+	record-detail-model="true"
+	data-is-angular-route="false"
+	data-angular-links="false"
+	data-has-action-bar="false"
+>
+	<sw-listing-column data-property-identifier="auditDateTime" />
+	<sw-listing-column data-property-identifier="sessionAccountFullName" />
+	<sw-listing-column data-property-identifier="sessionAccountEmailAddress" />
+	<sw-listing-column data-property-identifier="auditType" filter="true" />
+	<sw-listing-column data-property-identifier="title" tdclass="primary" />
+	<sw-listing-column data-property-identifier="baseObject" />
+	<sw-listing-column data-property-identifier="baseID" />
+
+</sw-listing-display>

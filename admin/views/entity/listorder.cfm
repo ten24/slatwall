@@ -63,7 +63,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
+	<!--- <hb:HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
 			recordDetailAction="admin:entity.detailorder"
 			recordEditAction="admin:entity.editorder"
 			showCreate="true">
@@ -80,6 +80,31 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Order'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editorder"
+		record-detail-action="admin:entity.detailorder"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="orderID" data-is-visible="false" />
+		<cfif rc.slatAction eq "admin:entity.listorder">
+			<sw-listing-column data-property-identifier="orderNumber" />
+			<sw-listing-column data-property-identifier="orderOpenDateTime" />
+		</cfif>
+		<sw-listing-column data-property-identifier="account.firstName" />
+		<sw-listing-column data-property-identifier="account.lastName" />
+		<sw-listing-column data-property-identifier="account.company" tdclass="primary" />
+		<sw-listing-column data-property-identifier="orderType.typeName" sort="true" title="#$.slatwall.rbKey('entity.order.orderType')#" />
+		<sw-listing-column data-property-identifier="orderStatusType.typeName" sort="true" filter="true" title="#$.slatwall.rbKey('define.status')#" />
+		<sw-listing-column data-property-identifier="orderOrigin.orderOriginName" />
+		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="calculatedTotal" />
+	</sw-listing-display>
 
 </cfoutput>

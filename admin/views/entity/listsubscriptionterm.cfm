@@ -64,12 +64,26 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
 							recordDetailAction="admin:entity.detailsubscriptionterm"
 							recordEditAction="admin:entity.editsubscriptionterm">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'SubscriptionTerm'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.editsubscriptionterm"
+		record-detail-action="admin:entity.detailsubscriptionterm"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="subscriptionTermID" data-is-visible="false" />
+		<sw-listing-column data-property-identifier="subscriptionTermName" tdclass="primary" />
+	</sw-listing-display>
 
 </cfoutput>
 

@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.appSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.appSmartList#"
 							   recordEditAction="admin:entity.editapp"
 							   recordDetailAction="admin:entity.detailapp">
 							      	      
@@ -70,6 +70,21 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="appCode" />
 		<hb:HibachiListingColumn propertyIdentifier="appRootPath" />
 		
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+	    data-collection="'App'"
+	    data-edit="false"
+	    data-has-search="true"
+	    record-edit-action="admin:entity.editapp"
+	    record-detail-action="admin:entity.detailapp"
+	    data-is-angular-route="false"
+	    data-angular-links="false"
+	    data-has-action-bar="false"
+	>
+	    <sw-listing-column data-property-identifier="appName" />
+	    <sw-listing-column data-property-identifier="appCode" />
+	    <sw-listing-column data-property-identifier="appRootPath" />
+	</sw-listing-display>
 
 </cfoutput>

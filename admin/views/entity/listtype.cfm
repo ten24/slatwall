@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
-	<hb:HibachiListingDisplay smartList="#rc.typeSmartList#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.typeSmartList#"
 							   recordDetailAction="admin:entity.detailtype"
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
@@ -70,5 +70,23 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="typeCode" />
 		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Type'"
+		data-edit="false"
+		data-has-search="true"
+		record-edit-action="admin:entity.edittype"
+		record-detail-action="admin:entity.detailtype"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+		data-expandable="true"
+		data-parent-property-name="parentType"
+	>
+		<sw-listing-column data-property-identifier="typeName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="typeCode" />
+		<sw-listing-column data-property-identifier="systemCode" />
+	</sw-listing-display>
+
 </cfoutput>
