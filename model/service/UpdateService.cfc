@@ -387,7 +387,7 @@ Notes:
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
 					
 					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS arguments.customEntityParser.getPropertyString()){
-						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition());
+						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition()-1);
 						var contentAfterCustomPropertiesStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
 						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&customEntityParser.getPropertyString();
 						var customPropertyContent = contentBeforeCustomPropertiesStart & combinedPropertyContent & contentAfterCustomPropertiesStart;
