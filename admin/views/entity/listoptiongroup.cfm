@@ -83,6 +83,7 @@ Notes:
 		data-sortable="true"
 		data-sort-property="sortOrder"
 	>
+		<sw-listing-column data-property-identifier="optionGroupID" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="optionGroupName" tdclass="primary" />
 		<sw-listing-column data-property-identifier="optionGroupCode" />
 	</sw-listing-display>

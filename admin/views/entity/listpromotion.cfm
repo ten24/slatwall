@@ -86,6 +86,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
+		<sw-listing-column data-property-identifier="promotionID" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="promotionName" tdclass="primary" />
 		<sw-listing-column data-property-identifier="createdDateTime" />
 		<sw-listing-column data-property-identifier="modifiedDateTime" />
