@@ -17,6 +17,7 @@ export class IStore {
     public getInstance:Function = ():Observable<any> => {
         return this.store$;
     }
+    //@ngInject
     constructor ( private initialState:any, private reducer:any,  private middleware?:Observable<any> ) {
 
         this.actionStream$ = new Subject<Action<string>>();
