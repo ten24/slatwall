@@ -525,6 +525,10 @@ class ListingService{
             if(metadata && angular.isDefined(metadata.persistent)){
                 column.persistent = metadata.persistent;
             }
+            
+            if(metadata && angular.isDefined(metadata.ormtype)){
+                column.ormtype = metadata.ormtype;
+            }
 
             if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
                 column.type = metadata.hb_formatType;

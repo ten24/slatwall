@@ -1,7 +1,8 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
- 
+
 class SWListingControlsController {
+    public swListingDisplay:any;
     private selectedSearchColumn;
     private filterPropertiesList;
     private collectionConfig;
@@ -61,7 +62,8 @@ class SWListingControlsController {
 
     }
     public filterActions =(res)=>{
-        if(res.action == 'add'){
+
+        if(res.action == 'add' || res.action == 'remove'){
             this.paginator.setCurrentPage(1);
         }
         this.filtersClosed = true;
@@ -75,7 +77,7 @@ class SWListingControlsController {
         if(!this.listingColumns.length){
             return true;
         }
-        
+
         if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
             return this.columnIsControllableMap[column.propertyIdentifier];
         }
@@ -143,11 +145,10 @@ class SWListingControlsController {
     };
 
     public saveCollection = ()=>{
-        this.getCollection();
         var data = {
             collectionConfig:this.collectionConfig
         };
-        this.observerService.notify('saveCollection',data);
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
 }
@@ -158,6 +159,7 @@ class SWListingControls  implements ng.IDirective{
     public templateUrl;
     public restrict = 'E';
     public scope = {};
+    public require={swListingDisplay:'?^swListingDisplay'}
 
     public bindToController =  {
         collectionConfig : "=",

@@ -82,6 +82,7 @@ Notes:
     data-angular-links="false"
     data-has-action-bar="false"
 >
+	<sw-listing-column data-property-identifier="collectionID" data-is-visible="false" data-is-deletable="false" />
 	<sw-listing-column data-property-identifier="collectionName" />
 	<sw-listing-column data-property-identifier="collectionCode" />
 	<sw-listing-column data-property-identifier="collectionObject" />

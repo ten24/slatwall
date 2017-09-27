@@ -1,9 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
-
-
 class SWListingDisplayController{
     /* local state variables */
     public  actions = [];
@@ -114,7 +111,7 @@ class SWListingDisplayController{
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
-
+        
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -146,7 +143,7 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-
+        
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
 
@@ -176,7 +173,8 @@ class SWListingDisplayController{
                     this.paginator.getCollection = this.getCollection;
 
                     var getCollectionEventID = this.tableID;
-            		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+
                 }
             );
         }else if(this.multiSlot == false){
@@ -184,7 +182,7 @@ class SWListingDisplayController{
                 this.collectionConfig.columns = this.columns;
             }
             this.setupCollectionPromise();
-            console.log('solumn',this.columns);
+
         }
 
         if (this.collectionObject){
@@ -228,6 +226,7 @@ class SWListingDisplayController{
         this.paginator.getCollection = this.getCollection;
 
         var getCollectionEventID = this.tableID;
+        
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
         this.listingService.getCollection(this.tableID);
