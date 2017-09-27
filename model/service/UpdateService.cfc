@@ -67,7 +67,7 @@ Notes:
 				variables.conditionLineBreak=variables.lineBreak;
 			}
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac' || lcase(getApplicationValue("lineBreakStyle")) == 'unix'){
-				variables.paddingCount = 3;
+				variables.paddingCount = 0;
 				variables.conditionLineBreak=variables.lineBreak;
 			}
 			
@@ -387,7 +387,7 @@ Notes:
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
 					
 					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS arguments.customEntityParser.getPropertyString()){
-						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition()-1);
+						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition());
 						var contentAfterCustomPropertiesStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
 						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&customEntityParser.getPropertyString();
 						var customPropertyContent = contentBeforeCustomPropertiesStart & combinedPropertyContent & contentAfterCustomPropertiesStart;
@@ -421,7 +421,7 @@ Notes:
 				}else{
 					var customFunctionString = arguments.customEntityParser.getCustomFunctionStringByFunctionString();
 
-					newContent = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getComponentEndPos()-(variables.paddingCount-1)) & conditionalLineBreak & customFunctionString & '}';
+					newContent = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getComponentEndPos()-(variables.paddingCount?variables.paddingCount-1:0)) & conditionalLineBreak & customFunctionString & '}';
 					arguments.coreEntityParser.setFileContent(newContent);
 				}
 			}
