@@ -92,6 +92,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
+		<sw-listing-column data-property-identifier="orderID" data-is-visible="false" />
 		<cfif rc.slatAction eq "admin:entity.listorder">
 			<sw-listing-column data-property-identifier="orderNumber" />
 			<sw-listing-column data-property-identifier="orderOpenDateTime" />

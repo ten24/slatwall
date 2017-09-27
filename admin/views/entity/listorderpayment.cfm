@@ -81,6 +81,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
+		<sw-listing-column data-property-identifier="orderPaymentID" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="order.orderNumber" />
 		<sw-listing-column data-property-identifier="order.account.firstName" />
 		<sw-listing-column data-property-identifier="order.account.lastName" />
