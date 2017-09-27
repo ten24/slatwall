@@ -81,6 +81,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
+		<sw-listing-column data-property-identifier="subscriptionBenefitID" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="subscriptionBenefitName" tdclass="primary" />
 	</sw-listing-display>
 

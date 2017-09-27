@@ -81,6 +81,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
+		<sw-listing-column data-property-identifier="priceGroupID" data-is-visible="false" />
 		<sw-listing-column data-property-identifier="priceGroupName" tdclass="primary" />
 		<sw-listing-column data-property-identifier="priceGroupCode" />
 		<sw-listing-column data-property-identifier="activeFlag" />

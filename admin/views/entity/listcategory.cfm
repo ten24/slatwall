@@ -79,6 +79,7 @@ Notes:
         data-expandable="true"
         data-parent-property-name="parentCategory"
     >
+    	<sw-listing-column data-property-identifier="categoryID" data-is-visible="false" />
         <sw-listing-column data-property-identifier="categoryName" tdclass="primary" sort="false" expandable="true" />
         <sw-listing-column data-property-identifier="restrictAccessFlag" sort="false" />
         <sw-listing-column data-property-identifier="allowProductAssignmentFlag" sort="false" />
