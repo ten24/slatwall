@@ -3,7 +3,15 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
-
+		
+		public any function getQueryLabels(required any query){
+			var qryColumns = "";
+			for (var column in getMetaData(arguments.query)){
+				qryColumns = listAppend(qryColumns, column.name);
+			}
+			return local.qryColumns;
+		}
+		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
