@@ -45,7 +45,7 @@ class SWListingColumnController{
         if(angular.isUndefined(this.isVisible)){
              this.isVisible = true;
         }
-        
+
         if(angular.isUndefined(this.isDeletable)){
              this.isDeletable = true;
         }

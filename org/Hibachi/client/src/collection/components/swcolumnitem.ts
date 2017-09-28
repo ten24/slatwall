@@ -31,27 +31,28 @@ class SWColumnItem{
 		return {
 			restrict: 'A',
 			require:{
-                swDisplayOptions:"^swDisplayOptions",
-                swListingControls:"?^swListingControls"
+                swDisplayOptions:"?^swDisplayOptions",
+				swListingControls:"?^swListingControls"
             },
 			scope:{
-				column:"=",
-				columns:"=",
-				columnIndex:"=",
+				column:"<",
+				columns:"<",
+				columnIndex:"<",
 				saveCollection:"&?",
-				propertiesList:"=",
-				orderBy:"="
+				propertiesList:"<",
+				orderBy:"<"
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
 			link: function(scope, element,attrs,controller,observerService){
                 if(!scope.saveCollection && controller.swListingControls){
-                    
+
                     scope.saveCollection = ()=>{
-                        controller.swListingControls.collectionConfig.columns=scope.columns;
+						controller.swListingControls.collectionConfig.columns=scope.columns;
+						controller.swDisplayOptions.columns=scope.columns;
                         controller.swListingControls.saveCollection();
                     }
                 }
-                
+
                 scope.editingDisplayTitle=false;
 
                 scope.editDisplayTitle = function(){

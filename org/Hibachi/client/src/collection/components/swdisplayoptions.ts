@@ -37,54 +37,53 @@ class SWDisplayOptions{
 
         return{
             restrict: 'E',
-            require:{swListingDisplay:"?^swListingDisplay"},
+            require:{
+                swListingDisplay:"?^swListingDisplay",
+                swListingControls:"?^swListingControls"
+            },
             transclude:true,
             scope:{
-                orderBy:"=",
-                columns:'=',
-                joins:"=",
-                groupBys:"=",
-                propertiesList:"=",
-                saveCollection:"&",
-                baseEntityAlias:"=?",
-                baseEntityName:"=?",
+                orderBy:"<",
+                columns:'<',
+                joins:"<",
+                groupBys:"<",
+                propertiesList:"<",
+                saveCollection:"&?",
+                baseEntityAlias:"<?",
+                baseEntityName:"<?",
                 listingName:"@?"
             },
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
-            controller: ['$scope','$element','$attrs','observerService',function($scope,$element,$attrs,observerService){
-                
+            link: (scope,element,$attrs,controllers,observerService)=>{
 
-                $log.debug('display options initialize');
-
-                $scope.breadCrumbs = [ {
-                    entityAlias : $scope.baseEntityAlias,
-                    cfc : $scope.baseEntityAlias,
-                    propertyIdentifier : $scope.baseEntityAlias
+                scope.breadCrumbs = [ {
+                    entityAlias : scope.baseEntityAlias,
+                    cfc : scope.baseEntityAlias,
+                    propertyIdentifier : scope.baseEntityAlias
                 } ];
 
-                this.removeColumn = function(columnIndex){
-                    $log.debug('parent remove column');
-                    $log.debug($scope.columns);
-                    if($scope.columns.length){
-                        $scope.columns.splice(columnIndex, 1);
+                scope.removeColumn = function(columnIndex){
+
+                    if(scope.columns.length){
+                        scope.columns.splice(columnIndex, 1);
                     }
 
                 };
 
-                this.getPropertiesList = function(){
-                    return $scope.propertiesList;
+                scope.getPropertiesList = function(){
+                    return scope.propertiesList;
                 };
 
-                $scope.addDisplayDialog = {
+                scope.addDisplayDialog = {
                     isOpen:false,
                     toggleDisplayDialog:function(){
-                        $scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen;
+                        scope.addDisplayDialog.isOpen = !scope.addDisplayDialog.isOpen;
                     }
                 };
 
 
                 var getTitleFromProperty = function(selectedProperty){
-                    var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1);
+                    var baseEntityCfcName = scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+scope.baseEntityName.replace('Slatwall','').slice(1);
                     var propertyIdentifier = selectedProperty.propertyIdentifier;
                     var title = '';
                     var propertyIdentifierArray = propertyIdentifier.replace(/^_/,'').split(/[._]+/);
@@ -100,7 +99,7 @@ class SWDisplayOptions{
                         //pass over the initial item
                         if(key !== 0 ){
                             if(key === 1){
-                                currentEntityInstance = $hibachi['new'+$scope.baseEntityName.replace('Slatwall','')]();
+                                currentEntityInstance = $hibachi['new'+scope.baseEntityName.replace('Slatwall','')]();
                                 currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
                                 title += rbkeyService.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
                             }else{
@@ -118,16 +117,16 @@ class SWDisplayOptions{
                     return title;
                 };
 
-                $scope.addColumn = function(closeDialog){
-                    var selectedProperty = $scope.selectedProperty;
-                    if(angular.isDefined($scope.selectedAggregate)){
-                        selectedProperty = $scope.selectedAggregate;
+                scope.addColumn = function(closeDialog){
+                    var selectedProperty = scope.selectedProperty;
+                    if(angular.isDefined(scope.selectedAggregate)){
+                        selectedProperty = scope.selectedAggregate;
                     }
 
 
 
                     if(selectedProperty.$$group === 'simple' || 'attribute' || 'compareCollections'){
-                        $log.debug($scope.columns);
+                        $log.debug(scope.columns);
                         if(angular.isDefined(selectedProperty)){
                             var column:any = {
                                 title : getTitleFromProperty(selectedProperty),
@@ -158,7 +157,7 @@ class SWDisplayOptions{
                                 };
                                 column['title'] +=  ' '+ rbkeyService.getRBKey('define.'+column['aggregate']['aggregateFunction']);
                             }
-                            $scope.columns.push(column);
+                            scope.columns.push(column);
 
                             if ((selectedProperty.propertyIdentifier.match(/_/g) || []).length > 1) {
                                 var PIlimit = selectedProperty.propertyIdentifier.length;
@@ -169,12 +168,12 @@ class SWDisplayOptions{
                                 var propertyIdentifierParts = propertyIdentifierJoins.split('_');
 
 
-                                var  current_collection = $hibachi.getEntityExample($scope.baseEntityName);
+                                var  current_collection = $hibachi.getEntityExample(scope.baseEntityName);
                                 var _propertyIdentifier = '';
                                 var joins = [];
 
-                                if (angular.isDefined($scope.joins)) {
-                                    joins = $scope.joins;
+                                if (angular.isDefined(scope.joins)) {
+                                    joins = scope.joins;
                                 }
 
                                 for (var i = 1; i < propertyIdentifierParts.length; i++) {
@@ -197,62 +196,65 @@ class SWDisplayOptions{
                                         }
                                     }
                                 }
-                                $scope.joins = joins;
+                                scope.joins = joins;
 
-                                if (angular.isUndefined($scope.groupBys) || $scope.groupBys.split(',').length != $scope.columns.length) {
-                                    var groupbyArray = angular.isUndefined($scope.groupBys) ? [] : $scope.groupBys.split(',');
-                                    for (var col = 0; col < $scope.columns.length; col++) {
-                                        if('attributeID' in $scope.columns[col]) continue;
-                                        if (groupbyArray.indexOf($scope.columns[col].propertyIdentifier) == -1) {
-                                            groupbyArray.push($scope.columns[col].propertyIdentifier);
+                                if (angular.isUndefined(scope.groupBys) || scope.groupBys.split(',').length != scope.columns.length) {
+                                    var groupbyArray = angular.isUndefined(scope.groupBys) ? [] : scope.groupBys.split(',');
+                                    for (var col = 0; col < scope.columns.length; col++) {
+                                        if('attributeID' in scope.columns[col]) continue;
+                                        if (groupbyArray.indexOf(scope.columns[col].propertyIdentifier) == -1) {
+                                            groupbyArray.push(scope.columns[col].propertyIdentifier);
                                         }
                                     }
-                                    $scope.groupBys = groupbyArray.join(',');
+                                    scope.groupBys = groupbyArray.join(',');
                                 }
 
                             }
 
+                            console.log('soup',controllers);
+                            if(controllers.swListingControls){
+                                controllers.swListingControls.columnIsControllableMap[column.propertyIdentifier] = true;
+                            }
 
+                            scope.saveCollection();
 
-                            $scope.saveCollection();
-                            observerService.notify('swListingAction',{type:'getRecords',payload:{'listingName':$scope.listingName}});
                             if(angular.isDefined(closeDialog) && closeDialog === true){
-                                $scope.addDisplayDialog.toggleDisplayDialog();
-                                $scope.selectBreadCrumb(0);
+                                scope.addDisplayDialog.toggleDisplayDialog();
+                                scope.selectBreadCrumb(0);
                             }
                         }
                     }
                 };
 
-                $scope.selectBreadCrumb = function(breadCrumbIndex){
+                scope.selectBreadCrumb = function(breadCrumbIndex){
                     //splice out array items above index
-                    var removeCount = $scope.breadCrumbs.length - 1 - breadCrumbIndex;
-                    $scope.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
-                    $scope.selectedPropertyChanged(null);
+                    var removeCount = scope.breadCrumbs.length - 1 - breadCrumbIndex;
+                    scope.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+                    scope.selectedPropertyChanged(null);
 
                 };
 
-                var unbindBaseEntityAlias = $scope.$watch('baseEntityAlias',function(newValue,oldValue){
+                var unbindBaseEntityAlias = scope.$watch('baseEntityAlias',function(newValue,oldValue){
                     if(newValue !== oldValue){
-                        $scope.breadCrumbs = [ {
-                            entityAlias : $scope.baseEntityAlias,
-                            cfc : $scope.baseEntityAlias,
-                            propertyIdentifier : $scope.baseEntityAlias
+                        scope.breadCrumbs = [ {
+                            entityAlias : scope.baseEntityAlias,
+                            cfc : scope.baseEntityAlias,
+                            propertyIdentifier : scope.baseEntityAlias
                         } ];
                         unbindBaseEntityAlias();
                     }
                 });
 
-                $scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
+                scope.selectedPropertyChanged = function(selectedProperty, aggregate?){
                     // drill down or select field?
 
 
                     if(!aggregate){
-                        $scope.selectedProperty = selectedProperty;
-                        $scope.selectedAggregate = undefined;
+                        scope.selectedProperty = selectedProperty;
+                        scope.selectedAggregate = undefined;
                     }else{
 
-                        $scope.selectedAggregate = selectedProperty;
+                        scope.selectedAggregate = selectedProperty;
                     }
 
                 };
@@ -260,7 +262,7 @@ class SWDisplayOptions{
 
                 jQuery(function($) {
 
-                    var panelList:any = angular.element($element).children('ul');
+                    var panelList:any = angular.element(element).children('ul');
                     panelList.sortable({
                         // Only make the .panel-heading child elements support dragging.
                         // Omit this to make then entire <li>...</li> draggable.
@@ -269,28 +271,36 @@ class SWDisplayOptions{
                             var tempColumnsArray = [];
                             $('.s-pannel-name', panelList).each(function(index, elem) {
                                 var newIndex = $(elem).attr('j-column-index');
-                                var columnItem = $scope.columns[newIndex];
+                                var columnItem = scope.columns[newIndex];
                                 tempColumnsArray.push(columnItem);
                             });
-                            $scope.$apply(function () {
-                                $scope.columns = tempColumnsArray;
+                            scope.$apply(()=> {
+                                scope.columns = tempColumnsArray;
+                                scope.saveCollection();
                             });
-                            $scope.saveCollection();
+
                         }
                     });
                 });
+
+                if(!scope.saveCollection && controllers.swListingControls){
+                    scope.saveCollection = ()=>{
+                        controllers.swListingControls.collectionConfig.columns=scope.columns;
+                        controllers.swListingControls.saveCollection();
+                    }
+                }
+
+                if(controllers.swListingDisplay){
+
+                    scope.getCollection = controllers.swListingDisplay.getCollection;
+                }
 
                 /*var unbindBaseEntityAlaisWatchListener = scope.$watch('baseEntityAlias',function(){
                  $("select").selectBoxIt();
                  unbindBaseEntityAlaisWatchListener();
                  });*/
-            }],
-            link:(scope,element,attrs,controllers)=>{
-                if(controllers.swListingDisplay){
-                    
-                    scope.getCollection = controllers.swListingDisplay.getCollection;
-                }
             }
+
         }
     }
 }

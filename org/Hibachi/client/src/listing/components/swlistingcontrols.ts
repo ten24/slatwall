@@ -19,7 +19,7 @@ class SWListingControlsController {
     private itemInUse;
     private getCollection;
     private tableId;
-    private columnIsControllableMap = {};
+    public columnIsControllableMap = {};
     public simple:boolean;
 
 
@@ -74,6 +74,7 @@ class SWListingControlsController {
     };
 
     public canDisplayColumn = (column) =>{
+
         if(!this.listingColumns.length){
             return true;
         }
@@ -148,6 +149,7 @@ class SWListingControlsController {
         var data = {
             collectionConfig:this.collectionConfig
         };
+        this.swListingDisplay.collectionConfig = this.collectionConfig;
         this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
