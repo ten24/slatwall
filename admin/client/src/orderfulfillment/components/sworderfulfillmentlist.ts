@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
-import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
+import * as Prototypes from '../../../../../org/Hibachi/client/src/core/prototypes/Observable';
 
 module FulfillmentsList {
     export enum Views {
