@@ -60,7 +60,7 @@ Notes:
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
-<hb:HibachiListingDisplay smartList="#rc.collectionSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.collectionSmartList#"
 						   recordDetailAction="admin:entity.detailcollection"
 						   recordEditAction="admin:entity.editcollection"
 						   recordDeleteAction="admin:entity.deletecollection"
@@ -69,4 +69,21 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="collectionName" />
 	<hb:HibachiListingColumn propertyIdentifier="collectionCode" />
 	<hb:HibachiListingColumn propertyIdentifier="collectionObject" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+<sw-listing-display
+    data-collection="'Collection'"
+    data-edit="false"
+    data-has-search="true"
+    record-edit-action="admin:entity.editcollection"
+    record-detail-action="admin:entity.detailcollection"
+    record-delete-action="admin:entity.deletecollection"
+    data-is-angular-route="false"
+    data-angular-links="false"
+    data-has-action-bar="false"
+>
+	<sw-listing-column data-property-identifier="collectionID" data-is-visible="false" data-is-deletable="false" />
+	<sw-listing-column data-property-identifier="collectionName" />
+	<sw-listing-column data-property-identifier="collectionCode" />
+	<sw-listing-column data-property-identifier="collectionObject" />
+</sw-listing-display>

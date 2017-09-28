@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
-import * as Prototypes from '../../../../../org/hibachi/client/src/core/prototypes/Observable';
+import * as Prototypes from '../../../../../org/Hibachi/client/src/core/prototypes/Observable';
 
 module FulfillmentsList {
     export enum Views {
@@ -15,7 +15,7 @@ module FulfillmentsList {
         "available",
     }
     export type CollectionFilterValue =  "partial"|"available"|"unavailable"|"location";
-} 
+}
 
 /**
  * Fulfillment List Controller
@@ -29,7 +29,7 @@ class SWOrderFulfillmentListController {
     private view:number;
     private collections:any;
     private refreshFlag:boolean;
-    
+
     public views:any;
     public total:number;
     public formData:{};
@@ -43,20 +43,20 @@ class SWOrderFulfillmentListController {
         //Set the initial state for the filters.
         this.filters = { "unavailable": false, "partial": false, "available": true };
         this.collections = [];
-        
+
         //Some setup for the fulfillments collection.
         this.createOrderFulfillmentCollection();
         this.createOrderItemCollection();
 
         //some view setup.
         this.views = FulfillmentsList.Views;
-        
+
         this.setView(this.views.Fulfillments);
-        
+
         //add both collections into the collection object. Removed 0 elements (insert only).
         this.collections.push(this.orderFulfillmentCollection);
         this.collections.push(this.orderItemCollection);
-        
+
         //Setup the processObject
         this.setProcessObject(this.$hibachi.newFulfillmentBatch_Create());
 
@@ -73,8 +73,8 @@ class SWOrderFulfillmentListController {
         //Attach our listeners for selections on both listing displays.
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-        
-        
+
+
         //Subscribe to state changes in orderFulfillmentService
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((state)=>{
             this.state = state;
@@ -86,13 +86,13 @@ class SWOrderFulfillmentListController {
             }
             this.getCollectionByView(this.getView());
         });
-        
+
         //Subscribe for state changes to the typeahead.
         this.typeaheadService.typeaheadStore.store$.subscribe((update)=>{
             if (update.action && update.action.payload){
                 this.recieveNotification(update.action);
             }
-        }); 
+        });
     }
 
     /**
@@ -107,7 +107,7 @@ class SWOrderFulfillmentListController {
         }
         this.setProcessObject(processObject);
     };
-    
+
     /**
      * Implements a listener for the orderItem selections
      */
@@ -118,7 +118,7 @@ class SWOrderFulfillmentListController {
         }else{
              processObject['data']['orderItemIDList'] = this.listRemove(processObject['data']['orderItemIDList'], callBackData.selection);
         }
-        
+
     };
 
     /**
@@ -127,7 +127,7 @@ class SWOrderFulfillmentListController {
     listAppend (str:string, subStr:string):string {
         return this.utilityService.listAppend(str, subStr, ",");
     }
-    
+
     /**
      * Removes a substring from a string.
      * str: The original string.
@@ -152,7 +152,7 @@ class SWOrderFulfillmentListController {
         if (view == undefined || this.collections == undefined){
             return;
         }
-        
+
         return this.collections[view];
      }
 
@@ -179,11 +179,11 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
      }
-    
+
      private createOrderFulfillmentCollectionWithStatus = (status):void => {
         delete this.orderFulfillmentCollection;
         this.view = undefined;
-        
+
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
@@ -195,25 +195,25 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
-        
+
         if (status){
             this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=", "OR");
         }
 
-        this.orderFulfillmentCollection.getEntity().then((result)=>{ 
+        this.orderFulfillmentCollection.getEntity().then((result)=>{
             //refreshes the page.
             this.collections[0] = this.orderFulfillmentCollection;
             this.view = this.views.Fulfillments;
         });
 
-         
+
      }
 
      private createOrderFulfillmentCollectionWithFilterMap = (filterMap:Map<String, any>):void => {
-        
+
         delete this.orderFulfillmentCollection;
         this.view = undefined;
-        
+
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
@@ -223,9 +223,9 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
-        
+
         //Build the collection using just the correct filters.
-        
+
         //Check the filters for multiple true
         var hasMultipleEnabled = false;
         var filterCount = 0;
@@ -243,7 +243,7 @@ class SWOrderFulfillmentListController {
         //Add the filters.
         filterMap.forEach((v, k) => {
             var systemCode = (k == 'available') ? 'ofisAvailable' : ((k == 'partial') ? 'ofisPartial' : ((k == 'unavailable') ? 'ofisUnAvailable' : ((k == 'location') ? 'location' : '' )));
-            //handle truth   
+            //handle truth
             if (filterMap.get(k) === true){
                 if (systemCode.length){
                     this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "=", (hasMultipleEnabled ? "OR" : "AND"));
@@ -260,15 +260,15 @@ class SWOrderFulfillmentListController {
                 }
             }
         });
-           
 
-        this.orderFulfillmentCollection.getEntity().then((result)=>{ 
+
+        this.orderFulfillmentCollection.getEntity().then((result)=>{
             //refreshes the page.
             this.collections[0] = this.orderFulfillmentCollection;
             this.view = this.views.Fulfillments;
         });
 
-         
+
      }
 
     /**
@@ -330,10 +330,10 @@ class SWOrderFulfillmentListController {
         }
     }
     /**
-     * Initialized the collection so that the listingDisplay can you it to display its data. 
+     * Initialized the collection so that the listingDisplay can you it to display its data.
      */
     public refreshCollectionTotal = (collection):any => {
-        
+
         if (collection){
             collection.getEntity().then((response)=>{
                 this.total = response.recordsCount;
@@ -348,26 +348,26 @@ class SWOrderFulfillmentListController {
      * @param key: FulfillmentsList.CollectionFilterValues {'partial' | 'available' | 'unavailable' | 'location'}
      * @param Vvalue: boolean: {true|false}
      */
-    
+
     public addFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
         this.$timeout(()=>{
             this.refreshFlag = true;
         }, 1);
-        
+
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
-            
+
             //If there is only one filter group add a second. otherwise add to the second.
             var filterGroup = [];
             var filter = {};
-            
+
             if (value == true){
-                
+
                 if (key == "partial"){
                     this.createOrderFulfillmentCollectionWithStatus("ofisPartial");
                 }
                 if (key == "available"){
-                     this.createOrderFulfillmentCollectionWithStatus("ofisAvailable"); 
+                     this.createOrderFulfillmentCollectionWithStatus("ofisAvailable");
                 }
                 if (key == "unavailable"){
                      this.createOrderFulfillmentCollectionWithStatus("ofisUnAvailable");
@@ -375,7 +375,7 @@ class SWOrderFulfillmentListController {
                 if (key == "location" && value != undefined){
                      filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
                 }
-                
+
             }
             if (value = false){
                 this.createOrderFulfillmentCollection();
@@ -386,10 +386,10 @@ class SWOrderFulfillmentListController {
         //Calls to auto refresh the collection since a filter was added.
         let refreshedCollection = this.orderFulfillmentCollection;
         this.orderFulfillmentCollection = undefined;
-        this.orderFulfillmentCollection = refreshedCollection; 
+        this.orderFulfillmentCollection = refreshedCollection;
         this.collections[0] = this.orderFulfillmentCollection;
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
-       
+
     }
 
     /**
@@ -397,12 +397,12 @@ class SWOrderFulfillmentListController {
      * @param key: FulfillmentsList.CollectionFilterValues {'partial' | 'available' | 'unavailable' | 'location'}
      * @param Vvalue: boolean: {true|false}
      */
-    
+
     public removeFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
         this.$timeout(()=>{
             this.refreshFlag = true;
         }, 1);
-        
+
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
             var filterMap = new Map<String, any>();
@@ -417,10 +417,10 @@ class SWOrderFulfillmentListController {
         //Calls to auto refresh the collection since a filter was added.
         let refreshedCollection = this.orderFulfillmentCollection;
         this.orderFulfillmentCollection = undefined;
-        this.orderFulfillmentCollection = refreshedCollection; 
+        this.orderFulfillmentCollection = refreshedCollection;
         this.collections[0] = this.orderFulfillmentCollection;
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
-       
+
     }
 
     /**
@@ -480,7 +480,7 @@ class SWOrderFulfillmentListController {
 
     /**
      * This will recieve all the notifications from all typeaheads on the page.
-     * When I revieve a notification, it will be an object that has a name and data. 
+     * When I revieve a notification, it will be an object that has a name and data.
      * The name is the name of the form and the data is the selected id. The three types,
      * that I'm currently looking for are:
      * "locationIDfilter", "locationID", or "accountID" These are the same as the names of the forms.
@@ -508,7 +508,7 @@ class SWOrderFulfillmentListController {
      * Returns the number of selected fulfillments
      */
     public getTotalFulfillmentsSelected = ():number => {
-        
+
         var total = 0;
         if (this.getProcessObject() && this.getProcessObject().data){
             try{
@@ -521,7 +521,7 @@ class SWOrderFulfillmentListController {
                 else if (this.getProcessObject().data.orderItemIDList && this.getProcessObject().data.orderItemIDList.split(",").length > 0){
                     return this.getProcessObject().data.orderItemIDList.split(",").length;
                 }
-            
+
             } catch (error){
                 return 0; //default
             }
@@ -534,47 +534,38 @@ class SWOrderFulfillmentListController {
  */
 class SWOrderFulfillmentList implements ng.IDirective{
 
-    public templateUrl; 
-    public restrict = "EA"; 
-    public scope = {}	
-    
+    public templateUrl;
+    public restrict = "EA";
+    public scope = {}
+
     public bindToController = {
     }
     public controller=SWOrderFulfillmentListController;
     public controllerAs="swOrderFulfillmentListController";
-     
+
     public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
-            $hibachi, 
-            $timeout, 
-            collectionConfigService,
-            observerService,
-			orderFulfillmentPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder,
+            orderFulfillmentPartialsPath
 		) => new SWOrderFulfillmentList (
-            $hibachi, 
-            $timeout, 
-            collectionConfigService,
-            observerService,
-			orderFulfillmentPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder,
+            orderFulfillmentPartialsPath
 		);
 		directive.$inject = [
-            '$hibachi', 
-            '$timeout', 
-            'collectionConfigService',
-            'observerService',
-			'orderFulfillmentPartialsPath',
-			'slatwallPathBuilder'
+            'slatwallPathBuilder',
+            'orderFulfillmentPartialsPath'
 		];
 		return directive;
 	}
     // @ngInject
-    constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private orderFulfillmentPartialsPath, slatwallPathBuilder){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderFulfillmentPartialsPath) + "orderfulfillmentlist.html";	
+    constructor(
+        slatwallPathBuilder,
+        orderFulfillmentPartialsPath
+    ){
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(orderFulfillmentPartialsPath) + "orderfulfillmentlist.html";
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{  
+    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
     }
 }
 
