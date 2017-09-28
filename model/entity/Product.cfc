@@ -299,11 +299,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	public string function getProductURL() {
-		return "/#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		return getService('ProductService').getProductUrlByUrlTitle(getUrlTitle());
 	}
 
 	public string function getListingProductURL() {
-		return "#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		var productUrl = getProductUrl();
+		return right(productUrl,len(productUrl)-1);
 	}
 
 	public string function getTemplate() {

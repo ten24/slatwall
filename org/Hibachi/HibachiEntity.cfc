@@ -785,66 +785,87 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return hasAnyInProperty(propertyName=right(arguments.missingMethodName, len(arguments.missingMethodName) - 6), entityArray=arguments.missingMethodArguments[1]);
 
 		// getXXXAssignedIDList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 14) == "AssignedIDList") {
-
-			return getPropertyAssignedIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
-
-		// getXXXOptions()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 7) == "Options") {
-
-			return getPropertyOptions( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-10) );
-
-		// getXXXOptionsSmartList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 16) == "OptionsSmartList") {
-
-			return getPropertyOptionsSmartList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-19) );
-
-		// getXXXSmartList()	Where XXX is a one-to-many or many-to-many property where we to return a smartList instead of just an array
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 9) == "SmartList") {
-
-			return getPropertySmartList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-12) );
-
-		// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 14) == "CollectionList") {
-
-			return getPropertyCollectionList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
-
-		// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 6) == "Struct") {
-
-			return getPropertyStruct( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-9) );
-
-		// getXXXCount()		Where XXX is a one-to-many or many-to-many property where we want to get the count of that property
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 5) == "Count") {
-
-			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
-
-		// getXXX() 			Where XXX is either and attributeID or attributeCode
-		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
-
-			return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));
-
-		}
-		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property
-		 else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
-
-			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
-		//getXXXUploadDirectory()
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 15) == "UploadDirectory") {
-			var propertyName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-18);
-
-			if(getPropertyFieldType(propertyName) == 'file'){
-				return getUploadDirectoryByPropertyName(propertyName);
+		} 
+		
+		if ( left(arguments.missingMethodName, 3) == "get"){
+			var propertyName="";
+			if(right(arguments.missingMethodName, 14) == "AssignedIDList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
+				if(hasProperty(propertyName)){
+					return getPropertyAssignedIDList( propertyName=propertyName );
+				}
 			}
-		//getXXXFileURL()
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 7) == "FileUrl") {
-			var propertyName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-10);
-
-			if(getPropertyFieldType(propertyName) == 'file'){
-				return getFileUrlByPropertyName(propertyName);
+			// getXXXOptions()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
+			if ( right(arguments.missingMethodName, 7) == "Options") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-10);
+				if(hasProperty(propertyName)){
+					return getPropertyOptions( propertyName=propertyName);
+				}
+			} 
+			// getXXXOptionsSmartList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
+			if ( right(arguments.missingMethodName, 16) == "OptionsSmartList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-19);
+				if(hasProperty(propertyName)){
+					return getPropertyOptionsSmartList( propertyName=propertyName );
+				}
 			}
+			// getXXXSmartList()	Where XXX is a one-to-many or many-to-many property where we to return a smartList instead of just an array
+			if ( right(arguments.missingMethodName, 9) == "SmartList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-12);
+				if(hasProperty(propertyName)){
+					return getPropertySmartList( propertyName=propertyName );
+				}
+			}
+			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
+				if(hasProperty(propertyName)){
+					return getPropertyCollectionList( propertyName=propertyName );
+				}
+			}
+			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
+			if ( right(arguments.missingMethodName, 6) == "Struct") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-9);
+				if(hasProperty(propertyName)){
+					return getPropertyStruct( propertyName=propertyName );
+				}
+			}	
+			// getXXXCount()		Where XXX is a one-to-many or many-to-many property where we want to get the count of that property
+			if ( right(arguments.missingMethodName, 5) == "Count") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8);
+				if(hasProperty(propertyName)){
+					return getPropertyCount( propertyName=propertyName );
+				}
+			}	
+			// getXXX() 			Where XXX is either and attributeID or attributeCode
+			if (structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
+				return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));
+			}
+			// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property
+			if ( right(arguments.missingMethodName, 2) == "ID") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5);
+				if(hasProperty(propertyName)){
+					return getPropertyPrimaryID( propertyName=propertyName );
+				}
+			}
+			//getXXXUploadDirectory()
+			if ( right(arguments.missingMethodName, 15) == "UploadDirectory") {
+				var propertyName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-18);
+				if(getPropertyFieldType(propertyName) == 'file'){
+					return getUploadDirectoryByPropertyName(propertyName);
+				}
+			}
+			//getXXXFileURL()
+			if ( right(arguments.missingMethodName, 7) == "FileUrl") {
+				var propertyName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-10);
+	
+				if(getPropertyFieldType(propertyName) == 'file'){
+					return getFileUrlByPropertyName(propertyName);
+				}
+			}
+		} 
 		//removeXXX() only for files
-		} else if ( left(arguments.missingMethodName, 6) == "remove") {
+		if ( left(arguments.missingMethodName, 6) == "remove") {
 			var propertyName =right(arguments.missingMethodName,len(arguments.missingMethodName)-6);
 			if(getPropertyFieldType(propertyName) == 'file'){
 				return genericPropertyRemove(propertyName);
