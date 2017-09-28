@@ -1053,7 +1053,8 @@ class PublicService {
     public accountAddressIsSelectedShippingAddress = (key, fulfillmentIndex) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress){
+           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress &&
+           !this.cart.orderFulfillments[fulfillmentIndex].shippingAddress.hasErrors){
             return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[fulfillmentIndex].shippingAddress);
         }        
         return false;
