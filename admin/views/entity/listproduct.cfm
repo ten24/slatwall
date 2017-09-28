@@ -95,7 +95,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="productID" data-is-visible="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="productID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="productType.productTypeName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="brand.brandName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="productName" tdclass="primary" ></sw-listing-column>

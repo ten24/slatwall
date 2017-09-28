@@ -74,7 +74,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="fulfillmentBatchID" data-is-visible="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fulfillmentBatchID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="fulfillmentBatchNumber" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="fulfillmentBatchName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="description" tdclass="primary" ></sw-listing-column>
