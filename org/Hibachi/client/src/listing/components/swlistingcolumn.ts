@@ -23,6 +23,7 @@ class SWListingColumnController{
     public buttonGroup:any;
     public aggregate:any;
     public persistent:boolean;
+    public isDeletable:boolean;
     public column:any;
 
     //@ngInject
@@ -43,6 +44,10 @@ class SWListingColumnController{
 
         if(angular.isUndefined(this.isVisible)){
              this.isVisible = true;
+        }
+        
+        if(angular.isUndefined(this.isDeletable)){
+             this.isDeletable = true;
         }
 
         this.editable = this.editable || false;
@@ -78,6 +83,7 @@ class SWListingColumnController{
             hasCellView:this.hasCellView,
             hasHeaderView:this.hasHeaderView,
             isVisible:this.isVisible,
+            isDeletable:this.isDeletable,
             action:this.action,
             queryString:this.queryString,
             persistent:this.persistent
@@ -114,6 +120,7 @@ class SWListingColumn implements ng.IDirective{
         sort:"=?",
         filter:"=?",
         isVisible:"=?",
+        isDeletable:"=?",
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
