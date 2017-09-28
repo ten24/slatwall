@@ -3,7 +3,31 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
-
+		
+		public function formatStructKeyList(required string str){
+ 		    if (!structKeyExists(server, "lucee")){
+ 		        return str;
+ 		    }
+ 		    var formattedStructKeyList = '';
+ 		    var strArray = listToArray(str, '.');
+ 		    for( var key in strArray){
+ 		        if(isNumeric(left(key, 1))){
+ 		            formattedStructKeyList &= "['#key#']";
+ 		        }else{
+ 		            formattedStructKeyList = listAppend(formattedStructKeyList, key, '.');
+ 		        }
+ 		    };
+ 		    return formattedStructKeyList;
+ 		}	
+ 		
+ 		public any function getQueryLabels(required any query){
+ 			var qryColumns = "";
+ 			for (var column in getMetaData(arguments.query)){
+ 				qryColumns = listAppend(qryColumns, column.name);
+ 			}
+ 			return local.qryColumns;
+ 		}
+ 		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
