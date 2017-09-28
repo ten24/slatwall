@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as Store from '../../../../../../org/hibachi/client/src/core/prototypes/swstore';
+import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 
 class ListingService{
 
