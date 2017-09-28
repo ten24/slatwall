@@ -87,8 +87,8 @@ Notes:
 		data-has-action-bar="false"
 	>
 		<sw-listing-column data-property-identifier="eventRegistrationID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="account.firstname" />
-		<sw-listing-column data-property-identifier="account.lastname" />
+		<sw-listing-column data-property-identifier="account.firstName" />
+		<sw-listing-column data-property-identifier="account.lastName" />
 		<sw-listing-column data-property-identifier="orderItem.sku.product.productName" />
 		<sw-listing-column data-property-identifier="orderItem.sku.eventStartDateTime" />
 		<sw-listing-column data-property-identifier="orderItem.sku.eventEndDateTime" />

@@ -81,9 +81,9 @@ Notes:
         data-angular-links="false"
         data-has-action-bar="false"
     >
+        <sw-listing-column data-property-identifier="fulfillmentMethodID" data-is-visible="false" data-is-deletable="false" />
         <sw-listing-column data-property-identifier="fulfillmentMethodName" tdclass="primary" />
         <sw-listing-column data-property-identifier="fulfillmentMethodType" />
         <sw-listing-column data-property-identifier="activeFlag" />
         <sw-listing-column data-property-identifier="autoFulfillFlag" />
     </sw-listing-display>
-    

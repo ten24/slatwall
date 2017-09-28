@@ -76,6 +76,7 @@ Notes:
     data-angular-links="false"
     data-has-action-bar="false"
 >
+    <sw-listing-column data-property-identifier="emailID" data-is-visible="false" data-is-deletable="false" />
     <sw-listing-column data-property-identifier="emailSubject" search="true" tdclass="primary" />
     <sw-listing-column data-property-identifier="emailTo" search="true" />
     <sw-listing-column data-property-identifier="createdDateTime">
