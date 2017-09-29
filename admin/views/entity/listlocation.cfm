@@ -83,9 +83,9 @@ Notes:
 		data-expandable="true"
 		data-parent-property-name="parentLocation"
 	>
-		<sw-listing-column data-property-identifier="locationID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="locationName" tdclass="primary" search="true" />
-		<sw-listing-column data-property-identifier="activeFlag" />
+		<sw-listing-column data-property-identifier="locationID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="locationName" tdclass="primary" search="true" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

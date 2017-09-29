@@ -73,10 +73,10 @@ Notes:
         data-angular-links="false"
         data-has-action-bar="false"
     >
-        <sw-listing-column data-property-identifier="sessionID" data-is-visible="false" data-is-deletable="false" />
-        <sw-listing-column data-property-identifier="lastRequestDateTime" />
-        <sw-listing-column data-property-identifier="createdDateTime" />
-        <sw-listing-column data-property-identifier="lastRequestIPAddress" tdclass="primary" />
-        <sw-listing-column data-property-identifier="account.firstName" />
-        <sw-listing-column data-property-identifier="account.lastName" />
+        <sw-listing-column data-property-identifier="sessionID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="lastRequestDateTime" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="lastRequestIPAddress" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
     </sw-listing-display>

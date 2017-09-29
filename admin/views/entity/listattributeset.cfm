@@ -81,9 +81,9 @@ Notes:
 	data-angular-links="false"
 	data-has-action-bar="false"
 >
-	<sw-listing-column data-property-identifier="attributeSetID" data-is-visible="false" data-is-deletable="false" />
-	<sw-listing-column data-property-identifier="attributeSetName" tdclass="primary" />
-	<sw-listing-column data-property-identifier="attributeSetObject" />
-	<sw-listing-column data-property-identifier="globalFlag" />
-	<sw-listing-column data-property-identifier="activeFlag" />
+	<sw-listing-column data-property-identifier="attributeSetID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="attributeSetName" tdclass="primary" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="attributeSetObject" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="globalFlag" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
 </sw-listing-display>

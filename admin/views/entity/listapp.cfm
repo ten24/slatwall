@@ -82,10 +82,10 @@ Notes:
 	    data-angular-links="false"
 	    data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="appID" data-is-visible="false" data-is-deletable="false" />
-	    <sw-listing-column data-property-identifier="appName" />
-	    <sw-listing-column data-property-identifier="appCode" />
-	    <sw-listing-column data-property-identifier="appRootPath" />
+		<sw-listing-column data-property-identifier="appID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="appName" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="appCode" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="appRootPath" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

@@ -96,19 +96,19 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="skuID" data-is-visible="false"  data-is-deletable="false"/>
-		<sw-listing-column data-property-identifier="skuCode" tdclass="primary" />
-		<sw-listing-column data-property-identifier="product.productName" />
-		<sw-listing-column data-property-identifier="product.productCode" />
-		<sw-listing-column data-property-identifier="product.productType.productTypeName" />
-		<sw-listing-column data-property-identifier="product.brand.brandName" />
-		<sw-listing-column data-property-identifier="listPrice" />
-		<sw-listing-column data-property-identifier="price" />
-		<sw-listing-column data-property-identifier="renewalPrice" />
-		<sw-listing-column data-property-identifier="calculatedSkuDefinition" />
-		<sw-listing-column data-property-identifier="activeFlag" />
-		<sw-listing-column data-property-identifier="publishedFlag" />
-		<sw-listing-column data-property-identifier="calculatedQATS" />
+		<sw-listing-column data-property-identifier="skuID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
+		<sw-listing-column data-property-identifier="skuCode" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="product.productName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="product.productCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="product.productType.productTypeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="product.brand.brandName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="listPrice" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="price" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="renewalPrice" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedSkuDefinition" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="publishedFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

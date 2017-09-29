@@ -79,10 +79,10 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="roundingRuleID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="roundingRuleName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="roundingRuleExpression" />
-		<sw-listing-column data-property-identifier="roundingRuleDirection" />
+		<sw-listing-column data-property-identifier="roundingRuleID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="roundingRuleName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="roundingRuleExpression" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="roundingRuleDirection" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

@@ -90,15 +90,14 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="vendorOrderItemID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="vendorOrder.vendor.vendorName" />
-		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderNumber" />
-		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderStatusType.typeName" />
-		<sw-listing-column data-property-identifier="stock.sku.product.brand.brandName" />
-		<sw-listing-column data-property-identifier="stock.sku.product.calculatedTitle" tdclass="primary" />
-		<sw-listing-column data-property-identifier="stock.sku.skuCode" />
-		<sw-listing-column data-property-identifier="quantity" />
-    <sw-listing-column data-property-identifier="cost" />
-
+		<sw-listing-column data-property-identifier="vendorOrderItemID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendorOrder.vendor.vendorName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendorOrder.vendorOrderStatusType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="stock.sku.product.brand.brandName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="stock.sku.product.calculatedTitle" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="stock.sku.skuCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
+	    <sw-listing-column data-property-identifier="cost" ></sw-listing-column>
 	</sw-listing-display>
 </cfoutput>

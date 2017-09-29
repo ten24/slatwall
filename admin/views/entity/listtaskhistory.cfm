@@ -76,12 +76,12 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="taskHistoryID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="startTime" />
-		<sw-listing-column data-property-identifier="endTime" />
-		<sw-listing-column data-property-identifier="task.taskName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="successFlag" />
-		<sw-listing-column data-property-identifier="response" />
+		<sw-listing-column data-property-identifier="taskHistoryID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="startTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="endTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="task.taskName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="successFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="response" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

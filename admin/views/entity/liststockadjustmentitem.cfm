@@ -97,17 +97,17 @@ Notes:
 	    data-angular-links="false"
 	    data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="stockAdjustmentItemID" data-is-visible="false" data-is-deletable="false" />
-    	<sw-listing-column data-property-identifier="sku.skucode" tdclass="primary" />
-    	<sw-listing-column data-property-identifier="sku.product.brand.brandName" />
-    	<sw-listing-column data-property-identifier="sku.product.productName" />
-    	<sw-listing-column data-property-identifier="sku.skuDefinition" sort="false" />
-    	<sw-listing-column data-property-identifier="stockAdjustment.stockAdjustmentType.typeName" filter="true" title="#$.slatwall.rbKey('entity.StockAdjustment.stockAdjustmentType')#" />
-    	<sw-listing-column data-property-identifier="stockAdjustment.stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true" />
-    	<sw-listing-column data-property-identifier="stockAdjustment.createdDateTime" />
-    	<sw-listing-column data-property-identifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
-    	<sw-listing-column data-property-identifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
-    	<sw-listing-column data-property-identifier="quantity" />
+		<sw-listing-column data-property-identifier="stockAdjustmentItemID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="sku.skucode" tdclass="primary" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="sku.product.brand.brandName" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="sku.product.productName" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="sku.skuDefinition" sort="false" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="stockAdjustment.stockAdjustmentType.typeName" filter="true" title="#$.slatwall.rbKey('entity.StockAdjustment.stockAdjustmentType')#" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="stockAdjustment.stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" filter="true" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="stockAdjustment.createdDateTime" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

@@ -84,12 +84,12 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="fileGroupID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="fileGroupName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="fileGroupCode" />
-		<sw-listing-column data-property-identifier="fileGroupDescription" />
-		<sw-listing-column data-property-identifier="fileRestrictAccessFlag" />
-		<sw-listing-column data-property-identifier="fileTrackAccessFlag" />
+		<sw-listing-column data-property-identifier="fileGroupID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileGroupName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileGroupCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileGroupDescription" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileRestrictAccessFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fileTrackAccessFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

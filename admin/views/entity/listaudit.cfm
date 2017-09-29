@@ -83,13 +83,13 @@ Notes:
 	data-angular-links="false"
 	data-has-action-bar="false"
 >
-	<sw-listing-column data-property-identifier="auditID" data-is-visible="false" data-is-deletable="false" />
-	<sw-listing-column data-property-identifier="auditDateTime" />
-	<sw-listing-column data-property-identifier="sessionAccountFullName" />
-	<sw-listing-column data-property-identifier="sessionAccountEmailAddress" />
-	<sw-listing-column data-property-identifier="auditType" filter="true" />
-	<sw-listing-column data-property-identifier="title" tdclass="primary" />
-	<sw-listing-column data-property-identifier="baseObject" />
-	<sw-listing-column data-property-identifier="baseID" />
+	<sw-listing-column data-property-identifier="auditID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="auditDateTime" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="sessionAccountFullName" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="sessionAccountEmailAddress" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="auditType" filter="true" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="title" tdclass="primary" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="baseObject" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="baseID" ></sw-listing-column>
 
 </sw-listing-display>
