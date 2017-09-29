@@ -26,6 +26,8 @@ class SWDisplayOptions{
         return directive;
     }
 
+
+
     //@ngInject
     constructor(
         $log,
@@ -54,6 +56,17 @@ class SWDisplayOptions{
                 listingName:"@?"
             },
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
+            controller:function($scope,$element,$attrs){
+
+
+                this.removeColumn = function(columnIndex){
+
+                    if($scope.columns.length){
+                        $scope.columns.splice(columnIndex, 1);
+                    }
+
+                };
+            },
             link: (scope,element,$attrs,controllers,observerService)=>{
 
                 scope.breadCrumbs = [ {
@@ -62,13 +75,7 @@ class SWDisplayOptions{
                     propertyIdentifier : scope.baseEntityAlias
                 } ];
 
-                scope.removeColumn = function(columnIndex){
 
-                    if(scope.columns.length){
-                        scope.columns.splice(columnIndex, 1);
-                    }
-
-                };
 
                 scope.getPropertiesList = function(){
                     return scope.propertiesList;
@@ -274,10 +281,11 @@ class SWDisplayOptions{
                                 var columnItem = scope.columns[newIndex];
                                 tempColumnsArray.push(columnItem);
                             });
-                            scope.$apply(()=> {
-                                scope.columns = tempColumnsArray;
-                                scope.saveCollection();
-                            });
+
+
+                            scope.columns = tempColumnsArray;
+                            scope.saveCollection();
+
 
                         }
                     });
@@ -285,7 +293,11 @@ class SWDisplayOptions{
 
                 if(!scope.saveCollection && controllers.swListingControls){
                     scope.saveCollection = ()=>{
+
                         controllers.swListingControls.collectionConfig.columns=scope.columns;
+                        if(controllers.swListingDisplay){
+                            controllers.swListingDisplay.columns=scope.columns;
+                        }
                         controllers.swListingControls.saveCollection();
                     }
                 }
