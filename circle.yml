@@ -8,7 +8,8 @@ machine:
 
 dependencies:
   cache_directories:
-    - node_modules
+    - node_modules/
+    - /home/ubuntu/nvm/versions/node/v6.9.1/
   pre:
     # Install node modules for building JS
     - if [ ! -e /home/ubuntu/nvm/versions/node/v6.9.1/bin/webpack ]; then npm install -g webpack@1.13.3 gulp less; else echo "global dependencies seems to be cached"; fi;
