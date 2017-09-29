@@ -92,19 +92,19 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="orderID" data-is-visible="false" data-is-deletable="false" />
+		<sw-listing-column data-property-identifier="orderID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<cfif rc.slatAction eq "admin:entity.listorder">
-			<sw-listing-column data-property-identifier="orderNumber" />
-			<sw-listing-column data-property-identifier="orderOpenDateTime" />
+			<sw-listing-column data-property-identifier="orderNumber" ></sw-listing-column>
+			<sw-listing-column data-property-identifier="orderOpenDateTime" ></sw-listing-column>
 		</cfif>
-		<sw-listing-column data-property-identifier="account.firstName" />
-		<sw-listing-column data-property-identifier="account.lastName" />
-		<sw-listing-column data-property-identifier="account.company" tdclass="primary" />
-		<sw-listing-column data-property-identifier="orderType.typeName" sort="true" title="#$.slatwall.rbKey('entity.order.orderType')#" />
-		<sw-listing-column data-property-identifier="orderStatusType.typeName" sort="true" filter="true" title="#$.slatwall.rbKey('define.status')#" />
-		<sw-listing-column data-property-identifier="orderOrigin.orderOriginName" />
-		<sw-listing-column data-property-identifier="createdDateTime" />
-		<sw-listing-column data-property-identifier="calculatedTotal" />
+		<sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.company" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderType.typeName" sort="true" title="#$.slatwall.rbKey('entity.order.orderType')#" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderStatusType.typeName" sort="true" filter="true" title="#$.slatwall.rbKey('define.status')#" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderOrigin.orderOriginName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedTotal" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

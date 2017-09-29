@@ -82,17 +82,17 @@ Notes:
 			data-angular-links="false"
 			data-has-action-bar="false"
 						>
-		<sw-listing-column data-property-identifier="subscriptionUsageID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="account.firstName" />
-		<sw-listing-column data-property-identifier="account.lastName" />
-		<sw-listing-column data-property-identifier="account.company" />
-		<sw-listing-column data-property-identifier="subscriptionOrderItemName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="currentStatusType" />
-		<sw-listing-column data-property-identifier="nextBillDate" />
-		<sw-listing-column data-property-identifier="expirationDate" />
-		<sw-listing-column data-property-identifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" />
-		<sw-listing-column data-property-identifier="renewalPrice" />
-		<sw-listing-column data-property-identifier="autoPayFlag" />
+		<sw-listing-column data-property-identifier="subscriptionUsageID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.company" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="subscriptionOrderItemName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="currentStatusType" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="nextBillDate" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="expirationDate" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="renewalPrice" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="autoPayFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

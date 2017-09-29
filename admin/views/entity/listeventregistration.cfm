@@ -86,13 +86,13 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="eventRegistrationID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="account.firstName" />
-		<sw-listing-column data-property-identifier="account.lastName" />
-		<sw-listing-column data-property-identifier="orderItem.sku.product.productName" />
-		<sw-listing-column data-property-identifier="orderItem.sku.eventStartDateTime" />
-		<sw-listing-column data-property-identifier="orderItem.sku.eventEndDateTime" />
-		<sw-listing-column data-property-identifier="orderItem.sku.calculatedSkuDefinition" />
+		<sw-listing-column data-property-identifier="eventRegistrationID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderItem.sku.product.productName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderItem.sku.eventStartDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderItem.sku.eventEndDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderItem.sku.calculatedSkuDefinition" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

@@ -84,10 +84,10 @@ Notes:
 		data-expandable="true"
 		data-parent-property-name="parentType"
 	>
-		<sw-listing-column data-property-identifier="typeID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="typeName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="typeCode" />
-		<sw-listing-column data-property-identifier="systemCode" />
+		<sw-listing-column data-property-identifier="typeID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="typeName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="typeCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="systemCode" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

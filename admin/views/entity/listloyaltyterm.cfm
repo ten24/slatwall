@@ -84,11 +84,11 @@ Notes:
 			data-angular-links="false"
 			data-has-action-bar="false"
 						>
-		<sw-listing-column data-property-identifier="loyaltyTermID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="loyaltyTermName" />
-		<sw-listing-column data-property-identifier="loyaltyTermStartDateTime" />
-		<sw-listing-column data-property-identifier="loyalty.loyaltyName" />
-		<sw-listing-column data-property-identifier="term.termName" />
+		<sw-listing-column data-property-identifier="loyaltyTermID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="loyaltyTermName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="loyaltyTermStartDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="loyalty.loyaltyName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="term.termName" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

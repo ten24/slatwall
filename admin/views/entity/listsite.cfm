@@ -83,12 +83,12 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="siteID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="siteName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="siteCode" />
-		<sw-listing-column data-property-identifier="domainNames" />
-		<sw-listing-column data-property-identifier="app.appName" />
-		<sw-listing-column data-property-identifier="allowAdminAccessFlag" />
+		<sw-listing-column data-property-identifier="siteID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="siteName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="siteCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="domainNames" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="app.appName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="allowAdminAccessFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

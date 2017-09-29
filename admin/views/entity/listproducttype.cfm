@@ -91,9 +91,9 @@ Notes:
 		data-expandable="true"
 		data-parent-property-name="parentProductType"
 	>
-		<sw-listing-column data-property-identifier="productTypeName" data-is-visible="false"  data-is-deletable="false"/>
-		<sw-listing-column data-property-identifier="productTypeName" tdclass="primary" sort="false" expandable="true" />
-		<sw-listing-column data-property-identifier="activeFlag" sort="false" />
+		<sw-listing-column data-property-identifier="productTypeName" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
+		<sw-listing-column data-property-identifier="productTypeName" tdclass="primary" sort="false" expandable="true" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" sort="false" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

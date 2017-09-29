@@ -76,14 +76,14 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="productReviewID" data-is-visible="false"  data-is-deletable="false"/>
-		<sw-listing-column data-property-identifier="reviewTitle" tdclass="primary" />
-		<sw-listing-column data-property-identifier="reviewerName" />
-		<sw-listing-column data-property-identifier="rating" />
-		<sw-listing-column data-property-identifier="product.productName" />
-		<sw-listing-column data-property-identifier="product.defaultSku.price" />
-		<sw-listing-column data-property-identifier="createdDateTime" />
-		<sw-listing-column data-property-identifier="createdDateTime" />
+		<sw-listing-column data-property-identifier="productReviewID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
+		<sw-listing-column data-property-identifier="reviewTitle" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="reviewerName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="rating" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="product.productName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="product.defaultSku.price" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

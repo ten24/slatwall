@@ -86,14 +86,14 @@ Notes:
 			data-angular-links="false"
 			data-has-action-bar="false"
 						>
-		<sw-listing-column data-property-identifier="accountID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="firstName" />
-		<sw-listing-column data-property-identifier="lastName" />
-		<sw-listing-column data-property-identifier="company" tdclass="primary" />
-		<sw-listing-column data-property-identifier="primaryPhoneNumber.phoneNumber" />
-		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" />
-		<sw-listing-column data-property-identifier="guestAccountFlag" />
-		<sw-listing-column data-property-identifier="organizationFlag" />
+		<sw-listing-column data-property-identifier="accountID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="company" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="primaryPhoneNumber.phoneNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="guestAccountFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="organizationFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

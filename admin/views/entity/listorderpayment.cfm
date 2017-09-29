@@ -81,16 +81,16 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="orderPaymentID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="order.orderNumber" />
-		<sw-listing-column data-property-identifier="order.account.firstName" />
-		<sw-listing-column data-property-identifier="order.account.lastName" />
-		<sw-listing-column data-property-identifier="createdDateTime" />
-		<sw-listing-column data-property-identifier="paymentMethod.paymentMethodName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="orderPaymentType.typeName" />
-		<sw-listing-column data-property-identifier="amount" />
-		<sw-listing-column data-property-identifier="amountReceived" />
-		<sw-listing-column data-property-identifier="amountCredited" />
+		<sw-listing-column data-property-identifier="orderPaymentID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="paymentMethod.paymentMethodName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="orderPaymentType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="amount" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="amountReceived" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="amountCredited" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

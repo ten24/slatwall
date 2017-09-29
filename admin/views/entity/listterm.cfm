@@ -84,8 +84,8 @@ Notes:
 		data-has-action-bar="false"
 		data-sort-property="sortOrder"
 	>
-		<sw-listing-column data-property-identifier="termID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="termName" tdclass="primary" />
+		<sw-listing-column data-property-identifier="termID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="termName" tdclass="primary" ></sw-listing-column>
 	</sw-listing-display>
 
 

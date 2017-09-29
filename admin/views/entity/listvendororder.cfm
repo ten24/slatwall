@@ -88,14 +88,14 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="vendorOrderID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="vendor.vendorName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="vendorOrderNumber" />
-		<sw-listing-column data-property-identifier="vendorOrderType.typeName" />
-		<sw-listing-column data-property-identifier="estimatedReceivalDateTime" />
-		<sw-listing-column data-property-identifier="vendorOrderStatusType.typeName" />
-		<sw-listing-column data-property-identifier="createdDateTime" />
-		<sw-listing-column data-property-identifier="total" />
+		<sw-listing-column data-property-identifier="vendorOrderID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendor.vendorName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendorOrderNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendorOrderType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="estimatedReceivalDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="vendorOrderStatusType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="total" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

@@ -78,12 +78,12 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="title" tdclass="primary" />
-		<sw-listing-column data-property-identifier="site.siteName" />
-		<sw-listing-column data-property-identifier="contentTemplateType.typeName" />
-		<sw-listing-column data-property-identifier="allowPurchaseFlag" />
-		<sw-listing-column data-property-identifier="allowPurchaseFlag" />
-		<sw-listing-column data-property-identifier="activeFlag" />
+		<sw-listing-column data-property-identifier="title" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="site.siteName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="contentTemplateType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="allowPurchaseFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="allowPurchaseFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
 	</sw-listing-display>
 
 

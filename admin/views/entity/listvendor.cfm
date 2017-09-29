@@ -80,9 +80,9 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 					>
-	<sw-listing-column data-property-identifier="vendorID" data-is-visible="false" data-is-deletable="false" />
-	<sw-listing-column data-property-identifier="vendorName" search="true" tdclass="primary" />
-	<sw-listing-column data-property-identifier="accountNumber" search="true" />
-	<sw-listing-column data-property-identifier="vendorWebsite" search="true" />
-	<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" search="true" />
+	<sw-listing-column data-property-identifier="vendorID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="vendorName" search="true" tdclass="primary" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="accountNumber" search="true" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="vendorWebsite" search="true" ></sw-listing-column>
+	<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" search="true" ></sw-listing-column>
 </sw-listing-display>

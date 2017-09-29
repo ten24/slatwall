@@ -83,18 +83,18 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="skuID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="sku.skuCode" tdclass="primary" />
-		<sw-listing-column data-property-identifier="sku.product.productName" />
-		<sw-listing-column data-property-identifier="sku.product.productCode" />
-		<sw-listing-column data-property-identifier="sku.product.productType.productTypeName" />
-		<sw-listing-column data-property-identifier="sku.product.brand.brandName" />
-		<sw-listing-column data-property-identifier="location.locationName" />
-		<sw-listing-column data-property-identifier="calculatedQOH" />
-		<sw-listing-column data-property-identifier="calculatedQNC" />
-		<sw-listing-column data-property-identifier="calculatedQATS" />
-    <sw-listing-column data-property-identifier="calculatedAverageCost" />
-    <sw-listing-column data-property-identifier="calculatedAverageLandedCost" />
+		<sw-listing-column data-property-identifier="skuID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="sku.skuCode" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="sku.product.productName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="sku.product.productCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="sku.product.productType.productTypeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="sku.product.brand.brandName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="location.locationName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedQOH" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedQNC" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="calculatedAverageCost" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="calculatedAverageLandedCost" ></sw-listing-column>
 	</sw-listing-display>
 
 

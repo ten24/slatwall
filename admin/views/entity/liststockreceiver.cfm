@@ -74,11 +74,11 @@ Notes:
         data-angular-links="false"
         data-has-action-bar="false"
     >
-        <sw-listing-column data-property-identifier="stockReceiverID" data-is-visible="false" data-is-deletable="false" />
-        <sw-listing-column data-property-identifier="packingSlipNumber" tdclass="primary" />
-        <sw-listing-column data-property-identifier="boxCount" />
-        <sw-listing-column data-property-identifier="receiverType" />
-        <sw-listing-column data-property-identifier="createdDateTime" />
+        <sw-listing-column data-property-identifier="stockReceiverID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="packingSlipNumber" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="boxCount" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="receiverType" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
     </sw-listing-display>
 
 </cfoutput>

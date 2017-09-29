@@ -97,16 +97,16 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="orderItemID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="order.account.firstName" />
-		<sw-listing-column data-property-identifier="order.account.lastName" />
-		<sw-listing-column data-property-identifier="order.orderNumber" />
-		<sw-listing-column data-property-identifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" />
-		<sw-listing-column data-property-identifier="order.orderOpenDateTime" />
-		<sw-listing-column data-property-identifier="sku.product.calculatedTitle" tdclass="primary" />
-		<sw-listing-column data-property-identifier="price" />
-		<sw-listing-column data-property-identifier="quantity" />
-		<sw-listing-column data-property-identifier="extendedPrice" />
+		<sw-listing-column data-property-identifier="orderItemID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.firstName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.lastName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderStatusType.typeName" title="#$.slatwall.rbKey('entity.order.orderStatusType')#" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderOpenDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="sku.product.calculatedTitle" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="price" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="extendedPrice" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

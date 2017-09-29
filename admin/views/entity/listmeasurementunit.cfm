@@ -72,10 +72,10 @@ Notes:
         data-angular-links="false"
         data-has-action-bar="false"
     >
-        <sw-listing-column data-property-identifier="unitCode" data-is-visible="false" data-is-deletable="false" />
-        <sw-listing-column data-property-identifier="unitName" tdclass="primary" />
-        <sw-listing-column data-property-identifier="unitCode" />
-        <sw-listing-column data-property-identifier="measurementType" />
+        <sw-listing-column data-property-identifier="unitCode" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="unitName" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="unitCode" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="measurementType" ></sw-listing-column>
     </sw-listing-display>
 
 </cfoutput>

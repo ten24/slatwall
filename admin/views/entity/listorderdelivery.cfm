@@ -77,15 +77,15 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="orderDeliveryID" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="order.orderNumber" />
-		<sw-listing-column data-property-identifier="order.orderOpenDateTime" />
-		<sw-listing-column data-property-identifier="createdDateTime" />
-		<sw-listing-column data-property-identifier="order.account.fullName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="location.locationName" />
-		<sw-listing-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" />
-		<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" />
-		<sw-listing-column data-property-identifier="trackingNumber" />
+		<sw-listing-column data-property-identifier="orderDeliveryID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderNumber" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.orderOpenDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="order.account.fullName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="location.locationName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="trackingNumber" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>

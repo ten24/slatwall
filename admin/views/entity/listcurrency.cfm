@@ -82,11 +82,11 @@ Notes:
 	    data-angular-links="false"
 	    data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="currencyCode" data-is-visible="false" data-is-deletable="false" />
-		<sw-listing-column data-property-identifier="currencyName" tdclass="primary" />
-		<sw-listing-column data-property-identifier="activeFlag" />
-		<sw-listing-column data-property-identifier="currencyCode" />
-		<sw-listing-column data-property-identifier="formattedExample" />
+		<sw-listing-column data-property-identifier="currencyCode" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="currencyName" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="currencyCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="formattedExample" ></sw-listing-column>
 	</sw-listing-display>
 
 </cfoutput>
