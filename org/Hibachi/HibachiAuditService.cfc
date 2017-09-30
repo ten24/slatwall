@@ -241,7 +241,10 @@ component extends="HibachiService" accessors="true" {
 		var newPropertyValueMappingData = {};
 		// Track all new auditable properties initially
 		for (var propertyName in auditablePropertiesStruct) {
-			propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.entity.invokeMethod('get#propertyName#'), propertyMetaData=auditablePropertiesStruct[propertyName], mappingData=newPropertyValueMappingData, mappingPath=propertyName, className=arguments.entity.getClassName());
+			var propertyMethod = 'get#propertyName#';
+			if(structKeyExists(arguments.entity,propertyMethod)){
+				propertyChangeData.newPropertyData[propertyName] = getStandardizedValue(propertyValue=arguments.entity.invokeMethod(propertyMethod), propertyMetaData=auditablePropertiesStruct[propertyName], mappingData=newPropertyValueMappingData, mappingPath=propertyName, className=arguments.entity.getClassName());				
+			}
 		}
 		
 		var oldPropertyValueMappingData = {};
