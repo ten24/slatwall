@@ -224,7 +224,6 @@ class SWColumnItem{
 				scope.removeColumn = function(columnIndex){
                     if(scope.columns[columnIndex].isDeletable){
 						removeSorting(scope.columns[columnIndex],true);
-						console.log('contorller',controller);
                         controller.swDisplayOptions.removeColumn(columnIndex);
                         updateOrderBy();
                         scope.saveCollection();

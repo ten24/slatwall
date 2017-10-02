@@ -218,7 +218,6 @@ class SWDisplayOptions{
 
                             }
 
-                            console.log('soup',controllers);
                             if(controllers.swListingControls){
                                 controllers.swListingControls.columnIsControllableMap[column.propertyIdentifier] = true;
                             }
