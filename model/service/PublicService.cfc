@@ -1363,12 +1363,12 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
         //get the address options.
         if (!isNull(arguments.data.countryCode)){
-        	arguments.data.ajaxResponse["addressOptions"] = getAddressOptionsByCountryCode(arguments.data);
+          getAddressOptionsByCountryCode(arguments.data);
         }
     }
     
     /** Given a country - this returns all of the address options for that country */
-    public struct function getAddressOptionsByCountryCode( required data ) {
+    public void function getAddressOptionsByCountryCode( required data ) {
         param name="data.countryCode" type="string" default="US";
         
         var addressOptions = {};
@@ -1406,7 +1406,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	        };
 	        getHibachiCacheService().setCachedValue(cacheKey,addressOptions);
         }
-     return addressOptions;
+        arguments.data.ajaxResponse["addressOptions"] = addressOptions;
         
     }
     
