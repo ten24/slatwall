@@ -251,6 +251,19 @@ class ListingService{
         }
     };
 
+    /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
+    public getSelectedBy = (listingID, propertyName, value) => {
+        if (!listingID || !propertyName || !value){ return -1;};
+        return this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value});
+    }
+
+    public clearAllSelections = (listingID) => {
+        if (!listingID) return -1;
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        }
+    }
+
     public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
         var classObjectString = "{"; 
         angular.forEach(this.getListing(listingID).colorFilters, (colorFilter, index)=>{
@@ -440,12 +453,23 @@ class ListingService{
             
             var column = this.getListing(listingID).columns[i];
 
+            this.setupColumn(listingID,column,collectionConfig,collectionObject);
+        }
+    };
+
+    public setupColumn=(listingID:string,column:any, collectionConfig, collectionObject)=>{
             if(this.getListing(listingID).collectionConfig != null && !column.hasCellView){
                 this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
             } 
 
-            var baseEntityName =  this.getListingBaseEntityName(listingID);
+        if(!collectionConfig && this.getListing(listingID).collectionConfig != null){
+            collectionConfig = this.getListing(listingID).collectionConfig != null;
+        }
 
+            var baseEntityName =  this.getListingBaseEntityName(listingID);
+        if(!collectionObject){
+            collectionObject = baseEntityName;
+        }
             //if we have entity information we can make some inferences about the column
             if(baseEntityName != null){
                 var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(baseEntityName,column.propertyIdentifier);
@@ -459,6 +483,14 @@ class ListingService{
 
                 var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
                 
+            if(metadata && angular.isDefined(metadata.persistent)){
+                column.persistent = metadata.persistent;
+            }
+
+            if(metadata && angular.isDefined(metadata.ormtype)){
+                column.ormtype = metadata.ormtype;
+            }
+
                 if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
                     column.type = metadata.hb_formatType;
                 } else { 
@@ -509,7 +541,6 @@ class ListingService{
 
             this.columnOrderBy(listingID, column);
         }
-    };
 
     public initCollectionConfigData = (listingID:string,collectionConfig) =>{
         //kick off other essential setup 
@@ -698,9 +729,8 @@ class ListingService{
         }
     };
     
-    
-
     public setupDefaultGetCollection = (listingID:string) =>{
+    
         if(this.getListing(listingID).collectionConfigs.length == 0){
             this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
             
@@ -708,7 +738,7 @@ class ListingService{
                 this.getListing(listingID).collectionConfig.setCurrentPage(this.getListing(listingID).paginator.getCurrentPage());
                 this.getListing(listingID).collectionConfig.setPageShow(this.getListing(listingID).paginator.getPageShow());
                 if(this.getListing(listingID).multiSlot){
-                	this.getListing(listingID).getEntity().then(
+                	this.getListing(listingID).collectionConfig.getEntity().then(
                     (data)=>{
                         this.getListing(listingID).collectionData = data;
                         this.setupDefaultCollectionInfo(listingID);
@@ -720,6 +750,7 @@ class ListingService{
                     }
                 );
                 }else{
+                    
                 	this.getListing(listingID).collectionPromise.then(
                     (data)=>{
                         this.getListing(listingID).collectionData = data;
