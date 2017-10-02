@@ -18,6 +18,7 @@ class SWListingSearchController {
     private listingId;
     public swListingDisplay;
     public searchableOptions;
+    public swListingControls;
 
     //@ngInject
     constructor(
@@ -54,7 +55,6 @@ class SWListingSearchController {
     };
 
 
-
     private search =()=>{
         if(this.searchText.length > 0 ){
             this.listingService.setExpandable(this.listingId, false);
@@ -63,7 +63,10 @@ class SWListingSearchController {
         }
 
         this.collectionConfig.setKeywords(this.searchText);
-        this.paginator.setCurrentPage(1);
+
+        this.swListingDisplay.collectionConfig = this.collectionConfig;
+
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
 
     };
 
@@ -89,7 +92,6 @@ class SWListingSearchController {
     }
 
 
-
 }
 
 class SWListingSearch  implements ng.IDirective{
@@ -97,11 +99,10 @@ class SWListingSearch  implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {};
-    public require = {swListingDisplay:"?^swListingDisplay"}
+    public require = {swListingDisplay:"?^swListingDisplay",swListingControls:'?^swListingControls'}
     public bindToController =  {
-        collectionConfig : "=?",
+        collectionConfig : "<?",
         paginator : "=?",
-        getCollection : "&",
         toggleFilters : "&?",
         toggleDisplayOptions : "&?",
         showToggleFilters : "=?",
