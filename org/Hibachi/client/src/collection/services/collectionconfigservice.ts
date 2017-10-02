@@ -84,12 +84,12 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
-    
-    
+
+
     get collectionConfigString():string {
         return angular.toJson(this.getCollectionConfig(false));
     }
-    
+
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -180,7 +180,7 @@ class CollectionConfig {
 
     public getCollectionConfig= (validate=true):any =>{
         if(validate){
-        this.validateFilter(this.filterGroups);
+            this.validateFilter(this.filterGroups);
         }
         return {
             baseEntityAlias: this.baseEntityAlias,
@@ -201,18 +201,17 @@ class CollectionConfig {
         };
     };
 
+
+
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);
     };
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
-        if(this.keywords && this.keywords.length && this.keywordColumns.length > 0){
 
-            var columns = this.keywordColumns;
-        } else {
-            var columns = this.columns;
-        }
+        var columns = this.columns;
+
         if(this.keywords && this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
             var filters = this.keywordFilterGroups;
         } else {
@@ -261,13 +260,13 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-            
+
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
-                
+
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
@@ -276,7 +275,7 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
-        
+
         return _propertyIdentifier;
     };
 
@@ -514,7 +513,6 @@ class CollectionConfig {
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
         var join = propertyIdentifier.split('.').length > 1;
-
         //create filter group
         var filter = new Filter(
             this.formatPropertyIdentifier(propertyIdentifier, join),
@@ -530,7 +528,8 @@ class CollectionConfig {
 
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         var group = {
-            filterGroup:[]
+            filterGroup:[],
+            logicalOperator: 'AND'
         };
         for(var i =  0; i < filterGroup.length; i++){
             var filter = this.createFilter(
