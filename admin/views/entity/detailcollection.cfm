@@ -20,15 +20,6 @@
     $('.j-tool-tip-item').tooltip();
   });
 </script>
-<cfset ormexecuteQuery('SELECT
-new Map(
-_product.productID as productID, _product.calculatedQATS as calculatedQATS, _product_productType.productTypeName as productType_productTypeName, _product_brand.brandName as brand_brandName, _product.productName as productName, _product.productCode as productCode, _product_defaultSku.price as defaultSku_price, _product.activeFlag as activeFlag, _product.publishedFlag as publishedFlag, _product_brand.activeFlag as brand_activeFlag, COUNT(DISTINCT _product_physicals) as physicalsCount
-) FROM SlatwallProduct as _product
-left join _product.brand as _product_brand
-left join _product.defaultSku as _product_defaultSku
-left join _product.productType as _product_productType
-left join _product.physicals as _product_physicals
-GROUP BY _product.productID,_product.calculatedQATS,_product_productType.productTypeName,_product_brand.brandName,_product.productName,_product.productCode,_product_defaultSku.price,_product.activeFlag,_product.publishedFlag,_product_brand.activeFlag,_product.createdDateTime ORDER BY _product.createdDateTime desc')/>
 <!---<script charset="utf-8">
   //This was created for example only to toggle the edit save icons
   $(function(){
