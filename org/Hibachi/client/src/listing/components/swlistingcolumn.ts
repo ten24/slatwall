@@ -144,6 +144,7 @@ class SWListingColumn implements ng.IDirective{
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         public listingService
     ){
@@ -151,6 +152,7 @@ class SWListingColumn implements ng.IDirective{
     }
 
     public link=(scope,elem,attr,listingService)=>{
+
         if(angular.isDefined(scope.swListingDisplay)
             && scope.swListingDisplay.tableID
             && scope.swListingDisplay.tableID.length
@@ -159,6 +161,15 @@ class SWListingColumn implements ng.IDirective{
 
             this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
             this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
+        }else if(
+            angular.isDefined(scope.swListingColumn.swListingDisplay)
+            && scope.swListingColumn.swListingDisplay.tableID
+            && scope.swListingColumn.swListingDisplay.tableID.length
+        ){
+            var listingDisplayID = scope.swListingColumn.swListingDisplay.tableID;
+
+            this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+            
         }else {
             throw("listing display scope not available to sw-listing-column or there is no table id")
         }
