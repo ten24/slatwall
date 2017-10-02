@@ -110,7 +110,11 @@ Notes:
 
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
-			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+			<cfif attributes.entity.hasProperty(attribute.getAttributeCode()) AND structKeyExists(attributes.entity, 'get#attribute.getAttributeCode()#UploadDirectory')>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attributes.entity.invokeMethod('get#attribute.getAttributeCode()#UploadDirectory'))##fdAttributes.value#" />
+			<cfelse>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+			</cfif>
 			
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
 			
