@@ -56,7 +56,7 @@ class SWDisplayOptions{
                 listingName:"@?"
             },
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
-            controller:function($scope,$element,$attrs){
+            controller:['$scope','$element','$attrs',function($scope,$element,$attrs){
 
 
                 this.removeColumn = function(columnIndex){
@@ -66,7 +66,7 @@ class SWDisplayOptions{
                     }
 
                 };
-            },
+            }],
             link: (scope,element,$attrs,controllers,observerService)=>{
 
                 scope.breadCrumbs = [ {
