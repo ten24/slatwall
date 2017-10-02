@@ -16,8 +16,5 @@
 	    data-multi-slot="false"
 	>
 	</sw-listing-display>
-	{{relatedObjectCollectionConfig.columns}}
-	<br>
-	{{relatedObjectCollectionConfig.collectionConfigString}}
 	<input name="relatedObjectCollectionConfig" ng-model="relatedObjectCollectionConfig.collectionConfigString" ng-show="false"/>
 </cfoutput>
