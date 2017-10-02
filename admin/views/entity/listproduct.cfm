@@ -55,6 +55,8 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
+	
+	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
 
 		<!--- Create --->

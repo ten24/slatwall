@@ -6,7 +6,7 @@ class SWListingControlsController {
     private selectedSearchColumn;
     private filterPropertiesList;
     private collectionConfig;
-    private paginator;
+
     private searchText;
     private backupColumnsConfig;
     private listingColumns;
@@ -19,7 +19,7 @@ class SWListingControlsController {
     private itemInUse;
     private getCollection;
     private tableId;
-    private columnIsControllableMap = {};
+    public columnIsControllableMap = {};
     public simple:boolean;
 
 
@@ -64,7 +64,8 @@ class SWListingControlsController {
     public filterActions =(res)=>{
 
         if(res.action == 'add' || res.action == 'remove'){
-            this.paginator.setCurrentPage(1);
+
+            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
         }
         this.filtersClosed = true;
     };
@@ -74,6 +75,7 @@ class SWListingControlsController {
     };
 
     public canDisplayColumn = (column) =>{
+
         if(!this.listingColumns.length){
             return true;
         }
@@ -108,7 +110,7 @@ class SWListingControlsController {
 
         this.searchText = '';
         this.collectionConfig.setKeywords(this.searchText);
-        this.paginator.setCurrentPage(1);
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
     };
 
     public toggleDisplayOptions= (closeButton:boolean=false)=>{
@@ -126,7 +128,7 @@ class SWListingControlsController {
     public removeFilter = (array, index, reloadCollection:boolean=true)=>{
         array.splice(index, 1);
         if(reloadCollection){
-            this.paginator.setCurrentPage(1);
+            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
         }
     };
 
@@ -144,10 +146,11 @@ class SWListingControlsController {
         this.collectionService.selectFilterItem(filterItem);
     };
 
-    public saveCollection = ()=>{
-        var data = {
-            collectionConfig:this.collectionConfig
-        };
+    public saveCollection = (collectionConfig)=>{
+        if(collectionConfig){
+            this.collectionConfig = collectionConfig;
+        }
+        this.swListingDisplay.collectionConfig = this.collectionConfig;
         this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
@@ -164,7 +167,6 @@ class SWListingControls  implements ng.IDirective{
     public bindToController =  {
         collectionConfig : "=",
         tableId : "=?",
-        paginator : "=",
         getCollection : "&",
         showFilters : "=?",
         showToggleFilters : "=?",
