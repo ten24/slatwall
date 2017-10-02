@@ -21,6 +21,7 @@ class SWColumnItem{
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$log,
 		hibachiPathBuilder,
