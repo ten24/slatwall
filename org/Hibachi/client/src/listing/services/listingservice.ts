@@ -27,7 +27,7 @@ class ListingService{
         this.listingDisplayStore = new Store.IStore( this.state, this.listingDisplayStateReducer );
 
     }
-
+ 
     /**
      * The reducer is responsible for modifying the state of the state object into a new state for listeners.
      */

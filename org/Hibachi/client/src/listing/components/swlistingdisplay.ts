@@ -437,7 +437,7 @@ class SWListingDisplayController{
             payload: {listingID: this.tableID, selectionCount: this.multiselectCount, values: this.multiselectValues }
         });
     };
-
+ 
 
     public getPageRecordKey = (propertyIdentifier)=>{
        return this.listingService.getPageRecordKey(propertyIdentifier);

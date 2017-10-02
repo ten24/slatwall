@@ -427,7 +427,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON) {
-		var qryColumns = arguments.query.getMeta().getColumnLabels();
+		var qryColumns = getService("HibachiUtilityService").getQueryLabels(query);
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
 
@@ -572,10 +572,10 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var idKeyStruct = structGet("generatedIDStruct.#tableName#.#idKeyList#");
+							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 						idKeyStruct["value"] = primaryKeyValue == ""?"null":primaryKeyValue;
 						} else if(tables[ tableName ][ "tableType" ] != "linktable") {
-							var idKeyStruct = structGet("generatedIDStruct.#tableName#");
+							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
 							idKeyStruct["value"] = primaryKeyValue;
 						}
 
@@ -642,12 +642,12 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var IDValueStruct = structGet("generatedIDStruct.#tableName#.#idKeyList#");
+							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
 						} else {
-							var IDValueStruct = structGet("generatedIDStruct.#tableName#");
+							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
@@ -678,7 +678,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}catch(any e){writeDump(e);abort;}
 
-		writedump(label="time", var="#getTickcount()-start#");
 	}
 
 	public any function getAllAttributeStruct(){

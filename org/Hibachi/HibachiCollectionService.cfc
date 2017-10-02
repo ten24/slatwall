@@ -3,7 +3,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	property name="aliasMap" type="struct";
 	
 	
-
+ 
 	// ===================== START: Logical Methods ===========================
 	public string function getCollectionObjectByCasing(required collection, required string casing){
 		switch(arguments.casing){
