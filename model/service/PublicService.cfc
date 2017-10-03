@@ -569,18 +569,18 @@ component extends="HibachiService"  accessors="true" output="false"
             //save the address at the order level.
             var order = getHibachiScope().getCart();
             for(var fulfillment in order.getOrderFulfillments()){
-              if(structKeyExists(data,'fulfillmentID') && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+              if(structKeyExists(data, "fulfillmentID") && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
-              }else if(!structKeyExists(data,'fulfillmentID')){
-                orderFulfillment.setShippingAddress(accountAddress.getAddress());
-              getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              }else if(!structKeyExists(data, "fulfillmentID")){
+                fulfillment.setShippingAddress(accountAddress.getAddress());
+              getService("OrderService").saveOrderFulfillment(fulfillment);
               }
             }
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
             }
             getOrderService().saveOrder(order);
-          	getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
