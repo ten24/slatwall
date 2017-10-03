@@ -77,7 +77,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	
 	// Related Properties (many-to-one)
 	property name="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="many-to-one" fkcolumn="taxCategoryRateID";
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true" hb_populateEnabled="public";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
 	
