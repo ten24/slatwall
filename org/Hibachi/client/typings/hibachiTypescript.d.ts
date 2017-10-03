@@ -71,6 +71,7 @@
 /// <reference path="../src/core/components/swentityactionbar.ts" />
 /// <reference path="../src/core/components/swentityactionbarbuttongroup.ts" />
 /// <reference path="../src/core/components/swexpandablerecord.ts" />
+/// <reference path="../src/core/components/swexpiringsessionnotifier.ts" />
 /// <reference path="../src/core/components/swexportaction.ts" />
 /// <reference path="../src/core/components/swgravatar.ts" />
 /// <reference path="../src/core/components/swhref.ts" />
