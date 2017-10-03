@@ -232,7 +232,7 @@ class SWOrderFulfillmentListController {
         filterMap.forEach((v, k) => {
             if (filterMap.get(k) === true){
                 filterCount++;
-                console.log("Filter count", filterCount);
+
             }
         });
 
@@ -291,7 +291,7 @@ class SWOrderFulfillmentListController {
      */
     public toggleFilter = (filterName):void => {
         this.filters[filterName] = !this.filters[filterName];
-        console.log(`${filterName} now ${this.filters[filterName]}`);
+
         if (this.filters[filterName]){
             this.addFilter(filterName, true);
             return;
@@ -381,7 +381,7 @@ class SWOrderFulfillmentListController {
                 this.createOrderFulfillmentCollection();
             }
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
-            console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
+            console.warn("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
         let refreshedCollection = this.orderFulfillmentCollection;
@@ -412,7 +412,7 @@ class SWOrderFulfillmentListController {
             filterMap.set("location", this.filters['location']);
             this.createOrderFulfillmentCollectionWithFilterMap(filterMap);
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
-            console.log("Adding orderItem Filters", this.getCollectionByView(this.getView()));
+            console.warn("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
         let refreshedCollection = this.orderFulfillmentCollection;
@@ -461,7 +461,7 @@ class SWOrderFulfillmentListController {
      * Handles a successful post of the processObject
      */
     public processCreateError= (data):void => {
-        console.log("Process Errors", data);
+        console.warn("Process Errors", data);
     }
 
     /**
