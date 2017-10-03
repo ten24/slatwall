@@ -1305,6 +1305,8 @@ component extends="HibachiService"  accessors="true" output="false"
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
+            }else{
+              this.addErrors(data,order.getErrors());
             }
 
         }
