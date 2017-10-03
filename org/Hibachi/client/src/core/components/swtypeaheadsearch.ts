@@ -187,7 +187,7 @@ class SWTypeaheadSearchController {
     }
 
     public toggleOptions = () =>{
-        if(this.hideSearch && (this.searchText && !this.searchText.length)){
+        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
             this.search(this.searchText);
         }
         this.hideSearch = !this.hideSearch;
@@ -195,6 +195,7 @@ class SWTypeaheadSearchController {
     };
 
     public search = (search:string)=>{
+
         if(this._timeoutPromise){
 
             this.$timeout.cancel(this._timeoutPromise);
@@ -227,7 +228,7 @@ class SWTypeaheadSearchController {
             }else{
                 promise = this.collectionConfig.getEntity();
             }
-
+            
             promise.then( (response) =>{
                 this.results = response.pageRecords || response.records; 
                 this.updateSelections();               
