@@ -65,6 +65,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxStateCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
+	property name="manualTaxAmountFlag" ormtype="boolean" default="false";
 	
 	//Persitent Integration Properties
 	property name="taxImpositionID" ormtype="string";
@@ -76,7 +77,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	
 	// Related Properties (many-to-one)
 	property name="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="many-to-one" fkcolumn="taxCategoryRateID";
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true" hb_populateEnabled="public";
 	
 	// Related Object Properties (one-to-many)
 	
