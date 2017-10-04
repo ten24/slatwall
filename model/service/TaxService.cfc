@@ -403,7 +403,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Remove all existing tax calculations
 			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem( orderItem );
+				var appliedTax = orderItem.getAppliedTaxes()[ta];
+				if(isNull(appliedTax.getManualTaxAmountFlag()) || !appliedTax.getManualTaxAmountFlag()){
+					appliedTax.removeOrderItem( orderItem );
+				}
 			}
 
 		}

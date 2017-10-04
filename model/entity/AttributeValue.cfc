@@ -71,6 +71,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID";
 	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID";
 	property name="eventRegistration" cfc="EventRegistration" fieldtype="many-to-one" fkcolumn="eventRegistrationID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
@@ -331,7 +332,25 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "brand");
 	}
 	
-	// Event Registrationf (many-to-one)
+	// Category (many-to-one)
+	public void function setCategory(required any Category) {
+		variables.category = arguments.category;
+		if(isNew() or !arguments.category.hasAttributeValue( this )) {
+			arrayAppend(arguments.category.getAttributeValues(), this);
+		}
+	}
+	public void function removeCategory(any category) {
+		if(!structKeyExists(arguments, "category")) {
+			arguments.category = variables.category;
+		}
+		var index = arrayFind(arguments.category.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.category.getAttributeValues(), index);
+		}
+		structDelete(variables, "category");
+	}
+
+	// Event Registration (many-to-one)
 	public void function setEventRegistration(required any eventRegistration) {
 		variables.eventRegistration = arguments.eventRegistration;
 		if(isNew() or !arguments.eventRegistration.hasAttributeValue( this )) {

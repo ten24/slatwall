@@ -112,7 +112,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var i=1; i<=arrayLen(skus); i++) {
 				var skuID = skus[i].getSkuID();
 				var index = arrayFind(sortedArray, skuID);
-				sortedArrayReturn[index] = skus[i];
+				if(index != 0){
+					sortedArrayReturn[index] = skus[i];
+				}
 			}
 
 			skus = sortedArrayReturn;
