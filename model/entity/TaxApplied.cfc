@@ -65,6 +65,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxStateCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
+	property name="manualTaxAmountFlag" ormtype="boolean" default="false";
 	
 	//Persitent Integration Properties
 	property name="taxImpositionID" ormtype="string";
