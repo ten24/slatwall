@@ -1351,12 +1351,12 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function getStateCodeOptionsByCountryCode( required struct data ) {
         param name="data.countryCode" type="string" default="US";
         var cacheKey = "PublicService.getStateCodeOptionsByCountryCode#arguments.data.countryCode#";
-        var stateCodeOptons = [];
+        var stateCodeOptions = [];
         if(getHibachiCacheService().hasCachedValue(cacheKey)){
         	stateCodeOptions = getHibachiCacheService().getCachedValue(cacheKey);
         }else{
         	var country = getAddressService().getCountry(data.countryCode);
-        	var stateCodeOptions = country.getStateCodeOptions();
+        	stateCodeOptions = country.getStateCodeOptions();
         	getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
         }
         
