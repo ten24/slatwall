@@ -1,5 +1,12 @@
 <fieldset>
     <legend>Billing Information</legend>
+        <div class="alert alert-success" ng-if="slatwall.updatedBillingAddress()">
+            <i class="fa fa-check-circle"></i> Successfully updated billing address.
+        </div>
+        <div class="alert alert-success" ng-if="slatwall.addedBillingAddress()">
+            <i class="fa fa-check-circle"></i> Successfully added billing address.
+        </div>
+        <swf-directive partial-name="billingaddresserrors"></swf-directive>
         <swf-directive partial-name="addbillingbyaccountaddresspartial" ng-show="slatwall.showBillingAccountAddresses()"></swf-directive>
         <sw-address-form ng-if="slatwall.showNewBillingAddressForm()"
             ng-init="slatwall.billingAddress = slatwall.getAddressEntity()"
