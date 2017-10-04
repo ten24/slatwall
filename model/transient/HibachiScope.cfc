@@ -214,7 +214,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		if (
 			len(arguments.entityName)
 			&& structKeyExists(variables, "routeEntity") 
-			&& structKeyExists(variables.routEntity,arguments.entityName) 
+			&& structKeyExists(variables.routeEntity,arguments.entityName) 
 			&& !isNull(variables.routeEntity[arguments.entityName])
 		) {
 			arguments.entityName = lcase(arguments.entityName);

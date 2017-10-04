@@ -2,7 +2,7 @@
 	"conditions":{
 	    "requiresNotInUse":{
 	        "primaryFlag":{"eq":true},
-	        "account.slatwallAuthenticationExistsFlag":{"eq":true}
+	        "account.nonIntegrationAuthenticationExistsFlag":{"eq":true}
 	    }
 	},
 	"properties":{
