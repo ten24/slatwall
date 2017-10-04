@@ -108,10 +108,10 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 			skuCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#this.getLocation().getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 		}
 
-		// Add min/max filters
-		skuCollection.addFilter('stocks.calculatedQATS', this.getMinQuantity(), '>=');
-		skuCollection.addFilter('stocks.calculatedQATS', this.getMaxQuantity(), '<=');
-
+		// aggregate QATS up to selected location and filter on min/max range
+		skuCollection.addDisplayAggregate('stocks.calculatedQATS','SUM','sumQATS');
+		skuCollection.addFilter('stocks.calculatedQATS', this.getMinQuantity(), '>=', 'AND', 'SUM');
+		skuCollection.addFilter('stocks.calculatedQATS', this.getMaxQuantity(), '<=', 'AND', 'SUM');
 
 		return skuCollection;
 	}
