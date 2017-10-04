@@ -86,26 +86,26 @@ Notes:
 			<cfif attributes.showEmailAddress>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#emailAddress" property="emailAddress" edit="#attributes.edit#" fieldClass="slatwall-address-emailAddress"  />
 			</cfif>
-			<cfif (isNull(attributes.address.getCountry()) || attributes.address.getCountry().getStreetAddressShowFlag()) and attributes.showStreetAddress>
+			<cfif attributes.showStreetAddress AND (isNull(attributes.address.getCountry()) OR ( NOT isNull(attributes.address.getCountry().getStreetAddressShowFlag()) AND attributes.address.getCountry().getStreetAddressShowFlag() ) )>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#streetAddress" property="streetAddress" edit="#attributes.edit#" fieldClass="slatwall-address-streetAddress" />	
 			</cfif>
-			<cfif (isNull(attributes.address.getCountry()) || attributes.address.getCountry().getStreet2AddressShowFlag()) and attributes.showStreet2Address>
+			<cfif attributes.showStreet2Address AND (isNull(attributes.address.getCountry()) OR ( NOT isNull(attributes.address.getCountry().getStreet2AddressShowFlag()) AND attributes.address.getCountry().getStreet2AddressShowFlag() ) )>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#street2Address" property="street2Address" edit="#attributes.edit#" fieldClass="slatwall-address-street2Address" />	
 			</cfif>
-			<cfif (isNull(attributes.address.getCountry()) ||  attributes.address.getCountry().getLocalityShowFlag()) and attributes.showLocality>
+			<cfif attributes.showLocality AND (isNull(attributes.address.getCountry()) OR  ( NOT isNull(attributes.address.getCountry().getLocalityShowFlag()) AND attributes.address.getCountry().getLocalityShowFlag()  ))>
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#locality" property="locality" edit="#attributes.edit#" fieldClass="slatwall-address-locality" />	
 			</cfif>
-			<cfif (isNull(attributes.address.getCountry()) ||  attributes.address.getCountry().getCityShowFlag()) and attributes.showCity>
+			<cfif attributes.showCity AND (isNull(attributes.address.getCountry()) OR  ( NOT isNULL(attributes.address.getCountry().getCityShowFlag()) AND attributes.address.getCountry().getCityShowFlag()) ) >
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#city" property="city" edit="#attributes.edit#" fieldClass="slatwall-address-city" />	
 			</cfif>
-			<cfif (isNull(attributes.address.getCountry()) || attributes.address.getCountry().getStateCodeShowFlag()) and attributes.showState>
+			<cfif attributes.showState AND (isNull(attributes.address.getCountry()) OR ( NOT isNull(attributes.address.getCountry().getStateCodeShowFlag()) AND attributes.address.getCountry().getStateCodeShowFlag() ))  >
 				<cfif attributes.edit and arrayLen(attributes.address.getStateCodeOptions()) gt 1>
 					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#stateCode" property="stateCode" fieldType="select" edit="#attributes.edit#" fieldClass="slatwall-address-stateCode" />
 				<cfelse>
 					<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#stateCode" property="stateCode" fieldType="text" edit="#attributes.edit#" fieldClass="slatwall-address-stateCode" />
 				</cfif>
 			</cfif>
-			<cfif (isNull(attributes.address.getCountry()) ||  attributes.address.getCountry().getPostalCodeShowFlag()) and attributes.showPostalCode>
+			<cfif attributes.showPostalCode AND (isNull(attributes.address.getCountry()) OR  ( NOT isNull(attributes.address.getCountry().getPostalCodeShowFlag()) AND attributes.address.getCountry().getPostalCodeShowFlag() )) >
 				<hb:HibachiPropertyDisplay object="#attributes.address#" fieldName="#attributes.fieldNamePrefix#postalCode" property="postalCode" edit="#attributes.edit#" fieldClass="slatwall-address-postalCode" />	
 			</cfif>
 		</div>
