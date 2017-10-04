@@ -1399,7 +1399,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getFilterGroupArrayFromAncestors(required any collectionEntity){
 		var collectionConfig = arguments.collectionEntity.getCollectionConfigStruct();
 		var filterGroupArray = [];
-		if(!isnull(collectionConfig['filterGroups']) && arraylen(collectionConfig['filterGroups'])){
+		if(structKeyExists(collectionConfig,'filterGroups') && !isnull(collectionConfig['filterGroups']) && arraylen(collectionConfig['filterGroups'])){
 			filterGroupArray = collectionConfig['filterGroups'];
 		}
 		return filterGroupArray;
