@@ -161,8 +161,8 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						var detailActionProperty=listlast(admin.detailActionProperty,'.');
 						var detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
 					}else{
-						detailActionProperty=record.getPrimaryIDPropertyName();
-						detailActionPropertyValue=record.getPrimaryIDValue();
+						var detailActionProperty=record.getPrimaryIDPropertyName();
+						var detailActionPropertyValue=record.getPrimaryIDValue();
 					}
 					var attributes = {
 						action=admin.detailAction,
