@@ -170,6 +170,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// Place the standard smartList in the rc
 		arguments.rc["#arguments.entityName#SmartList"] = entityService.invokeMethod( "get#arguments.entityName#SmartList", {1=arguments.rc} );
+		arguments.rc["#arguments.entityName#CollectionList"] = entityService.invokeMethod( "get#arguments.entityName#CollectionList", {1=arguments.rc} );
 	}
 
 	// CREATE

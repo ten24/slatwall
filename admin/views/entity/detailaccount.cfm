@@ -55,6 +55,7 @@ Notes:
 
 <!--- Set up the order / carts smart lists --->
 <cfset rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList() />
+<cfset rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList() />
 <cfset rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList() />
 
 <cfif !isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 >
