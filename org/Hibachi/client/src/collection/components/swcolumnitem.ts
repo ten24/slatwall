@@ -36,12 +36,12 @@ class SWColumnItem{
 				swListingControls:"?^swListingControls"
             },
 			scope:{
-				column:"<",
-				columns:"<",
-				columnIndex:"<",
+				column:"=",
+				columns:"=",
+				columnIndex:"=",
 				saveCollection:"&?",
 				propertiesList:"<",
-				orderBy:"<"
+				orderBy:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
 			link: function(scope, element,attrs,controller,observerService){
