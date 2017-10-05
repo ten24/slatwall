@@ -544,6 +544,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if(structKeyExists(arguments, 'title')){
 			column['title'] = arguments.title;
+		}else{
+			column['title'] = getCollectionEntityObject().getTitleByPropertyIdentifier(arguments.displayProperty);
 		}
 		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
 			column['isDeletable'] = arguments.columnConfig['isDeletable'];
