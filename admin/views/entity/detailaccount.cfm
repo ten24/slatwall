@@ -56,7 +56,9 @@ Notes:
 <!--- Set up the order / carts smart lists --->
 <cfset rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList() />
 <cfset rc.ordersPlacedCollectionList = rc.account.getOrdersPlacedCollectionList() />
+
 <cfset rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList() />
+<cfset rc.ordersNotPlacedCollectionList = rc.account.getOrdersNotPlacedCollectionList() />
 
 <cfif !isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 >
 	<cfset rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' ) />
