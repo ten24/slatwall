@@ -332,38 +332,38 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 
 	public string function createURLTitlePath(){
 
-		var urlTitle = '';
+		var urlTitleText = '';
 		if(!isNull(getURLtitle())){
-			urlTitle = getURLtitle();
+			urlTitleText = getURLtitle();
 		}
 
-		var urlTitlePath = '';
+		var urlTitlePathText = '';
 		if(!isNull(getParentContent())){
-			urlTitlePath = getParentContent().getURLTitlePath();
-			if(isNull(urlTitlePath)){
-				urlTitlePath = '';
+			urlTitlePathText = getParentContent().getURLTitlePath();
+			if(isNull(urlTitlePathText)){
+				urlTitlePathText = '';
 			}
 		}
 
 		var urlTitlePathString = '';
-		if(len(urlTitlePath)){
-			urlTitlePathString = urlTitlePath & '/' & urlTitle;
+		if(len(urlTitlePathText)){
+			urlTitlePathString = urlTitlePathText & '/' & urlTitleText;
 		}else{
-			urlTitlePathString = urlTitle;
+			urlTitlePathString = urlTitleText;
 		}
 
 		var addon = 1;
 		if(!isNull(getSite())){
 			var contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
 			while(!isNull(contentEntity) && this.getContentID() != contentEntity.getContentID()) {
-				urlTitle = '#urlTitle#-#addon#';
+				urlTitleText = '#urlTitleText#-#addon#';
 				urlTitlePathString = "#urlTitlePathString#-#addon#";
 				addon++;
 				contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
 			}
 		}
 		
-		variables.urlTitle = urlTitle;
+		variables.urlTitle = urlTitleText;
 		setUrlTitlePath(urlTitlePathString);
 		return urlTitlePathString;
 	}
