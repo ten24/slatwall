@@ -19,6 +19,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="modifiedEntities" type="array";
 	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
+	property name="entityURLlKeyType" type="string";
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -35,6 +36,29 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setModifiedEntities( [] );
 		
 		return super.init();
+	}
+	
+	public string function getEntityURLKeyType(required string entityURLKey){
+		if(!structKeyExists(variables,'entityURLlKeyType')){
+			//in priority of assumed use
+			if(arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL){
+				variables.entityURLlKeyType='Product';
+			}else if(arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL){
+				variables.entityURLlKeyType='ProductType';
+			}else if(arguments.slatwallScope.setting('globalURLKeyCategory') == arguments.entityURL){
+				variables.entityURLlKeyType='Category';
+			}else if(arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL){
+				variables.entityURLlKeyType='Brand';
+			}else if(arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL){
+				variables.entityURLlKeyType='Account';	
+			}else if(arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL){
+				variables.entityURLlKeyType='Address';
+			}else{
+				variables.entityURLKeyType="";
+			}
+			
+		}
+		return variables.entityURLlKeyType;
 	}
 	
 	public string function getServerInstanceIPAddress(){
