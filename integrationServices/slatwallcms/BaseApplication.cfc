@@ -114,7 +114,7 @@ Notes:
 				globalURLKeyProductType,
 				globalURLKeyAccount,
 				globalURLKeyAddress,
-				
+				gloablURLKeyCategory,
 				productDisplayTemplate,
 				productTypeDisplayTemplate,
 				brandDisplayTemplate,
@@ -135,8 +135,10 @@ Notes:
 			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
 			var isAddressURLKey = arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL;
 			var isAccountURLKey = arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL;
+			var isCategoryURLKey = arguments.slatwallScope.setting('globalURLKeyCategory') == arguments.entityURL;
 			
 			var entityName = '';
+			
 
 			// First look for the Brand URL Key
 			if (isBrandURLKey) {
@@ -184,6 +186,15 @@ Notes:
 				}
 				arguments.slatwallScope.setRouteEntity(  "account", account );
 				entityName = 'account';
+			}
+			//Look for the Category URL Key
+			if (isCategoryURLKey) {
+				var category = arguments.slatwallScope.getService("categoryService").getCategoryByURLTitle(arguments.contenturlTitle, true);
+				if(isNull(categry)){
+					var content = render404(arguments.slatwallScope, site);
+				}
+				arguments.slatwallScope.setRouteEntity(  "category", category );
+				entityName = 'category';
 			}
 			
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);

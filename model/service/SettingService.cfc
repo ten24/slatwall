@@ -161,6 +161,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 			contentEnableTrackingFlag = {fieldType="yesno",defaultValue=0},
 			
+			//Category
+			categoryDisplayTemplate = {fieldType="select"},
+			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
 			emailToAddress = {fieldType="text", defaultValue=""},
@@ -234,6 +237,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
@@ -433,6 +437,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "address" );
+			case "categoryDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "category", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "category" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
