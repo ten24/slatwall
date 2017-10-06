@@ -31,13 +31,20 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			var cgiPathInfo = CGI.PATH_INFO;
 		}
 		var pathInfo = cgiPathInfo;
-		 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+		// SES URLs by popular request :)
+        if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
             // canonicalize for IIS:
             pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
         } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
             // pathInfo is bogus so ignore it:
             pathInfo = '';
         }
+        
+        if(!len(pathInfo)){
+        	pathInfo = cgiScriptName;
+        }
+        
+       	
         //take path and  parse it
         var pathArray = listToArray(pathInfo,'/');
         var pathArrayLen = arrayLen(pathArray);
@@ -54,6 +61,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 		){
         		return;
         }
+        
         //try to get a site form the domain name
 		var domainNameSite = arguments.slatwallScope.getCurrentRequestSite();
       
@@ -109,9 +117,9 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 						}
 					}
 				}
+				
 			//if we are not using apps path
 			}else if(pathArrayLen - indexOffset && pathArray[1] != 'apps'){
-								
 				var urlTitlePathStartPosition = 1+indexOffset;
         		if(
         			len(arguments.slatwallScope.getEntityURLKeyType(pathArray[1+indexOffset]))
