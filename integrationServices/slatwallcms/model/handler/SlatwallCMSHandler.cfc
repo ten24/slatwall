@@ -41,9 +41,10 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         }
         
         if(!len(pathInfo)){
-        	pathInfo = cgiScriptName;
+        	if(right(cgiScriptName,9)=='index.cfm'){
+        		pathInfo = left(cgiScriptName,len(cgiScriptName)-9);	
+        	}
         }
-        
        	
         //take path and  parse it
         var pathArray = listToArray(pathInfo,'/');
