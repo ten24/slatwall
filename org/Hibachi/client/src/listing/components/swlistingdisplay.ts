@@ -111,7 +111,7 @@ class SWListingDisplayController{
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
-        
+
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -143,7 +143,7 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-        
+
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
 
@@ -183,6 +183,10 @@ class SWListingDisplayController{
             }
             this.setupCollectionPromise();
 
+        }
+
+        if(!this.collectionObject && (this.collectionConfig && this.collectionConfig.baseEntityName)){
+            this.collectionObject = this.collectionConfig.baseEntityName;
         }
 
         if (this.collectionObject){
@@ -226,7 +230,7 @@ class SWListingDisplayController{
         this.paginator.getCollection = this.getCollection;
 
         var getCollectionEventID = this.tableID;
-        
+
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
         this.listingService.getCollection(this.tableID);
@@ -437,7 +441,7 @@ class SWListingDisplayController{
             payload: {listingID: this.tableID, selectionCount: this.multiselectCount, values: this.multiselectValues }
         });
     };
- 
+
 
     public getPageRecordKey = (propertyIdentifier)=>{
        return this.listingService.getPageRecordKey(propertyIdentifier);

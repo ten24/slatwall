@@ -51,6 +51,7 @@ Notes:
 
 
 <cfparam name="rc.productTypeSmartList" type="any" />
+<cfparam name="rc.productTypeCollectionList" type="any" />
 
 <cfset rc.productTypeSmartList.addOrder("productTypeName|ASC") />
 
@@ -71,29 +72,26 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.productTypeSmartList#"
-								recordEditAction="admin:entity.editproducttype"
-								recordDetailAction="admin:entity.detailproducttype">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productTypeName" sort="false" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" sort="false" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display
-		data-collection="'ProductType'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editproducttype"
-		record-detail-action="admin:entity.detailproducttype"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-		data-expandable="true"
-		data-parent-property-name="parentProductType"
-	>
-		<sw-listing-column data-property-identifier="productTypeName" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="productTypeName" tdclass="primary" sort="false" expandable="true" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" sort="false" ></sw-listing-column>
-	</sw-listing-display>
+	<cfset rc.productTypeCollectionList.addFilter('parentProductType','null','is')/>
+	<cfset rc.productTypeCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true"
+	})/>
+	<cfset rc.productTypeCollectionList.addDisplayProperty(displayProperty='productTypeName',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true",
+		tdclass="primary"
+	},prepend=true)/>
+	<cfset rc.productTypeCollectionList.addDisplayProperty(displayProperty='productTypeID',columnConfig={
+		isSearchable="false",
+		isVisible="false",
+		isDeletable="false"
+	})/>
+	<cfset rc.productTypeCollectionList.addDisplayAggregate('childProductTypes','COUNT','childProductTypesCount')/>
+	
+	<hb:HibachiListingDisplay collectionList="#rc.productTypeCollectionList#">
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

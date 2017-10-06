@@ -65,25 +65,27 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />
 </hb:HibachiListingDisplay> --->
 
-    <sw-listing-display
-        data-collection="'Category'"
-        data-edit="false"
-        data-has-search="true"
-        record-edit-action="admin:entity.editcategory"
-        record-edit-query-string="redirectAction=admin:entity.listcategory"
-        record-detail-action="admin:entity.detailcategory"
-        record-delete-action="admin:entity.deletecategory"
-        data-is-angular-route="false"
-        data-angular-links="false"
-        data-has-action-bar="false"
-        data-expandable="true"
-        data-parent-property-name="parentCategory"
-    >
-    	<sw-listing-column data-property-identifier="categoryID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
-        <sw-listing-column data-property-identifier="categoryName" tdclass="primary" sort="false" expandable="true" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="restrictAccessFlag" sort="false" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="allowProductAssignmentFlag" sort="false" ></sw-listing-column>
-    </sw-listing-display>
+    <cfset rc.categoryCollectionList.addFilter('parentCategory','null','is')/>
+	<cfset rc.categoryCollectionList.setDisplayProperties(displayPropertiesList='restrictAccessFlag,allowProductAssignmentFlag',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true"
+	})/>
+	<cfset rc.categoryCollectionList.addDisplayProperty(displayProperty='categoryName',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true",
+		tdclass="primary"
+	},prepend=true)/>
+	<cfset rc.categoryCollectionList.addDisplayProperty(displayProperty='categoryID',columnConfig={
+		isSearchable="false",
+		isVisible="false",
+		isDeletable="false"
+	})/>
+	<cfset rc.categoryCollectionList.addDisplayAggregate('childCategories','COUNT','childCategoriesCount')/>
+	
+	<hb:HibachiListingDisplay collectionList="#rc.categoryCollectionList#">
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

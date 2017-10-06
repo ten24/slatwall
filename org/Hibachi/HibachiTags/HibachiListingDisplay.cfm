@@ -83,6 +83,8 @@
 	<cfif isObject(attributes.collectionList)>
 		<cfoutput>
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
+			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
+			
 			<span ng-init="
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
 			"></span>
@@ -96,7 +98,11 @@
 				data-is-angular-route="false"
 				data-angular-links="false"
 				data-has-action-bar="false"
+				data-expandable="#attributes.expandable#"
 			    edit="true"
+			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
+			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
+			    </cfif>
 			>
 			</sw-listing-display>
 		</cfoutput>
