@@ -504,7 +504,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
-	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}){
+	public void function addDisplayProperty(required string displayProperty, string title, struct columnConfig = {}, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
 
 		var column = {};
@@ -559,18 +559,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(arguments.columnConfig, 'isExportable')){
 			column['isExportable'] = arguments.columnConfig['isExportable'];
 		}
+		if(structKeyExists(arguments.columnConfig, 'tdclass')){
+			column['tdclass'] = arguments.columnConfig['tdclass'];
+		}
 
-		addColumn(column);
+		addColumn(column,arguments.prepend);
 		//backend should Automatically Authorize
 		addAuthorizedProperty(convertPropertyIdentifierToAlias(column['propertyIdentifier']));
 	}
 
-	public void function addColumn(required column){
+	public void function addColumn(required column, boolean prepend=false){
 		var collectionConfig = this.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfig,'columns')){
 			collectionConfig["columns"] = [];
 		}
-		arrayAppend(collectionConfig.columns,arguments.column);
+		if(arguments.prepend){
+			arrayPrepend(collectionConfig.columns,arguments.column);
+		}else{
+			arrayAppend(collectionConfig.columns,arguments.column);
+		}
+		
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
@@ -1021,9 +1029,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
 		var HibachiBaseEntity = "";
-		HibachiBaseEntity = arguments.collectionObject;
+		HibachiBaseEntity = getService("hibachiService").getProperlyCasedShortEntityName(arguments.collectionObject);
 
-		variables.collectionObject = arguments.collectionObject;
+		variables.collectionObject = HibachiBaseEntity;
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
