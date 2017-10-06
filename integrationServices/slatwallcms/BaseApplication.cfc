@@ -114,7 +114,7 @@ Notes:
 				globalURLKeyProductType,
 				globalURLKeyAccount,
 				globalURLKeyAddress,
-				
+				gloablURLKeyCategory,
 				productDisplayTemplate,
 				productTypeDisplayTemplate,
 				brandDisplayTemplate,
@@ -130,60 +130,15 @@ Notes:
 
 
 		if(!isNull(arguments.entityURL)){
-			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
-			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
-			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
-			var isAddressURLKey = arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL;
-			var isAccountURLKey = arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL;
-			
-			var entityName = '';
-
-			// First look for the Brand URL Key
-			if (isBrandURLKey) {
-				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
-				if(isNull(brand)){
+			var entityName = getHibachiScope().getEntityURLKeyType(arguments.entityUrl);
+			if(len(entityName)){
+				var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
+				var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=arguments.contentURLTitlePath,2=true});
+				if(isNull(entity)){
 					var content = render404(arguments.slatwallScope,site);
 				}
-				arguments.slatwallScope.setBrand( brand );
-				entityName = 'brand';
-			}
-
-			// Look for the Product URL Key
-			if(isProductURLKey) {
-				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
-				if(isNull(product)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setProduct( product );
-				entityName = 'product';
-			}
-
-			// Look for the Product Type URL Key
-			if (isProductTypeURLKey) {
-				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
-				if(isNull(productType)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setProductType( productType );
-				entityName = 'productType';
-			}
-			// Look for the Address URL Key
-			if (isAddressURLKey) {
-				var address = arguments.slatwallScope.getService("addressService").getAddressByURLTitle(arguments.contenturlTitle, true);
-				if(isNull(address)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setRouteEntity( "address", address );
-				entityName = 'address';
-			}
-			// Look for the Address URL Key
-			if (isAccountURLKey) {
-				var account = arguments.slatwallScope.getService("accountService").getAccountByURLTitle(arguments.contenturlTitle, true);
-				if(isNull(account)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setRouteEntity(  "account", account );
-				entityName = 'account';
+				arguments.slatwallScope.invokeMethod('set#entityName#',{1=entity});
+				arguments.slatwallScope.setRouteEntity(  entityName, entity );
 			}
 			
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);

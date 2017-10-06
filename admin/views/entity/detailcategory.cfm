@@ -60,7 +60,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.category#">
 			<hb:HibachiEntityDetailItem view="admin:entity/categorytabs/basic" open="true" showOnCreateFlag="true" />	
 			<hb:HibachiEntityDetailItem view="admin:entity/categorytabs/childcategories" /> 
-
+			<hb:HibachiEntityDetailItem view="admin:entity/categorytabs/settings" />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.category.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.category#" attributeSet="#attributeSet#" />
