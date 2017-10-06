@@ -2652,6 +2652,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					//verify that column is valid, if not remove it
 					if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
+						getPropertyIdentifierAlias(column.propertyIdentifier);
 						//check if we have an aggregate
 						if(!isNull(column.aggregate))
 						{

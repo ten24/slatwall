@@ -38,27 +38,27 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return super.init();
 	}
 	
-	public string function getEntityURLKeyType(required string entityURLKey){
-		if(!structKeyExists(variables,'entityURLlKeyType')){
+	public string function getEntityURLKeyType(string entityURLKey=""){
+		if(!structKeyExists(variables,'entityURLKeyType')){
 			//in priority of assumed use
-			if(arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL){
-				variables.entityURLlKeyType='Product';
-			}else if(arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL){
-				variables.entityURLlKeyType='ProductType';
-			}else if(arguments.slatwallScope.setting('globalURLKeyCategory') == arguments.entityURL){
-				variables.entityURLlKeyType='Category';
-			}else if(arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL){
-				variables.entityURLlKeyType='Brand';
-			}else if(arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL){
-				variables.entityURLlKeyType='Account';	
-			}else if(arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL){
-				variables.entityURLlKeyType='Address';
+			if(setting('globalURLKeyProduct') == arguments.entityURLKey){
+				variables.entityURLKeyType='Product';
+			}else if(setting('globalURLKeyProductType') == arguments.entityURLKey){
+				variables.entityURLKeyType='ProductType';
+			}else if(setting('globalURLKeyCategory') == arguments.entityURLKey){
+				variables.entityURLKeyType='Category';
+			}else if(setting('globalURLKeyBrand') == arguments.entityURLKey){
+				variables.entityURLKeyType='Brand';
+			}else if(setting('globalURLKeyAccount') == arguments.entityURLKey){
+				variables.entityURLKeyType='Account';	
+			}else if(setting('globalURLKeyAddress') == arguments.entityURLKey){
+				variables.entityURLKeyType='Address';
 			}else{
 				variables.entityURLKeyType="";
 			}
 			
 		}
-		return variables.entityURLlKeyType;
+		return variables.entityURLKeyType;
 	}
 	
 	public string function getServerInstanceIPAddress(){

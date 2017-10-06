@@ -132,7 +132,7 @@ Notes:
 		if(!isNull(arguments.entityURL)){
 			var entityName = getHibachiScope().getEntityURLKeyType(arguments.entityUrl);
 			if(len(entityName)){
-				var entityService = getService( "hibachiService" ).getServiceByEntityName( entityName );
+				var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
 				var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=arguments.contentURLTitlePath,2=true});
 				if(isNull(entity)){
 					var content = render404(arguments.slatwallScope,site);
