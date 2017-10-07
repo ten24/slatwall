@@ -87,9 +87,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		// SET Database Type
 		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
 		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
-		var beanFactory = getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory( getBeanFactory() );
-		
-		setBeanFactory( beanFactory );
+		var beanFactory = getBeanFactory('main').getBean("integrationService").updateIntegrationsFromDirectory();
 		
 		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
 	}
@@ -97,24 +95,24 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	public void function onUpdateRequest() {
 		if(!getHibachiScope().getApplicationValue('skipDbData')){
 			// Setup Default Data... Not called on soft reloads.
-			getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
+			getBeanFactory('main').getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
 		}
 		// Setup Default Data.. Not called on soft reloads
-		getBeanFactory().getBean('integrationService').loadDataFromIntegrations();
+		getBeanFactory('main').getBean('integrationService').loadDataFromIntegrations();
 		
 		writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		
 		// Clear the setting cache so that it can be reloaded
-		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
+		getBeanFactory('main').getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
 		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
 		
 		// Clear the setting meta cache so that it can be reloaded
-        	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
+        	getBeanFactory('main').getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
         	writeLog(file="Slatwall", text="General Log - Setting Meta cache has been cleared because of updated request");
 		
 		// Run Scripts
 		if( !getHibachiScope().getApplicationValue('skipDbData')){
-			getBeanFactory().getBean("updateService").runScripts();
+			getBeanFactory('main').getBean("updateService").runScripts();
 		}
 		writeLog(file="Slatwall", text="General Log - Update Service Scripts Have been Run");
 		

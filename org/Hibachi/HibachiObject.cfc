@@ -52,8 +52,10 @@ component accessors="true" output="false" persistent="false" {
 		return getBeanFactory().containsBean( arguments.beanName );
 	}
 	// @hint sets bean factory
-	public void function setBeanFactory(required any beanFactory) {
-		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+	public void function setBeanFactory(required any beanFactory, boolean overwrite=false) {
+		if(!structKeyExists(application[ getApplicationValue('applicationKey') ],'factory') || arguments.overwrite){
+			application[ getApplicationValue('applicationKey') ].factory = request._fw1.theapp.subsystemfactories.main;	
+		}
 	}
 
 	// @hint whether or not we have a bean
