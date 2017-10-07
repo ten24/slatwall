@@ -518,6 +518,7 @@ component extends="framework.one" {
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
+		var begin = getTickCount();
 		if(
 			(
 				hasReloadKey()
@@ -525,14 +526,14 @@ component extends="framework.one" {
 		) {
 			getHibachiScope().setApplicationValue("initialized", false);
 		}
-
+		
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="600"  {
-
+				
 				// Set the request timeout to 600
-				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
+				setting requesttimeout=600;
 
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
@@ -725,6 +726,8 @@ component extends="framework.one" {
 				}
 			}
 		}
+		var end = getTickCount();
+		writedump(end-begin);abort;
 	}
 
 	public void function populateAPIHeaders(){
