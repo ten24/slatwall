@@ -550,7 +550,6 @@ component extends="framework.one" {
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
-					applicationInitData["gzipJavascript"] = 			variables.framework.hibachi.gzipJavascript;
 					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
 					applicationInitData["errorNotifyEmailAddresses"] =	variables.framework.hibachi.errorNotifyEmailAddresses;
 					applicationInitData["baseURL"] = 					variables.framework.baseURL;
@@ -585,8 +584,6 @@ component extends="framework.one" {
 
 					//========================= IOC SETUP ====================================
 
-
-
 					// Setup the custom bean factory
 					var customBF = javacast('null','');
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
@@ -598,7 +595,7 @@ component extends="framework.one" {
 							transients=["process", "transient", "report"],
 							exclude=["entity"]
 							,omitDirectoryAliases=true
-					});
+						});
 
 					}
 
@@ -647,6 +644,7 @@ component extends="framework.one" {
 
 					// Call the onFirstRequest() Method for the parent Application.cfc
 					onFirstRequest();
+					
 					//==================== START: EVENT HANDLER SETUP ========================
 					getBeanFactory('main').getBean('HibachiEventService').registerEventHandlers();
 
