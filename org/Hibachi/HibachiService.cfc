@@ -43,7 +43,7 @@
 		}
 		
 		public string function getSimpleRepresentationPropertyNameByEntityName(required string entityName){
-			var example = this.getEntityObject(arguments.entityName);
+			var example = this.new(arguments.entityName);
 			var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 			return simpleRepresentationPropertyName;
 		}
@@ -52,7 +52,7 @@
 			var smartList = getHibachiDAO().getSmartList(argumentcollection=arguments);
 			
 			if(structKeyExists(arguments.data, "keyword") || structKeyExists(arguments.data, "keywords")) {
-				var example = this.getEntityObject(arguments.entityName);
+				var example = this.new(arguments.entityName);
 				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
 				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
