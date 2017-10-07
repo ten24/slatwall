@@ -50,7 +50,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	// Persistent Properties
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="settingName" ormtype="string";
+	property name="settingName" ormtype="string" index="PI_settingName";
 	property name="settingValue" ormtype="string" length="4000";
 	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="settingValueEncryptDT";
 	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false" column="settingValueEncryptGen";

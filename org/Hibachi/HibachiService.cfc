@@ -19,6 +19,7 @@
 	<cfset variables.entityHasProperty = {} />
 	<cfset variables.entityHasAttribute = {} />
 	<cfset variables.processComponentDirectoryListing = [] />
+	<cfset variables.properlyCasedFullEntityNameStruct = {}/>
 	
 	<cfscript>
 		public any function get(required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
@@ -42,7 +43,7 @@
 		}
 		
 		public string function getSimpleRepresentationPropertyNameByEntityName(required string entityName){
-			var example = this.new(arguments.entityName);
+			var example = this.getEntityObject(arguments.entityName);
 			var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 			return simpleRepresentationPropertyName;
 		}
@@ -51,7 +52,7 @@
 			var smartList = getHibachiDAO().getSmartList(argumentcollection=arguments);
 			
 			if(structKeyExists(arguments.data, "keyword") || structKeyExists(arguments.data, "keywords")) {
-				var example = this.new(arguments.entityName);
+				var example = this.getEntityObject(arguments.entityName);
 				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
 				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
 				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
@@ -792,7 +793,10 @@
 		}
 		
 		public string function getProperlyCasedFullEntityName( required string entityName ) {
-			return "#getApplicationValue('applicationKey')##getProperlyCasedShortEntityName( arguments.entityName )#";
+			if(!structKeyExists(variables.properlyCasedFullEntityNameStruct,entityName)){
+				variables.properlyCasedFullEntityNameStruct[arguments.entityName] = "#getApplicationValue('applicationKey')##getProperlyCasedShortEntityName( arguments.entityName )#";;
+			}
+			return variables.properlyCasedFullEntityNameStruct[arguments.entityName];
 		}
 		
 		public string function getProperlyCasedFullClassNameByEntityName( required string entityName ) {
@@ -810,7 +814,9 @@
 				for(var entityName in entityNamesArr) {
 					var entity = entityNew(entityName);
 					if(structKeyExists(entity, "getThisMetaData")) {
-						var entityMetaData = entityNew(entityName).getThisMetaData();
+						var newEntity = entityNew(entityName);
+						var entityMetaData = newEntity.getThisMetaData();
+						variables.entityObjects[ entityName ] = newEntity;
 						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
 							var entityShortName = listLast(entityMetaData.fullname, '.');
 							allMD[ entityShortName ] = entityMetaData;
@@ -851,7 +857,6 @@
 		
 		// @hint returns the properties of a given entity
 		public any function getPropertiesByEntityName( required string entityName ) {
-			
 			// First Check the application cache
 			if( hasApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
 				return getApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
