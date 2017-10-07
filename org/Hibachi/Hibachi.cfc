@@ -518,7 +518,6 @@ component extends="framework.one" {
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
-		var begin = getTickCount();
 		if(
 			(
 				hasReloadKey()
@@ -608,6 +607,7 @@ component extends="framework.one" {
 							'applicationKey'=variables.framework.applicationKey,
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
+						exclude=["HibachiProcess.cfc","HibachiEntity.cfc","HibachiTransient"],
 						transients=["entity", "process", "transient", "report"],
 						transientPattern="Bean$",
 						omitDirectoryAliases=true
@@ -618,11 +618,18 @@ component extends="framework.one" {
 							'applicationKey'=variables.framework.applicationKey,
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
 						},
+						transientPattern="(^(.(?!Service|DAO$))+$)",
+						exclude=["Hibachi.cfc",
+							"HibachiScope.cfc",
+							"HibachiEntity.cfc",
+							"HibachiObject.cfc",
+							"HibachiProcess.cfc",
+							"HibachiTransient.cfc"
+						],
 						omitDirectoryAliases=true,
 						recurse=false
 						});
 						setSubsystemBeanFactory('hibachi',hibachiBF);
-
 					if(!isNull(customBF)){
 						coreBF.setParent(hibachiBF);
 						customBF.setParent(coreBF);
@@ -633,7 +640,6 @@ component extends="framework.one" {
 						setSubsystemBeanFactory('main',coreBF);
 					}
 
-					
 
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 
@@ -719,7 +725,6 @@ component extends="framework.one" {
 				}
 			}
 		}
-		var end = getTickCount();writedump(end-begin);abort;
 	}
 
 	public void function populateAPIHeaders(){
