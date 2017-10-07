@@ -17,8 +17,8 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 	// Allow For DevOps Config
-	try{include "../../../configApplication.cfm";}catch(any e){} 
-	try{include "../../../../configApplication.cfm";}catch(any e){} 
+	try{include "../../../configApplication.cfm";}catch(any e){}
+	try{include "../../../../configApplication.cfm";}catch(any e){}
 
 	// =============== configFramework
 
@@ -104,15 +104,15 @@ component extends="framework.one" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
-	
+
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
 	try{include "../../custom/config/configFramework.cfm";}catch(any e){}
 	// Allow For DevOps Config
-	try{include "../../../configFramework.cfm";}catch(any e){} 
-	try{include "../../../../configFramework.cfm";}catch(any e){} 
-	
+	try{include "../../../configFramework.cfm";}catch(any e){}
+	try{include "../../../../configFramework.cfm";}catch(any e){}
+
 	if(structKeyExists(url, variables.framework.hibachi.runDbDataKey)){
 		variables.framework.hibachi.skipDbData = false;
 	}
@@ -128,8 +128,8 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configMappings.cfm";}catch(any e){}
 	// Allow For DevOps Config
-	try{include "../../../configMapping.cfm";}catch(any e){} 
-	try{include "../../../../configMapping.cfm";}catch(any e){} 
+	try{include "../../../configMapping.cfm";}catch(any e){}
+	try{include "../../../../configMapping.cfm";}catch(any e){}
 
 
 	// =============== configCustomTags
@@ -165,15 +165,15 @@ component extends="framework.one" {
 	// Allow For Instance Config
 	try{include "../../custom/config/configORM.cfm";}catch(any e){}
 	// Allow For DevOps Config
-	try{include "../../../configORM.cfm";}catch(any e){} 
-	try{include "../../../../configORM.cfm";}catch(any e){} 
+	try{include "../../../configORM.cfm";}catch(any e){}
+	try{include "../../../../configORM.cfm";}catch(any e){}
 
 	// ==================== START: PRE UPDATE SCRIPTS ======================
 	if(
 		!variables.framework.hibachi.skipDbData
 		&&(
-			!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/lastFullUpdate.txt.cfm") 
-			|| !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm") 
+			!fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/lastFullUpdate.txt.cfm")
+			|| !fileExists("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm")
 			|| (structKeyExists(url, variables.framework.hibachi.fullUpdateKey) && url[ variables.framework.hibachi.fullUpdateKey ] == variables.framework.hibachi.fullUpdatePassword)
 		)
 	){
@@ -205,9 +205,9 @@ component extends="framework.one" {
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
 	// =======  END: ENVIORNMENT CONFIGURATION  =======
-	
+
 	public void function setupApplication() {
-		
+
 	}
     public void function setupEnvironment( env ) {
 
@@ -230,7 +230,7 @@ component extends="framework.one" {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
         }
-		
+
 		setupGlobalRequest();
 
 		// Announce the applicatoinRequest event
@@ -251,7 +251,7 @@ component extends="framework.one" {
 	}
 
 	public void function setupGlobalRequest() {
-		
+
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
@@ -335,7 +335,7 @@ component extends="framework.one" {
         }
 		var status = 200;
 		setupGlobalRequest();
-		
+
 		var httpRequestData = getHTTPRequestData();
 
 		//Set an account before checking auth in case the user is trying to login via the REST API
@@ -518,7 +518,6 @@ component extends="framework.one" {
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false) {
-		var begin = getTickCount();
 		if(
 			(
 				hasReloadKey()
@@ -526,12 +525,12 @@ component extends="framework.one" {
 		) {
 			getHibachiScope().setApplicationValue("initialized", false);
 		}
-		
+
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
 			lock scope="Application" timeout="600"  {
-				
+
 				// Set the request timeout to 600
 				setting requesttimeout=600;
 
@@ -569,7 +568,7 @@ component extends="framework.one" {
 
 					// Application Setup Started
 					application[ getHibachiInstanceApplicationScopeKey() ] = applicationInitData;
-					
+
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application cache cleared, and init values set.");
 
 					//Add application name to ckfinder
@@ -585,8 +584,8 @@ component extends="framework.one" {
 					// ================ END: Required Application Setup ==================
 
 					//========================= IOC SETUP ====================================
-					
-					
+
+
 
 					// Setup the custom bean factory
 					var customBF = javacast('null','');
@@ -613,7 +612,7 @@ component extends="framework.one" {
 						transientPattern="Bean$",
 						omitDirectoryAliases=true
 					});
-					
+
 					var hibachiBF = new framework.aop("/#variables.framework.applicationKey#/org/Hibachi", {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
@@ -650,7 +649,7 @@ component extends="framework.one" {
 					onFirstRequest();
 					//==================== START: EVENT HANDLER SETUP ========================
 					getBeanFactory('main').getBean('HibachiEventService').registerEventHandlers();
-					
+
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
@@ -724,10 +723,9 @@ component extends="framework.one" {
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
 
 				}
+
 			}
 		}
-		var end = getTickCount();
-		writedump(end-begin);abort;
 	}
 
 	public void function populateAPIHeaders(){
@@ -829,7 +827,7 @@ component extends="framework.one" {
 	}
 
 	public void function setupView(rc) {
-		
+
 		param name="arguments.rc.ajaxRequest" default="false";
 
 		if(arguments.rc.ajaxRequest) {
@@ -840,7 +838,7 @@ component extends="framework.one" {
 			request.layout = false;
 			setLayout("#getSubsystem(arguments.rc[ getAction() ])#:modal");
 		}
-		
+
 	}
 
 	// Allows for custom views to be created for the admin, frontend or public subsystems
@@ -1018,7 +1016,7 @@ component extends="framework.one" {
 	// @hint setups an application scope value that will always be consistent
 	public any function getHibachiInstanceApplicationScopeKey() {
 		return getHibachiScope().getHibachiInstanceApplicationScopeKey();
-	} 
+	}
 
 	public void function onError(any exception, string event){
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
