@@ -79,18 +79,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 				}
 				*/
 		
-		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
-			writedump('test');abort;
-			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
-		
-			if(sessionEntity.getNewFlag()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
-			} else {
-				foundWithPSID = true;
-				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
-			}
-		
-		
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")) {
 			var sessionEntity = this.getSessionBySessionCookieExtendedPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], true);
 		
@@ -114,6 +102,17 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 		
 			}
+		
+		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
+			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
+		
+			if(sessionEntity.getNewFlag()) {
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
+			} else {
+				foundWithPSID = true;
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+			}
+		
 		
 		} else {
 			var sessionEntity = this.newSession();
