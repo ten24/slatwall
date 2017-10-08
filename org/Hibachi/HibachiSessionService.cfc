@@ -25,6 +25,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	public void function setProperSession() {
+		
 		var requestHeaders = getHTTPRequestData();
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
@@ -78,6 +79,18 @@ component output="false" accessors="true" extends="HibachiService"  {
 				}
 				*/
 		
+		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
+			writedump('test');abort;
+			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
+		
+			if(sessionEntity.getNewFlag()) {
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
+			} else {
+				foundWithPSID = true;
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
+			}
+		
+		
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-ExtendedPSID")) {
 			var sessionEntity = this.getSessionBySessionCookieExtendedPSID( cookie["#getApplicationValue('applicationKey')#-ExtendedPSID"], true);
 		
@@ -101,17 +114,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 		
 			}
-		
-		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
-			var sessionEntity = this.getSessionBySessionCookiePSID( cookie["#getApplicationValue('applicationKey')#-PSID"], true);
-		
-			if(sessionEntity.getNewFlag()) {
-				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="#now()#");
-			} else {
-				foundWithPSID = true;
-				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
-			}
-		
 		
 		} else {
 			var sessionEntity = this.newSession();
@@ -203,6 +205,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
+		
 		
 	}
 	
