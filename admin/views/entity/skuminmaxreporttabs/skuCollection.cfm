@@ -18,6 +18,10 @@
 		isSearchable=false,
 		isDeletable=false
 	})/>
-	<hb:HibachiListingDisplay collectionList="#skuCollectionList#">
+	<hb:HibachiListingDisplay 
+		collectionList="#skuCollectionList#"
+		collectionConfigFieldName="skuCollectionConfig"
+		showSimpleListingControls="false"
+	>
 	</hb:HibachiListingDisplay>
 </cfoutput>
