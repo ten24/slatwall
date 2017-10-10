@@ -105,6 +105,7 @@
 			    </cfif>
 			>
 			</sw-listing-display>
+			<input name="testit" ng-model="#scopeVariableID#.collectionConfigString"/>
 		</cfoutput>
 		
 	<cfelse>
