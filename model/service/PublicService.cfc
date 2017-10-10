@@ -572,8 +572,8 @@ component extends="HibachiService"  accessors="true" output="false"
               if(structKeyExists(data,'fulfillmentID') && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
               }else if(!structKeyExists(data,'fulfillmentID')){
-                orderFulfillment.setShippingAddress(accountAddress.getAddress());
-              getService("OrderService").saveOrderFulfillment(orderFulfillment);
+                fulfillment.setShippingAddress(accountAddress.getAddress());
+              	getService("OrderService").saveOrderFulfillment(fulfillment);
               }
             }
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
@@ -1304,6 +1304,8 @@ component extends="HibachiService"  accessors="true" output="false"
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
+            }else{
+              this.addErrors(data,order.getErrors());
             }
 
         }
@@ -1350,12 +1352,12 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function getStateCodeOptionsByCountryCode( required struct data ) {
         param name="data.countryCode" type="string" default="US";
         var cacheKey = "PublicService.getStateCodeOptionsByCountryCode#arguments.data.countryCode#";
-        var stateCodeOptons = [];
+        var stateCodeOptions = [];
         if(getHibachiCacheService().hasCachedValue(cacheKey)){
         	stateCodeOptions = getHibachiCacheService().getCachedValue(cacheKey);
         }else{
         	var country = getAddressService().getCountry(data.countryCode);
-        	var stateCodeOptions = country.getStateCodeOptions();
+        	stateCodeOptions = country.getStateCodeOptions();
         	getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
         }
         

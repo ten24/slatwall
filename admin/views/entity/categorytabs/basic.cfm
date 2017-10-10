@@ -13,6 +13,10 @@
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="categoryName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="restrictAccessFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.category#" property="allowProductAssignmentFlag" edit="#rc.edit#">
+			<cfif not rc.category.isNew()>
+				<hb:HibachiPropertyDisplay object="#rc.category#" property="urlTitle" edit="#rc.edit#">
+			</cfif>
+					
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput> 

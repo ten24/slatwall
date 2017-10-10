@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Category" entityname="SlatwallCategory" table="SwCategory" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentCategory" {
+component displayname="Category" entityname="SlatwallCategory" table="SwCategory" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_childPropertyName="childCategories" hb_parentPropertyName="parentCategory" {
 	
 	// Persistent Properties
 	property name="categoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -66,7 +66,8 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	
 	// Related Object Properties (one-to-many)
 	property name="childCategories" singularname="childCategory" cfc="Category" type="array" fieldtype="one-to-many" fkcolumn="parentCategoryID" cascade="all-delete-orphan" inverse="true";
-	
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="categoryID" inverse="true" cascade="all-delete-orphan";
+
 	// Related Object Properties (many-to-many - inverse)
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="categoryID" inversejoincolumn="productID" inverse="true";
 	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwContentCategory" fkcolumn="categoryID" inversejoincolumn="contentID" inverse="true";
@@ -91,7 +92,15 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 		
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Child Categories (one-to-many)    
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setCategory( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeCategory( this );
+	}
+
+	// Child Categories (one-to-many)
 	public void function addChildCategory(required any childCategory) {    
 		arguments.childCategory.setParentCategory( this );    
 	}    

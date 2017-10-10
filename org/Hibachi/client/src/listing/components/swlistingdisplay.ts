@@ -1,9 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
-
-
 class SWListingDisplayController{
     /* local state variables */
     public  actions = [];
@@ -176,7 +173,8 @@ class SWListingDisplayController{
                     this.paginator.getCollection = this.getCollection;
 
                     var getCollectionEventID = this.tableID;
-            		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+
                 }
             );
         }else if(this.multiSlot == false){
@@ -184,7 +182,11 @@ class SWListingDisplayController{
                 this.collectionConfig.columns = this.columns;
             }
             this.setupCollectionPromise();
-            console.log('solumn',this.columns);
+
+        }
+
+        if(!this.collectionObject && (this.collectionConfig && this.collectionConfig.baseEntityName)){
+            this.collectionObject = this.collectionConfig.baseEntityName;
         }
 
         if (this.collectionObject){
@@ -228,6 +230,7 @@ class SWListingDisplayController{
         this.paginator.getCollection = this.getCollection;
 
         var getCollectionEventID = this.tableID;
+
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
         this.listingService.getCollection(this.tableID);

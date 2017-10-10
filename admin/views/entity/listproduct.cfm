@@ -55,6 +55,8 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
+	
+	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
 
 		<!--- Create --->
@@ -94,8 +96,9 @@ Notes:
 		data-is-angular-route="false"
 		data-angular-links="false"
 		data-has-action-bar="false"
+		data-show-simple-listing-controls="true"
 	>
-		<sw-listing-column data-property-identifier="productID" data-is-visible="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="productID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="productType.productTypeName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="brand.brandName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="productName" tdclass="primary" ></sw-listing-column>

@@ -3,7 +3,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as FluxStore from   '../../../../../org/hibachi/client/src/core/prototypes/swstore';
+import * as FluxStore from   '../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
 
 /**

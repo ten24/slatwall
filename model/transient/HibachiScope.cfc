@@ -56,6 +56,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="address" type="any";
 	property name="site" type="any";
 	property name="app" type="any";
+	property name="category" type="any";
 	
 	// Slatwall specific request smartList properties
 	property name="productSmartList" type="any";
@@ -209,12 +210,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return variables.address;
 	}
 	
+	// Category
+	public any function getCategory() {
+		if(!structKeyExists(variables, "category")) {
+			variables.address = getService("categoryService").newCategory();
+		}
+		return variables.category;
+	}
+	
 	// Display Route Entity
 	public any function getRouteEntity(string entityName = ""){
 		if (
 			len(arguments.entityName)
 			&& structKeyExists(variables, "routeEntity") 
-			&& structKeyExists(variables.routEntity,arguments.entityName) 
+			&& structKeyExists(variables.routeEntity,arguments.entityName) 
 			&& !isNull(variables.routeEntity[arguments.entityName])
 		) {
 			arguments.entityName = lcase(arguments.entityName);

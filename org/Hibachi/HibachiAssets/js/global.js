@@ -1192,7 +1192,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 								if (pi <= 1 && pv !== "adminIcon") {
 									cls += " first";
 								}
-								innerLI += '<span class="' + cls + '">' + rv[ pv ] + '</span>';
+								var suggestedText = $("<textarea/>").html(rv[ pv ]).text();
+								innerLI += '<span class="' + cls + '">' + suggestedText + '</span>';
 							});
 							innerLI += '</a></li>';
 							jQuery( '#' + jQuery(autocompleteField).data('sugessionsid') ).append( innerLI );

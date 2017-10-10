@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as Store from '../../../../../../org/hibachi/client/src/core/prototypes/swstore';
+import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 
 class ListingService{
 
@@ -27,7 +27,7 @@ class ListingService{
         this.listingDisplayStore = new Store.IStore( this.state, this.listingDisplayStateReducer );
 
     }
-
+ 
     /**
      * The reducer is responsible for modifying the state of the state object into a new state for listeners.
      */
@@ -524,6 +524,10 @@ class ListingService{
 
             if(metadata && angular.isDefined(metadata.persistent)){
                 column.persistent = metadata.persistent;
+            }
+
+            if(metadata && angular.isDefined(metadata.ormtype)){
+                column.ormtype = metadata.ormtype;
             }
 
             if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){

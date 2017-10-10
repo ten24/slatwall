@@ -49,34 +49,13 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.sitesArray" />
+
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="globalUsageStats" />
-		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
-		<swa:SlatwallSetting settingName="globalCurrencyType" />
-		<swa:SlatwallSetting settingName="globalDateFormat" />
-		<swa:SlatwallSetting settingName="globalLogMessages" />
-		<swa:SlatwallSetting settingName="globalTimeFormat" />
-		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
-		<swa:SlatwallSetting settingName="globalAuditCommitMode" />
-		<swa:SlatwallSetting settingName="globalAssetsImageFolderPath" />
-		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
-		<swa:SlatwallSetting settingName="globalMissingImagePath" />
-		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
-		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
-		<swa:SlatwallSetting settingName="globalURLKeyCategory" />
-		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
-		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
-		<swa:SlatwallSetting settingName="globalURLKeyAddress" />
-		<swa:SlatwallSetting settingName="globalURLKeyAccount" />
-		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
-		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
-		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
-		<swa:SlatwallSetting settingName="globalExtendedSessionAutoLogoutInDays" />
-		<swa:SlatwallSetting settingName="globalUseExtendedSession" />
-		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
-        <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
-        <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
+	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
+		<!--- Site Specific Settings --->
+		<cfloop array="#rc.sitesArray#" index="site">
+			<swa:SlatwallSetting settingName="categoryDisplayTemplate" settingFilterEntities="#[site]#" />
+		</cfloop>
 	</swa:SlatwallSettingTable>
 </cfoutput>
-

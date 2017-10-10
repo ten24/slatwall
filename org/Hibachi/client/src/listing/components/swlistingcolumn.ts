@@ -23,6 +23,7 @@ class SWListingColumnController{
     public buttonGroup:any;
     public aggregate:any;
     public persistent:boolean;
+    public isDeletable:boolean;
     public column:any;
 
     //@ngInject
@@ -45,6 +46,14 @@ class SWListingColumnController{
              this.isVisible = true;
         }
 
+        if(angular.isUndefined(this.isDeletable)){
+             this.isDeletable = true;
+        }
+
+        if(angular.isUndefined(this.search)){
+            this.search = true;
+        }
+
         this.editable = this.editable || false;
         //did a cellView get suggested, if so does it exist
         if(this.cellView){
@@ -62,6 +71,7 @@ class SWListingColumnController{
             }
         }
 
+
         this.column = {
             columnID: "C" + this.utilityService.createID(31),
             propertyIdentifier:this.propertyIdentifier,
@@ -78,10 +88,14 @@ class SWListingColumnController{
             hasCellView:this.hasCellView,
             hasHeaderView:this.hasHeaderView,
             isVisible:this.isVisible,
+            isDeletable:this.isDeletable,
+            isSearchable:this.search,
             action:this.action,
             queryString:this.queryString,
             persistent:this.persistent
         };
+
+
 
         if(this.hasCellView){
             this.column.cellView = this.cellView;
@@ -114,6 +128,7 @@ class SWListingColumn implements ng.IDirective{
         sort:"=?",
         filter:"=?",
         isVisible:"=?",
+        isDeletable:"=?",
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
@@ -137,6 +152,7 @@ class SWListingColumn implements ng.IDirective{
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         public listingService
     ){
@@ -144,6 +160,7 @@ class SWListingColumn implements ng.IDirective{
     }
 
     public link=(scope,elem,attr,listingService)=>{
+
         if(angular.isDefined(scope.swListingDisplay)
             && scope.swListingDisplay.tableID
             && scope.swListingDisplay.tableID.length
@@ -152,6 +169,15 @@ class SWListingColumn implements ng.IDirective{
 
             this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
             this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
+        }else if(
+            angular.isDefined(scope.swListingColumn.swListingDisplay)
+            && scope.swListingColumn.swListingDisplay.tableID
+            && scope.swListingColumn.swListingDisplay.tableID.length
+        ){
+            var listingDisplayID = scope.swListingColumn.swListingDisplay.tableID;
+
+            this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+
         }else {
             throw("listing display scope not available to sw-listing-column or there is no table id")
         }

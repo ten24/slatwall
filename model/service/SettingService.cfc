@@ -85,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"productType",
 			"product",
 			"content",
+			"category",
 			"account",
 			"address",
 			"image",
@@ -106,6 +107,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
 			content = ["contentIDPath","site.siteID"],
+			category = ["categoryIDPath",'site.siteID'],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
@@ -160,6 +162,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 			contentEnableTrackingFlag = {fieldType="yesno",defaultValue=0},
+			
+			//Category
+			categoryDisplayTemplate = {fieldType="select"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
@@ -234,6 +239,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
@@ -393,7 +399,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
  
 	private string function extractPackageNameBySettingName (required string settingName){
-		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[a-zA-Z])',arguments.settingName,1,true);
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
 		var packageName = Mid(substring,12,len(substring));
 		return packageName;
@@ -433,6 +439,11 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "address" );
+			case "categoryDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "category", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "category" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
