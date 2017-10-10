@@ -303,7 +303,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
+ 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() >= 1;
  	}
 
 	//TODO: Unused function 
