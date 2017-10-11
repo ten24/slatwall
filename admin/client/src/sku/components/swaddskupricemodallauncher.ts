@@ -18,6 +18,7 @@ class SWAddSkuPriceModalLauncherController{
     public disableAllFieldsButPrice:boolean;
     public currencyCodeOptions; 
     public saveSuccess:boolean=true; 
+    public imagePath:string; 
     
     //@ngInject
     constructor(
@@ -133,6 +134,8 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {}; 
+    public skuData = {}; 
+    public imagePathToUse;
     public transclude = true; 
     public bindToController = {
         sku:"=?",
@@ -155,14 +158,14 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
             scopeService,
             collectionConfigService,
             skuPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder
         )=> new SWAddSkuPriceModalLauncher(
             $hibachi, 
             entityService,
             scopeService,
             collectionConfigService,
             skuPartialsPath,
-			slatwallPathBuilder
+            slatwallPathBuilder
         );
         directive.$inject = [
             '$hibachi',
@@ -170,7 +173,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
             'scopeService',
             'collectionConfigService',
             'skuPartialsPath',
-			'slatwallPathBuilder'
+            'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -179,8 +182,8 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         private entityService,
         private scopeService, 
         private collectionConfigService, 
-		private skuPartialsPath,
-	    private slatwallPathBuilder
+        private skuPartialsPath,
+        private slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"addskupricemodallauncher.html";
     }
@@ -194,16 +197,21 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
                     //sku record case
                     if(angular.isDefined(currentScope.pageRecord.skuID)){    
+
                         var skuData = {
                             skuID:currentScope.pageRecord.skuID,
                             skuCode:currentScope.pageRecord.skuCode,
                             skuDescription:currentScope.pageRecord.skuDescription,
-                            eligibleCurrencyCodeList:currentScope.pageRecord.eligibleCurrencyCodeList
+                            eligibleCurrencyCodeList:currentScope.pageRecord.eligibleCurrencyCodeList,
+                            imagePath:currentScope.pageRecord.imagePath
                         }
+                        
                         $scope.swAddSkuPriceModalLauncher.currencyCodeOptions = currentScope.pageRecord.eligibleCurrencyCodeList.split(",");
                         $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku',skuData);
                         $scope.swAddSkuPriceModalLauncher.skuPrice = this.entityService.newEntity('SkuPrice');
                         $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
+                    
+
                     }
                 } else{ 
                     throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
