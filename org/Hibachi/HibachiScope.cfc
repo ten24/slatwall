@@ -47,6 +47,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				variables.entityURLKeyType='ProductType';
 			}else if(setting('globalURLKeyCategory') == arguments.entityURLKey){
 				variables.entityURLKeyType='Category';
+			}else if(setting('globalURLKeyAttribute') == arguments.entityURLKey){
+				variables.entityURLKeyType='Attribute';
 			}else if(setting('globalURLKeyBrand') == arguments.entityURLKey){
 				variables.entityURLKeyType='Brand';
 			}else if(setting('globalURLKeyAccount') == arguments.entityURLKey){

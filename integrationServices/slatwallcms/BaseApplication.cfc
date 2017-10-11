@@ -109,7 +109,8 @@ Notes:
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
 			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
 			var cacheList = 
-			   "globalURLKeyBrand,
+			   "globalURLKeyAttribute,
+			    globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
 				globalURLKeyAccount,
