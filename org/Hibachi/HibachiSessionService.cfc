@@ -25,6 +25,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	public void function setProperSession() {
+		
 		var requestHeaders = getHTTPRequestData();
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
@@ -203,6 +204,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Update the last request datetime, and IP Address now that all other checks have completed.
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
 		getHibachiScope().getSession().setLastRequestIPAddress( getRemoteAddress() );
+		
 		
 	}
 	

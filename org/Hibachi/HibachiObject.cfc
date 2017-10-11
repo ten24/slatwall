@@ -52,32 +52,25 @@ component accessors="true" output="false" persistent="false" {
 		return getBeanFactory().containsBean( arguments.beanName );
 	}
 	// @hint sets bean factory
-	public void function setBeanFactory(required any beanFactory) {
-		application[ getApplicationValue('applicationKey') ].factory = arguments.beanFactory;
+	public void function setBeanFactory(required any beanFactory, boolean overwrite=false) {
+		if(!structKeyExists(application[ getApplicationValue('applicationKey') ],'factory') || arguments.overwrite){
+			application[ getApplicationValue('applicationKey') ].factory = request._fw1.theapp.subsystemfactories.main;	
+		}
 	}
 
 	// @hint whether or not we have a bean
 	public boolean function hasService(required string serviceName){
-		if(!hasApplicationValue("service_#arguments.serviceName#")){
-			return hasBean(arguments.serviceName);
-		}
-		return true;
+		return hasBean(arguments.serviceName);
 	} 
 	
 	// @hint returns an application scope cached version of the service
 	public any function getService(required string serviceName) {
-		if( !hasApplicationValue("service_#arguments.serviceName#") ) {
-			setApplicationValue("service_#arguments.serviceName#", getBean(arguments.serviceName) );
-		}
-		return getApplicationValue("service_#arguments.serviceName#");
+		return getBean(arguments.serviceName);
 	}
 	
 	// @hint returns an application scope cached version of the service
 	public any function getDAO(required string daoName) {
-		if( !hasApplicationValue("dao_#arguments.daoName#") ) {
-			setApplicationValue("dao_#arguments.daoName#", getBean(arguments.daoName) );
-		}
-		return getApplicationValue("dao_#arguments.daoName#");
+		return getBean(arguments.daoName);
 	}
 	
 	// @hint returns a new transient bean

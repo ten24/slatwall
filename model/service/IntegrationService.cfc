@@ -152,9 +152,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return variables.taxIntegrationCFCs[ arguments.integration.getIntegrationPackage() ];
 	}
 	
-	public any function updateIntegrationsFromDirectory() {
+	public void function updateIntegrationsFromDirectory() {
 		var dirList = directoryList( expandPath("/Slatwall") & '/integrationServices' );
-		var integrationList = this.listIntegration();
 		var installedIntegrationList = "";
 		
 		// Loop over each integration in the integration directory
@@ -170,7 +169,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		ORMExecuteQuery("UPDATE #getDao('hibachiDao').getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
 		getHibachiDAO().flushORMSession();
 		
-		return getBeanFactory();
 	}
 	
 	public void function loadDataFromIntegrations(){
@@ -222,12 +220,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// If this integration is active lets register all of its event handlers, and decorate the getBeanFactory() with it
 				if( integration.getEnabledFlag() ) {
-					
-					for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
+					var integrationHandlersCount = arrayLen(integrationCFC.getEventHandlers());
+					for(var e=1; e<=integrationHandlersCount; e++) {
 						getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
 					}
 					
-					if(arrayLen(integrationCFC.getEventHandlers())) {
+					if(integrationHandlersCount) {
 						logHibachi("The Integration: #integrationPackage# has had #arrayLen(integrationCFC.getEventHandlers())# eventHandler(s) registered");	
 					}
 					
@@ -236,7 +234,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						//if we have entities then copy them into root model/entity
 						if(directoryExists("#getApplicationValue("applicationRootMappingPath")#/integrationServices/#integrationPackage#/model/entity")){
 							var modelList = directoryList( expandPath("/Slatwall") & "/integrationServices/#integrationPackage#/model/entity" );
-							for(var modelFilePath in modelList){
+							var modelArray = listToArray(modelList);
+							for(var modelFilePath in modelArray){
 								var beanCFC = listLast(replace(modelFilePath,"\","/","all"),'/');
 								var beanName = listFirst(beanCFC,'.');
 								var modelDestinationPath = expandPath("/Slatwall") & "/model/entity/" & beanCFC;
@@ -268,7 +267,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 							
 						}
-						setBeanFactory(beanFactory);
 					}
 
 				}
