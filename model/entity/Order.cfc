@@ -655,7 +655,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var returnOrderPayment = javaCast("null", "");
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
-				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+				if(isNull(dynamicChargeOrderPayment) || (orderPayment.getCreatedDateTime() > dynamicChargeOrderPayment.getCreatedDateTime() && !orderPayment.getNewFlag())) {
 					returnOrderPayment = orderPayment;
 				}
 			}
