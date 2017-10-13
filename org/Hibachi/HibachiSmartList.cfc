@@ -847,16 +847,16 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	
 	public numeric function getRecordsCount() {
 		if(!structKeyExists(variables, "recordsCount")) {
-			if(getCacheable() && structKeyExists(application.entitySmartList, getCacheName()) && structKeyExists(application.entitySmartList[getCacheName()], "recordsCount")) {
-				variables.recordsCount = application.entitySmartList[ getCacheName() ].recordsCount;
+			if(getCacheable() && structKeyExists(session.entitySmartList, getCacheName()) && structKeyExists(session.entitySmartList[getCacheName()], "recordsCount")) {
+				variables.recordsCount = session.entitySmartList[ getCacheName() ].recordsCount;
 			} else {
 				if(!structKeyExists(variables,"records")) {
 					var HQL = "#getHQLSelect(countOnly=true)##getHQLFrom(allowFetch=false)##getHQLWhere()#";
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					variables.recordsCount = recordCount;
 					if(getCacheable()) {
-						application.entitySmartList[ getCacheName() ] = {};
-						application.entitySmartList[ getCacheName() ].recordsCount = variables.recordsCount;
+						session.entitySmartList[ getCacheName() ] = {};
+						session.entitySmartList[ getCacheName() ].recordsCount = variables.recordsCount;
 					}
 				} else {
 					variables.recordsCount = arrayLen(getRecords());	
