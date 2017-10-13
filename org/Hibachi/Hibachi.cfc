@@ -101,6 +101,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
+	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	
 
 	// Allow For Application Config
@@ -239,15 +240,17 @@ component extends="FW1.framework" {
 			// Verify that the application is setup
 			verifyApplicationSetup();
 			
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+			if(variables.framework.hibachi.useServerInstanceCacheControl){
+				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
-			}else{
-				//RELOAD JUST THE SETTINGS
-				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-					getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
-					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-					serverInstance.setSettingsExpired(false);
-				}	
+				}else{
+					//RELOAD JUST THE SETTINGS
+					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+						serverInstance.setSettingsExpired(false);
+					}	
+				}
 			}
 			
 			// Verify that the session is setup
