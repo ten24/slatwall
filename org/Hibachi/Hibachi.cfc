@@ -767,7 +767,9 @@ component extends="FW1.framework" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-
+					if(updated){
+						redirect(action=request.action,queryString='updated=true');
+					}
 				}
 			}
 		}
