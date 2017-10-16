@@ -25,6 +25,9 @@ class SWSkuStockAdjustmentModalLauncherController{
     public stockAdjustmentStatusTypePromise:any;
     
     public skuPromise; 
+
+    public stockCollectionConfig;
+    public value;
     
     //@ngInject
     constructor(
@@ -32,7 +35,8 @@ class SWSkuStockAdjustmentModalLauncherController{
         private $q, 
         private $hibachi, 
         private observerService,
-        private utilityService
+        private utilityService,
+        protected collectionConfigService
     ){
         this.toLocationTypeaheadDataKey = this.utilityService.createID(32);
         if(angular.isDefined(this.skuId)){
@@ -108,6 +112,17 @@ class SWSkuStockAdjustmentModalLauncherController{
         if(angular.isDefined(item)){
             this.toLocation = this.$hibachi.populateEntity('Location', item); 
             this.stockAdjustment.$$setToLocation(this.toLocation);
+            this.stock.$$setLocation(this.toLocation);
+        
+            //get existing stockID if one exists
+            this.stockCollectionConfig = this.collectionConfigService.newCollectionConfig('Stock');
+            this.stockCollectionConfig.addFilter('sku.skuID', this.stock.sku.skuID);
+            this.stockCollectionConfig.addFilter('location.locationID', this.toLocation.locationID);
+            this.stockCollectionConfig.setDistinct(true);
+            this.stockCollectionConfig.getEntity().then((res) =>{
+                this.stock.stockID = res.pageRecords[0].stockID;
+            });
+            
         } else { 
             this.toLocation = undefined; 
         }
