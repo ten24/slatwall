@@ -246,6 +246,19 @@ component accessors="true" output="false" persistent="false" {
 		return false;
 	}
 	
+	public void function clearApplicationValueByPrefix(required any prefix){
+		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey())) {
+			for(var key in application[ getHibachiInstanceApplicationScopeKey() ]){
+				if(
+					len(arguments.prefix) < len(key)
+					&& arguments.prefix == left(key,len(prefix))
+				){
+					clearApplicationValue(key);
+				}
+			}
+		}
+	}
+	
 	// @hint facade method to check the application scope for a value
 	public void function clearApplicationValue(required any key) {
 		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
