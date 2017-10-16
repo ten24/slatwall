@@ -28,10 +28,11 @@
                         type="search"
                         title="{{swTypeaheadSearch.titleText}}"
                         class="form-control"
+                        style="max-width: 100%;"
                         autocomplete="off"
                         data-ng-required="swTypeaheadSearch.validateRequired"
                         data-ng-disabled="swTypeaheadSearch.disabled"/>
-                </div>
+			</div>
             <div class="input-group-btn">
                 <button class="btn btn-default" type='button' ng-click="swTypeaheadSearch.toggleOptions()" data-ng-disabled="swTypeaheadSearch.disabled" style="border-radius:0;">
                     <i class="fa" data-ng-class="(swTypeaheadSearch.hideSearch) ? 'fa-caret-down': 'fa-caret-up'" ></i>
