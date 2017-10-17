@@ -9,7 +9,6 @@
 			<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="location" edit="#rc.edit#"/>
 			<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="minQuantity" edit="#rc.edit#"/>
 			<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="maxQuantity" edit="#rc.edit#"/>
-			<!--- <hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="schedule" edit="#rc.edit#"/> --->
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

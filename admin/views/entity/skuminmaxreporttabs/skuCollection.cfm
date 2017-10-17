@@ -8,7 +8,7 @@
 		<cfset skuCollectionList.setCollectionConfig(rc.skuminmaxreport.getSkuCollectionConfig())/>
 	</cfif>
 	
-	<cfset skuCollectionList.setDisplayProperties('skuName,skuCode',{
+	<cfset skuCollectionList.setDisplayProperties('skuName,skuCode,skuDescription,skuDefinition',{
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true

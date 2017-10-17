@@ -52,10 +52,10 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 	property name="skuMinMaxReportID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="reportName" ormtype="string" description="Defines the name of the report.";
 
-	property name="skuCollectionConfig" hb_populateEnabled="public" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
+	property name="skuCollectionConfig" hb_populateEnabled="public" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query" default="{}";
 
-	property name="minQuantity" type="numeric";
-	property name="maxQuantity" type="numeric";
+	property name="minQuantity" ormtype="integer";
+	property name="maxQuantity" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
@@ -73,7 +73,7 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="skuCollectionConfigStruct" persistent="false";
+	property name="skuMinMaxReportCollection" persistent="false";
 
 	//Derived Properties
 
@@ -92,31 +92,42 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 		return "reportName";
 	}
 
-
-	public any function getSkuCollection() {
-		var stockSmartList = getService("StockService").getStockSmartList();
-		var skuCollection = getService('HibachiCollectionService').newCollection();
-		
-		// Create base collection to select active skus what have inventory transactions
-		skuCollection.setCollectionObject('Sku');
-		skuCollection.setDisplayProperties('skuCode,calculatedQATS,activeFlag,skuID');
-		skuCollection.addOrderBy('skuCode|ASC');
-		skuCollection.addFilter('activeFlag', 'True', '=');
-
-		// Add selected locations filters
-		if(!isNull(this.getLocation())) {
-			skuCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#this.getLocation().getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+	public any function getSkuCollectionConfig() {
+		if(variables.skuCollectionConfig == '{}' ) {
+			// Create base collection to select active skus
+			var skuCollection = getService('HibachiCollectionService').newCollection();
+			skuCollection.setCollectionObject('Sku');
+			skuCollection.setDisplayProperties('skuName,skuCode,skuDescription,skuDefinition,calculatedQATS,activeFlag,skuID');
+			skuCollection.addOrderBy('skuCode|ASC');
+			skuCollection.addFilter('activeFlag', 'True', '=');
+			return serializeJSON(skuCollection.getCollectionConfigStruct());
+		} else {
+			return variables.skuCollectionConfig;
 		}
-
-		// aggregate QATS up to selected location and filter on min/max range
-		skuCollection.addDisplayAggregate('stocks.calculatedQATS','SUM','sumQATS');
-		skuCollection.addFilter('stocks.calculatedQATS', this.getMinQuantity(), '>=', 'AND', 'SUM');
-		skuCollection.addFilter('stocks.calculatedQATS', this.getMaxQuantity(), '<=', 'AND', 'SUM');
-
-		return skuCollection;
 	}
 
+	public any function getSkuMinMaxReportCollection() {
+		var skuMinMaxReportCollection = getService('HibachiCollectionService').newCollection();
+		skuMinMaxReportCollection.setCollectionObject('Sku');
+		// skuMinMaxReportCollection.setDisplayProperties('skuName,skuCode,skuDescription,skuDefinition,calculatedQATS,activeFlag,skuID');
+		// skuMinMaxReportCollection.addDisplayAggregate('stocks.calculatedQATS','SUM','sumQATS');
+		// skuMinMaxReportCollection.addOrderBy('skuCode|ASC');
+		// skuMinMaxReportCollection.addFilter('activeFlag', 'True', '=');
 
+		// Apply sku collection
+		skuMinMaxReportCollection.setCollectionConfig(this.getSkuCollectionConfig());
+
+		// Add selected locations filters
+		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#this.getLocation().getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='locationFilters', filterGroupLogicalOperator='AND');
+
+		// Aggregate QATS up to selected location and filter on min/max range
+		skuMinMaxReportCollection.addFilter('stocks.calculatedQATS', this.getMinQuantity(), '<', 'OR', 'SUM','stockFilters','AND');
+		skuMinMaxReportCollection.addFilter('stocks.calculatedQATS', this.getMaxQuantity(), '>', 'OR', 'SUM','stockFilters','AND');
+
+		// skuMinMaxReportCollection.updateCollectionConfig();
+
+		return skuMinMaxReportCollection;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
