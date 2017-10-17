@@ -19,7 +19,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="modifiedEntities" type="array";
 	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
-	property name="entityURLlKeyType" type="string";
+	property name="entityURLKeyType" type="string";
+	
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -47,14 +48,14 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				variables.entityURLKeyType='ProductType';
 			}else if(setting('globalURLKeyCategory') == arguments.entityURLKey){
 				variables.entityURLKeyType='Category';
-			}else if(setting('globalURLKeyAttribute') == arguments.entityURLKey){
-				variables.entityURLKeyType='Attribute';
 			}else if(setting('globalURLKeyBrand') == arguments.entityURLKey){
 				variables.entityURLKeyType='Brand';
 			}else if(setting('globalURLKeyAccount') == arguments.entityURLKey){
 				variables.entityURLKeyType='Account';	
 			}else if(setting('globalURLKeyAddress') == arguments.entityURLKey){
 				variables.entityURLKeyType='Address';
+			}else if(setting('globalURLKeyAttribute') == arguments.entityURLKey){
+				variables.entityURLKeyType='Attribute';
 			}else{
 				variables.entityURLKeyType="";
 			}
