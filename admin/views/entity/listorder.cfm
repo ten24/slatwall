@@ -81,30 +81,30 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
 	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display
-		data-collection="'Order'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editorder"
-		record-detail-action="admin:entity.detailorder"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
+	
+	<cfset displayPropertyList = ""/>
+	<cfif rc.slatAction eq "admin:entity.listorder">
+		<cfset displayPropertyList &= "orderNumber,orderOpenDateTime,"/>	
+	</cfif>
+	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,orderType.typeName,orderStatusType.typeName,orderOrigin.orderOriginName,createdDateTime,calculatedTotal'/>
+	<cfset rc.orderCollectionList.setDisplayProperties(
+		displayPropertyList,
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+	
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	<hb:HibachiListingDisplay 
+		collectionList="#rc.orderCollectionlist#"
 	>
-		<sw-listing-column data-property-identifier="orderID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<cfif rc.slatAction eq "admin:entity.listorder">
-			<sw-listing-column data-property-identifier="orderNumber" ></sw-listing-column>
-			<sw-listing-column data-property-identifier="orderOpenDateTime" ></sw-listing-column>
-		</cfif>
-		<sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.company" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="orderType.typeName" sort="true" title="#$.slatwall.rbKey('entity.order.orderType')#" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="orderStatusType.typeName" sort="true" filter="true" title="#$.slatwall.rbKey('define.status')#" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="orderOrigin.orderOriginName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedTotal" ></sw-listing-column>
-	</sw-listing-display>
+	</hb:HibachiListingDisplay>
+
 
 </cfoutput>
