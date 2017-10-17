@@ -54731,7 +54731,8 @@
 	        this.utilityService = utilityService;
 	        this.collectionConfigService = collectionConfigService;
 	        this.initData = function () {
-	            _this.toLocation = undefined;
+	            _this.selectedLocation = undefined;
+	            _this.stockAdjustmentType = undefined;
 	            var skudata = {
 	                skuID: _this.skuId,
 	                skuCode: _this.skuCode,
@@ -54746,20 +54747,29 @@
 	            _this.stock = _this.$hibachi.newStock();
 	            _this.stockAdjustment = _this.$hibachi.newStockAdjustment();
 	            _this.stockAdjustmentItem = _this.$hibachi.newStockAdjustmentItem();
-	            _this.toLocation = _this.$hibachi.newLocation();
-	            _this.stockAdjustment.$$setToLocation(_this.toLocation);
+	            _this.selectedLocation = _this.$hibachi.newLocation();
 	            _this.stockAdjustment.$$addStockAdjustmentItem(_this.stockAdjustmentItem);
 	            _this.stock.$$setSku(_this.sku);
-	            _this.stockAdjustmentItem.$$setToStock(_this.stock);
-	            _this.stockAdjustmentType = _this.$hibachi.populateEntity("Type", { typeID: "444df2e60db81c12589c9b39346009f2" }); //manual in stock adjustment type 
 	            _this.stockAdjustmentStatusType = _this.$hibachi.populateEntity("Type", { typeID: "444df2e2f66ddfaf9c60caf5c76349a6" }); //new status type for stock adjusment
-	            _this.stockAdjustment.$$setStockAdjustmentType(_this.stockAdjustmentType);
 	            _this.stockAdjustment.$$setStockAdjustmentStatusType(_this.stockAdjustmentStatusType);
 	            _this.stockAdjustmentItem.$$setSku(_this.sku);
 	            _this.newQuantity = _this.calculatedQoh || 0;
-	            _this.observerService.notify(_this.toLocationTypeaheadDataKey + 'clearSearch');
+	            _this.observerService.notify(_this.selectLocationTypeaheadDataKey + 'clearSearch');
 	        };
 	        this.save = function () {
+	            //setup adjustment for either manualIn or manualOut
+	            console.log();
+	            if (_this.stockAdjustmentItem.data.quantity > 0) {
+	                _this.stockAdjustment.$$setStockAdjustmentType(_this.$hibachi.populateEntity("Type", { typeID: "444df2e60db81c12589c9b39346009f2" })); //manual in stock adjustment type 
+	                _this.stockAdjustment.$$setToLocation(_this.selectedLocation);
+	                _this.stockAdjustmentItem.$$setToStock(_this.stock);
+	            }
+	            else {
+	                _this.stockAdjustment.$$setStockAdjustmentType(_this.$hibachi.populateEntity("Type", { typeID: "444df2e7dba550b7a24a03acbb37e717" })); //manual out stock adjustment type 
+	                _this.stockAdjustment.$$setFromLocation(_this.selectedLocation);
+	                _this.stockAdjustmentItem.data.quantity = _this.stockAdjustmentItem.data.quantity * -1;
+	                _this.stockAdjustmentItem.$$setFromStock(_this.stock);
+	            }
 	            return _this.$q.all([_this.observerService.notify('updateBindings'), _this.stock.$$save()]).then().finally(function () {
 	                var stockAdjustmentSavePromise = _this.stockAdjustment.$$save();
 	                stockAdjustmentSavePromise.then(function (response) {
@@ -54777,22 +54787,23 @@
 	                });
 	            });
 	        };
-	        this.addToLocation = function (item) {
+	        this.addSelectedLocation = function (item) {
 	            if (angular.isDefined(item)) {
-	                _this.toLocation = _this.$hibachi.populateEntity('Location', item);
-	                _this.stockAdjustment.$$setToLocation(_this.toLocation);
-	                _this.stock.$$setLocation(_this.toLocation);
+	                _this.selectedLocation = _this.$hibachi.populateEntity('Location', item);
+	                _this.stock.$$setLocation(_this.selectedLocation);
 	                //get existing stockID if one exists
 	                _this.stockCollectionConfig = _this.collectionConfigService.newCollectionConfig('Stock');
 	                _this.stockCollectionConfig.addFilter('sku.skuID', _this.stock.sku.skuID);
-	                _this.stockCollectionConfig.addFilter('location.locationID', _this.toLocation.locationID);
+	                _this.stockCollectionConfig.addFilter('location.locationID', _this.selectedLocation.locationID);
 	                _this.stockCollectionConfig.setDistinct(true);
 	                _this.stockCollectionConfig.getEntity().then(function (res) {
-	                    _this.stock.stockID = res.pageRecords[0].stockID;
+	                    if (res.pageRecords.length > 0) {
+	                        _this.stock.stockID = res.pageRecords[0].stockID;
+	                    }
 	                });
 	            }
 	            else {
-	                _this.toLocation = undefined;
+	                _this.selectedLocation = undefined;
 	            }
 	        };
 	        this.updateNewQuantity = function (args) {
@@ -54812,7 +54823,7 @@
 	                _this.newQuantity = 0;
 	            }
 	        };
-	        this.toLocationTypeaheadDataKey = this.utilityService.createID(32);
+	        this.selectLocationTypeaheadDataKey = this.utilityService.createID(32);
 	        if (angular.isDefined(this.skuId)) {
 	            this.name = "skuStockAdjustment" + this.utilityService.createID(32);
 	        }
