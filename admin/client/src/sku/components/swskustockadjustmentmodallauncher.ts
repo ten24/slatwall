@@ -115,7 +115,6 @@ class SWSkuStockAdjustmentModalLauncherController{
                     url:this.$hibachi.getUrlWithActionPrefix()+"entity.processStockAdjustment&processContext=processAdjustment&stockAdjustmentID="+this.stockAdjustmentID
                 }).then((response)=>{
                     //don't need to do anything here
-                    console.log(this.swListingDisplay)
                     this.swListingDisplay.getCollection();
                 });
 
@@ -124,7 +123,6 @@ class SWSkuStockAdjustmentModalLauncherController{
     }
 
     public addSelectedLocation = (item) =>{
-        console.log('item',item);
         if(angular.isDefined(item)){
             this.selectedLocation = this.$hibachi.populateEntity('Location', item);
 
