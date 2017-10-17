@@ -723,7 +723,7 @@ component extends="framework.one" {
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-
+					var updated = false;
 					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup
 						&& (
 							!structKeyExists(server,'runFullUpdate')
@@ -751,6 +751,7 @@ component extends="framework.one" {
 						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
+						getHibachiScope().clearApplicationValueByPrefix('class');
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 
@@ -758,7 +759,7 @@ component extends="framework.one" {
 
 						// Write File
 						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/config/lastFullUpdate.txt.cfm', now());
-
+						updated = true;
 						// Announce the applicationFullUpdate event
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
 					}
@@ -791,7 +792,9 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-
+					if(updated){
+						redirect(action=request.action,queryString='updated=true');
+					}
 				}
 			}
 		}
