@@ -1,6 +1,6 @@
-<sw-form ng-if="swSkuPriceEdit.sku" 
-        data-object="swSkuPriceEdit.sku" 
-        data-name="{{swSkuPriceEdit.formName}}"> 
+<sw-form ng-if="swSkuPriceEdit.sku"
+        data-object="swSkuPriceEdit.sku"
+        data-name="{{swSkuPriceEdit.formName}}">
         <span ng-show="swSkuPriceEdit.showPriceEdit">
             <sw-property-display
                     data-object="swSkuPriceEdit.sku"
@@ -8,21 +8,21 @@
                     data-in-listing-display="true"
                     data-editing="true"
                     data-editable="true"
-                    data-event-handlers="change"
+                    data-event-announcers="change"
                 >
-                
+
             </sw-property-display>
-            <a href="##" 
-            class="s-indicator-icon" 
+            <a href="##"
+            class="s-indicator-icon"
             ng-click="swSkuPriceEdit.switchTabContext()"
             ng-if="swSkuPriceEdit.showSwitchTabContextButton">
                     <i class="fa fa-list"></i>
             </a>
         </span>
 </sw-form>
-<sw-form ng-if="swSkuPriceEdit.skuPrice" 
-        data-object="swSkuPriceEdit.skuPrice" 
-        data-name="{{swSkuPriceEdit.formName}}"> 
+<sw-form ng-if="swSkuPriceEdit.skuPrice"
+        data-object="swSkuPriceEdit.skuPrice"
+        data-name="{{swSkuPriceEdit.formName}}">
         <span ng-show="swSkuPriceEdit.showPriceEdit">
             <sw-property-display
                     ng-if="!swSkuPriceEdit.skuPrice.data.inferred"
@@ -35,7 +35,7 @@
                     data-editing="true"
                     data-editable="true"
                     data-revert-to-value="swSkuPriceEdit.revertToValue"
-                    data-event-handlers="change"
+                    data-event-announcers="change"
                 >
             </sw-property-display>
             <sw-add-sku-price-modal-launcher
@@ -51,7 +51,7 @@
                     <input readonly type="text" ng-model="swSkuPriceEdit.skuPrice.data.price" class="form-control input-xs s-inherited">
                 </div>
              </sw-add-sku-price-modal-launcher>
-             <sw-add-sku-price-modal-launcher 
+             <sw-add-sku-price-modal-launcher
                 data-sku="swSkuPriceEdit.skuPrice.data.sku"
                 data-min-quantity="{{swSkuPriceEdit.skuPrice.data.minQuantity}}"
                 data-max-quantity="{{swSkuPriceEdit.skuPrice.data.maxQuantity}}"
@@ -64,9 +64,9 @@
                     <input readonly type="text" value="No Rate Available" class="form-control input-xs s-inherited">
                 </div>
             </sw-add-sku-price-modal-launcher>
-            
-            <a href="##" 
-                class="s-indicator-icon" 
+
+            <a href="##"
+                class="s-indicator-icon"
                 ng-click="swSkuPriceEdit.switchTabContext()"
                 ng-if="swSkuPriceEdit.showSwitchTabContextButton">
                     <i class="fa fa-list"></i>
