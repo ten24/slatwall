@@ -381,7 +381,9 @@ class SWTypeaheadSearch implements ng.IDirective{
         typeaheadDataKey:"@?",
         rightContentPropertyIdentifier:"@?",
         searchEndpoint:"@?",
-        titleText:'@?'
+        titleText:'@?',
+        urlBase:'@?', 
+        urlProperty:'@?'
     };
     public controller=SWTypeaheadSearchController;
     public controllerAs="swTypeaheadSearch";
@@ -410,12 +412,17 @@ class SWTypeaheadSearch implements ng.IDirective{
                 
                 var target = element.find(".dropdown-menu");
                 var listItemTemplateString = `
-                    <li ng-repeat="item in swTypeaheadSearch.results" ng-class="{'s-selected':item.selected}"></li>
+                    <li ng-repeat="item in swTypeaheadSearch.results" class="dropdown-item" ng-class="{'s-selected':item.selected}"></li>
                 `;
 
-                var anchorTemplateString = `
-                    <a ng-click="swTypeaheadSearch.addOrRemoveItem(item)">
-                `
+                var anchorTemplateString = '<a ';
+
+                if(angular.isDefined($scope.swTypeaheadSearch.urlBase) &&
+                    angular.isDefined($scope.swTypeaheadSearch.urlProperty)){
+                    anchorTemplateString += 'href="' + $scope.swTypeaheadSearch.urlBase + '{{item.' + $scope.swTypeaheadSearch.urlProperty + '}}">';
+                } else {
+                    anchorTemplateString += 'ng-click="swTypeaheadSearch.addOrRemoveItem(item)">';
+                }
 
                 if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){
                     var rightContentTemplateString = `<span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>`
