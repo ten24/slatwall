@@ -36,7 +36,6 @@
 Notes:
 
 */
-
 component displayname="Rule Set" entityname="SlatwallRuleSet" table="SwRuleSet" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" hb_processContexts="clone" {
 	
 	// Persistent Properties
