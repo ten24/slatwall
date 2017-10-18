@@ -371,7 +371,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
  
 	private string function extractPackageNameBySettingName (required string settingName){
-		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[a-zA-Z])',arguments.settingName,1,true);
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
 		var packageName = Mid(substring,12,len(substring));
 		return packageName;
@@ -983,8 +983,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
 			}
-
-			for(var serverInstance in this.getServerInstanceSmartList().getRecords()){
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+			var serverInstanceSmartList = this.getServerInstanceSmartList();
+			serverInstanceSmartList.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#serverinstance.serverInstanceID != '#serverInstance.getServerInstanceID()#'");
+			for(var serverInstance in serverInstanceSmartList.getRecords()){
 				serverInstance.setServerInstanceExpired(true);
 
 			}
