@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"ruleName":		[{"contexts":"save","required":true}],
+		"ruleCode":		[{"contexts":"save","required":true}]
+	}
+}
