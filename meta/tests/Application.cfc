@@ -66,5 +66,7 @@ component extends="meta.testbox.Application"{
 	this.ormSettings.automanageSession = false;
 
 	
-
+	public void function onApplicationStart() {
+		setting requesttimeout="180";
+	}
 }
