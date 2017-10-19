@@ -67,6 +67,6 @@ component extends="meta.testbox.Application"{
 
 	
 	public void function onApplicationStart() {
-		setting requesttimeout="180";
+		setting requesttimeout="0";
 	}
 }
