@@ -203,15 +203,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			variables.productTypeOptions = [];
 
-			if(arrayLen(records) > 1){
-				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
-			}
-
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
 				recordStruct['value']=records[i].getProductTypeID();
 				arrayAppend(variables.productTypeOptions, recordStruct);
+			}
+			variables.productTypeOptions = getService('hibachiUtilityService').arrayOfStructsSort(variables.productTypeOptions,'name','asc');
+			if(arrayLen(records) > 1){
+				ArrayPrepend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
 			}
 		}
 

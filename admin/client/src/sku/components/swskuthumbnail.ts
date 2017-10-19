@@ -19,7 +19,7 @@ class SWSkuThumbnailController{
 
         fileService.imageExists(this.skuData.imagePath).then(
             ()=>{
-                this.skuData.imagePath = this.skuData.imagePath; 
+                //Do nothing
             },
             ()=>{
                 this.skuData.imagePath = '/assets/images/image-placeholder.jpg';
