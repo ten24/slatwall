@@ -67,25 +67,25 @@ component displayname="Rule" entityname="SlatwallRule" table="SwRule" persistent
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="workflowObjectOptions" persistent="false";
+	property name="ruleObjectOptions" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public array function getWorkflowObjectOptions(){
-		if(!structKeyExists(variables,'workflowObjectOptions')){
+	public array function getRuleObjectOptions(){
+		if(!structKeyExists(variables,'ruleObjectOptions')){
 			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
 			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
 			arraySort(entitiesMetaDataArray,"text");
-			variables.workflowObjectOptions = [];
+			variables.ruleObjectOptions = [];
 			for(var i=1; i <=arrayLen(entitiesMetaDataArray); i++){
 				var entityMetaDataStruct = {};
 				entityMetaDataStruct['name'] = rbKey('entity.#entitiesMetaDataArray[i]#');
 				entityMetaDataStruct['value'] = entitiesMetaDataArray[i];
-				arrayAppend(variables.workflowObjectOptions,entityMetaDataStruct);
+				arrayAppend(variables.ruleObjectOptions,entityMetaDataStruct);
 			}
 		}
 		
-		return variables.workflowObjectOptions;
+		return variables.ruleObjectOptions;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

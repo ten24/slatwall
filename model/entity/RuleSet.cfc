@@ -43,6 +43,8 @@ component displayname="Rule Set" entityname="SlatwallRuleSet" table="SwRuleSet" 
 	property name="ruleSetName" ormtype="string";
 	property name="ruleSetCode" ormtype="string" index="PI_RULESETCODE";
 	property name="ruleSetDescription" ormtype="string";
+	property name="ruleSetObject" ormtype="string" hb_formfieldType="select";
+	property name="ruleSetConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	
 	// Calculated Properties
 	
@@ -63,6 +65,31 @@ component displayname="Rule Set" entityname="SlatwallRuleSet" table="SwRuleSet" 
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Non-Persistent Properties
+	property name="ruleSetObjectOptions" persistent="false";
+	
+	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getRuleSetObjectOptions(){
+		if(!structKeyExists(variables,'ruleSetObjectOptions')){
+			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
+			variables.ruleSetObjectOptions = [];
+			for(var i=1; i <=arrayLen(entitiesMetaDataArray); i++){
+				var entityMetaDataStruct = {};
+				entityMetaDataStruct['name'] = rbKey('entity.#entitiesMetaDataArray[i]#');
+				entityMetaDataStruct['value'] = entitiesMetaDataArray[i];
+				arrayAppend(variables.ruleSetObjectOptions,entityMetaDataStruct);
+			}
+		}
+		
+		return variables.ruleSetObjectOptions;
+	}
+	
+	// ============  END:  Non-Persistent Property Methods =================
+	
 
 	
 	
