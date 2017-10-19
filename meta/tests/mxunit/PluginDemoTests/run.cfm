@@ -4,7 +4,7 @@
 <body>
 
 <cfsetting showdebugoutput="true">
-<cfsetting requesttimeout="300">
+<cfsetting requesttimeout="3000">
 <cfparam name="url.output" default="extjs">
 
 <cfset dir = expandPath(".")>
