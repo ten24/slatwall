@@ -139,9 +139,11 @@ class SWTypeaheadSearchController {
 
         this.collectionConfig.setAllRecords(this.allRecords);
         
-        if( angular.isDefined(this.maxRecords)){
-            this.collectionConfig.setPageShow(this.maxRecords);
+        if( angular.isUndefined(this.maxRecords)){
+            this.maxRecords = 10;    
         }
+
+        this.collectionConfig.setPageShow(this.maxRecords);
 
         if( angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
@@ -381,6 +383,7 @@ class SWTypeaheadSearch implements ng.IDirective{
         typeaheadDataKey:"@?",
         rightContentPropertyIdentifier:"@?",
         searchEndpoint:"@?",
+        allResultsEndpoint:"@?",
         titleText:'@?',
         urlBase:'@?', 
         urlProperty:'@?'
@@ -415,7 +418,9 @@ class SWTypeaheadSearch implements ng.IDirective{
                     <li ng-repeat="item in swTypeaheadSearch.results" class="dropdown-item" ng-class="{'s-selected':item.selected}"></li>
                 `;
 
-                var anchorTemplateString = '<a ';
+                var anchorTemplateString = `
+                    <a 
+                `;
 
                 if(angular.isDefined($scope.swTypeaheadSearch.urlBase) &&
                     angular.isDefined($scope.swTypeaheadSearch.urlProperty)){
@@ -425,9 +430,17 @@ class SWTypeaheadSearch implements ng.IDirective{
                 }
 
                 if(angular.isDefined($scope.swTypeaheadSearch.rightContentPropertyIdentifier)){
-                    var rightContentTemplateString = `<span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>`
+                    var rightContentTemplateString = `
+                        <span class="s-right-content" ng-bind="item[swTypeaheadSearch.rightContentPropertyIdentifier]"></span></a>
+                    `;
                 } else {
                     var rightContentTemplateString = "</a>";
+                }
+
+                if(angular.isDefined($scope.swTypeaheadSearch.allResultsEndpoint)){
+                    var searchAllListItemTemplate = `
+                        <li class="dropdown-item" ng-if="swTypeaheadSearch.results.length == swTypeaheadSearch.maxRecords"><a href="{{swTypeaheadSearch.allResultsEndpoint}}?keywords={{swTypeaheadSearch.searchText}}">See All Results</a></li>
+                    `
                 }
 
                 anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
@@ -436,8 +449,14 @@ class SWTypeaheadSearch implements ng.IDirective{
                
                 anchorTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
                 listItemTemplate.append(anchorTemplate); 
+                
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
+                    
                     target.append(this.$compile(listItemTemplate)($scope));
+
+                    if(searchAllListItemTemplate != null){
+                        target.append(this.$compile(searchAllListItemTemplate)($scope));
+                    }
                 });
                 
             }
