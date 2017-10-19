@@ -20,10 +20,13 @@
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwOrderNumber" />
 	<cfif currenttables.recordCount>
 		<!--- add all records --->
-		<cfquery datasource="#this.datasource.name#" name="insertOrderNumbers">
-			INSERT INTO SwOrderNumber (orderNumber,orderID)
-			SELECT orderNumber,orderID FROM swOrder where orderNumber is not null order by orderNumber ASC
-		</cfquery>
+		<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwOrder" />
+		<cfif currenttables.recordCount>
+			<cfquery datasource="#this.datasource.name#" name="insertOrderNumbers">
+				INSERT INTO SwOrderNumber (orderNumber,orderID)
+				SELECT orderNumber,orderID FROM swOrder where orderNumber is not null order by orderNumber ASC
+			</cfquery>
+		</cfif>
 		<!--- remove dupes and enforce incrementing going forward--->
 		<cfquery datasource="#this.datasource.name#" name="cleardupes">
 			ALTER IGNORE TABLE SwOrderNumber MODIFY COLUMN orderNumber INT NOT NULL auto_increment PRIMARY KEY
