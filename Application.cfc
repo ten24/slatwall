@@ -50,7 +50,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	// ===================================== HIBACHI HOOKS
 	
 	public void function onApplicationStart() {
-		setting requesttimeout="120";
+		setting requesttimeout="180";
 	}
 	
 	// @hint this method always fires one time, even if the request is coming from an outside application.
