@@ -140,8 +140,10 @@ class SWTypeaheadSearchController {
         this.collectionConfig.setAllRecords(this.allRecords);
         
         if( angular.isDefined(this.maxRecords)){
-            this.collectionConfig.setPageShow(this.maxRecords);
+            this.maxRecords = 10;    
         }
+
+        this.collectionConfig.setPageShow(this.maxRecords);
 
         if( angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
             this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
@@ -437,7 +439,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 
                 if(angular.isDefined($scope.swTypeaheadSearch.allResultsEndpoint)){
                     var searchAllListItemTemplate = `
-                        <li class="dropdown-item"><a href="{{swTypeaheadSearch.allResultsEndpoint}}?keywords={{swTypeaheadSearch.searchText}}">See All Results</a></li>
+                        <li class="dropdown-item" ng-if="swTypeaheadSearch.results.length == swTypeaheadSearch.maxRecords"><a href="{{swTypeaheadSearch.allResultsEndpoint}}?keywords={{swTypeaheadSearch.searchText}}">See All Results</a></li>
                     `
                 }
 
@@ -451,8 +453,8 @@ class SWTypeaheadSearch implements ng.IDirective{
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
                     
                     target.append(this.$compile(listItemTemplate)($scope));
-					
-					if(searchAllListItemTemplate != null){
+
+                    if(searchAllListItemTemplate != null){
                         target.append(this.$compile(searchAllListItemTemplate)($scope));
                     }
                 });
