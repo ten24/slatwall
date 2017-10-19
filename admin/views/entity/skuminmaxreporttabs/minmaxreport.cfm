@@ -7,7 +7,6 @@
 
 	<cfif not rc.edit>
 		<cfset skuCollectionList = rc.skuminmaxreport.getSkuMinMaxReportCollection() />
-		<!--- <cfdump var="#skuCollectionList.getRecords()#" top="10"> --->
 		<hb:HibachiListingDisplay 
 			collectionList="#skuCollectionList#"
 			collectionConfigFieldName="collectionConfig"

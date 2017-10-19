@@ -537,42 +537,43 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 
-		column['isDeletable'] = false;
-		column['isVisible'] = false;
-		column['isSearchable'] = false;
-		column['isExportable'] = false;
-
 		if(structKeyExists(arguments, 'title')){
 			column['title'] = arguments.title;
 		}else{
 			column['title'] = getCollectionEntityObject().getTitleByPropertyIdentifier(arguments.displayProperty);
 		}
-		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
-			column['isDeletable'] = arguments.columnConfig['isDeletable'];
-		}
-		if(structKeyExists(arguments.columnConfig, 'isVisible')){
-			column['isVisible'] = arguments.columnConfig['isVisible'];
-		}
-		if(structKeyExists(arguments.columnConfig, 'isSearchable')){
-			column['isSearchable'] = arguments.columnConfig['isSearchable'];
-		}
-		if(structKeyExists(arguments.columnConfig, 'isExportable')){
-			column['isExportable'] = arguments.columnConfig['isExportable'];
-		}
-		if(structKeyExists(arguments.columnConfig, 'tdclass')){
-			column['tdclass'] = arguments.columnConfig['tdclass'];
-		}
 
-		addColumn(column,arguments.prepend);
+		addColumn(column,arguments.prepend,arguments.columnConfig);
 		//backend should Automatically Authorize
 		addAuthorizedProperty(convertPropertyIdentifierToAlias(column['propertyIdentifier']));
 	}
 
-	public void function addColumn(required column, boolean prepend=false){
+	public void function addColumn(required column, boolean prepend=false, struct columnConfig = {}){
 		var collectionConfig = this.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfig,'columns')){
 			collectionConfig["columns"] = [];
 		}
+
+		arguments.column['isDeletable'] = false;
+		arguments.column['isVisible'] = false;
+		arguments.column['isSearchable'] = false;
+		arguments.column['isExportable'] = false;
+		if(structKeyExists(arguments.columnConfig, 'isDeletable')){
+			arguments.column['isDeletable'] = arguments.columnConfig['isDeletable'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'isVisible')){
+			arguments.column['isVisible'] = arguments.columnConfig['isVisible'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'isSearchable')){
+			arguments.column['isSearchable'] = arguments.columnConfig['isSearchable'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'isExportable')){
+			arguments.column['isExportable'] = arguments.columnConfig['isExportable'];
+		}
+		if(structKeyExists(arguments.columnConfig, 'tdclass')){
+			arguments.column['tdclass'] = arguments.columnConfig['tdclass'];
+		}
+
 		if(arguments.prepend){
 			arrayPrepend(collectionConfig.columns,arguments.column);
 		}else{
@@ -583,7 +584,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	//add display Aggregate
-	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct){
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias, boolean isDistinct, struct columnConfig = {}){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
 		var join = {};
@@ -635,7 +636,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		//Add columns
-		this.addColumn(column);
+		this.addColumn(column=column,columnConfig=arguments.columnConfig);
 		//Do Join if Needed
 		if(doJoin) addJoin(join);
 	}
