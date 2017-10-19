@@ -70,7 +70,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest(){
 		
 		var orderNumbers = {};
-		var iterationCount = 100;
+		var iterationCount = 25;
 		for(var i=1;i<=iterationCount;i++){
 			thread name="#createUUID()#" orderNumbers="#orderNumbers#"{
 				var orderData = {
