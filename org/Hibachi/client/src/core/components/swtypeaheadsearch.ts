@@ -451,8 +451,8 @@ class SWTypeaheadSearch implements ng.IDirective{
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
                     
                     target.append(this.$compile(listItemTemplate)($scope));
-                    console.log("searchAllListItemTemplate", searchAllListItemTemplate != null);
-                    if(searchAllListItemTemplate != null){
+					
+					if(searchAllListItemTemplate != null){
                         target.append(this.$compile(searchAllListItemTemplate)($scope));
                     }
                 });
