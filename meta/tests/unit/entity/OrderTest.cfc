@@ -70,7 +70,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest(){
 		
 		var orderNumbers = {};
-		var iterationCount = 25;
+		var iterationCount = 100;
 		for(var i=1;i<=iterationCount;i++){
 			thread name="#createUUID()#" orderNumbers="#orderNumbers#"{
 				var orderData = {
@@ -83,7 +83,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				order = createTestEntity('Order',orderData);
 				entitySave(order);
 				attributes.orderNumbers[order.getOrderNumber()]=order.getOrderNumber();				
-				debug(order.getOrderNumber());	
 			}
 			
 		}
