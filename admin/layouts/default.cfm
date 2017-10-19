@@ -219,6 +219,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listruleset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
 									
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
