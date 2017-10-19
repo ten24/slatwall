@@ -139,7 +139,7 @@ class SWTypeaheadSearchController {
 
         this.collectionConfig.setAllRecords(this.allRecords);
         
-        if( angular.isDefined(this.maxRecords)){
+        if( angular.isUndefined(this.maxRecords)){
             this.maxRecords = 10;    
         }
 
