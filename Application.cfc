@@ -47,7 +47,7 @@ Notes:
 	
 */
 component extends="org.Hibachi.Hibachi" output="false" {
-
+	setting requesttimeout="120";
 	// ===================================== HIBACHI HOOKS
 	
 	// @hint this method always fires one time, even if the request is coming from an outside application.
