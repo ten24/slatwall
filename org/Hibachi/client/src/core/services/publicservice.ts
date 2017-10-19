@@ -388,9 +388,11 @@ class PublicService {
         //Run any specific adjustments needed
         this.runCheckoutAdjustments(response);
 
+        this.successfulActions = [];
+        this.failureActions = [];
+        
         //if the action that was called was successful, then success is true.
         if (request && request.hasSuccessfulAction()){
-            this.successfulActions = [];
             for (var action in request.successfulActions){
                 if (request.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
                     this.$window.location.href = this.confirmationUrl;
@@ -406,7 +408,6 @@ class PublicService {
         }
 
         if(request && request.hasFailureAction()){
-            this.failureActions = [];
             for (var action in request.failureActions){
                 this.failureActions.push(request.failureActions[action].split('.')[1]);
             }
