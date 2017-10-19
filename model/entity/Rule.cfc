@@ -42,6 +42,7 @@ component displayname="Rule" entityname="SlatwallRule" table="SwRule" persistent
 	property name="ruleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="ruleName" ormtype="string";
 	property name="ruleCode" ormtype="string" index="PI_RULECODE";
+	property name="ruleObject" ormtype="string" hb_formfieldType="select";
 	property name="ruleConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	
 	
@@ -65,6 +66,29 @@ component displayname="Rule" entityname="SlatwallRule" table="SwRule" persistent
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	// Non-Persistent Properties
+	property name="workflowObjectOptions" persistent="false";
+	
+	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getWorkflowObjectOptions(){
+		if(!structKeyExists(variables,'workflowObjectOptions')){
+			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
+			variables.workflowObjectOptions = [];
+			for(var i=1; i <=arrayLen(entitiesMetaDataArray); i++){
+				var entityMetaDataStruct = {};
+				entityMetaDataStruct['name'] = rbKey('entity.#entitiesMetaDataArray[i]#');
+				entityMetaDataStruct['value'] = entitiesMetaDataArray[i];
+				arrayAppend(variables.workflowObjectOptions,entityMetaDataStruct);
+			}
+		}
+		
+		return variables.workflowObjectOptions;
+	}
+	
+	// ============  END:  Non-Persistent Property Methods =================
 	
 	
 }
