@@ -270,16 +270,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
 				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
-					if(!isNull(variables.orderID) && len(variables.orderID)){
-						var maxOrderNumberQuery = new query();
-						var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
-						
-						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
-						maxOrderNumberQuery.addParam(name="orderID",value=variables.orderID);
-						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
-						
-						//setOrderNumber(insertedID);	
-					}
+//					if(!isNull(variables.orderID) && len(variables.orderID)){
+//						var maxOrderNumberQuery = new query();
+//						var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
+//						
+//						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
+//						maxOrderNumberQuery.addParam(name="orderID",value=variables.orderID);
+//						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
+//						
+//						//setOrderNumber(insertedID);	
+//					}
 				}else{
 					var maxOrderNumber = getOrderService().getMaxOrderNumber();
 					if( arrayIsDefined(maxOrderNumber,1) ){
