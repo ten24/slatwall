@@ -278,7 +278,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 						maxOrderNumberQuery.addParam(name="orderID",value=variables.orderID);
 						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
 						
-						setOrderNumber(insertedID);	
+						//setOrderNumber(insertedID);	
 					}
 				}else{
 					var maxOrderNumber = getOrderService().getMaxOrderNumber();
