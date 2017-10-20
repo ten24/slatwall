@@ -80,8 +80,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						typeID="444df2b5c8f9b37338229d4f7dd84ad1"
 					}
 				};
-				order = createTestEntity('Order',orderData);
-				entitySave(order);
+				order = createPersistedTestEntity('Order',orderData);
+				
 				attributes.orderNumbers[order.getOrderNumber()]=order.getOrderNumber();				
 			}
 			

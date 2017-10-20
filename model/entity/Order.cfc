@@ -270,12 +270,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
 				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
-					if(!isNull(variables.orderID) && len(variables.orderID)){
+					if(!isNull(this.getOrderID())){
 						var maxOrderNumberQuery = new query();
-						var maxOrderNumberSQL = 'insert into swordernumber (orderID) VALUES (:orderID)';
+						var maxOrderNumberSQL = 'insert into swordernumber (orderID,createdDateTime) VALUES (:orderID,:createdDateTime)';
 						
 						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
-						maxOrderNumberQuery.addParam(name="orderID",value=variables.orderID);
+						maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
+						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),sqltype="cf_sql_timestamp" );
 						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
 						
 						setOrderNumber(insertedID);	
