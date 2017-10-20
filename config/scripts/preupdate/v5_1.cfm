@@ -27,11 +27,12 @@
 				SELECT max(orderNumber),orderID FROM swOrder
 			</cfquery>
 		</cfif>
-		<!--- remove dupes and enforce incrementing going forward--->
-		<cfquery datasource="#this.datasource.name#" name="cleardupes">
-			ALTER IGNORE TABLE SwOrderNumber MODIFY COLUMN orderNumber INT NOT NULL auto_increment PRIMARY KEY
-		</cfquery>
+		
 	</cfif>
+	<!--- remove dupes and enforce incrementing going forward--->
+	<cfquery datasource="#this.datasource.name#" name="cleardupes">
+		ALTER IGNORE TABLE SwOrderNumber MODIFY COLUMN orderNumber INT NOT NULL auto_increment PRIMARY KEY
+	</cfquery>
 </cfif>
 
 <cflog file="Slatwall" text="General Log - Preupdate Script v5_1 has run with no errors">
