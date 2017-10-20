@@ -7,21 +7,21 @@
 
 <cftry>
 	<cfif ListFind(getApplicationValue("databaseType"), 'MySQL')>
-		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="currenttables" pattern="SwOrderNumber" />
+		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="currenttables" pattern="swordernumber" />
 		
 		<cfif !currenttables.recordCount>
-			<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="hasOrderTable" pattern="SwOrder" />
+			<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="hasOrderTable" pattern="sworder" />
 			<cfset lastValue = 1/>
 			<cfif hasOrderTable.recordCount>
 				<cfquery  name="insertOrderNumbers">
-					SELECT max(orderNumber) as maximumvalue FROM swOrder
+					SELECT max(orderNumber) as maximumvalue FROM sworder
 				</cfquery>
-				<cfif isNumeric(insertOrderNumbers.maximumvalue)>
+				<cfif structKeyExists(insertOrderNumbers,'maximumvalue') && isNumeric(insertOrderNumbers.maximumvalue)>
 					<cfset lastValue = insertOrderNumbers.maximumvalue/>
 				</cfif>
 			</cfif>
 			<cfquery  name="createSwOrderNumber">
-				CREATE TABLE SwOrderNumber(
+				CREATE TABLE swordernumber(
 					orderNumber INT NOT NULL auto_increment PRIMARY KEY,
 					orderID VARCHAR(32),
 					createdDateTime TIMESTAMP
@@ -29,7 +29,7 @@
 				
 			</cfquery>
 			<cfquery  name="setIncrementSwOrderNumber">
-				ALTER TABLE swOrderNumber AUTO_INCREMENT = #lastValue+1#;
+				ALTER TABLE swordernumber AUTO_INCREMENT = #lastValue+1#;
 			</cfquery>
 		</cfif>
 		
