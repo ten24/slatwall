@@ -11,7 +11,7 @@
 			<cfquery  name="insertOrderNumbers">
 				SELECT max(orderNumber) as maximumvalue FROM swOrder
 			</cfquery>
-			<cfif len(insertOrderNumbers.maximumvalue)>
+			<cfif isNumeric(insertOrderNumbers.maximumvalue)>
 				<cfset lastValue = insertOrderNumbers.maximumvalue/>
 			</cfif>
 		</cfif>
