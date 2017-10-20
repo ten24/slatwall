@@ -1566,7 +1566,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return createPErsistedTestEntity('Sku', skuData);
 	}
 	private  void function returnVoid() {
-		super.preInsert();
+		
 	}
 	
 	

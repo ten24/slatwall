@@ -270,14 +270,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
 				if(getApplicationValue('databaseType') eq "MySQL"){
-					var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
-
-					var maxOrderNumberQuery = new query();
-					maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
-					maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
-					var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
-					
-					setOrderNumber(insertedID);	
+					if(!isNull(this.getOrderID())){
+						var maxOrderNumberQuery = new query();
+						var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
+	
+						
+						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
+						maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
+						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
+						
+						setOrderNumber(insertedID);	
+					}
 				}else{
 					var maxOrderNumber = getOrderService().getMaxOrderNumber();
 					if( arrayIsDefined(maxOrderNumber,1) ){
