@@ -22,7 +22,7 @@
 			</cfif>
 			<cfquery  name="createSwOrderNumber">
 				CREATE TABLE swordernumber(
-					orderNumber INT NOT NULL auto_increment,
+					orderNumber INT NOT NULL auto_increment PRIMARY KEY,
 					orderID VARCHAR(32),
 					createdDateTime TIMESTAMP
 				);

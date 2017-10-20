@@ -272,7 +272,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
 					if(!isNull(variables.orderID) && len(variables.orderID)){
 						var maxOrderNumberQuery = new query();
-						var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
+						var maxOrderNumberSQL = 'insert into swordernumber (orderID) VALUES (:orderID)';
 						
 						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
 						maxOrderNumberQuery.addParam(name="orderID",value=variables.orderID);
