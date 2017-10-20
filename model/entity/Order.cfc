@@ -269,12 +269,24 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		// If the order is open, and has no open dateTime
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
-				var maxOrderNumber = getOrderService().getMaxOrderNumber();
-				if( arrayIsDefined(maxOrderNumber,1) ){
-					setOrderNumber(maxOrderNumber[1] + 1);
-				} else {
-					setOrderNumber(1);
+				if(getApplicationValue('databaseType') eq "MySQL"){
+					var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
+
+					var maxOrderNumberQuery = new query();
+					maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
+					maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
+					var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
+					
+					setOrderNumber(insertedID);	
+				}else{
+					var maxOrderNumber = getOrderService().getMaxOrderNumber();
+					if( arrayIsDefined(maxOrderNumber,1) ){
+						setOrderNumber(maxOrderNumber[1] + 1);
+					} else {
+						setOrderNumber(1);
+					}					
 				}
+			
 			} else {
 				setOrderNumber( getService("integrationService").getIntegrationByIntegrationPackage( setting('globalOrderNumberGeneration') ).getIntegrationCFC().getNewOrderNumber(order=this) );
 			}
