@@ -1,11 +1,10 @@
-<cfparam name="this.ormSettings.dialect" />
 <cfparam name="this.datasource.name" />
 <cfparam name="this.datasource.username" default="" />
 <cfparam name="this.datasource.password" default="" />
 
 <cfsetting requesttimeout="1200" />
-<cfif ListFind(this.ormSettings.dialect, 'MySQL')>
-	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwOrderNumber" />
+<cfif ListFind(getApplicationValue("databaseType"), 'MySQL')>
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="currenttables" pattern="SwOrderNumber" />
 	
 	<cfif !currenttables.recordCount>
 		<cfquery datasource="#this.datasource.name#" name="createSwOrderNumber">
@@ -17,10 +16,10 @@
 		</cfquery>
 	</cfif>
 	
-	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwOrderNumber" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="currenttables" pattern="SwOrderNumber" />
 	<cfif currenttables.recordCount>
 		<!--- add all records --->
-		<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwOrder" />
+		<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="tables" name="currenttables" pattern="SwOrder" />
 		<cfif currenttables.recordCount>
 			<cfquery datasource="#this.datasource.name#" name="insertOrderNumbers">
 				INSERT INTO SwOrderNumber (orderNumber,orderID)
@@ -28,7 +27,7 @@
 			</cfquery>
 		</cfif>
 	</cfif>
-	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" table="SwOrderNumber" name="swOrderNumberInfo" pattern="orderNumber" />
+	<cfdbinfo datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" type="columns" table="SwOrderNumber" name="swOrderNumberInfo" pattern="orderNumber" />
 	<cfif !swOrderNumberInfo.is_PrimaryKey && !swOrderNumberInfo.is_AutoIncrement> 
 		<!--- remove dupes and enforce incrementing going forward--->
 		<cfquery datasource="#this.datasource.name#" name="cleardupes">
