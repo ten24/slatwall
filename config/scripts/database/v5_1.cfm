@@ -37,6 +37,7 @@
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - v5_1">
 		<cfset local.scriptHasErrors = true />
+		<cflog file="application" text="General Log - #cfcatch.message#">
 	</cfcatch>
 
 
