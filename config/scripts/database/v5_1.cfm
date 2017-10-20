@@ -1,6 +1,4 @@
-<cfparam name="this.datasource.name" />
-<cfparam name="this.datasource.username" default="" />
-<cfparam name="this.datasource.password" default="" />
+
 
 <cfsetting requesttimeout="1200" />
 <cfif ListFind(getApplicationValue("databaseType"), 'MySQL')>
