@@ -24,7 +24,7 @@
 			
 		</cfquery>
 		<cfquery  name="setIncrementSwOrderNumber">
-			ALTER TABLE swOrderNumber AUTO_INCREMENT = 100;
+			ALTER TABLE swOrderNumber AUTO_INCREMENT = #lastValue+1#;
 		</cfquery>
 	</cfif>
 	
