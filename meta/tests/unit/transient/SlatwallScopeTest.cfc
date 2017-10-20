@@ -47,20 +47,25 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
+	public void function setUp() {
+		super.setup();
+		
+		variables.slatwallScope = request.slatwallScope.getTransient('hibachiscope');
+		variables.slatwallScope.setSession(request.slatwallScope.getSession());
+	}
 	// getEntity()	
 	/**
 	* @test
 	*/
 	public void function getEntity_works() {
-		assert(!isNull(request.slatwallScope.getEntity('SlatwallCountry', 'US')));
+		assert(!isNull(variables.slatwallScope.getEntity('SlatwallCountry', 'US')));
 	}
 		
 	/**
 	* @test
 	*/
 	public void function getEntity_works_with_struct() {
-		assert(!isNull(request.slatwallScope.getEntity('Country', {countryCode='US'})));
+		assert(!isNull(variables.slatwallScope.getEntity('Country', {countryCode='US'})));
 	}
 	
 	// getAccountData() 	
@@ -68,7 +73,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_returns_valid_struct() {
-		var ad = request.slatwallScope.getAccountData();
+		var ad = variables.slatwallScope.getAccountData();
 		assert(isStruct(ad));
 	}
 		
@@ -76,8 +81,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
-		var ad = request.slatwallScope.getAccountData();
-		var aapArray = listToArray(request.slatwallScope.getAvailableAccountPropertyList());
+		var ad = variables.slatwallScope.getAccountData();
+		var aapArray = listToArray(variables.slatwallScope.getAvailableAccountPropertyList());
 		for(var propertyIdentifier in aapArray){
 			var topLevelProperty = listFirst(propertyIdentifier,'.');
 			assertFalse(!structKeyExists(ad,topLevelProperty),topLevelProperty & ' does not exist!');
@@ -88,11 +93,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_returns_errors_set_on_account() {
-		request.slatwallScope.getAccount().addError( 'firstName', 'The First Name is Required' );
-		request.slatwallScope.getAccount().addError( 'lastName', 'The Last Name is Required' );
-		request.slatwallScope.getAccount().addError( 'lastName', 'The Last Name must be xyz' );
+		variables.slatwallScope.getAccount().addError( 'firstName', 'The First Name is Required' );
+		variables.slatwallScope.getAccount().addError( 'lastName', 'The Last Name is Required' );
+		variables.slatwallScope.getAccount().addError( 'lastName', 'The Last Name must be xyz' );
 		
-		var ad = request.slatwallScope.getAccountData( 'accountID' );
+		var ad = variables.slatwallScope.getAccountData( 'accountID' );
 		
 		assert(ad.hasErrors, "The account data 'hasErrors' is set to true ");
 		
@@ -113,7 +118,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_always_includes_hasErrors_and_errors_and_processObjects() {
-		var ad = request.slatwallScope.getAccountData( 'accountID' );
+		var ad = variables.slatwallScope.getAccountData( 'accountID' );
 		
 		// hasErrors check
 		assert(structKeyExists(ad, 'hasErrors'), "The 'hasErrors' key doesn't exist in response data");
@@ -132,7 +137,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_with_specific_propertyList_returns_only_those_keys() {
-		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
+		var ad = variables.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
 		
 		// Should be 5... the 3 listed above, plus 'hasErrors', 'errors' & 'processObjects'
 		assertEquals(structCount(ad), 6);
@@ -142,10 +147,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_with_specific_propertyList_returns_correct_values() {
-		request.slatwallScope.getAccount().setFirstName( 'test-first' );
-		request.slatwallScope.getAccount().setLastName( 'test-last' );
+		variables.slatwallScope.getAccount().setFirstName( 'test-first' );
+		variables.slatwallScope.getAccount().setLastName( 'test-last' );
 		
-		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
+		var ad = variables.slatwallScope.getAccountData( 'accountID,firstName,lastName' );
 		
 		assertEquals( 6, structCount(ad));
 		
@@ -164,7 +169,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getAccountData_passing_invalid_property_wont_add_to_return() {
-		var ad = request.slatwallScope.getAccountData( 'accountID,firstName,lastName,createdDateTime' );
+		var ad = variables.slatwallScope.getAccountData( 'accountID,firstName,lastName,createdDateTime' );
 		
 		assertEquals( 6, structCount(ad));
 		
@@ -176,7 +181,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getCartData_returns_valid_struct() {
-		var cd = request.slatwallScope.getCartData();
+		var cd = variables.slatwallScope.getCartData();
 		assert(isStruct(cd));
 	}
 		
@@ -184,8 +189,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	/*public void function getCartData_without_any_propertyList_returns_all_available_properties() {
-		var cd = request.slatwallScope.getCartData();
-		var acpArray = listToArray(request.slatwallScope.getAvailableCartPropertyList());
+		var cd = variables.slatwallScope.getCartData();
+		var acpArray = listToArray(variables.slatwallScope.getAvailableCartPropertyList());
 		for(var propertyIdentifier in acpArray){
 			var topLevelProperty = listFirst(propertyIdentifier,'.');
 			assertFalse(!structKeyExists(cd,topLevelProperty),topLevelProperty & ' does not exist!');
@@ -197,9 +202,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getCartData_returns_errors_set_on_cart() {
-		request.slatwallScope.getCart().addError( 'addOrderPayment', 'The order payment could not be added' );
+		variables.slatwallScope.getCart().addError( 'addOrderPayment', 'The order payment could not be added' );
 		
-		var cd = request.slatwallScope.getCartData( 'orderid' );
+		var cd = variables.slatwallScope.getCartData( 'orderid' );
 		
 		assert(cd.hasErrors, "The cart data 'hasErrors' is set to true ");
 		
@@ -217,7 +222,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getCartData_always_includes_hasErrors_and_errors() {
-		var cd = request.slatwallScope.getCartData( 'orderid' );
+		var cd = variables.slatwallScope.getCartData( 'orderid' );
 		
 		// Should be 5... the 1 listed above, plus 'hasErrors', 'errors' and 'processObjects'
 		assertEquals(4, structCount(cd));
@@ -236,7 +241,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getCartData_with_specific_propertyList_returns_only_those_keys() {
-		var cd = request.slatwallScope.getCartData( 'orderid' );
+		var cd = variables.slatwallScope.getCartData( 'orderid' );
 		
 		// Should be 4... the 1 listed above, plus 'hasErrors', 'errors' and 'processObjects'
 		assertEquals( 4, structCount(cd));
@@ -246,7 +251,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getCartData_passing_invalid_property_wont_add_to_return() {
-		var cd = request.slatwallScope.getCartData( 'orderID,hushpuppy' );
+		var cd = variables.slatwallScope.getCartData( 'orderID,hushpuppy' );
 		
 		assertEquals(4, structCount(cd));
 		
@@ -257,7 +262,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function getProductSmartListTest() {
-		var productSmartList = request.slatwallScope.getProductSmartList();
+		var productSmartList = variables.slatwallScope.getProductSmartList();
 		productSmartList.getHQL();
 	}
 	
@@ -270,17 +275,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			productListingPageFlag=1
 		};
 		var contentEntity = createPersistedTestEntity('Content',contentData);
-		request.slatwallScope.setContent(contentEntity);
+		variables.slatwallScope.setContent(contentEntity);
 		
-		var productSmartList = request.slatwallScope.getProductSmartList();
-		request.slatwallScope.getProductSmartList().getHQL();
+		var productSmartList = variables.slatwallScope.getProductSmartList();
+		variables.slatwallScope.getProductSmartList().getHQL();
 	}
 	
 	/**
 	* @test
 	*/
 	public void function getProductCollectionListTest() {
-		var productCollectionList = request.slatwallScope.getProductCollectionList();
+		var productCollectionList = variables.slatwallScope.getProductCollectionList();
 		productCollectionList.getHQL();
 	}
 	
@@ -294,9 +299,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var contentEntity = createPersistedTestEntity('Content',contentData);
 		
-		request.slatwallScope.setContent(contentEntity);
+		variables.slatwallScope.setContent(contentEntity);
 		
-		var productCollectionList = request.slatwallScope.getProductCollectionList();
+		var productCollectionList = variables.slatwallScope.getProductCollectionList();
 		productCollectionList.getHQL();
 		assert(productCollectionList.getHQL() CONTAINS '_product_listingPages_content');
 	}

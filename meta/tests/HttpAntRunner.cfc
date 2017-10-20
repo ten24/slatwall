@@ -1,6 +1,6 @@
 <cfcomponent extends="mxunit.runner.HttpAntRunner">
 
-	<cfsetting requesttimeout="1800">
+	<cfsetting requesttimeout="18000">
 
 	<cfscript>
 		remote function run() {

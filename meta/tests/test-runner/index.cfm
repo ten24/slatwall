@@ -7,7 +7,7 @@
 	<cfset url.target = url.testBundles/>
 	<cfset url.opt_run = true/>
 </cfif>
-<cfsetting requesttimeout="3600">
+<cfsetting requesttimeout="0">
 <cfscript>
 // create testbox
 testBox = new testbox.system.TestBox();

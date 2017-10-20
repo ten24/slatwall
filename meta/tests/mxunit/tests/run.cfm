@@ -2,7 +2,7 @@
 NOTE: these tests take a long time to run. A lot of the time is in a subset of tests that use CF's built-in component explorer, which is a pig. In addition, the EXT output is slower than the HTML output.
 
 --->
-<cfsetting requesttimeout="300">
+<cfsetting requesttimeout="3000">
 
 
 <cfparam name="url.output" default="extjs">

@@ -64,7 +64,6 @@ component extends="meta.testbox.Application"{
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
 	this.ormSettings.automanageSession = false;
-
+	setting requesttimeout="9600";
 	
-
 }

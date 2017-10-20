@@ -63,6 +63,33 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors() );
 	}
 		
+	//prevent duplicate ordernumbers
+	/**
+	* @test 
+	*/
+	/*public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest(){
+		
+		var orderNumbers = {};
+		var iterationCount = 100;
+		for(var i=1;i<=iterationCount;i++){
+			thread name="#createUUID()#" orderNumbers="#orderNumbers#"{
+				var orderData = {
+					orderID="",
+					orderStatusType={
+						//ostNew
+						typeID="444df2b5c8f9b37338229d4f7dd84ad1"
+					}
+				};
+				order = createTestEntity('Order',orderData);
+				entitySave(order);
+				attributes.orderNumbers[order.getOrderNumber()]=order.getOrderNumber();				
+			}
+			
+		}
+		threadJoin();
+		assertEquals(iterationCount, structCount(orderNumbers),'has duplicates');
+	}*/
+		
 	/**
 	* @test
 	*/
