@@ -269,7 +269,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		// If the order is open, and has no open dateTime
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
-				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
+//				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
 //					if(!isNull(variables.orderID) && len(variables.orderID)){
 //						var maxOrderNumberQuery = new query();
 //						var maxOrderNumberSQL = 'insert into SwOrderNumber (orderID) VALUES (:orderID)';
@@ -280,14 +280,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 //						
 //						//setOrderNumber(insertedID);	
 //					}
-				}else{
+//				}else{
 					var maxOrderNumber = getOrderService().getMaxOrderNumber();
 					if( arrayIsDefined(maxOrderNumber,1) ){
 						setOrderNumber(maxOrderNumber[1] + 1);
 					} else {
 						setOrderNumber(1);
 					}					
-				}
+//				}
 			
 			} else {
 				setOrderNumber( getService("integrationService").getIntegrationByIntegrationPackage( setting('globalOrderNumberGeneration') ).getIntegrationCFC().getNewOrderNumber(order=this) );
