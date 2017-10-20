@@ -24,7 +24,7 @@
 		<cfif currenttables.recordCount>
 			<cfquery datasource="#this.datasource.name#" name="insertOrderNumbers">
 				INSERT INTO SwOrderNumber (orderNumber,orderID)
-				SELECT orderNumber,orderID FROM swOrder where orderNumber is not null order by orderNumber ASC
+				SELECT max(orderNumber),orderID FROM swOrder
 			</cfquery>
 		</cfif>
 		<!--- remove dupes and enforce incrementing going forward--->
