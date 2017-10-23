@@ -269,7 +269,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				orderItemID = mockOrderItem.getOrderItemID()
 			}]
 		};
-		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var mockOrder = createTestEntity('Order', orderData);
+		injectMethod(mockOrder, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrder);
 		
 		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem1);
 		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem2);
