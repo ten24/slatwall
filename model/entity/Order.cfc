@@ -1146,6 +1146,19 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	public numeric function getTotalItems() {
 		return arrayLen(getOrderItems());
 	}
+	
+	public any function getOrderCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
+	}
+
 
 	// ============  END:  Non-Persistent Property Methods =================
 
