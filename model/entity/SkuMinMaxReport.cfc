@@ -119,8 +119,8 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 
 		// Aggregate QATS up to selected location and filter on min/max range
 		skuMinMaxReportCollection.addDisplayAggregate(propertyIdentifier='stocks.calculatedQATS', aggregateFunction='SUM', aggregateAlias='sumQATS', columnConfig={isSearchable="false",isVisible="false",isDeletable="false"});
-		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMinQuantity(), comparisonOperator='<=', logicalOperator='OR', aggregate='SUM', filterGroupAlias='stockFilters', filterGroupLogicalOperator='AND');
-		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMaxQuantity(), comparisonOperator='>=', logicalOperator='OR', aggregate='SUM', filterGroupAlias='stockFilters', filterGroupLogicalOperator='AND');
+		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMinQuantity(), comparisonOperator='>=', logicalOperator='OR', aggregate='SUM', filterGroupAlias='stockFilters', filterGroupLogicalOperator='AND');
+		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMaxQuantity(), comparisonOperator='<=', logicalOperator='OR', aggregate='SUM', filterGroupAlias='stockFilters', filterGroupLogicalOperator='AND');
 
 		// skuMinMaxReportCollection.updateCollectionConfig();
 
