@@ -46,7 +46,7 @@ class SWDisplayOptions{
             transclude:true,
             scope:{
                 orderBy:"<",
-                columns:'<',
+                columns:'=',
                 joins:"<",
                 groupBys:"<",
                 propertiesList:"<",
