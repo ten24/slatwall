@@ -1,10 +1,10 @@
 <div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
         <div class="input-group">
              <div class="input-group-btn s-left">
-                <button type="button" 
-                        class="btn btn-default" 
+                <button type="button"
+                        class="btn btn-default"
                         data-ng-disabled="swTypeaheadSearch.disabled"
-                        ng-click="swTypeaheadSearch.toggleDropdown()" 
+                        ng-click="swTypeaheadSearch.toggleDropdown()"
                         aria-expanded="true">
                         <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
                 </button>
@@ -28,6 +28,7 @@
                         type="search"
                         title="{{swTypeaheadSearch.titleText}}"
                         class="form-control"
+                        style="max-width:100%;"
                         autocomplete="off"
                         data-ng-required="swTypeaheadSearch.validateRequired"
                         data-ng-disabled="swTypeaheadSearch.disabled"/>
@@ -42,7 +43,7 @@
             </div>
         </div>
     <div class="dropdown s-search-results-wrapper" ng-class="{'open btn-group':!swTypeaheadSearch.hideSearch}">
-        <ul ng-show="!swTypeaheadSearch.hideSearch" class="dropdown-menu"> 
+        <ul ng-show="!swTypeaheadSearch.hideSearch" class="dropdown-menu">
             <!-- populated by the directives link function -->
         </ul>
     </div>
