@@ -84,6 +84,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Related Object Properties (many-to-many - owner)
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
+	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductSite" fkcolumn="productID" inversejoincolumn="siteID";
 
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
