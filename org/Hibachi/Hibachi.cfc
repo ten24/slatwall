@@ -264,7 +264,7 @@ component extends="framework.one" {
 			}else{
 				//RELOAD JUST THE SETTINGS
 				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-					getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 					serverInstance.setSettingsExpired(false);
 				}
@@ -600,6 +600,9 @@ component extends="framework.one" {
 					// If the default singleton beans were not found in the model, add a reference to the core one in hibachi
 					if(!coreBF.containsBean("hibachiDAO")) {
 						coreBF.declareBean("hibachiDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDAO", true);
+					}
+					if(!coreBF.containsBean("hibachiCacheDAO")) {
+						coreBF.declareBean("hibachiCacheDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheDAO", true);
 					}
 					if(!coreBF.containsBean("hibachiService")) {
 						coreBF.declareBean("hibachiService", "#variables.framework.applicationKey#.org.Hibachi.HibachiService", true);

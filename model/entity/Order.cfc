@@ -276,7 +276,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 						
 						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
 						maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
-						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),sqltype="cf_sql_timestamp" );
+						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
 						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
 						
 						setOrderNumber(insertedID);	

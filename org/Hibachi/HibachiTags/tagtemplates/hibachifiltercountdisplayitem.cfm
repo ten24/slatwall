@@ -42,7 +42,7 @@
 				</cfloop>
 			</ul>
 		</li>
-		<cfif attributes.filterType eq 'r'>
+		<cfif attributes.filterType eq 'r' and attributes.showApplyRange>
 			<hr class="dashed">
 			<div class="apply row">
 				<cfset rangeSearchID = rereplace(createUUID(),'-','','all')/>
