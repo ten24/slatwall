@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"giftCardCodes":		[	{"contexts":"createGiftCards","required":true,"method":"hasUniqueGiftCardCodes"},
+									{"contexts":"createGiftCards","method":"hasNoDuplicateGiftCardCodesInOrderDelivery"},
+									{"contexts":"createGiftCards","method":"hasProperGiftCardCodeLengths"}]
+	}
+}

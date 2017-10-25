@@ -68,8 +68,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="capturableAmount" hb_formatType="currency";
 
 	variables.orderDeliveryItems = [];
-	
-	
+
+	public array function getUndeliveredOrderItemsWithoutProvidedGiftCardCodePlaceholders() {
+		var placeholders = [];
+		for (var orderDeliveryItem in getOrderDeliveryItems()) {
+			for (var orderItem in getOrderFulfillment().getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) {
+				if (orderItem.getOrderItemID() == orderDeliveryItem.orderItem.orderItemID && orderDeliveryItem.quantity > 0) {
+					arrayAppend(placeholders, {
+						orderItem = orderItem,
+						quantity = min(orderDeliveryItem.quantity, orderItem.getQuantityUndelivered())
+					});
+				}
+			}
+		}
+
+		return placeholders;
+	}
 	
 	public any function getShippingIntegration(){
 		if(
@@ -143,18 +157,29 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 	}
 	
+	public boolean function hasAllGiftCardCodes() {
+		return true;
+	}
 	
-	public boolean function hasAllGiftCardCodes(){
-
-			if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(this.getGiftCardCodes())){
+	public boolean function hasGiftCardCodesForAllGiftCardDeliveryItems(){
+			// FIXME: need to look at orderItem sku setting
+			//throw("We need to refactor this method");
+			
+			// When manual providing gift card codes and gift card codes are present make sure all are allocated
+			if( !getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") 
+				&& !isNull(this.getGiftCardCodes())
+			){
 				return this.getOrderFulfillment().getNumberOfNeededGiftCardCodes() == ArrayLen(this.getGiftCardCodes());
+
 			} else if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")) {
-				return this.getOrderFulfillment().hasGiftCardCodes();
+				return !hasUndeliveredOrderItemsWithoutProvidedGiftCardCode();
 			}
 			return true;
 	}
 
 	public boolean function hasRecipientsForAllGiftCardDeliveryItems(){
+		// FIXME: need to look at orderItem sku setting
+		return true;
 		for(var deliveryItem in this.getOrderDeliveryItems()){
 			if(!hasRecipientsForGiftCard(deliveryItem)){
 				return false;

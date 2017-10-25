@@ -596,7 +596,91 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return true;
 	}
 
+	public array function getRecipientManualGiftCardCodes() {
+		var manualGiftCardCodes = [];
+
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					arrayAppend(manualGiftCardCodes, recipient.manualGiftCardCode);
+				}
+			}
+		}
+
+		return manualGiftCardCodes;
+	}
+
 	// =====================  END: Helper Methods ==========================
+
+	// =====================  START: Validation Methods ====================
+
+	public boolean function hasProvidedManualGiftCardCodes() {
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (!structKeyExists(recipient, "manualGiftCardCode")) {
+					// Recipient data is missing 'manualGiftCardCode' property key
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify gift card codes are unique and not presently in use
+	public boolean function hasUniqueGiftCardCodes() {
+		
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					if (!getDAO("giftCardDAO").verifyUniqueGiftCardCode(recipient.manualGiftCardCode)) {
+						// Invalid gift card code, it is not unique because it already exists in database
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify the length of the gift card codes
+	public boolean function hasProperGiftCardCodeLengths() {
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					if (len(recipient.manualGiftCardCode) != getSku().setting('skuGiftCardCodeLength')) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify gift card codes contain no duplicates within provided gift codes of the orderDelivery
+	public boolean function hasNoDuplicateGiftCardCodesInOrderDelivery() {
+
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					if (len(recipient.manualGiftCardCode) == getSku().setting('skuGiftCardCodeLength')) {
+						// Check through all manual gift card codes provided for duplicates
+						var matchedElements = arrayFindAllNoCase(getRecipientManualGiftCardCodes(), recipient.manualGiftCardCode);
+						if (arrayLen(matchedElements) > 1) {
+							// Invalid gift card code, duplicate code, same code was found multiple times in the provided array
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// =====================  END: Validation Methods ======================
 
 	public any function populate( required struct data={} ) {
 		// Call the super populate to do all the standard logic

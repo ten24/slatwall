@@ -26,6 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
+
 	- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
@@ -33,6 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
+
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
@@ -44,19 +46,60 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess"{
-
+component output="false" accessors="true" extends="HibachiProcess" {
+	
 	// Injected Entity
-	property name="order" cfc="Order";
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
-
-	property name="recipient" cfc="OrderItemGiftRecipient" fieldType="many-to-one";
+	property name="orderDeliveryItem";
 
 	// Data Properties
- 	property name="firstName" type="string";
- 	property name="lastName" type="string";
- 	property name="emailAddress" type="string";
- 	property name="account";
- 	property name="quantity" type="numeric";
- 	property name="giftMessage";
+	property name="giftCardCodes" type="array" hb_populateArray="true"; // giftCardCodes for only this orderDeliveryItem
+	property name="orderDeliveryGiftCardCodes" type="array" hb_populateArray="true"; // master set of giftCardCodes from all orderDeliveryItems for the entire OrderDelivery
+
+	// @hint Validation method to verify gift card codes are unique and not presently in use
+	public boolean function hasUniqueGiftCardCodes() {
+
+		if (!isNull(getGiftCardCodes())) {
+			for (var giftCardCode in getGiftCardCodes()) {
+				if (!getDAO("giftCardDAO").verifyUniqueGiftCardCode(giftCardCode)) {
+					// Invalid gift card code, it is not unique because it already exists in database
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify gift card codes contain no duplicates within provided gift codes of the orderDelivery
+	public boolean function hasNoDuplicateGiftCardCodesInOrderDelivery() {
+
+		if (!isNull(getGiftCardCodes())) {
+			for (var giftCardCode in getGiftCardCodes()) {
+				if (len(giftCardCode) == getOrderDeliveryItem().getOrderItem().getSku().setting('skuGiftCardCodeLength')) {
+					var matchedElements = arrayFindAllNoCase(getOrderDeliveryGiftCardCodes(), giftCardCode);
+					if (arrayLen(matchedElements) > 1) {
+						// Invalid gift card code, duplicate code, same code was found multiple times in the provided array
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	//
+	public boolean function hasProperGiftCardCodeLengths() {
+		if (!isNull(getGiftCardCodes())) {
+			for (var giftCardCode in getGiftCardCodes()) {
+				if (len(giftCardCode) != getOrderDeliveryItem().getOrderItem().getSku().setting('skuGiftCardCodeLength')) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 }
+	
