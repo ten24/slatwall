@@ -159,11 +159,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		}
 
-		var orderItemGiftRecipients = this.getOrderItemGiftRecipients();
 		var count = this.getQuantity();
 
-		for(var recipient in orderItemGiftRecipients){
-			count = count - recipient.getQuantity();
+		// Deduct quantity assigned to each orderItemGiftRecipient for total orderItem quantity
+		for(var orderItemGiftRecipient in this.getOrderItemGiftRecipients()){
+			count = count - orderItemGiftRecipient.getQuantity();
 		}
 
 		return count;
