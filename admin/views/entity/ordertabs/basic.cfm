@@ -20,6 +20,7 @@
 			</cfif>
 
 			<!--- Origin --->
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
 
 			<!--- Order Type --->

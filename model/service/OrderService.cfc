@@ -937,6 +937,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Setup Site Origin if using slatwall cms
 		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
 			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		}else if ( !isNull(arguments.processObject.getOrderCreatedSite()) ) {
+			arguments.order.setOrderCreatedSite(arguments.processObject.getOrderCreatedSite());
 		}
 
 		// Setup Account
