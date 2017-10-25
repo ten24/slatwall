@@ -158,11 +158,11 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 				// Add the admin buttons
 				if(structKeyExists(admin, "detailAction")) {
 					if(structKeyExists(admin,"detailActionProperty")){
-						detailActionProperty=listlast(admin.detailActionProperty,'.');
-						detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
+						var detailActionProperty=listlast(admin.detailActionProperty,'.');
+						var detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
 					}else{
-						detailActionProperty=record.getPrimaryIDPropertyName();
-						detailActionPropertyValue=record.getPrimaryIDValue();
+						var detailActionProperty=record.getPrimaryIDPropertyName();
+						var detailActionPropertyValue=record.getPrimaryIDValue();
 					}
 					var attributes = {
 						action=admin.detailAction,
@@ -218,6 +218,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					if(structKeyExists(admin,"processActionProperty")){
 						var processActionProperty=listlast(admin.processActionProperty,'.');
 						var processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.processActionProperty);
+					}else if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
+						var processActionProperty=arguments.rc.recordAlias & 'ID';
+						var processActionPropertyValue=record.getPrimaryIDValue();
 					}else{
 						var processActionProperty=record.getPrimaryIDPropertyName();
 						var processActionPropertyValue=record.getPrimaryIDValue();
