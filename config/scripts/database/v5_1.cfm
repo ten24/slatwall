@@ -14,7 +14,7 @@
 			<cfset lastValue = 1/>
 			<cfif hasOrderTable.recordCount>
 				<cfquery  name="insertOrderNumbers">
-					SELECT max(orderNumber) as maximumvalue FROM sworder
+					SELECT max(CAST(orderNumber AS UNSIGNED)) as maximumvalue FROM sworder
 				</cfquery>
 				<cfif structKeyExists(insertOrderNumbers,'maximumvalue') && isNumeric(insertOrderNumbers.maximumvalue)>
 					<cfset lastValue = insertOrderNumbers.maximumvalue/>
