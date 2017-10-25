@@ -123,7 +123,7 @@ class SWActionCallerController{
         this.$timeout(()=>{
             if(!this.form){
                 this.$scope.$root.slatwall.doAction(this.action);
-            }else if(this.form.$valid){
+            }else{
                 this.formController.submit(this.action);
             }
         });

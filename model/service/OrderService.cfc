@@ -1499,7 +1499,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		}	// END OF LOCK
 
-
+		if(arguments.order.hasErrors()){
+			getHibachiScope().setOrmHasErrors(true);
+		}
 
 		return arguments.order;
 	}
