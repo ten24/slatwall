@@ -131,7 +131,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			// Add any process object values
 			if(arrayLen(popArray)) {
 				var processObject = getTransient("#arguments.rc.processEntity#_#arguments.rc.processContext#");
-				if(structKeyExists(arguments.rc, 'recordAlias')){
+				if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
 					processObject.invokeMethod("set#arguments.rc.recordAlias#", {1=record});
 				}else{
 					processObject.invokeMethod("set#record.getClassName()#", {1=record});

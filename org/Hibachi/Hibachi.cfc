@@ -104,6 +104,7 @@ component extends="framework.one" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
+	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -257,14 +258,16 @@ component extends="framework.one" {
 		// Verify that the application is setup
 		verifyApplicationSetup();
 
-		if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-			verifyApplicationSetup(reloadByServerInstance=true);
-		}else{
-			//RELOAD JUST THE SETTINGS
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-				getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
-				var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-				serverInstance.setSettingsExpired(false);
+		if(variables.framework.hibachi.useServerInstanceCacheControl){
+			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+				verifyApplicationSetup(reloadByServerInstance=true);
+			}else{
+				//RELOAD JUST THE SETTINGS
+				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+					serverInstance.setSettingsExpired(false);
+				}
 			}
 		}
 
@@ -598,6 +601,9 @@ component extends="framework.one" {
 					if(!coreBF.containsBean("hibachiDAO")) {
 						coreBF.declareBean("hibachiDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDAO", true);
 					}
+					if(!coreBF.containsBean("hibachiCacheDAO")) {
+						coreBF.declareBean("hibachiCacheDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheDAO", true);
+					}
 					if(!coreBF.containsBean("hibachiService")) {
 						coreBF.declareBean("hibachiService", "#variables.framework.applicationKey#.org.Hibachi.HibachiService", true);
 					}
@@ -720,7 +726,7 @@ component extends="framework.one" {
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-
+					var updated = false;
 					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup
 						&& (
 							!structKeyExists(server,'runFullUpdate')
@@ -748,6 +754,7 @@ component extends="framework.one" {
 						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
+						getHibachiScope().clearApplicationValueByPrefix('class');
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 
@@ -755,7 +762,7 @@ component extends="framework.one" {
 
 						// Write File
 						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/config/lastFullUpdate.txt.cfm', now());
-
+						updated = true;
 						// Announce the applicationFullUpdate event
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
 					}
@@ -788,7 +795,9 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-
+					if(updated){
+						redirect(action=request.action,queryString='updated=true');
+					}
 				}
 			}
 		}

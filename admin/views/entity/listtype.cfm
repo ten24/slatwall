@@ -62,7 +62,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.typeSmartList#"
+	 <!---<hb:HibachiListingDisplay smartList="#rc.typeSmartList#"
 							   recordDetailAction="admin:entity.detailtype"
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
@@ -72,22 +72,26 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
-		data-collection="'Type'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.edittype"
-		record-detail-action="admin:entity.detailtype"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-		data-expandable="true"
-		data-parent-property-name="parentType"
-	>
-		<sw-listing-column data-property-identifier="typeID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="typeName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="typeCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="systemCode" ></sw-listing-column>
-	</sw-listing-display>
+	<cfset rc.typeCollectionList.addFilter('parentType','null','is')/>
+	<cfset rc.typeCollectionList.setDisplayProperties(displayPropertiesList='typeCode,systemCode',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true"
+	})/>
+	<cfset rc.typeCollectionList.addDisplayProperty(displayProperty='typeName',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true",
+		tdclass="primary"
+	},prepend=true)/>
+	<cfset rc.typeCollectionList.addDisplayProperty(displayProperty='typeID',columnConfig={
+		isSearchable="false",
+		isVisible="false",
+		isDeletable="false"
+	})/>
+	<cfset rc.typeCollectionList.addDisplayAggregate('childTypes','COUNT','childTypesCount')/>
+	
+	<hb:HibachiListingDisplay collectionList="#rc.typeCollectionList#">
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

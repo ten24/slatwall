@@ -50,6 +50,10 @@ class SWListingColumnController{
              this.isDeletable = true;
         }
 
+        if(angular.isUndefined(this.search)){
+            this.search = true;
+        }
+
         this.editable = this.editable || false;
         //did a cellView get suggested, if so does it exist
         if(this.cellView){
@@ -66,6 +70,7 @@ class SWListingColumnController{
                 throw(this.headerView + ' is not an existing directive');
             }
         }
+
 
         this.column = {
             columnID: "C" + this.utilityService.createID(31),
@@ -84,10 +89,13 @@ class SWListingColumnController{
             hasHeaderView:this.hasHeaderView,
             isVisible:this.isVisible,
             isDeletable:this.isDeletable,
+            isSearchable:this.search,
             action:this.action,
             queryString:this.queryString,
             persistent:this.persistent
         };
+
+
 
         if(this.hasCellView){
             this.column.cellView = this.cellView;
@@ -169,7 +177,7 @@ class SWListingColumn implements ng.IDirective{
             var listingDisplayID = scope.swListingColumn.swListingDisplay.tableID;
 
             this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
-            
+
         }else {
             throw("listing display scope not available to sw-listing-column or there is no table id")
         }

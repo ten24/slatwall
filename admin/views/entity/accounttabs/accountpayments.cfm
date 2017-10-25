@@ -57,7 +57,20 @@ Notes:
 	<cfset accountPaymentSL.setSelectDistinctFlag(1)/>
 	<cfset accountPaymentSL.addFilter('paymentTransactions.transactionSuccessFlag','1')/>
 	
-	<hb:HibachiListingDisplay smartList="#accountPaymentSL#"
+	<cfset accountPaymentCollectionlist = rc.account.getAccountPaymentsCollectionList()/>
+	<cfset accountPaymentCollectionlist.addFilter("paymentTransactions.transactionSuccessFlag","1")/>
+	<cfset accountPaymentCollectionlist.setDisplayProperties('paymentMethod.paymentMethodName,accountPaymentType.typeName,amount,amountReceived,amountCredited',{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset accountPaymentCollectionlist.addDisplayProperty(displayProperty='accountPaymentID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	
+	<!---<hb:HibachiListingDisplay smartList="#accountPaymentSL#"
 							   recordDetailAction="admin:entity.detailaccountpayment"
 							   recordEditAction="admin:entity.editaccountpayment">
 
@@ -67,8 +80,9 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 
+	</hb:HibachiListingDisplay>--->
+	<hb:HibachiListingDisplay collectionList="#accountPaymentCollectionlist#">
 	</hb:HibachiListingDisplay>
-
 
 	<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn btn-default" icon="plus" />
 </cfoutput>

@@ -61,9 +61,11 @@ Notes:
 	<hb:HibachiEntityDetailGroup>
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/global" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/globaladvanced" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/attribute" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/account" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/address" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/category" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
 		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />

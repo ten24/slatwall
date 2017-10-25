@@ -1,10 +1,10 @@
-<sw-modal-launcher data-modal-name="{{swSkuStockAdjustmentModalLauncher.name}}" 
+<sw-modal-launcher data-modal-name="{{swSkuStockAdjustmentModalLauncher.name}}"
                    data-save-action="swSkuStockAdjustmentModalLauncher.save"
                    data-cancel-action="swSkuStockAdjustmentModalLauncher.initData"
                    data-title="Stock Adjustment"><!-- Change this to rb -->
     <sw-modal-static-button>
         <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
-                 data-object="swSkuStockAdjustmentModalLauncher.sku" 
+                 data-object="swSkuStockAdjustmentModalLauncher.sku"
                  ng-if="swSkuStockAdjustmentModalLauncher.sku">
             <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.sku"
                                  data-name="newQuantity"
@@ -15,25 +15,25 @@
                                  data-in-listing-display="true"
                                  data-row-save-enabled="false"
                                  data-in-modal="true"
-                                 data-event-handlers="change"
+                                 data-event-announcers="change"
             >
             </sw-property-display>
-        </sw-form> 
+        </sw-form>
     </sw-modal-static-button>
-    <sw-modal-content> 
+    <sw-modal-content>
         <sw-form data-name="{{swSkuStockAdjustmentModalLauncher.name}}"
-                 data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"    
+                 data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"
                  data-context="save"
-                 ng-if="swSkuStockAdjustmentModalLauncher.stockAdjustment != null"> 
-            <div class="row">              
-                
+                 ng-if="swSkuStockAdjustmentModalLauncher.stockAdjustment != null">
+            <div class="row">
+
                 <div class="col-sm-4">
-                    <sw-sku-thumbnail data-sku-data="swSkuStockAdjustmentModalLauncher.sku.data"></sw-sku-thumbnail> 
+                    <sw-sku-thumbnail data-sku-data="swSkuStockAdjustmentModalLauncher.sku.data"></sw-sku-thumbnail>
                 </div>
-                
-                <div class="col-sm-8">    
+
+                <div class="col-sm-8">
                     <div class="row s-modal-module-wrapper">
-                        
+
                         <div class="col-md-4">
                             <div class="s-modal-module s-original-value">
                                 <div class="s-title">Original Qty</div>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-4">
                             <div class="s-modal-module">
                                 <div class="s-title">Adjustment</div>
@@ -53,15 +53,15 @@
                             </div>
                         </div>
 
-                        
-                        
+
+
                         <div class="col-md-4">
                             <div class="s-modal-module">
                                 <div class="s-title">New Qty</div>
                                 <div class="s-value">
-                                    <input type="number" 
-                                           ng-model="swSkuStockAdjustmentModalLauncher.newQuantity" 
-                                           ng-change="swSkuStockAdjustmentModalLauncher.updateStockAdjustmentQuantity()" 
+                                    <input type="number"
+                                           ng-model="swSkuStockAdjustmentModalLauncher.newQuantity"
+                                           ng-change="swSkuStockAdjustmentModalLauncher.updateStockAdjustmentQuantity()"
                                            class="form-control input-xs" />
                                 </div>
                              </div>
@@ -71,12 +71,12 @@
                         data-placeholder-text="Search Locations..."
                         data-entity="Location"
                         data-property-to-show="'locationName'"
-                        data-add-function="swSkuStockAdjustmentModalLauncher.addToLocation"
+                        data-add-function="swSkuStockAdjustmentModalLauncher.addSelectedLocation"
                         data-validate-required="true"
-                        data-typeahead-data-key="{{swSkuStockAdjustmentModalLauncher.toLocationTypeaheadDataKey}}"
-                        > 
+                        data-typeahead-data-key="{{swSkuStockAdjustmentModalLauncher.selectedLocationTypeaheadDataKey}}"
+                        >
                         <span sw-typeahead-search-line-item data-property-identifier="locationName">
-                        </span> 
+                        </span>
                     </sw-typeahead-search>
                     <!-- Temporary Omitting this field, not sure if we have the js capability to simple add comments
                          without manually creating a comment entity and commentRelationship
@@ -84,15 +84,15 @@
                         <label for="" class="control-label">Comment:</label>
                         <textarea class="form-control"></textarea>
                     </div>
-                    --> 
+                    -->
                 </div>
             </div>
-        </sw-form> 
-        <sw-form 
+        </sw-form>
+        <sw-form
                  data-name="stockAdjustmentItemForm"
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
                  data-context="save">
-                 <input style="display:none" type="number" name="quantity" ng-model="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.quantity" /> 
+                 <input style="display:none" type="number" name="quantity" ng-model="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem.quantity" />
         </sw-form>
-    </sw-modal-content> 
+    </sw-modal-content>
 </sw-modal-launcher>

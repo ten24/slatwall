@@ -85,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"productType",
 			"product",
 			"content",
+			"category",
 			"account",
 			"address",
 			"image",
@@ -94,6 +95,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"site",
 			"task",
 			"sku",
+			"attribute",
 			"physical"
 		];
 	}
@@ -106,6 +108,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
 			content = ["contentIDPath","site.siteID"],
+			category = ["categoryIDPath",'site.siteID'],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
@@ -141,6 +144,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
 			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
 
+			//Attribute
+			attributeDisplayTemplate = {fieldType="select"},
+
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -160,6 +166,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 			contentEnableTrackingFlag = {fieldType="yesno",defaultValue=0},
+			
+			//Category
+			categoryDisplayTemplate = {fieldType="select"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
@@ -229,11 +238,13 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
+			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
@@ -433,6 +444,16 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "address" );
+			case "attributeDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "attribute", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "attribute" );
+			case "categoryDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "category", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "category" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -1034,8 +1055,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 
 
-			for(var serverInstance in this.getServerInstanceSmartList().getRecords()){
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+			var serverInstanceSmartList = this.getServerInstanceSmartList();
+			serverInstanceSmartList.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#serverinstance.serverInstanceID != '#serverInstance.getServerInstanceID()#'");
+			for(var serverInstance in serverInstanceSmartList.getRecords()){
 				serverInstance.setServerInstanceExpired(true);
+
 			}
 		}
 

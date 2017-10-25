@@ -269,12 +269,27 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		// If the order is open, and has no open dateTime
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
-				var maxOrderNumber = getOrderService().getMaxOrderNumber();
-				if( arrayIsDefined(maxOrderNumber,1) ){
-					setOrderNumber(maxOrderNumber[1] + 1);
-				} else {
-					setOrderNumber(1);
+				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
+					if(!isNull(this.getOrderID())){
+						var maxOrderNumberQuery = new query();
+						var maxOrderNumberSQL = 'insert into swordernumber (orderID,createdDateTime) VALUES (:orderID,:createdDateTime)';
+						
+						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
+						maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
+						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
+						
+						setOrderNumber(insertedID);	
+					}
+				}else{
+					var maxOrderNumber = getOrderService().getMaxOrderNumber();
+					if( arrayIsDefined(maxOrderNumber,1) ){
+						setOrderNumber(maxOrderNumber[1] + 1);
+					} else {
+						setOrderNumber(1);
+					}					
 				}
+			
 			} else {
 				setOrderNumber( getService("integrationService").getIntegrationByIntegrationPackage( setting('globalOrderNumberGeneration') ).getIntegrationCFC().getNewOrderNumber(order=this) );
 			}

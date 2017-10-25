@@ -301,6 +301,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.ordersNotPlacedSmartList;
 	}
+	
+	public any function getOrdersNotPlacedCollectionList() {
+		if(!structKeyExists(variables, "ordersNotPlacedCollectionList")) {
+			var ocl = getService("orderService").getOrderCollectionList();
+			ocl.addFilter('account.accountID', getAccountID());
+			ocl.addFilter('orderStatusType.systemCode', 'ostNotPlaced');
+			ocl.addOrderBy("modifiedDateTime|DESC");
+
+			variables.ordersNotPlacedCollectionList = ocl;
+		}
+		return variables.ordersNotPlacedCollectionList;
+	}	
 
 	public string function getPasswordResetID() {
 		return getService("accountService").getPasswordResetID(account=this);
