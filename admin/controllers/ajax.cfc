@@ -218,7 +218,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					if(structKeyExists(admin,"processActionProperty")){
 						var processActionProperty=listlast(admin.processActionProperty,'.');
 						var processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.processActionProperty);
-					}else if(structKeyExists(arguments.rc, 'recordAlias')){
+					}else if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
 						var processActionProperty=arguments.rc.recordAlias & 'ID';
 						var processActionPropertyValue=record.getPrimaryIDValue();
 					}else{
