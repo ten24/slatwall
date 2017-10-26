@@ -15,8 +15,8 @@ export class BaseBootStrapper{
     public instantiationKey:string;
 
     constructor(myApplication){
-      this.myApplication = myApplication;
-      return angular.lazy(this.myApplication)
+        this.myApplication = myApplication;
+        return angular.lazy(this.myApplication)
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
             this.$q = $q;
@@ -26,7 +26,6 @@ export class BaseBootStrapper{
 
             try{
                 var hashedData = md5(localStorage.getItem('attributeMetaData'));
-
                 if(hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
                     coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
                 }else{
@@ -36,8 +35,18 @@ export class BaseBootStrapper{
                 invalidCache.push('attributeCacheKey');
             }
 
-            invalidCache.push('instantiationKey');
-
+            if(localStorage.getItem('appConfig') !== null){
+                try{
+                    this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                    if(this.appConfig.instantiationKey === null || this.appConfig.instantiationKey != this.instantiationKey){
+                        invalidCache.push('instantiationKey');
+                    }else{
+                        coremodule.constant('appConfig',this.appConfig);
+                    }
+                }catch(e){
+                    invalidCache.push('instantiationKey');
+                }
+            }
             return this.getData(invalidCache);
 
         }])
@@ -45,6 +54,7 @@ export class BaseBootStrapper{
     }
 
     getData=(invalidCache:string[])=>{
+        console.log(invalidCache);
         var promises:{[id:string]:ng.IPromise<any>} ={};
         for(var i in invalidCache){
             var invalidCacheName = invalidCache[i];
@@ -53,9 +63,10 @@ export class BaseBootStrapper{
 
         }
 
-        return this.$q.all(promises).then((data)=>{
+        return this.$q.all(promises).finally(()=>{
+            return this.getResourceBundles();
         });
-    }
+    };
 
     getAttributeCacheKeyData = ()=>{
 
@@ -71,7 +82,6 @@ export class BaseBootStrapper{
         }
         urlString += hibachiConfig.baseURL;
 
-
          if(urlString.length && urlString.slice(-1) !== '/'){
             urlString += '/';
          }
@@ -84,11 +94,9 @@ export class BaseBootStrapper{
                 localStorage.setItem('attributeMetaData',JSON.stringify(resp.data.data));
             }catch(e){}
             this.attributeMetaData = resp.data.data;
-        },(response:any) => {
-
         });
 
-    }
+    };
 
     getInstantiationKeyData = ()=>{
         if(!this.instantiationKey){
@@ -117,15 +125,15 @@ export class BaseBootStrapper{
             if(hibachiConfig.baseURL.length){
                 appConfig.baseURL=urlString;    
             }
+            //for safari private mode which has no localStorage
+            try{
+                localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
+            }catch(e){}
             coremodule.constant('appConfig',resp.data.data);
             this.appConfig = appConfig;
-            return this.getResourceBundles();
-
-        },(response:any) => {
-
         });
 
-    }
+    };
 
     getResourceBundle= (locale) => {
         var deferred = this.$q.defer();
@@ -160,30 +168,21 @@ export class BaseBootStrapper{
     }
 
     getResourceBundles= () => {
-        var rbLocale = this.appConfig.rbLocale.split('_');
-        var localeListArray = rbLocale;
+        var localeListArray = this.appConfig.rbLocale.split('_');
         var rbPromise;
         var rbPromises = [];
         rbPromise = this.getResourceBundle(this.appConfig.rbLocale);
         rbPromises.push(rbPromise);
-        if(localeListArray.length === 2) {
-            //$log.debug('has two');
-            rbPromise = this.getResourceBundle(localeListArray[0]);
+        for(var i = 0; i > localeListArray.length; i++){
+            rbPromise = this.getResourceBundle(localeListArray[i]);
             rbPromises.push(rbPromise);
         }
         if(localeListArray[0] !== 'en') {
-            //$log.debug('get english');
-            //this.getResourceBundle('en_us');
             this.getResourceBundle('en');
         }
-        var resourceBundlePromises = this.$q.all(rbPromises).then((data) => {
-            coremodule.constant('resourceBundles',this._resourceBundle);
-
-        },(error) =>{
-            //can enterhere due to 404
+        return this.$q.all(rbPromises).finally(() => {
             coremodule.constant('resourceBundles',this._resourceBundle);
         });
-        return resourceBundlePromises;
 
     }
 }
