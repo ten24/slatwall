@@ -1478,7 +1478,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								getHibachiDAO().save( arguments.order );
 	
 								// Do a flush so that the order is commited to the DB
-								//getHibachiDAO().flushORMSession();
+								getHibachiDAO().flushORMSession();
 	
 								// Log that the order was placed
 								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
@@ -2041,7 +2041,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var orderDeliverItemCreateGiftCardsData = {
 						giftCardCodes = orderDeliveryItemGiftCardCodes, // gift card codes that only apply to order deliver item
 						orderDeliveryGiftCardCodes = orderDeliveryGiftCardCodes // all gift card codes for entire order delivery
-					}
+					};
 
 					// Create the actual gift cards whether gift card code is auto generated or manually provided
 					this.processOrderDeliveryItem(orderDeliveryItem, orderDeliverItemCreateGiftCardsData, 'createGiftCards');
@@ -2165,8 +2165,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var giftCard = this.newGiftCard();
 				var giftCard_create = giftCard.getProcessObject('create');
 				
-				// 1:1 relationship between orderItem and orderItemGiftRecipient when manual gift card codes are required
-				giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipientsByGiftCardCodeStruct[giftCardCode]);
+				// Expecting a 1:1 relationship between orderItem and orderItemGiftRecipient when manual gift card codes are required
+				// However more refactoring with gift card validation could be done standardize and eliminate these sort of checks
+				if (structKeyExists(orderItemGiftRecipientsByGiftCardCodeStruct, giftCardCode)) {
+					giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipientsByGiftCardCodeStruct[giftCardCode]);
+				}
 				giftCard_create.setOriginalOrderItem(orderItem);
 				giftCard_create.setGiftCardCode(giftCardCode);
 				giftCard_create.setGiftCardPin("");
