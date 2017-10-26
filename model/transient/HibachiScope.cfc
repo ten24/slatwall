@@ -146,6 +146,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		config[ 'applicationKey' ] = '#getApplicationValue('applicationKey')#';
+		config[ 'attributeCacheKey' ] = '#getService('hibachiService').getAttributeCacheKey()#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';

@@ -1247,6 +1247,19 @@
 			
 			return options;
 		}
+
+		public string function getAttributeCacheKey(){
+			var attributeCacheKey = '';
+			var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
+			if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
+			attributeCacheKey = getService('HibachiCacheService').getCachedValue(modelCacheKey);
+			}else if (hasService('attributeService')){
+				var attributeMetaData = getService('attributeService').getAttributeModel();
+				attributeCacheKey = hash(serializeJson(attributeMetaData),'MD5');
+				getService('HibachiCacheService').setCachedValue(modelCacheKey,attributeCacheKey);
+			}
+			return attributeCacheKey;
+		}
 		
 		public array function getSelectedOptionsByApplyData(required string entityName, required string propertyIdentifier){
 			var applyData = {};

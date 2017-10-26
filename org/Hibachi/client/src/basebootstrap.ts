@@ -20,47 +20,27 @@ export class BaseBootStrapper{
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
             this.$q = $q;
-             var baseURL = hibachiConfig.baseURL;
-             if(!baseURL) {
-                 baseURL = ''
-             }
-             if(baseURL.length && baseURL.slice(-1) !== '/'){
-                baseURL += '/';
-             }
-             return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
-            .then( (resp)=> {
-                this.instantiationKey = resp.data.data.instantiationKey;
+            this.instantiationKey = hibachiConfig.instantiationKey;
+            var invalidCache = [];
 
-                var invalidCache = [];
-                try{
-                    var hashedData = md5(localStorage.getItem('attributeMetaData'));
+            try{
+                var hashedData = md5(localStorage.getItem('attributeMetaData'));
 
-                    if(resp.data.data['attributeCacheKey'] === hashedData.toUpperCase()){
-                        coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-                    }else{
-                        invalidCache.push('attributeCacheKey');
-                    }
-                }catch(e){
+                if(hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
+                    coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
+                }else{
                     invalidCache.push('attributeCacheKey');
                 }
+            }catch(e){
+                invalidCache.push('attributeCacheKey');
+            }
 
-                invalidCache.push('instantiationKey');
+            invalidCache.push('instantiationKey');
 
-               return this.getData(invalidCache);
-            });
+            return this.getData(invalidCache);
 
         }])
-        .loading(function(){
-            //angular.element('#loading').show();
-        })
-        .error(function(){
-            //angular.element('#error').show();
-        })
-        .done(function() {
-            //angular.element('#loading').hide();
-
-        });
 
     }
 
@@ -193,7 +173,7 @@ export class BaseBootStrapper{
         }
         if(localeListArray[0] !== 'en') {
             //$log.debug('get english');
-            this.getResourceBundle('en_us');
+            //this.getResourceBundle('en_us');
             this.getResourceBundle('en');
         }
         var resourceBundlePromises = this.$q.all(rbPromises).then((data) => {

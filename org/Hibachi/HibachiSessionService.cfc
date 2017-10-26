@@ -21,6 +21,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		config[ 'rbLocale' ] = rbLocale;
 		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
+		config[ 'attributeCacheKey' ] = '#getAttributeCacheKey()#';
+
 		return config;
 	}
 	
