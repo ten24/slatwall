@@ -144,7 +144,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 					skuID = getSku().getSkuID(),
 					orderItemID = getOrderItemID(),
 					sku = getSku()
-				}
+				};
 
 				arrayAppend(options, placeholder);
 			}
