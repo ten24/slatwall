@@ -63,6 +63,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
 		<swa:SlatwallSetting settingName="globalMissingImagePath" />
 		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
+		<swa:SlatwallSetting settingName="globalURLKeyAttribute" />
 		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
 		<swa:SlatwallSetting settingName="globalURLKeyCategory" />
 		<swa:SlatwallSetting settingName="globalURLKeyProduct" />

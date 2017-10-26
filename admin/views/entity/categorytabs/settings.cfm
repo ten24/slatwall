@@ -55,7 +55,7 @@ Notes:
 <cfset sites.addFilter('activeFlag', 1) /> 
 <cfset rc.sitesArray = sites.getRecords() />
 <cfoutput>
-	<swa:SlatwallSettingTable>
+	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" >
 		<cfloop array="#rc.sitesArray#" index="site">
 			<swa:SlatwallSetting settingName="categoryDisplayTemplate" settingObject="#rc.category#" settingFilterEntities="#[site]#" />
 		</cfloop>

@@ -27,7 +27,7 @@ class ListingService{
         this.listingDisplayStore = new Store.IStore( this.state, this.listingDisplayStateReducer );
 
     }
- 
+
     /**
      * The reducer is responsible for modifying the state of the state object into a new state for listeners.
      */
@@ -772,7 +772,7 @@ class ListingService{
     public setupDefaultGetCollection = (listingID:string) =>{
 
         if(this.getListing(listingID).collectionConfigs.length == 0){
-            console.log("=>",this.getListing(listingID));
+
             this.getListing(listingID).collectionPromise = this.getListing(listingID).collectionConfig.getEntity();
 
             return () =>{
@@ -854,6 +854,9 @@ class ListingService{
     //for multi order by
     public columnOrderByIndex = (listingID:string, column) =>{
         var isfound = false;
+        if(column.sorting.active && column.sorting.sortOrder){
+            return column.sorting.sortOrder.toUpperCase();
+        }
         if(this.getListing(listingID).collectionConfig != null){
             angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
                 if(column.propertyIdentifier == orderBy.propertyIdentifier){
@@ -865,6 +868,7 @@ class ListingService{
         if(!isfound){
             this.getListing(listingID).orderByIndices[column.propertyIdentifier] = '';
         }
+
         return this.getListing(listingID).orderByIndices[column.propertyIdentifier];
     };
 
@@ -908,7 +912,7 @@ class ListingService{
         if(this.getListing(listingID).hasSingleCollectionConfig()){
             this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
         }
-        this.getCollection(listingID);
+
     };
     //End Order By Functions
 

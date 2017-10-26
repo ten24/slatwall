@@ -49,23 +49,16 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.sku" type="any" />
 
-<cfoutput>
-	<hb:HibachiPropertyList>
-		
-		<cfset optionInUseCollectionList = getHibachiScope().getService('optionService').getOptionCollectionList()/>
-		<cfset optionInUseCollectionList.addFilter('skus.skuID',rc.sku.getSkuID())/>
-		<cfset optionInUseCollectionList.setDisplayProperties('optionID')/>
-		<cfset optionInUseCollectionList.addDisplayAggregate('skus.orderItems','COUNT','orderItemsCount')/>
-		<cfset optionIsEditable = arraylen(optionInUseCollectionList.getRecords()) && !optionInUseCollectionList.getRecords()[1]['orderItemsCount']/>
-		
-		<cfif optionIsEditable && rc.edit>
-			<div sw-add-option-group option-groups="'#rc.product.getOptionGroupsAsList()#'" product-id="#rc.product.getProductID()#"></div>
-		<cfelse>
-			<cfloop array="#rc.sku.getOptions()#" index="option">
-				<hb:HibachiFieldDisplay title="#option.getOptionGroup().getOptionGroupName()#" value="#option.getOptionName()#" edit="false">
-			</cfloop>
-		</cfif>
-	</hb:HibachiPropertyList>
-</cfoutput>
+<cfparam name="rc.attribute" type="any" />
+
+<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
+<cfset sites.addFilter('activeFlag', 1) /> 
+<cfset rc.sitesArray = sites.getRecords() />
+
+<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
+	<!--- Site Specific Settings --->
+	<cfloop array="#rc.sitesArray#" index="site">
+		<swa:SlatwallSetting settingName="attributeDisplayTemplate" settingObject="#rc.attribute#" settingFilterEntities="#[site]#" />
+	</cfloop>
+</swa:SlatwallSettingTable>

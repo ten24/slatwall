@@ -497,6 +497,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		return activeAuthentications;
 	}
+	
+	public any function getAccountCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 

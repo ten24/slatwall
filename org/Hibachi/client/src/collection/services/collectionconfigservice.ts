@@ -644,6 +644,7 @@ class CollectionConfig {
     };
 
     public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
+
         if(!this.orderBy){
             this.orderBy = [];
         }
@@ -659,19 +660,34 @@ class CollectionConfig {
                 break;
             }
         }
+        var direction = 'desc';
 
-        if(!found){
-            if(singleColumn){
-                this.orderBy = [];
-                for(var i =  0; i < this.columns.length; i++){
-                    if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
-                        this.columns[i]["sorting"]["active"] = false;
+        if(singleColumn){
+            this.orderBy = [];
+
+            for(var i =  0; i < this.columns.length; i++){
+                if(this.columns[i]['propertyIdentifier'] == formattedPropertyIdentifier){
+                    this.columns[i]["sorting"]["active"] = true;
+                    this.columns[i]["sorting"]["priority"] = 1;
+                    if(!this.columns[i]["sorting"]["sortOrder"] || this.columns[i]["sorting"]["sortOrder"] === 'desc'){
                         this.columns[i]["sorting"]["sortOrder"] = 'asc';
+                        direction = 'asc';
+                    }else{
+                        this.columns[i]["sorting"]["sortOrder"] = 'desc';
+                        direction = 'desc';
                     }
+                }else if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
+                    this.columns[i]["sorting"]["active"] = false;
+                    this.columns[i]["sorting"]["sortOrder"] = 'asc';
                 }
+
             }
-            this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
+
         }
+
+        this.addOrderBy(formattedPropertyIdentifier + '|'+direction, false);
+
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
     public removeOrderBy = (formattedPropertyIdentifier:string) => {

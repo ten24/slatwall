@@ -83,6 +83,7 @@ Notes:
 					<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/relatedobjectcollection"/>
 				</cfif>
 				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
+				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/settings" />
 			</hb:HibachiEntityDetailGroup>
 
 		</hb:HibachiEntityDetailForm>

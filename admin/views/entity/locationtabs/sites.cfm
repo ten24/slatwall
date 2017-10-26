@@ -49,23 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.sku" type="any" />
-
-<cfoutput>
-	<hb:HibachiPropertyList>
-		
-		<cfset optionInUseCollectionList = getHibachiScope().getService('optionService').getOptionCollectionList()/>
-		<cfset optionInUseCollectionList.addFilter('skus.skuID',rc.sku.getSkuID())/>
-		<cfset optionInUseCollectionList.setDisplayProperties('optionID')/>
-		<cfset optionInUseCollectionList.addDisplayAggregate('skus.orderItems','COUNT','orderItemsCount')/>
-		<cfset optionIsEditable = arraylen(optionInUseCollectionList.getRecords()) && !optionInUseCollectionList.getRecords()[1]['orderItemsCount']/>
-		
-		<cfif optionIsEditable && rc.edit>
-			<div sw-add-option-group option-groups="'#rc.product.getOptionGroupsAsList()#'" product-id="#rc.product.getProductID()#"></div>
-		<cfelse>
-			<cfloop array="#rc.sku.getOptions()#" index="option">
-				<hb:HibachiFieldDisplay title="#option.getOptionGroup().getOptionGroupName()#" value="#option.getOptionName()#" edit="false">
-			</cfloop>
-		</cfif>
-	</hb:HibachiPropertyList>
-</cfoutput>
+<hb:HibachiPropertyList>	
+	<hb:HibachiPropertyDisplay object="#rc.location#" displayType="plain" property="sites" edit="#rc.edit#" />
+</hb:HibachiPropertyList>

@@ -57,6 +57,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="site" type="any";
 	property name="app" type="any";
 	property name="category" type="any";
+	property name="attribute" type="any";
+	property name="attributeOption" type="any";
 	
 	// Slatwall specific request smartList properties
 	property name="productSmartList" type="any";
@@ -164,7 +166,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// ================= Entity Helper Methods =====================
-	
+	//Attribute
+	public any function getAttribute() {
+		if(!structKeyExists(variables, "attribute")) {
+			variables.attribute = getService("AttributeService").newAttribute();
+		}
+		return variables.attribute;
+	}
+	//Attribute Option
+	public any function getAttributeOption() {
+		if(!structKeyExists(variables, "attributeOption")) {
+			variables.attributeOption = getService("AttributeService").newAttributeOption();
+		}
+		return variables.attributeOption;
+	}
 	// Brand
 	public any function getBrand() {
 		if(!structKeyExists(variables, "brand")) {
@@ -371,7 +386,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
-			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urltitle,orderItems.sku.product.baseProductType,
+			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,
 			orderItems.sku.product.brand.brandName,
 			orderItems.sku.product.productType.productTypeName,
 			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,

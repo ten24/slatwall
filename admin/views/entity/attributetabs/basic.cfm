@@ -29,6 +29,9 @@
  			<cfif rc.attribute.getAttributeInputType() EQ 'File'>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="maxFileSize" edit="#rc.edit#">
  			</cfif>
+ 			<cfif not rc.attribute.isNew()>
+ 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="urlTitle" edit="#rc.edit#">
+ 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

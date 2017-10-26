@@ -43,6 +43,7 @@
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8d" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8d" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Address" systemCode="cttAddress" sortOrder="5" />
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8f" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8f" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Account" systemCode="cttAccount" sortOrder="6" />
 		<Record typeID="447df331c2c2c3b093212519e8c1ae8g" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b093212519e8c1ae8g" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Category" systemCode="cttCategory" sortOrder="7" />
+		<Record typeID="447df331c2c2c3b033312519e8c1ae8h" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b033312519e8c1ae8h" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Attribute" systemCode="cttAttribute" sortOrder="7" />
 
 		<Record typeID="bb6fd9cff5afa5112ad66560b6a887dd" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd" parentTypeID="NULL" typeName="Event Registration Status Types" systemCode="eventRegistrationStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="b89ae134f66e795e53c858b92360ded7" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b89ae134f66e795e53c858b92360ded7" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" typeName="Attended" systemCode="erstAttended" sortOrder="1" />

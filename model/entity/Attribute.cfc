@@ -68,6 +68,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
 	property name="maxFileSize" hb_populateEnabled="public" ormtype="integer";
 	property name="relatedObjectCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
+	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this attribute.  For Example: http://www.myslatwallsite.com/att/my-url-title/ where att is the global attribute url key, and my-url-title is the urlTitle of this attribtue";
 
 	// Calculated Properties
 

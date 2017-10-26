@@ -109,7 +109,8 @@ Notes:
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
 			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
 			var cacheList = 
-			   "globalURLKeyBrand,
+			   "globalURLKeyAttribute,
+			    globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
 				globalURLKeyAccount,
@@ -128,12 +129,20 @@ Notes:
 			site.setResetSettingCache(false);
 		}
 
-
 		if(!isNull(arguments.entityURL)){
 			var entityName = getHibachiScope().getEntityURLKeyType(arguments.entityUrl);
 			if(len(entityName)){
-				var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
-				var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=arguments.contentURLTitlePath,2=true});
+				if(entityName=='Attribute'){
+					var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
+					var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=listFirst(arguments.contentURLTitlePath,'/'),2=true});
+					var attributeOption = entityService.invokeMethod('getAttributeOptionByURLTitle',{1=listLast(arguments.contentURLTitlePath,'/'),2=true});
+					arguments.slatwallScope.setAttributeOption(attributeOption);
+					
+				}else{
+					var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
+					var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=arguments.contentURLTitlePath,2=true});
+				}
+				
 				if(isNull(entity)){
 					var content = render404(arguments.slatwallScope,site);
 				}
