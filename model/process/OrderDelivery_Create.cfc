@@ -156,57 +156,121 @@ component output="false" accessors="true" extends="HibachiProcess" {
   		}
 		
 	}
-	
-	public boolean function hasAllGiftCardCodes() {
-		return true;
-	}
-	
-	public boolean function hasGiftCardCodesForAllGiftCardDeliveryItems(){
-			// FIXME: need to look at orderItem sku setting
-			//throw("We need to refactor this method");
-			
-			// When manual providing gift card codes and gift card codes are present make sure all are allocated
-			if( !getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") 
-				&& !isNull(this.getGiftCardCodes())
-			){
-				return this.getOrderFulfillment().getNumberOfNeededGiftCardCodes() == ArrayLen(this.getGiftCardCodes());
 
-			} else if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")) {
-				return !hasUndeliveredOrderItemsWithoutProvidedGiftCardCode();
-			}
-			return true;
+	public boolean function hasUndeliveredOrderItemsWithoutProvidedGiftCardCode() {
+		return arrayLen(getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) > 0;
 	}
 
-	public boolean function hasRecipientsForAllGiftCardDeliveryItems(){
-		// FIXME: need to look at orderItem sku setting
-		return true;
-		for(var deliveryItem in this.getOrderDeliveryItems()){
-			if(!hasRecipientsForGiftCard(deliveryItem)){
-				return false;
+	// @hint Returns a struct to assist with quick lookup for orderDeliveryItem data by using orderItemID
+	private struct function getOrderDeliveryItemsStruct() {
+		// Assists with quick lookup for orderDeliveryItem data by using orderItemID
+		var orderDeliveryItemsStruct = {};
+		for (var orderDeliveryItemData in getOrderDeliveryItems()) {
+			if (!structKeyExists(orderDeliveryItemsStruct, orderDeliveryItemData.orderItem.orderItemID)) {
+				orderDeliveryItemsStruct[orderDeliveryItemData.orderItem.orderItemID] = orderDeliveryItemData;
+			} else {
+				orderDeliveryItemsStruct[orderDeliveryItemData.orderItem.orderItemID].quantity += orderDeliveryItemData.quantity;
 			}
 		}
+		
+		return orderDeliveryItemsStruct;
+	}
+
+	// @hint Returns an array of orderItems that require gift card codes
+	public array function getUndeliveredOrderItemsWithoutProvidedGiftCardCode() {
+		var undeliveredOrderItemsWithoutProvidedGiftCardCode = [];
+
+		// Assists with quick lookup for orderDeliveryItem data by using orderItemID
+		var orderDeliveryItemsStruct = getOrderDeliveryItemsStruct();
+
+		// Inspect only orderItems of the orderFulfillment that are associated with an orderDeliveryItem
+		for (var orderItem in getOrderFulfillment().getOrderFulfillmentItems()) {
+
+			// Only for gift card orderItems part of the order delivery that require gift card codes manually provided
+			if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && (orderItem.getQuantityUndelivered() > 0) && orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+				var quantityAllocatedWithGiftCardCodes = 0;
+
+				// Check if any gift card codes have already been allocated to orderItemGiftRecipients (ie. during orderService.order_addOrderItem)
+				if (!isNull(orderItem.getOrderItemGiftRecipients())) {
+					for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+						if (!isNull(orderItemGiftRecipient.getManualGiftCardCode()) && len(orderItemGiftRecipient.getManualGiftCardCode()) ) {
+							quantityAllocatedWithGiftCardCodes += orderItemGiftRecipient.getNumberOfUnassignedGiftCards();
+						}
+					}
+				}
+				
+				var quantityRemainsWithoutGiftCardCodes = orderItem.getQuantity() - quantityAllocatedWithGiftCardCodes;
+				if (quantityRemainsWithoutGiftCardCodes > 0) {
+					arrayAppend(undeliveredOrderItemsWithoutProvidedGiftCardCode, orderItem);
+				}
+			}
+		}
+		
+		return undeliveredOrderItemsWithoutProvidedGiftCardCode;
+	}
+
+	// @hint Checks that all orderDeliveryItems for orderItems with manual gift card codes have correct number of gift card codes provided
+	public boolean function hasGiftCardCodesForAllGiftCardDeliveryItems(){
+
+		if (!isNull(getGiftCardCodes())) {
+
+			// Creates struct to reference gift card codes for orderItem
+			var giftCardCodeCountByOrderItemStruct = {};
+			for (var giftCardCodeData in getGiftCardCodes()) {
+				// Initialize gift card code count for orderItem
+				if (!structKeyExists(giftCardCodeCountByOrderItemStruct, giftCardCodeData.orderItemID)) {
+					giftCardCodeCountByOrderItemStruct[giftCardCodeData.orderItemID].count = 0;
+				}
+
+				// Increment gift card code count for orderItem
+				giftCardCodeCountByOrderItemStruct[giftCardCodeData.orderItemID].count++;
+			}
+
+			// Assists with quick lookup for orderDeliveryItem data by using orderItemID
+			var orderDeliveryItemsStruct = getOrderDeliveryItemsStruct();
+
+			// Inspect only orderItems of the orderFulfillment that are associated with an orderDeliveryItem
+			for (var orderItem in getOrderFulfillment().getOrderFulfillmentItems()) {
+				if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+					// Invalid when we do not have enough gift card codes for the orderItem to deliver quantity specified
+					if (giftCardCodeCountByOrderItemStruct[orderItem.getOrderItemID()].count < orderDeliveryItemsStruct[orderItem.getOrderItemID()].quantity) {
+						return false;
+					}
+				}
+			}
+		}
+
 		return true;
 	}
 
-    private boolean function hasRecipientsForGiftCard(required any orderDelivery){
-        var orderItem = getService("HibachiService").get("OrderItem", orderDelivery.orderItem.orderItemID);
-        if(orderItem.getSku().isGiftCardSku()){
-            var quantityCount = orderDelivery.quantity;
-            for(var recipient in orderItem.getOrderItemGiftRecipients()){
-                if(!recipient.hasAllAssignedGiftCards()){
-                    quantityCount = quantityCount - recipient.getNumberOfUnassignedGiftCards();
-                }
+	// @hint Checks that all orderDeliveryItems for orderItem with recipient required are allocated with correct number of recipients
+	public boolean function hasRecipientsForAllGiftCardDeliveryItems(){
+		// Assists with quick lookup for orderDeliveryItem data by using orderItemID
+		var orderDeliveryItemsStruct = getOrderDeliveryItemsStruct();
+		
+		// Inspect only orderItems of the orderFulfillment that are associated with an orderDeliveryItem
+		for (var orderItem in getOrderFulfillment().getOrderFulfillmentItems()) {
+			// Apply only for gift card order items with recipient requirement
+			if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && orderItem.isGiftCardOrderItem() && orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
+				var quantityRequired = orderDeliveryItemsStruct[orderItem.getOrderItemID()].quantity;
+				var quantityAllocated = 0;
 
-                if(quantityCount LTE 0){
-                    return true;
-                }
-            }
-        } else {
-            //validation passes
-            return true;
-        }
-        return false;
-    }
+				// Increment quantity with the quantity allocated to each recipient
+				if (!isNull(orderItem.getOrderItemGiftRecipients())) {
+					for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+						quantityAllocated += orderItemGiftRecipient.getNumberOfUnassignedGiftCards();
+					}
+				}
+
+				// Not enough recipients allocated to fulfill
+				if (quantityAllocated < quantityRequired) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 
 	public numeric function getCapturableAmount() {
 		if(!structKeyExists(variables, "capturableAmount")) {

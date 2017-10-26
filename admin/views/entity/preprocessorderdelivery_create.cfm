@@ -103,7 +103,7 @@ Notes:
 				</cfif>
 
 				<!--- Gift Card Codes (Manual) --->
-				<cfif rc.orderFulfillment.hasUndeliveredOrderItemsWithoutProvidedGiftCardCode()>
+				<cfif rc.processObject.hasUndeliveredOrderItemsWithoutProvidedGiftCardCode()>
 					<hb:HibachiEntityDetailGroup>
 					
 					<cfsavecontent variable="giftCardCodeContent">
@@ -119,7 +119,7 @@ Notes:
 								<cfset giftCardCodeValue = rc.processObject.getGiftCardCodes()[giftCardIndex].giftCardCode />
 							</cfif>
 							<!--- Add title prefix if necessary --->
-							<cfif arrayLen(rc.orderFulfillment.getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) GT 1 or arrayLen(placeholder.orderItem.getProvidedGiftCardCodePlaceholderOptions()) GT 1 >
+							<cfif arrayLen(rc.processObject.getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) GT 1 or arrayLen(placeholder.orderItem.getProvidedGiftCardCodePlaceholderOptions(placeholder.quantity)) GT 1 >
 								<cfset giftCardCodeFieldTitle = "#giftCardIndex#. #giftCardCodeFieldTitle#" />
 							</cfif>
 							<hb:HibachiFieldDisplay fieldType="hidden" fieldName="giftCardCodes[#giftCardIndex#].orderItemID" value="#placeholder.orderItem.getOrderItemID()#" displayType="plain" edit="true" />
