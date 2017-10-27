@@ -52,7 +52,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public void function deployApplication(required any app) {
+	public void function deployApplication(required any app, boolean createAppTemplatesFlag=false) {
 		// copy skeletonapp to /apps/{applicationCodeOrID} 
 		if(!directoryExists(arguments.app.getAppPath())){
 			directoryCreate(arguments.app.getAppPath());
@@ -64,6 +64,18 @@ component extends="HibachiService" accessors="true" output="false" {
 			recurse=false, 
 			copyContentExclusionList=".svn,.git"
 		);
+		if(!createAppTemplatesFlag){
+			
+			var appTemplatesPath = arguments.app.getAppPath() & '/templates/'; 	
+			if(DirectoryExists(appTemplatesPath)){ 
+				directoryDelete(appTemplatesPath,true);
+			}
+		    
+			var appTagsPath = arguments.app.getAppPath() & '/tags/'; 
+			if(DirectoryExists(appTagsPath)){ 
+				directoryDelete(appTagsPath,true);
+			}
+		}
 	}
 	
 	public void function updateCMSApp(required app){
@@ -101,9 +113,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(!directoryExists(arguments.app.getAppPath())){
 				directoryCreate(arguments.app.getAppPath());
 			}
-			
+			var createAppTemplatesFlag = false; 
+			if(structKeyExists(data, "createAppTemplatesFlag") && arguments.data.createAppTemplatesFlag){
+				createAppTemplatesFlag = arguments.data.createAppTemplatesFlag;
+			}		
 			//deploy skeletonApp
-			deployApplication(arguments.app);
+			deployApplication(arguments.app, createAppTemplatesFlag);
 		}
 		arguments.app = super.save(arguments.app, arguments.data);	
 		return arguments.app;

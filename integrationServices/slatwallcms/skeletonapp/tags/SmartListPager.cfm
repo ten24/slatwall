@@ -1,4 +1,5 @@
-/*
+<!---
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -25,6 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
+
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -32,6 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
+
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -39,16 +42,33 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-Notes:
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
 
-	// Injected Entity
-	property name="app";
-
-	// Data Properties
-	property name="appName" hb_rbKey="entity.app.appName";
-	property name="appCode" hb_rbKey="entity.app.appCode";
-	property name="createAppTemplatesFlag" ormtype="boolean"; 
+	Notes:
 	
-}
+--->
+<cfparam name="attributes.smartList" type="any" />
+<cfparam name="attributes.class" default="pagination" />
+<cfparam name="attributes.ulclass" default="pagination" />
+
+<cfif thisTag.executionMode is "start">
+	<cfoutput>
+		<cfif attributes.smartList.getTotalPages() gt 1>
+			<div class="#attributes.class#">
+				<ul class="#attributes.ulclass#">
+					<cfif attributes.smartList.getCurrentPage() gt 1>
+						<li class="prev"><a href="#attributes.smartList.buildURL('P:Current=#attributes.smartList.getCurrentPage() - 1#')#">Prev</a></li>
+					</cfif>
+					<cfloop from="1" to="#attributes.smartList.getTotalPages()#" step="1" index="i">
+						<cfset currentPage = attributes.smartList.getCurrentPage() />
+						<li class="page#i#<cfif currentPage eq i> current</cfif>">
+							<a href="#attributes.smartList.buildURL('P:Current=#i#')#" class="<cfif currentPage EQ i>active</cfif>">#i#</a>
+						</li>
+					</cfloop>
+					<cfif attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages()>
+						<li class="next"><a href="#attributes.smartList.buildURL('P:Current=#attributes.smartList.getCurrentPage() + 1#')#">Next</a></li>
+					</cfif>
+				</ul>
+			</div>
+		</cfif>
+	</cfoutput>
+</cfif>

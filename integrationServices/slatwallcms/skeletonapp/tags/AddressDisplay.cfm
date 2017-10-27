@@ -1,4 +1,5 @@
-/*
+<!---
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -25,6 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
+
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -32,6 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
+
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -39,16 +42,44 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-Notes:
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
 
-	// Injected Entity
-	property name="app";
-
-	// Data Properties
-	property name="appName" hb_rbKey="entity.app.appName";
-	property name="appCode" hb_rbKey="entity.app.appCode";
-	property name="createAppTemplatesFlag" ormtype="boolean"; 
+	Notes:
 	
-}
+--->
+<cfparam name="attributes.address" type="any" />
+<cfparam name="attributes.domType" type="string" default="p" />
+
+<cfif thisTag.executionMode is "start">
+	<cfoutput>
+		<#attributes.domType# class="sw-address-display">
+			<cfif !isNull(attributes.address.getName()) and len(attributes.address.getName())>
+				#attributes.address.getName()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getCompany()) and len(attributes.address.getCompany())>
+				#attributes.address.getCompany()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getStreetAddress()) and len(attributes.address.getStreetAddress())>
+				#attributes.address.getStreetAddress()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getStreet2Address()) and len(attributes.address.getStreet2Address())>
+				#attributes.address.getStreet2Address()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getLocality()) and len(attributes.address.getLocality())>
+				#attributes.address.getLocality()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getCity()) and len(attributes.address.getCity())>
+				#attributes.address.getCity()#,
+			</cfif>
+			<cfif !isNull(attributes.address.getStateCode()) and len(attributes.address.getStateCode())>
+				#attributes.address.getStateCode()# 
+			</cfif>
+			<cfif !isNull(attributes.address.getPostalCode()) and len(attributes.address.getPostalCode())>
+				#attributes.address.getPostalCode()#
+			</cfif>
+			<br />
+			<cfif !isNull(attributes.address.getCountryCode()) and len(attributes.address.getCountryCode())>
+				#attributes.address.getCountryCode()#<br />
+			</cfif>
+		</#attributes.domType#>
+	</cfoutput>
+</cfif>
