@@ -1522,7 +1522,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}	// END OF LOCK
 
 
-		
+
 		return arguments.order;
 	}
 	
@@ -2003,29 +2003,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// arguments.data.giftCardCodes will be used for orderDeliveryItem_createGiftCards() process
 			if (!structKeyExists(arguments.data, 'giftCardCodes')) {
 				arguments.data.giftCardCodes = [];
+			}
 
-				for (var orderDeliveryItem in orderDelivery.getOrderDeliveryItems()) {
-					var orderItem = orderDeliveryItem.getOrderItem();
+			// Normalizing manual gift cards into arguments.data.giftCardCodes as they may be provided directly or need to be looked up from the OrderItemGiftRecipient
+			for (var orderDeliveryItem in orderDelivery.getOrderDeliveryItems()) {
+				var orderItem = orderDeliveryItem.getOrderItem();
 
-					// Need to populate gift card code data needed later during gift card processing
-					if (orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
-						var giftCardCreateCount = 1;
-						// Could be partial fulfillment
-						for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+				// Need to populate gift card code data needed later during gift card processing (orderItem with recipient will have giftCardCode stored in OrderItemGiftRecipient)
+				if (orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag() && !orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
+					var giftCardCreateCount = 1;
+					// Could be partial fulfillment
+					for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
 
-							// Check to make sure gift card code has not already been fulfilled and assigned
-							if (!orderItemGiftRecipient.hasAllAssignedGiftCards() && giftCardCreateCount <= orderDeliveryItem.getQuantity()) {
-								arrayAppend(arguments.data.giftCardCodes, {giftCardCode=orderItemGiftRecipient.getManualGiftCardCode(), orderItemID=orderItem.getOrderItemID()});
-								giftCardCreateCount++;
-							}
+						// Check to make sure gift card code has not already been fulfilled and assigned
+						if (!orderItemGiftRecipient.hasAllAssignedGiftCards() && giftCardCreateCount <= orderDeliveryItem.getQuantity()) {
+							arrayAppend(arguments.data.giftCardCodes, {giftCardCode=orderItemGiftRecipient.getManualGiftCardCode(), orderItemID=orderItem.getOrderItemID()});
+							giftCardCreateCount++;
 						}
 					}
 				}
+			}
 
-				// Clean up if not needed
-				if (!arrayLen(arguments.data.giftCardCodes)) {
-					structDelete(arguments.data, 'giftCardCodes');
-				}
+			// Clean up if not needed
+			if (!arrayLen(arguments.data.giftCardCodes)) {
+				structDelete(arguments.data, 'giftCardCodes');
 			}
 
 			// Used to maintain state for gift card code processing and validation
@@ -2045,7 +2046,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderDeliveryItem = this.processOrderDeliveryItem(orderDeliveryItem, {}, 'setupContentAccess');
 				}
 				
-				// bypass auto fulfillment for manual gift card codes that require recipient
+				// Create gift cards
 				if (orderDeliveryItem.getOrderItem().isGiftCardOrderItem()) {
 					
 					// Manual gift card code orderDeliveryItems require special setup to use provided gift card codes
@@ -2054,20 +2055,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 						// find all gift card codes for the specific orderItem
 						for (var giftCardCodeData in arguments.data.giftCardCodes) {
-							// Note: need to manage two arrays of gift card codes
-							// 1. all gift card codes to be used for processObject validation to ensure no duplicates
-							// 2. the subset of gift card codes associated with each orderDeliveryItem for giftCard creation
+							if (!isNull(giftCardCodeData.giftCardCode)) {
+								// Note: need to manage two arrays of gift card codes
+								// 1. all gift card codes to be used for processObject validation to ensure no duplicates
+								// 2. the subset of gift card codes associated with each orderDeliveryItem for giftCard creation
 
-							// Keeping references of all gift card codes to be created for processObject validation
-							// Population should only need to execute once and be used for all orderDeliveryItems
-							if (!orderDeliveryGiftCardCodesPopulatedFlag) {
-								arrayAppend(orderDeliveryGiftCardCodes, giftCardCodeData.giftCardCode);
-							}
+								// Keeping references of all gift card codes to be created for processObject validation
+								// Population should only need to execute once and be used for all orderDeliveryItems
+								if (!orderDeliveryGiftCardCodesPopulatedFlag) {
+									arrayAppend(orderDeliveryGiftCardCodes, giftCardCodeData.giftCardCode);
+								}
 
-							// Gift card codes subset for those with this orderItem, matching on orderItemID
-							if (orderDeliveryItem.getOrderItem().getOrderItemID() == giftCardCodeData.orderItemID) {
-								// Add giftCardCode to array for further processing
-								arrayAppend(orderDeliveryItemGiftCardCodes, giftCardCodeData.giftCardCode);
+								// Gift card codes subset for those with this orderItem, matching on orderItemID
+								if (orderDeliveryItem.getOrderItem().getOrderItemID() == giftCardCodeData.orderItemID) {
+									// Add giftCardCode to array for further processing
+									arrayAppend(orderDeliveryItemGiftCardCodes, giftCardCodeData.giftCardCode);
+								}
 							}
 						}
 
@@ -2078,13 +2081,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// The two gift card structures are not the same (ie. giftCardCodes is a subset of orderDeliveryGiftCardCodes)
 					// It provides more data for the gift card code validation process during processOrderDeliveryItem_createGiftCards
-					var orderDeliverItemCreateGiftCardsData = {
+					var orderDeliveryItemCreateGiftCardsData = {
 						giftCardCodes = orderDeliveryItemGiftCardCodes, // gift card codes that only apply to order deliver item
 						orderDeliveryGiftCardCodes = orderDeliveryGiftCardCodes // all gift card codes for entire order delivery
 					};
-
+					
 					// Create the actual gift cards whether gift card code is auto generated or manually provided
-					this.processOrderDeliveryItem(orderDeliveryItem, orderDeliverItemCreateGiftCardsData, 'createGiftCards');
+					this.processOrderDeliveryItem(orderDeliveryItem, orderDeliveryItemCreateGiftCardsData, 'createGiftCards');
 
 					// Add any gift card generation errors to the orderDelivery
 					if (orderDeliveryItem.getProcessObject('createGiftCards').hasError('giftCardCodes')) {
@@ -2167,7 +2170,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
 			for(var recipient in orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients()){
 				for(var giftCard in recipient.getGiftCards()){
-					sendEmail(recipient.getEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
 				}
 			}
 		} else {
@@ -2186,13 +2189,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		email = getEmailService().sendEmail(email);
 	}
 
-	public any function processOrderDeliveryItem_createGiftCards(required any orderDeliveryItem, required any processObject, struct data={}) {
+	public any function processOrderDeliveryItem_createGiftCards(required any orderDeliveryItem, struct data={}, required any processObject) {
 		var orderItem = arguments.orderDeliveryItem.getOrderItem();
 		var term = orderItem.getSku().getGiftCardExpirationTerm();
 		var giftCardCodes = arguments.data.giftCardCodes;
-
+		
 		if (!orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
-
+			
 			// Creates a simple lookup of the orderItemGiftRecipient by using giftCardCode as the key
 			var orderItemGiftRecipientsByGiftCardCodeStruct = {};
 			for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
@@ -2261,6 +2264,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(!orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
 							giftCardCodeIndex++;
 							giftCard_create.setGiftCardCode(giftCardCodes[giftCardCodeIndex]);
+							giftCard_create.setGiftCardPin("");
 						}
 	
 						giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
