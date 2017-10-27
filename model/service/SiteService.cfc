@@ -319,7 +319,7 @@ component  extends="HibachiService" accessors="true" {
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-			var createTemplatesFlag = false; 
+			var createTemplatesFlag = true; 
 			if(structKeyExists(data, "useAppTemplatesFlag") && arguments.data.useAppTemplatesFlag){
 				createTemplatesFlag = !arguments.data.useAppTemplatesFlag;
 			}
