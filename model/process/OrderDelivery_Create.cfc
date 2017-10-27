@@ -72,7 +72,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public array function getUndeliveredOrderItemsWithoutProvidedGiftCardCodePlaceholders() {
 		var placeholders = [];
 		for (var orderDeliveryItem in getOrderDeliveryItems()) {
-			for (var orderItem in getOrderFulfillment().getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) {
+			for (var orderItem in getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) {
 				if (orderItem.getOrderItemID() == orderDeliveryItem.orderItem.orderItemID && orderDeliveryItem.quantity > 0) {
 					arrayAppend(placeholders, {
 						orderItem = orderItem,
@@ -187,7 +187,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		for (var orderItem in getOrderFulfillment().getOrderFulfillmentItems()) {
 
 			// Only for gift card orderItems part of the order delivery that require gift card codes manually provided
-			if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && (orderItem.getQuantityUndelivered() > 0) && orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+			if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && (orderItem.getQuantityUndelivered() > 0) && orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag() && orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
 				var quantityAllocatedWithGiftCardCodes = 0;
 
 				// Check if any gift card codes have already been allocated to orderItemGiftRecipients (ie. during orderService.order_addOrderItem)
@@ -231,7 +231,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 			// Inspect only orderItems of the orderFulfillment that are associated with an orderDeliveryItem
 			for (var orderItem in getOrderFulfillment().getOrderFulfillmentItems()) {
-				if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+				if (structKeyExists(orderDeliveryItemsStruct, orderItem.getOrderItemID()) && orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag() && orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
 					// Invalid when we do not have enough gift card codes for the orderItem to deliver quantity specified
 					if (giftCardCodeCountByOrderItemStruct[orderItem.getOrderItemID()].count < orderDeliveryItemsStruct[orderItem.getOrderItemID()].quantity) {
 						return false;
