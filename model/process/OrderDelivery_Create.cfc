@@ -106,7 +106,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public boolean function hasQuantityOnOneOrderDeliveryItem() {
-		if (getOrderFulfillment().getFulfillmentMethodType() == "auto" ){
+		if (getOrderFulfillment().isAutoFulfillment() ){
 			return true;
 		}else{
 			for(var orderDeliveryItem in getOrderDeliveryItems()) {
@@ -199,7 +199,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					}
 				}
 				
-				var quantityRemainsWithoutGiftCardCodes = orderItem.getQuantity() - quantityAllocatedWithGiftCardCodes;
+				var quantityRemainsWithoutGiftCardCodes = orderItem.getQuantityUndelivered() - quantityAllocatedWithGiftCardCodes;
 				if (quantityRemainsWithoutGiftCardCodes > 0) {
 					arrayAppend(undeliveredOrderItemsWithoutProvidedGiftCardCode, orderItem);
 				}
@@ -268,7 +268,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
