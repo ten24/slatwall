@@ -1925,7 +1925,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
 			var orderDeliveryItem = arguments.processObject.getOrderDeliveryItems()[i];
-			addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+			if (orderDeliveryItem.quantity > 0) {
+				addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+			}
 		}
 		return arguments.orderDelivery;
 	}
@@ -2004,7 +2006,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!structKeyExists(arguments.data, 'giftCardCodes')) {
 				arguments.data.giftCardCodes = [];
 			}
-
+			
 			// Normalizing manual gift cards into arguments.data.giftCardCodes as they may be provided directly or need to be looked up from the OrderItemGiftRecipient
 			for (var orderDeliveryItem in orderDelivery.getOrderDeliveryItems()) {
 				var orderItem = orderDeliveryItem.getOrderItem();
@@ -2023,7 +2025,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-
+			
 			// Clean up if not needed
 			if (!arrayLen(arguments.data.giftCardCodes)) {
 				structDelete(arguments.data, 'giftCardCodes');
@@ -2035,7 +2037,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
 			for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
-
+				
 				// If the sku has a subscriptionTerm, then we can process the item to setupSubscription
 				if(!isNull(orderDeliveryItem.getOrderItem().getSku().getSubscriptionTerm())) {
 					orderDeliveryItem = this.processOrderDeliveryItem(orderDeliveryItem, {}, 'setupSubscription');
