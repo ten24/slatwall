@@ -67,6 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="passwordConfirm";
 	property name="orderOriginID" hb_rbKey="entity.orderOrigin" hb_formFieldType="select";
 	property name="defaultStockLocationID" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="select";
+	property name="orderCreatedSite" cfc="Site" fieldtype="many-to-one";
 	
 	// Cached Properties
 	property name="fulfillmentMethodIDOptions";
@@ -119,5 +120,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.fulfillmentMethodIDOptions = fmSL.getRecords();
 		}
 		return variables.fulfillmentMethodIDOptions;
+	}
+	
+	public any function getOrderCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
 	}
 }

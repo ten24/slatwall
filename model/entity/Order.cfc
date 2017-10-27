@@ -276,7 +276,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 						
 						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
 						maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
-						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),sqltype="cf_sql_timestamp" );
+						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
 						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
 						
 						setOrderNumber(insertedID);	
@@ -1146,6 +1146,19 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	public numeric function getTotalItems() {
 		return arrayLen(getOrderItems());
 	}
+	
+	public any function getOrderCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
+	}
+
 
 	// ============  END:  Non-Persistent Property Methods =================
 
