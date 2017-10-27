@@ -64,6 +64,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		variables.slatwallFW1Application.bootstrap();
 		
 		request.slatwallScope.getAccount().setSuperUserFlag(1);
+		request.slatwallScope.getAccount().setFirstName('BigBoy');
 
 		// Setup a debugging output array
 		variables.debugArray = [];
@@ -137,7 +138,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		arrayAppend(variables.persistentEntities, entity);
 	}
 	
-	private any function persistTestEntity(required any testEntity, required any data, boolean saveWithService=false){
+	private any function persistTestEntity(required any testEntity, required any data={}, boolean saveWithService=false){
 		// Save with Service
 		if(arguments.saveWithService) {
 

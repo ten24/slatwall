@@ -2,6 +2,7 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 import {alertmodule} from "../alert/alert.module";
+import {cardmodule} from "../card/card.module";
 import {collectionmodule} from "../collection/collection.module";
 import {listingmodule} from "../listing/listing.module";
 import {dialogmodule} from "../dialog/dialog.module";
@@ -16,6 +17,7 @@ import {SWSaveAndFinish} from "./components/swsaveandfinish";
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
+    cardmodule.name,
     collectionmodule.name,
     entitymodule.name,
     dialogmodule.name,
@@ -42,6 +44,9 @@ var hibachimodule = angular.module('hibachi',[
     }
     if($hibachi.newState){
         $rootScope.hibachiScope.getStates();
+    }
+    if($hibachi.newState){
+        $rootScope.hibachiScope.getAddressOptions();
     }
 }])
 .constant('hibachiPartialsPath','hibachi/components/')

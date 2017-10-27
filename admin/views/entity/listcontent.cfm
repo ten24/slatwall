@@ -56,7 +56,7 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.contentSmartList#" showCreate="false" />
 
-<hb:HibachiListingDisplay smartList="#rc.contentSmartList#"
+<!--- <hb:HibachiListingDisplay smartList="#rc.contentSmartList#"
 						   recordDetailAction="admin:entity.detailcontent"
 						   recordEditAction="admin:entity.editcontent">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
@@ -65,7 +65,27 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="productListingPageFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+	<sw-listing-display
+		data-collection="'Sku'"
+		data-edit="false"
+		data-show-top-pagination="true"
+		data-has-search="true"
+		record-edit-action="admin:entity.editcontent"
+		record-detail-action="admin:entity.detailcontent"
+		data-is-angular-route="false"
+		data-angular-links="false"
+		data-has-action-bar="false"
+	>
+		<sw-listing-column data-property-identifier="title" tdclass="primary" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="site.siteName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="contentTemplateType.typeName" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="allowPurchaseFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="allowPurchaseFlag" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
+	</sw-listing-display>
+
 
 </cfoutput>
 

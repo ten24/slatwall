@@ -20,9 +20,10 @@ export class BaseBootStrapper{
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
             this.$q = $q;
-
-
              var baseURL = hibachiConfig.baseURL;
+             if(!baseURL) {
+                 baseURL = ''
+             }
              if(baseURL.length && baseURL.slice(-1) !== '/'){
                 baseURL += '/';
              }
@@ -130,7 +131,7 @@ export class BaseBootStrapper{
             urlString+='/';
         }
 
-        return this.$http.get(urlString+'custom/config/config.json?instantiationKey='+this.instantiationKey)
+        return this.$http.get(urlString+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
         .then( (resp:any)=> {
         	var appConfig = resp.data.data;
             if(hibachiConfig.baseURL.length){

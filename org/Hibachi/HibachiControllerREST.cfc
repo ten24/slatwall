@@ -16,7 +16,6 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
-    this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
@@ -34,6 +33,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getAttributeModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
+    this.publicMethods=listAppend(this.publicMethods, 'authenticateAction');
 
     this.secureMethods='';
     this.secureMethods=listAppend(this.secureMethods, 'getFormResponses');
@@ -95,6 +95,12 @@ component output="false" accessors="true" extends="HibachiController" {
     	response.setHeader('Content-Type',"application/json");
     	
     	writeOutput(responseValue);abort;
+    }
+    
+    public void function authenticateAction(required struct rc){
+    	var account = getHibachiScope().account();
+    	var authenticateActionResult = getHibachiScope().authenticateAction(rc.permissionaction);
+    	writeOutput(authenticateActionResult);abort;
     }
 
     public void function getInstantiationKey(required struct rc){
@@ -300,7 +306,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
 
     public any function getFilterPropertiesByBaseEntityName( required struct rc){
-        var entityName = rereplace(rc.entityName,'_','');
+    	var entityName = listToArray(rc.entityName, "_")[1];
         var includeNonPersistent = false;
 
 		if(structKeyExists(arguments.rc,'includeNonPersistent') && IsBoolean(arguments.rc.includeNonPersistent)){
@@ -667,7 +673,6 @@ component output="false" accessors="true" extends="HibachiController" {
                 //should be able to add select and where filters here
                 var result = getService('hibachiCollectionService').getAPIResponseForEntityName( arguments.rc.entityName,
 																								 arguments.rc);
-
                 structAppend(arguments.rc.apiResponse.content,result);
             }else{
 				

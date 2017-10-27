@@ -125,7 +125,7 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 			} else {
 				requestData["cardholder_email"] = "";
 			}
-			requestData["ip_address"] = CGI.REMOTE_ADDR;
+			requestData["ip_address"] = getRemoteAddress();
 
 		} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
 

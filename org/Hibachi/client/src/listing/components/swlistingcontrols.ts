@@ -2,10 +2,11 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingControlsController {
+    public swListingDisplay:any;
     private selectedSearchColumn;
     private filterPropertiesList;
     private collectionConfig;
-    private paginator;
+
     private searchText;
     private backupColumnsConfig;
     private listingColumns;
@@ -18,7 +19,9 @@ class SWListingControlsController {
     private itemInUse;
     private getCollection;
     private tableId;
-    private columnIsControllableMap = {};
+    public columnIsControllableMap = {};
+    public simple:boolean;
+
 
     //@ngInject
     constructor(
@@ -42,6 +45,9 @@ class SWListingControlsController {
         if(angular.isDefined(this.tableId)){
             this.listingColumns = this.listingService.getListingColumns(this.tableId);
         }
+        if(angular.isUndefined(this.simple)){
+            this.simple = true;
+        }
 
 
         this.filterPropertiesList = {};
@@ -56,8 +62,10 @@ class SWListingControlsController {
 
     }
     public filterActions =(res)=>{
-        if(res.action == 'add'){
-            this.paginator.setCurrentPage(1);
+
+        if(res.action == 'add' || res.action == 'remove'){
+
+            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
         }
         this.filtersClosed = true;
     };
@@ -67,6 +75,11 @@ class SWListingControlsController {
     };
 
     public canDisplayColumn = (column) =>{
+
+        if(!this.listingColumns.length){
+            return true;
+        }
+
         if(angular.isDefined(this.columnIsControllableMap[column.propertyIdentifier])){
             return this.columnIsControllableMap[column.propertyIdentifier];
         }
@@ -97,7 +110,7 @@ class SWListingControlsController {
 
         this.searchText = '';
         this.collectionConfig.setKeywords(this.searchText);
-        this.paginator.setCurrentPage(1);
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
     };
 
     public toggleDisplayOptions= (closeButton:boolean=false)=>{
@@ -115,14 +128,16 @@ class SWListingControlsController {
     public removeFilter = (array, index, reloadCollection:boolean=true)=>{
         array.splice(index, 1);
         if(reloadCollection){
-            this.paginator.setCurrentPage(1);
+            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
         }
     };
 
     public toggleFilters = ()=>{
         if(this.filtersClosed) {
             this.filtersClosed = false;
+            if(this.simple){
             this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+        }
         }
     };
 
@@ -131,8 +146,12 @@ class SWListingControlsController {
         this.collectionService.selectFilterItem(filterItem);
     };
 
-    public saveCollection = ()=>{
-        this.getCollection()();
+    public saveCollection = (collectionConfig)=>{
+        if(collectionConfig){
+            this.collectionConfig = collectionConfig;
+        }
+        this.swListingDisplay.collectionConfig = this.collectionConfig;
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
 }
@@ -143,15 +162,16 @@ class SWListingControls  implements ng.IDirective{
     public templateUrl;
     public restrict = 'E';
     public scope = {};
+    public require={swListingDisplay:'?^swListingDisplay'}
 
     public bindToController =  {
         collectionConfig : "=",
         tableId : "=?",
-        paginator : "=",
         getCollection : "&",
         showFilters : "=?",
         showToggleFilters : "=?",
-        showToggleDisplayOptions : "=?"
+        showToggleDisplayOptions : "=?",
+        simple:"=?"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';

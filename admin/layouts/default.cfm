@@ -92,6 +92,7 @@ Notes:
 		</script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></script>
 		<!--- Trigger Print Window --->
 		<cfif listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
@@ -145,8 +146,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcartandquote" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
+									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
@@ -165,6 +168,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listloyalty" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listledgeraccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendor" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
@@ -220,6 +224,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listfilegroup" type="list">
 									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
 										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
 									</cfif>

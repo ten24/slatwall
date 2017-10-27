@@ -77,6 +77,14 @@ component extends="HibachiService" accessors="true" {
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
 	}
 
+	public string function getProductURLByUrlTitle(string urlTitle){
+		var urlTitleString = "";
+		if(structKeyExists(arguments,'urlTitle')){
+			urlTitleString = arguments.urlTitle;
+		}
+		return "/#getHibachiScope().setting('globalURLKeyProduct')#/#urlTitleString#/";
+	}
+	
 	public any function getFormattedOptionGroups(required any product){
 		var AvailableOptions={};
 
@@ -1034,7 +1042,6 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
@@ -1147,8 +1154,7 @@ component extends="HibachiService" accessors="true" {
 		return delete( arguments.product );
 	}
 
-	public boolean function deleteProductListingPage(required any productListingPage){ 
-		
+	public boolean function deleteProductListingPage(required any productListingPage){  
 		arguments.productListingPage.removeContent(); 
 		arguments.productListingPage.removeProduct(); 
 		return delete( arguments.productListingPage ); 

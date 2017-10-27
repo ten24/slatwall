@@ -19,13 +19,13 @@
 				     	>
 					        <sw-property-display
 									data-object="product"
-									data-property="productName"
+									data-property-identifier="productName"
 									data-editing="true"
 									data-editable="true"
 							></sw-property-display>
 					        <sw-property-display
 									data-object="product"
-									data-property="productCode"
+									data-property-identifier="productCode"
 									data-editing="true"
 									data-editable="true"
 									data-on-change="product.data.skus[0].data.skuCode = product.data.productCode + '-1'"
@@ -39,7 +39,7 @@
 					        <sw-property-display
 					        		ng-if="product.data.skus[0]"
 									data-object="product.data.skus[0]"
-									data-property="price"
+									data-property-identifier="price"
 									data-editing="true"
 									data-editable="true"
 							></sw-property-display>
@@ -54,15 +54,15 @@
 				     	>
 					        <sw-property-display
 									data-object="product"
-									data-property="productType"
+									data-property-identifier="productType"
 									data-editing="true"
 									data-editable="true"
-									data-options-arguments="{property:'productType',argument1:'productBundle'}"
+									data-options-arguments="{propertyIdentifier:'productType',argument1:'productBundle'}"
 									data-is-dirty="true"
 							></sw-property-display>
 					        <sw-property-display
 									data-object="product"
-									data-property="brand"
+									data-property-identifier="brand"
 									data-editing="true"
 									data-editable="true"
 									data-is-dirty="true"
@@ -82,7 +82,7 @@
 			<sw-property-display
 								style="display:none"
 								data-object="product.data.skus[0]"
-								data-property="skuID"
+								data-property-identifier="skuID"
 								data-editing="true"
 								data-editable="true"
 								data-no-validate="true"
@@ -90,7 +90,7 @@
 			<sw-property-display
 								style="display:none"
 								data-object="product.data.skus[0]"
-								data-property="skuCode"
+								data-property-identifier="skuCode"
 								data-editing="true"
 								data-editable="true"
 								data-is-dirty="true"

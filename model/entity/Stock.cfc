@@ -58,11 +58,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
+	
 	//Calculated Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
-	property name="calculatedQNC" ormtype="integer";
+	property name="calculatedQATS" ormtype="float";
+	property name="calculatedQOH" ormtype="float";
+	property name="calculatedQNC" ormtype="float";
+	property name="calculatedAverageCost" ormtype="big_decimal";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -74,6 +77,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+
+	property name="averageCost" persistent="false";
+	property name="averageLandedCost" persistent="false";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -87,7 +93,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		if( !structKeyExists(variables, arguments.quantityType) ) {
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -96,8 +102,27 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return variables[ arguments.quantityType ];
 	}
 
-
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getCurrentMargin(){
+		return getDao('stockDao').getCurrentMargin(this.getStockID());
+	}
+	
+	public numeric function getCurrentLandedMargin(){
+		return getDao('stockDao').getCurrentLandedMargin(this.getStockID());
+	}
+	
+	public numeric function getAverageCost(){
+		return getDao('stockDao').getAverageCost(this.getStockID());
+	}
+	
+	public numeric function getAverageLandedCost(){
+		return getDao('stockDao').getAverageLandedCost(this.getStockID());
+	}
+
+	public numeric function getCurrentAssetValue(){
+		return getQOH() * getAverageCost();
+	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");
@@ -110,9 +135,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public any function getQNC() {
 		return getQuantity("QNC");
 	}
-	
+
 	public boolean function getLocationIsLeafNode(){
-		return getLocation().getChildLocationCount() == 0;
+		return getLocation().getChildLocationsCount() == 0;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -126,7 +151,15 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public void function removeVendorOrderItem(required any vendorOrderItem) {
 		arguments.vendorOrderItem.removeStock( this );
 	}
-
+	
+	// Fulfillment Batches (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.setStock(this);
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.removeStock(this);
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

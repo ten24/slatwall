@@ -87,7 +87,7 @@ Notes:
 					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					avsstreet="#arguments.requestBean.getBillingStreetAddress()#"
 					avszip="#arguments.requestBean.getBillingPostalCode()#"
-					clientip="#cgi.REMOTE_ADDR#"
+					clientip="#getRemoteAddress()#"
 				>
 			</cfcase>
 			<cfcase value="authorizeAndCharge">
@@ -107,7 +107,7 @@ Notes:
 					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					avsstreet="#arguments.requestBean.getBillingStreetAddress()#"
 					avszip="#arguments.requestBean.getBillingPostalCode()#"
-					clientip="#cgi.REMOTE_ADDR#"
+					clientip="#getRemoteAddress()#"
 				>
 			</cfcase>
 			<cfcase value="chargePreAuthorization">
@@ -121,7 +121,7 @@ Notes:
 					refnum="#arguments.requestBean.getPreAuthorizationProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					authcode=""
-					clientip="#cgi.REMOTE_ADDR#"
+					clientip="#getRemoteAddress()#"
 				>
 			</cfcase>
 			<cfcase value="credit">
@@ -135,7 +135,7 @@ Notes:
 					refnum="#arguments.requestBean.getOriginalChargeProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
-					clientip="#cgi.REMOTE_ADDR#"
+					clientip="#getRemoteAddress()#"
 				>
 			</cfcase>
 			<cfcase value="void">
@@ -149,7 +149,7 @@ Notes:
 					refnum="#arguments.requestBean.getOriginalProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
-					clientip="#cgi.REMOTE_ADDR#"
+					clientip="#getRemoteAddress()#"
 				>
 			</cfcase>
 		</cfswitch>

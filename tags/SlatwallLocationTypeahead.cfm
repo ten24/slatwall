@@ -5,6 +5,7 @@
 <cfparam name="attributes.rbKey" type="string" default="entity.location" />		<!--- entity.location --->
 <cfparam name="attributes.selectedFormatString" type="string" default="Store Locations >> ${locationName}"/><!--- Store Locations >> ${locationName} --->
 <cfparam name="attributes.showActiveLocationsFlag" type="boolean" default="false" />
+<cfparam name="attributes.maxrecords" type="string" default="25" />
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<!--- Generic Location Typeahead --->
@@ -41,24 +42,21 @@
 					        data-show-add-button="true"
 					        data-show-view-button="true"
 					        data-placeholder-rb-key="#attributes.rbKey#"
+					        data-placeholder-text="Search Locations"
 					        data-multiselect-mode="false"
 					        data-filter-flag="true"
 					        data-selected-format-string="#attributes.selectedFormatString#"
 					        data-field-name="#attributes.locationPropertyName#"
-					        data-initial-entity-id="#initialEntityID#">
+					        data-initial-entity-id="#initialEntityID#"
+					        data-max-records="#attributes.maxrecords#"
+					        data-order-by-list="locationName|ASC">
 					
 					    <sw-collection-config
 					            data-entity-name="Location"
 					            data-collection-config-property="typeaheadCollectionConfig"
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
-					
-							
-							<!--- Order By --->
-					    	<sw-collection-order-bys>
-					        	<sw-collection-order-by data-order-by="locationName|ASC"></sw-collection-order-by>
-					    	</sw-collection-order-bys>
-					    	
+					            
 					    	<!--- Filters --->
 					    	<cfif attributes.showActiveLocationsFlag EQ true>
 						    	<sw-collection-filters>
@@ -67,7 +65,7 @@
 					    	</cfif>
 					    </sw-collection-config>
 						
-						<span sw-typeahead-search-line-item data-property-identifier="locationName"></span><br>
+						<span sw-typeahead-search-line-item data-property-identifier="locationName" is-searchable="true"></span><br>
 						    	
 					</sw-typeahead-input-field>
 				</div>

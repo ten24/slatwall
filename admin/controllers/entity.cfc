@@ -58,7 +58,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="optionService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
-	property name="permissionService" type="any";
 	property name="promotionService" type="any";
 	property name="scheduleService" type="any";
 	property name="settingService" type="any";
@@ -221,6 +220,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
 		arguments.rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
+		
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		arguments.rc.orderCollectionList.addOrderBy('orderOpenDateTime|DESC');
 	}
 
 	// Order (Carts and quotes)
@@ -229,6 +231,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		arguments.rc.orderSmartList.addInFilter('orderStatusType.systemCode', 'ostNotPlaced');
 		arguments.rc.orderSmartList.addOrder("createdDateTime|DESC");
+		
+		arguments.rc.orderCollectionList.addFilter('orderStatusType.systemCode','ostNotPlaced','IN');
+		arguments.rc.orderCollectionList.addOrderBy('createdDateTime|DESC');
 
 		arguments.rc.entityActionDetails.createAction="admin:entity.createOrder";
 		getFW().setView("admin:entity.listorder");

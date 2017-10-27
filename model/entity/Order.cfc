@@ -50,7 +50,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="orderNumber" ormtype="string";
+	property name="orderNumber" ormtype="string"  index="PI_ORDERNUMBER";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="orderOpenDateTime" ormtype="timestamp";
 	property name="orderOpenIPAddress" ormtype="string";
@@ -269,18 +269,33 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		// If the order is open, and has no open dateTime
 		if((isNull(variables.orderNumber) || variables.orderNumber == "") && !isNUll(getOrderStatusType()) && !isNull(getOrderStatusType().getSystemCode()) && getOrderStatusType().getSystemCode() != "ostNotPlaced") {
 			if(setting('globalOrderNumberGeneration') == "Internal" || setting('globalOrderNumberGeneration') == "") {
-				var maxOrderNumber = getOrderService().getMaxOrderNumber();
-				if( arrayIsDefined(maxOrderNumber,1) ){
-					setOrderNumber(maxOrderNumber[1] + 1);
-				} else {
-					setOrderNumber(1);
+				if(getDao('hibachiDao').getApplicationValue('databaseType') == "MySQL"){
+					if(!isNull(this.getOrderID())){
+						var maxOrderNumberQuery = new query();
+						var maxOrderNumberSQL = 'insert into swordernumber (orderID,createdDateTime) VALUES (:orderID,:createdDateTime)';
+						
+						maxOrderNumberQuery.setSQL(maxOrderNumberSQL);
+						maxOrderNumberQuery.addParam(name="orderID",value=this.getOrderID());
+						maxOrderNumberQuery.addParam(name="createdDateTime",value=now(),cfsqltype="cf_sql_timestamp" );
+						var insertedID = maxOrderNumberQuery.execute().getPrefix().generatedKey;
+						
+						setOrderNumber(insertedID);	
+					}
+				}else{
+					var maxOrderNumber = getOrderService().getMaxOrderNumber();
+					if( arrayIsDefined(maxOrderNumber,1) ){
+						setOrderNumber(maxOrderNumber[1] + 1);
+					} else {
+						setOrderNumber(1);
+					}					
 				}
+			
 			} else {
 				setOrderNumber( getService("integrationService").getIntegrationByIntegrationPackage( setting('globalOrderNumberGeneration') ).getIntegrationCFC().getNewOrderNumber(order=this) );
 			}
 
 			setOrderOpenDateTime( now() );
-			setOrderOpenIPAddress( CGI.REMOTE_ADDR );
+			setOrderOpenIPAddress( getRemoteAddress() );
 
 			// Loop over the order payments to setAmount = getAmount so that any null payments get explicitly defined
 			for(var orderPayment in getOrderPayments()) {
@@ -426,7 +441,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     		&& !isNull(getShippingAddress()) 
     		&& !getShippingAddress().hasErrors()
     	  ) {
-
     		// Create a New Account Address, Copy over Shipping Address, and save
     		var accountAddress = getService('accountService').newAccountAddress();
     		if(!isNull(getSaveShippingAccountAddressName())) {
@@ -510,6 +524,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 		}
 		return discountTotal;
+	}
+
+	public numeric function getOrderAndItemDiscountAmountTotal(){
+		return getItemDiscountAmountTotal() + getOrderDiscountAmountTotal();
 	}
 
 	public numeric function getFulfillmentDiscountAmountTotal() {
@@ -731,6 +749,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 		return totalPaymentsAuthorized;
+	}
+	
+	public numeric function getPaymentAmountCapturedTotal() {
+		var totalPaymentsCaptured = 0;
+
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive") {
+				totalPaymentsCaptured = getService('HibachiUtilityService').precisionCalculate(totalPaymentsCaptured + orderPayment.getAmountCaptured());
+			}
+		}
+
+		return totalPaymentsCaptured;
 	}
 
 	public numeric function getPaymentAmountReceivedTotal() {
@@ -1116,6 +1146,19 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	public numeric function getTotalItems() {
 		return arrayLen(getOrderItems());
 	}
+	
+	public any function getOrderCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
+	}
+
 
 	// ============  END:  Non-Persistent Property Methods =================
 

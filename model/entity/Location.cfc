@@ -66,6 +66,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (Many-to-Many - owner)
+	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="locationID" inversejoincolumn="siteID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
@@ -119,6 +120,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	public any function getLocationPathName() {
 		if(!structKeyExists(variables, "locationPathName")) {
+			
 			variables.locationPathName = "";
 			
 			//Add each of the parents in the chain to the string.
@@ -134,6 +136,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
 			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
 		}
+		
 		return variables.locationPathName;
 	}
 	
@@ -213,6 +216,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
+
 		if(!isNull(getCalculatedLocationPathName())){
 			return getCalculatedLocationPathName();
 		}else{

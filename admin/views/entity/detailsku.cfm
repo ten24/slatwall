@@ -66,6 +66,8 @@ Notes:
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="makeupBundledSkus" type="list" modal="true" />
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="breakupBundledSkus" type="list" modal="true" />
 				<li class="divider"></li>
+			<cfelse>
+				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="createBOM" type="list" modal="false" />
 			</cfif>
 			<hb:HibachiActionCaller action="admin:entity.createalternateskucode" querystring="skuID=#rc.sku.getSkuID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
 			<cfif rc.product.getBaseProductType() EQ "event">
@@ -110,6 +112,8 @@ Notes:
 			</cfif>
 			<hb:HibachiEntityDetailItem property="skuDescription" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/saleshistory" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/vendorskus" />			
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/vendororderhistory" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/currencies" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/alternateskucodes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/skusettings" />

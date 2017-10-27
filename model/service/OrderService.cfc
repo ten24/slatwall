@@ -295,7 +295,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 
 					}
-
+					
+					//Sets the status type
+					orderFulfillment.setOrderFulfillmentInvStatType(orderFulfillment.getOrderFulfillmentInvStatType());
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
                     //check the fulfillment and display errors if needed.
                     if (orderFulfillment.hasErrors()){
@@ -676,12 +678,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
-		
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
+
 		// If this is an existing account payment method, then we can pull the data from there
 		if( arguments.processObject.getCopyFromType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
-
 			// Setup the newOrderPayment from the existing payment method
 			var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.processObject.getAccountPaymentMethodID() );
 			newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
@@ -696,6 +697,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
 
 			if(!isNull(accountAddress)) {
+				newOrderPayment.setBillingAccountAddress(accountAddress);
 				newOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
 			}
 		}
@@ -734,32 +736,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   			}
         }
 
-		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
-		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
+		//Save the newOrderPayment
+        this.saveOrderPayment(newOrderPayment);
+        
+        if(!newOrderPayment.hasErrors()){
+			// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
+			getHibachiScope().flushORMSession();
+			arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
-		// Save the newOrderPayment
-		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-		
-		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
-		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
-			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
-				if ((orderPayment.getStatusCode() == 'opstActive')
-					&& !isNull(orderPayment.getPaymentMethod())
-					&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
-					&& orderPayment.getPaymentMethod().getAllowSaveFlag()){
-					arguments.processObject.setSaveAccountPaymentMethodFlag( true );
-					break;
+			// Save the newOrderPayment
+			newOrderPayment = this.saveOrderPayment( newOrderPayment );
+
+			//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
+			if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
+				for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
+					if ((orderPayment.getStatusCode() == 'opstActive')
+						&& !isNull(orderPayment.getPaymentMethod())
+						&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
+						&& orderPayment.getPaymentMethod().getAllowSaveFlag()){
+						arguments.processObject.setSaveAccountPaymentMethodFlag( true );
+						break;
+					}
 				}
 			}
 		}
-
 		// Attach 'createTransaction' errors to the order
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
 
 		} else if(newOrderPayment.hasErrors()) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
-
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors()
 				&& ( arguments.processObject.getSaveAccountPaymentMethodFlag()
@@ -768,7 +774,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				&& isNull(newOrderPayment.getAccountPaymentMethod())) {
 			// Create a new Account Payment Method
 			var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
-
 			// Attach to Account
 			newAccountPaymentMethod.setAccount( arguments.order.getAccount() );
 
@@ -799,7 +804,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderPayment.getPaymentTerm().getTerm().getEndDate() );
 		}
-
 		return arguments.order;
 	}
 
@@ -933,6 +937,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Setup Site Origin if using slatwall cms
 		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
 			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		}else if ( !isNull(arguments.processObject.getOrderCreatedSite()) ) {
+			arguments.order.setOrderCreatedSite(arguments.processObject.getOrderCreatedSite());
 		}
 
 		// Setup Account
@@ -1319,7 +1325,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Reload the order in case it was already in cache
 			getHibachiDAO().reloadEntity(arguments.order);
-
 			// Make sure that the entity is notPlaced before going any further
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 
@@ -1357,7 +1362,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 							arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 						}
-						
 	
 						// Generate the order requirements list, to see if we still need action to be taken
 						var orderRequirementsList = getOrderRequirementsList( arguments.order );
@@ -1438,7 +1442,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 								}
-	
 	
 								// Clear this order out of all sessions
 								getOrderDAO().removeOrderFromAllSessions(orderID=arguments.order.getOrderID());
@@ -1624,13 +1627,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Loop over all of the items in this order
 			for(var orderPayment in arguments.order.getOrderPayments())	{
-
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(orderPayment.getOrderPaymentID() == arguments.data.orderPaymentID) {
-
 					if(orderPayment.isDeletable()) {
 						arguments.order.removeOrderPayment( orderPayment );
-						this.deleteOrderPayment( orderPayment );
+						this.deleteOrderPayment( arguments.order , orderPayment );
 					} else {
 						orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstRemoved') );
 					}
@@ -1638,7 +1639,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					break;
 				}
 			}
-
 		}
 
 		return arguments.order;
@@ -1736,7 +1736,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
-
+		
+		//Update the inventory Status Type
+		orderFulfillment.setOrderFulfillmentInvStatusType(orderFulfillment.getOrderFulfillmentInvStatusType());
+		
 		if(!orderFulfillment.hasErrors()) {
 			arguments.order = this.saveOrder(arguments.order);
 		} else {
@@ -3061,15 +3064,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 
-	public any function deleteOrderPayment( required any orderPayment ) {
+	public any function deleteOrderPayment( required any order, required any orderPayment ) {
 
 		// Check delete validation
 		if(arguments.orderPayment.isDeletable()) {
 
 			// Remove the primary fields so that we can delete this entity
-			var order = arguments.orderPayment.getOrder();
-
-			order.removeOrderPayment( arguments.orderPayment );
+			arguments.order.removeOrderPayment( arguments.orderPayment );
 
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderPayment );
@@ -3178,7 +3179,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return found;
 	}
 	
-	
+	public any function getOrderAttributePropertylist(){
+		var propertyList = '';
+		if(structKeyExists(getService('AttributeService').getAttributeModel(),'Order')){
+			var orderAttributeModel = getService('AttributeService').getAttributeModel().Order;
+			if(!isNull(orderAttributeModel)){
+				for(var attributeSetName in orderAttributeModel){
+					var attributeSet = orderAttributeModel[attributeSetName];
+					for(var attribute in attributeSet.attributes){
+						propertyList = listAppend(propertyList, attribute, ',');
+					}
+				}
+			}
+		}
+		
+		return propertyList;
+	}
 	// ================== START: Private Helper Functions =====================
 
 	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {

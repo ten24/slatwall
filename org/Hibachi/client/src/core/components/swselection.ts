@@ -22,6 +22,14 @@ class SWSelectionController{
         }else{
             this.toggleValue = selectionService.hasSelection(this.selectionid,this.selection);
         }
+        
+        if(this.isRadio && this.toggleValue){
+            this.toggleValue = this.selection;
+        }
+
+        if(this.isRadio && this.toggleValue){
+            this.toggleValue = this.selection;
+        }
 
         //attach observer so we know when a selection occurs
         observerService.attach(this.updateSelectValue,'swSelectionToggleSelection' + this.selectionid);
@@ -46,7 +54,7 @@ class SWSelectionController{
     private toggleSelection = (toggleValue,selectionid,selection)=>{
         if(this.isRadio){
             this.selectionService.radioSelection(selectionid,selection);
-            this.toggleValue = toggleValue;
+            this.toggleValue = selection;
         }else{
             if(toggleValue){
                 this.selectionService.addSelection(selectionid,selection);

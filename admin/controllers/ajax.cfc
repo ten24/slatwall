@@ -131,9 +131,15 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			// Add any process object values
 			if(arrayLen(popArray)) {
 				var processObject = getTransient("#arguments.rc.processEntity#_#arguments.rc.processContext#");
-				processObject.invokeMethod("set#record.getClassName()#", {1=record});
+				if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
+					processObject.invokeMethod("set#arguments.rc.recordAlias#", {1=record});
+				}else{
+					processObject.invokeMethod("set#record.getClassName()#", {1=record});
+				}
 				processObject.invokeMethod("set#record.getPrimaryIDPropertyName()#", {1=record.getPrimaryIDValue()});
 				processObject.invokeMethod("set#rc.processEntity#", {1=processEntity});
+
+
 				for(var p=1; p<=arrayLen(popArray); p++) {
 					var attributes = {
 						object=processObject,
@@ -141,6 +147,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						edit=true,
 						displayType='plain'
 					};
+
 					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(template="./HibachiTags/HibachiPropertyDisplay.cfm", attributeCollection=attributes);
 				}
 			}
@@ -151,11 +158,11 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 				// Add the admin buttons
 				if(structKeyExists(admin, "detailAction")) {
 					if(structKeyExists(admin,"detailActionProperty")){
-						detailActionProperty=listlast(admin.detailActionProperty,'.');
-						detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
+						var detailActionProperty=listlast(admin.detailActionProperty,'.');
+						var detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
 					}else{
-						detailActionProperty=record.getPrimaryIDPropertyName();
-						detailActionPropertyValue=record.getPrimaryIDValue();
+						var detailActionProperty=record.getPrimaryIDPropertyName();
+						var detailActionPropertyValue=record.getPrimaryIDValue();
 					}
 					var attributes = {
 						action=admin.detailAction,
@@ -211,6 +218,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					if(structKeyExists(admin,"processActionProperty")){
 						var processActionProperty=listlast(admin.processActionProperty,'.');
 						var processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.processActionProperty);
+					}else if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
+						var processActionProperty=arguments.rc.recordAlias & 'ID';
+						var processActionPropertyValue=record.getPrimaryIDValue();
 					}else{
 						var processActionProperty=record.getPrimaryIDPropertyName();
 						var processActionPropertyValue=record.getPrimaryIDValue();
@@ -354,6 +364,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
 			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
 			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			if(sku.getBundleFlag()){
+				thisData["MQATSBOM"] = sku.getQuantity('MQATSBOM',location.getLocationID());
+			}
 			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
 			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
 			ArrayAppend(thisDataArr,thisData);

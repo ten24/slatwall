@@ -1192,7 +1192,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 								if (pi <= 1 && pv !== "adminIcon") {
 									cls += " first";
 								}
-								innerLI += '<span class="' + cls + '">' + rv[ pv ] + '</span>';
+								var suggestedText = $("<textarea/>").html(rv[ pv ]).text();
+								innerLI += '<span class="' + cls + '">' + suggestedText + '</span>';
 							});
 							innerLI += '</a></li>';
 							jQuery( '#' + jQuery(autocompleteField).data('sugessionsid') ).append( innerLI );
@@ -1288,6 +1289,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			data[ 'adminAttributes' ] = JSON.stringify(jQuery('#' + tableID).find('th.admin').data());
 			data[ 'savedStateID' ] = jQuery('#' + tableID).data('savedstateid');
 			data[ 'entityName' ] = jQuery('#' + tableID).data('entityname');
+			data[ 'recordAlias' ] = jQuery('#' + tableID).data('recordalias');
 	
 			var idProperty = jQuery('#' + tableID).data('idproperty');
 			var nextRowDepth = 0;

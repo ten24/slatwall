@@ -182,14 +182,14 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		if(arguments.order.getDiscountTotal() > 0){
 			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NAME#i#", value="Discount");
 			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_NUMBER#i#", value="DISCOUNT");
-			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getDiscountTotal()#");
+			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_AMT#i#", value="-#arguments.order.getOrderAndItemDiscountAmountTotal()#");
 			httpRequest.addParam(type="formfield", name="L_PAYMENTREQUEST_0_QTY#i#", value="1");
 		}
 
 		var itemSubTotal = arguments.order.getSubTotalAfterItemDiscounts();
 		if(arguments.order.getOrderDiscountAmountTotal() > 0){
 			itemSubTotal -= arguments.order.getOrderDiscountAmountTotal();
-		} 
+		}
 
 		var total = arguments.order.getTotal(); 
 		

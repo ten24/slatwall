@@ -101,7 +101,7 @@ Notes:
 
 		<cfif listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', attribute.getAttributeInputType())>
 
-			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
+			<cfset fdAttributes.valueOptionsCollectionList = attribute.getRelatedObjectCollectionConfig()/>
 
 			<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
 				<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
@@ -110,7 +110,11 @@ Notes:
 
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
-			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+			<cfif attributes.entity.hasProperty(attribute.getAttributeCode()) AND structKeyExists(attributes.entity, 'get#attribute.getAttributeCode()#UploadDirectory')>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attributes.entity.invokeMethod('get#attribute.getAttributeCode()#UploadDirectory'))##fdAttributes.value#" />
+			<cfelse>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+			</cfif>
 			
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
 			

@@ -11,7 +11,7 @@ import {SWFormFieldController} from "./swformfield";
 import {ObserverService} from "../../core/services/observerservice";
 import {MetaDataService} from "../../core/services/metadataservice";
 //defines possible eventoptions
-type EventHandler = "blur" |
+type EventAnnouncer = "blur" |
 	"change" |
 	"click" |
 	"copy" |
@@ -37,7 +37,6 @@ class SWInputController{
 	public swFormField:SWFormFieldController;
 	public class:string;
 	public fieldType:string;
-	public property:string;
 	public object:any;
 	public inputAttributes:string;
 	public initialValue:any;
@@ -49,10 +48,8 @@ class SWInputController{
 	public propertyIdentifier:string;
 	public binaryFileTarget:string;
 	public rawFileTarget:string;
-	public type:string;
 	public edit:boolean;
 	public edited:boolean;
-	public editing:boolean;
 	public name:string;
 	public value:any;
 	public reverted:boolean;
@@ -62,9 +59,9 @@ class SWInputController{
 	public eventNameForObjectSuccess:string;
 	public rowSaveEnabled:boolean;
 
-	public eventHandlers:string="";
-	public eventHandlersArray:Array<EventHandler>;
-	public eventHandlerTemplate:string;
+	public eventAnnouncers:string="";
+	public eventAnnouncersArray:Array<EventAnnouncer>;
+	public eventAnnouncerTemplate:string;
 
 	//@ngInject
 	constructor(
@@ -81,44 +78,44 @@ class SWInputController{
 	}
 
 	public onSuccess = ()=>{
-		this.utilityService.setPropertyValue(this.swForm.object,this.property,this.value);
+		this.utilityService.setPropertyValue(this.swForm.object,this.propertyIdentifier,this.value);
 		if(this.swPropertyDisplay){
-			this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.property,this.value);
+			this.utilityService.setPropertyValue(this.swPropertyDisplay.object,this.propertyIdentifier,this.value);
 		}
 		if(this.swfPropertyDisplay){
-			this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.property,this.value);
-			this.swfPropertyDisplay.editing = false;
+			this.utilityService.setPropertyValue(this.swfPropertyDisplay.object,this.propertyIdentifier,this.value);
+			this.swfPropertyDisplay.edit = false;
 		}
-		this.utilityService.setPropertyValue(this.swFormField.object,this.property,this.value);
+		this.utilityService.setPropertyValue(this.swFormField.object,this.propertyIdentifier,this.value);
 	}
 
 	public getValidationDirectives = ()=>{
 		var spaceDelimitedList = '';
-		var name = this.property;
+		var name = this.propertyIdentifier;
 		var form = this.form;
 		this.$log.debug("Name is:" + name + " and form is: " + form);
 
 		if(this.metadataService.isAttributePropertyByEntityAndPropertyIdentifier(this.object,this.propertyIdentifier)){
 			this.object.validations.properties[name] = [];
-			if(this.object.metaData[this.property].requiredFlag && this.object.metaData[this.property].requiredFlag.trim().toLowerCase()=="yes"){
+			if((this.object.metaData[this.propertyIdentifier].requiredFlag && this.object.metaData[this.propertyIdentifier].requiredFlag == true) || typeof this.object.metaData[this.propertyIdentifier].requiredFlag === 'string' && this.object.metaData[this.propertyIdentifier].requiredFlag.trim().toLowerCase()=="yes"){
 				this.object.validations.properties[name].push({
 					contexts:"save",
 					required:true
 				});
 			}
-			if(this.object.metaData[this.property].validationRegex){
+			if(this.object.metaData[this.propertyIdentifier].validationRegex){
 				this.object.validations.properties[name].push({
-					contexts:"save",regex:this.object.metaData[this.property].validationRegex
+					contexts:"save",regex:this.object.metaData[this.propertyIdentifier].validationRegex
 				});
 			}
 		}
 
 		if(angular.isUndefined(this.object.validations )
 			|| angular.isUndefined(this.object.validations.properties)
-			|| angular.isUndefined(this.object.validations.properties[this.property])){
+			|| angular.isUndefined(this.object.validations.properties[this.propertyIdentifier])){
 			return '';
 		}
-		var validations = this.object.validations.properties[this.property];
+		var validations = this.object.validations.properties[this.propertyIdentifier];
 
 		this.$log.debug("Validations: ", validations);
 		this.$log.debug(this.form);
@@ -136,9 +133,6 @@ class SWInputController{
 		//get the validations for the current element.
 		var propertyValidations = this.object.validations.properties[name];
 
-		/*
-		* Investigating why number inputs are not working.
-		* */
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
 			//if this is a procesobject validation then the context is implied
@@ -146,7 +140,7 @@ class SWInputController{
 				propertyValidations[0].contexts = this.object.metaData.className.split('_')[1];
 			}
 
-			if (propertyValidations[0].contexts === formContext){
+			if (propertyValidations[0].contexts.indexOf(formContext) > -1){
 				this.$log.debug("Matched");
 				for (var prop in propertyValidations[0]){
 						if (prop != "contexts" && prop !== "conditions"){
@@ -165,7 +159,6 @@ class SWInputController{
 		this.$log.debug(form);
 
 		angular.forEach(validations,(validation,key)=>{
-
 			if(validation.contexts && this.utilityService.listFind(validation.contexts.toLowerCase(),this.swForm.context.toLowerCase()) !== -1){
 				this.$log.debug("Validations for context");
 				this.$log.debug(validation);
@@ -199,8 +192,8 @@ class SWInputController{
     }
 
 	public onEvent = (event:Event,eventName:string):void=>{
-
 		let customEventName = this.swForm.name+this.name+eventName;
+		let formEventName = this.swForm.name + eventName;
 		let data = {
 			event:event,
 			eventName:eventName,
@@ -210,6 +203,8 @@ class SWInputController{
 			inputElement:$('input').first()[0]
 		};
 		this.observerService.notify(customEventName,data);
+		this.observerService.notify(formEventName,data);
+		this.observerService.notify(eventName,data);
 	}
 
 	public getTemplate = ()=>{
@@ -227,7 +222,7 @@ class SWInputController{
 			validations = this.getValidationDirectives();
 		}
 
-		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.property) != undefined && this.object.metaData.$$getPropertyFormatType(this.property) == "currency"){
+		if(this.object && this.object.metaData && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) != undefined && this.object.metaData.$$getPropertyFormatType(this.propertyIdentifier) == "currency"){
 			currencyFormatter = 'sw-currency-formatter ';
 			if(angular.isDefined(this.object.data.currencyCode)){
 				currencyFormatter = currencyFormatter + 'data-currency-code="' + this.object.data.currencyCode + '" ';
@@ -238,8 +233,8 @@ class SWInputController{
 		var appConfig = this.$hibachi.getConfig();
 
 		var placeholder ='';
-		if(this.object.metaData && this.object.metaData[this.property] && this.object.metaData[this.property].hb_nullrbkey){
-			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.property].hb_nullrbkey);
+		if(this.object.metaData && this.object.metaData[this.propertyIdentifier] && this.object.metaData[this.propertyIdentifier].hb_nullrbkey){
+			placeholder = this.rbkeyService.getRBKey(this.object.metaData[this.propertyIdentifier].hb_nullrbkey);
 		}
 
 		if(this.fieldType.toLowerCase() === 'json'){
@@ -249,22 +244,24 @@ class SWInputController{
 		var acceptedFieldTypes = ['email','text','password','number','time','date','datetime','json','file'];
 
 		if(acceptedFieldTypes.indexOf(this.fieldType.toLowerCase()) >= 0){
-			 var inputType = this.fieldType.toLowerCase();
-            if(this.fieldType === 'time'){
+			var inputType = this.fieldType.toLowerCase();
+			
+			if(this.fieldType === 'time' || this.fieldType === 'number'){
                 inputType="text";
-            }
+			}
+			
 			template = currencyTitle + '<input type="' + inputType + '" class="' + this.class + '" '+
-				' ng-model="swInput.value" '+
-				' ng-disabled="swInput.editable === false" '+
-				' ng-show="swInput.editing" '+
-				` ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay} "` +
-				' name="'+this.property+'" ' +
-				' placeholder="'+placeholder+'" '+
+				'ng-model="swInput.value" '+
+				'ng-disabled="swInput.editable === false" '+
+				'ng-show="swInput.edit" '+
+				`ng-class="{'form-control':swInput.inListingDisplay, 'input-xs':swInput.inListingDisplay}"` +
+				'name="'+this.propertyIdentifier+'" ' +
+				'placeholder="'+placeholder+'" '+
 				validations + currencyFormatter +
-				' id="swinput'+this.swForm.name+this.name+'" '+
-				' style="' + style + '" ' + " " +
-	            this.inputAttributes + " " +
-				this.eventHandlerTemplate;
+				'id="swinput'+this.swForm.name+this.name+'" '+
+				'style="'+style+'"'+
+				this.inputAttributes+
+				this.eventAnnouncerTemplate;
 		}
 
 		var dateFieldTypes = ['date','datetime','time'];
@@ -284,7 +281,7 @@ class SWInputController{
 		var actionButtons = `
 			<a class="s-remove-change"
 				data-ng-click="swPropertyDisplay.clear()"
-				data-ng-if="swInput.edited && swInput.editing">
+				data-ng-if="swInput.edited && swInput.edit">
 					<i class="fa fa-remove"></i>
 			</a>
 
@@ -320,23 +317,14 @@ class SWInputController{
 			}
 		}
 
-		this.property = this.property || this.propertyIdentifier;
-        this.propertyIdentifier = this.propertyIdentifier || this.property;
-
-        this.type = this.type || this.fieldType;
-        this.fieldType = this.fieldType || this.type;
-
-        this.edit = this.edit || this.editing;
-        this.editing = this.editing || this.edit;
-
-		this.editing = this.editing || true;
+		this.edit = this.edit || true;
 		this.fieldType = this.fieldType || "text";
 
 		this.inputAttributes = this.inputAttributes || "";
 
 		this.inputAttributes = this.utilityService.replaceAll(this.inputAttributes,"'",'"');
 
-		this.value = this.utilityService.getPropertyValue(this.object,this.property);
+		this.value = this.utilityService.getPropertyValue(this.object,this.propertyIdentifier);
     }
 
     public pushBindings = ()=>{
@@ -347,13 +335,13 @@ class SWInputController{
 
         this.pullBindings();
 
-		this.eventHandlersArray = <Array<EventHandler>>this.eventHandlers.split(',');
+		this.eventAnnouncersArray = <Array<EventAnnouncer>>this.eventAnnouncers.split(',');
 
-		this.eventHandlerTemplate = "";
-		for(var i in this.eventHandlersArray){
-			var eventName = this.eventHandlersArray[i];
+		this.eventAnnouncerTemplate = "";
+		for(var i in this.eventAnnouncersArray){
+			var eventName = this.eventAnnouncersArray[i];
             if(eventName.length){
-                this.eventHandlerTemplate += ` ng-`+eventName+`="swInput.onEvent($event,'`+eventName+`')"`;
+                this.eventAnnouncerTemplate += ` ng-`+eventName+`="swInput.onEvent($event,'`+eventName+`')"`;
             }
 		}
 
@@ -362,19 +350,20 @@ class SWInputController{
  		}else{
  			this.eventNameForObjectSuccess = this.context.charAt(0).toUpperCase()+this.context.slice(1)+'Success'
  		}
-		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.property;
+		var eventNameForObjectSuccessID = this.eventNameForObjectSuccess+this.propertyIdentifier;
 
 		var eventNameForUpdateBindings = 'updateBindings';
 		if (this.object && this.object.metaData && this.object.metaData.className != undefined){
- 			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.property+'updateBindings';
+ 			var eventNameForUpdateBindingsID = this.object.metaData.className.split('_')[0]+this.propertyIdentifier+'updateBindings';
  		}else{
- 			var eventNameForUpdateBindingsID = this.property+'updateBindings';
+ 			var eventNameForUpdateBindingsID = this.propertyIdentifier+'updateBindings';
  		}
         var eventNameForPullBindings = 'pullBindings';
         if (this.object && this.object.metaData && this.object.metaData.className != undefined){
-         	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.property+'pullBindings';
+         	var eventNameForPullBindingsID = this.object.metaData.className.split('_')[0]+this.propertyIdentifier+'pullBindings';
 		}else{
- 			var eventNameForPullBindingsID = this.property+'pullBindings';
+ 			var eventNameForPullBindingsID = this.propertyIdentifier+'pullBindings';
+
  		}
 		//attach a successObserver
 		if(this.object){
@@ -440,8 +429,7 @@ class SWInput{
 		showRevert:"=?",
 		inputAttributes:"@?",
 		type:"@?",
-		editing:"=?",
-		eventHandlers:"@?",
+		eventAnnouncers:"@?",
 		context:"@?"
 	}
 	public controller=SWInputController;

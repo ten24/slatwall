@@ -56,6 +56,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="company" hb_populateEnabled="public" ormtype="string";
 	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false";
+	property name="totpSecretKey" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
+	property name="totpSecretKeyCreatedDateTime" hb_populateEnabled="false" ormtype="string" hb_auditable="false";
 	property name="taxExemptFlag" ormtype="boolean";
 	property name="organizationFlag" ormtype="boolean" default="false";
 	property name="testAccountFlag" ormtype="boolean";
@@ -96,7 +98,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="subscriptionUsages" singularname="subscriptionUsage" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="termAccountOrderPayments" singularname="termAccountOrderPayment" cfc="OrderPayment" type="array" fieldtype="one-to-many" fkcolumn="termPaymentAccountID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="ownerAccountID" cascade="all" inverse="true";
-
+	property name="fulfillmentBatches" singularname="fulfillmentBatch" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="FulfillmentBatch" inverse="true";
+	property name="pickWaves" singularname="pickWave" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="PickWave" inverse="true";
+	
 	// Related Object Properties (many-to-many - owner)
 	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="accountID" inversejoincolumn="priceGroupID";
 	property name="permissionGroups" singularname="permissionGroup" cfc="PermissionGroup" fieldtype="many-to-many" linktable="SwAccountPermissionGroup" fkcolumn="accountID" inversejoincolumn="permissionGroupID";
@@ -127,19 +131,21 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="gravatarURL" persistent="false";
 	property name="guestAccountFlag" persistent="false" hb_formatType="yesno";
 	property name="ordersPlacedSmartList" persistent="false";
+	property name="ordersPlacedCollectionList" persistent="false";
 	property name="ordersNotPlacedSmartList" persistent="false";
 	property name="passwordResetID" persistent="false";
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
 	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
-	property name="slatwallAuthenticationExistsFlag" persistent="false";
+	property name="nonIntegrationAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
+	property name="twoFactorAuthenticationFlag" persistent="false" hb_formatType="yesno";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
-	
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
 	}
@@ -260,6 +266,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return giftCardSmartList;
 	}
 
+	public any function getOrdersPlacedCollectionList() {
+		if(!structKeyExists(variables, "ordersPlacedCollectionList")) {
+			var ocl = getService("orderService").getOrderCollectionList();
+			ocl.addFilter('account.accountID', getAccountID());
+			ocl.addFilter('orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled', 'in');
+			ocl.addOrderBy("orderOpenDateTime|DESC");
+
+			variables.ordersPlacedCollectionList = ocl;
+		}
+		return variables.ordersPlacedCollectionList;
+	}	
+
 	public any function getOrdersPlacedSmartList() {
 		if(!structKeyExists(variables, "ordersPlacedSmartList")) {
 			var osl = getService("orderService").getOrderSmartList();
@@ -283,6 +301,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.ordersNotPlacedSmartList;
 	}
+	
+	public any function getOrdersNotPlacedCollectionList() {
+		if(!structKeyExists(variables, "ordersNotPlacedCollectionList")) {
+			var ocl = getService("orderService").getOrderCollectionList();
+			ocl.addFilter('account.accountID', getAccountID());
+			ocl.addFilter('orderStatusType.systemCode', 'ostNotPlaced');
+			ocl.addOrderBy("modifiedDateTime|DESC");
+
+			variables.ordersNotPlacedCollectionList = ocl;
+		}
+		return variables.ordersNotPlacedCollectionList;
+	}	
 
 	public string function getPasswordResetID() {
 		return getService("accountService").getPasswordResetID(account=this);
@@ -292,18 +322,24 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return getPrimaryPhoneNumber().getPhoneNumber();
 	}
 
-	public boolean function getSlatwallAuthenticationExistsFlag() {
-		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
-			variables.slatwallAuthenticationExistsFlag = false;
+	public boolean function getNonIntegrationAuthenticationExistsFlag() {
+		if(!structKeyExists(variables, "nonIntegrationAuthenticationExistsFlag")) {
+			variables.nonIntegrationAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(auth in authArray) {
-				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() ) {
-					variables.slatwallAuthenticationExistsFlag = true;
+			for(var auth in authArray) {
+				if(
+					(
+						!getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration')
+						|| isNull(auth.getIntegration())
+					)
+					&& !isNull(auth.getPassword())  && !isNull(auth.getActiveFlag()) && auth.getActiveFlag() 
+				) {
+					variables.nonIntegrationAuthenticationExistsFlag = true;
 					break;
 				}
 			}
 		}
-		return variables.slatwallAuthenticationExistsFlag;
+		return variables.nonIntegrationAuthenticationExistsFlag;
 	}
 	
 	public void function setSlatwallAuthenticationExistsFlag(required boolean slatwallAuthenticationExistsFlag){
@@ -326,6 +362,10 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		termAccountAvailableCredit = val(precisionEvaluate(termAccountAvailableCredit - getTermAccountBalance()));
 
 		return termAccountAvailableCredit;
+	}
+	
+	public string function getTwoFactorAuthenticationFlag() {
+		return !isNull(getTotpSecretKey()) && len(getTotpSecretKey());
 	}
 	
 	public numeric function getOrderPaymentAmount(){
@@ -456,6 +496,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 
 		return activeAuthentications;
+	}
+	
+	public any function getAccountCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -658,7 +710,23 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function removeGiftCard(required any giftCard){
 		arguments.giftCard.removeOwnerAccount( this );
 	}
-
+	
+	// Fulfillment Batches (one-to-many)
+	public void function addFulfillmentBatch(required any fulfillmentBatch) {
+	   arguments.fulfillmentBatch.setAssignedAccount(this);
+	}
+	public void function removeFulfillmentBatch(required any fulfillmentBatch) {
+	   arguments.fulfillmentBatch.removeAssignedAccount(this);
+	}
+	
+	// Pick Wave (one-to-many)
+	public void function addPickWave(required any pickWave) {
+	   arguments.pickWave.setAssignedAccount(this);
+	}
+	public void function removePickWave(required any pickWave) {
+	   arguments.pickWave.removeAssignedAccount(this);
+	}
+	
 	// Price Groups (many-to-many - owner)
 	public void function addPriceGroup(required any priceGroup) {
 		if(arguments.priceGroup.isNew() or !hasPriceGroup(arguments.priceGroup)) {

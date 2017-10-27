@@ -59,6 +59,9 @@ class SWProductBundleGroupType{
 				$scope.productBundleGroupTypes.$$adding = false;
                 $scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
+				$scope.productBundleGroupTypeCollection = collectionConfigService.newCollectionConfig(("Type"));
+				$scope.productBundleGroupTypeCollection.setAllRecords(true);
+				$scope.productBundleGroupTypeCollection.addFilter("parentType.systemCode", "productBundleGroupType", "=");
 
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $hibachi.newType();

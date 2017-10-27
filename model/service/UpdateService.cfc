@@ -67,7 +67,7 @@ Notes:
 				variables.conditionLineBreak=variables.lineBreak;
 			}
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac' || lcase(getApplicationValue("lineBreakStyle")) == 'unix'){
-				variables.paddingCount = 3;
+				variables.paddingCount = 0;
 				variables.conditionLineBreak=variables.lineBreak;
 			}
 			
@@ -421,7 +421,7 @@ Notes:
 				}else{
 					var customFunctionString = arguments.customEntityParser.getCustomFunctionStringByFunctionString();
 
-					newContent = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getComponentEndPos()-(variables.paddingCount-1)) & conditionalLineBreak & customFunctionString & '}';
+					newContent = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getComponentEndPos()-(variables.paddingCount?variables.paddingCount-1:0)) & conditionalLineBreak & customFunctionString & '}';
 					arguments.coreEntityParser.setFileContent(newContent);
 				}
 			}

@@ -31,25 +31,48 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 			var cgiPathInfo = CGI.PATH_INFO;
 		}
 		var pathInfo = cgiPathInfo;
-		 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+		// SES URLs by popular request :)
+        if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
             // canonicalize for IIS:
             pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
         } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
             // pathInfo is bogus so ignore it:
             pathInfo = '';
         }
+        
+        if(!len(pathInfo)){
+        	if(right(cgiScriptName,9)=='index.cfm'){
+        		pathInfo = left(cgiScriptName,len(cgiScriptName)-9);	
+        	}
+        }
+       	
         //take path and  parse it
         var pathArray = listToArray(pathInfo,'/');
         var pathArrayLen = arrayLen(pathArray);
         
         //Make sure this isn't a call to the api, if it is, return without using CMS logic
-		if(pathArrayLen && pathArray[1] == 'api' || (structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender'))){
+		if(
+			(
+				structKeyExists(url,'slatAction') && getDao('hibachiDao').getApplicationValue('application').getSubsystem(url.slatAction) == 'api'
+			) 
+			|| pathArrayLen && pathArray[1] == 'api' 
+			|| (
+				structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender')
+			)
+		){
         		return;
         }
+        
         //try to get a site form the domain name
 		var domainNameSite = arguments.slatwallScope.getCurrentRequestSite();
       
        	if(!isNull(domainNameSite)){
+       		var indexOffset = 0;
+       		//is CurrentRequestSitePathType == sitecode or domain
+			if(arguments.slatwallScope.getCurrentRequestSitePathType() == 'sitecode'){
+				indexOffset = 1;
+			}
+       		
    			//render site via apps route
 	        if(pathArrayLen && pathArray[1] == 'apps'){
 	        	
@@ -63,9 +86,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	        		//need to figure out if we are working with a detail page type
 	        		var urlTitlePathStartPosition = 4;
 	        		if(
-	        			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[4]
-	        			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[4]
-	        			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[4]
+	        			len(arguments.slatwallScope.getEntityURLKeyType(pathArray[4]))
 	        		){
 	        			arguments.entityUrl = pathArray[4];
 	        			urlTitlePathStartPosition = 5;
@@ -97,20 +118,19 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 						}
 					}
 				}
+				
 			//if we are not using apps path
-			}else if(pathArrayLen && pathArray[1] != 'apps'){
-					
-				var urlTitlePathStartPosition = 1;
+			}else if(pathArrayLen - indexOffset && pathArray[1] != 'apps'){
+				var urlTitlePathStartPosition = 1+indexOffset;
         		if(
-        			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[1]
-        			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[1]
-        			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[1]
+        			len(arguments.slatwallScope.getEntityURLKeyType(pathArray[1+indexOffset]))
         		){
-        			arguments.entityUrl = pathArray[1];
-        			urlTitlePathStartPosition = 2;
+        			arguments.entityUrl = pathArray[1+indexOffset];
+        			urlTitlePathStartPosition = 2+indexOffset;
         		}else{
-        			urlTitlePathStartPosition = 1;
+        			urlTitlePathStartPosition = 1+indexOffset;
         		}
+        		
         		arguments.contenturlTitlePath = '';
         		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
         			if(i == arrayLen(pathArray)){
@@ -119,6 +139,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
         				arguments.contenturlTitlePath &= pathArray[i] & '/';
         			}
         		}
+        		
 				var app = domainNameSite.getApp();
 				var site = domainNameSite;
        		}else{

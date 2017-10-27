@@ -84,6 +84,12 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+
+
+    get collectionConfigString():string {
+        return angular.toJson(this.getCollectionConfig(false));
+    }
+
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -172,8 +178,10 @@ class CollectionConfig {
         return this;
     };
 
-    public getCollectionConfig= ():any =>{
-        this.validateFilter(this.filterGroups);
+    public getCollectionConfig= (validate=true):any =>{
+        if(validate){
+            this.validateFilter(this.filterGroups);
+        }
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -193,18 +201,17 @@ class CollectionConfig {
         };
     };
 
+
+
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);
     };
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
-        if(this.keywords && this.keywords.length && this.keywordColumns.length > 0){
 
-            var columns = this.keywordColumns;
-        } else {
-            var columns = this.columns;
-        }
+        var columns = this.columns;
+
         if(this.keywords && this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
             var filters = this.keywordFilterGroups;
         } else {
@@ -253,13 +260,13 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-            
+
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
-                
+
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
@@ -268,7 +275,7 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
-        
+
         return _propertyIdentifier;
     };
 
@@ -456,6 +463,9 @@ class CollectionConfig {
         if(isKeywordFilter){
             this.keywordFilterGroups[0].filterGroup.push(filter);
         }
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -486,6 +496,9 @@ class CollectionConfig {
         );
 
         this.filterGroups[0].filterGroup.push(filter);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -500,7 +513,6 @@ class CollectionConfig {
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
         var join = propertyIdentifier.split('.').length > 1;
-
         //create filter group
         var filter = new Filter(
             this.formatPropertyIdentifier(propertyIdentifier, join),
@@ -516,7 +528,8 @@ class CollectionConfig {
 
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         var group = {
-            filterGroup:[]
+            filterGroup:[],
+            logicalOperator: 'AND'
         };
         for(var i =  0; i < filterGroup.length; i++){
             var filter = this.createFilter(
@@ -530,11 +543,17 @@ class CollectionConfig {
         }
 
         this.filterGroups[0].filterGroup.push(group);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
 
@@ -587,6 +606,9 @@ class CollectionConfig {
                 readOnly
             )
         );
+        this.observerService.notify('collectionConfigUpdated', {
+            collectionConfig: this
+        });
         return this;
     };
     //orderByList in this form: "property|direction" concrete: "skuName|ASC"
@@ -622,6 +644,7 @@ class CollectionConfig {
     };
 
     public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
+
         if(!this.orderBy){
             this.orderBy = [];
         }
@@ -637,19 +660,34 @@ class CollectionConfig {
                 break;
             }
         }
+        var direction = 'desc';
 
-        if(!found){
-            if(singleColumn){
-                this.orderBy = [];
-                for(var i =  0; i < this.columns.length; i++){
-                    if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
-                        this.columns[i]["sorting"]["active"] = false;
+        if(singleColumn){
+            this.orderBy = [];
+
+            for(var i =  0; i < this.columns.length; i++){
+                if(this.columns[i]['propertyIdentifier'] == formattedPropertyIdentifier){
+                    this.columns[i]["sorting"]["active"] = true;
+                    this.columns[i]["sorting"]["priority"] = 1;
+                    if(!this.columns[i]["sorting"]["sortOrder"] || this.columns[i]["sorting"]["sortOrder"] === 'desc'){
                         this.columns[i]["sorting"]["sortOrder"] = 'asc';
+                        direction = 'asc';
+                    }else{
+                        this.columns[i]["sorting"]["sortOrder"] = 'desc';
+                        direction = 'desc';
                     }
+                }else if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
+                    this.columns[i]["sorting"]["active"] = false;
+                    this.columns[i]["sorting"]["sortOrder"] = 'asc';
                 }
+
             }
-            this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
+
         }
+
+        this.addOrderBy(formattedPropertyIdentifier + '|'+direction, false);
+
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
     public removeOrderBy = (formattedPropertyIdentifier:string) => {
