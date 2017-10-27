@@ -157,10 +157,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		
 	}
 
-	public boolean function hasUndeliveredOrderItemsWithoutProvidedGiftCardCode() {
-		return arrayLen(getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) > 0;
-	}
-
 	// @hint Returns a struct to assist with quick lookup for orderDeliveryItem data by using orderItemID
 	private struct function getOrderDeliveryItemsStruct() {
 		// Assists with quick lookup for orderDeliveryItem data by using orderItemID
@@ -174,6 +170,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		
 		return orderDeliveryItemsStruct;
+	}
+
+	public boolean function hasUndeliveredOrderItemsWithoutProvidedGiftCardCode() {
+		return arrayLen(getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) > 0;
 	}
 
 	// @hint Returns an array of orderItems that require gift card codes
@@ -199,7 +199,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					}
 				}
 				
-				var quantityRemainsWithoutGiftCardCodes = orderItem.getQuantityUndelivered() - quantityAllocatedWithGiftCardCodes;
+				var quantityRemainsWithoutGiftCardCodes = orderItem.getQuantity() - quantityAllocatedWithGiftCardCodes;
 				if (quantityRemainsWithoutGiftCardCodes > 0) {
 					arrayAppend(undeliveredOrderItemsWithoutProvidedGiftCardCode, orderItem);
 				}

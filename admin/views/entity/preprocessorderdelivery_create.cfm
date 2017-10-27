@@ -111,7 +111,7 @@ Notes:
 					<cfset giftCardIndex = 0 />
 					
 					<cfloop index="placeholder" array="#rc.processObject.getUndeliveredOrderItemsWithoutProvidedGiftCardCodePlaceholders()#">
-						<cfloop index="giftCardPlaceholder" array="#placeholder.orderItem.getProvidedGiftCardCodePlaceholderOptions(placeholder.quantity)#">
+						<cfloop index="giftCardPlaceholder" array="#placeholder.orderItem.getProvidedGiftCardCodePlaceholderOptions(maxPlaceholders=placeholder.quantity)#">
 							<cfset giftCardIndex++ />
 							<cfset giftCardCodeFieldTitle = giftCardPlaceholder.name />
 							<cfset giftCardCodeValue = "" />
