@@ -369,6 +369,11 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			}
 			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
 			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
+			if ( location.setting('locationExcludeFromQATS') ){
+				thisData["ExcludedLocation"] = true;
+			}else{
+				thisData["ExcludedLocation"] = false;
+			}
 			ArrayAppend(thisDataArr,thisData);
 		}
 		arguments.rc.ajaxResponse["inventoryData"] = thisDataArr;

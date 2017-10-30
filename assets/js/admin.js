@@ -119,7 +119,12 @@ $(document).ready(function(e){
 			if (invDataArr.length) {
 				for(var i=0;i<invDataArr.length;i++) {
 					var invData = invDataArr[i];
-					var newTR = ["<tr class='stock' data-parentlocationid='"+parentLocationID+"' data-parentlocationidpath='"+parentLocationIDPath+"'>", 
+					var rowClass = 'stock';
+					if (invData.ExcludedLocation){
+						rowClass = "'stock excludedLocation'"
+					}
+					
+					var newTR = ["<tr class=" + rowClass + " data-parentlocationid='"+parentLocationID+"' data-parentlocationidpath='"+parentLocationIDPath+"'>", 
 						"<td><a href='#' class='update-inventory-plus depth"+newDepth+"' data-depth='"+newDepth+"' data-locationid='"+invData.locationID+"' data-locationidpath='path"+invData.locationIDPath+"' data-skuid='"+invData.skuID+"'><i class='glyphicon glyphicon-plus'></i></a> <strong>"+invData.locationName+"</strong></td>",
 						"<td>"+invData.QOH+"</td>",
 						"<td>"+invData.QOSH+"</td>",
