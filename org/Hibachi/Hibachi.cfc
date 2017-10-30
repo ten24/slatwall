@@ -96,6 +96,7 @@ component extends="framework.one" {
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
 	variables.framework.hibachi.useCachingEngineFlag = false;
+	variables.framework.hibachi.isApplicationStart = false;
 
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
@@ -251,6 +252,11 @@ component extends="framework.one" {
 		}
 	}
 
+	public void function onApplicationStart(){
+		variables.framework.hibachi.isApplicationStart = true;
+		super.onApplicationStart();
+	}
+
 	public void function setupGlobalRequest() {
 		
 		var httpRequestData = GetHttpRequestData();
@@ -258,7 +264,7 @@ component extends="framework.one" {
 		// Verify that the application is setup
 		verifyApplicationSetup();
 
-		if(variables.framework.hibachi.useServerInstanceCacheControl){
+			if(!variables.framework.hibachi.isApplicationStart && variables.framework.hibachi.useServerInstanceCacheControl){
 			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
 			}else{
@@ -267,6 +273,7 @@ component extends="framework.one" {
 						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
 					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 					serverInstance.setSettingsExpired(false);
+						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
 				}
 			}
 		}
@@ -581,7 +588,7 @@ component extends="framework.one" {
 					// The FW1 Application had not previously been loaded so we are going to call onApplicationStart()
 					if(!structKeyExists(application, variables.framework.applicationKey)) {
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - onApplicationStart() was called");
-						onApplicationStart();
+
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - onApplicationStart() finished");
 					}
 					// ================ END: Required Application Setup ==================
@@ -603,6 +610,9 @@ component extends="framework.one" {
 					}
 					if(!coreBF.containsBean("hibachiCacheDAO")) {
 						coreBF.declareBean("hibachiCacheDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheDAO", true);
+					}
+					if(!coreBF.containsBean("hibachiDataDAO")) {
+						coreBF.declareBean("hibachiDataDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataDAO", true);
 					}
 					if(!coreBF.containsBean("hibachiService")) {
 						coreBF.declareBean("hibachiService", "#variables.framework.applicationKey#.org.Hibachi.HibachiService", true);
@@ -780,11 +790,15 @@ component extends="framework.one" {
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
 
 					//only run the update if it wasn't initiated by serverside cache being expired
+					if(!variables.framework.hibachi.isApplicationStart){
 					if(!arguments.reloadByServerInstance){
 						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
 					}else{
 						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 						serverInstance.setServerInstanceExpired(false);
+							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+							getHibachiScope().flushORMSession();
+						}						
 					}
 
 					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
