@@ -95,7 +95,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
-			} else if(listFindNoCasearguments.quantityType == "QATS"){
+			} else if(arguments.quantityType == "QATS"){
 				if (this.getLocation().setting('locationExcludeFromQATS')){
 					variables[ arguments.quantityType ] = 0;
 				}else{
