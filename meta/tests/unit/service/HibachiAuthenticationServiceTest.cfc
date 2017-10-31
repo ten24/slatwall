@@ -177,6 +177,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(arraylen(permissionRecordRestrictions),1);
 		//verify that we have refined the list based on restrictions
+		request.slatwallScope.getService('HibachiCacheService').setCache({});
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		
 		
@@ -344,8 +345,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(arraylen(permission.getPermissionRecordRestrictions()));
 		
 		ormflush();
-		
 		allDataCollection.setRequestAccount(peasantyAccount);
+		request.slatwallScope.getService('HibachiCacheService').setCache({});
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		
 		//now record level perms restrictions
@@ -382,6 +383,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		order.setAccount(restrictedAccount);
 		ormflush();
+		request.slatwallScope.getService('HibachiCacheService').setCache({});
 		//make this request use our account with restrictions 
 		var allDataCollection2 = createTestEntity('collection');
 		allDataCollection2.setCollectionObject('Order');
@@ -389,6 +391,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		allDataCollection2.setRequestAccount(peasantyAccount);
 		allDataCollection2.applyPermissions();
 		//verify that we have refined the list based on restrictions
+		
 		assertEquals(arraylen(allDataCollection2.getRecords(true)),0);
 		
 	}
