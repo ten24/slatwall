@@ -1996,18 +1996,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private array function getPermissionRecordRestrictions(){
 		var objectPermissionsList = getObjectPermissionList();
+		var permissionGroupCacheKey = 'getPermissionRecordRestrictions_#objectPermissionsList#'& getHibachiScope().getPermissionGroupCacheKey();
+		
+		if(getService('HibachiCacheService').hasCachedValue(permissionGroupCacheKey)){
+			return getService('HibachiCacheService').getCachedValue(permissionGroupCacheKey);
+		}else{
+			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
+			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
+			permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
+			permissionRecordRestrictionCollectionList.addFilter('permission.propertyName','NULL','IS');
+			permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
+			permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#objectPermissionsList#','IN');
+			permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
+			permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,collectionConfig,permission.entityClassName');
+			permissionRecordRestrictionCollectionList.addDisplayProperty('enforceOnDirectObjectReference');
 
-		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
-		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
-		permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
-		permissionRecordRestrictionCollectionList.addFilter('permission.propertyName','NULL','IS');
-		permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
-		permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#objectPermissionsList#','IN');
-		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
-		permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,collectionConfig,permission.entityClassName');
-		permissionRecordRestrictionCollectionList.addDisplayProperty('enforceOnDirectObjectReference');
-
-		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+			getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
+		}
 		return permissionRecordRestrictions;
 
 	}
