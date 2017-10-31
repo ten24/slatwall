@@ -177,6 +177,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals(arraylen(permissionRecordRestrictions),1);
 		//verify that we have refined the list based on restrictions
+		request.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
 		assertEquals(arraylen(allDataCollection.getRecords(true)),1);
 		
 		
@@ -389,6 +390,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		allDataCollection2.setRequestAccount(peasantyAccount);
 		allDataCollection2.applyPermissions();
 		//verify that we have refined the list based on restrictions
+		request.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
 		assertEquals(arraylen(allDataCollection2.getRecords(true)),0);
 		
 	}
