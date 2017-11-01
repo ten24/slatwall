@@ -463,8 +463,28 @@ component accessors="true" output="false" extends="HibachiService" {
 					selectList = listAppend(selectList, "#tables[ tableName ][ "primaryKeyColumn" ]#_new");
 				}
 			// get distinct values for this table
-				var qry = new Query( sql="SELECT DISTINCT #selectList# FROM query", query=arguments.query, dbtype="query" );
-				var thisTableData = qry.execute().getResult();
+				var errorFree = false;
+				var remainingTries = 20;
+				tables[tableName]['missingColumns'] = [];
+				while(errorFree == false && listLen(selectList) > 0 && remainingTries > 0){
+					try{
+						var qry = new Query( sql="SELECT DISTINCT #selectList# FROM query", query=arguments.query, dbtype="query" );
+						var thisTableData = qry.execute().getResult();
+						errorFree = true;
+					}catch(any e){
+						var missingColumn = reReplace(e.detail, '^.+\[(.*)\].+$', '\1');
+						var listIndex = listFind(selectList,missingColumn);
+
+						//Throw error if not caused by missing column
+						if(listIndex == 0){
+							writeDump(e);abort;
+						}
+
+						arrayAppend(tables[tableName]["missingColumns"], missingColumn);
+						selectList = listDeleteAt(selectList,listIndex);
+						remainingTries -= 1;
+					};
+				}
 				var generatedIDStruct = {};
 
 				generatedIDStruct[ tableName ] = {};
