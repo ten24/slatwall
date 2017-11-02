@@ -58,7 +58,7 @@ Notes:
 	</cfif>
 <cfelseif structKeyExists(server, "lucee")>
 	<!--- for clean lucee install --->
-	<cfset local.logFile = "/opt/lucee/web/logs/Slatwall.log">
+	<cfset local.logFile = expandPath('/') & "WEB-INF/lucee/logs/Slatwall.log">
 <cfelse>
 	<cfset local.logFile = Server.ColdFusion.RootDir & "/logs/Slatwall.log">
 </cfif>
