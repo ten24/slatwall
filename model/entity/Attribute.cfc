@@ -77,7 +77,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
 	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID";
-	property name="attributeOptionSource" cfc="attribute" fieldtype="many-to-one" fkcolumn="attributeOptionSourceID" hb_formFieldType="select";
+	property name="attributeOptionSource" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeOptionSourceID" hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="attributeOptions" singularname="attributeOption" cfc="AttributeOption" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
