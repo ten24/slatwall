@@ -77,6 +77,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
 	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID";
+	property name="attributeOptionSource" cfc="attribute" fieldtype="many-to-one" fkcolumn="attributeOptionSourceID" hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="attributeOptions" singularname="attributeOption" cfc="AttributeOption" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
@@ -103,7 +104,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="typeSetOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
 	property name="relatedObjectCollectionConfigStruct" persistent="false";
-
+	property name="attributeOptionSourceOptions" type="array" persistent="false";
+	
 	// Deprecated Properties
 	property name="attributeType" persistent="false";
 
@@ -112,6 +114,17 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getAttributeOptionSourceOptions(){
+		if(!structKeyExists(variables,'attributeOptionSourceOptions')){
+			var attributeOptionSourceOptionsCollectionList = getService('attributeService').getAttributeCollectionList();
+			attributeOptionSourceOptionsCollectionList.setDisplayProperties('attributeName|name,attributeID|value');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeSet.attributeSetObject',getAttributeSet().getAttributeSetObject());
+			variables.attributeOptionSourceOptions = attributeOptionSourceOptionsCollectionList.getRecords();
+		}
+		
+		return variables.attributeOptionSourceOptions;
+	}
 	
 	public struct function getRelatedObjectCollectionConfigStruct(){
 		if(!structKeyExists(variables,'relatedObjectCollectionConfigStruct')){
@@ -134,10 +147,17 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
+		
+		if(!isNull(getAttributeOptionSource())){
+    		var currentAttributeOptions = getAttributeOptionSource().getAttributeOptions();
+    	}else{
+    		var currentAttributeOptions = variables.attributeOptions;
+    	}
+		
 		if(!structKeyExists(arguments,"orderby")) {
-			return variables.AttributeOptions;
+			return currentAttributeOptions;
 		} else {
-			return getService("hibachiUtilityService").sortObjectArray(variables.AttributeOptions,arguments.orderby,arguments.sortType,arguments.direction);
+			return getService("hibachiUtilityService").sortObjectArray(currentAttributeOptions,arguments.orderby,arguments.sortType,arguments.direction);
 		}
 	}
 
@@ -229,6 +249,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 		return variables.validationTypeOptions;
     }
+     
+    
 
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
