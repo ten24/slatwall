@@ -121,7 +121,7 @@ $(document).ready(function(e){
 					var invData = invDataArr[i];
 					var rowClass = 'stock';
 					if (invData.ExcludedLocation){
-						rowClass = "'stock excludedLocation'"
+						rowClass = "'stock s-disabled'"
 					}
 					
 					var newTR = ["<tr class=" + rowClass + " data-parentlocationid='"+parentLocationID+"' data-parentlocationidpath='"+parentLocationIDPath+"'>", 
