@@ -258,7 +258,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
 
 			// Location
-			locationOrderingRequiresQATS = {fieldType="yesno",defaultValue=0},
+			locationOrderingRequiresQATS = {fieldType="yesno",defaultValue=1},
 			locationExcludeFromQATS = {fieldType="yesno",defaultValue=0},
 			
 			// Location Configuration
