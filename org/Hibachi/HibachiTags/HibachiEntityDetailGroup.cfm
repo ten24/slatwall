@@ -81,13 +81,15 @@
 							<content class="s-body-box">
 								<cfoutput>
 									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
-										<!--- if is a wysiwyg then the ckeditor js needs to be able to init html without ng-if preventing compilation --->
-										<cfif findNoCase('wysiwyg',tab.tabcontent)>
-											#tab.tabcontent#
-										<cfelse>
+										<!--- 
+											if is a non-angular content js needs to be able to init html without ng-if preventing compilation
+										 --->
+										<cfif findNoCase('<sw-',tab.tabcontent)>
 											<span ng-if="#tabScope#.active">
 												#tab.tabcontent#
 											</span>
+										<cfelse>
+											#tab.tabcontent#
 										</cfif>
 									</div>
 								</cfoutput>
