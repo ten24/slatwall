@@ -113,7 +113,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
 			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
-			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
+			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ],
+			account = ["accountCreatedSite.siteID"],
+			order = ["orderCreatedSite.siteID"]
 		};
 	}
 
