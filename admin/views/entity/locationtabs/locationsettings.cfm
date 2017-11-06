@@ -58,7 +58,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<!---<swa:SlatwallSetting settingName="locationConfigurationCapacity" settingObject="#rc.location#" />--->
-		<swa:SlatwallSetting settingName="locationOrderingRequiresQATS" settingObject="#rc.location#" />
+		<swa:SlatwallSetting settingName="locationRequiresQATSForOrdering" settingObject="#rc.location#" />
 		<swa:SlatwallSetting settingName="locationExcludeFromQATS" settingObject="#rc.location#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
