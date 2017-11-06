@@ -69,6 +69,7 @@ Notes:
 	<swa:SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" settingObject="rc.product" />
 	<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.product#" />

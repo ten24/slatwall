@@ -20,7 +20,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
 	property name="entityURLKeyType" type="string";
-	
+	property name="permissionGroupCacheKey" type="string";
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -37,6 +37,25 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setModifiedEntities( [] );
 		
 		return super.init();
+	}
+	
+	public string function getPermissionGroupCacheKey(){
+		if(!structKeyExists(variables,'permissionGroupCacheKey')){
+			var permissionGroupCacheKey = "";
+		
+			if(!isNull(getAccount()) && getAccount().getPermissionGroupsCount()){
+				var permissionGroupCollectionList = getAccount().getPermissionGroupsCollectionList();
+				permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+				var permissionGroupRecords = permissionGroupCollectionList.getRecords();
+				for(var permissionGroupRecord in permissiongroupRecords){
+					permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+				}
+			}
+			variables.permissionGroupCacheKey = permissionGroupCacheKey;
+		}
+		
+		
+		return variables.permissionGroupCacheKey;
 	}
 	
 	public string function getEntityURLKeyType(string entityURLKey=""){

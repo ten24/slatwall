@@ -86,6 +86,7 @@ Notes:
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="defaultStockLocationID" edit="#rc.edit#">
 		</hb:HibachiPropertyList>

@@ -2,7 +2,7 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-
+ 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -47,11 +47,12 @@ Notes:
 
 */
 component extends="HibachiDAO" {
+	
 	public boolean function isLocalIPAddress(required serverInstanceIPAddress){
 		return left(arguments.serverInstanceIPAddress,4) == '192.' || left(arguments.serverInstanceIPAddress,4) == '127.';
 	}
 	
-	public boolean function isServerInstanceCacheExpired(required serverInstanceIPAddress){
+	public any function isServerInstanceCacheExpired(required serverInstanceIPAddress){
 		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
 			return false;
 		}
@@ -64,7 +65,7 @@ component extends="HibachiDAO" {
 			true
 		);
 		if(isNull(isExpired)){
-			isExpired = true;
+			return;
 		}
 		return isExpired;
 	}
