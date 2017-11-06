@@ -176,7 +176,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				
-				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationOrderingRequiresQATS')) {
+				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationRequiresQATSForOrdering')) {
 					maxQTY = getStock().getQuantity('QATS');
 				} else if( getSku().getQATS() <= maxQTY ){
 					maxQTY = getSku().getQATS();
