@@ -114,8 +114,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountAuthentication = [ "integration.integrationID" ],
 			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
 			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ],
-			account = ["accountCreatedSite.siteID"],
-			order = ["orderCreatedSite.siteID"]
+			account = ["accountCreatedSite.siteID"]
 		};
 	}
 
