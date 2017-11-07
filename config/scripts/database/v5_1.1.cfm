@@ -44,3 +44,40 @@
     of the program, but you are not obligated to do so.
 
 Notes:
+
+--->
+
+<cfset local.scriptHasErrors = false />
+
+<cftry>
+	<cfset local.subquerysql = "select c.categoryID,c.categoryName,
+		(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
+		(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
+		from swcategory c order by length(categoryIDPath) "
+	/>
+	
+	<cfset local.sql = "update
+	         swcategory c
+	    INNER JOIN (
+			#PreserveSingleQuotes(local.subquerysql)#
+		) AS Table_B
+	        ON c.categoryID = Table_B.categoryID
+	        set c.categoryNamePath = Table_B.categoryNamePath,
+	        	c.urlTitlePath = Table_B.urlTitlePath"
+	/>
+	<cfquery name="local.updateCategoryPaths">
+		#PreserveSingleQuotes(local.sql)#
+	</cfquery>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+
+<cfif local.scriptHasErrors>
+	<cflog file="Slatwall" text="General Log - Part of Script v5_1.1 had errors when running">
+	<cfthrow detail="Part of Script v5_1.1 had errors when running">
+<cfelse>
+	<cflog file="Slatwall" text="General Log - Script v5_1.1 has run with no errors">
+</cfif>
