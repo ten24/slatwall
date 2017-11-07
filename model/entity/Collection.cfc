@@ -398,7 +398,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"filterAggregateName" = arguments.filterAggregateName,
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
-			"value" = arguments.value
+			"value" = arguments.value,
+			"hidden"=true
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -439,7 +440,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filter = {
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
-			"value" = arguments.value
+			"value" = arguments.value,
+			"hidden"=true
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
