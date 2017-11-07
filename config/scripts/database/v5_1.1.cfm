@@ -49,7 +49,7 @@ Notes:
 
 <cfset local.scriptHasErrors = false />
 
-<!---<cftry>--->
+<cftry>
 	<cfset local.subquerysql = "select c.categoryID,c.categoryName,
 		(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
 		(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
@@ -65,14 +65,15 @@ Notes:
 	        set c.categoryNamePath = Table_B.categoryNamePath,
 	        	c.urlTitlePath = Table_B.urlTitlePath"
 	/>
-	<cfquery name="local.updateCategoryPaths">
-		#PreserveSingleQuotes(local.sql)#
-	</cfquery>
-<!---	<cfcatch>
+	<cfscript>
+		var queryService = new query();
+		queryService.execute(sql=local.sql);
+	</cfscript>
+	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-</cftry>--->
+</cftry>
 
 
 <cfif local.scriptHasErrors>
