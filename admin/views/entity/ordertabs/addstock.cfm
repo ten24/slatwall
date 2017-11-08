@@ -57,7 +57,7 @@ Notes:
 
 <!--- Setup default stock location filter--->
 <cfif !isnull(rc.order.getDefaultStockLocation())>
-	<cfset local.addOrderItemStockOptionsSmartList.addFilter("location.locationName", "#rc.order.getDefaultStockLocation().getLocationName()#")>
+	<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition("aslatwalllocation.locationIDPath LIKE '%#rc.order.getDefaultStockLocation().getLocationID()#%'")>
 </cfif>
 
 <cfoutput>
@@ -75,7 +75,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		<hb:HibachiListingColumn propertyIdentifier="QATS" />
 		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
