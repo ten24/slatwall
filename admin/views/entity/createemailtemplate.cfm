@@ -61,6 +61,7 @@ Notes:
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="logEmailFlag" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
