@@ -313,7 +313,7 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             urlBase = urlBase + action; //any path
         }else{
-            urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
+            urlBase = this.baseActionPath + action;//public path
         }
 
 
