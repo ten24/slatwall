@@ -57,7 +57,12 @@ Notes:
 
 <!--- Setup default stock location filter--->
 <cfif !isnull(rc.order.getDefaultStockLocation())>
-	<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition("aslatwalllocation.locationIDPath LIKE '%#rc.order.getDefaultStockLocation().getLocationID()#%'")>
+	<cfif  rc.order.getDefaultStockLocation().hasChildLocation()>
+		<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition("aslatwalllocation.locationName != '#rc.order.getDefaultStockLocation().getLocationName()#'") />
+		<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition("aslatwalllocation.locationIDPath LIKE '%#rc.order.getDefaultStockLocation().getLocationID()#%'") />
+	<cfelse>
+		<cfset local.addOrderItemStockOptionsSmartList.addFilter("location.locationName", "#rc.order.getDefaultStockLocation().getLocationName()#")>
+	</cfif>
 </cfif>
 
 <cfoutput>
