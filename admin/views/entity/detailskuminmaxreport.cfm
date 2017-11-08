@@ -46,32 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-
-<cfparam name="rc.orderItem" type="any" />
-<cfparam name="rc.order" type="any" />
-<cfparam name="rc.edit" type="boolean" />
-
-<cfsilent>
-	<cfset local.recipientList = rc.orderItem.getAllOrderItemGiftRecipientsSmartList() />
-</cfsilent>
+<cfparam name="rc.skuMinMaxReport" type="any">
 
 <cfoutput>
-    <hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderitemgiftrecipients')#" smartList="#local.recipientList#" 
-                recordDetailAction="admin:entity.detailorderitemgiftrecipient"
-				recordEditAction="admin:entity.editorderitemgiftrecipient">
-			<cfif rc.orderItem.getSku().getGiftCardRecipientRequiredFlag()>
-            	<hb:HibachiListingColumn propertyIdentifier="firstName" />
-            	<hb:HibachiListingColumn propertyIdentifier="lastName" />
-            	<hb:HibachiListingColumn propertyIdentifier="emailAddress" />
-				<hb:HibachiListingColumn propertyIdentifier="giftMessage" />
-			</cfif>
-			<cfif rc.orderItem.getSku().getGiftCardAutoGenerateCodeFlag()>
-				<hb:HibachiListingColumn propertyIdentifier="quantity" />
-			<cfelse>
-				<hb:HibachiListingColumn propertyIdentifier="manualGiftCardCode" />
-			</cfif>
-    </hb:HibachiListingDisplay>
+	<hb:HibachiEntityDetailForm object="#rc.skuMinMaxReport#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.skuMinMaxReport#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
+				
+		<hb:HibachiEntityDetailGroup object="#rc.skuMinMaxReport#">
+			<hb:HibachiEntityDetailItem view="admin:entity/skuminmaxreporttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skuminmaxreporttabs/skucollection" text="#$.slatwall.rbKey('admin.define.collection')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skuminmaxreporttabs/minmaxreport" text="#$.slatwall.rbKey('admin.define.report')#" />
+		</hb:HibachiEntityDetailGroup>
+
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

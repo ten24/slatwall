@@ -8,10 +8,13 @@
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 	<cfparam name="attributes.expandable" type="boolean" default="true" /> <!--- Although this defaults to true, the listing will only be expandable if hb_parentProperty is specified at the entity level--->
 
-
 	<!--- Optional --->
-	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.title" type="string" default="" />
+	
+	<!--- Collection Params. If collectionList is specified the items below configure it --->
+	<cfparam name="attributes.collectionList" type="any" default=""/>
+	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
+	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="false"/>
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -97,6 +100,7 @@
 				record-detail-action="admin:entity.detail#lcase(attributes.collectionlist.getCollectionObject())#"
 				data-is-angular-route="false"
 				data-angular-links="false"
+				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 			    edit="true"
@@ -105,6 +109,9 @@
 			    </cfif>
 			>
 			</sw-listing-display>
+			<cfif structKeyExists(attributes,'collectionConfigFieldName')>
+				<input name="#attributes.collectionConfigFieldName#" class="hidden" ng-model="#scopeVariableID#.collectionConfigString"/>
+			</cfif>
 		</cfoutput>
 		
 	<cfelse>
