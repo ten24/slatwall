@@ -65,7 +65,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Returns array of leaf locations, i.e. locations that can have stock
 	// @locationID string If specified will be used as top level location
-	public array function getLocationOptions( string locationID ) {
+	public array function getLocationOptions( string locationID, boolean getAllLocations=false ) {
 		var locationOptions = [];
 		var smartList = this.getLocationSmartList();
 		smartlist.addSelect('calculatedLocationPathName','name');
@@ -73,7 +73,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments,"locationID")) {
 			smartList.addFilter("locationID",arguments.locationID);
 		}
-		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
+		if (!arguments.getAllLocations){
+			smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
+		}
 		smartList.addOrder("locationIDPath");
 		var locationOptions = smartList.getRecords();
 		

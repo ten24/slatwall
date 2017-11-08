@@ -876,7 +876,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 
 	public array function getDefaultStockLocationOptions() {
 		if(!structKeyExists(variables, "defaultStockLocationOptions")) {
-			var defaultStockLocationOptions=getService("locationService").getLocationOptions();
+			var defaultStockLocationOptions=getService("locationService").getLocationOptions(getAllLocations=true);
 			arrayPrepend(defaultStockLocationOptions, {"name"=rbKey('define.none'),"value"=""});
 			variables.defaultStockLocationOptions=defaultStockLocationOptions;
 		}
