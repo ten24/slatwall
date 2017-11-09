@@ -50,7 +50,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="order" cfc="Order";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 
-	property name="recipient" cfc="OrderItemGiftRecipient";
+	property name="recipient" cfc="OrderItemGiftRecipient" fieldType="many-to-one";
 
 	// Data Properties
  	property name="firstName" type="string";
@@ -59,12 +59,4 @@ component output="false" accessors="true" extends="HibachiProcess"{
  	property name="account";
  	property name="quantity" type="numeric";
  	property name="giftMessage";
-
- 	public string function getEmailAddress(){
- 		if(!structKeyExists(variables, "emailAddress")){
- 			return recipient.getEmailAddress();
- 		}
- 		return variables.emailAddress;
- 	}
-
 }

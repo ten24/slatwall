@@ -77,6 +77,9 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
 				
+				<!--- Organization Flag --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#">
+
 				<!--- Parent Account --->
 				<cfif structKeyExists(rc,'parentAccountID')>
 					<input type="hidden" name="parentAccountID" value="#rc.parentAccountID#" />
