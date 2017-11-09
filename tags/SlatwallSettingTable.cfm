@@ -91,6 +91,8 @@ Notes:
 										<cfif structKeyList(thisSetting.settingDetails.settingRelationships) eq "productTypeID">
 											<cfset local.productType = request.slatwallScope.getService("productService").getProductType(thisSetting.settingDetails.settingRelationships.productTypeID) />
 											<hb:HibachiActionCaller action="admin:entity.detailProductType" text="#local.productType.getSimpleRepresentation()#" queryString="productTypeID=#thisSetting.settingDetails.settingRelationships.productTypeID#">
+										<cfelseif structKeyList(thisSetting.settingDetails.settingRelationships) eq "siteID">
+											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="siteID=#thisSetting.settingDetails.settingRelationships.siteID#">
 										</cfif>
 									</cfif>
 								</cfif>
