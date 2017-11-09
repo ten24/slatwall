@@ -53,7 +53,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="addressService" type="any";
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="giftCardService" type="any";
+	property name="hibachiAuditService" type="any";	
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
