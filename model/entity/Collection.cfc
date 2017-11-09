@@ -84,6 +84,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="keywords" type="string" persistent="false";
 	property name="keywordArray" type="array" persistent="false";
+	property name="splitKeywords" type="boolean" persistent="false" default="1";
 
 	property name="aggregateFilters" type="array" persistent="false";
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
@@ -1187,10 +1188,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return aggregateFunction;
 	}
 
-
 	public array function getKeywordArray(){
-		if(!arraylen(variables.keywordArray)){
+		if(!arraylen(variables.keywordArray) && !isNull(variables.splitKeywords) && variables.splitKeywords){
 			variables.keywordArray = ListToArray(getKeywords(),' ');
+		}else{
+			variables.keywordArray=[getKeywords()];
 		}
 		return variables.keywordArray;
 	}
@@ -1999,11 +2001,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private array function getPermissionRecordRestrictions(){
 		var objectPermissionsList = getObjectPermissionList();
-		var permissionGroupCacheKey = 'getPermissionRecordRestrictions_#objectPermissionsList#'& getHibachiScope().getPermissionGroupCacheKey();
+		// var permissionGroupCacheKey = 'getPermissionRecordRestrictions_#objectPermissionsList#'& getHibachiScope().getPermissionGroupCacheKey();
 		
-		if(getService('HibachiCacheService').hasCachedValue(permissionGroupCacheKey)){
-			return getService('HibachiCacheService').getCachedValue(permissionGroupCacheKey);
-		}else{
+		// if(getService('HibachiCacheService').hasCachedValue(permissionGroupCacheKey)){
+		// 	return getService('HibachiCacheService').getCachedValue(permissionGroupCacheKey);
+		// }else{
 			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
 			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
 			permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
@@ -2015,9 +2017,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			permissionRecordRestrictionCollectionList.addDisplayProperty('enforceOnDirectObjectReference');
 
 			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
-			getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
-		}
-		return permissionRecordRestrictions;
+			// getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
+		// }
+		// return permissionRecordRestrictions;
 
 	}
 
