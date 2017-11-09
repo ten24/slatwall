@@ -775,7 +775,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-
+		
 		// Create some placeholder Var's
 		var foundValue = false;
 		var settingRecord = "";
@@ -898,7 +898,29 @@ component extends="HibachiService" output="false" accessors="true" {
 				}
 			}
 
-			// If we still haven't found a value yet, lets look for this with no relationships
+			// Look at the contextual site-level if we haven't found a value yet, this is within the context of the site handling the request
+			if (!foundValue && !isNull(getHibachiScope().getCurrentRequestSite())) {
+				structClear(settingDetails.settingRelationships);
+
+				settingDetails.settingRelationships[getHibachiScope().getCurrentRequestSite().getPrimaryIDPropertyName()] = getHibachiScope().getCurrentRequestSite().getPrimaryIDValue();
+				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
+					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
+				}
+
+				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+				if(settingRecord.recordCount) {
+					foundValue = true;
+					settingDetails.settingValue = settingRecord.settingValue;
+					settingDetails.settingID = settingRecord.settingID;
+					if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+						settingDetails.settingInherited = true;
+					} else {
+						settingDetails.settingInherited = false;
+					}
+				}
+			}
+
+			// Look at the highest-level if we still haven't found a value yet, no lower-level relationships associated with setting value
 			if(!foundValue) {
 				settingDetails.settingRelationships = {};
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {

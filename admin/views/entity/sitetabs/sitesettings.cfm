@@ -58,5 +58,9 @@ Notes:
 		<swa:SlatwallSetting settingName="siteRecaptchaSiteKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaSecretKey" settingObject="#rc.site#" />
 		<swa:SlatwallSetting settingName="siteRecaptchaProtectedEvents" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.site#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
