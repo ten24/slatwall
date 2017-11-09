@@ -5,11 +5,10 @@
 <cfparam name="rc.edit" type="boolean">
 <cfparam name="url['P:Current']" default="1">
 
-<cfif rc.inventoryAnalysis.hasSkuCollection()>
 	<cfset rc.inventoryAnalysis.getSkuCollection().setPageRecordsStart(url['P:Current'])>
 
 	<cfoutput>
-1
+
 		<table class="table table-striped table-bordered table-condensed">
 			<!--- Term Payment Details --->
 			<thead>
@@ -31,7 +30,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<cfloop query="#rc.inventoryAnalysis.getReportData(rc.inventoryAnalysis.getSkuCollection().getPageRecords()).query#">
+				<cfloop query="#rc.inventoryAnalysis.getReportData().query#">
 					<tr>
 						<td>#ProductType#</td>
 						<td>#SkuCode#</td>
@@ -58,4 +57,3 @@
 		<swa:SlatwallCollectionPagination collection="#rc.inventoryAnalysis.getSkuCollection()#" slatwallScope="#rc.$.slatwall#" />
 
 	</cfoutput>
-</cfif>

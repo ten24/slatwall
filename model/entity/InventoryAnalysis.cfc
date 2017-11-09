@@ -59,7 +59,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 	property name="skuCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 
 	// Related Object Properties (many-to-one)
-	property name="skuCollection" hb_populateEnabled="public" cfc="Collection" fieldtype="many-to-one" fkcolumn="collectionID";
+	
 	
 	// Related Object Properties (one-to-many)
 	
@@ -77,30 +77,28 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-
+	property name="skuCollection" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 
     public string function getSkuCollectionConfig(){
     	if(isNull(variables.skuCollectionConfig)){
-    		var defaultSkuCollectionConfig = {};
-    		defaultSkuCollectionConfig["baseEntityName"]='Sku';
-			defaultSkuCollectionConfig["baseEntityAlias"]='_sku';
-			
-			defaultSkuCollectionConfig["filterGroups"]=[{"filterGroup"=[]}];
-			defaultSkuCollectionConfig["columns"]=[];
-			var defaultColumnsArray = ['skuID','activeFlag','publishedFlag','skuName','skuDescription','skuCode','listPrice','price','renewalPrice'];
-			
-			for(var column in defaultColumnsArray){
-				var columnStruct = {};
-				columnStruct['propertyIdentifier'] = '_sku.#column#';
-				columnStruct['title'] = getService('HibachiRBService').getRBKey('entity.sku.#column#');
-				columnStruct['isVisible'] = true;
-				ArrayAppend(defaultSkuCollectionConfig["columns"],columnStruct);
-			}
-    		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionConfig);
+    		var defaultSkuCollectionList = getService('skuService').getSkuCollectionList();
+    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true});
+    		defaultSkuCollectionList.addDisplayProperty(displayProperty='skuID',columnconfig={isVisible=false});
+    		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionList.getCollectionConfigStruct());
+    		
     	}
     	return variables.skuCollectionConfig;
+    }
+    
+    public any function getSkuCollection(){
+    	if(!structKeyExists(variables,'skuColletiton')){
+    		var skuCollectionList = getService('skuService').getSkuCollectionList();
+    		skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
+    		variables.skuCollection = skuCollectionList;
+    	}
+    	return variables.skuCollection;
     }
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -119,8 +117,9 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 
 	// ============== START: Overridden Implicet Getters ===================
 	
-	public any function getReportData(array skuCollectionRecords) {
-
+	public any function getReportData() {
+		var skuCollectionRecords = getSkuCollection().getPageRecords();
+		
 		var reportData = {};
 		reportData.headerRowHTML = 'Product Type,Sku Code,Description,Definition,Net Sales Last 12 Months,Committed <br>QC,Expected <br>QE,On Hand <br>QOH,Estimated Months Remaining,Total On Hand <br>QOH+QC,Estimated Days Out';
 		reportData.headerRowXSL = 'Product Type,Sku Code,Description,Definition,Net Sales Last 12 Months,Committed QC,Expected QE,On Hand QOH,Estimated Months Remaining,Total On Hand QOH+QC,Estimated Days Out';
@@ -128,30 +127,36 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 		reportData.columnsTypeList = 'VarChar,VarChar,VarChar,VarChar,Integer,Integer,Integer,Integer,Decimal,Integer,Integer';
 		reportData.query = queryNew(reportData.columnList,reportData.columnsTypeList);
 
-		if(structKeyExists(arguments, 'skuCollectionRecords') and isArray(arguments.skuCollectionRecords)) {
-			for(var thisSkuDetails in arguments.skuCollectionRecords) {
-				var thisSku = getService('SkuService').getSku(thisSkuDetails.skuId);
-				var netSalesLast12Months = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSku.getSkuID(),getAnalysisHistoryStartDateTime(),getAnalysisHistoryEndDateTime())['quantity'];
-				var estimatedDaysOut = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSku.getSkuID(),getAnalysisHistoryStartDateTime(),getAnalysisHistoryDaysOutDateTime())['quantity'];
-				queryAddRow(reportData.query);
-				querySetCell(reportData.query, 'ProductType', thisSku..getProduct().getProductType().getProductTypeName());
-				querySetCell(reportData.query, 'SkuCode', thisSku.getSkuCode());
-				if(len(thisSku.getSkuName())){
-					querySetCell(reportData.query, 'Description', thisSku.getSkuName());
-				} else {
-					querySetCell(reportData.query, 'Description', thisSku.getProduct().getProductName());
-				}
-				querySetCell(reportData.query, 'Definition', thisSku.getCalculatedSkuDefinition());
-				querySetCell(reportData.query, 'NetSalesLast12Months', netSalesLast12Months);
-				querySetCell(reportData.query, 'CommittedQC', thisSku.getQuantity('QC'));
-				querySetCell(reportData.query, 'ExpectedQE', thisSku.getQuantity('QE'));
-				querySetCell(reportData.query, 'OnHandQOH', thisSku.getQOH());
-				querySetCell(reportData.query, 'TotalOnHandQOHplusQC', thisSku.getQOH() + thisSku.getQuantity('QC'));
-				if(netSalesLast12Months != 0) {
-					querySetCell(reportData.query, 'EstimatedMonthsRemaining', thisSku.getQOH()/(netSalesLast12Months/12));
-				}
-				querySetCell(reportData.query, 'EstimatedDaysOut', estimatedDaysOut);
+		for(var thisSkuDetails in skuCollectionRecords) {
+			var thisSku = getService('SkuService').getSku(thisSkuDetails['skuID']);
+			var netSalesLast12Months = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSku.getSkuID(),getAnalysisHistoryStartDateTime(),getAnalysisHistoryEndDateTime())['quantity'];
+			var estimatedDaysOut = getDAO("inventoryDAO").getSkuOrderQuantityForPeriod(thisSku.getSkuID(),getAnalysisHistoryStartDateTime(),getAnalysisHistoryDaysOutDateTime())['quantity'];
+			queryAddRow(reportData.query);
+			var productTypeName = "";
+			if(
+				!isNull(!isNull(thisSku.getProduct()))
+				&& !isNull(thisSku.getProduct().getProductType())
+				&& !isNull(thisSku.getProduct().getProductType().getProductTypeName())
+			){
+				productTypeName = thisSku.getProduct().getProductType().getProductTypeName();
 			}
+			querySetCell(reportData.query, 'ProductType', productTypeName);
+			querySetCell(reportData.query, 'SkuCode', thisSku.getSkuCode());
+			if(len(thisSku.getSkuName())){
+				querySetCell(reportData.query, 'Description', thisSku.getSkuName());
+			} else {
+				querySetCell(reportData.query, 'Description', thisSku.getProduct().getProductName());
+			}
+			querySetCell(reportData.query, 'Definition', thisSku.getCalculatedSkuDefinition());
+			querySetCell(reportData.query, 'NetSalesLast12Months', netSalesLast12Months);
+			querySetCell(reportData.query, 'CommittedQC', thisSku.getQuantity('QC'));
+			querySetCell(reportData.query, 'ExpectedQE', thisSku.getQuantity('QE'));
+			querySetCell(reportData.query, 'OnHandQOH', thisSku.getQOH());
+			querySetCell(reportData.query, 'TotalOnHandQOHplusQC', thisSku.getQOH() + thisSku.getQuantity('QC'));
+			if(netSalesLast12Months != 0) {
+				querySetCell(reportData.query, 'EstimatedMonthsRemaining', thisSku.getQOH()/(netSalesLast12Months/12));
+			}
+			querySetCell(reportData.query, 'EstimatedDaysOut', estimatedDaysOut);
 		}
 
 		return reportData;
