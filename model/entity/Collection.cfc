@@ -2001,11 +2001,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private array function getPermissionRecordRestrictions(){
 		var objectPermissionsList = getObjectPermissionList();
-		// var permissionGroupCacheKey = 'getPermissionRecordRestrictions_#objectPermissionsList#'& getHibachiScope().getPermissionGroupCacheKey();
+		var permissionGroupCacheKey = 'getPermissionRecordRestrictions_#objectPermissionsList#'& getHibachiScope().getPermissionGroupCacheKey();
 		
-		// if(getService('HibachiCacheService').hasCachedValue(permissionGroupCacheKey)){
-		// 	return getService('HibachiCacheService').getCachedValue(permissionGroupCacheKey);
-		// }else{
+		if(getService('HibachiCacheService').hasCachedValue(permissionGroupCacheKey)){
+			return getService('HibachiCacheService').getCachedValue(permissionGroupCacheKey);
+		}else{
 			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
 			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
 			permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
@@ -2017,8 +2017,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			permissionRecordRestrictionCollectionList.addDisplayProperty('enforceOnDirectObjectReference');
 
 			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
-			// getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
-		// }
+			getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
+		}
 		return permissionRecordRestrictions;
 
 	}
