@@ -2019,7 +2019,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
 			// getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
 		// }
-		// return permissionRecordRestrictions;
+		return permissionRecordRestrictions;
 
 	}
 
