@@ -129,6 +129,29 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
  	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
+
+	// @hint Returns options that can act as placeholders for gift card codes that remain to be assigned to fulfill order item quantity
+	public array function getProvidedGiftCardCodePlaceholderOptions( maxPlaceholders = getQuantityUndelivered() ) {
+		
+		// Only needed for gift card order items that will have gift card code manually provided and assigned
+		var options = [];
+		if (isGiftCardOrderItemAndManuallyProvideGiftCardCodes() && getQuantityUndelivered() > 0) {
+			// gift card code is one-to-one with order item quantity (eg. order item quantity is 5, then 5 gift card codes are required)
+			for (var q = 1; q <= arguments.maxPlaceholders; q++ ) {
+				var placeholder = {
+					name = "#getSku().getFormattedRedemptionAmount()# - #getSimpleRepresentation()#",
+					value = '',
+					skuID = getSku().getSkuID(),
+					orderItemID = getOrderItemID(),
+					sku = getSku()
+				};
+
+				arrayAppend(options, placeholder);
+			}
+		}
+		
+		return options;
+	}
  	
 	public numeric function getNumberOfUnassignedGiftCards(){
 
@@ -136,11 +159,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		}
 
-		var orderItemGiftRecipients = this.getOrderItemGiftRecipients();
 		var count = this.getQuantity();
 
-		for(var recipient in orderItemGiftRecipients){
-			count = count - recipient.getQuantity();
+		// Deduct quantity assigned to each orderItemGiftRecipient for total orderItem quantity
+		for(var orderItemGiftRecipient in this.getOrderItemGiftRecipients()){
+			count = count - orderItemGiftRecipient.getQuantity();
 		}
 
 		return count;
@@ -157,6 +180,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public boolean function isGiftCardOrderItem(){
 		return this.getSku().isGiftCardSku();
+	}
+
+	public boolean function isGiftCardOrderItemAndManuallyProvideGiftCardCodes() {
+		return getSku().isGiftCardSku() && !getSku().getGiftCardAutoGenerateCodeFlag();
 	}
 
     public any function getAllOrderItemGiftRecipientsSmartList(){
