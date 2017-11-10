@@ -49,28 +49,20 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.site" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.inventoryAnalysis" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.site#" edit="#rc.edit#">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.site#">
-		</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.inventoryAnalysis#" edit="#rc.edit#" sRedirectAction="admin:entity.editinventoryanalysis">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.inventoryAnalysis#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<!--- General Details --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="app" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="useAppTemplatesFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
-		
+				<hb:HibachiPropertyDisplay object="#rc.inventoryAnalysis#" property="inventoryAnalysisName" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.inventoryAnalysis#" property="analysisStartDateTime" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.inventoryAnalysis#" property="daysOut" edit="true" />
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
-	</hb:HibachiEntityProcessForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

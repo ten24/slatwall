@@ -459,6 +459,50 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Process Methods ===========================
 	
+
+	public any function saveInventoryAnalysis(required any inventoryAnalysis, struct data={}, string context="save"){
+		
+		arguments.inventoryAnalysis = super.save(entity=arguments.inventoryAnalysis,data=arguments.data);
+
+		arguments.inventoryAnalysis.setAnalysisHistoryStartDateTime(dateAdd('yyyy',-1,arguments.inventoryAnalysis.getAnalysisStartDateTime()));
+		arguments.inventoryAnalysis.setAnalysisHistoryEndDateTime(arguments.inventoryAnalysis.getAnalysisStartDateTime());
+		arguments.inventoryAnalysis.setAnalysisHistoryDaysOutDateTime(dateAdd('d',arguments.inventoryAnalysis.getDaysOut(),arguments.inventoryAnalysis.getAnalysisStartDateTime()));
+
+		return arguments.inventoryAnalysis;
+	}
+
+	public any function processInventoryAnalysis_exportXLS(required any InventoryAnalysis, required any processObject) {
+
+		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.xls';
+		var fullFilename = getHibachiTempDirectory() & filename;
+
+		// Create spreadsheet object
+		var spreadsheet = spreadsheetNew(filename);
+		var spreadsheetrowcount = 0;
+		// Add the column headers
+		spreadsheetAddRow(spreadsheet, arguments.InventoryAnalysis.getReportData().headerRowXSL);
+		spreadsheetrowcount += 1;
+		spreadsheetFormatRow(spreadsheet, {bold=true}, 1);
+		// Add rows
+		spreadsheetAddRows(spreadsheet, arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query);
+		spreadsheetrowcount += arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query.recordcount;
+
+		spreadsheetWrite( spreadsheet, fullFilename, true );
+		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
+
+		return arguments.InventoryAnalysis;
+	}
+	public any function processInventoryAnalysis_exportCSV(required any InventoryAnalysis, required any processObject) {
+
+		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.csv';
+		var fullFilename = getHibachiTempDirectory() & filename;
+
+		fileWrite(fullFilename, getService("hibachiUtilityService").queryToCSV(arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query, arguments.InventoryAnalysis.getReportData().columnList, true ));
+		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
+
+		return arguments.InventoryAnalysis;
+	}
+
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================

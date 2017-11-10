@@ -49,28 +49,23 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.site" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.inventoryAnalysisSmartList" type="any"/>
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.site#" edit="#rc.edit#">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.site#">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<!--- General Details --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="app" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="useAppTemplatesFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
-		
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
+	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.inventoryAnalysisSmartList#" showCreate="false">
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createinventoryanalysis" entity="inventoryanalysis" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartlist="#rc.inventoryAnalysisSmartList#" 
+	                          recordeditaction="admin:entity.editinventoryanalysis"
+							  recorddetailaction="admin:entity.detailinventoryanalysis">
+	
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="inventoryAnalysisName" />	
+		<hb:HibachiListingColumn propertyidentifier="analysisStartDateTime" />	
+		<hb:HibachiListingColumn propertyidentifier="daysOut" />	
+	</hb:HibachiListingDisplay>
+
 </cfoutput>

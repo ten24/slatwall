@@ -178,6 +178,7 @@ Notes:
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
 								<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
+								<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
 								<li class="divider"></li>
 								<hb:HibachiActionCaller action="admin:entity.listskuminmaxreport" type="list">
 							</hb:HibachiActionCallerDropdown>
