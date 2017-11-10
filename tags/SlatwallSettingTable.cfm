@@ -84,16 +84,22 @@ Notes:
 					<cfif attributes.showInheritance>
 						<td>
 							<cfif thisSetting.settingDetails.settingInherited>
-								<cfif !structCount(thisSetting.settingDetails.settingRelationships)>
+								<cfif listFindNoCase("global,global.default",thisSetting.settingDetails.settingValueResolvedLevel)>
 									<hb:HibachiActionCaller action="admin:entity.settings" text="#request.slatwallScope.rbKey('define.global')#"/>
-								<cfelse>
-									<cfif structCount(thisSetting.settingDetails.settingRelationships) eq 1>
-										<cfif structKeyList(thisSetting.settingDetails.settingRelationships) eq "productTypeID">
+								<cfelseif listFindNoCase("site",thisSetting.settingDetails.settingValueResolvedLevel)>
+									<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="siteID=#thisSetting.settingDetails.settingRelationships.siteID#">
+								<cfelseif listFindNoCase("object,object.site",thisSetting.settingDetails.settingValueResolvedLevel)>
+									#request.slatwallScope.rbKey('define.here')#
+								<cfelseif listFindNoCase("ancestor,ancestor.site",thisSetting.settingDetails.settingValueResolvedLevel)>
+									<cfif structCount(thisSetting.settingDetails.settingRelationships) gt 0 and structCount(thisSetting.settingDetails.settingRelationships) lte 2 and structKeyExists(thisSetting.settingDetails.settingRelationships, "productTypeID")>
 											<cfset local.productType = request.slatwallScope.getService("productService").getProductType(thisSetting.settingDetails.settingRelationships.productTypeID) />
-											<hb:HibachiActionCaller action="admin:entity.detailProductType" text="#local.productType.getSimpleRepresentation()#" queryString="productTypeID=#thisSetting.settingDetails.settingRelationships.productTypeID#">
-										<cfelseif structKeyList(thisSetting.settingDetails.settingRelationships) eq "siteID">
-											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="siteID=#thisSetting.settingDetails.settingRelationships.siteID#">
-										</cfif>
+											<cfset local.linktext = local.productType.getSimpleRepresentation() />
+											<cfif not isNull(thisSetting.settingDetails.siteContext.siteID) and len(thisSetting.settingDetails.siteContext.siteID)>
+												<cfset local.linktext &= " (#request.slatwallScope.rbKey('entity.site')#)" />
+											</cfif>
+											<hb:HibachiActionCaller action="admin:entity.detailProductType" text="#local.linktext#" queryString="productTypeID=#thisSetting.settingDetails.settingRelationships.productTypeID#">
+									<cfelse>
+										#request.slatwallScope.rbKey('define.inherit')#
 									</cfif>
 								</cfif>
 							<cfelse>
