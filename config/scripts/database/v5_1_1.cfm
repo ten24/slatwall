@@ -63,7 +63,7 @@ Notes:
 		<cfset local.sql = "update
 		         swcategory c
 		    INNER JOIN (
-				#PreserveSingleQuotes(local.subquerysql)#
+				#local.subquerysql#
 			) AS Table_B
 		        ON c.categoryID = Table_B.categoryID
 		        set c.categoryNamePath = Table_B.categoryNamePath,
@@ -75,7 +75,7 @@ Notes:
 		</cfscript>
 	</cfif>
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - update to category paths">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>
