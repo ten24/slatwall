@@ -32,7 +32,18 @@
 			</cfif>
 
 			<!--- Default Stock Location --->
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
+			<cfif rc.edit>
+				<cfif NOT isNull(rc.order.getDefaultStockLocation())>
+					<cfset local.locationID = rc.order.getDefaultStockLocation().getLocationID() />
+				<cfelse>
+					<cfset local.locationID = ''>
+				</cfif>
+				
+				<swa:SlatwallLocationTypeahead locationPropertyName="defaultStockLocation.locationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="true" showActiveLocationsFlag="true" initialEntityID="#local.locationID#"></swa:SlatwallLocationTypeahead>
+			
+			<cfelse>
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="false">
+			</cfif>
 
 			<!--- Order IP Address --->
 			<cfif !isNull(rc.order.getOrderOpenIPAddress())>
