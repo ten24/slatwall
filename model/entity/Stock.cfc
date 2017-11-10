@@ -98,14 +98,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
 			}
-			
-			if (arguments.quantityType == 'QATS' && this.getLocation().hasChildLocation() ){
-				for (var childLocation in this.getLocation().getChildLocations() ){
-					if ( !childLocation.setting('locationExcludeFromQATS')){
-						variables[ arguments.quantityType ] += getService("StockService").getStockBySkuAndLocation(this.getSku(), childLocation).getQATS();
-					}
-				}
-			}
 		}
 		return variables[ arguments.quantityType ];
 	}
