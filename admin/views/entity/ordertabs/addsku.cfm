@@ -68,7 +68,11 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		<cfif NOT isNull(rc.order.getDefaultStockLocation()) >
+			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" methodIdentifier='{"METHODNAME":"getQuantity","METHODARGUMENTS":{"QUANTITYTYPE":"QATS","LOCATIONID":"#rc.order.getDefaultStockLocation().getLocationID()#"}}' />
+		<cfelse>
+			<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		</cfif>
 		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
