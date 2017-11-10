@@ -60,6 +60,7 @@ Notes:
 	<cfif  rc.order.getDefaultStockLocation().hasChildLocation()>
 		<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition("aslatwalllocation.locationID != '#rc.order.getDefaultStockLocation().getLocationID()#'") />
 		<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition("aslatwalllocation.locationIDPath LIKE '%#rc.order.getDefaultStockLocation().getLocationID()#%'") />
+		<cfset local.addOrderItemStockOptionsSmartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)") />
 	<cfelse>
 		<cfset local.addOrderItemStockOptionsSmartList.addFilter("location.locationID", "#rc.order.getDefaultStockLocation().getLocationID()#")>
 	</cfif>
@@ -73,14 +74,15 @@ Notes:
 							  recordProcessEntity="#rc.order#"
 							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
 		
-		<hb:HibachiListingColumn propertyIdentifier="location.locationName" filter="true" />					    
+		<hb:HibachiListingColumn propertyIdentifier="location.locationName" filter="true" />
+		<hb:HibachiListingColumn propertyIdentifier="location.locationPathName"/>						    
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="QATS" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 		<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
