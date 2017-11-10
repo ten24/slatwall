@@ -204,9 +204,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
 				
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationRequiresQATSForOrdering')) {
+					
 					maxQTY = getStock().getQuantity('QATS');
+				
 				} else if( getSku().getQATS() <= maxQTY ){
-					maxQTY = getSku().getQATS();
+					
+					if ( isNull( this.getOrder().getDefaultStockLocation() ) ){
+						maxQTY = getSku().getQATS();
+					}else{
+						maxQTY = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
+					}
 				}
 				
 				if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
