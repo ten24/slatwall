@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,12 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.site" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+	// Injected Entity
+	property name="inventoryAnalysis";
 
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.site#" edit="#rc.edit#">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.site#">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<!--- General Details --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="app" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="useAppTemplatesFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
-		
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
-</cfoutput>
+	// Data Properties
+	
+}

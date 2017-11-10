@@ -49,28 +49,21 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.site" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.inventoryAnalysis" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.site#" edit="#rc.edit#">
-		
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.site#">
+	<hb:HibachiEntityDetailForm object="#rc.inventoryAnalysis#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.inventoryAnalysis#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller action="admin:entity.preProcessInventoryAnalysis" entity="#rc.inventoryAnalysis#" processContext="exportXLS" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessInventoryAnalysis" entity="#rc.inventoryAnalysis#" processContext="exportCSV" type="list" modal="true" />
 		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiEntityDetailGroup object="#rc.inventoryAnalysis#">
+			<hb:HibachiEntityDetailItem view="admin:entity/inventoryanalysistabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/inventoryanalysistabs/skucollection" open="false" text="#$.slatwall.rbKey('entity.InventoryAnalysis.skuCollection')#" showOnCreateFlag=false />
+			<hb:HibachiEntityDetailItem view="admin:entity/inventoryanalysistabs/analysisresults" open="true" text="#$.slatwall.rbKey('entity.InventoryAnalysis.analysisResults')#" showOnCreateFlag=false />
+		</hb:HibachiEntityDetailGroup>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<!--- General Details --->
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="app" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="useAppTemplatesFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
-		
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityProcessForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

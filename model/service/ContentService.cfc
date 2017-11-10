@@ -59,6 +59,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 
+	public any function getAppTemplates(required any content){
+		var templateDirectory = arguments.content.getSite().getApp().getAppPath()& '/templates/';
+		var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
+		var templates =[];
+		for(var directory in directoryList){
+			var template ={};
+			template['name'] = directory.name;
+			template['value'] = directory.name;
+			arrayAppend(templates,template);
+		}
+		return templates;
+	}
+	
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
 		
@@ -75,6 +88,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				template['value'] = directory.name;
 				arrayAppend(templates,template);
 			}
+			
+			var appTemplates = getAppTemplates(arguments.content);
+			for(var appTemplate in appTemplates){
+				if(!ArrayFind(templates, function(arrayElement) {return arrayElement.name == appTemplate.name;})){
+					arrayAppend(templates,appTemplate);
+				}	
+			}
+			
+			
 			return templates;
 		}
 	}
