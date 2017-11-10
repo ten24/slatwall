@@ -51,6 +51,10 @@ Notes:
 
 <cfparam name="rc.sku" type="any" />
 
+<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
+<cfset sites.addFilter('activeFlag', 1) /> 
+<cfset rc.sitesArray = sites.getRecords() />
+
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
@@ -59,12 +63,12 @@ Notes:
 		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
-		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
 			<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.sku#" />
 		<cfelse>
 			<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.sku#" />
 		</cfif>
+		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.sku#" />
@@ -100,4 +104,15 @@ Notes:
 			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.sku#"/>
 		</cfif>
 	</swa:SlatwallSettingTable>
+
+	<!--- Site Specific Settings --->
+	<cfloop array="#rc.sitesArray#" index="site">
+		<hr />
+		<h4>#site.getSiteName()#</h4>
+		<swa:SlatwallSettingTable showInheritance="true">
+		<cfloop list="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods" index="local.settingName">
+			<swa:SlatwallSetting settingName="#local.settingName#" settingObject="#rc.sku#" settingFilterEntities="#[site]#" />
+		</cfloop>
+		</swa:SlatwallSettingTable>
+	</cfloop>
 </cfoutput>

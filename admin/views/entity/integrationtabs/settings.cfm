@@ -51,6 +51,10 @@ Notes:
 
 <cfparam name="rc.integration" type="any" />
 
+<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
+<cfset sites.addFilter('activeFlag', 1) /> 
+<cfset rc.sitesArray = sites.getRecords() />
+
 <!--- Dynamic Settings --->
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
@@ -58,4 +62,15 @@ Notes:
 			<swa:SlatwallSetting settingName="integration#rc.integration.getIntegrationPackage()##local.settingName#" settingObject="#rc.integration#" />
 		</cfloop>
 	</swa:SlatwallSettingTable>
+
+	<!--- Site Specific Settings --->
+	<cfloop array="#rc.sitesArray#" index="site">
+		<hr />
+		<h4>#site.getSiteName()#</h4>
+		<swa:SlatwallSettingTable showInheritance="false">
+		<cfloop list="#listSort(structKeyList(rc.integration.getSettings()), "textnocase")#" index="local.settingName">
+			<swa:SlatwallSetting settingName="integration#rc.integration.getIntegrationPackage()##local.settingName#" settingObject="#rc.integration#" settingFilterEntities="#[site]#" />
+		</cfloop>
+		</swa:SlatwallSettingTable>
+	</cfloop>
 </cfoutput>
