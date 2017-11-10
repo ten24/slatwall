@@ -119,8 +119,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		if(!structKeyExists(variables,'attributeOptionSourceOptions')){
 			var attributeOptionSourceOptionsCollectionList = getService('attributeService').getAttributeCollectionList();
 			attributeOptionSourceOptionsCollectionList.setDisplayProperties('attributeName|name,attributeID|value');
-			attributeOptionSourceOptionsCollectionList.addFilter('attributeSet.attributeSetObject',getAttributeSet().getAttributeSetObject());
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeInputType','checkboxGroup,multiselect,radioGroup,select','IN');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeOptionSource','NULL','IS');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeID',getAttributeID(),'!=');
 			variables.attributeOptionSourceOptions = attributeOptionSourceOptionsCollectionList.getRecords();
+			arrayprepend(variables.attributeOptionSourceOptions,{name="None",value=""});
 		}
 		
 		return variables.attributeOptionSourceOptions;

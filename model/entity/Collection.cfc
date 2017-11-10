@@ -84,6 +84,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="keywords" type="string" persistent="false";
 	property name="keywordArray" type="array" persistent="false";
+	property name="splitKeywords" type="boolean" persistent="false" default="1";
 
 	property name="aggregateFilters" type="array" persistent="false";
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
@@ -1187,10 +1188,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return aggregateFunction;
 	}
 
-
 	public array function getKeywordArray(){
-		if(!arraylen(variables.keywordArray)){
+		if(!arraylen(variables.keywordArray) && !isNull(variables.splitKeywords) && variables.splitKeywords){
 			variables.keywordArray = ListToArray(getKeywords(),' ');
+		}else{
+			variables.keywordArray=[getKeywords()];
 		}
 		return variables.keywordArray;
 	}
