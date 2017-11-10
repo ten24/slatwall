@@ -51,9 +51,9 @@ Notes:
 
 <cftry>
 	<cfquery name="local.hasRecords">
-		select count(categoryID) from swcategory
+		select count(categoryID) as categoryCount from swcategory
 	</cfquery>
-	<cfif local.hasRecords.recordCount>
+	<cfif local.hasRecords.categoryCount>
 		<cfset local.subquerysql = "select c.categoryID,c.categoryName,
 			(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
 			(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
