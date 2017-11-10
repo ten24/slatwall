@@ -46,33 +46,13 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.location" type="any">
-<cfparam name="rc.edit" type="boolean">
-
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.location#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.location#">
-			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" modal="true" />
-			<hb:HibachiActionCaller action="admin:entity.createlocationconfiguration" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" type="list" />
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.location#">
-			<hb:HibachiEntityDetailItem view="admin:entity/locationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem property="locationAddresses" />
-			<hb:HibachiEntityDetailItem property="locationConfigurations" />
-			<hb:HibachiEntityDetailItem view="admin:entity/locationtabs/locationsettings" />
-			<hb:HibachiEntityDetailItem view="admin:entity/locationtabs/locationconfigurationsettings" />
-			<hb:HibachiEntityDetailItem view="admin:entity/locationtabs/locationstocks" />
-			<hb:HibachiEntityDetailItem property="sites" count="#rc.location.getSitesCount()#" />
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.location.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.location#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<!---<swa:SlatwallSetting settingName="locationConfigurationCapacity" />--->
+		<swa:SlatwallSetting settingName="locationOrderingRequiresQATS" />
+		<swa:SlatwallSetting settingName="locationExcludeFromQATS" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
+

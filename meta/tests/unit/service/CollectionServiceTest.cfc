@@ -589,6 +589,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(!isNull(accountCollection.getAccountCollection()));
 
 	}
+	
 }
 
 

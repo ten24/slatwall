@@ -202,18 +202,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
-				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
-					maxQTY = getStock().getQuantity('QATS');
-					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
-						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
-					}
-				} else if(getSku().getQATS() <= maxQTY) {
+				
+				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationRequiresQATSForOrdering')) {
 					
-					maxQTY = getSku().getQATS();
-					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
-						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+					maxQTY = getStock().getQuantity('QATS');
+				
+				} else if( getSku().getQATS() <= maxQTY ){
+					
+					if ( isNull( this.getOrder().getDefaultStockLocation() ) ){
+						maxQTY = getSku().getQATS();
+					}else{
+						maxQTY = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
 					}
 				}
+				
+				if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
+					maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+				}
+				
 			}
 		}
 		return maxQTY;
