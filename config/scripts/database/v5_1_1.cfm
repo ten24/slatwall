@@ -49,7 +49,7 @@ Notes:
 
 <cfset local.scriptHasErrors = false />
 
-<cftry>
+<!---<cftry>--->
 	<cfquery name="local.hasRecords">
 		select count(categoryID) as categoryCount from swcategory
 	</cfquery>
@@ -74,11 +74,11 @@ Notes:
 			queryService.execute(sql=local.sql);
 		</cfscript>
 	</cfif>
-	<cfcatch>
+	<!---<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - update to category paths">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-</cftry>
+</cftry>--->
 
 
 <cfif local.scriptHasErrors>
