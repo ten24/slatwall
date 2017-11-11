@@ -1672,6 +1672,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct['filterGroups'])){
             aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct['filterGroups']));
         }
+        
+        if(structKeyExists(variables, 'postFilterGroups') && arraylen(variables.postFilterGroups)){
+            aliases = listAppend(aliases, getFilterAliases(variables.postFilterGroups));
+        }
 
         if(structKeyExists(collectionConfigStruct,'joins')) {
             var joinAliasList = [];
@@ -2903,6 +2907,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
 				}
+				
 			}
 
 			//build FROM last because we have aquired joins implicitly
@@ -2979,7 +2984,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					formatter = "LOWER";
 				}
 				//Create a propertyIdentifier for DefaultColumns
-				var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
+				var propertyIdentifier = (!defaultColumns)? getPropertyIdentifierAlias(column.propertyIdentifier) : getPropertyIdentifierAlias(column.name);
 				//If is Attributes
 				if (structKeyExists(column, 'attributeID')) {
 					postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;
