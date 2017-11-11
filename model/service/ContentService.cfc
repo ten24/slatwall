@@ -169,6 +169,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.content;
 	}
 
+	public any function saveCategory(required any category, struct data={}){
+		if(!arguments.category.hasErrors()){
+			if(structKeyExists(arguments.data,'urlTitle') && len(arguments.data.urlTitle)){
+				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
+			}else{
+				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.categoryName);
+			}
+		}
+		
+		arguments.category = super.save(arguments.category,arguments.data);
+		return arguments.category;
+		
+	}
+
 	public any function getDefaultContentBySIte(required any site){
 		return getContentDAO().getDefaultContentBySIte(arguments.site);
 	}
