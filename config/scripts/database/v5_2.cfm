@@ -50,29 +50,31 @@ Notes:
 <cfset local.scriptHasErrors = false />
 
 <cftry>
-	<cfquery name="local.hasRecords">
-		select count(categoryID) as categoryCount from swcategory
-	</cfquery>
-	<cfif local.hasRecords.categoryCount>
-		<cfset local.subquerysql = "select c.categoryID,c.categoryName,
-			(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
-			(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
-			from swcategory c order by length(categoryIDPath) "
-		/>
-		
-		<cfset local.categorysql = "update
-		         swcategory c
-		    INNER JOIN (
-				#PreserveSingleQuotes(local.subquerysql)#
-			) AS Table_B
-		        ON c.categoryID = Table_B.categoryID
-		        set c.categoryNamePath = Table_B.categoryNamePath,
-		        	c.urlTitlePath = Table_B.urlTitlePath"
-		/>
-		<cfscript>
-			local.queryService = new query();
-			local.queryService.execute(sql=local.categorysql);
-		</cfscript>
+	<cfif ListFind(getApplicationValue("databaseType"), 'MySQL')>
+		<cfquery name="local.hasRecords">
+			select count(categoryID) as categoryCount from swcategory
+		</cfquery>
+		<cfif local.hasRecords.categoryCount>
+			<cfset local.subquerysql = "select c.categoryID,c.categoryName,
+				(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
+				(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
+				from swcategory c order by length(categoryIDPath) "
+			/>
+			
+			<cfset local.categorysql = "update
+			         swcategory c
+			    INNER JOIN (
+					#PreserveSingleQuotes(local.subquerysql)#
+				) AS Table_B
+			        ON c.categoryID = Table_B.categoryID
+			        set c.categoryNamePath = Table_B.categoryNamePath,
+			        	c.urlTitlePath = Table_B.urlTitlePath"
+			/>
+			<cfscript>
+				local.queryService = new query();
+				local.queryService.execute(sql=local.categorysql);
+			</cfscript>
+		</cfif>
 	</cfif>
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
