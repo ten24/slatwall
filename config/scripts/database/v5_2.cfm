@@ -52,11 +52,11 @@ Notes:
 <cftry>
 	<cfif ListFind(getApplicationValue("databaseType"), 'MySQL')>
 		<cfquery name="local.hasRecords">
-			select count(categoryID) as categoryCount from swcategory
+			select count(categoryID) as categoryCount from SwCategory
 		</cfquery>
 		<cfif local.hasRecords.categoryCount>
 			<cfset local.subquerysql = "select c.categoryID,c.categoryName,
-				(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
+				(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM SwCategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
 				(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
 				from swcategory c order by length(categoryIDPath) "
 			/>
