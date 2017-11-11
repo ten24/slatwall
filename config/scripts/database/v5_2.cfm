@@ -77,6 +77,7 @@ Notes:
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
 		<cfset local.scriptHasErrors = true />
+		<cfrethrow/>
 	</cfcatch>
 </cftry>
 
