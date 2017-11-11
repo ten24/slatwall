@@ -46,7 +46,7 @@
 Notes:
 
 --->
-
+<cfsetting requesttimeout="1200" />
 <cfset local.scriptHasErrors = false />
 
 <cftry>
