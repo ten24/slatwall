@@ -218,7 +218,6 @@ Notes:
 					<cfset script.setSuccessfulExecutionCount(script.getSuccessfulExecutionCount()+1) />
 					<cfcatch>
 						<!--- failed, let's log this execution count --->
-						<cfset script.setLastException(cfcatch.detail) />
 						<cfset script.setExecutionCount(script.getExecutionCount()+1) />
 					</cfcatch>
 				</cftry>
