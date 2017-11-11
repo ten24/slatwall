@@ -60,7 +60,7 @@ Notes:
 			from swcategory c order by length(categoryIDPath) "
 		/>
 		
-		<cfset local.sql = "update
+		<cfset local.categorysql = "update
 		         swcategory c
 		    INNER JOIN (
 				#PreserveSingleQuotes(local.subquerysql)#
@@ -70,8 +70,8 @@ Notes:
 		        	c.urlTitlePath = Table_B.urlTitlePath"
 		/>
 		<cfscript>
-			var queryService = new query();
-			queryService.execute(sql=local.sql);
+			local.queryService = new query();
+			local.queryService.execute(sql=local.categorysql);
 		</cfscript>
 	</cfif>
 	<cfcatch>
