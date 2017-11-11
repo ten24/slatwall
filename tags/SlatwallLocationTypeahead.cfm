@@ -6,22 +6,21 @@
 <cfparam name="attributes.selectedFormatString" type="string" default="Store Locations >> ${locationName}"/><!--- Store Locations >> ${locationName} --->
 <cfparam name="attributes.showActiveLocationsFlag" type="boolean" default="false" />
 <cfparam name="attributes.maxrecords" type="string" default="25" />
-<cfparam name="attributes.initialEntityID" type="string" default="" />
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
 		<!--- Generic Location Typeahead --->
 			<cfif !isNull(attributes.property)><!--- Only show if we have a default --->
-				<div ng-show="'#attributes.edit#' == 'false'" ng-cloak>
-					<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
-						<span class="s-title">#attributes.locationLabelText#</span>
-					</label>
-					<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
-						#attributes.property.getLocationName()#
-					</div>
-					<cfif attributes.edit EQ 'false'>
-	   					<input type="hidden" name="#attributes.locationPropertyName#" value="#attributes.property.getLocationID()#" />
-	   				</cfif>
+			<div ng-show="'#attributes.edit#' == 'false'" ng-cloak>
+				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
+					<span class="s-title">#attributes.locationLabelText#</span>
+				</label>
+				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
+					#attributes.property.getLocationName()#
 				</div>
+				<cfif attributes.edit EQ 'false'>
+   					<input type="hidden" name="#attributes.locationPropertyName#" value="#attributes.property.getLocationID()#" />
+   				</cfif>
+			</div>
 			</cfif>
 			<div ng-show="'#attributes.edit#' == 'true'" ng-cloak>
 				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
@@ -30,7 +29,10 @@
 				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
 					<!--- Generic Configured Location --->
 					<cfif !isNull(attributes.property) && !isNull(attributes.property.getLocationID())>
-						<cfset attributes.initialEntityID = "#attributes.property.getLocationID()#">
+						<cfset initialEntityID = "#attributes.property.getLocationID()#">
+					</cfif>
+					<cfif isNull(initialEntityID)>
+						<cfset initialEntityID = "">
 					</cfif>
 					<sw-typeahead-input-field
 							data-entity-name="Location"
@@ -45,7 +47,7 @@
 					        data-filter-flag="true"
 					        data-selected-format-string="#attributes.selectedFormatString#"
 					        data-field-name="#attributes.locationPropertyName#"
-					        data-initial-entity-id="#attributes.initialEntityID#"
+					        data-initial-entity-id="#initialEntityID#"
 					        data-max-records="#attributes.maxrecords#"
 					        data-order-by-list="locationName|ASC">
 					

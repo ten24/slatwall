@@ -35,11 +35,12 @@
 			<cfif rc.edit>
 				<cfif NOT isNull(rc.order.getDefaultStockLocation())>
 					<cfset local.locationID = rc.order.getDefaultStockLocation().getLocationID() />
+					<swa:SlatwallLocationTypeahead property="#rc.order.getDefaultStockLocation()#" locationPropertyName="defaultStockLocation.locationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="true" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
 				<cfelse>
 					<cfset local.locationID = ''>
 				</cfif>
 				
-				<swa:SlatwallLocationTypeahead locationPropertyName="defaultStockLocation.locationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="true" showActiveLocationsFlag="true" initialEntityID="#local.locationID#"></swa:SlatwallLocationTypeahead>
+				
 			
 			<cfelse>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="false">
