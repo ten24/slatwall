@@ -56,6 +56,7 @@ component entityname="SlatwallUpdateScript" table="SwUpdateScript" persistent="t
 	property name="successfulExecutionCount" ormtype="integer" default="0";
 	property name="executionCount" ormtype="integer" default="0" ;
 	property name="lastExecutedDateTime" ormtype="timestamp";
+	property name="lastException" ormtype="string" length="4000";
 		
 	// ============ START: Non-Persistent Property Methods =================
 	
