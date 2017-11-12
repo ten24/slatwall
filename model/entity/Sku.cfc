@@ -151,6 +151,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
+	property name="giftCardExpirationTermOptions" persistent="false";
+	property name="giftCardAutoGenerateCodeFlag" persistent="false";
+	property name="giftCardRecipientRequiredFlag" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="imageFileName" type="string" persistent="false";
 	property name="imagePath" type="string" persistent="false";
@@ -180,7 +183,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
-	property name="giftCardExpirationTermOptions" persistent="false";
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
@@ -226,6 +228,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
 		}
 		return variables.giftCardExpirationTermIDOptions;
+	}
+
+	public boolean function getGiftCardAutoGenerateCodeFlag() {
+		return setting('skuGiftCardAutoGenerateCode');
+	}
+
+	public boolean function getGiftCardRecipientRequiredFlag() {
+		return setting('skuGiftCardRecipientRequired');
 	}
 
 	public array function getRedemptionAmountTypeOptions(){
@@ -576,11 +586,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				//Need to get location and all children of location
 				var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
 				var totalQuantity = 0;
+				
 				for(var i=1;i<=arraylen(locations);i++) {
 					var location = getService("locationService").getLocation(locations[i].value);
-					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
-					totalQuantity += stock.getQuantity(arguments.quantityType);
+					if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+						var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+						totalQuantity += stock.getQuantity(arguments.quantityType);
+					}  
 				}
+				
 				return totalQuantity;
 
 			// If this is a calculated quantity and stockID exists, then delegate

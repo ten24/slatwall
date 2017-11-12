@@ -1291,6 +1291,22 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			data[ 'entityName' ] = jQuery('#' + tableID).data('entityname');
 			data[ 'recordAlias' ] = jQuery('#' + tableID).data('recordalias');
 	
+			var tableHeadRowSelector = '#' + tableID + ' thead tr';
+					
+			// Loop over each column of the header to set data[ 'actionCallerAttributes' ]
+	 		data[ 'methodIdentifier' ] = {};
+	 		
+	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
+				if( jQuery(cv).hasClass('data') ) {
+					if( jQuery(cv).data('methodidentifier') !== undefined ) {
+						data[ 'methodIdentifier' ][ jQuery(cv).data('propertyidentifier') ] = jQuery(cv).data('methodidentifier');
+					}
+				}
+			});
+			
+			// convert data[ 'methodIdentifier' ] to string so we can pass it in ajax request
+			data[ 'methodIdentifier' ] = JSON.stringify(data[ 'methodIdentifier' ]) ;
+				 
 			var idProperty = jQuery('#' + tableID).data('idproperty');
 			var nextRowDepth = 0;
 	
@@ -1298,6 +1314,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				nextRowDepth = jQuery('#' + afterRowID).find('[data-depth]').attr('data-depth');
 				nextRowDepth++;
 			}
+
 			if(data['entityName']){
 				jQuery.ajax({
 					url: hibachiConfig.baseURL + '/',
@@ -1315,7 +1332,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						// Setup Selectors
 						var tableBodySelector = '#' + tableID + ' tbody';
 						var tableHeadRowSelector = '#' + tableID + ' thead tr';
-		
+						
 						// Clear out the old Body, if there is no afterRowID
 						if(!afterRowID) {
 							jQuery(tableBodySelector).html('');
@@ -1333,13 +1350,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 								jQuery(rowSelector).attr('data-parentid', afterRowID);
 								jQuery(rowSelector).data('parentid', afterRowID);
 							}
-		
+							
 							// Loop over each column of the header to pull the data out of the response and populate new td's
 							jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
 		
 								var newtd = '';
 								var link = '';
-		
+								
 								if( jQuery(cv).hasClass('data') ) {
 		
 									if( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && rv[jQuery(cv).data('propertyidentifier')] ) {

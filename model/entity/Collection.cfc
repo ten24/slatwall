@@ -84,6 +84,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	property name="keywords" type="string" persistent="false";
 	property name="keywordArray" type="array" persistent="false";
+	property name="splitKeywords" type="boolean" persistent="false" default="1";
 
 	property name="aggregateFilters" type="array" persistent="false";
 	property name="postFilterGroups" type="array" singularname="postFilterGroup"  persistent="false" hint="where conditions that are added by the user through the UI, applied in addition to the collectionConfig.";
@@ -398,7 +399,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"filterAggregateName" = arguments.filterAggregateName,
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
-			"value" = arguments.value
+			"value" = arguments.value,
+			"hidden"=true
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -439,7 +441,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filter = {
 			"propertyIdentifier" = propertyIdentifierAlias,
 			"comparisonOperator" = arguments.comparisonOperator,
-			"value" = arguments.value
+			"value" = arguments.value,
+			"hidden"=true
 		};
 		if(len(ormtype)){
 			filter['ormtype']= ormtype;
@@ -1185,10 +1188,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return aggregateFunction;
 	}
 
-
 	public array function getKeywordArray(){
-		if(!arraylen(variables.keywordArray)){
+		if(!arraylen(variables.keywordArray) && !isNull(variables.splitKeywords) && variables.splitKeywords){
 			variables.keywordArray = ListToArray(getKeywords(),' ');
+		}else{
+			variables.keywordArray=[getKeywords()];
 		}
 		return variables.keywordArray;
 	}
@@ -1668,6 +1672,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
         if(structKeyExists(collectionConfigStruct, 'filterGroups') && arraylen(collectionConfigStruct['filterGroups'])){
             aliases = listAppend(aliases, getFilterAliases(collectionConfigStruct['filterGroups']));
         }
+        
+        if(structKeyExists(variables, 'postFilterGroups') && arraylen(variables.postFilterGroups)){
+            aliases = listAppend(aliases, getFilterAliases(variables.postFilterGroups));
+        }
 
         if(structKeyExists(collectionConfigStruct,'joins')) {
             var joinAliasList = [];
@@ -1997,18 +2005,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private array function getPermissionRecordRestrictions(){
 		var objectPermissionsList = getObjectPermissionList();
+		var permissionGroupCacheKey = 'getPermissionRecordRestrictions_#objectPermissionsList#'& getHibachiScope().getPermissionGroupCacheKey();
+		
+		if(getService('HibachiCacheService').hasCachedValue(permissionGroupCacheKey)){
+			return getService('HibachiCacheService').getCachedValue(permissionGroupCacheKey);
+		}else{
+			var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
+			permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
+			permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
+			permissionRecordRestrictionCollectionList.addFilter('permission.propertyName','NULL','IS');
+			permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
+			permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#objectPermissionsList#','IN');
+			permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
+			permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,collectionConfig,permission.entityClassName');
+			permissionRecordRestrictionCollectionList.addDisplayProperty('enforceOnDirectObjectReference');
 
-		var permissionRecordRestrictionCollectionList = getService('HibachiCollectionService').getPermissionRecordRestrictionCollectionList();
-		permissionRecordRestrictionCollectionList.setPermissionAppliedFlag(true);
-		permissionRecordRestrictionCollectionList.addFilter('permission.allowReadFlag',1);
-		permissionRecordRestrictionCollectionList.addFilter('permission.propertyName','NULL','IS');
-		permissionRecordRestrictionCollectionList.addFilter('permission.accessType','entity');
-		permissionRecordRestrictionCollectionList.addFilter('permission.entityClassName','#objectPermissionsList#','IN');
-		permissionRecordRestrictionCollectionList.addFilter('permission.permissionGroup.accounts.accountID',getRequestAccount().getAccountID());
-		permissionRecordRestrictionCollectionList.setDisplayProperties('permissionRecordRestrictionID,collectionConfig,permission.entityClassName');
-		permissionRecordRestrictionCollectionList.addDisplayProperty('enforceOnDirectObjectReference');
-
-		var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+			var permissionRecordRestrictions = permissionRecordRestrictionCollectionList.getRecords();
+			getService('HibachiCacheService').setCachedValue(permissionGroupCacheKey,permissionRecordRestrictions);
+		}
 		return permissionRecordRestrictions;
 
 	}
@@ -2893,6 +2907,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
 				}
+				
 			}
 
 			//build FROM last because we have aquired joins implicitly
@@ -2969,7 +2984,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					formatter = "LOWER";
 				}
 				//Create a propertyIdentifier for DefaultColumns
-				var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
+				var propertyIdentifier = (!defaultColumns)? getPropertyIdentifierAlias(column.propertyIdentifier) : getPropertyIdentifierAlias(column.name);
 				//If is Attributes
 				if (structKeyExists(column, 'attributeID')) {
 					postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;

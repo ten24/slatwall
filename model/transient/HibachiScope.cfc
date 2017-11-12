@@ -326,7 +326,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// Adds a PrintID to the print queue.
 	public string function addToPrintQueue(required string printID) {
-		var cookieData = cookie.printQueue;
+		var cookieData = getPrintQueue();
 		var newPrintQueue = listAppend(cookieData, printID);
 		getService('HibachiTagService').cfCookie('printQueue', newPrintQueue);
 	}

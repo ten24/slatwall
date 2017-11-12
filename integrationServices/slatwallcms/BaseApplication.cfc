@@ -103,7 +103,8 @@ Notes:
 	function generateRenderedContent() {
 		
 		var site = arguments.slatwallScope.getSite();
-		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
+		var appTemplatePath = site.getApp().getAppRootPath() & '/templates/';  
+ 		var siteTemplatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
@@ -155,16 +156,7 @@ Notes:
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
 				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
-				if(!isNull(contentTemplateFile)){
-
-					contentPath = templatePath & contentTemplateFile;
-					
-
-					arguments.slatwallScope.setContent(entityTemplateContent);
-				}else{
-					render404(arguments.slatwallScope,site);
-					//throw('no contentTemplateFile for the entity');
-				}
+				 
 			}else{
 				render404(arguments.slatwallScope,site);
 				//throw('no content for entity');
@@ -184,10 +176,17 @@ Notes:
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
 			var contentTemplateFile = content.Setting('contentTemplateFile');
-			//templatePath relative to the slatwallCMS
-			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
 		}
+		
+		if(FileExists(ExpandPath(siteTemplatePath) & contentTemplateFile)){ 
+			var contentPath = siteTemplatePath & contentTemplateFile;
+		} else if (FileExists(ExpandPath(appTemplatePath) & contentTemplateFile)){
+			var contentPath = appTemplatePath & contentTemplateFile; 
+		} else { 
+			render404(arguments.slatwallScope,site);
+			//throw("Requested Template: " & contentTemplateFile & " Doesn't Exist in the Site Or The App");
+		}	
 		
 		arguments.contentPath = contentPath;
 

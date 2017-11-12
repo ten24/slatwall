@@ -61,6 +61,11 @@ Notes:
 		</cfif>
 	</cffunction>
 
+	<cffunction name="verifyUniqueGiftCardCode" returntype="boolean" access="public">
+		<cfargument name="giftCardCode" type="string" required="true" />
+		<cfreturn verifyUniquePropertyValue(entityName="#getApplicationKey()#GiftCard", propertyName="giftCardCode", value=arguments.giftCardCode) />
+	</cffunction>
+
 	<cffunction name="activeLiability" access="public" returntype="numeric" output="false">
 
 		<cfquery name="local.getLiability">

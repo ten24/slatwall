@@ -96,13 +96,15 @@ component extends="HibachiService" output="false" accessors="true" {
 			"task",
 			"sku",
 			"attribute",
-			"physical"
+			"physical",
+			"location"
 		];
 	}
 
 	public struct function getSettingLookupOrder() {
 		return {
 			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
+			location=["locationIDPath"],
 			locationConfiguration = ["location.locationID"	],
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
@@ -255,6 +257,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
 
+			// Location
+			locationRequiresQATSForOrdering = {fieldType="yesno",defaultValue=1},
+			locationExcludeFromQATS = {fieldType="yesno",defaultValue=0},
+			
 			// Location Configuration
 			locationConfigurationCapacity = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
@@ -331,6 +337,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
+			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
