@@ -192,7 +192,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Deprecated Properties
 
 
-	// ==================== START: Logical Methods =========================
+	// ==================== START: Logical Methods =========================	
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
@@ -1226,12 +1226,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
-	public any function getAverageCost(){
-		return getDao('skuDao').getAverageCost(this.getSkuID());
+	public any function getAverageCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.location=arguments.location;
+		}
+		
+		return getDao('skuDao').getAverageCost(argumentCollection=params);
 	}
 	
-	public any function getAverageLandedCost(){
-		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
+	public any function getAverageLandedCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.location=arguments.location;
+		}
+		
+		return getDao('skuDao').getAverageLandedCost(argumentCollection=params);
 	}
 
 

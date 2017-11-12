@@ -186,30 +186,54 @@ Notes:
 		return skus;
 	}
 	
-	public any function getAverageCost(required string skuID){
-			
-		return ORMExecuteQuery(
-			'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+	public any function getAverageCost(required string skuID, any location){
+		var params = {skuID=arguments.skuID};
+		
+		var hql = 'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
 			FROM SlatwallInventory i 
 			LEFT JOIN i.stock stock
 			LEFT JOIN stock.sku sku
-			WHERE sku.skuID=:skuID
-			',
-			{skuID=arguments.skuID},
+		';
+		
+		if(!isNull(arguments.location)){
+			hql &= ' LEFT JOIN stock.location location ';
+		}
+		
+		hql &= ' WHERE sku.skuID=:skuID';
+		
+		if(!isNull(arguments.location)){
+			hql&= ' AND location.locationID = :location';	
+			params.location = arguments.location;
+		}
+		
+		return ORMExecuteQuery(
+			hql,
+			params,
 			true
 		);
 	}
 	
-	public any function getAverageLandedCost(required string skuID){
+	public any function getAverageLandedCost(required string skuID, any location){
+		var params = {skuID=arguments.skuID};
 		
-		return ORMExecuteQuery(
-			'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+		var hql = 'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
 			FROM SlatwallInventory i 
 			LEFT JOIN i.stock stock
-			LEFT JOIN stock.sku sku
-			WHERE sku.skuID = :skuID
-			',
-			{skuID=arguments.skuID},
+			LEFT JOIN stock.sku sku';
+			
+		if(!isNull(arguments.location)){
+			hql &= ' LEFT JOIN stock.location location ';
+		}
+		hql &= ' WHERE sku.skuID = :skuID ';
+		
+		if(!isNull(arguments.location)){
+			hql &= ' AND location.locationID=:location ';	
+			params.location=arguments.location;
+		}
+		
+		return ORMExecuteQuery(
+			hql,
+			params,
 			true
 		);
 	}
