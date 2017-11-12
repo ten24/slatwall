@@ -192,10 +192,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Deprecated Properties
 
 
-	// ==================== START: Logical Methods =========================	//CUSTOM PROPERTIES BEGIN
-property name="bottlesPerBox" ormtype="integer";
-	property name="barcode" ormtype="string";
-property name="allowBackorder" ormtype="boolean" default="0";//CUSTOM PROPERTIES END
+	// ==================== START: Logical Methods =========================	
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
