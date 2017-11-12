@@ -142,7 +142,10 @@ $(document).ready(function(e){
 					}
 					newTR.push.apply(newTR,["<td>"+invData.QATS+"</td>",
 						"<td>"+invData.QIATS+"</td>",
+						"<td>"+invData.averageCost+"</td>",
+						"<td>"+invData.averageLandedCost+"</td>",
 					"</tr>"]);
+					
 					newTR = newTR.join('\n');
 					$(currentTableRow).after(newTR);
 				}

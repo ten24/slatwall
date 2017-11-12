@@ -192,7 +192,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Deprecated Properties
 
 
-	// ==================== START: Logical Methods =========================
+	// ==================== START: Logical Methods =========================	//CUSTOM PROPERTIES BEGIN
+property name="bottlesPerBox" ormtype="integer";
+	property name="barcode" ormtype="string";
+property name="allowBackorder" ormtype="boolean" default="0";//CUSTOM PROPERTIES END
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
@@ -1226,12 +1229,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
-	public any function getAverageCost(){
-		return getDao('skuDao').getAverageCost(this.getSkuID());
+	public any function getAverageCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.location=arguments.location;
+		}
+		
+		return getDao('skuDao').getAverageCost(argumentCollection=params);
 	}
 	
-	public any function getAverageLandedCost(){
-		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
+	public any function getAverageLandedCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.location=arguments.location;
+		}
+		
+		return getDao('skuDao').getAverageLandedCost(argumentCollection=params);
 	}
 
 
