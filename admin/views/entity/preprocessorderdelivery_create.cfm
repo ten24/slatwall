@@ -115,7 +115,7 @@ Notes:
 							<cfset giftCardIndex++ />
 							<cfset giftCardCodeFieldTitle = giftCardPlaceholder.name />
 							<cfset giftCardCodeValue = "" />
-							<cfif not isNull(rc.processObject.getGiftCardCodes()) && giftCardIndex <= arrayLen(rc.processObject.getGiftCardCodes()) >
+							<cfif not isNull(rc.processObject.getGiftCardCodes()) AND  giftCardIndex LTE arrayLen(rc.processObject.getGiftCardCodes() ) >
 								<cfset giftCardCodeValue = rc.processObject.getGiftCardCodes()[giftCardIndex].giftCardCode />
 							</cfif>
 							<!--- Add title prefix if necessary --->
