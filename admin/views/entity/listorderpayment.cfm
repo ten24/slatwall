@@ -76,7 +76,7 @@ Notes:
 		data-collection="'OrderPayment'"
 		data-edit="false"
 		data-has-search="true"
-		record-detail-action="admin:entity.detailorderpaymment"
+		record-detail-action="admin:entity.detailorderpayment"
 		data-is-angular-route="false"
 		data-angular-links="false"
 		data-has-action-bar="false"
