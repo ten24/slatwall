@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,23 +45,12 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.minMaxSetup" type="any">
+	// Injected Entity
+	property name="MinMaxSetup";
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.minMaxSetup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxSetup#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller action="admin:entity.preProcessMinMaxSetup" entity="#rc.minMaxSetup#" processContext="updateStockMinMax" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.minMaxSetup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/skucollection" text="#$.slatwall.rbKey('admin.define.collection')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/minmaxreport" text="#$.slatwall.rbKey('admin.define.report')#" />
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+	// Data Properties
+	
+}

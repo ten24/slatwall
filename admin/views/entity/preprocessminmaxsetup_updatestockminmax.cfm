@@ -49,19 +49,12 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minMaxSetup" type="any">
+<cfparam name="rc.minmaxsetup" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.minMaxSetup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxSetup#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller action="admin:entity.preProcessMinMaxSetup" entity="#rc.minMaxSetup#" processContext="updateStockMinMax" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityProcessForm entity="#rc.minmaxsetup#" edit="#rc.edit#" sRedirectAction="admin:entity.detailminmaxsetup">
 
-		<hb:HibachiEntityDetailGroup object="#rc.minMaxSetup#">
-			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/skucollection" text="#$.slatwall.rbKey('admin.define.collection')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/minmaxreport" text="#$.slatwall.rbKey('admin.define.report')#" />
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
