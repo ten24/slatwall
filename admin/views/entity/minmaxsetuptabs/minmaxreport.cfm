@@ -1,11 +1,11 @@
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.skuminmaxreport" type="any" />
+<cfparam name="rc.minMaxSetup" type="any" />
 <cfoutput>
 
 	<cfif not rc.edit>
-		<cfset skuCollectionList = rc.skuminmaxreport.getSkuMinMaxReportCollection() />
+		<cfset skuCollectionList = rc.minMaxSetup.getminMaxSetupCollection() />
 		<hb:HibachiListingDisplay 
 			collectionList="#skuCollectionList#"
 			collectionConfigFieldName="collectionConfig"

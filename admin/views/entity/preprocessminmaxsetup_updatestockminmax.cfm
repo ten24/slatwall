@@ -49,18 +49,12 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.skuMinMaxReport" type="any">
+<cfparam name="rc.minmaxsetup" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.skuMinMaxReport#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.skuMinMaxReport#" edit="#rc.edit#">
-		</hb:HibachiEntityActionBar>
-				
-		<hb:HibachiEntityDetailGroup object="#rc.skuMinMaxReport#">
-			<hb:HibachiEntityDetailItem view="admin:entity/skuminmaxreporttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/skuminmaxreporttabs/skucollection" text="#$.slatwall.rbKey('admin.define.collection')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/skuminmaxreporttabs/minmaxreport" text="#$.slatwall.rbKey('admin.define.report')#" />
-		</hb:HibachiEntityDetailGroup>
+	<hb:HibachiEntityProcessForm entity="#rc.minmaxsetup#" edit="#rc.edit#" sRedirectAction="admin:entity.detailminmaxsetup">
 
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
