@@ -22,7 +22,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 	
 	public any function getServerInstanceByServerInstanceIPAddress(required any serverInstanceIPAddress){
-		var serverInstance = super.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
 		
 		if(isNull(serverInstance) || serverInstance.getNewFlag()){
 			serverInstance = this.newServerInstance();
