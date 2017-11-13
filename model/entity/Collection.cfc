@@ -538,6 +538,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			){
 				column['persistent'] = false;
 			}
+			var ormtype = getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.displayProperty);
+			if(
+				len(ormtype)
+			){
+				column['ormtype'] = ormtype;
+			}
+			
 		}
 
 		if(structKeyExists(arguments, 'title')){
