@@ -49,22 +49,19 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.skuMinMaxReport" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.minMaxSetup" type="any">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.skuMinMaxReport#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.skuMinMaxReport#" edit="#rc.edit#" />
-		<div class="s-top-spacer">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList>
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="reportName" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="location" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="minQuantity" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="maxQuantity" edit="#rc.edit#"/>
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
-		</div>
+	<hb:HibachiEntityDetailForm object="#rc.minMaxSetup#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxSetup#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller action="admin:entity.preProcessMinMaxSetup" entity="#rc.minMaxSetup#" processContext="updateStockMinMax" type="list" modal="true" />
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiEntityDetailGroup object="#rc.minMaxSetup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/skucollection" text="#$.slatwall.rbKey('admin.define.collection')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/minmaxreport" text="#$.slatwall.rbKey('admin.define.report')#" />
+		</hb:HibachiEntityDetailGroup>
+
 	</hb:HibachiEntityDetailForm>
-	</span>
 </cfoutput>

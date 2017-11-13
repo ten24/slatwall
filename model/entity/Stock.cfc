@@ -50,6 +50,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// Persistent Properties
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="minQuantity" ormtype="integer" default="0";
+	property name="maxQuantity" ormtype="integer" default="0";
 
 	// Related Object Properties (many-to-one)
 	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";

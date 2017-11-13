@@ -46,11 +46,11 @@
 Notes:
 
 */
-component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" table="swSkuMinMaxReport" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" {
+component displayname="MinMaxSetup" entityname="SlatwallMinMaxSetup" table="swMinMaxSetup" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
 
 	// Persistent Properties
-	property name="skuMinMaxReportID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="reportName" ormtype="string" description="Defines the name of the report.";
+	property name="minMaxSetupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="setupName" ormtype="string" description="Defines the name of the report.";
 
 	property name="skuCollectionConfig" hb_populateEnabled="public" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query" default="{}";
 
@@ -59,7 +59,6 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 
 	// Related Object Properties (many-to-one)
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
-	property name="schedule" cfc="Schedule" fieldtype="many-to-one" fkcolumn="scheduleID";
 
 	//Calculated Properties
 	
@@ -73,7 +72,7 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="skuMinMaxReportCollection" persistent="false";
+	property name="minMaxSetupCollection" persistent="false";
 
 	//Derived Properties
 
@@ -89,7 +88,7 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentationPropertyName() {
-		return "reportName";
+		return "setupName";
 	}
 
 	public any function getSkuCollectionConfig() {
@@ -107,23 +106,23 @@ component displayname="SkuMinMaxReport" entityname="SlatwallSkuMinMaxReport" tab
 		}
 	}
 
-	public any function getSkuMinMaxReportCollection() {
-		var skuMinMaxReportCollection = request.slatwallScope.getService('HibachiService').getSkuCollectionList();
+	public any function getMinMaxSetupCollection() {
+		var minMaxSetupCollection = request.slatwallScope.getService('HibachiService').getSkuCollectionList();
 		// Apply sku collection config
-		skuMinMaxReportCollection.setCollectionConfig(this.getSkuCollectionConfig());
+		minMaxSetupCollection.setCollectionConfig(this.getSkuCollectionConfig());
 		//SELECT
-		skuMinMaxReportCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,calculatedSkuDefinition,activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
-		skuMinMaxReportCollection.addDisplayProperty(displayProperty='skuID', columnConfig={isSearchable="false",isVisible="false",isDeletable="false"});
-		skuMinMaxReportCollection.addDisplayAggregate(propertyIdentifier='stocks.calculatedQATS', aggregateFunction='SUM', aggregateAlias='sumQATS', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
+		minMaxSetupCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,calculatedSkuDefinition,activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
+		minMaxSetupCollection.addDisplayProperty(displayProperty='skuID', columnConfig={isSearchable="false",isVisible="false",isDeletable="false"});
+		minMaxSetupCollection.addDisplayAggregate(propertyIdentifier='stocks.calculatedQATS', aggregateFunction='SUM', aggregateAlias='sumQATS', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
 		//WHERE
-		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#this.getLocation().getLocationID()#%', comparisonOperator='LIKE');
+		minMaxSetupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#this.getLocation().getLocationID()#%', comparisonOperator='LIKE');
 		//HAVING
-		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMinQuantity(), comparisonOperator='<', aggregate='SUM');
-		skuMinMaxReportCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMaxQuantity(), comparisonOperator='>', aggregate='SUM', logicalOperator='OR');
+		// minMaxSetupCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMinQuantity(), comparisonOperator='<', aggregate='SUM');
+		// minMaxSetupCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMaxQuantity(), comparisonOperator='>', aggregate='SUM', logicalOperator='OR');
 		//ORDER BY
-		skuMinMaxReportCollection.addOrderBy('skuCode|ASC');
+		minMaxSetupCollection.addOrderBy('skuCode|ASC');
 
-		return skuMinMaxReportCollection;
+		return minMaxSetupCollection;
 	}
 
 	// ==================  END:  Overridden Methods ========================

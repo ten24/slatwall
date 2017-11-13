@@ -49,17 +49,17 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.skuMinMaxReportSmartList" type="any" />
+<cfparam name="rc.minMaxSetupSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.skuMinMaxReportSmartList#" showCreate="true" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.minMaxSetupSmartList#" showCreate="true" />
 
-	<hb:HibachiListingDisplay smartList="#rc.skuMinMaxReportSmartList#"
-			recordEditAction="admin:entity.editskuMinMaxReport"
-			recorddetailaction="admin:entity.detailskuMinMaxReport">
+	<hb:HibachiListingDisplay smartList="#rc.minMaxSetupSmartList#"
+			recordEditAction="admin:entity.editMinMaxSetup"
+			recorddetailaction="admin:entity.detailMinMaxSetup">
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="reportname" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="setupName" />
 	</hb:HibachiListingDisplay>
 
 </cfoutput>
