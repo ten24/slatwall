@@ -117,8 +117,8 @@ component displayname="MinMaxSetup" entityname="SlatwallMinMaxSetup" table="swMi
 		//WHERE
 		minMaxSetupCollection.addFilter(propertyIdentifier='stocks.location.locationIDPath', value='%#this.getLocation().getLocationID()#%', comparisonOperator='LIKE');
 		//HAVING
-		minMaxSetupCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMinQuantity(), comparisonOperator='<', aggregate='SUM');
-		minMaxSetupCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMaxQuantity(), comparisonOperator='>', aggregate='SUM', logicalOperator='OR');
+		// minMaxSetupCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMinQuantity(), comparisonOperator='<', aggregate='SUM');
+		// minMaxSetupCollection.addFilter(propertyIdentifier='stocks.calculatedQATS', value=this.getMaxQuantity(), comparisonOperator='>', aggregate='SUM', logicalOperator='OR');
 		//ORDER BY
 		minMaxSetupCollection.addOrderBy('skuCode|ASC');
 
