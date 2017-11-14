@@ -56,7 +56,7 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 
 	// Related Object Properties (one-to-many)
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" cfc="MinMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="minMaxStockTransferID" inverse="true" cascade="all-delete-orphan";
-	// property name="stockAdjustments" singularname="stockAdjustment" cfc="StockAdjustment" type="array" fieldtype="one-to-many" fkcolumn="minMaxStockTransferID" cascade="all-delete-orphan" inverse="true";
+	property name="stockAdjustments" singularname="stockAdjustment" cfc="StockAdjustment" type="array" fieldtype="one-to-many" fkcolumn="minMaxStockTransferID" cascade="all-delete-orphan" inverse="true";
 
 	//Calculated Properties
 	

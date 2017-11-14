@@ -60,7 +60,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.minMaxStockTransfer#">
 			<hb:HibachiEntityDetailItem view="admin:entity/minmaxstocktransfertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/minmaxstocktransfertabs/minmaxstocktransferitems" text="#$.slatwall.rbKey('entity.MinMaxStockTransferItem_plural')#" />
-			<!--- <hb:HibachiEntityDetailItem view="admin:entity/minmaxsetuptabs/minmaxreport" text="#$.slatwall.rbKey('admin.define.report')#" /> --->
+			<hb:HibachiEntityDetailItem view="admin:entity/minmaxstocktransfertabs/minmaxstocktransferstockadjustments" text="#$.slatwall.rbKey('entity.physical.stockAdjustments')#" />
 		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>

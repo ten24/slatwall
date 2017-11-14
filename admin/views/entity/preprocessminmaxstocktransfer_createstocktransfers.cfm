@@ -46,24 +46,15 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfset request.slatwallScope.getDAO("stockDAO").getMinMaxStockTransferDetails(toLocationID=rc.minMaxStockTransfer.getToLocation().getLocationID())>
+<cfparam name="rc.minmaxstocktransfer" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<cfparam name="rc.minMaxStockTransfer" default="any" >
 <cfoutput>
+	<hb:HibachiEntityProcessForm entity="#rc.minmaxstocktransfer#" edit="#rc.edit#" sRedirectAction="admin:entity.detailminmaxstocktransfer">
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getMinMaxStockTransferItemsSmartList()#"
-							   recordEditAction="admin:entity.editminmaxstocktransferitem"
-							   recordDetailAction="admin:entity.detailminmaxstocktransferitem">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toTopLocation.locationName" title="To" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLeafLocation.locationName" title="To Location" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromTopLocation.locationName" title="From" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLeafLocation.locationName" title="From Location" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="transferQuantity" title="Transfer Quantity" />
-
-	</hb:HibachiListingDisplay>
-
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

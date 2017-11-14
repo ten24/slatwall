@@ -49,21 +49,17 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfset request.slatwallScope.getDAO("stockDAO").getMinMaxStockTransferDetails(toLocationID=rc.minMaxStockTransfer.getToLocation().getLocationID())>
-
 <cfparam name="rc.minMaxStockTransfer" default="any" >
 <cfoutput>
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getMinMaxStockTransferItemsSmartList()#"
-							   recordEditAction="admin:entity.editminmaxstocktransferitem"
-							   recordDetailAction="admin:entity.detailminmaxstocktransferitem">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toTopLocation.locationName" title="To" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLeafLocation.locationName" title="To Location" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromTopLocation.locationName" title="From" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLeafLocation.locationName" title="From Location" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="transferQuantity" title="Transfer Quantity" />
-
+	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getStockAdjustmentsSmartList()#"
+							   recordEditAction="admin:entity.editstockadjustment"
+							   recordDetailAction="admin:entity.detailstockadjustment">
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
+		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLocation.locationName" title="To" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLocation.locationName" title="From" />
+		
 	</hb:HibachiListingDisplay>
 
 </cfoutput>
