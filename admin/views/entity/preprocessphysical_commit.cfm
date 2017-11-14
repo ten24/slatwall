@@ -61,6 +61,7 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="expenseLedgerAccountID" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="assetLedgerAccountID" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

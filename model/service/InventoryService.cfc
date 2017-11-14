@@ -84,6 +84,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					//set the cogs ledger account 
 					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuCogsLedgerAccount'));
 					inventory.setCogsLedgerAccount(cogsLedgerAccount);
+					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuAssetLedgerAccount'));
+					inventory.setAssetLedgerAccount(assetLedgerAccount);
 				}
 			}
 			
@@ -96,7 +98,13 @@ component extends="HibachiService" accessors="true" output="false" {
 					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultExpenseLedgerAccount');
 					var expenseLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
 				}
-				
+				if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getAssetLedgerAccount())){
+					var assetLedgerAccount = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getAssetLedgerAccount();
+				}else{
+					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultAssetLedgerAccount');
+					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
+				}
+				inventory.setAssetLedgerAccount(assetLedgerAccount);
 				inventory.setExpenseLedgerAccount(expenseLedgerAccount);
 			}
 			
@@ -145,6 +153,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the revenue ledger account 
 						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
 						inventory.setRevenueLedgerAccount(revenueLedgerAccount);
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					
 					
@@ -201,6 +211,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the inventory ledger account 
 						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
 						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					getHibachiDAO().save( inventory );
 				}

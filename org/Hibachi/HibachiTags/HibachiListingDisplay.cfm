@@ -465,7 +465,7 @@
 										<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
 									</cfif>
 								</cfsilent>
-								<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
+								<th style="min-width:70px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
 									<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 										#column.title#
 									<cfelse>

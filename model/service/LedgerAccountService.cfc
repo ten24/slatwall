@@ -70,6 +70,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		return returnList;
 	}
 	
+	public any function getAssetLedgerAccountIDList(){
+		var returnList = "";
+		var sl = this.getLedgerAccountSmartList();
+		sl.addFilter('ledgerAccountType.systemCode','latAsset');
+		sl.addSelect('ledgerAccountID','ledgerAccountID');
+		var records = sl.getRecords();
+		for(var i=1; i<=arrayLen(records); i++) {
+			returnList = listAppend(returnList, records[i]['ledgerAccountID']);
+		}
+		return returnList;
+	}
+	
 
 	// =====================  END: Logical Methods ============================
 

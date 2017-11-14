@@ -265,7 +265,7 @@ Notes:
 						  LEFT JOIN
 					  		orderDeliveryItem.orderItem orderItem
 						WHERE
-							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
 						  AND
 						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
