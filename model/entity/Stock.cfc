@@ -82,6 +82,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	property name="averageCost" persistent="false";
 	property name="averageLandedCost" persistent="false";
+	property name="currentMargin" persistent="false" hb_formatType="currency";
+	property name="currentLandedMargin" persistent="false" hb_formatType="currency";
+	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	property name="averagePriceSold" persistent="false" hb_formatType="currency";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";

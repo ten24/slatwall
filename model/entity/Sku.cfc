@@ -82,6 +82,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedAverageCost" ormtype="big_decimal";
 	property name="calculatedAverageLandedCost" ormtype="big_decimal";
+//	property name="calculatedAveragePriceSold" ormtype="big_decimal";
+//	property name="calculatedCurrentMargin" ormtype="big_decimal";
+//	property name="calculatedCurrentLandedMargin" ormtype="big_decimal";
+//	property name="calculatedCurrentAssetValue" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -140,8 +144,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
 	property name="availableForPurchaseFlag" persistent="false";
 	property name="availableSeatCount" persistent="false";
-	property name="averageCost" persistent="false";
-	property name="averageLandedCost" persistent="false";
+	property name="averageCost" persistent="false" hb_formatType="currency";
+	property name="averageLandedCost" persistent="false" hb_formatType="currency";
+	property name="currentMargin" persistent="false" hb_formatType="currency";
+	property name="currentLandedMargin" persistent="false" hb_formatType="currency";
+	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	property name="averagePriceSold" persistent="false" hb_formatType="currency";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -188,7 +196,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="allowWaitlistedRegistrations" persistent="false";
 	property name="inventoryTrackByOptions" persistent="false";
 	property name="inventoryMeasurementUnitOptions" persistent="false";
-	property name="averagePriceSold" persistent="false";
+	
 	// Deprecated Properties
 
 
