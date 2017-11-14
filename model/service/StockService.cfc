@@ -442,6 +442,67 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 		return arguments.MinMaxSetup;
 	}
+
+	public any function saveMinMaxStockTransfer(required any entity, struct data={}, string context="save"){
+		
+		arguments.entity = super.save(argumentcollection=arguments);
+		
+		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
+		if(!arguments.entity.hasErrors()) {
+			
+			// for(var minMaxStockTransferItem in arguments.entity) {
+			// 	// minMaxStockTransferItem.delete();
+			// }
+
+			// writeDump(var=stockDAO.getMinMaxStockTransferDetails(toLocationID=arguments.entity.getToLocation().getLocationID()),top=10);
+
+			var currentSku = '';
+			var currentOffset = 0;
+			for (row in stockDAO.getMinMaxStockTransferDetails(toLocationID=arguments.entity.getToLocation().getLocationID())) {
+				// writeDump(var=row.skuID,top=1);
+				// writeDump(var=currentSku,top=1);
+			    if(row.skuID != currentSku) {
+			    	currentSku = row.skuID;
+			    	currentOffset = row.toSumQATS-row.toMaxQuantity;
+			    }
+				// writeDump(var=currentOffset,top=1);
+			    if(currentOffset < 0) {
+				    var newMinMaxStockTransferItem = this.newMinMaxStockTransferItem();
+				    newMinMaxStockTransferItem.setMinMaxStockTransfer(arguments.entity);
+				    newMinMaxStockTransferItem.setSku(getSkuService().getSku(row.skuID));
+				    newMinMaxStockTransferItem.setToTopLocation(getLocationService().getLocation(row.toTopLocationID));
+				    newMinMaxStockTransferItem.setToLeafLocation(getLocationService().getLocation(row.toLeafLocationID));
+				    newMinMaxStockTransferItem.setFromTopLocation(getLocationService().getLocation(row.fromTopLocationID));
+				    newMinMaxStockTransferItem.setFromLeafLocation(getLocationService().getLocation(row.fromLeafLocationID));
+				    newMinMaxStockTransferItem.setToMinQuantity(row.toMinQuantity);
+				    newMinMaxStockTransferItem.setToMaxQuantity(row.toMaxQuantity);
+				    newMinMaxStockTransferItem.setToOffsetQuantity(row.toSumQATS-row.toMaxQuantity);
+				    newMinMaxStockTransferItem.setToSumQATS(row.toSumQATS);
+				    newMinMaxStockTransferItem.setFromMinQuantity(row.fromMinQuantity);
+				    newMinMaxStockTransferItem.setFromMaxQuantity(row.fromMaxQuantity);
+				    newMinMaxStockTransferItem.setFromOffsetQuantity(row.fromSumQATS-row.fromMaxQuantity);
+				    newMinMaxStockTransferItem.setFromSumQATS(row.fromSumQATS-row.fromMinQuantity);
+				    newMinMaxStockTransferItem.setFromCalculatedQATS(row.fromCalculatedQATS);
+				    if(newMinMaxStockTransferItem.getFromOffsetQuantity() > 0 && newMinMaxStockTransferItem.getFromOffsetQuantity() >= -currentOffset) {
+				    	newMinMaxStockTransferItem.setTransferQuantity(-currentOffset);
+				    	currentOffset = 0;
+					    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
+				    } else if (newMinMaxStockTransferItem.getFromOffsetQuantity() > 0 && row.fromCalculatedQATS < -currentOffset) {
+				    	newMinMaxStockTransferItem.setTransferQuantity(newMinMaxStockTransferItem.getFromOffsetQuantity());
+				    	currentOffset = currentOffset + newMinMaxStockTransferItem.getFromOffsetQuantity();
+					    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
+				    } else {
+				    	newMinMaxStockTransferItem.setTransferQuantity(0);
+				    }
+				    
+			    }
+			}
+		
+		}
+	
+		return arguments.entity;
+	}
+
 	
 	// =====================  END: Process Methods ============================
 	
