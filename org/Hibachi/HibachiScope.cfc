@@ -377,6 +377,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(structKeyExists(arguments, "replaceStringData") && findNoCase("${", keyValue)) {
 			keyValue = getService("hibachiUtilityService").replaceStringTemplate(keyValue, arguments.replaceStringData);
 		}
+		
+		if(findNoCase('_missing',keyValue)){
+			return listFirst(keyValue);
+		}
 		return keyValue;
 	}
 	
