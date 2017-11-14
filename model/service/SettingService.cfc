@@ -586,6 +586,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "physicalDefaultExpenseLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
 				return optionsSL.getRecords();
+			case "physicalDefaultAssetLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
+				return optionsSL.getRecords();
 		}
 
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {
