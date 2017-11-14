@@ -98,9 +98,6 @@ component entityname="SlatwallLedgerAccount" table="SwLedgerAccount" persistent=
 		var inventoryProperty = "";
 		var systemCode = this.getLedgerAccountType().getSystemCode();
 		switch(systemCode){
-			case 'latAsset':
-				inventoryProperty = 'inventoryLedgerAccount';
-				break;
 			default:
 				var caseInsensitiveInventoryProperty = right(systemCode,len(this.getLedgerAccountType().getSystemCode())-3) & 'LedgerAccount';
 				inventoryProperty = getService('hibachiService').getPropertyByEntityNameAndPropertyName('Inventory',caseInsensitiveInventoryProperty).name;	

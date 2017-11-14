@@ -55,5 +55,7 @@ Notes:
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="physicalEligibleExpenseLedgerAccount" settingObject="#rc.physical#" />
 		<swa:SlatwallSetting settingName="physicalDefaultExpenseLedgerAccount" settingObject="#rc.physical#" />
+		<swa:SlatwallSetting settingName="physicalEligibleAssetLedgerAccount" settingObject="#rc.physical#" />
+		<swa:SlatwallSetting settingName="physicalDefaultAssetLedgerAccount" settingObject="#rc.physical#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

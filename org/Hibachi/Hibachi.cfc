@@ -809,7 +809,7 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					if(updated){
+					if(updated && structKeyExists(request, "action")){
 						redirect(action=request.action,queryString='updated=true');
 					}
 				}
@@ -819,6 +819,11 @@ component extends="framework.one" {
 
 	public void function populateAPIHeaders(){
 		param name="request.context.headers" default="#structNew()#";
+		var httpRequestData = getHTTPRequestData();
+
+		if(this.CORSEnabled && arrayLen(this.CORSWhitelist) && structKeyExists(httpRequestData.headers,'Origin') && !isNull(httpRequestData.headers['Origin'])){
+			populateCORSHeader(httpRequestData.headers['Origin']);
+		}
 		if(!structKeyExists(request.context.headers,'Content-Type')){
 			request.context.headers['Content-Type'] = 'application/json';
 		}
@@ -832,6 +837,17 @@ component extends="framework.one" {
 		}
 	}
 
+	public void function populateCORSHeader(origin){
+		for(var domain in this.CORSWhiteList){
+			if(domain == '*'){
+				request.context.headers['Access-Control-Allow-Origin'] = domain;
+				return;
+			}else if(REfind(domain, arguments.origin)){
+				request.context.headers['Access-Control-Allow-Origin'] = arguments.origin;
+				return;
+			}
+		}
+	}
 
 	public void function renderApiResponse(){
 

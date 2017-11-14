@@ -69,6 +69,7 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
 	property name="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="many-to-one" fkcolumn="vendorOrderDeliveryItemID";
 	property name="stockAdjustmentDeliveryItem" cfc="StockAdjustmentDeliveryItem" fieldtype="many-to-one" fkcolumn="stockAdjustmentDeliveryItemID";
+	property name="assetLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="assetLedgerAccountID";
 	property name="cogsLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="cogsLedgerAccountID";
 	property name="expenseLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="expenseLedgerAccountID";
 	property name="inventoryLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="inventoryLedgerAccountID";

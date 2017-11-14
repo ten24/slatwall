@@ -82,6 +82,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedAverageCost" ormtype="big_decimal";
 	property name="calculatedAverageLandedCost" ormtype="big_decimal";
+//	property name="calculatedAveragePriceSold" ormtype="big_decimal";
+//	property name="calculatedCurrentMargin" ormtype="big_decimal";
+//	property name="calculatedCurrentLandedMargin" ormtype="big_decimal";
+//	property name="calculatedCurrentAssetValue" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -140,8 +144,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
 	property name="availableForPurchaseFlag" persistent="false";
 	property name="availableSeatCount" persistent="false";
-	property name="averageCost" persistent="false";
-	property name="averageLandedCost" persistent="false";
+	property name="averageCost" persistent="false" hb_formatType="currency";
+	property name="averageLandedCost" persistent="false" hb_formatType="currency";
+	property name="currentMargin" persistent="false" hb_formatType="currency";
+	property name="currentLandedMargin" persistent="false" hb_formatType="currency";
+	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	property name="averagePriceSold" persistent="false" hb_formatType="currency";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -151,6 +159,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
+	property name="giftCardExpirationTermOptions" persistent="false";
+	property name="giftCardAutoGenerateCodeFlag" persistent="false";
+	property name="giftCardRecipientRequiredFlag" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="imageFileName" type="string" persistent="false";
 	property name="imagePath" type="string" persistent="false";
@@ -180,17 +191,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
-	property name="giftCardExpirationTermOptions" persistent="false";
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
 	property name="inventoryTrackByOptions" persistent="false";
 	property name="inventoryMeasurementUnitOptions" persistent="false";
-	property name="averagePriceSold" persistent="false";
+	
 	// Deprecated Properties
 
 
-	// ==================== START: Logical Methods =========================
+	// ==================== START: Logical Methods =========================	
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
@@ -226,6 +236,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
 		}
 		return variables.giftCardExpirationTermIDOptions;
+	}
+
+	public boolean function getGiftCardAutoGenerateCodeFlag() {
+		return setting('skuGiftCardAutoGenerateCode');
+	}
+
+	public boolean function getGiftCardRecipientRequiredFlag() {
+		return setting('skuGiftCardRecipientRequired');
 	}
 
 	public array function getRedemptionAmountTypeOptions(){
@@ -576,11 +594,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				//Need to get location and all children of location
 				var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
 				var totalQuantity = 0;
+				
 				for(var i=1;i<=arraylen(locations);i++) {
 					var location = getService("locationService").getLocation(locations[i].value);
-					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
-					totalQuantity += stock.getQuantity(arguments.quantityType);
+					if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+						var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+						totalQuantity += stock.getQuantity(arguments.quantityType);
+					}  
 				}
+				
 				return totalQuantity;
 
 			// If this is a calculated quantity and stockID exists, then delegate
@@ -1212,12 +1234,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
-	public any function getAverageCost(){
-		return getDao('skuDao').getAverageCost(this.getSkuID());
+	public any function getAverageCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.location=arguments.location;
+		}
+		
+		return getDao('skuDao').getAverageCost(argumentCollection=params);
 	}
 	
-	public any function getAverageLandedCost(){
-		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
+	public any function getAverageLandedCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.location=arguments.location;
+		}
+		
+		return getDao('skuDao').getAverageLandedCost(argumentCollection=params);
 	}
 
 

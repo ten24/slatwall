@@ -32,6 +32,10 @@
  			<cfif not rc.attribute.isNew()>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="urlTitle" edit="#rc.edit#">
  			</cfif>
+ 			
+ 			<cfif listFindNoCase('checkboxGroup,multiselect,radioGroup,select',rc.attribute.getAttributeInputType() ) && (!isNull(rc.attribute.getAttributeOptionSource()) || rc.attribute.getAttributeOptionsCount() eq 0)>
+ 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeOptionSource" edit="#rc.edit#">
+ 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

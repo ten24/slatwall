@@ -51,12 +51,39 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected Entity
 	property name="physical";
 	property name="expenseLedgerAccount";
+	property name="assetLedgerAccount";
 
 	// Data Properties
 	property name="expenseLedgerAccountID" hb_formFieldType="select";
+	property name="assetLedgerAccountID" hb_formFieldType="select";
 	
 	// Chached Properties
 	property name="expenseLedgerAccountIDOptions";
+	property name="assetLedgerAccountIDOptions";
+	
+	public any function getAssetLedgerAccount(){
+		if(!structKeyExists(variables,'assetLedgerAccount')){
+			variables.assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(getAssetLedgerAccountID());
+		}
+		return variables.assetLedgerAccount;
+	}
+	
+	public array function getAssetLedgerAccountIDOptions() {
+		if(!structKeyExists(variables, "assetLedgerAccountIDOptions")) {
+			var assetLedgerAccountIDs = getPhysical().setting('physicalEligibleAssetLedgerAccount');
+			if(!listLen(assetLedgerAccountIDs)){
+				assetLedgerAccountIDs = getPhysical().setting('physicalDefaultAssetLedgerAccount');
+			}
+			
+			var ledgerAccountSmartList = getService('ledgerAccountService').getledgerAccountSmartList();
+			ledgerAccountSmartList.addSelect('ledgerAccountID','value');
+			ledgerAccountSmartList.addSelect('ledgerAccountName','name');
+			ledgerAccountSmartList.addInFilter('ledgerAccountID',assetLedgerAccountIDs);
+			variables.assetLedgerAccountIDOptions = ledgerAccountSmartList.getRecords();
+		}
+		
+		return variables.assetLedgerAccountIDOptions;
+	}
 	
 	public any function getExpenseLedgerAccount(){
 		if(!structKeyExists(variables,'expenseLedgerAccount')){
