@@ -21,12 +21,12 @@ component accessors="true" output="false" extends="HibachiService" {
 		return super.init();
 	}
 	
-	public any function getServerInstanceByServerInstanceIPAddress(){
+	public any function getServerInstanceByServerInstanceIPAddress(required any serverInstanceIPAddress){
 		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
 		
 		if(isNull(serverInstance) || serverInstance.getNewFlag()){
 			serverInstance = this.newServerInstance();
-			serverInstance.setServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress());
+			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			serverInstance.setServerInstanceExpired(false);
 			serverInstance.setSettingsExpired(false);
 			
@@ -35,6 +35,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		}
 		return serverInstance;
 	}
+	
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
@@ -77,7 +78,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function isServerInstanceCacheExpired(required string serverInstanceIPAddress){
 		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
 		if(isNull(isExpired)){
-			this.getServerInstanceByServerInstanceIPAddress();
+			this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
 			return false;
 		}else{
 			return isExpired;
