@@ -50,7 +50,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="locationCode" ormtype="string" unique="true";
+	property name="locationCode" ormtype="string";
 	property name="locationIDPath" ormtype="string";
 	property name="locationName" ormtype="string";
 	property name="activeFlag" ormtype="boolean" ;
