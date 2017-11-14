@@ -10,12 +10,12 @@
 	<cfoutput>
 		<!--- Generic Location Typeahead --->
 			<cfif !isNull(attributes.property)><!--- Only show if we have a default --->
-			<div ng-show="'#attributes.edit#' == 'false'" ng-cloak>
+			<div ng-show="'#attributes.edit#' == 'false'" ng-cloak  class="form-group">
 				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
-				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
-					#attributes.property.getLocationName()#
+				<div class="col-sm-8">
+					<p class="form-control-static value">#attributes.property.getLocationName()#</p>
 				</div>
 				<cfif attributes.edit EQ 'false'>
    					<input type="hidden" name="#attributes.locationPropertyName#" value="#attributes.property.getLocationID()#" />
@@ -50,13 +50,13 @@
 					        data-initial-entity-id="#initialEntityID#"
 					        data-max-records="#attributes.maxrecords#"
 					        data-order-by-list="locationName|ASC">
-					
+
 					    <sw-collection-config
 					            data-entity-name="Location"
 					            data-collection-config-property="typeaheadCollectionConfig"
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
-					            
+
 					    	<!--- Filters --->
 					    	<cfif attributes.showActiveLocationsFlag EQ true>
 						    	<sw-collection-filters>
@@ -64,9 +64,9 @@
 		                        </sw-collection-filters>
 					    	</cfif>
 					    </sw-collection-config>
-						
+
 						<span sw-typeahead-search-line-item data-property-identifier="locationName" is-searchable="true"></span><br>
-						    	
+
 					</sw-typeahead-input-field>
 				</div>
 			</div>
