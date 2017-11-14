@@ -11,7 +11,7 @@
 		<!--- Generic Location Typeahead --->
 			<cfif !isNull(attributes.property)><!--- Only show if we have a default --->
 			<div ng-show="'#attributes.edit#' == 'false'" ng-cloak  class="form-group">
-				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
+				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" >
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
 				<div class="col-sm-8">
