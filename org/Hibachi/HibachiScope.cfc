@@ -43,13 +43,24 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(!structKeyExists(variables,'permissionGroupCacheKey')){
 			var permissionGroupCacheKey = "";
 		
-			if(!isNull(getAccount()) && getAccount().getPermissionGroupsCount()){
-				var permissionGroupCollectionList = getAccount().getPermissionGroupsCollectionList();
-				permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
-				var permissionGroupRecords = permissionGroupCollectionList.getRecords();
-				for(var permissionGroupRecord in permissiongroupRecords){
-					permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+			if(
+				!isNull(getAccount()) 
+			){
+				var permissionGroupCountCollectionList = getService('accountService').getAccountCollectionList();
+				permissionGroupCountCollectionList.addFilter('accountID',getAccount().getAccountID());
+				permissionGroupCountCollectionList.setPermissionAppliedFlag(true);
+				permissionGroupCountCollectionList.setDisplayProperties('accountID');
+				permissionGroupCountCollectionList.addDisplayAggregate('permissionGroups','COUNT','permissionGroupsCount');
+				var records = permissionGroupCountCollectionList.getRecords();
+				if(arraylen(records) && records[1]['permissionGroupsCount']){
+					var permissionGroupCollectionList = getAccount().getPermissionGroupsCollectionList();
+					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+					var permissionGroupRecords = permissionGroupCollectionList.getRecords();
+					for(var permissionGroupRecord in permissiongroupRecords){
+						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+					}
 				}
+				
 			}
 			variables.permissionGroupCacheKey = permissionGroupCacheKey;
 		}
@@ -365,6 +376,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		var keyValue = getService("hibachiRBService").getRBKey(arguments.key, getRBLocale());
 		if(structKeyExists(arguments, "replaceStringData") && findNoCase("${", keyValue)) {
 			keyValue = getService("hibachiUtilityService").replaceStringTemplate(keyValue, arguments.replaceStringData);
+		}
+		
+		if(findNoCase('_missing',keyValue)){
+			return listFirst(keyValue);
 		}
 		return keyValue;
 	}

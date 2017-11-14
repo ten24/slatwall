@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,26 +45,12 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="MinMaxSetup";
 
-<cfparam name="rc.emailTemplate" type="any">
-<cfparam name="rc.edit" type="boolean">
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editemailtemplate">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="logEmailFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
-
+	// Data Properties
+	
+}

@@ -46,16 +46,44 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.physical" type="any" />
+<cfset local.scriptHasErrors = false />
 
-<cfoutput>
-	<swa:SlatwallSettingTable>
-		<swa:SlatwallSetting settingName="physicalEligibleExpenseLedgerAccount" settingObject="#rc.physical#" />
-		<swa:SlatwallSetting settingName="physicalDefaultExpenseLedgerAccount" settingObject="#rc.physical#" />
-		<swa:SlatwallSetting settingName="physicalEligibleAssetLedgerAccount" settingObject="#rc.physical#" />
-		<swa:SlatwallSetting settingName="physicalDefaultAssetLedgerAccount" settingObject="#rc.physical#" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+<cftry>
+	<cfquery name="local.hasRecords">
+		select count(categoryID) as categoryCount from SwCategory
+	</cfquery>
+	<cfif local.hasRecords.categoryCount>
+		<cfset local.subquerysql = "select c.categoryID,c.categoryName,
+			(SELECT GROUP_CONCAT(c1.categoryName SEPARATOR ' > ') FROM SwCategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as categoryNamePath,
+			(SELECT GROUP_CONCAT(c1.urlTitle SEPARATOR '/') FROM swcategory c1 where FIND_IN_SET(c1.categoryID, c.categoryIDPath)) as urlTitlePath
+			from swcategory c order by length(categoryIDPath) "
+		/>
+		
+		<cfset local.sql = "update
+		         SwCategory c
+		    INNER JOIN (
+				#PreserveSingleQuotes(local.subquerysql)#
+			) AS Table_B
+		        ON c.categoryID = Table_B.categoryID
+		        set c.categoryNamePath = Table_B.categoryNamePath,
+		        	c.urlTitlePath = Table_B.urlTitlePath"
+		/>
+		<cfscript>
+			var queryService = new query();
+			queryService.execute(sql=local.sql);
+		</cfscript>
+	</cfif>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+
+<cfif local.scriptHasErrors>
+	<cflog file="Slatwall" text="General Log - Part of Script v5_1.1 had errors when running">
+	<cfthrow detail="Part of Script v5_1.1 had errors when running">
+<cfelse>
+	<cflog file="Slatwall" text="General Log - Script v5_1.1 has run with no errors">
+</cfif>

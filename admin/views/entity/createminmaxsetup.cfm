@@ -49,39 +49,22 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
-<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
-<cfset sites.addFilter('activeFlag', 1) />
-
-<cfset rc.sitesArray = sites.getRecords() />
+<cfparam name="rc.minMaxSetup" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityActionBar type="static"></hb:HibachiEntityActionBar>
-	
-	<hb:HibachiEntityDetailGroup>
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/global" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/globaladvanced" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/attribute" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/account" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/address" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/category" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/image" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/location" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/locationConfiguration" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/paymentmethod" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/physical" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/producttype" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/product" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/site" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethod" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethodrate" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/sku" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/subscriptionusage" />
-		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/task" />
-	</hb:HibachiEntityDetailGroup>
+	<hb:HibachiEntityDetailForm object="#rc.minMaxSetup#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxSetup#" edit="#rc.edit#" />
+		<div class="s-top-spacer">
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="setupName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="location" edit="#rc.edit#"/>
+					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="minQuantity" edit="#rc.edit#"/>
+					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="maxQuantity" edit="#rc.edit#"/>
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
+		</div>
+	</hb:HibachiEntityDetailForm>
+	</span>
 </cfoutput>
-

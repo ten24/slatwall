@@ -46,25 +46,13 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-<cfparam name="rc.skuMinMaxReport" type="any">
-<cfparam name="rc.edit" type="boolean">
-
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.skuMinMaxReport#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.skuMinMaxReport#" edit="#rc.edit#" />
-		<div class="s-top-spacer">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList>
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="reportName" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="location" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="minQuantity" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.skuMinMaxReport#" property="maxQuantity" edit="#rc.edit#"/>
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
-		</div>
-	</hb:HibachiEntityDetailForm>
-	</span>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<!---<swa:SlatwallSetting settingName="locationConfigurationCapacity" />--->
+		<swa:SlatwallSetting settingName="locationRequiresQATSForOrdering" />
+		<swa:SlatwallSetting settingName="locationExcludeFromQATS" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
+

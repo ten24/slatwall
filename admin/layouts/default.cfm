@@ -180,7 +180,7 @@ Notes:
 								<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
 								<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
 								<li class="divider"></li>
-								<hb:HibachiActionCaller action="admin:entity.listskuminmaxreport" type="list">
+								<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
 							</hb:HibachiActionCallerDropdown>
 							<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
 							<cfif arrayLen(local.integrationSubsystems)>

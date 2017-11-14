@@ -465,7 +465,7 @@
 										<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
 									</cfif>
 								</cfsilent>
-								<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif>>
+								<th style="min-width:70px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
 									<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 										#column.title#
 									<cfelse>
@@ -554,6 +554,7 @@
 								<cfif thistag.sortable>
 									<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
 								</cfif>
+								
 								<cfloop array="#thistag.columns#" index="column">
 									<!--- Expandable Check --->
 									<cfif column.tdclass eq "primary" and thistag.expandable>
@@ -563,11 +564,14 @@
 											<cfelse>
 												#attributes.hibachiScope.hibachiHTMLEditFormat(record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true ))#
 											</cfif>
-											
 										</td>
 									<cfelse>
 										<td class="#column.tdclass#">
-											<cfif len(column.propertyIdentifier)>
+											<cfif structKeyExists(column,'methodIdentifier') AND len(column.methodIdentifier)>
+												<cfset local.methodIdentifiers = DeserializeJSON(column.methodIdentifier) />
+												<cfset local.methodOutput = record.invokeMethod(local.methodIdentifiers.methodName, local.methodIdentifiers.methodArguments) />
+												#local.methodOutput#
+											<cfelseif len(column.propertyIdentifier)>
 												<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
 												#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
 												<cfelse>

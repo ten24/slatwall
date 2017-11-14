@@ -46,25 +46,19 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.location" type="any" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.emailTemplate" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.location" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editemailtemplate">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="logEmailFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-	</hb:HibachiEntityDetailForm>
+	<swa:SlatwallSettingTable>
+		<!---<swa:SlatwallSetting settingName="locationConfigurationCapacity" settingObject="#rc.location#" />--->
+		<swa:SlatwallSetting settingName="locationRequiresQATSForOrdering" settingObject="#rc.location#" />
+		<swa:SlatwallSetting settingName="locationExcludeFromQATS" settingObject="#rc.location#" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
-
