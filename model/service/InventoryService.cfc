@@ -153,7 +153,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the revenue ledger account 
 						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
 						inventory.setRevenueLedgerAccount(revenueLedgerAccount);
-						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuAssetLedgerAccount'));
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					
