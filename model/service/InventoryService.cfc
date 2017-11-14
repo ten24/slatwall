@@ -173,6 +173,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the inventory ledger account 
 						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					getHibachiDAO().save( inventory );
 				}
