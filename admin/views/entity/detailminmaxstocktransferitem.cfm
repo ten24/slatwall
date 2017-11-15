@@ -46,20 +46,19 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minMaxStockTransfer" default="any" >
+<cfparam name="rc.minMaxStockTransferItem" type="any">
+
 <cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.minMaxStockTransferItem#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxStockTransferItem#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getStockAdjustmentsSmartList()#"
-							   recordEditAction="admin:entity.editstockadjustment"
-							   recordDetailAction="admin:entity.detailstockadjustment">
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
-		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLocation.locationName" title="From" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLocation.locationName" title="To" />
-		
-	</hb:HibachiListingDisplay>
+		<hb:HibachiEntityDetailGroup object="#rc.minMaxStockTransferItem#">
+			<hb:HibachiEntityDetailItem view="admin:entity/minmaxstocktransferitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		</hb:HibachiEntityDetailGroup>
 
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

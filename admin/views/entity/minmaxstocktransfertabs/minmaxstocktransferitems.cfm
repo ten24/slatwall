@@ -58,10 +58,10 @@ Notes:
 							   recordEditAction="admin:entity.editminmaxstocktransferitem"
 							   recordDetailAction="admin:entity.detailminmaxstocktransferitem">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toTopLocation.locationName" title="To" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLeafLocation.locationName" title="To Location" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromTopLocation.locationName" title="From" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLeafLocation.locationName" title="From Location" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toTopLocation.locationName" title="To" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLeafLocation.locationName" title="To Location" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="transferQuantity" title="Transfer Quantity" />
 
 	</hb:HibachiListingDisplay>
