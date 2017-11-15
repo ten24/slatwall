@@ -49,18 +49,18 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minMaxSetupSmartList" type="any" />
+<cfparam name="rc.minMaxStockTransferSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.minMaxSetupSmartList#" showCreate="true" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.minMaxStockTransferSmartList#" showCreate="true" />
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxSetupSmartList#"
-			recordEditAction="admin:entity.editminmaxsetup"
-			recorddetailaction="admin:entity.detailminmaxsetup">
+	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransferSmartList#"
+			recordEditAction="admin:entity.editminmaxstocktransfer"
+			recorddetailaction="admin:entity.detailminmaxstocktransfer">
 
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="setupName" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLocation.locationName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="createdDateTime" />
 	</hb:HibachiListingDisplay>
 
 </cfoutput>
