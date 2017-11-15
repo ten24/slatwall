@@ -74,7 +74,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			shipperCountryCode = {fieldType="text"},
 			contactPersonName = {fieldType="text"},
 			contactCompany = {fieldType="text"},
-			contactPhoneNumber = {fieldType="text"}
+			contactPhoneNumber = {fieldType="text"},
+			labelImageType = {fieldType="text", defaultValue="PDF"}
 		};
 		
 		return settings;
