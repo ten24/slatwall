@@ -85,10 +85,13 @@ component displayname="MinMaxStockTransferItem" entityname="SlatwallMinMaxStockT
 	// Non-Persistent Properties
 
 	//Derived Properties
-
-
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getSimpleRepresentation() {
+		return "From #getToTopLocation().getLocationName()# - To #getFromTopLocation().getLocationName()# - Sku #getSku().getSkuCode()#";
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -96,10 +99,6 @@ component displayname="MinMaxStockTransferItem" entityname="SlatwallMinMaxStockT
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
-
-	public string function getSimpleRepresentationPropertyName() {
-		return "minmaxStockTransferItem";
-	}
 
 	// ==================  END:  Overridden Methods ========================
 
