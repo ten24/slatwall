@@ -527,6 +527,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 		return arguments.entity;
 	}
+
 	
 	// =====================  END: Process Methods ============================
 	
