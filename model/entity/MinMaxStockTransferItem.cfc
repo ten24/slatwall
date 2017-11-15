@@ -98,7 +98,7 @@ component displayname="MinMaxStockTransferItem" entityname="SlatwallMinMaxStockT
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentationPropertyName() {
-		return getFormattedValue(getCreatedDateTime());
+		return "minmaxStockTransferItem";
 	}
 
 	// ==================  END:  Overridden Methods ========================
