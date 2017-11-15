@@ -97,10 +97,6 @@ component displayname="MinMaxStockTransferItem" entityname="SlatwallMinMaxStockT
 
 	// ================== START: Overridden Methods ========================
 
-	public string function getSimpleRepresentationPropertyName() {
-		return fromLocation.getLocationName & ' - ' & getFormattedValue(createdDateTime);
-	}
-
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
