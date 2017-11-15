@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,48 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTransfer" table="swMinMaxStockTransfer" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
 
-<cfparam name="rc.minMaxSetupSmartList" type="any" />
+	// Persistent Properties
+	property name="minMaxStockTransferID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
-<cfoutput>
+	// Related Object Properties (many-to-one)
+	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.minMaxSetupSmartList#" showCreate="true" />
+	// Related Object Properties (one-to-many)
+	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" cfc="MinMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="minMaxStockTransferID" inverse="true" cascade="all-delete-orphan";
+	property name="stockAdjustments" singularname="stockAdjustment" cfc="StockAdjustment" type="array" fieldtype="one-to-many" fkcolumn="minMaxStockTransferID" cascade="all-delete-orphan" inverse="true";
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxSetupSmartList#"
-			recordEditAction="admin:entity.editminmaxsetup"
-			recorddetailaction="admin:entity.detailminmaxsetup">
+	//Calculated Properties
+	
+	// Remote properties
+	property name="remoteID" ormtype="string";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+
+	// Non-Persistent Properties
+
+	//Derived Properties
 
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="setupName" />
-	</hb:HibachiListingDisplay>
+	// ============ START: Non-Persistent Property Methods =================
+	
+	// ============  END:  Non-Persistent Property Methods =================
 
-</cfoutput>
+	// ============= START: Bidirectional Helper Methods ===================
+
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// ================== START: Overridden Methods ========================
+
+	// ==================  END:  Overridden Methods ========================
+
+	// =================== START: ORM Event Hooks  =========================
+
+	// ===================  END:  ORM Event Hooks  =========================
+}

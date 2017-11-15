@@ -433,6 +433,105 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processMinMaxSetup_updateStockMinMax(required any MinMaxSetup, required any processObject) {
 
 		var location = locationService.getLocation(arguments.MinMaxSetup.getLocation().getLocationID());
+		for(var skuDetails in arguments.MinMaxSetup.getMinMaxSetupCollection().getRecords()) {
+			var sku = skuService.getSku(skuDetails.skuID);
+			var stock = getStockBySkuANDLocation(sku, location);	
+			stock.setMinQuantity(arguments.MinMaxSetup.getMinQuantity());
+			stock.setMaxQuantity(arguments.MinMaxSetup.getMaxQuantity());
+		}
+	
+		return arguments.MinMaxSetup;
+	}
+
+	public any function processMinMaxStockTransfer_createStockTransfers(required any MinMaxStockTransfer, required any processObject) {
+
+		// writeDump(var=arguments.MinMaxStockTransfer,top=1);
+		// abort;
+		for(var minMaxStockTransferItem in arguments.MinMaxStockTransfer.getminmaxstocktransferitems()) {
+			var newStockAdjustment = this.newStockAdjustment();
+			newStockAdjustment.setFromLocation(minMaxStockTransferItem.getFromLeafLocation());
+			newStockAdjustment.setToLocation(minMaxStockTransferItem.getToLeafLocation());
+			newStockAdjustment.setStockAdjustmentType(getService("typeService").getTypeBySystemCode("satLocationTransfer"));
+			newStockAdjustment.setStockAdjustmentStatusType(getService("typeService").getTypeBySystemCode("sastNew"));
+			newStockAdjustment.setMinMaxStockTransfer(arguments.MinMaxStockTransfer);
+			newStockAdjustment = this.saveNewStockAdjustment(newStockAdjustment);
+
+			var newStockAdjustmentItem = this.newStockAdjustmentItem();
+			newStockAdjustmentItem.setQuantity(minMaxStockTransferItem.getTransferQuantity());
+			newStockAdjustmentItem.setCost(0);
+			newStockAdjustmentItem.setStockAdjustment(newStockAdjustment);
+			newStockAdjustmentItem.setFromStock(getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getFromLeafLocation()));
+			newStockAdjustmentItem.setToStock(getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getToLeafLocation()));
+			newStockAdjustmentItem.setSku(minMaxStockTransferItem.getsku());
+
+			newStockAdjustmentItem = this.saveNewStockAdjustmentItem(newStockAdjustmentItem);
+
+			// writeDump(var=newStockAdjustment,top=1);
+			// writeDump(var=newStockAdjustmentItem,top=1);
+			// abort;
+			// minMaxStockTransfer
+			// stock.setMinQuantity(arguments.MinMaxSetup.getMinQuantity());
+			// stock.setMaxQuantity(arguments.MinMaxSetup.getMaxQuantity());
+		}
+	
+		return arguments.MinMaxStockTransfer;
+	}
+
+	public any function saveMinMaxStockTransfer(required any entity, struct data={}, string context="save"){
+		
+		arguments.entity = super.save(argumentcollection=arguments);
+		
+		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
+		if(!arguments.entity.hasErrors()) {
+			
+			var currentSku = '';
+			var currentOffset = 0;
+			for (row in stockDAO.getMinMaxStockTransferDetails(toLocationID=arguments.entity.getToLocation().getLocationID())) {
+			    if(row.skuID != currentSku) {
+			    	currentSku = row.skuID;
+			    	currentOffset = row.toSumQATS-row.toMaxQuantity;
+			    }
+			    if(currentOffset < 0) {
+				    var newMinMaxStockTransferItem = this.newMinMaxStockTransferItem();
+				    newMinMaxStockTransferItem.setMinMaxStockTransfer(arguments.entity);
+				    newMinMaxStockTransferItem.setSku(getSkuService().getSku(row.skuID));
+				    newMinMaxStockTransferItem.setToTopLocation(getLocationService().getLocation(row.toTopLocationID));
+				    newMinMaxStockTransferItem.setToLeafLocation(getLocationService().getLocation(row.toLeafLocationID));
+				    newMinMaxStockTransferItem.setFromTopLocation(getLocationService().getLocation(row.fromTopLocationID));
+				    newMinMaxStockTransferItem.setFromLeafLocation(getLocationService().getLocation(row.fromLeafLocationID));
+				    newMinMaxStockTransferItem.setToMinQuantity(row.toMinQuantity);
+				    newMinMaxStockTransferItem.setToMaxQuantity(row.toMaxQuantity);
+				    newMinMaxStockTransferItem.setToOffsetQuantity(row.toSumQATS-row.toMaxQuantity);
+				    newMinMaxStockTransferItem.setToSumQATS(row.toSumQATS);
+				    newMinMaxStockTransferItem.setFromMinQuantity(row.fromMinQuantity);
+				    newMinMaxStockTransferItem.setFromMaxQuantity(row.fromMaxQuantity);
+				    newMinMaxStockTransferItem.setFromOffsetQuantity(row.fromSumQATS-row.fromMaxQuantity);
+				    newMinMaxStockTransferItem.setFromSumQATS(row.fromSumQATS-row.fromMinQuantity);
+				    newMinMaxStockTransferItem.setFromCalculatedQATS(row.fromCalculatedQATS);
+				    if(newMinMaxStockTransferItem.getFromOffsetQuantity() > 0 && newMinMaxStockTransferItem.getFromOffsetQuantity() >= -currentOffset) {
+				    	newMinMaxStockTransferItem.setTransferQuantity(-currentOffset);
+				    	currentOffset = 0;
+					    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
+				    } else if (newMinMaxStockTransferItem.getFromOffsetQuantity() > 0 && row.fromCalculatedQATS < -currentOffset) {
+				    	newMinMaxStockTransferItem.setTransferQuantity(newMinMaxStockTransferItem.getFromOffsetQuantity());
+				    	currentOffset = currentOffset + newMinMaxStockTransferItem.getFromOffsetQuantity();
+					    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
+				    } else {
+				    	newMinMaxStockTransferItem.setTransferQuantity(0);
+				    }
+				    
+			    }
+			}
+		
+		}
+	
+		return arguments.entity;
+	}
+
+	
+	public any function processMinMaxSetup_updateStockMinMax(required any MinMaxSetup, required any processObject) {
+
+		var location = locationService.getLocation(arguments.MinMaxSetup.getLocation().getLocationID());
 		for(var skuDetails in arguments.MinMaxSetup.getminMaxSetupCollection().getRecords()) {
 			var sku = skuService.getSku(skuDetails.skuID);
 			var stock = getStockBySkuANDLocation(sku, location);	
