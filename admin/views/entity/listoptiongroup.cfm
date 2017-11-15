@@ -71,7 +71,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="optionGroupCode" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'OptionGroup'"
 		data-edit="false"
 		data-has-search="true"

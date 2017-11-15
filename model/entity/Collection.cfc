@@ -54,6 +54,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
 	property name="mergeCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="mergeCollectionID" hb_formFieldType="select";
 
+	property name="accountOwner" cfc="Account" fieldtype="many-to-one" fkcolumn="accountOwnerID";
 	// Related Object Properties (one-to-many)
 	property name="accountCollections" hb_populateEnabled="false" singularname="accountCollection" cfc="AccountCollection" type="array" fieldtype="one-to-many" fkcolumn="collectionID" inverse="true" cascade="all-delete-orphan";
 

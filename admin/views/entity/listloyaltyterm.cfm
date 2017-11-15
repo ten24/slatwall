@@ -74,7 +74,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="term.termName" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 			data-collection="'LoyaltyTerm'"
 			data-edit="false"
 			data-has-search="true"

@@ -71,7 +71,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="autoFulfillFlag" />
 </hb:HibachiListingDisplay> --->
 
-    <sw-listing-display
+    <sw-listing-display data-using-personal-collection="true"
         data-collection="'FulfillmentMethod'"
         data-edit="false"
         data-has-search="true"

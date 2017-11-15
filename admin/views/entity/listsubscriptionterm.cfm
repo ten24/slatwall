@@ -71,7 +71,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'SubscriptionTerm'"
 		data-edit="false"
 		data-has-search="true"

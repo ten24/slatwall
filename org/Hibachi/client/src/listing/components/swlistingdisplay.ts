@@ -92,6 +92,7 @@ class SWListingDisplayController{
     public isCurrentPageRecordsSelected;
     public allSelected;
     public name;
+    public usingPersonalCollection:boolean;
     //@ngInject
     constructor(
         public $scope,
@@ -105,12 +106,16 @@ class SWListingDisplayController{
         public paginationService,
         public selectionService,
         public observerService,
-        public rbkeyService
+        public rbkeyService,
+        public localStorageService
     ){
         //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
         // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
         //     return;
         // }
+        if(angular.isUndefined(this.usingPersonalCollection)){
+            this.usingPersonalCollection=false;
+        }
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
@@ -123,7 +128,7 @@ class SWListingDisplayController{
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-             this.$timeout(()=>{
+            this.$timeout(()=>{
                 this.collection = this.collectionConfig;
                 this.columns = this.collectionConfig.columns;
             });
@@ -131,11 +136,40 @@ class SWListingDisplayController{
             this.multipleCollectionDeffered.reject();
         }
 
-		this.initializeState();
+        if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]){
+
+            var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
+            personalCollection.setDisplayProperties('collectionConfig');
+            personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
+            personalCollection.getEntity().then((data)=>{
+                if(data.pageRecords.length){
+
+                    this.collectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
+                    console.log('collectionConfig',this.collectionConfig);
+                    this.collectionObject = this.baseEntityName;
+
+                    this.$timeout(()=>{
+                        this.collection = this.collectionConfig;
+                        this.columns = this.collectionConfig.columns;
+                    });
+
+                }
+                this.processCollection();
+            })
+
+        }else{
+            this.processCollection();
+        }
+
+
+    }
+
+    public processCollection = () =>{
+        this.initializeState();
 
         if(angular.isDefined(this.collectionPromise)){
-             this.hasCollectionPromise = true;
-             this.multipleCollectionDeffered.reject();
+                this.hasCollectionPromise = true;
+                this.multipleCollectionDeffered.reject();
         }
 
         if(this.collectionConfig != null){
@@ -149,7 +183,7 @@ class SWListingDisplayController{
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
 
-		if(this.multiSlot){
+        if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
             });
@@ -190,7 +224,7 @@ class SWListingDisplayController{
         }
 
         if (this.collectionObject){
-             this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
+                this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
     }
@@ -535,7 +569,7 @@ class SWListingDisplay implements ng.IDirective{
         customListingControls:"?swCustomListingControls"
     };
     public bindToController={
-
+            usingPersonalCollection:"<?",
             isRadio:"<?",
             angularLinks:"<?",
             isAngularRoute:"<?",

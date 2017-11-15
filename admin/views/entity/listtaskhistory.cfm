@@ -68,7 +68,7 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="response" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'TaskHistory'"
 		data-edit="false"
 		data-has-search="true"
