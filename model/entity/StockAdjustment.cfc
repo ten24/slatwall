@@ -57,6 +57,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="stockAdjustmentType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentType";
 	property name="stockAdjustmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentStatusType";
 	property name="physical" cfc="Physical" fieldtype="many-to-one" fkcolumn="physicalID";
+	property name="minMaxStockTransfer" cfc="MinMaxStockTransfer" fieldtype="many-to-one" fkcolumn="minMaxStockTransferID";
 	
 	// Related Object Properties (one-to-many)
 	property name="stockAdjustmentItems" singularname="stockAdjustmentItem" cfc="StockAdjustmentItem" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" inverse="true" cascade="all-delete-orphan";
