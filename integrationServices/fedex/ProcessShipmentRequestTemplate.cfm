@@ -143,7 +143,7 @@
            
            <ns:LabelSpecification>
 	           <ns:LabelFormatType>COMMON2D</ns:LabelFormatType>
-	           <ns:ImageType>PDF</ns:ImageType>
+	           <ns:ImageType>#trim(setting('labelImageType'))#</ns:ImageType>
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
 	        
