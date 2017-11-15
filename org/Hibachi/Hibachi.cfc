@@ -809,7 +809,7 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					if(updated){
+					if(updated && structKeyExists(request, "action")){
 						redirect(action=request.action,queryString='updated=true');
 					}
 				}

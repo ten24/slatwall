@@ -237,34 +237,36 @@
 								</div>
                             </div>
 
-                            <div class="table-responsive" ng-init="swFulfillmentBatchDetailController.state.orderItem = {}">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th><!--- Blank header for images ---></th>
-                                            <th>Item Name</th>
-                                            <th>Sku Code</th>
-                                            <th>Qty</th>
-                                            <th><!--- Blank header for fulfill count ---></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="orderItem in swFulfillmentBatchDetailController.state.orderFulfillmentItemsCollection">
-                                            <td><img src="{{orderItem['sku_imagePath']||'http://placehold.it/60x60'}}" width="60"></td>
-                                            <td>{{orderItem['sku_product_productName']}} {{orderItem['sku_skuName']}}</td>
-                                            <td>{{orderItem['sku_skuCode']}}</td>
-                                            <td>{{orderItem.quantity}}</td>
-                                            <td contenteditable='true'>
-                                                <input type="text" 
-                                                	name="orderItemQuantity_{{orderItem.orderItemID}}" 
-                                                	class="form-control" 
-                                                	ng-init="swFulfillmentBatchDetailController.state.orderItem[orderItem.orderItemID] = 1" 
-                                                	ng-model="swFulfillmentBatchDetailController.state.orderItem[orderItem.orderItemID]" 
-                                                	ng-required="true" />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="table-responsive">
+                                <div class="table table-bordered">
+                                    <div class="row">
+                                    	<div class="col-md-2">&nbsp</div>
+                                        <div class="col-md-2"><strong>Item Name</strong></div>
+                                        <div class="col-md-2"><strong>Sku Code</strong></div>
+                                        <div class="col-md-2"><strong>Qty Delivered</strong></div>
+                                        <div class="col-md-2"><strong>Qty Ordered</strong></div>
+                                        <div class="col-md-2">&nbsp</div>
+                                    </div><br>
+                                    <span ng-init="swFulfillmentBatchDetailController.orderItem = {}"></span>
+                                	<div class="row" ng-repeat="oi in swFulfillmentBatchDetailController.state.orderFulfillmentItemsCollection">
+                                        
+                                           <div class="col-md-2">
+                                           	<img src="{{oi['sku_imagePath']||'http://placehold.it/60x60'}}" width="60">
+                                           </div>
+                                           
+                                           <div class="col-md-2">{{oi['sku_product_productName']}} {{oi['sku_skuName']}}</div>
+                                           
+                                           <div class="col-md-2">{{oi['sku_skuCode']}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.quantityDelivered}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.quantity}}</div>
+                                           
+                                           <div class="col-md-2">
+                                            	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]"/>
+                                           </div>
+                                	</div>
+                                </div>
                             </div>
                         </div>
                     </div>

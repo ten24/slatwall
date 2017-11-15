@@ -283,6 +283,16 @@ component extends="HibachiService" output="false" accessors="true" {
 				defaultValue=getLedgerAccountService().getExpenseLedgerAccountIDList()
 			},
 			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
+			physicalEligibleAssetLedgerAccount = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="LedgerAccount",
+				listingMultiselectFilters=[{
+					propertyIdentifier="ledgerAccountType.systemCode",
+					value="latAsset"
+				}],
+				defaultValue=getLedgerAccountService().getAssetLedgerAccountIDList()
+			},
+			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="a54668fcc2ff2c8413c7b85b6927a850"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},
@@ -575,6 +585,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getHibachiEventService().getEntityEventNameOptions('before');
 			case "physicalDefaultExpenseLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
+				return optionsSL.getRecords();
+			case "physicalDefaultAssetLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
 				return optionsSL.getRecords();
 		}
 

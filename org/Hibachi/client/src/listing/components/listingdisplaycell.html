@@ -1,7 +1,7 @@
 
 
 <span
-      ng-bind="swListingDisplayCell.value"
+      ng-bind="swListingDisplayCell.column.ormtype == 'big_decimal' ? (swListingDisplayCell.value|number:2) :swListingDisplayCell.value"
       popover="{{swListingDisplayCell.popover}}"
       popover-trigger="mouseenter"
       popover-placement="bottom"

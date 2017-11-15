@@ -59,6 +59,7 @@ Notes:
 			recordEditAction="admin:entity.editminmaxsetup"
 			recorddetailaction="admin:entity.detailminmaxsetup">
 
+
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="setupName" />
 	</hb:HibachiListingDisplay>
 

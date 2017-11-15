@@ -529,6 +529,19 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	
+	public any function processMinMaxSetup_updateStockMinMax(required any MinMaxSetup, required any processObject) {
+
+		var location = locationService.getLocation(arguments.MinMaxSetup.getLocation().getLocationID());
+		for(var skuDetails in arguments.MinMaxSetup.getminMaxSetupCollection().getRecords()) {
+			var sku = skuService.getSku(skuDetails.skuID);
+			var stock = getStockBySkuANDLocation(sku, location);	
+			stock.setMinQuantity(arguments.MinMaxSetup.getMinQuantity());
+			stock.setMaxQuantity(arguments.MinMaxSetup.getMaxQuantity());
+		}
+	
+		return arguments.MinMaxSetup;
+	}
+	
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Status Methods ===========================
