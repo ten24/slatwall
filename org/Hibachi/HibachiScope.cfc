@@ -39,6 +39,21 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return super.init();
 	}
 	
+	//get the users personal collection options
+	public array function getCollectionOptions(){
+		//if new account then you have no personal collections
+		var collectionOptions = [];
+		
+		if(getAccount().getNewFlag()){
+			return collectionOptions;
+		}
+		
+		var collectionCollectionList = getService('HibachiCollectionService').getCollectionCollectionList();
+		collectionCollectionList.setDisplayProperties('collectionName|name,collectionID|value');
+		collectionCollectionList.addFilter('accountOwner.accountID',getAccount().getAccountID());
+		return collectionCollectionList.getRecords();
+	}
+	
 	public string function getPermissionGroupCacheKey(){
 		if(!structKeyExists(variables,'permissionGroupCacheKey')){
 			var permissionGroupCacheKey = "";

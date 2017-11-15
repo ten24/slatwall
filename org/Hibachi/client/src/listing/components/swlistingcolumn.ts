@@ -166,13 +166,20 @@ class SWListingColumn implements ng.IDirective{
             && scope.swListingDisplay.tableID.length
         ){
             var listingDisplayID = scope.swListingDisplay.tableID;
+            if(
+                scope.swListingDisplay.usePersonalCollection !=true
+                && scope.swListingDisplay.columns
+            ){
+                this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
+                this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
+            }
 
-            this.listingService.addColumn(listingDisplayID, scope.swListingColumn.column);
-            this.listingService.setupColumn(listingDisplayID,scope.swListingColumn.column);
         }else if(
             angular.isDefined(scope.swListingColumn.swListingDisplay)
             && scope.swListingColumn.swListingDisplay.tableID
             && scope.swListingColumn.swListingDisplay.tableID.length
+            && scope.swListingColumn.swListingDisplay.usePersonalCollection !=true
+            && scope.swListingColumn.swListingDisplay.columns
         ){
             var listingDisplayID = scope.swListingColumn.swListingDisplay.tableID;
 
@@ -181,6 +188,7 @@ class SWListingColumn implements ng.IDirective{
         }else {
             throw("listing display scope not available to sw-listing-column or there is no table id")
         }
+
     }
 }
 export{

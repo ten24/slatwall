@@ -72,7 +72,7 @@ Notes:
 
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
 	data-collection="'Audit'"
 	data-edit="false"
 	data-has-search="true"

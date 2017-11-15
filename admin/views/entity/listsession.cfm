@@ -65,7 +65,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
 </hb:HibachiListingDisplay> --->
 
-    <sw-listing-display
+    <sw-listing-display data-using-personal-collection="true"
         data-collection="'Session'"
         data-edit="false"
         data-has-search="true"

@@ -66,7 +66,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'ProductReview'"
 		data-edit="false"
 		data-has-search="true"

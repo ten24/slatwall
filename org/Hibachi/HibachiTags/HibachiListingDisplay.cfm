@@ -10,11 +10,11 @@
 
 	<!--- Optional --->
 	<cfparam name="attributes.title" type="string" default="" />
-	
+
 	<!--- Collection Params. If collectionList is specified the items below configure it --->
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
-	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="false"/>
+	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -87,12 +87,14 @@
 		<cfoutput>
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
-			
+
 			<span ng-init="
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
 			"></span>
+			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
+				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
 			    data-edit="false"
 				data-has-search="true"
@@ -104,6 +106,7 @@
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 			    edit="true"
+			    data-using-personal-collection="true"
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
@@ -113,42 +116,42 @@
 				<input name="#attributes.collectionConfigFieldName#" class="hidden" ng-model="#scopeVariableID#.collectionConfigString"/>
 			</cfif>
 		</cfoutput>
-		
+
 	<cfelse>
 		<cfsilent>
-			
-			
+
+
 			<cfif !isObject(attributes.smartList) && !len(attributes.smartlist)>
 				<cfthrow message="The required parameter attributes.smartList was not provided."/>
 			</cfif>
-			
+
 			<cfif isSimpleValue(attributes.smartList)>
 				<cfset attributes.smartList = attributes.hibachiScope.getService("hibachiService").getServiceByEntityName( attributes.smartList ).invokeMethod("get#attributes.smartList#SmartList") />
 			</cfif>
-	
+
 			<!--- Setup the example entity --->
 			<cfset thistag.exampleEntity = entityNew(attributes.smartList.getBaseEntityName()) />
-	
+
 			<!--- Setup export action --->
 			<cfif not len(attributes.exportAction)>
 				<cfset attributes.exportAction = "admin:entity.export#attributes.smartList.getBaseEntityName()#" />
 			</cfif>
-	
+
 			<!--- Setup the default table class --->
 			<cfset attributes.tableclass = listPrepend(attributes.tableclass, 'table table-bordered table-hover', ' ') />
-	
+
 			<!--- Setup Select --->
 			<cfif len(attributes.selectFieldName)>
 				<cfset thistag.selectable = true />
-	
+
 				<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-select', ' ') />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-selectfield="#attributes.selectFieldName#"', " ") />
 			</cfif>
-	
+
 			<!--- Setup Multiselect --->
 			<cfif len(attributes.multiselectFieldName)>
 				<cfset thistag.multiselectable = true />
-	
+
 				<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-multiselect', ' ') />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-multiselectfield="#attributes.multiselectFieldName#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-multiselectpropertyidentifier="#attributes.multiselectPropertyIdentifier#"', " ") />
@@ -158,7 +161,7 @@
 					<cfset attributes.smartList.addFilter("activeFlag", 1) />
 				</cfif>
 			</cfif>
-	
+
 			<!--- Look for Hierarchy in example entity --->
 			<cfif not len(attributes.parentPropertyName)>
 				<cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
@@ -166,61 +169,61 @@
 					<cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
 				</cfif>
 			</cfif>
-	
+
 			<!--- Setup Hierarchy Expandable --->
 			<cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false' && (isNull(attributes.expandable) || attributes.expandable)>
 				<cfset thistag.expandable = true />
-	
+
 				<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
-	
+
 				<cfset attributes.smartList.joinRelatedProperty( attributes.smartList.getBaseEntityName() , attributes.parentPropertyName, "LEFT") />
 				<cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
-	
+
 				<cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, "#thisTag.exampleEntity.getPrimaryIDPropertyName()#Path") />
-	
+
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-parentidproperty="#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#"', " ") />
-	
+
 				<cfset attributes.smartList.setPageRecordsShow(1000000) />
 			</cfif>
-	
+
 			<!--- Setup Sortability --->
 			<cfif len(attributes.sortProperty)>
 				<cfif not arrayLen(attributes.smartList.getOrders())>
 					<cfset thistag.sortable = true />
-	
+
 					<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-sortable', ' ') />
-	
+
 					<cfset attributes.smartList.addOrder("#attributes.sortProperty#|ASC") />
-	
+
 					<cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, "#attributes.sortProperty#") />
-	
+
 					<cfif len(attributes.sortContextIDColumn) and len(attributes.sortContextIDValue)>
 						<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-sortcontextidcolumn="#attributes.sortContextIDColumn#"', " ") />
 						<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-sortcontextidvalue="#attributes.sortContextIDValue#"', " ") />
 					</cfif>
 				</cfif>
 			</cfif>
-	
+
 			<!--- Setup the admin meta info --->
 			<cfset attributes.administativeCount = 0 />
-	
+
 			<!--- Detail --->
 			<cfif len(attributes.recordDetailAction)>
 				<cfset attributes.administativeCount++ />
-	
+
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailaction="#attributes.recordDetailAction#"', " ") />
 				<cfif len(attributes.recordDetailActionProperty)>
 					<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailactionproperty="#attributes.recordDetailActionProperty#"', " ") />
 				</cfif>
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailquerystring="#attributes.recordDetailQueryString#"', " ") />
-	
+
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailmodal="#attributes.recordDetailModal#"', " ") />
 			</cfif>
-	
+
 			<!--- Edit --->
 			<cfif len(attributes.recordEditAction)>
 				<cfset attributes.administativeCount++ />
-	
+
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editaction="#attributes.recordEditAction#"', " ") />
 				<cfif len(attributes.recordEditActionProperty)>
 					<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editactionproperty="#attributes.recordEditActionProperty#"', " ") />
@@ -228,33 +231,33 @@
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editquerystring="#attributes.recordEditQueryString#"', " ") />
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editmodal="#attributes.recordEditModal#"', " ") />
 			</cfif>
-	
+
 			<!--- Delete --->
 			<cfif len(attributes.recordDeleteAction)>
 				<cfset attributes.administativeCount++ />
-	
+
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-deleteaction="#attributes.recordDeleteAction#"', " ") />
 				<cfif len(attributes.recordDeleteActionProperty)>
 					<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-deleteactionproperty="#attributes.recordDeleteActionProperty#"', " ") />
 				</cfif>
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-deletequerystring="#attributes.recordDeleteQueryString#"', " ") />
 			</cfif>
-	
+
 			<!--- Process --->
 			<cfif len(attributes.recordProcessAction) and attributes.recordProcessButtonDisplayFlag>
 				<cfset attributes.administativeCount++ />
-	
+
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processcontext="#attributes.recordProcessContext#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentity="#attributes.recordProcessEntity.getClassName()#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentityid="#attributes.recordProcessEntity.getPrimaryIDValue()#"', " ") />
-	
+
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-processaction="#attributes.recordProcessAction#"', " ") />
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-processcontext="#attributes.recordProcessContext#"', " ") />
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-processquerystring="#attributes.recordProcessQueryString#"', " ") />
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-processupdatetableid="#attributes.recordProcessUpdateTableID#"', " ") />
 			</cfif>
-	
-	
+
+
 			<!--- Setup the primary representation column if no columns were passed in --->
 			<cfif not arrayLen(thistag.columns)>
 				<cfset arrayAppend(thistag.columns, {
@@ -269,24 +272,24 @@
 					buttonGroup = true
 				}) />
 			</cfif>
-	
+
 			<!--- Setup the list of all property identifiers to be used later --->
 			<cfloop array="#thistag.columns#" index="column">
-	
+
 				<!--- If this is a standard propertyIdentifier --->
 				<cfif len(column.propertyIdentifier)>
-	
+
 					<!--- Add to the all property identifiers --->
 					<cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, column.propertyIdentifier) />
-	
+
 					<!--- Check to see if we need to setup the dynamic filters, ect --->
 					<cfif not len(column.search) || not len(column.sort) || not len(column.filter) || not len(column.range)>
-	
+
 						<!--- Get the entity object to get property metaData --->
 						<cfset thisEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), column.propertyIdentifier ) />
 						<cfset thisPropertyName = listLast( column.propertyIdentifier, "." ) />
 						<cfset thisPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( thisEntityName, thisPropertyName ) />
-	
+
 						<!--- Setup automatic search, sort, filter & range --->
 						<cfif !isNull(thisPropertyMeta) && not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
 							<cfset column.search = true />
@@ -300,13 +303,13 @@
 						</cfif>
 						<cfif !isNull(thisPropertyMeta) && not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
 							<cfset column.filter = false />
-	
+
 							<cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
 								<cfset column.filter = true />
 							</cfif>
 							<!---
 							<cfif !column.filter && listLen(column.propertyIdentifier, '._') gt 1>
-	
+
 								<cfset oneUpPropertyIdentifier = column.propertyIdentifier />
 								<cfset oneUpPropertyIdentifier = listDeleteAt(oneUpPropertyIdentifier, listLen(oneUpPropertyIdentifier, '._'), '._') />
 								<cfset oneUpPropertyName = listLast(oneUpPropertyIdentifier, '.') />
@@ -332,7 +335,7 @@
 					<cfset column.sort = false />
 					<cfset column.filter = false />
 					<cfset column.range = false />
-	
+
 					<cfset thistag.allprocessobjectproperties = listAppend(thistag.allprocessobjectproperties, column.processObjectProperty) />
 				</cfif>
 				<cfif findNoCase("primary", column.tdClass) and thistag.expandable>
@@ -340,7 +343,7 @@
 					<cfset column.sort = false />
 				</cfif>
 			</cfloop>
-	
+
 			<!--- Setup a variable for the number of columns so that the none can have a proper colspan --->
 			<cfset thistag.columnCount = arrayLen(thisTag.columns) />
 			<cfif thistag.selectable>
@@ -358,9 +361,9 @@
 			<cfif attributes.administativeCount>
 			</cfif>
 		</cfsilent>
-	
+
 		<cfoutput>
-	
+
 			<div class="s-table-header-nav s-listing-head-margin">
 				<cfif len(attributes.title)>
 					<div class="col-xs-6 s-no-padding-left">
@@ -371,14 +374,14 @@
 						</ul>
 					</div>
 				</cfif>
-	
+
 				<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
 					<ul class="list-inline list-unstyled">
 						<li class="s-table-action">
 							<div class="btn-group navbar-left dropdown">
-	
+
 								<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>
-	
+
 								<ul class="dropdown-menu pull-right" role="menu">
 									<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 								</ul>
@@ -396,7 +399,7 @@
 										</cfif>
 									</cfloop>
 								</cfif>
-	
+
 								<!--- Listing: Create --->
 								<cfif len(attributes.createAction)>
 									<div class="btn-group">
@@ -407,7 +410,7 @@
 										</cfif>
 									</div>
 								</cfif>
-	
+
 							</div>
 						</li>
 						<li class="s-table-header-search">
@@ -416,14 +419,14 @@
 							</cfif>
 						</li>
 					</ul>
-	
+
 				</div>
 			</div><!--- reyjay's class --->
-	
+
 			<div class="table-responsive s-listing-display-table-wrapper">
 				<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" data-recordalias='#attributes.recordAlias#' #attributes.tableattributes#>
 					<thead>
-	
+
 						<tr>
 							<!--- Selectable --->
 							<cfif thistag.selectable>
@@ -554,11 +557,11 @@
 								<cfif thistag.sortable>
 									<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
 								</cfif>
-								
+
 								<cfloop array="#thistag.columns#" index="column">
 									<!--- Expandable Check --->
 									<cfif column.tdclass eq "primary" and thistag.expandable>
-										<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> 
+										<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a>
 											<cfif record.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) eq 'wysiwyg'>
 												#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
 											<cfelse>
@@ -602,11 +605,11 @@
 												<cfset detailActionProperty=record.getPrimaryIDPropertyName()>
 												<cfset detailActionPropertyValue=record.getPrimaryIDValue()>
 											</cfif>
-	
+
 											<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
 											<hb:HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#detailActionProperty#=#detailActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
 										</cfif>
-	
+
 										<!--- Edit --->
 										<cfif len(attributes.recordEditAction)>
 											<cfif len(attributes.recordEditActionProperty)>
@@ -622,7 +625,7 @@
 											<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
 											<hb:HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#editActionProperty#=#editActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
 										</cfif>
-	
+
 										<!--- Delete --->
 										<cfif len(attributes.recordDeleteAction)>
 											<cfif len(attributes.recordDeleteActionProperty)>
@@ -638,7 +641,7 @@
 											<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
 											<hb:HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#deleteActionProperty#=#deleteActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
 										</cfif>
-	
+
 										<!--- Process --->
 										<cfif len(attributes.recordProcessAction)>
 											<cfif len(attributes.recordDeleteActionProperty)>
@@ -664,15 +667,15 @@
 						</cfif>
 					</tbody>
 				</table>
-	
+
 				</div><!--- table-responsive --->
-	
-	
+
+
 			<!--- Pager --->
 			<cfsilent>
 				<cfset local.pageStart = 1 />
 				<cfset local.pageCount = 2 />
-	
+
 				<cfif attributes.smartList.getTotalPages() gt 6>
 					<cfif attributes.smartList.getCurrentPage() lte 3>
 						<cfset local.pageCount = 4 />
@@ -685,10 +688,10 @@
 				<cfelse>
 					<cfset local.pageCount = attributes.smartList.getTotalPages() - 1 />
 				</cfif>
-	
+
 				<cfset local.pageEnd = local.pageStart + local.pageCount />
 			</cfsilent>
-	
+
 			<div class="j-pagination" data-tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 				<ul class="pagination paginationpages#attributes.smartList.getTotalPages()#">
 					<li><a href="##" class="paging-show-toggle">#attributes.hibachiScope.rbKey('define.show')# <span class="details">(#attributes.smartList.getPageRecordsStart()# - #attributes.smartList.getPageRecordsEnd()# #lcase(attributes.hibachiScope.rbKey('define.of'))# #attributes.smartList.getRecordsCount()#)</span></a></li>
@@ -697,7 +700,7 @@
 					<li><a href="##" class="show-option" data-show="50">50</a></li>
 					<li><a href="##" class="show-option" data-show="100">100</a></li>
 					<li><a href="##" class="show-option" data-show="250">250</a></li>
-					<cfif attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') eq 0 
+					<cfif attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') eq 0
 						|| attributes.hibachiScope.setting('globalSmartListGetAllRecordsLimit') gte attributes.smartList.getRecordsCount()
 					>
 						<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>

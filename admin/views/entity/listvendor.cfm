@@ -70,7 +70,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" search="true" />
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Vendor'"
 		data-edit="false"
 		data-has-search="true"

@@ -76,7 +76,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="currentFlag" sort=false search=false range=false filter=false />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Promotion'"
 		data-edit="false"
 		data-has-search="true"

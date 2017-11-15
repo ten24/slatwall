@@ -78,7 +78,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="total" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'VendorOrder'"
 		data-edit="false"
 		data-has-search="true"

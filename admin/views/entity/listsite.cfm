@@ -73,7 +73,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Site'"
 		data-edit="false"
 		data-has-search="true"

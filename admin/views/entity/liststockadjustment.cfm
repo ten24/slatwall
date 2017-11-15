@@ -78,7 +78,7 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 	    data-collection="'StockAdjustment'"
 	    data-edit="false"
 	    data-has-search="true"
