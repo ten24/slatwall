@@ -156,12 +156,12 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 
 	public any function getMeasurementUnit(){
 		if(!StructKeyExists(variables, 'measurementUnit') || isNull(variables.measurementUnit)){
-			if(!isNull(getBundledSku()) && getBundledSku().getInventoryTrackBy() != 'Quantity'){
+			if(!isNull(getBundledSku()) && getBundledSku().getInventoryTrackBy() == 'Measurement'){
 				variables.measurementUnit = getBundledSku().getInventoryMeasurementUnit();
 			}else{
 				return;
 			}
-		}else if(getBundledSku().getInventoryTrackBy() == 'Quantity'){
+		}else if(getBundledSku().getInventoryTrackBy() != 'Measurement'){
 			structDelete(variables, 'measurementUnit');
 			return;
 		}
