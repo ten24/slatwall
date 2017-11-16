@@ -63,6 +63,10 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public struct function getSettings() {
 		return {};
 	}
+
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return false;
+	}
 	
 	public array function getEventHandlers() {
 		return [];
