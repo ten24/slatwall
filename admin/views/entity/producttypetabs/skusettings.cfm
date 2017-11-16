@@ -51,12 +51,8 @@ Notes:
 
 <cfparam name="rc.productType" type="any" />
 
-<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
-<cfset sites.addFilter('activeFlag', 1) /> 
-<cfset rc.sitesArray = sites.getRecords() />
-
 <cfoutput>
-	<swa:SlatwallSettingTable>
+	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.productType#" />
@@ -100,15 +96,4 @@ Notes:
 			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.productType#"/>
 		</cfif>
 	</swa:SlatwallSettingTable>
-
-	<!--- Site Specific Settings --->
-	<cfloop array="#rc.sitesArray#" index="site">
-		<hr />
-		<h4>#site.getSiteName()#</h4>
-		<swa:SlatwallSettingTable showInheritance="true">
-		<cfloop list="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods" index="local.settingName">
-			<swa:SlatwallSetting settingName="#local.settingName#" settingObject="#rc.productType#" settingFilterEntities="#[site]#" />
-		</cfloop>
-		</swa:SlatwallSettingTable>
-	</cfloop>
 </cfoutput>
