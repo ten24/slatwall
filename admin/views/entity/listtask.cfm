@@ -71,7 +71,7 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Task'"
 		data-edit="false"
 		data-has-search="true"

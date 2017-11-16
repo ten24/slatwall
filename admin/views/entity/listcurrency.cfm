@@ -72,7 +72,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="formattedExample" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 	    data-collection="'Currency'"
 	    data-edit="false"
 	    data-has-search="true"

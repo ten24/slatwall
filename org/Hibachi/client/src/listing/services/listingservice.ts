@@ -854,7 +854,7 @@ class ListingService{
     //for multi order by
     public columnOrderByIndex = (listingID:string, column) =>{
         var isfound = false;
-        if(column.sorting.active && column.sorting.sortOrder){
+        if(column.sorting && column.sorting.active && column.sorting.sortOrder){
             return column.sorting.sortOrder.toUpperCase();
         }
         if(this.getListing(listingID).collectionConfig != null){

@@ -52,7 +52,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
-	public void function deployApplication(required any app, boolean createAppTemplatesFlag=false) {
+	public void function deployApplication(required any app) {
 		// copy skeletonapp to /apps/{applicationCodeOrID} 
 		if(!directoryExists(arguments.app.getAppPath())){
 			directoryCreate(arguments.app.getAppPath());
@@ -64,18 +64,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			recurse=false, 
 			copyContentExclusionList=".svn,.git"
 		);
-		if(!createAppTemplatesFlag){
-			
-			var appTemplatesPath = arguments.app.getAppPath() & '/templates/'; 	
-			if(DirectoryExists(appTemplatesPath)){ 
-				directoryDelete(appTemplatesPath,true);
-			}
-		    
-			var appTagsPath = arguments.app.getAppPath() & '/tags/'; 
-			if(DirectoryExists(appTagsPath)){ 
-				directoryDelete(appTagsPath,true);
-			}
-		}
+		
 	}
 	
 	public void function updateCMSApp(required app){

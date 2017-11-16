@@ -70,7 +70,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'PrintTemplate'"
 		data-edit="false"
 		data-has-search="true"

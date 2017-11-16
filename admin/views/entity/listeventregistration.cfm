@@ -76,7 +76,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'EventRegistration'"
 		data-edit="false"
 		data-has-search="true"

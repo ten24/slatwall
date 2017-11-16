@@ -71,7 +71,7 @@ Notes:
 
 	</hb:HibachiListingDisplay>--->
 
-  <sw-listing-display
+  <sw-listing-display data-using-personal-collection="true"
 			data-collection="'LedgerAccount'"
 			data-edit="false"
 			data-has-search="true"

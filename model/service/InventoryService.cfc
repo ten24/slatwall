@@ -84,6 +84,8 @@ component extends="HibachiService" accessors="true" output="false" {
 					//set the cogs ledger account 
 					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuCogsLedgerAccount'));
 					inventory.setCogsLedgerAccount(cogsLedgerAccount);
+					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuAssetLedgerAccount'));
+					inventory.setAssetLedgerAccount(assetLedgerAccount);
 				}
 			}
 			
@@ -96,7 +98,13 @@ component extends="HibachiService" accessors="true" output="false" {
 					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultExpenseLedgerAccount');
 					var expenseLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
 				}
-				
+				if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getAssetLedgerAccount())){
+					var assetLedgerAccount = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getAssetLedgerAccount();
+				}else{
+					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultAssetLedgerAccount');
+					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
+				}
+				inventory.setAssetLedgerAccount(assetLedgerAccount);
 				inventory.setExpenseLedgerAccount(expenseLedgerAccount);
 			}
 			
@@ -145,6 +153,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the revenue ledger account 
 						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
 						inventory.setRevenueLedgerAccount(revenueLedgerAccount);
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					
 					
@@ -163,6 +173,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the inventory ledger account 
 						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					getHibachiDAO().save( inventory );
 				}
@@ -201,6 +213,8 @@ component extends="HibachiService" accessors="true" output="false" {
 						//set the inventory ledger account 
 						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
 						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
 					getHibachiDAO().save( inventory );
 				}
@@ -459,6 +473,50 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Process Methods ===========================
 	
+
+	public any function saveInventoryAnalysis(required any inventoryAnalysis, struct data={}, string context="save"){
+		
+		arguments.inventoryAnalysis = super.save(entity=arguments.inventoryAnalysis,data=arguments.data);
+
+		arguments.inventoryAnalysis.setAnalysisHistoryStartDateTime(dateAdd('yyyy',-1,arguments.inventoryAnalysis.getAnalysisStartDateTime()));
+		arguments.inventoryAnalysis.setAnalysisHistoryEndDateTime(arguments.inventoryAnalysis.getAnalysisStartDateTime());
+		arguments.inventoryAnalysis.setAnalysisHistoryDaysOutDateTime(dateAdd('d',arguments.inventoryAnalysis.getDaysOut(),arguments.inventoryAnalysis.getAnalysisStartDateTime()));
+
+		return arguments.inventoryAnalysis;
+	}
+
+	public any function processInventoryAnalysis_exportXLS(required any InventoryAnalysis, required any processObject) {
+
+		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.xls';
+		var fullFilename = getHibachiTempDirectory() & filename;
+
+		// Create spreadsheet object
+		var spreadsheet = spreadsheetNew(filename);
+		var spreadsheetrowcount = 0;
+		// Add the column headers
+		spreadsheetAddRow(spreadsheet, arguments.InventoryAnalysis.getReportData().headerRowXSL);
+		spreadsheetrowcount += 1;
+		spreadsheetFormatRow(spreadsheet, {bold=true}, 1);
+		// Add rows
+		spreadsheetAddRows(spreadsheet, arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query);
+		spreadsheetrowcount += arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query.recordcount;
+
+		spreadsheetWrite( spreadsheet, fullFilename, true );
+		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
+
+		return arguments.InventoryAnalysis;
+	}
+	public any function processInventoryAnalysis_exportCSV(required any InventoryAnalysis, required any processObject) {
+
+		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.csv';
+		var fullFilename = getHibachiTempDirectory() & filename;
+
+		fileWrite(fullFilename, getService("hibachiUtilityService").queryToCSV(arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query, arguments.InventoryAnalysis.getReportData().columnList, true ));
+		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
+
+		return arguments.InventoryAnalysis;
+	}
+
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================

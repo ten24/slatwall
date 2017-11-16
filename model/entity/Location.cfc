@@ -46,10 +46,11 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
+component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation"  hb_childPropertyName="childLocations" {
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationCode" ormtype="string";
 	property name="locationIDPath" ormtype="string";
 	property name="locationName" ormtype="string";
 	property name="activeFlag" ormtype="boolean" ;
@@ -64,6 +65,10 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all" type="array";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
+	property name="minMaxStockTransferItemToTopLocationIDs" singularname="minMaxStockTransferItemToTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemToLeafLocationIDs" singularname="minMaxStockTransferItemToLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemFromTopLocationIDs" singularname="minMaxStockTransferItemFromTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemFromLeafLocationIDs" singularname="minMaxStockTransferItemFromLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
 
 	// Related Object Properties (Many-to-Many - owner)
 	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="locationID" inversejoincolumn="siteID";

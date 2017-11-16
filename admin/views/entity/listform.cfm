@@ -61,7 +61,7 @@ Notes:
 	</sw-entity-action-bar>
 
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 			data-collection="'Form'"
 			data-edit="false"
 			data-has-search="true"

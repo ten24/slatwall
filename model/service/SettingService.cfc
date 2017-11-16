@@ -96,13 +96,15 @@ component extends="HibachiService" output="false" accessors="true" {
 			"task",
 			"sku",
 			"attribute",
-			"physical"
+			"physical",
+			"location"
 		];
 	}
 
 	public struct function getSettingLookupOrder() {
 		return {
 			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
+			location=["locationIDPath"],
 			locationConfiguration = ["location.locationID"	],
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
@@ -255,6 +257,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
 
+			// Location
+			locationRequiresQATSForOrdering = {fieldType="yesno",defaultValue=1},
+			locationExcludeFromQATS = {fieldType="yesno",defaultValue=0},
+			
 			// Location Configuration
 			locationConfigurationCapacity = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
@@ -277,6 +283,16 @@ component extends="HibachiService" output="false" accessors="true" {
 				defaultValue=getLedgerAccountService().getExpenseLedgerAccountIDList()
 			},
 			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
+			physicalEligibleAssetLedgerAccount = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="LedgerAccount",
+				listingMultiselectFilters=[{
+					propertyIdentifier="ledgerAccountType.systemCode",
+					value="latAsset"
+				}],
+				defaultValue=getLedgerAccountService().getAssetLedgerAccountIDList()
+			},
+			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="a54668fcc2ff2c8413c7b85b6927a850"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},
@@ -331,6 +347,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
+			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
@@ -568,6 +585,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getHibachiEventService().getEntityEventNameOptions('before');
 			case "physicalDefaultExpenseLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
+				return optionsSL.getRecords();
+			case "physicalDefaultAssetLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
 				return optionsSL.getRecords();
 		}
 

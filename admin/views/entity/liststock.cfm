@@ -73,7 +73,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="calculatedAverageLandedCost" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Stock'"
 		data-edit="false"
 		data-has-search="true"
@@ -83,7 +83,7 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 	>
-		<sw-listing-column data-property-identifier="skuID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="stockID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="sku.skuCode" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="sku.product.productName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="sku.product.productCode" ></sw-listing-column>

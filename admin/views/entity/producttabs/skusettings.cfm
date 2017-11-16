@@ -64,22 +64,26 @@ Notes:
 	<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />
-	<cfif rc.product.getProductType().getBaseProductType() eq "gift-card">
-		<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.product#" />
-	<cfelse>
-		<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.product#" />
-	</cfif>
 	<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" settingObject="rc.product" />
 	<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.product#" />
+	<cfif rc.product.getProductType().getBaseProductType() eq "gift-card">
+		<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="skuGiftCardCodeLength" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="skuGiftCardRecipientRequired" settingObject="#rc.product#" />
+	<cfelse>
+		<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.product#" />
+	</cfif>
 	<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.product#" />
 	
 	<cfif rc.product.getProductType().getBaseProductType() eq "merchandise">

@@ -9,6 +9,7 @@ import * as actions from '../actions/fulfillmentbatchactions';
 class SWFulfillmentBatchDetailController  {
     
     public state;
+    public orderItem = {};
     public fulfillmentBatchId: string;
     
     // @ngInject
@@ -99,6 +100,7 @@ class SWFulfillmentBatchDetailController  {
 
     public userCaptureAndFulfill = () => {
         //request the fulfillment process.
+        this.state.orderItem = this.orderItem;
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }

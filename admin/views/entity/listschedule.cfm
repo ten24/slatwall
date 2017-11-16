@@ -69,7 +69,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Schedule'"
 		data-edit="false"
 		data-has-search="true"

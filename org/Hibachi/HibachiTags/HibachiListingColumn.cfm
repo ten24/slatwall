@@ -16,5 +16,7 @@
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="true" /> 		<!--- If set to false, will hide select box if no options are available --->
 	
+	<cfparam name="attributes.methodIdentifier" type="string" default="" />
+	
 	<cfassociate basetag="cf_HibachiListingDisplay" datacollection="columns">
 </cfif>

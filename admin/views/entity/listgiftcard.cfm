@@ -61,7 +61,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 			data-collection="'GiftCard'"
 			data-edit="false"
 			data-has-search="true"

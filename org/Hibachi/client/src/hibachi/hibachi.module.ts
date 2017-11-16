@@ -29,7 +29,7 @@ var hibachimodule = angular.module('hibachi',[
 ]).config([()=>{
 
 }])
-.run(['$rootScope','publicService','$hibachi', ($rootScope, publicService, $hibachi)=> {
+.run(['$rootScope','publicService','$hibachi','localStorageService', ($rootScope, publicService, $hibachi, localStorageService)=> {
 
     $rootScope.hibachiScope = publicService;
     $rootScope.hasAccount = publicService.hasAccount;
@@ -48,6 +48,11 @@ var hibachimodule = angular.module('hibachi',[
     if($hibachi.newState){
         $rootScope.hibachiScope.getAddressOptions();
     }
+
+    if(localStorageService.hasItem('selectedPersonalCollection')){
+        $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
+    }
+
 }])
 .constant('hibachiPartialsPath','hibachi/components/')
 .directive('swSaveAndFinish',SWSaveAndFinish.Factory())

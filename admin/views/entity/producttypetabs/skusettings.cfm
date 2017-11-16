@@ -76,6 +76,11 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.productType#" />
+		<cfif rc.productType.getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" settingObject="#rc.productType#" />
+			<swa:SlatwallSetting settingName="skuGiftCardCodeLength" settingObject="#rc.productType#" />
+			<swa:SlatwallSetting settingName="skuGiftCardRecipientRequired" settingObject="#rc.productType#" />
+		</cfif>
 		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.productType#" />
 		<cfif rc.productType.getBaseProductType() eq "merchandise">
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
