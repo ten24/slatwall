@@ -97,7 +97,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			"sku",
 			"attribute",
 			"physical",
-			"location"
+			"location",
+			"integration"
 		];
 	}
 
@@ -800,7 +801,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public boolean function isGlobalSetting(required string settingName){
-		return left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration";
+		return left(arguments.settingName, 6) == "global";
 	}
 
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false, boolean siteAutoProvided=false) {

@@ -64,8 +64,22 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return {};
 	}
 
+	// @hint Determines whether integration should allow site specific setting overrides
 	public boolean function getAllowSiteSpecificSettingsFlag() {
 		return false;
+	}
+
+	// @hint comma-delimitd list of settings to display that allow site specific overrides (without 'integration{packageName}' prefix)
+	public string function getAllowedSiteSettingNames() {
+		return "";
+	}
+
+	public string function getAllowedSiteSettingNamesPrefixed() {
+		variables.settingNamesPrefixed = "";
+		for (var settingName in listToArray(getAllowedSiteSettingNames())) {
+			variables.settingNamesPrefixed = listAppend(variables.settingNamesPrefixed, "integration#getPackageName()##settingName#");
+		}
+		return variables.settingNamesPrefixed;
 	}
 	
 	public array function getEventHandlers() {
