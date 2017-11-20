@@ -115,7 +115,7 @@ Notes:
 						</tr>
 						
 						<!--- Order Items --->
-						<tr ng-repeat="orderItem in slatwall.cart.orderItems track by $index">
+						<tr ng-repeat="orderItem in slatwall.cart.orderItems">
 							<!--- Product Image --->
 							<td>
 								<div ng-init="slatwall.getResizedImageByProfileName('large', orderItem.sku.skuID)">
