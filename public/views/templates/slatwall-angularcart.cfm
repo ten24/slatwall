@@ -153,7 +153,7 @@ Notes:
 						    			<i class="fa fa-chevron-right"></i>
 						    		</button>
 						        </div> --->
-						        <sw-form ng-init="orderItemQuantity = {}; slatwall.binder(slatwall,slatwall.copyOrderItem,orderItemQuantity, orderItem)()"
+						        <sw-form ng-init="orderItemQuantity = {}; slatwall.binder(orderItemQuantity,slatwall.copyOrderItem,orderItem)()"
 						        	data-object="orderItemQuantity"
 						        	data-name="orderItemQuantity"
 						        	data-event-announcers="keyup"
@@ -165,7 +165,7 @@ Notes:
 							        		data-property-identifier="orderItem.quantity"
 							        		data-label-text=""
 							        		data-field-type="text"
-							        		data-event-listener="{updateOrderItemSuccess:slatwall.binder(slatwall,slatwall.copyOrderItem,orderItemQuantity, orderItem)}"
+							        		data-event-listener="{updateOrderItemSuccess:slatwall.binder(orderItemQuantity,slatwall.copyOrderItem,orderItem)}"
 							        	></swf-property-display>
 						        	</div>
 						        	<div class="col-sm-6">
