@@ -78,6 +78,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="currentDomain";
 	property name="currentRequestSite";
 	property name="currentRequestSitePathType" default="domain"; //enums: domain,sitecode
+	property name="currentRequestSiteLocation";
 	
 	property name="currentProductSmartList";
 	
@@ -126,6 +127,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public string function getCurrentRequestSitePathType(){
 		return variables.currentRequestSitePathType;
+	}
+	
+	public any function getCurrentRequestSiteLocation(){
+		if(!structKeyExists(variables,'currentRequestSiteLocation')){
+			var site = getCurrentRequestSite();
+			if ( !isNull(site) ){
+				//Though the relationship is a many-to-many we're only dealing with 1 location at as time
+				variables.currentRequestSiteLocation= site.getLocations()[1];
+			}
+		}
+
+		if(isNull(variables.currentRequestSiteLocation)){
+			return;
+		}
+		return variables.currentRequestSiteLocation;
 	}
 	
 	public void function setCurrentRequestSitePathType(required string currentRequestSitePathType){
