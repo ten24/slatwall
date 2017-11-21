@@ -834,13 +834,19 @@ component extends="HibachiService" output="false" accessors="true" {
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 
 		// Method argument validation for site-level setting value resolution
-		for (var entity in arguments.filterEntities) {
-			if (entity.getClassName() == 'Site') {
-				settingDetails.siteProvided = true;
-				settingDetails.siteContext.siteID = entity.getSiteID();
-				settingDetails.siteContext.siteCode = entity.getSiteCode();
-				break;
+		if (isNull(arguments.object) || arguments.object.getClassName() != 'Site') {
+			for (var entity in arguments.filterEntities) {
+				if (entity.getClassName() == 'Site') {
+					settingDetails.siteProvided = true;
+					settingDetails.siteContext.siteID = entity.getSiteID();
+					settingDetails.siteContext.siteCode = entity.getSiteCode();
+					break;
+				}
 			}
+		} else {
+			settingDetails.siteProvided = true;
+			settingDetails.siteContext.siteID = arguments.object.getSiteID();
+			settingDetails.siteContext.siteCode = arguments.object.getSiteCode();
 		}
 
 		//if we have a default value initialize it
