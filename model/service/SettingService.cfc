@@ -765,14 +765,24 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-		arguments.siteAutoProvided = false;
 		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
 		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
-			arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
-			arguments.siteAutoProvided = true;
+
+			// Make sure a site entity does not already exist in the filterEntities, we do not want to unecessarily add the additional site combo that can't exist
+			var siteFound = false;
+			for(var entity in arguments.filterEntities) {
+				if (entity.getClassName() == 'Site') {
+					siteFound = true;
+					break;
+				}
+			}
+
+			if (!siteFound) {
+				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
+			}
 		}
 
-		// Build out the cached key
+		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
 		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
@@ -782,7 +792,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
 		}
-		cacheKey &= "siteAutoProvided_#arguments.siteAutoProvided#";
 
 		// Get the setting details using the cacheKey to try and get it from cache first
 		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
@@ -804,7 +813,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		return left(arguments.settingName, 6) == "global";
 	}
 
-	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false, boolean siteAutoProvided=false) {
+	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		
 		// Create some placeholder Var's
 		var foundValue = false;
@@ -816,7 +825,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			settingRelationships = {},
 			settingInherited = false,
 			settingValueResolvedLevel = "undefined",
-			siteAutoProvided = arguments.siteAutoProvided,
+			siteProvided = false,
 			siteContext = {
 				siteID = "",
 				siteCode = ""
@@ -825,24 +834,19 @@ component extends="HibachiService" output="false" accessors="true" {
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 
 		// Method argument validation for site-level setting value resolution
-		
-		var siteFound = false;
 		for (var entity in arguments.filterEntities) {
 			if (entity.getClassName() == 'Site') {
-				siteFound = true;
+				settingDetails.siteProvided = true;
 				settingDetails.siteContext.siteID = entity.getSiteID();
 				settingDetails.siteContext.siteCode = entity.getSiteCode();
 				break;
 			}
 		}
-		if (arguments.siteAutoProvided && !siteFound) {
-			throw("The method invoked with 'siteAutoProvided' requires the 'filterEntities' argument to contain a site object.");
-		}
 
 		//if we have a default value initialize it
 		if(structKeyExists(settingMetaData, "defaultValue")) {
 			settingDetails.settingValue = settingMetaData.defaultValue;
-			settingDetails.settingValueResolvedLevel = "global.default";
+			settingDetails.settingValueResolvedLevel = "global.metadata";
 
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
@@ -880,23 +884,9 @@ component extends="HibachiService" output="false" accessors="true" {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				// Attempt low object level value resolution with consideration for site context if necessary
-				if (!arguments.siteAutoProvided) {
-
-					// First Check to see if there is a setting the is explicitly defined to this object
-					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-					if(settingRecord.recordCount) {
-						foundValue = true;
-						settingDetails.settingValue = settingRecord.settingValue;
-						settingDetails.settingID = settingRecord.settingID;
-						settingDetails.settingInherited = false;
-						settingDetails.settingValueResolvedLevel = 'object';
-					} else {
-						structClear(settingDetails.settingRelationships);
-					}
-
-				// Site was auto provided so we need to try and resolve on object-site level and possibly object level also
-				} else {
+				// Attempting lowest object level value resolution with consideration for site context if necessary
+				// A site exists
+				if (settingDetails.siteProvided) {
 					// Trying object-site level value resolution with the siteID and any other specified relationships
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
@@ -905,21 +895,30 @@ component extends="HibachiService" output="false" accessors="true" {
 						settingDetails.settingID = settingRecord.settingID;
 						settingDetails.settingInherited = false;
 						settingDetails.settingValueResolvedLevel = 'object.site';
-					
-					// Now try just object level value resolution without siteID in settingRelationships since it was implicitly provided automatically
-					} else {
-						structDelete(settingDetails.settingRelationships, 'siteID'); 
-						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-						if(settingRecord.recordCount) {
-							foundValue = true;
-							settingDetails.settingValue = settingRecord.settingValue;
-							settingDetails.settingID = settingRecord.settingID;
-							settingDetails.settingInherited = false;
-							settingDetails.settingValueResolvedLevel = 'object';
-						}
 					}
+				}
 
-					if (!foundValue) {
+				// Attempt object level value resolution without site context if necessary
+				if (!foundValue) {
+					// Delete any siteID from settingRelationship if present
+					structDelete(settingDetails.settingRelationships, 'siteID');
+
+					// Now try just object level value resolution without siteID in settingRelationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingInherited = false;
+						settingDetails.settingValueResolvedLevel = 'object';
+
+						// object-site inherits from object
+						if (settingDetails.siteProvided) {
+							settingDetails.settingInherited = true;
+						}
+
+					// Still not found, resets settingRelationships for next step: ancestor lookup, it re-processes the filterEntities
+					} else {
 						structClear(settingDetails.settingRelationships);
 					}
 				}
@@ -964,9 +963,29 @@ component extends="HibachiService" output="false" accessors="true" {
 							settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 						}
 
-						// Attempt object's ancestor level value resolution with consideration for site context if necessary
-						if (!arguments.siteAutoProvided) {
-							
+						// Site was provided so we need to try and resolve on object's ancestor-site level and possibly object's ancestor level after
+						if (settingDetails.siteProvided) {
+							// Trying object's ancestor-site level value resolution with the siteID and any other specified relationships
+							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+							if(settingRecord.recordCount) {
+								foundValue = true;
+								settingDetails.settingValue = settingRecord.settingValue;
+								settingDetails.settingID = settingRecord.settingID;
+								settingDetails.settingValueResolvedLevel = "ancestor.site";
+	
+								// Add custom logic for cmsContentID
+								if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
+									settingDetails.settingInherited = false;
+								} else {
+									settingDetails.settingInherited = true;
+								}
+							}
+						}
+
+						// Attempt object's ancestor level value resolution without site context if necessary
+						if (!foundValue) {
+							// Delete any siteID from settingRelationship if present
+							structDelete(settingDetails.settingRelationships, 'siteID'); 
 							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 							if(settingRecord.recordCount) {
 								foundValue = true;
@@ -983,46 +1002,6 @@ component extends="HibachiService" output="false" accessors="true" {
 							} else {
 								structClear(settingDetails.settingRelationships);
 							}
-						
-						// Site was auto provided so we need to try and resolve on object's ancestor-site level and possibly object's ancestor level also
-						} else {
-							// Trying object's ancestor-site level value resolution with the siteID and any other specified relationships
-							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-							if(settingRecord.recordCount) {
-								foundValue = true;
-								settingDetails.settingValue = settingRecord.settingValue;
-								settingDetails.settingID = settingRecord.settingID;
-								settingDetails.settingValueResolvedLevel = "ancestor.site";
-	
-								// Add custom logic for cmsContentID
-								if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
-									settingDetails.settingInherited = false;
-								} else {
-									settingDetails.settingInherited = true;
-								}
-							
-							// Now try just object's ancestor level value resolution without siteID in settingRelationships since it was implicitly provided automatically
-							} else {
-								structDelete(settingDetails.settingRelationships, 'siteID'); 
-								settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-								if(settingRecord.recordCount) {
-									foundValue = true;
-									settingDetails.settingValue = settingRecord.settingValue;
-									settingDetails.settingID = settingRecord.settingID;
-									settingDetails.settingValueResolvedLevel = "ancestor";
-		
-									// Add custom logic for cmsContentID
-									if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
-										settingDetails.settingInherited = false;
-									} else {
-										settingDetails.settingInherited = true;
-									}
-								}
-							}
-
-							if (!foundValue) {
-								structClear(settingDetails.settingRelationships);
-							}
 						}
 
 						if(nextPathListIndex==0) {
@@ -1033,7 +1012,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				}
 			}
 
-			// Look at the highest-level if we still haven't found a value yet, no lower-level relationships associated with setting value
+			// Look at the highest-levels if we still haven't found a value yet, no lower-level relationships associated with setting value
 			if(!foundValue) {
 				structClear(settingDetails.settingRelationships);
 
@@ -1042,23 +1021,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				// Attempt global level value resolution with consideration for site context if necessary
-				if (!arguments.siteAutoProvided) {
-					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-					if(settingRecord.recordCount) {
-						foundValue = true;
-						settingDetails.settingValue = settingRecord.settingValue;
-						settingDetails.settingID = settingRecord.settingID;
-						settingDetails.settingValueResolvedLevel = "global";
-						if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-							settingDetails.settingInherited = true;
-						} else {
-							settingDetails.settingInherited = false;
-						}
-					}
-
 				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also
-				} else {
+				if (settingDetails.siteProvided) {
 					// Trying site level value resolution with the siteID and any other specified relationships
 					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 					if(settingRecord.recordCount) {
@@ -1072,21 +1036,24 @@ component extends="HibachiService" output="false" accessors="true" {
 						} else {
 							settingDetails.settingInherited = false;
 						}
-					// Now try just global level value resolution without siteID in settingRelationships since it was implicitly provided automatically
-					} else {
-						structDelete(settingDetails.settingRelationships, 'siteID');
-						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-						if(settingRecord.recordCount) {
-							foundValue = true;
-							settingDetails.settingValue = settingRecord.settingValue;
-							settingDetails.settingID = settingRecord.settingID;
-							settingDetails.settingValueResolvedLevel = "global";
+					}
+				}
 
-							if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-								settingDetails.settingInherited = true;
-							} else {
-								settingDetails.settingInherited = false;
-							}
+				// Attempt global level value resolution without site context
+				if (!foundValue) {
+					structDelete(settingDetails.settingRelationships, 'siteID');
+
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingValueResolvedLevel = "global";
+
+						if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+							settingDetails.settingInherited = true;
+						} else {
+							settingDetails.settingInherited = false;
 						}
 					}
 				}

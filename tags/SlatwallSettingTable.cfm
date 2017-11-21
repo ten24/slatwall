@@ -155,22 +155,24 @@ Notes:
 								<td>#settingFilterEntitiesName#</td>
 							</cfif>
 							<td>
-								#thisSetting.settingDetails.settingValueFormatted#
+								#left(thisSetting.settingDetails.settingValueFormatted, 100)##len(thisSetting.settingDetails.settingValueFormatted) GT 100 ? "..." : ""#
 							</td>
 							<cfif attributes.showInheritance>
 								<td>
 									<cfif thisSetting.settingDetails.settingInherited>
-										<cfif listFindNoCase("global,global.default",thisSetting.settingDetails.settingValueResolvedLevel)>
+										<cfif thisSetting.settingDetails.settingValueResolvedLevel eq "global" or thisSetting.settingDetails.settingValueResolvedLevel eq "global.metadata">
 											<hb:HibachiActionCaller action="admin:entity.settings" text="#request.slatwallScope.rbKey('define.global')#"/>
-										<cfelseif listFindNoCase("site",thisSetting.settingDetails.settingValueResolvedLevel)>
+										<cfelseif thisSetting.settingDetails.settingValueResolvedLevel eq "site">
 											<hb:HibachiActionCaller action="admin:entity.detailsite" text="#request.slatwallScope.rbKey('entity.site')#" queryString="siteID=#thisSetting.settingDetails.settingRelationships.siteID#">
-										<cfelseif listFindNoCase("object,object.site",thisSetting.settingDetails.settingValueResolvedLevel)>
+										<cfelseif (thisSetting.settingDetails.settingValueResolvedLevel eq "object" and tabData.isGlobalFlag) or thisSetting.settingDetails.settingValueResolvedLevel eq "object.site">
 											#request.slatwallScope.rbKey('define.here')#
+										<cfelseif thisSetting.settingDetails.settingValueResolvedLevel eq "object" and not tabData.isGlobalFlag>
+											#request.slatwallScope.rbKey('define.here')# (#request.slatwallScope.rbKey('define.inherit')# #request.slatwallScope.rbKey('define.primary')#)
 										<cfelseif listFindNoCase("ancestor,ancestor.site",thisSetting.settingDetails.settingValueResolvedLevel)>
 											<cfif structCount(thisSetting.settingDetails.settingRelationships) gt 0 and structCount(thisSetting.settingDetails.settingRelationships) lte 2 and structKeyExists(thisSetting.settingDetails.settingRelationships, "productTypeID")>
 													<cfset local.productType = request.slatwallScope.getService("productService").getProductType(thisSetting.settingDetails.settingRelationships.productTypeID) />
 													<cfset local.linktext = local.productType.getSimpleRepresentation() />
-													<cfif not isNull(thisSetting.settingDetails.siteContext.siteID) and len(thisSetting.settingDetails.siteContext.siteID)>
+													<cfif thisSetting.settingDetails.settingValueResolvedLevel eq "ancestor.site">
 														<cfset local.linktext &= " (#request.slatwallScope.rbKey('entity.site')#)" />
 													</cfif>
 													<hb:HibachiActionCaller action="admin:entity.detailProductType" text="#local.linktext#" queryString="productTypeID=#thisSetting.settingDetails.settingRelationships.productTypeID#">
@@ -184,7 +186,11 @@ Notes:
 								</td>
 							</cfif>
 							<td class="admin admin1">
-								<cfif thisSetting.settingDetails.settingInherited || !len(thisSetting.settingDetails.settingID)>
+								<cfset objectHasDefinedSetting = false />
+								<cfif (thisSetting.settingDetails.settingValueResolvedLevel eq "object" and tabData.isGlobalFlag) or thisSetting.settingDetails.settingValueResolvedLevel eq "object.site">
+									<cfset objectHasDefinedSetting = true />
+								</cfif>
+								<cfif not objectHasDefinedSetting and (thisSetting.settingDetails.settingInherited or !len(thisSetting.settingDetails.settingID))>
 									<cfif isObject(thisSetting.settingObject)>
 										<hb:HibachiActionCaller action="admin:entity.createsetting" queryString="settingID=&redirectAction=#request.context.slatAction#&settingName=#thisSetting.settingName#&#thisSetting.settingObject.getPrimaryIDPropertyName()#=#thisSetting.settingObject.getPrimaryIDValue()#&currentValue=#URLEncodedFormat(thisSetting.settingDetails.settingValue)#&#settingFilterEntitiesURL#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" modal="true" />
 									<cfelse>
