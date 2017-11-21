@@ -86,8 +86,8 @@ Notes:
 			</cfif>
 		</cfloop>
 
-		<!--- No additional sites availabe, just global. Do not build any tabs --->
-		<cfif arrayLen(tabs) lte 1 >
+		<!--- Check either no site or single site configuration along with global. No other additional sites available. Do not build any tabs just display global only --->
+		<cfif arrayLen(tabs) lte 2 >
 			<cfset attributes.showMultiSite = false />
 		</cfif>
 	</cfif>
