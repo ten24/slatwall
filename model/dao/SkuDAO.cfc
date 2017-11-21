@@ -278,6 +278,10 @@ Notes:
 		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalEarned']/QDOODetails['QDOO']);
 		return averagePriceSold;
 	}
+	
+	public any function getSkuLocationInventoryBySkuIDAndLocationID( required string skuID, locationID){
+		return ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationInventory sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
+	}
 
 	</cfscript>
 
