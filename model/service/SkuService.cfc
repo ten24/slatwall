@@ -84,6 +84,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return skuDefinition;
 	}
 	
+	public any function getSkuLocationInventoryBySkuIDAndLocationID(required string skuID, required string locationID){
+		return getSkuDAO().getSkuLocationInventoryBySkuIDAndLocationID(skuID=arguments.skuID, locationID=arguments.locationID);
+	}
+	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
 		var imageSaved = getService("imageService").saveImageFile(uploadResult=arguments.imageUploadResult,filePath=imagePath,allowedExtensions="jpg,jpeg,png,gif");
@@ -937,7 +941,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return true;
 	}
-
+	
 	// ===================  END: Deprecated Functions =========================
 
 }
