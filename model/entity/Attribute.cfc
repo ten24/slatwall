@@ -334,7 +334,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 	
 	public boolean function isValidString(string stringValue){
-		var attributeCodeLength = len(getAttributeCode);
+		var attributeCodeLength = len(getAttributeCode());
 		return attributeCodeLength > len(arguments.stringValue) && lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue);
 	}
 	
