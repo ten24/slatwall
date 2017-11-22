@@ -99,5 +99,5 @@ Notes:
 		<sw-listing-column data-property-identifier="stock.sku.skuCode" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="cost" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 </cfoutput>
