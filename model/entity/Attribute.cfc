@@ -333,7 +333,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		arguments.attributeValue.removeAttribute( this );
 	}
 	
-	public boolean function isValidString(stringValue){
+	public boolean function isValidString(string stringValue){
 		var attributeCodeLength = len(getAttributeCode);
 		return attributeCodeLength > len(arguments.stringValue) && lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue);
 	}
