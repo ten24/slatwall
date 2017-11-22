@@ -2524,6 +2524,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
 					var fromValue = DateAdd("d",-arguments.filter.value,Now());
+					//make from value start at beginning of of day
+					fromValue = createDateTime(Year(fromValue),Month(fromValue),Day(fromValue),0,0,0);
 					var toValue = Now();
 				}
 
