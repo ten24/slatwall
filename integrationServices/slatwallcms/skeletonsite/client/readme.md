@@ -1,0 +1,1 @@
+Feel free to customize and extend slatwallcms frontend based code here.
