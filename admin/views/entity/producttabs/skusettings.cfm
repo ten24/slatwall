@@ -51,10 +51,6 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 
-<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
-<cfset sites.addFilter('activeFlag', 1) /> 
-<cfset rc.sitesArray = sites.getRecords() />
-
 <cfoutput>
 	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.product#"  />
