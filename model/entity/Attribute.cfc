@@ -333,14 +333,15 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		arguments.attributeValue.removeAttribute( this );
 	}
 	
+	public boolean function isValidString(stringValue){
+		var attributeCodeLength = len(getAttributeCode);
+		return attributeCodeLength > len(arguments.stringValue) && lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue);
+	}
+	
 	public boolean function isValidAttributeCode(){
 		//attribute code cannot begin with a string
 		var isValid = refind("^[a-zA-Z][a-zA-Z0-9_]*$",getAttributeCode());
 		
-		var isValidString = function(stringValue){
-			var attributeCodeLength = len(getAttributeCode);
-			return attributeCodeLength > len(stringValue) && lcase(right(getAttributeCode(),len(stringValue)))!=lcase(stringValue);
-		};
 		return isValid 
 		&& isValidString("Options")
 		&& isValidString("Count")
