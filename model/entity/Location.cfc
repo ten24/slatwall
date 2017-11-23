@@ -124,15 +124,15 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			//Add each of the parents in the chain to the string.
 			var parentLocation = this.getParentLocation();
 			while (!isNull(parentLocation)){
-				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "»");
+				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "#chr(187)#");
 				if(isNull(parentLocation.getParentLocation())){
 					break;
 				}
 				parentLocation = parentLocation.getParentLocation();
 			}
 			//Add this location name to the end.
-			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
-			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
+			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "#chr(187)#");
+			variables.locationPathName = rereplace(variables.locationPathName,'#chr(187)#',' #chr(187)# ','all');
 		}
 		return variables.locationPathName;
 	}
