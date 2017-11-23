@@ -197,9 +197,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		giftCard = variables.service.processGiftCard(giftCard, creditData, 'addCredit');
-		writeDump(giftCard.getBalanceAmount());
-		writeDump(giftCard.getCalculatedBalanceAmount());
-		abort;
 		assert(giftCard.getBalanceAmount() EQ 0);				// -ve Credit should not be allowed, backend validation is required
 		assert(giftCard.getCalculatedBalanceAmount() EQ 0);
 
