@@ -4,6 +4,25 @@
 	<cfproperty name="hibachiAuditService" type="any" />
 
 	<cfscript>
+		
+		public string function getTablesWithDefaultData(){
+			var dbdataDirPath = expandPath('/Slatwall') & '/config/dbdata';
+		
+			var dbdataDirList = directoryList(dbdataDirPath,false,'name');
+			
+			var tablesWithDefaultData = '';
+			
+			for(var fileName in dbdataDirList){
+				//remove .xml.cfm suffix
+				var entityName = left(filename,len(filename)-8);
+				//remove Slatwall prefix
+				entityName = right(entityName,len(entityName)-len('Slatwall'));
+				var tableName = request.slatwallScope.getService('HibachiService').getTableNameByEntityName(entityName);
+				tablesWithDefaultData = listAppend(tablesWithDefaultData,tableName);
+			}
+			return tablesWithDefaultData;
+		}
+		
 		public any function get( required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
