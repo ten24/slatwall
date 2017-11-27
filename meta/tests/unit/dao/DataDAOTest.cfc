@@ -46,7 +46,7 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.meta.tests.unit.SlatwallDAOTestBase">
+<cfcomponent extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase">
 
 	<cffunction name="setup">
 		<cfset super.setup() />

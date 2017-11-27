@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallDAOTestBase" {
+component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 
 	
 	public void function setUp() {
