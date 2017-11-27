@@ -666,6 +666,12 @@ class CollectionConfig {
             this.orderBy = [];
 
             for(var i =  0; i < this.columns.length; i++){
+                if(!this.columns[i]["sorting"]){
+                    this.columns[i]["sorting"] = {};
+                }
+                if(angular.isUndefined(this.columns[i]["sorting"]["active"])){
+                    this.columns[i]["sorting"]["active"] = false;
+                }
                 if(this.columns[i]['propertyIdentifier'] == formattedPropertyIdentifier){
                     this.columns[i]["sorting"]["active"] = true;
                     this.columns[i]["sorting"]["priority"] = 1;

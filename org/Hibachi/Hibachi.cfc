@@ -244,7 +244,7 @@ component extends="framework.one" {
 	public any function reloadApplication() {
 		setupApplicationWrapper();
 
-		lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="10" {
+		lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="20" {
 			if( !structKeyExists(application, getHibachiInstanceApplicationScopeKey()) ) {
 				application[ getHibachiInstanceApplicationScopeKey() ] = {};
 			}
@@ -539,10 +539,10 @@ component extends="framework.one" {
 		// Check to see if out application stuff is initialized
 		if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {
 			// If not, lock the application until this is finished
-			lock scope="Application" timeout="600"  {
+			lock scope="Application" timeout="1200"  {
 
-				// Set the request timeout to 600
-				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=600);
+				// Set the request timeout to 1200
+				createObject("#variables.framework.applicationKey#.org.Hibachi.HibachiTagService").cfsetting(requesttimeout=1200);
 
 				// Check again so that the qued requests don't back up
 				if(!getHibachiScope().hasApplicationValue("initialized") || !getHibachiScope().getApplicationValue("initialized")) {

@@ -94,6 +94,6 @@ Notes:
 	    <sw-listing-column data-property-identifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

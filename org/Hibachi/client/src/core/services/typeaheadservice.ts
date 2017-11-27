@@ -96,6 +96,7 @@ class TypeaheadService {
         }
         this.typeaheadData[key].push(data); 
         this.notifyTypeaheadSelectionUpdateEvent(key,data); 
+       
     } 
 
     public removeSelection = (key:string, index:number, data?:any) => {

@@ -84,6 +84,6 @@ Notes:
 		<sw-listing-column data-property-identifier="ledgerAccountID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="ledgerAccountName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="ledgerAccountType.typeName" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

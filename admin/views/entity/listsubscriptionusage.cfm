@@ -93,6 +93,6 @@ Notes:
 		<sw-listing-column data-property-identifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="renewalPrice" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="autoPayFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

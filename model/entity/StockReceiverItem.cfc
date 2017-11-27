@@ -111,7 +111,7 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 	}
 	
 	public numeric function getLandingAmountByWeight(){
-		return getVendorOrderItem().getLandingAmounByWeight();
+		return getVendorOrderItem().getLandingAmountByWeight();
 	}
 	
 	private boolean function hasOneAndOnlyOneRelatedItem() {

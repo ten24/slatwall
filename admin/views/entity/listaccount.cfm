@@ -94,6 +94,6 @@ Notes:
 		<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="guestAccountFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="organizationFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

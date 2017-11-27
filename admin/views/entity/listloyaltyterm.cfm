@@ -89,6 +89,6 @@ Notes:
 		<sw-listing-column data-property-identifier="loyaltyTermStartDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="loyalty.loyaltyName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="term.termName" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
