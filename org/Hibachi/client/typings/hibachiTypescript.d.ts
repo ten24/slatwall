@@ -104,11 +104,8 @@
 /// <reference path="../src/core/filters/swtrim.ts" />
 /// <reference path="../src/core/filters/swunique.ts" />
 /// <reference path="../src/core/model/baseobject.ts" />
-<<<<<<< HEAD
 /// <reference path="../src/core/prototypes/observable.ts" />
 /// <reference path="../src/core/prototypes/swstore.ts" />
-=======
->>>>>>> refs/remotes/origin/hotfix
 /// <reference path="../src/core/services/accountservice.ts" />
 /// <reference path="../src/core/services/baseentityservice.ts" />
 /// <reference path="../src/core/services/baseservice.ts" />
