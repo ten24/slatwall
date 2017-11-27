@@ -45,6 +45,7 @@
 	<cfparam name="attributes.template" default="./tagtemplates/hibachifiltercountdisplayitem.cfm"/>
 	
 	<cfparam name="attributes.rangeData" default=""/>
+	<cfparam name="attributes.showApplyRange" default="true"/>
 	<cfparam name="attributes.discriminatorProperty" default=""/>
 	
 	
