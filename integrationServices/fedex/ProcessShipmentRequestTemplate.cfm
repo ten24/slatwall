@@ -103,7 +103,7 @@
 		            
 		            <ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
 		            
-		            <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber#</ns:PhoneNumber>
+		            <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
 	           </ns:Contact>
 	        	<ns:Address>
 	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>

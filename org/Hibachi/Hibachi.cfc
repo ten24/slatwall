@@ -784,6 +784,7 @@ component extends="FW1.framework" {
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
 					if(updated && structKeyExists(request, "action")){
+
 						redirect(action=request.action,queryString='updated=true');
 					}
 				}
