@@ -56,7 +56,6 @@
 /// <reference path="../src/collection/controllers/entity_createcollection.ts" />
 /// <reference path="../src/collection/services/collectionconfigservice.ts" />
 /// <reference path="../src/collection/services/collectionservice.ts" />
-/// <reference path="../src/core/controllers/globalsearch.ts" />
 /// <reference path="../src/core/components/swactioncaller.ts" />
 /// <reference path="../src/core/components/swactioncallerdropdown.ts" />
 /// <reference path="../src/core/components/swclickoutside.ts" />
@@ -97,18 +96,16 @@
 /// <reference path="../src/core/components/swtypeaheadremoveselection.ts" />
 /// <reference path="../src/core/components/swtypeaheadsearch.ts" />
 /// <reference path="../src/core/components/swtypeaheadsearchlineitem.ts" />
+/// <reference path="../src/core/controllers/globalsearch.ts" />
 /// <reference path="../src/core/filters/datefilter.ts" />
 /// <reference path="../src/core/filters/entityrbkey.ts" />
 /// <reference path="../src/core/filters/percentage.ts" />
 /// <reference path="../src/core/filters/swcurrency.ts" />
 /// <reference path="../src/core/filters/swtrim.ts" />
 /// <reference path="../src/core/filters/swunique.ts" />
-<<<<<<< HEAD
 /// <reference path="../src/core/model/baseobject.ts" />
 /// <reference path="../src/core/prototypes/observable.ts" />
 /// <reference path="../src/core/prototypes/swstore.ts" />
-=======
->>>>>>> refs/remotes/origin/hotfix
 /// <reference path="../src/core/services/accountservice.ts" />
 /// <reference path="../src/core/services/baseentityservice.ts" />
 /// <reference path="../src/core/services/baseservice.ts" />
@@ -139,7 +136,6 @@
 /// <reference path="../src/core/services/skuservice.ts" />
 /// <reference path="../src/core/services/typeaheadservice.ts" />
 /// <reference path="../src/core/services/utilityservice.ts" />
-/// <reference path="../src/core/model/baseobject.ts" />
 /// <reference path="../src/dialog/controllers/pagedialog.ts" />
 /// <reference path="../src/dialog/model/pagedialog.ts" />
 /// <reference path="../src/dialog/services/dialogservice.ts" />
