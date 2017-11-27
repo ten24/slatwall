@@ -103,9 +103,12 @@
 /// <reference path="../src/core/filters/swcurrency.ts" />
 /// <reference path="../src/core/filters/swtrim.ts" />
 /// <reference path="../src/core/filters/swunique.ts" />
+<<<<<<< HEAD
 /// <reference path="../src/core/model/baseobject.ts" />
 /// <reference path="../src/core/prototypes/observable.ts" />
 /// <reference path="../src/core/prototypes/swstore.ts" />
+=======
+>>>>>>> refs/remotes/origin/hotfix
 /// <reference path="../src/core/services/accountservice.ts" />
 /// <reference path="../src/core/services/baseentityservice.ts" />
 /// <reference path="../src/core/services/baseservice.ts" />
@@ -136,6 +139,7 @@
 /// <reference path="../src/core/services/skuservice.ts" />
 /// <reference path="../src/core/services/typeaheadservice.ts" />
 /// <reference path="../src/core/services/utilityservice.ts" />
+/// <reference path="../src/core/model/baseobject.ts" />
 /// <reference path="../src/dialog/controllers/pagedialog.ts" />
 /// <reference path="../src/dialog/model/pagedialog.ts" />
 /// <reference path="../src/dialog/services/dialogservice.ts" />
