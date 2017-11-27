@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase"  {
+component extends="Slatwall.meta.tests.unit.SlatwallDAOTestBase"  {
 	
 	public void function setUp() {
 		request.slatwallScope.getDao('HibachiDataDao').truncateTablesWithoutDefaultData();
