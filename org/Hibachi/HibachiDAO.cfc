@@ -20,6 +20,8 @@
 				var tableName = request.slatwallScope.getService('HibachiService').getTableNameByEntityName(entityName);
 				tablesWithDefaultData = listAppend(tablesWithDefaultData,tableName);
 			}
+			tablesWithDefaultData = listAppend(tablesWithDefaultData,'swintegration');
+			
 			return tablesWithDefaultData;
 		}
 		
