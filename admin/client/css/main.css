@@ -754,11 +754,15 @@ table th {
 }
 .s-tab-table .s-tabs ul li.active a {
   background: #fff;
-  border-bottom: 0px;
+  border: 2px solid #666;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
   border-radius: 0px;
 }
 .s-tab-table .tab-content {
   padding: 0px;
+  padding-top: 10px;
   -moz-box-shadow: inset none;
   -webkit-box-shadow: none;
   box-shadow: none;
