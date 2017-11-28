@@ -72,7 +72,7 @@ Notes:
 
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
 	data-collection="'Audit'"
 	data-edit="false"
 	data-has-search="true"
@@ -92,4 +92,4 @@ Notes:
 	<sw-listing-column data-property-identifier="baseObject" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="baseID" ></sw-listing-column>
 
-</sw-listing-display>
+</sw-listing-display data-using-personal-collection="true">

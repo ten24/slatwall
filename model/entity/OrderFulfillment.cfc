@@ -190,37 +190,57 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	// Gift Card Helper Methods
-	public boolean function hasGiftCardCodes(){
-		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){
-			return !this.getNumberOfNeededGiftCardCodes() > 0;
-		} else {
-			return true;
-		}
+
+	// @hint Determines whether orderFulfillment has any undelivered order items that require a manual gift card code to be provided.
+	public boolean function hasUndeliveredOrderItemsWithoutProvidedGiftCardCode(){
+		return arrayLen(this.getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) > 0;
 	}
 
-	public boolean function hasFulfillmentItemsWithAssignedRecipients(){
+	// @hint this method validates that this order fulfilmment has no order items where any remaining gift card recipient assignments are still required
+	public boolean function hasGiftCardOrderItemsWithAllRecipientsAssigned(){
 		for(var item in this.getOrderFulfillmentItems()){
-			if(!item.hasAllGiftCardsAssigned()){
-				return false;
+			if (item.isGiftCardOrderItem()) {
+				if(item.getSku().getGiftCardRecipientRequiredFlag() && !item.hasAllGiftCardsAssigned()){
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
+	// @hint method validates that this orderFulfillment does not need the email address because gift card recipients exist instead
 	public boolean function needsEmailForFulfillment(){
-		return !hasFulfillmentItemsWithAssignedRecipients();
+		return !hasGiftCardOrderItemsWithAllRecipientsAssigned();
 	}
 
 	public any function getNumberOfNeededGiftCardCodes(){
-		var count = 0;
-		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){
-			for(var item in this.getOrderFulfillmentItems()){
-				if(item.isGiftCardOrderItem()){
-					count += item.getQuantityUndelivered();
-				}
+		var numberOfCodesNeeded = 0;
+		for (var orderItem in this.getOrderFulfillmentItems()) {
+			if (orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+				numberOfCodesNeeded += orderItem.getQuantityUndelivered();
 			}
 		}
-		return count;
+
+		return numberOfCodesNeeded;
+	}
+
+	public array function getUndeliveredOrderItemsWithoutProvidedGiftCardCode() {
+		if (structKeyExists(variables, "undeliveredOrderItemsWithoutProvidedGiftCardCode")) {
+			return variables.undeliveredOrderItemsWithoutProvidedGiftCardCode;
+		}
+
+		var orderItemsMissingGiftCardCode = [];
+		for (var orderItem in this.getOrderFulfillmentItems()) {
+			if ( orderItem.isGiftCardOrderItem() 
+				 && (!orderItem.getSku().getGiftCardAutoGenerateCodeFlag())
+				 && (orderItem.getQuantityUndelivered() > 0)
+			) {
+				arrayAppend(orderItemsMissingGiftCardCode, orderItem);
+			}
+		}
+		undeliveredOrderItemsWithoutProvidedGiftCardCode = orderItemsMissingGiftCardCode;
+
+		return variables.undeliveredOrderItemsWithoutProvidedGiftCardCode;
 	}
 
 	public array function getGiftCardListLabels(){
@@ -492,7 +512,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
 
     public boolean function isAutoFulfillmentReadyToBeFulfilled(){
-		return this.isAutoFulfillment() && this.hasOrderWithMinAmountRecievedRequiredForFulfillment() && this.hasFulfillmentItemsWithAssignedRecipients();
+		return this.isAutoFulfillment() && this.hasOrderWithMinAmountRecievedRequiredForFulfillment() && this.hasGiftCardOrderItemsWithAllRecipientsAssigned();
     }
 
     public numeric function getTotalShippingQuantity() {

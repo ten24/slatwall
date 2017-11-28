@@ -70,7 +70,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="emailTemplateObject" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 	    data-collection="'EmailTemplate'"
 	    data-edit="false"
 	    data-has-search="true"
@@ -83,7 +83,7 @@ Notes:
 		<sw-listing-column data-property-identifier="emailTemplateID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="emailTemplateName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="emailTemplateObject" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

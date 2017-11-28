@@ -51,6 +51,7 @@ Notes:
 
 
 <cfparam name="rc.locationSmartList" type="any" />
+<cfparam name="rc.locationCollectionList" type="any" />
 
 <cfoutput>
 
@@ -62,30 +63,27 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<!--- <hb:HibachiListingDisplay smartList="#rc.locationSmartList#"
-							  recordDetailAction="admin:entity.detaillocation"
-							  recordEditAction="admin:entity.editlocation">
+	<cfset rc.locationCollectionList.addFilter('parentLocation','null','is')/>
+	<cfset rc.locationCollectionList.setDisplayProperties(displayPropertiesList='activeFlag',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true"
+	})/>
+	<cfset rc.locationCollectionList.addDisplayProperty(displayProperty='locationName',columnConfig={
+		isSearchable="true",
+		isVisible="true",
+		isDeletable="true",
+		tdclass="primary"
+	},prepend=true)/>
+	<cfset rc.locationCollectionList.addDisplayProperty(displayProperty='locationID',columnConfig={
+		isSearchable="false",
+		isVisible="false",
+		isDeletable="false"
+	})/>
+	<cfset rc.locationCollectionList.addDisplayAggregate('childLocations','COUNT','childLocationsCount')/>
 
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display
-		data-collection="'Location'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editlocation"
-		record-detail-action="admin:entity.detaillocation"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-		data-expandable="true"
-		data-parent-property-name="parentLocation"
-	>
-		<sw-listing-column data-property-identifier="locationID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="locationName" tdclass="primary" search="true" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-	</sw-listing-display>
+	<hb:HibachiListingDisplay collectionList="#rc.locationCollectionList#">
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

@@ -6,18 +6,39 @@
 
 <cfoutput>
 	<!--- ledger account inventory listing --->
+	
+	
 	<cfif ListFindNoCase('latAsset,latExpense,latRevenue,latCogs',rc.ledgerAccount.getLedgerAccountType().getSystemCode())>
 		<cfset laSmartList = rc.ledgerAccount.getInventorySmartList()/>
 		<cfset laSmartList.addOrder('createdDateTime|DESC')/>
 		<hb:HibachiListingDisplay smartList="#laSmartList#"
 		>
-			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+			<cfswitch expression="#rc.ledgerAccount.getLedgerAccountType().getSystemCode()#" >
+				
+		        <!---<hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />--->
+				<cfcase value="latCogs">
+			        <hb:HibachiListingColumn propertyIdentifier="vendorOrderDeliveryItem.vendorOrderItem.vendorOrder.vendorOrderNumber" />
+			        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode" />
+					<hb:HibachiListingColumn propertyIdentifier="cost" />
+					<hb:HibachiListingColumn propertyIdentifier="landedAmount" />
+					<hb:HibachiListingColumn propertyIdentifier="landedCost" />
+				</cfcase> 
+				<cfcase value="latAsset">
+			        <hb:HibachiListingColumn propertyIdentifier="vendorOrderDeliveryItem.vendorOrderItem.vendorOrder.vendorOrderNumber" />
+			        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode" />
+					<hb:HibachiListingColumn propertyIdentifier="cost" />
+					<hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.calculatedExtendedPrice" />
+				</cfcase> 
+				<cfcase value="latRevenue">
+					<hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
+			        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.calculatedExtendedPrice" />
+				</cfcase>
+				<cfcase value="latExpense">
+				</cfcase>
+			</cfswitch>
 	        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
 	        <hb:HibachiListingColumn propertyIdentifier="quantityOUT" />
-	        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode" />
-	        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
-	        <!---<hb:HibachiListingColumn propertyIdentifier="stockAdjustmentDeliveryItem.stockAdjustmentItem.stockAdjustment.stockAdjustmentID" />--->
-			
+			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		</hb:HibachiListingDisplay>
     </cfif>
 </cfoutput>

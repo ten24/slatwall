@@ -101,7 +101,10 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	
 	public numeric function getLandingAmountByWeight(){
 		if(!isNull(getVendorOrder()) && !isNull(getExtendedWeight())){
-			var totalQuantity = getVendorOrder().getTotalWeight();
+			var totalWeight = getVendorOrder().getTotalWeight();
+			if(totalWeight==0){
+				return 0;
+			}
 			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getExtendedWeight()/totalWeight);
 			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
 		}
@@ -110,7 +113,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	
 	public numeric function getLandingAmountByCost(){
 		if(!isNull(getVendorOrder()) && !isNull(getExtendedCost())){
-			var totalQuantity = getVendorOrder().getTotalCost();
+			var totalCost = getVendorOrder().getTotalCost();
 			var percentageOfTotal = getService('hibachiUtilityService').precisionCalculate(getExtendedCost()/totalCost);
 			return getService('hibachiUtilityService').precisionCalculate(getVendorOrder().getShippingAndHandlingCost() * percentageOfTotal);	
 		}

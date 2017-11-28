@@ -39,17 +39,43 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return super.init();
 	}
 	
+	//get the users personal collection options
+	public array function getCollectionOptions(){
+		//if new account then you have no personal collections
+		var collectionOptions = [];
+		
+		if(getAccount().getNewFlag()){
+			return collectionOptions;
+		}
+		
+		var collectionCollectionList = getService('HibachiCollectionService').getCollectionCollectionList();
+		collectionCollectionList.setDisplayProperties('collectionName|name,collectionID|value');
+		collectionCollectionList.addFilter('accountOwner.accountID',getAccount().getAccountID());
+		return collectionCollectionList.getRecords();
+	}
+	
 	public string function getPermissionGroupCacheKey(){
 		if(!structKeyExists(variables,'permissionGroupCacheKey')){
 			var permissionGroupCacheKey = "";
 		
-			if(!isNull(getAccount()) && getAccount().getPermissionGroupsCount()){
-				var permissionGroupCollectionList = getAccount().getPermissionGroupsCollectionList();
-				permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
-				var permissionGroupRecords = permissionGroupCollectionList.getRecords();
-				for(var permissionGroupRecord in permissiongroupRecords){
-					permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+			if(
+				!isNull(getAccount()) 
+			){
+				var permissionGroupCountCollectionList = getService('accountService').getAccountCollectionList();
+				permissionGroupCountCollectionList.addFilter('accountID',getAccount().getAccountID());
+				permissionGroupCountCollectionList.setPermissionAppliedFlag(true);
+				permissionGroupCountCollectionList.setDisplayProperties('accountID');
+				permissionGroupCountCollectionList.addDisplayAggregate('permissionGroups','COUNT','permissionGroupsCount');
+				var records = permissionGroupCountCollectionList.getRecords();
+				if(arraylen(records) && records[1]['permissionGroupsCount']){
+					var permissionGroupCollectionList = getAccount().getPermissionGroupsCollectionList();
+					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+					var permissionGroupRecords = permissionGroupCollectionList.getRecords();
+					for(var permissionGroupRecord in permissiongroupRecords){
+						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+					}
 				}
+				
 			}
 			variables.permissionGroupCacheKey = permissionGroupCacheKey;
 		}
@@ -365,6 +391,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		var keyValue = getService("hibachiRBService").getRBKey(arguments.key, getRBLocale());
 		if(structKeyExists(arguments, "replaceStringData") && findNoCase("${", keyValue)) {
 			keyValue = getService("hibachiUtilityService").replaceStringTemplate(keyValue, arguments.replaceStringData);
+		}
+		
+		if(findNoCase('_missing',keyValue)){
+			return listFirst(keyValue);
 		}
 		return keyValue;
 	}

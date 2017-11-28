@@ -2,11 +2,12 @@
     <div class="s-search-wrapper">
         <span sw-listing-search data-collection-config="swListingControls.collectionConfig"
                                data-paginator="swListingControls.paginator"
-                               data-toggle-filters="swListingControls.toggleFilters()"
-                               data-toggle-display-options="swListingControls.toggleDisplayOptions()"
-                               data-show-toggle-filters="swListingControls.showToggleFilters"
-                               data-show-toggle-display-options="swListingControls.showToggleDisplayOptions"
+
          ></span>
+        <!-- PERSONAL COLLECTIONS -->
+        <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.personalCollectionsClosed" id="j-personal-collections">
+            personal collections
+        </div>
         <!-- DISPLAY OPTIONS -->
         <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">

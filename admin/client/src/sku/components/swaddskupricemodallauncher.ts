@@ -16,9 +16,11 @@ class SWAddSkuPriceModalLauncherController{
     public uniqueName:string;
     public listingID:string;  
     public disableAllFieldsButPrice:boolean;
+    public currencyCodeEditable:boolean=false; 
     public currencyCodeOptions; 
     public saveSuccess:boolean=true; 
     public imagePath:string; 
+    public selectCurrencyCodeEventName:string; 
     
     //@ngInject
     constructor(
@@ -35,6 +37,16 @@ class SWAddSkuPriceModalLauncherController{
         this.skuPrice = this.entityService.newEntity('SkuPrice'); 
     }    
     
+    public updateCurrencyCodeSelector = (args) =>{
+        if(args != 'All'){
+            this.skuPrice.data.currencyCode = args; 
+            this.currencyCodeEditable = false;
+        } else {
+            this.currencyCodeEditable = true; 
+        }
+        this.observerService.notify("pullBindings");
+    }
+
     public initData = () =>{
         //these are populated in the link function initially
         this.skuPrice = this.entityService.newEntity('SkuPrice'); 
@@ -74,7 +86,7 @@ class SWAddSkuPriceModalLauncherController{
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 //temporarily overriding for USD need to get this setting accessable to client side
                 if( angular.isDefined(this.listingID) && 
-                    this.skuPrice.data.currencyCode=="USD"
+                    this.skuPrice.data.currencyCode == "USD"
                 ){
                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);
                    for(var i=0; i < pageRecords.length; i++){
@@ -116,10 +128,14 @@ class SWAddSkuPriceModalLauncherController{
             }
         ).finally(()=>{
             if(this.saveSuccess){
+                
                 for(var key in this.skuPrice.data){
                     this.skuPrice.data[key] = null;
                 }
+                
+                this.formService.resetForm(this.formName);
                 this.initData();
+
                 if(firstSkuPriceForSku){
                     this.listingService.getCollection(this.listingID); 
                 }
@@ -155,6 +171,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         var directive = (
             $hibachi,
             entityService,
+            observerService,
             scopeService,
             collectionConfigService,
             skuPartialsPath,
@@ -162,6 +179,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         )=> new SWAddSkuPriceModalLauncher(
             $hibachi, 
             entityService,
+            observerService,
             scopeService,
             collectionConfigService,
             skuPartialsPath,
@@ -170,6 +188,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         directive.$inject = [
             '$hibachi',
             'entityService',
+            'observerService',
             'scopeService',
             'collectionConfigService',
             'skuPartialsPath',
@@ -180,6 +199,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     constructor(
         private $hibachi, 
         private entityService,
+        private observerService,
         private scopeService, 
         private collectionConfigService, 
         private skuPartialsPath,
@@ -219,6 +239,10 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
                 if(angular.isDefined(listingScope.swListingDisplay)){ 
                     $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
+                    $scope.swAddSkuPriceModalLauncher.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
+                    this.observerService.attach($scope.swAddSkuPriceModalLauncher.updateCurrencyCodeSelector, $scope.swAddSkuPriceModalLauncher.selectCurrencyCodeEventName);
+                } else {
+                    throw("swAddSkuPriceModalLauncher couldn't find listing scope");
                 }
                  $scope.swAddSkuPriceModalLauncher.initData();
             },

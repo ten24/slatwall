@@ -69,7 +69,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="roundingRuleDirection" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'RoundingRule'"
 		data-edit="false"
 		data-has-search="true"
@@ -83,7 +83,7 @@ Notes:
 		<sw-listing-column data-property-identifier="roundingRuleName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="roundingRuleExpression" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="roundingRuleDirection" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

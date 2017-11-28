@@ -64,7 +64,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="assignedAccount.fullName" />
 </hb:HibachiListingDisplay>-->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
 		data-collection="'FulfillmentBatch'"
 		data-edit="false"
 		data-has-search="true"
@@ -79,4 +79,4 @@ Notes:
 		<sw-listing-column data-property-identifier="fulfillmentBatchName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="description" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="assignedAccount.fullName" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">

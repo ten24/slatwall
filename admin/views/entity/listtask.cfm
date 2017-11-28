@@ -71,7 +71,7 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Task'"
 		data-edit="false"
 		data-has-search="true"
@@ -85,6 +85,6 @@ Notes:
 		<sw-listing-column data-property-identifier="taskName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="runningFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

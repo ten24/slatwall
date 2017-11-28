@@ -60,48 +60,187 @@ Notes:
 		
 
 	<cfscript>
-		public numeric function getCurrentMargin(required string stockID){
-			return ORMExecuteQuery("
-				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(stock.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
-				FROM SlatwallStock stock
-				LEFT JOIN stock.sku sku
-				WHERE stock.stockID=:stockID
-			",{stockID=arguments.stockID},true);
+
+	public query function getMinMaxStockTransferDetails(required string toLocationID){
+		var dataQuery = new Query();
+		// dataQuery.setDatasource(application.configBean.getDatasource());
+		// dataQuery.setUsername(application.configBean.getDBUsername());
+		// dataQuery.setPassword(application.configBean.getDBPassword());
+		dataQuery.setSql("
+			SELECT
+			  st.skuID, sk.skuCode, 
+			  st.locationID AS toTopLocationID, st.minQuantity AS toMinQuantity, st.maxQuantity AS toMaxQuantity, 0 AS toOffsetQuantity,
+			  ( SELECT sum(st1.calculatedQATS)
+			    FROM swstock AS st1
+			      JOIN swlocation AS lt1 ON st1.locationID = lt1.locationID
+			    WHERE st1.skuID = st.skuID
+			      AND lt1.locationIDPath LIKE concat('%',st.locationID,'%')
+			  ) AS toSumQATS,
+			  ( SELECT st2.locationID
+			    FROM swstock AS st2
+			    INNER JOIN swlocation AS lt2 ON lt2.locationID = st2.locationID
+			    WHERE st2.skuID = st.skuID
+			      AND lt2.locationIDPath LIKE concat('%',st.locationID,'%')
+			    ORDER BY st2.calculatedQATS DESC LIMIT 1
+			  ) AS toLeafLocationID,
+			  sf.locationID AS fromTopLocationID, sf.minQuantity AS fromMinQuantity, sf.maxQuantity AS fromMaxQuantity, 0 AS fromOffsetQuantity,
+			  ( SELECT sum(sf1.calculatedQATS)
+			    FROM swstock AS sf1
+			      JOIN swlocation AS lf1 ON sf1.locationID = lf1.locationID
+			    WHERE lf1.locationIDPath LIKE concat('%',sf.locationID,'%')
+			      AND sf1.skuID = st.skuID
+			  ) AS fromSumQATS,
+			  sfl.locationID AS fromLeafLocationID, sfl.calculatedQATS as fromCalculatedQATS
+			FROM swstock AS st
+			  INNER JOIN swstock AS sf ON sf.skuID = st.skuID
+			  INNER JOIN swsku AS sk ON sk.skuID = sf.skuID
+			    AND sf.locationID <> st.locationID
+			  INNER JOIN swstock AS sfl ON sfl.skuID = sf.skuID
+			    INNER JOIN swlocation AS lfl ON lfl.locationID = sfl.locationID
+			WHERE st.locationID = '#arguments.toLocationID#'
+			  AND st.skuID = sf.skuID
+			  AND sfl.calculatedQATS > 0
+			  AND lfl.locationIDPath LIKE concat('%',sf.locationID,'%')
+			  AND st.minQuantity > 0
+			  AND st.maxQuantity > 0
+			  AND sf.minQuantity > 0
+			  AND sf.maxQuantity > 0
+			ORDER BY st.locationID, sk.skuCode, sfl.calculatedQATS DESC
+
+		");
+
+
+
+
+		return dataQuery.execute().getResult();
+	}
+
+
+	public numeric function getCurrentMargin(required string stockID){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
+	}
+	
+	public numeric function getCurrentLandedMargin(required string stockID){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
+	}
+	
+	public numeric function getAveragePriceSold(required string stockID){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+					  	LEFT JOIN
+					  		orderItem.sku sku
+					  	LEFT JOIN
+					  		sku.stocks stocks
+					  		
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							stocks.stockID = :stockID
+						GROUP BY stocks.stockID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID},true);	
+		
+		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalEarned']/QDOODetails['QDOO']);
+		return averagePriceSold;
+	}
+		
+	public any function getAverageCost(required string stockID, string locationID=""){
+		var params = {stockID=arguments.stockID};
+		
+		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+		';
+		
+		if(len(arguments.locationID)){
+			hql &= ' LEFT JOIN stock.location location ';
 		}
 		
-		public numeric function getCurrentLandedMargin(required string stockID){
-			return ORMExecuteQuery("
-				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(stock.calculatedLandedAverageCost,0)) / COALESCE(sku.price,0),0)
-				FROM SlatwallStock stock
-				LEFT JOIN stock.sku sku
-				WHERE stock.stockID=:stockID
-			",{stockID=arguments.stockID},true);
+		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL ';
+		
+		if(len(arguments.locationID)){
+			hql&= ' AND location.locationID = :locationID';	
+			params.locationID = arguments.locationID;
 		}
 		
-		public numeric function getAverageCost(required string stockID){
+		
+		return ORMExecuteQuery(
+			hql,
+			params,
+			true
+		);
+	}
+	
+	public any function getAverageLandedCost(required string stockID, string locationID=""){
+		var params = {stockID=arguments.stockID};
+		
+		var hql = 'SELECT COALESCE(SUM(i.landedCost*i.quantityIn)/SUM(i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+		';
 			
-			return ORMExecuteQuery(
-				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
-				FROM SlatwallInventory i 
-				LEFT JOIN i.stock s
-				WHERE s.stockID=:stockID
-				',
-				{stockID=arguments.stockID},
-				true
-			);
+		if(len(arguments.locationID)){
+			hql &= ' LEFT JOIN stock.location location ';
+		}
+		hql &= ' WHERE stock.stockID = :stockID AND i.landedCost IS NOT NULL ';
+		
+		if(len(arguments.locationID)){
+			hql &= ' AND location.locationID=:locationID ';	
+			params.locationID=arguments.locationID;
 		}
 		
-		public numeric function getAverageLandedCost(required string stockID){
+		return ORMExecuteQuery(
+			hql,
+			params,
+			true
+		);
+	}
+		
+		public any function getAverageProfit(required string stockID){
+			return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageCost(argumentCollection=arguments));
+		}
+		
+		public any function getAverageLandedProfit(required string stockID){
+			return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageLandedCost(argumentCollection=arguments));
+		}
+		
+		public any function getAverageMarkup(required string stockID){
+			var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+			var averageCost = getAverageCost(argumentCollection=arguments);
+			if(averageCost == 0){
+				return 0;
+			}
 			
-			return ORMExecuteQuery(
-				'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
-				FROM SlatwallInventory i 
-				LEFT JOIN i.stock s
-				WHERE s.stockID=:stockID
-				',
-				{stockID=arguments.stockID},
-				true
-			);
+			return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageCost)/averageCost)*100);
+		}
+		
+		public any function getAverageLandedMarkup(required string stockID){
+			var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+			var averageLandedCost = getAverageLandedCost(argumentCollection=arguments);
+			if(averageLandedCost == 0){
+				return 0;
+			}
+			return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageLandedCost)/averageLandedCost)*100);
 		}
 		
 		public any function getStockBySkuAndLocation(required any sku, required any location) {

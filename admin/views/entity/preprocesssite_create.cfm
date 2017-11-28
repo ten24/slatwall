@@ -66,7 +66,6 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="useAppTemplatesFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.site#" property="subdomainName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
 		

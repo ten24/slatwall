@@ -119,8 +119,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		if(!structKeyExists(variables,'attributeOptionSourceOptions')){
 			var attributeOptionSourceOptionsCollectionList = getService('attributeService').getAttributeCollectionList();
 			attributeOptionSourceOptionsCollectionList.setDisplayProperties('attributeName|name,attributeID|value');
-			attributeOptionSourceOptionsCollectionList.addFilter('attributeSet.attributeSetObject',getAttributeSet().getAttributeSetObject());
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeInputType','checkboxGroup,multiselect,radioGroup,select','IN');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeOptionSource','NULL','IS');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeID',getAttributeID(),'!=');
 			variables.attributeOptionSourceOptions = attributeOptionSourceOptionsCollectionList.getRecords();
+			arrayprepend(variables.attributeOptionSourceOptions,{name="None",value=""});
 		}
 		
 		return variables.attributeOptionSourceOptions;
@@ -354,6 +357,29 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeAttribute( this );
+	}
+	
+	public boolean function isValidString(string stringValue){
+		var attributeCodeLength = len(getAttributeCode());
+		return attributeCodeLength > len(arguments.stringValue) && lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue);
+	}
+	
+	public boolean function isValidAttributeCode(){
+		//attribute code cannot begin with a string
+		var isValid = refind("^[a-zA-Z][a-zA-Z0-9_]*$",getAttributeCode());
+		
+		return isValid 
+		&& isValidString("Options")
+		&& isValidString("Count")
+		&& isValidString("AssignedIDList")
+		&& isValidString("OptionsSmartList")
+		&& isValidString("SmartList")
+		&& isValidString("CollectionList")
+		&& isValidString("Struct")
+		&& isValidString("ID")
+		&& isValidString("FileURL")
+		&& isValidString("UploadDirectory")
+		;
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

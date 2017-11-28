@@ -68,7 +68,7 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="response" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'TaskHistory'"
 		data-edit="false"
 		data-has-search="true"
@@ -82,6 +82,6 @@ Notes:
 		<sw-listing-column data-property-identifier="task.taskName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="successFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="response" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

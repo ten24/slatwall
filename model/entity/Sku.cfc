@@ -82,6 +82,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedAverageCost" ormtype="big_decimal";
 	property name="calculatedAverageLandedCost" ormtype="big_decimal";
+//	property name="calculatedAveragePriceSold" ormtype="big_decimal";
+//	property name="calculatedCurrentMargin" ormtype="big_decimal";
+//	property name="calculatedCurrentLandedMargin" ormtype="big_decimal";
+//	property name="calculatedCurrentAssetValue" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -105,6 +109,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="MinMaxStockTransferItem" inverse="true" lazy="extra";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
@@ -140,8 +145,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="assignedOrderItemAttributeSetSmartList" persistent="false";
 	property name="availableForPurchaseFlag" persistent="false";
 	property name="availableSeatCount" persistent="false";
-	property name="averageCost" persistent="false";
-	property name="averageLandedCost" persistent="false";
+	property name="averageCost" persistent="false" hb_formatType="currency";
+	property name="averageLandedCost" persistent="false" hb_formatType="currency";
+	property name="currentMargin" persistent="false" hb_formatType="percentage";
+	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
+	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
+	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averageMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageProfit" persistent="false" hb_formatType="currency";
+	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -151,6 +165,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventConflictsSmartList" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventOverbookedFlag" type="boolean" persistent="false";
+	property name="giftCardExpirationTermOptions" persistent="false";
+	property name="giftCardAutoGenerateCodeFlag" persistent="false";
+	property name="giftCardRecipientRequiredFlag" persistent="false";
 	property name="imageExistsFlag" type="boolean" persistent="false";
 	property name="imageFileName" type="string" persistent="false";
 	property name="imagePath" type="string" persistent="false";
@@ -180,17 +197,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
-	property name="giftCardExpirationTermOptions" persistent="false";
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
 	property name="inventoryTrackByOptions" persistent="false";
 	property name="inventoryMeasurementUnitOptions" persistent="false";
-	property name="averagePriceSold" persistent="false";
+	
 	// Deprecated Properties
 
 
-	// ==================== START: Logical Methods =========================
+	// ==================== START: Logical Methods =========================	
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
@@ -205,12 +221,33 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQOH() * getAverageCost();
 	}
 	
+//	public numeric function getCurrentRevenueTotal(){
+//		
+//		return getQuantity('QDOO') * getAveragePriceSold();
+//	}
+	
 	public numeric function getCurrentMargin(){
 		return getDao('skuDao').getCurrentMargin(this.getSkuID());
 	}
 	
 	public numeric function getCurrentLandedMargin(){
 		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID());
+	}
+
+	public numeric function getAverageProfit(){
+		return getDao('skuDao').getAverageProfit(this.getSkuID());
+	}
+	
+	public numeric function getAverageLandedProfit(){
+		return getDao('skuDao').getAverageLandedProfit(this.getSkuID());
+	}
+	
+	public numeric function getAverageMarkup(){
+		return getDao('skuDao').getAverageMarkup(this.getSkuID());
+	}
+	
+	public numeric function getAverageLandedMarkup(){
+		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID());
 	}
 
 	public array function getGiftCardExpirationTermOptions(){
@@ -226,6 +263,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
 		}
 		return variables.giftCardExpirationTermIDOptions;
+	}
+
+	public boolean function getGiftCardAutoGenerateCodeFlag() {
+		return setting('skuGiftCardAutoGenerateCode');
+	}
+
+	public boolean function getGiftCardRecipientRequiredFlag() {
+		return setting('skuGiftCardRecipientRequired');
 	}
 
 	public array function getRedemptionAmountTypeOptions(){
@@ -576,11 +621,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				//Need to get location and all children of location
 				var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
 				var totalQuantity = 0;
+				
 				for(var i=1;i<=arraylen(locations);i++) {
 					var location = getService("locationService").getLocation(locations[i].value);
-					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
-					totalQuantity += stock.getQuantity(arguments.quantityType);
+					if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+						var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+						totalQuantity += stock.getQuantity(arguments.quantityType);
+					}  
 				}
+				
 				return totalQuantity;
 
 			// If this is a calculated quantity and stockID exists, then delegate
@@ -592,7 +641,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 		// Standard Logic
 		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
+			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
@@ -1212,12 +1261,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
-	public any function getAverageCost(){
-		return getDao('skuDao').getAverageCost(this.getSkuID());
+	public any function getAverageCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.locationID=arguments.location.getLocationID();
+		}
+		
+		return getDao('skuDao').getAverageCost(argumentCollection=params);
 	}
 	
-	public any function getAverageLandedCost(){
-		return getDao('skuDao').getAverageLandedCost(this.getSkuID());
+	public any function getAverageLandedCost(any location){
+		var params.skuID = this.getSkuID();
+		if(!isNull(arguments.location)){
+			params.locationID=arguments.location.getLocationID();
+		}
+		
+		return getDao('skuDao').getAverageLandedCost(argumentCollection=params);
 	}
 
 
