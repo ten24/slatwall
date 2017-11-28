@@ -480,7 +480,6 @@ a:hover {
 .dropdown-menu {
   font-size: 12px;
 }
-.dropdown-menu .dropdown-menu-loader { display: block; text-align: center; }
 .s-btn-dropdown .btn-default.s-btn-select {
   border-left: 1px solid #dddddd;
 }
