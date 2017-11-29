@@ -58,7 +58,7 @@ Notes:
 		<cfset optionInUseCollectionList.addFilter('skus.skuID',rc.sku.getSkuID())/>
 		<cfset optionInUseCollectionList.setDisplayProperties('optionID')/>
 		<cfset optionInUseCollectionList.addDisplayAggregate('skus.orderItems','COUNT','orderItemsCount')/>
-		<cfset optionIsEditable = arraylen(optionInUseCollectionList.getRecords()) && !optionInUseCollectionList.getRecords()[1]['orderItemsCount']/>
+		<cfset optionIsEditable = !arraylen(optionInUseCollectionList.getRecords()) || (arraylen(optionInUseCollectionList.getRecords()) && !optionInUseCollectionList.getRecords()[1]['orderItemsCount'])/>
 		
 		<cfif optionIsEditable && rc.edit>
 			<div sw-add-option-group option-groups="'#rc.product.getOptionGroupsAsList()#'" product-id="#rc.product.getProductID()#"></div>
