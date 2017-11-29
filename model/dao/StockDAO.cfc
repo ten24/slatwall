@@ -116,7 +116,7 @@ Notes:
 	}
 
 
-	public numeric function getCurrentMargin(required string stockID){
+	public numeric function getCurrentMargin(required string stockID, required string currencyCode){
 		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 		if(averagePriceSold == 0){
 			return 0;
@@ -124,7 +124,7 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
-	public numeric function getCurrentLandedMargin(required string stockID){
+	public numeric function getCurrentLandedMargin(required string stockID, required string currencyCode){
 		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 		if(averagePriceSold == 0){
 			return 0;
@@ -132,7 +132,7 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
-	public numeric function getAveragePriceSold(required string stockID){
+	public numeric function getAveragePriceSold(required string stockID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
@@ -152,10 +152,12 @@ Notes:
 						  AND
 						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						  AND 
 							stocks.stockID = :stockID
 						GROUP BY stocks.stockID
 						";
-		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID},true);	
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID, currencyCode=arguments.currencyCode},true);	
 		
 		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
 			return 0;
@@ -164,8 +166,8 @@ Notes:
 		return averagePriceSold;
 	}
 		
-	public any function getAverageCost(required string stockID, string locationID=""){
-		var params = {stockID=arguments.stockID};
+	public any function getAverageCost(required string stockID, required string currencyCode, string locationID=""){
+		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
 		
 		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
@@ -176,7 +178,7 @@ Notes:
 			hql &= ' LEFT JOIN stock.location location ';
 		}
 		
-		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL ';
+		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL AND i.currencyCode=:currencyCode ';
 		
 		if(len(arguments.locationID)){
 			hql&= ' AND location.locationID = :locationID';	
@@ -191,8 +193,8 @@ Notes:
 		);
 	}
 	
-	public any function getAverageLandedCost(required string stockID, string locationID=""){
-		var params = {stockID=arguments.stockID};
+	public any function getAverageLandedCost(required string stockID, required string currencyCode, string locationID=""){
+		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
 		
 		var hql = 'SELECT COALESCE(SUM(i.landedCost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
@@ -202,7 +204,7 @@ Notes:
 		if(len(arguments.locationID)){
 			hql &= ' LEFT JOIN stock.location location ';
 		}
-		hql &= ' WHERE stock.stockID = :stockID AND i.landedCost IS NOT NULL ';
+		hql &= ' WHERE stock.stockID = :stockID AND i.landedCost IS NOT NULL AND i.currencyCode=:currencyCode ';
 		
 		if(len(arguments.locationID)){
 			hql &= ' AND location.locationID=:locationID ';	
@@ -216,15 +218,15 @@ Notes:
 		);
 	}
 		
-		public any function getAverageProfit(required string stockID){
+		public any function getAverageProfit(required string stockID, required string currencyCode){
 			return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageCost(argumentCollection=arguments));
 		}
 		
-		public any function getAverageLandedProfit(required string stockID){
+		public any function getAverageLandedProfit(required string stockID, required string currencyCode){
 			return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageLandedCost(argumentCollection=arguments));
 		}
 		
-		public any function getAverageMarkup(required string stockID){
+		public any function getAverageMarkup(required string stockID, required string currencyCode){
 			var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 			var averageCost = getAverageCost(argumentCollection=arguments);
 			if(averageCost == 0){
@@ -234,7 +236,7 @@ Notes:
 			return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageCost)/averageCost)*100);
 		}
 		
-		public any function getAverageLandedMarkup(required string stockID){
+		public any function getAverageLandedMarkup(required string stockID, required string currencyCode){
 			var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 			var averageLandedCost = getAverageLandedCost(argumentCollection=arguments);
 			if(averageLandedCost == 0){

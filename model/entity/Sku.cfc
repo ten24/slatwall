@@ -80,12 +80,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
-	property name="calculatedAverageCost" ormtype="big_decimal";
-	property name="calculatedAverageLandedCost" ormtype="big_decimal";
-//	property name="calculatedAveragePriceSold" ormtype="big_decimal";
-//	property name="calculatedCurrentMargin" ormtype="big_decimal";
-//	property name="calculatedCurrentLandedMargin" ormtype="big_decimal";
-//	property name="calculatedCurrentAssetValue" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -213,12 +207,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return vendorSkuSmartList;
 	}
 
-	public numeric function getAveragePriceSold(){
-		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
+	public numeric function getAveragePriceSold(required string currencyCode="USD"){
+		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 
-	public numeric function getCurrentAssetValue(){
-		return getQOH() * getAverageCost();
+	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		return getQOH(currencyCode=arguments.currencyCode) * getAverageCost(arguments.currencyCode);
 	}
 	
 //	public numeric function getCurrentRevenueTotal(){
@@ -226,28 +220,28 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 //		return getQuantity('QDOO') * getAveragePriceSold();
 //	}
 	
-	public numeric function getCurrentMargin(){
-		return getDao('skuDao').getCurrentMargin(this.getSkuID());
+	public numeric function getCurrentMargin(required string currencyCode="USD"){
+		return getDao('skuDao').getCurrentMargin(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getCurrentLandedMargin(){
-		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID());
+	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
+		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID(),arguments.currencyCode);
 	}
 
-	public numeric function getAverageProfit(){
-		return getDao('skuDao').getAverageProfit(this.getSkuID());
+	public numeric function getAverageProfit(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageLandedProfit(){
-		return getDao('skuDao').getAverageLandedProfit(this.getSkuID());
+	public numeric function getAverageLandedProfit(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageLandedProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageMarkup(){
-		return getDao('skuDao').getAverageMarkup(this.getSkuID());
+	public numeric function getAverageMarkup(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageLandedMarkup(){
-		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID());
+	public numeric function getAverageLandedMarkup(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 
 	public array function getGiftCardExpirationTermOptions(){
@@ -1261,8 +1255,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
-	public any function getAverageCost(any location){
+	public any function getAverageCost(required string currencyCode, any location){
 		var params.skuID = this.getSkuID();
+		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
 			params.locationID=arguments.location.getLocationID();
 		}
@@ -1270,8 +1265,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getDao('skuDao').getAverageCost(argumentCollection=params);
 	}
 	
-	public any function getAverageLandedCost(any location){
+	public any function getAverageLandedCost(required string currencyCode, any location){
 		var params.skuID = this.getSkuID();
+		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
 			params.locationID=arguments.location.getLocationID();
 		}

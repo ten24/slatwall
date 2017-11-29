@@ -74,6 +74,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
 			inventory.setStock(arguments.stockReceiverItem.getStock());
 			inventory.setStockReceiverItem(arguments.stockReceiverItem);
+			inventory.setCurrencyCode(arguments.stockReceiverItem.getCurrencyCode());
 
 			//vendorOrderItem logic
 			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendorOrder' || arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'stockAdjustment'){
@@ -148,7 +149,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut( arguments.entity.getQuantity() );
 					inventory.setStock( arguments.entity.getStock() );
 					inventory.setOrderDeliveryItem( arguments.entity );
-					
+					inventory.setCurrencyCode(arguments.entity.getOrderItem().getCurrencyCode());
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the revenue ledger account 
 						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
@@ -169,6 +170,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
+					inventory.setCurrencyCode(arguments.entity.getVendorOrderItem().getCurrencyCode());
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the inventory ledger account 
 						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
@@ -208,6 +210,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					inventory.setCost(arguments.entity.getCost());
 					inventory.setLandedCost(arguments.entity.getCost());
 					inventory.setLandedAmount(arguments.entity.getCost());
+					inventory.setCurrencyCode(arguments.entity.getCurrencyCode());
 
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the inventory ledger account 

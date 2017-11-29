@@ -55,6 +55,7 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="cost" ormtype="big_decimal";
 	property name="landedCost" ormtype="big_decimal";
 	property name="landedAmount" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

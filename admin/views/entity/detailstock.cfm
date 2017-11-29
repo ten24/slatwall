@@ -63,6 +63,7 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.stock#">
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/accountinginfo" />
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventory" />
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventoryhistory" />
 		</hb:HibachiEntityDetailGroup>

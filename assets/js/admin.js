@@ -141,10 +141,21 @@ $(document).ready(function(e){
 						newTR.push("<td>"+invData.MQATSBOM+"</td>");
 					}
 					newTR.push.apply(newTR,["<td>"+invData.QATS+"</td>",
-						"<td>"+invData.QIATS+"</td>",
-						"<td>"+parseFloat(invData.averageCost).toFixed(2)+"</td>",
-						"<td>"+parseFloat(invData.averageLandedCost).toFixed(2)+"</td>",
-					"</tr>"]);
+						"<td>"+invData.QIATS+"</td>"
+					]);
+					
+					var currencyArray = [];
+					var currencyCodeArray = invData.activeCurrencies.split(',');
+					for(var jj in currencyCodeArray){
+						var currencyCode = currencyCodeArray[jj];
+						newTR.push.apply(newTR,[
+							"<td>"+parseFloat(invData['averageCost'+currencyCode]).toFixed(2)+"</td>",
+							"<td>"+parseFloat(invData['averageLandedCost'+currencyCode]).toFixed(2)+"</td>"
+						]);
+					}
+					
+					
+					newTR.push("</tr>");
 					
 					newTR = newTR.join('\n');
 					$(currentTableRow).after(newTR);
