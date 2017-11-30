@@ -90,6 +90,6 @@ Notes:
 		<sw-listing-column data-property-identifier="fileGroupDescription" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="fileRestrictAccessFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="fileTrackAccessFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

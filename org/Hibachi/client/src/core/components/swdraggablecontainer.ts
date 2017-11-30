@@ -70,8 +70,9 @@ class SWDraggableContainer implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        if(scope.swDraggableContainer.draggable){
-            angular.element(element).attr("draggable", "true");
+        scope.$watch('swDraggableContainer.draggable',(newValue,oldValue)=>{
+
+            angular.element(element).attr("draggable", newValue);
 
             var placeholderElement = angular.element("<tr class='s-placeholder'><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td>placeholder</td><td></td></tr>");//temporarirly hardcoding tds so it will show up
 
@@ -83,82 +84,83 @@ class SWDraggableContainer implements ng.IDirective{
             var listNode = element[0];
             var placeholderNode = placeholderElement[0];
             placeholderElement.remove();
+            if(newValue){
+                element.on('drop', (e)=>{
+                    e = e.originalEvent || e;
+                    e.preventDefault();
 
-            element.on('drop', (e)=>{
-                e = e.originalEvent || e;
-                e.preventDefault();
+                    if(!this.draggableService.isDropAllowed(e)) return true;
 
-                if(!this.draggableService.isDropAllowed(e)) return true;
+                    var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
+                    var parsedRecord = JSON.parse(record);
 
-                var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
-                var parsedRecord = JSON.parse(record);
-
-                var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
-                if(index < parsedRecord.draggableStartKey){
-                    parsedRecord.draggableStartKey++;
-                }
-
-                this.$timeout(
-                    ()=>{
-                        scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
-                        scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
-                    }, 0
-                );
-
-                if (angular.isDefined(scope.swDraggableContainer.listingId)){
-                    this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
-                } else if (angular.isDefined(scope.swDraggableContainer.dropEventName)){
-                    this.observerService.notify(scope.swDraggableContainer.dropEventName);
-                }
-
-                placeholderElement.remove();
-                e.stopPropagation();
-                return false;
-            });
-
-            element.on('dragenter', (e)=>{
-                e = e.originalEvent || e;
-                if (!this.draggableService.isDropAllowed(e)) return true;
-                e.preventDefault();
-            });
-
-            element.on('dragleave', (e)=>{
-                e = e.originalEvent || e;
-
-                if (e.pageX != 0 || e.pageY != 0) {
-                    return false;
-                }
-
-                return false;
-            });
-
-            element.on('dragover', (e)=>{
-                e = e.originalEvent || e;
-                e.stopPropagation();
-
-                if(placeholderNode.parentNode != listNode) {
-                    element.append(placeholderElement);
-                }
-
-                if(e.target !== listNode) {
-                    var listItemNode = e.target;
-                    while (listItemNode.parentNode !== listNode && listItemNode.parentNode) {
-                        listItemNode = listItemNode.parentNode;
+                    var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
+                    if(index < parsedRecord.draggableStartKey){
+                        parsedRecord.draggableStartKey++;
                     }
 
-                    if (listItemNode.parentNode === listNode && listItemNode !== placeholderNode) {
-                        if (this.draggableService.isMouseInFirstHalf(e, listItemNode)) {
-                            listNode.insertBefore(placeholderNode, listItemNode);
-                        } else {
-                            listNode.insertBefore(placeholderNode, listItemNode.nextSibling);
+                    this.$timeout(
+                        ()=>{
+                            scope.swDraggableContainer.draggableRecords.splice(index, 0, parsedRecord);
+                            scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
+                        }, 0
+                    );
+
+                    if (angular.isDefined(scope.swDraggableContainer.listingId)){
+                        this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
+                    } else if (angular.isDefined(scope.swDraggableContainer.dropEventName)){
+                        this.observerService.notify(scope.swDraggableContainer.dropEventName);
+                    }
+
+                    placeholderElement.remove();
+                    e.stopPropagation();
+                    return false;
+                });
+
+                element.on('dragenter', (e)=>{
+                    e = e.originalEvent || e;
+                    if (!this.draggableService.isDropAllowed(e)) return true;
+                    e.preventDefault();
+                });
+
+                element.on('dragleave', (e)=>{
+                    e = e.originalEvent || e;
+
+                    if (e.pageX != 0 || e.pageY != 0) {
+                        return false;
+                    }
+
+                    return false;
+                });
+
+                element.on('dragover', (e)=>{
+                    e = e.originalEvent || e;
+                    e.stopPropagation();
+
+                    if(placeholderNode.parentNode != listNode) {
+                        element.append(placeholderElement);
+                    }
+
+                    if(e.target !== listNode) {
+                        var listItemNode = e.target;
+                        while (listItemNode.parentNode !== listNode && listItemNode.parentNode) {
+                            listItemNode = listItemNode.parentNode;
+                        }
+
+                        if (listItemNode.parentNode === listNode && listItemNode !== placeholderNode) {
+                            if (this.draggableService.isMouseInFirstHalf(e, listItemNode)) {
+                                listNode.insertBefore(placeholderNode, listItemNode);
+                            } else {
+                                listNode.insertBefore(placeholderNode, listItemNode.nextSibling);
+                            }
                         }
                     }
-                }
 
-                element.addClass("s-dragged-over");
-                return false;
-            });
-        }
+                    element.addClass("s-dragged-over");
+                    return false;
+                });
+            }
+        });
     }
 }
 export{

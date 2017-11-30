@@ -46,35 +46,15 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.integrationSmartList" type="any" />
-<cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfparam name="rc.site" type="any" />
 
 <cfoutput>
-
-	<hb:HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
-
-	<!--- <hb:HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay> --->
-
-    <sw-listing-display data-using-personal-collection="true"
-        data-collection="'Integration'"
-        data-edit="false"
-        data-has-search="true"
-        record-edit-action="admin:entity.editintegration"
-        record-detail-action="admin:entity.detailintegration"
-        data-is-angular-route="false"
-        data-angular-links="false"
-        data-has-action-bar="false"
-    >
-        <sw-listing-column data-property-identifier="integrationID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="integrationName" tdclass="primary" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-    </sw-listing-display data-using-personal-collection="true">
-
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.site#" />
+	</swa:SlatwallSettingTable>
 </cfoutput>

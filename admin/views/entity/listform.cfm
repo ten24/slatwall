@@ -70,12 +70,12 @@ Notes:
 			data-is-angular-route="false"
 			data-angular-links="false"
 			data-has-action-bar="false"
-						> 
+						>
 		<sw-listing-column data-property-identifier="formID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="emailTo"></sw-listing-column>
 		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
 		<sw-listing-column data-property-identifier="formName"></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

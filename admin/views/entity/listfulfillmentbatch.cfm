@@ -79,4 +79,4 @@ Notes:
 		<sw-listing-column data-property-identifier="fulfillmentBatchName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="description" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="assignedAccount.fullName" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">

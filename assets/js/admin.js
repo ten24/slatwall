@@ -142,8 +142,8 @@ $(document).ready(function(e){
 					}
 					newTR.push.apply(newTR,["<td>"+invData.QATS+"</td>",
 						"<td>"+invData.QIATS+"</td>",
-						"<td>"+invData.averageCost+"</td>",
-						"<td>"+invData.averageLandedCost+"</td>",
+						"<td>"+parseFloat(invData.averageCost).toFixed(2)+"</td>",
+						"<td>"+parseFloat(invData.averageLandedCost).toFixed(2)+"</td>",
 					"</tr>"]);
 					
 					newTR = newTR.join('\n');

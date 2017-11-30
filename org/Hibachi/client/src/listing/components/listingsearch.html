@@ -1,5 +1,6 @@
 <div class="input-group">
-    <div class="input-group-btn search-panel">
+
+    <div class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchColumn.title"></span> <span class="caret"></span>
         </button>
@@ -11,7 +12,7 @@
             </li>
         </ul>
     </div>
-    <span class="s-search">
+    <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
                 data-ng-model="swListingSearch.searchText"
                 data-ng-model-options='{ debounce: 500 }'
