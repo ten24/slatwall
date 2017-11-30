@@ -230,11 +230,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		}
 	}
 	
-	public void function updateCalculatedProperties() {
-		super.updateCalculatedProperties(argumentCollection=arguments);
-		getService("locationService").processLocation(this, "updateInventoryCalculationsForSkus");
-	}
-	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
