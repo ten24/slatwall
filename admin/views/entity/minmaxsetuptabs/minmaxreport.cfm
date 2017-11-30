@@ -10,6 +10,8 @@
 			collectionList="#skuCollectionList#"
 			collectionConfigFieldName="collectionConfig"
 			showSimpleListingControls="false"
+			recordEditAction="admin:entity.edit#lcase(skuCollectionList.getCollectionObject())#"
+			recordDetailAction="admin:entity.detail#lcase(skuCollectionList.getCollectionObject())#"
 		>
 		</hb:HibachiListingDisplay>
 	</cfif>
