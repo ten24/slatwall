@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
+	property name="inventoryService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productService" type="any";
@@ -82,10 +83,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				skuDefinition = "";
 		}
 		return skuDefinition;
-	}
-	
-	public any function getSkuLocationInventoryBySkuIDAndLocationID(required string skuID, required string locationID){
-		return getSkuDAO().getSkuLocationInventoryBySkuIDAndLocationID(skuID=arguments.skuID, locationID=arguments.locationID);
 	}
 	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
@@ -616,7 +613,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		
 		return arguments.sku;
-	} 
+	}
+
+	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
+		
+		var locationCollection = getLocationService().getLocationCollectionList();
+		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
+		var locationRecords = locationCollection.getRecords();
+		
+		// Update calculations for each location
+		for (var locationData in locationRecords) {
+			
+			// Allows us to leverage the populate method to set relationships on new skuLocationInventoryCalculation entity when needed
+			var data = {
+				sku = { skuID = arguments.sku.getSkuID() },
+				location = { locationID = locationData.locationID }
+			};
+
+			// Attempt to load entity or create new entity if it did not previously exist
+			var skuLocationInventoryCalculation = getInventoryService().getSkuLocationInventoryCalculationBySkuIDAndLocationID(data.sku.skuID, data.location.locationID);
+
+			// Sku and Location entity references should already be populated for existing entity, delete from populate data
+			if (!skuLocationInventoryCalculation.getNewFlag()) {
+				structDelete(data, 'skuID');
+				structDelete(data, 'locationID');
+			}
+			
+			// Populate with updated calculated values and sku/location relationships
+			skuLocationInventoryCalculation.populate(data);
+			skuLocationInventoryCalculation.updateCalculatedProperties();
+		}
+
+		this.saveSku(arguments.sku);
+		
+		return arguments.sku;
+	}
 
 	// =====================  END: Process Methods ============================
 

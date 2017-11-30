@@ -110,7 +110,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="MinMaxStockTransferItem" inverse="true" lazy="extra";
-	property name="skuLocationInventory" singularname="skuLocationInventory" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuLocationInventory" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
+	property name="skuLocationInventoryCalculations" singularname="skuLocationInventoryCalculation" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuLocationInventoryCalculation" inverse="true" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
@@ -1671,6 +1671,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return super.onMissingMethod(argumentCollection=arguments);
 	}
 
+	public void function updateCalculatedProperties() {
+		super.updateCalculatedProperties(argumentCollection=arguments);
+		getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

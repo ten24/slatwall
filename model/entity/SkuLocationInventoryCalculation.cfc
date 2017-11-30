@@ -46,17 +46,17 @@
 Notes:
 
 */
-component entityname="SlatwallSkuLocationInventory" table="SwSkuLocationInventory" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="" {
+component entityname="SlatwallSkuLocationInventoryCalculation" table="SwSkuLocationInventoryCalculation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="inventoryService" hb_permission="this" hb_processContexts="" {
 
 	// Persistent Properties
-	property name="skuLocationInventoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="skuLocationInventoryCalculationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
 
 	// Related Object Properties (many-to-one)
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 
 	// Related Object Properties (one-to-many)
@@ -104,37 +104,37 @@ component entityname="SlatwallSkuLocationInventory" table="SwSkuLocationInventor
 	// Sku (many-to-one)
 	public void function setSku(required any sku) {
 		variables.sku = arguments.sku;
-		if(isNew() or !arguments.sku.hasSkuLocationInventory( this )) {
-			arrayAppend(arguments.sku.getSkuLocationInventory(), this);
+		if(isNew() or !arguments.sku.hasSkuLocationInventoryCalculation( this )) {
+			arrayAppend(arguments.sku.getSkuLocationInventoryCalculations(), this);
 		}
 	}
 	public void function removeSku(any sku) {
 		if(!structKeyExists(arguments, "sku")) {
 			arguments.sku = variables.sku;
 		}
-		var index = arrayFind(arguments.sku.getSkuLocationInventory(), this);
+		var index = arrayFind(arguments.sku.getSkuLocationInventoryCalculations(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.sku.getSkuLocationInventory(), index);
+			arrayDeleteAt(arguments.sku.getSkuLocationInventoryCalculations(), index);
 		}
 		structDelete(variables, "sku");
 	}
 	
 	// Location (many-to-one)
-	public void function setLocation(required any Location) {
-		variables.Location = arguments.Location;
-		if(isNew() or !arguments.Location.hasSkuLocationInventory( this )) {
-			arrayAppend(arguments.Location.getSkuLocationInventory(), this);
+	public void function setLocation(required any location) {
+		variables.location = arguments.location;
+		if(isNew() or !arguments.location.hasSkuLocationInventoryCalculation( this )) {
+			arrayAppend(arguments.location.getSkuLocationInventoryCalculations(), this);
 		}
 	}
-	public void function removeLocation(any Location) {
-		if(!structKeyExists(arguments, "Location")) {
-			arguments.Location = variables.Location;
+	public void function removeLocation(any location) {
+		if(!structKeyExists(arguments, "location")) {
+			arguments.location = variables.location;
 		}
-		var index = arrayFind(arguments.Location.getSkuLocationInventory(), this);
+		var index = arrayFind(arguments.location.getSkuLocationInventoryCalculations(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.Location.getSkuLocationInventory(), index);
+			arrayDeleteAt(arguments.location.getSkuLocationInventoryCalculations(), index);
 		}
-		structDelete(variables, "Location");
+		structDelete(variables, "location");
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

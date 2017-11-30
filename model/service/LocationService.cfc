@@ -50,6 +50,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	property name="locationDAO" type="any";
 	property name="stockDAO" type="any";
+	property name="skuService" type="any";
+	property name="inventoryService" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -128,11 +130,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processLocation_updateInventoryCalculationsForSkus(required any location) {
+		var skuCollection = getSkuService().getSkuCollectionList();
+		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider activeFlag
+		var skuRecords = skuCollection.getRecords();
+		
+		// Update calculations for each sku
+		for (var skuData in skuRecords) {
+			
+			// Allows us to leverage the populate method to set relationships on new skuLocationInventoryCalculation entity when needed
+			var data = {
+				sku = { skuID = skuData.skuID },
+				location = { locationID = arguments.location.getLocationID() }
+			};
+
+			// Attempt to load entity or create new entity if it did not previously exist
+			var skuLocationInventoryCalculation = getInventoryService().getSkuLocationInventoryCalculationBySkuIDAndLocationID(data.sku.skuID, data.location.locationID);
+
+			// Sku and Location entity references should already be populated for existing entity, delete from populate data
+			if (!skuLocationInventoryCalculation.getNewFlag()) {
+				structDelete(data, 'skuID');
+				structDelete(data, 'locationID');
+			}
+			
+			// Populate with updated calculated values and sku/location relationships
+			skuLocationInventoryCalculation.populate(data);
+			skuLocationInventoryCalculation.updateCalculatedProperties();
+		}
+
+		this.saveLocation(arguments.location);
+		
+		return arguments.location;
+	}
+
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
 	
-	public any function saveLocation(required any location, required struct data) {
+	public any function saveLocation(required any location, struct data={}) {
 		
 		arguments.location = super.save(arguments.location, arguments.data);
 		

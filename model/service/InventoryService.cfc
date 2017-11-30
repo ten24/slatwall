@@ -462,6 +462,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
+	public any function getSkuLocationInventoryCalculationBySkuIDAndLocationID(required string skuID, required string locationID) {
+		return getInventoryDAO().getSkuLocationInventoryCalculationBySkuIDAndLocationID(argumentCollection=arguments);
+	}
 
 	// ===================== START: Logical Methods ===========================
 	
