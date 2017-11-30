@@ -1671,9 +1671,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return super.onMissingMethod(argumentCollection=arguments);
 	}
 
-	public void function updateCalculatedProperties() {
-		super.updateCalculatedProperties(argumentCollection=arguments);
-		getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
+	public void function updateCalculatedProperties(boolean runAgain=false) {
+		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
+			super.updateCalculatedProperties(argumentCollection=arguments);
+			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
+		}
 	}
 
 	// ==================  END:  Overridden Methods ========================
