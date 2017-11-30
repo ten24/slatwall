@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-
+var md5 = require('md5');
 class optionWithGroup {
     constructor(
         public optionID:string,
@@ -24,13 +24,18 @@ class SWAddOptionGroupController {
     public productTypeID;
     public productCollectionConfig;
     public skuCollectionConfig;
+    public optionCollectionConfig;
     public skus;
+    public skuId;
     public usedOptions;
     public selection;
     public selectedOptionList;
     public showValidFlag;
     public showInvalidFlag;
     public skusProcessing;
+
+    public possibleComboHashes;
+    public savedOptions;
 
     // @ngInject
     constructor(private $hibachi, private $timeout,
@@ -51,58 +56,54 @@ class SWAddOptionGroupController {
             this.selection.push(new optionWithGroup("", this.optionGroupIds[i], false));
         }
 
+        //get current selections
+        this.optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
+        this.optionCollectionConfig.setDisplayProperties('optionID,optionGroup.optionGroupID');
+        this.optionCollectionConfig.addFilter('skus.skuID',this.skuId);
 
-        this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
-        this.productCollectionConfig.addDisplayProperty("productID, productName, productType.productTypeID");
+        this.optionCollectionConfig.setAllRecords(true)
+        this.optionCollectionConfig.getEntity().then((response)=>{
+            this.savedOptions={};
 
-        this.productCollectionConfig.getEntity(this.productId).then((response)=>{
+            if(response.records){
+                for(var kk in response.records){
+                    var record = response.records[kk];
+                    this.savedOptions[record['optionGroup_optionGroupID']]=record['optionID'];
+                    this.addToSelection(record['optionID'], record['optionGroup_optionGroupID']);
+                }
+            }
 
-            this.product = response;
-            this.productTypeID = response.productType_productTypeID;
-
-            this.skuCollectionConfig = collectionConfigService.newCollectionConfig("Sku");
-            this.skuCollectionConfig.addDisplayProperty("skuID, skuCode, product.productID");
-            this.skuCollectionConfig.addFilter("product.productID", this.productId);
-            this.skuCollectionConfig.setAllRecords(true);
-
-            this.usedOptions = [];
-
-            this.skuCollectionConfig.getEntity().then((response)=>{
-                this.skus = response.records;
-                this.skusProcessing = this.skus.length;
-                angular.forEach(this.skus, (sku)=>{
-
-                    var optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
-
-                    optionCollectionConfig.addDisplayProperty("optionID, optionName, optionCode, optionGroup.optionGroupID");
-                    optionCollectionConfig.setAllRecords(true);
-                    optionCollectionConfig.addFilter("skus.skuID", sku.skuID);
-
-                    optionCollectionConfig.getEntity().then((response)=>{
-                        if(response.records.length){
-                            this.usedOptions.push(
-                                utilityService.arraySorter(response.records, ["optionGroup_optionGroupID"])
-                            );
-                        }
-                        this.skusProcessing--;
-                    });
-                });
-            });
         });
 
         this.observerService.attach(this.validateOptions, "validateOptions");
     }
 
     public getOptionList = () => {
+        this.selection.sort();
         return this.utilityService.arrayToList(this.selection);
     }
 
     public validateOptions = (args:Array<any>) => {
 
-        this.addToSelection(args[0], args[1].optionGroupID);
+        this.addToSelection(args[0], args[1].optionGroupId);
 
         if( this.hasCompleteSelection() ){
-            if(this.validateSelection()){
+            this.validateSelection();
+        }
+    }
+
+    private validateSelection = () => {
+
+        var optionList = this.getOptionList();
+
+        var validateSkuCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku");
+        validateSkuCollectionConfig.addDisplayProperty("calculatedOptionsHash");
+        validateSkuCollectionConfig.addFilter("product.productID", this.productId);
+        validateSkuCollectionConfig.addFilter("skuID",this.skuId,"!=")
+        validateSkuCollectionConfig.addFilter("calculatedOptionsHash",md5(optionList));
+        validateSkuCollectionConfig.setAllRecords(true);
+        validateSkuCollectionConfig.getEntity().then((response)=>{
+            if(response.records && response.records.length == 0){
                 this.selectedOptionList = this.getOptionList();
                 this.showValidFlag = true;
                 this.showInvalidFlag = false;
@@ -110,47 +111,13 @@ class SWAddOptionGroupController {
                 this.showValidFlag = false;
                 this.showInvalidFlag = true;
             }
-        }
-    }
-
-    private validateSelection = () => {
-        var valid = true;
-        console.log('usedOptions',this.usedOptions);
-
-        angular.forEach(this.usedOptions, (combination) => {
-            if(valid){
-                var counter = 0;
-                angular.forEach(combination, (usedOption) => {
-                    if(this.selection[counter].optionGroupID === usedOption.optionGroup_optionGroupID
-                        && this.selection[counter].optionID != usedOption.optionID
-                    ){
-                        this.selection[counter].match = true;
-                    }
-                    counter++;
-                });
-                if(!this.allSelectionFieldsValidForThisCombination()){
-                    valid = false;
-                }
-            }
         });
 
-        return valid;
-    }
-
-    private allSelectionFieldsValidForThisCombination = () =>{
-        var matches = 0;
-        angular.forEach(this.selection, (pair)=>{
-            if(!pair.match){
-                matches++;
-            }
-            //reset
-            pair.match = false;
-        });
-        return matches != this.selection.length;
     }
 
     private hasCompleteSelection = () =>{
         var answer = true;
+
         angular.forEach(this.selection, (pair)=>{
             if(pair.optionID.length === 0){
                 answer = false;
@@ -179,6 +146,7 @@ class SWAddOptionGroup implements ng.IDirective{
 
     public bindToController = {
         productId:"@",
+        skuId:"@",
         optionGroups:"="
     }
     public controller=SWAddOptionGroupController;
