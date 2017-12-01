@@ -56,6 +56,8 @@ Notes:
 
 <hb:HibachiListingDisplay
 	collectionList="#rc.ordersPlacedCollectionList#"
+	recordEditAction="admin:entity.editorder"
+	recordDetailAction="admin:entity.detailorder"
 >
 </hb:HibachiListingDisplay>
 <hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />
