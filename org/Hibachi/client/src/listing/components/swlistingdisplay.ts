@@ -32,6 +32,8 @@ class SWListingDisplayController{
     public expandableRules = [];
     public exampleEntity:any = "";
     public exportAction;
+    public emailAction;
+    public printAction;
     public filters = [];
     public filterGroups = [];
     public isAngularRoute:boolean;
@@ -105,15 +107,18 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-
-
+        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
+        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+        //     return;
+        // }
+        
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
-
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+
             //not sure why we have two properties for this
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
@@ -122,12 +127,12 @@ class SWListingDisplayController{
                 this.collection = this.collectionConfig;
                 this.columns = this.collectionConfig.columns;
             });
+
             this.multipleCollectionDeffered.reject();
         }
+        
 		this.initializeState();
-		
-		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-		        
+
         if(angular.isDefined(this.collectionPromise)){
              this.hasCollectionPromise = true;
              this.multipleCollectionDeffered.reject();
@@ -138,15 +143,17 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-
+        
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
-        
+
+        this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
+
 		if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
             });
-    
+
             this.multipleCollectionPromise.then(
                 ()=>{
                     //now do the intial setup
@@ -159,28 +166,34 @@ class SWListingDisplayController{
                 }
             ).finally(
                 ()=>{
+                    
                     if(angular.isUndefined(this.getCollection)){
                         this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                     }
-    
+
                     this.paginator.getCollection = this.getCollection;
-    
+
                     var getCollectionEventID = this.tableID;
-            		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+
                 }
             );
         }else if(this.multiSlot == false){
-
-        	this.setupCollectionPromise();
             
+            if(this.columns && this.columns.length){
+                this.collectionConfig.columns = this.columns;
+            }
+                
+            this.setupCollectionPromise();
+
         }
-        
+
         if (this.collectionObject){
              this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
     }
-    
+
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -202,21 +215,22 @@ class SWListingDisplayController{
                 this.collectionData = data;
                 this.observerService.notify('swPaginationUpdate',data);
             });
-            
+
         }
-        
+
     }
-    
+
     private setupCollectionPromise=()=>{
+
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
-            
             
         }
 
         this.paginator.getCollection = this.getCollection;
-        
+
         var getCollectionEventID = this.tableID;
+        
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
         this.listingService.getCollection(this.tableID);
@@ -233,7 +247,7 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(angular.isDefined(this.name)){
+        if(this.name!=null){
             this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
@@ -304,6 +318,14 @@ class SWListingDisplayController{
         //setup export action
         if(angular.isDefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
+        }
+        //setup print action
+        if(angular.isDefined(this.printAction)){
+            this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
+        }
+        //setup email action
+        if(angular.isDefined(this.emailAction)){
+            this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
         }
         this.paginator = this.paginationService.createPagination();
         this.hasCollectionPromise = false;
@@ -434,6 +456,14 @@ class SWListingDisplayController{
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
+    };
+
+    public getPrintAction = ():string =>{
+        return this.printAction + this.collectionID;
+    };
+
+    public getEmailAction = ():string =>{
+        return this.emailAction + this.collectionID;
     };
 
     public exportCurrentList =(selection:boolean=false)=>{

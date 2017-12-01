@@ -561,7 +561,7 @@ component extends="HibachiService"  accessors="true" output="false"
         if (isNull(accountAddressID)){
             this.addErrors(arguments.data, "Could not add account address. address id empty."); //add the basic errors
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-       		return;
+          return;
         }
 
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
@@ -570,18 +570,18 @@ component extends="HibachiService"  accessors="true" output="false"
             var order = getHibachiScope().getCart();
 
             for(var fulfillment in order.getOrderFulfillments()){
-              if(data.fulfillmentID && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
+              if(structKeyExists(data, "fulfillmentID") && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
                 var orderFulfillment = fulfillment;
-              }else if(!data.fulfillmentID){
-              	orderFulfillment.setShippingAddress(accountAddress.getAddress());
-             	getService("OrderService").saveOrderFulfillment(orderFulfillment);
+              }else if(!structKeyExists(data, "fulfillmentID")){
+                fulfillment.setShippingAddress(accountAddress.getAddress());
+              getService("OrderService").saveOrderFulfillment(fulfillment);
               }
             }
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
             }
             getOrderService().saveOrder(order);
-          	getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
@@ -1213,9 +1213,12 @@ component extends="HibachiService"  accessors="true" output="false"
             var orderPayment = this.newOrderPayment();
             orderPayment.populate(data.newOrderPayment);
             orderPayment.setOrder(getHibachiScope().getCart());
-            orderPayment.validate('save');
+            if(orderPayment.getPaymentMethod().getPaymentMethodType() == 'termPayment'){
+              orderPayment.setTermPaymentAccount(getHibachiScope().getAccount());
+            }
             //Add billing address error
-            orderPayment.addError('addBillingAddress','Billing address is required.');
+            orderPayment.addError('addBillingAddress', getHibachiScope().rbKey('validate.processOrder_addOrderPayment.billingAddress'));
+            orderPayment.validate('save');
 
             this.addErrors(data, orderPayment.getErrors());
 
@@ -1302,6 +1305,8 @@ component extends="HibachiService"  accessors="true" output="false"
             if(!order.hasErrors()) {
                 getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
                 getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
+            }else{
+              this.addErrors(data,order.getErrors());
             }
 
         }
@@ -1348,24 +1353,24 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function getStateCodeOptionsByCountryCode( required struct data ) {
         param name="data.countryCode" type="string" default="US";
         var cacheKey = "PublicService.getStateCodeOptionsByCountryCode#arguments.data.countryCode#";
-        var stateCodeOptons = [];
+        var stateCodeOptions = [];
         if(getHibachiCacheService().hasCachedValue(cacheKey)){
         	stateCodeOptions = getHibachiCacheService().getCachedValue(cacheKey);
         }else{
         	var country = getAddressService().getCountry(data.countryCode);
-        	var stateCodeOptions = country.getStateCodeOptions();
+        	stateCodeOptions = country.getStateCodeOptions();
         	getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
         }
         
         arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
         //get the address options.
         if (!isNull(arguments.data.countryCode)){
-        	arguments.data.ajaxResponse["addressOptions"] = getAddressOptionsByCountryCode(arguments.data);
+          getAddressOptionsByCountryCode(arguments.data);
         }
     }
     
     /** Given a country - this returns all of the address options for that country */
-    public struct function getAddressOptionsByCountryCode( required data ) {
+    public void function getAddressOptionsByCountryCode( required data ) {
         param name="data.countryCode" type="string" default="US";
         
         var addressOptions = {};
@@ -1403,7 +1408,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	        };
 	        getHibachiCacheService().setCachedValue(cacheKey,addressOptions);
         }
-     return addressOptions;
+        arguments.data.ajaxResponse["addressOptions"] = addressOptions;
         
     }
     

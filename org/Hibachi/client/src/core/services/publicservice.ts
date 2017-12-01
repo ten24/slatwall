@@ -313,7 +313,7 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             urlBase = urlBase + action; //any path
         }else{
-            urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
+            urlBase = this.baseActionPath + action;//public path
         }
 
 
@@ -989,6 +989,13 @@ class PublicService {
     }
 
     public hideBillingAddressForm = ()=>{
+        if(this.billingAddressEditFormIndex != undefined){
+            let index = this.billingAddressEditFormIndex;
+            if(this.billingAddressEditFormIndex == 'new'){
+                index = this.account.accountAddresses.length - 1;
+            }
+            this.selectBillingAddress(index);
+        }
         this.billingAddressEditFormIndex = undefined;
         this.billingAddress = {};
     }

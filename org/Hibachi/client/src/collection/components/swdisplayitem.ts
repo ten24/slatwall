@@ -30,7 +30,7 @@ class SWDisplayItem{
 		hibachiPathBuilder
 	){
 		return{
-			require:'^swDisplayOptions',
+			require:'?^swDisplayOptions',
 			restrict: 'A',
 			scope:{
 				selectedProperty:"=",

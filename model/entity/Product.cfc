@@ -286,7 +286,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
+ 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() >= 1;
  	}
 
 	//TODO: Unused function 
@@ -299,11 +299,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	public string function getProductURL() {
-		return "/#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		return getService('ProductService').getProductUrlByUrlTitle(getUrlTitle());
 	}
 
 	public string function getListingProductURL() {
-		return "#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		var productUrl = getProductUrl();
+		return right(productUrl,len(productUrl)-1);
 	}
 
 	public string function getTemplate() {
@@ -552,7 +553,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		');
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
 		optionCollection.addFilter('skus.calculatedQATS',0,'>');
-		optionCollection.addFilter('skus.activeFlag',1);
+		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
+		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {

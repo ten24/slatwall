@@ -92,6 +92,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
 	variables.framework.hibachi.useCachingEngineFlag = false;
+	variables.framework.hibachi.isApplicationStart = false;
 
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
@@ -101,6 +102,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
+	variables.framework.hibachi.useServerInstanceCacheControl=true;
 	
 
 	// Allow For Application Config
@@ -226,6 +228,11 @@ component extends="FW1.framework" {
 		}
 	}
 
+	public void function onApplicationStart(){
+		variables.framework.hibachi.isApplicationStart = true;
+		super.onApplicationStart();
+	}
+
 	public void function setupGlobalRequest() {
 		var httpRequestData = GetHttpRequestData();
 
@@ -239,15 +246,18 @@ component extends="FW1.framework" {
 			// Verify that the application is setup
 			verifyApplicationSetup();
 			
-			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+			if(!variables.framework.hibachi.isApplicationStart && variables.framework.hibachi.useServerInstanceCacheControl){
+				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
 				verifyApplicationSetup(reloadByServerInstance=true);
-			}else{
-				//RELOAD JUST THE SETTINGS
-				if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
-					getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting');
-					var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-					serverInstance.setSettingsExpired(false);
-				}	
+				}else{
+					//RELOAD JUST THE SETTINGS
+					if(getHibachiScope().getService('hibachiCacheService').isServerInstanceSettingsCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
+						getBeanFactory().getBean('hibachiCacheService').resetCachedKeyByPrefix('setting',true);
+						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+						serverInstance.setSettingsExpired(false);
+						getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+					}	
+				}
 			}
 			
 			// Verify that the session is setup
@@ -552,7 +562,7 @@ component extends="FW1.framework" {
 					// The FW1 Application had not previously been loaded so we are going to call onApplicationStart()
 					if(!structKeyExists(application, variables.framework.applicationKey)) {
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - onApplicationStart() was called");
-						onApplicationStart();
+
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - onApplicationStart() finished");
 					}
 					// ================ END: Required Application Setup ==================
@@ -570,6 +580,12 @@ component extends="FW1.framework" {
 					// If the default singleton beans were not found in the model, add a reference to the core one in hibachi
 					if(!coreBF.containsBean("hibachiDAO")) {
 						coreBF.declareBean("hibachiDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDAO", true);
+					}
+					if(!coreBF.containsBean("hibachiCacheDAO")) {
+						coreBF.declareBean("hibachiCacheDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheDAO", true);
+					}
+					if(!coreBF.containsBean("hibachiDataDAO")) {
+						coreBF.declareBean("hibachiDataDAO", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataDAO", true);
 					}
 					if(!coreBF.containsBean("hibachiService")) {
 						coreBF.declareBean("hibachiService", "#variables.framework.applicationKey#.org.Hibachi.HibachiService", true);
@@ -694,7 +710,7 @@ component extends="FW1.framework" {
 					//===================== END: EVENT HANDLER SETUP =========================
 
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
-					
+					var updated = false;
 					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup 
 						&& (
 							!structKeyExists(server,'runFullUpdate') 
@@ -722,6 +738,7 @@ component extends="FW1.framework" {
 						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
+						getHibachiScope().clearApplicationValueByPrefix('class');
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 
@@ -729,7 +746,7 @@ component extends="FW1.framework" {
 
 						// Write File
 						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/config/lastFullUpdate.txt.cfm', now());
-
+						updated = true;
 						// Announce the applicationFullUpdate event
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
 					}
@@ -747,12 +764,15 @@ component extends="FW1.framework" {
 					//==================== START: UPDATE SERVER INSTANCE CACHE STATUS ========================
 					
 					//only run the update if it wasn't initiated by serverside cache being expired
-					if(!arguments.reloadByServerInstance){
-						getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
-					}else{
-						
-						var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
-						serverInstance.setServerInstanceExpired(false);
+					if(!variables.framework.hibachi.isApplicationStart){
+						if(!arguments.reloadByServerInstance){
+							getBeanFactory().getBean('hibachiCacheService').updateServerInstanceCache(getHibachiScope().getServerInstanceIPAddress());
+						}else{
+							var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+							serverInstance.setServerInstanceExpired(false);
+							getBeanFactory().getBean('hibachiCacheService').saveServerInstance(serverInstance);
+							getHibachiScope().flushORMSession();
+						}						
 					}
 					
 					//==================== END: UPDATE SERVER INSTANCE CACHE STATUS ========================
@@ -763,7 +783,9 @@ component extends="FW1.framework" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-
+					if(updated && structKeyExists(request, "action")){
+						redirect(action=request.action,queryString='updated=true');
+					}
 				}
 			}
 		}

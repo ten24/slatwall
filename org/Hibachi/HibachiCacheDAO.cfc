@@ -2,7 +2,7 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-
+ 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -47,24 +47,55 @@ Notes:
 
 */
 component extends="HibachiDAO" {
-	public boolean function isServerInstanceCacheExpired(required serverInstanceIPAddress){
-		var isExpired = ORMExecuteQuery('SELECT si.serverInstanceExpired FROM #getApplicationKey()#ServerInstance si WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress',{serverInstanceIPAddress=arguments.serverInstanceIPAddress},true);
+	
+	public boolean function isLocalIPAddress(required serverInstanceIPAddress){
+		return left(arguments.serverInstanceIPAddress,4) == '192.' || left(arguments.serverInstanceIPAddress,4) == '127.';
+	}
+	
+	public any function isServerInstanceCacheExpired(required serverInstanceIPAddress){
+		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
+			return false;
+		}
+		
+		var isExpired = ORMExecuteQuery('
+			SELECT si.serverInstanceExpired 
+			FROM #getApplicationKey()#ServerInstance si 
+			WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress',
+			{serverInstanceIPAddress=arguments.serverInstanceIPAddress},
+			true
+		);
 		if(isNull(isExpired)){
-			isExpired = true;
+			return;
 		}
 		return isExpired;
 	}
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
-		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{masxresults=1});
+		return ormExecuteQuery("FROM #getDao('hibachiDao').getApplicationKey()#DatabaseCache where databaseCacheKey = :databaseCacheKey",{databaseCacheKey=arguments.databaseCacheKey},true,{maxresults=1});
 	}
 	
 	public void function updateServerInstanceCache(required any serverInstance){
-		ORMExecuteQuery('UPDATE #getApplicationKey()#ServerInstance si SET si.serverInstanceExpired=1 where si<>:serverInstance',{serverInstance=arguments.serverInstance});
+		if(!isNull(arguments.serverInstance) && isLocalIPAddress(arguments.serverInstance.getserverInstanceIPAddress())){
+			return;
+		}
+		ORMExecuteQuery("
+			UPDATE #getApplicationKey()#ServerInstance si 
+			SET si.serverInstanceExpired=1 
+			where si<>:serverInstance
+			",
+			{serverInstance=arguments.serverInstance}
+		);
 	}
 	
 	public boolean function isServerInstanceSettingsCacheExpired(required serverInstanceIPAddress){
-		var isExpired = ORMExecuteQuery('SELECT si.settingsExpired FROM #getApplicationKey()#ServerInstance si WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress',{serverInstanceIPAddress=arguments.serverInstanceIPAddress},true);
+		if(isLocalIPAddress(arguments.serverInstanceIPAddress)){
+			return false;
+		}
+		var isExpired = ORMExecuteQuery("
+			SELECT si.settingsExpired 
+			FROM #getApplicationKey()#ServerInstance si 
+			WHERE si.serverInstanceIPAddress=:serverInstanceIPAddress",
+			{serverInstanceIPAddress=arguments.serverInstanceIPAddress},true);
 		if(isNull(isExpired)){
 			isExpired = true;
 		}
@@ -72,6 +103,10 @@ component extends="HibachiDAO" {
 	}
 	
 	public void function updateServerInstanceSettingsCache(required any serverInstance){
-		ORMExecuteQuery('UPDATE #getApplicationKey()#ServerInstance si SET si.settingsExpired=1 where si<>:serverInstance',{serverInstance=arguments.serverInstance});
+		if(!isNull(arguments.serverInstance) && isLocalIPAddress(arguments.serverInstance.getserverInstanceIPAddress())){
+			return;
+		}
+		ORMExecuteQuery("
+			UPDATE #getApplicationKey()#ServerInstance si SET si.settingsExpired=1 where si<>:serverInstance",{serverInstance=arguments.serverInstance});
 	}
 }
