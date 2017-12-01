@@ -997,7 +997,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 			if(arguments.entity.getSettingName() == 'globalAssetsImageFolderPath' && originalSettingValue != arguments.entity.getSettingValue()){
 				
-				getImageDAO().updateCalculatedImagePath( getURLFromPath(originalSettingValue), getURLFromPath(arguments.entity.getSettingValue()); 
+				getImageDAO().updateCalculatedImagePath( getURLFromPath(originalSettingValue), getURLFromPath(arguments.entity.getSettingValue())); 
 			}
 			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 			var serverInstanceSmartList = this.getServerInstanceSmartList();
