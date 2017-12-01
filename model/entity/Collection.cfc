@@ -2224,6 +2224,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables,'records');
 		structDelete(variables,'pageRecords');
 		structDelete(variables,'recordsCount');
+		this.setExcludeOrderBy(false);
 	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
@@ -2493,6 +2494,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					//if list length is 1 then we treat it as a date range From Now() - Days to Now()
 					var fromValue = DateAdd("d",-arguments.filter.value,Now());
+					//make from value start at beginning of of day
+					fromValue = createDateTime(Year(fromValue),Month(fromValue),Day(fromValue),0,0,0);
 					var toValue = Now();
 				}
 
