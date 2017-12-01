@@ -67,6 +67,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="taskService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="imageDAO" type="any";
 
 	// ====================== START: META DATA SETUP ============================
 
@@ -966,6 +967,17 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSetting(required any entity, struct data={}) {
+
+		if(!isNull(entity.getSettingValue())){
+			var originalSettingValue = entity.getSettingValue(); 
+		} else {
+			var settingName = arguments.entity.getSettingName(); 
+			if(isNull(settingName)){
+				settingName = arguments.data.settingName; 
+			} 
+			var originalSettingValue = this.getSettingValue(settingName);
+		} 
+
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
 
@@ -982,6 +994,11 @@ component extends="HibachiService" output="false" accessors="true" {
 			// If calculation is needed, then we should do it
 			if(listFindNoCase("skuAllowBackorderFlag,skuAllowPreorderFlag,skuQATSIncludesQNROROFlag,skuQATSIncludesQNROVOFlag,skuQATSIncludesQNROSAFlag,skuTrackInventoryFlag", arguments.entity.getSettingName())) {
 				updateStockCalculated();
+			}
+			if(arguments.entity.getSettingName() == 'globalAssetsImageFolderPath' && originalSettingValue != arguments.entity.getSettingValue()){
+				
+				getImageDAO().updateCalculatedImagePath( replaceNoCase(originalSettingValue,getApplicationValue('applicationRootMappingPath'),''), 
+														 replaceNoCase(arguments.entity.getSettingValue(),getApplicationValue('applicationRootMappingPath'),'') ); 
 			}
 			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
 			var serverInstanceSmartList = this.getServerInstanceSmartList();
