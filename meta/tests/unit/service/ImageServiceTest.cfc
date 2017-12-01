@@ -144,7 +144,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			directory='product'
 		};
 		var image = createTestEntity('image',imageData);
-		
+		image.updateCalculatedProperties(); 		
+	
 		assertEquals(image.getCalculatedImagePath(),'custom/assets/image/product/test.png');		
 		//create setting for siteMissingImagePath
 		var settingData = {
