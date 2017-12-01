@@ -88,7 +88,7 @@ component entityname="SlatwallSkuLocationInventoryCalculation" table="SwSkuLocat
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	// Meaningless comment to see if circleCI builds
 	public any function getQATS() {
 		return getSku().getQuantity(quantityType="QATS", locationID=getLocation().getLocationId());
 	}
