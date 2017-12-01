@@ -146,7 +146,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var image = createTestEntity('image',imageData);
 		image.updateCalculatedProperties(); 		
 	
-		assertEquals(image.getCalculatedImagePath(),'custom/assets/image/product/test.png');		
+		assertEquals('custom/assets/images/product/test.png',image.getCalculatedImagePath());		
 		//create setting for siteMissingImagePath
 		var settingData = {
 			settingID = "",
@@ -155,7 +155,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 	
-		assertEquals(image.getCalculatedImagePath(),'custom/assets/img/product/test.png');		
+		assertEquals('custom/assets/img/product/test.png', image.getCalculatedImagePath());		
 	} 
 	
 }
