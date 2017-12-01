@@ -681,6 +681,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
+		if(isNew()){
+			return 0;
+		}
+		
 		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
 		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
 		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
