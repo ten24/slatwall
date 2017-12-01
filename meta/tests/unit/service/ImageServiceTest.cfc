@@ -143,7 +143,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			imageFile='test.png',
 			directory='product'
 		};
-		var image = createTestEntity('image',imageData);
+		var image = createPersistedTestEntity('image',imageData);
+		
+		image = variables.service.saveImage(image, imageData); 
+
 		image.updateCalculatedProperties(); 		
 		
 		assertEquals(image.getImagePath(),image.getCalculatedImagePath());		
