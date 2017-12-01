@@ -624,24 +624,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Update calculations for each location
 		for (var locationData in locationRecords) {
 			
-			// Allows us to leverage the populate method to set relationships on new skuLocationInventoryCalculation entity when needed
+			// Allows us to leverage the populate method to set relationships on new skuLocationQuantity entity when needed
 			var data = {
 				sku = { skuID = arguments.sku.getSkuID() },
 				location = { locationID = locationData.locationID }
 			};
 
 			// Attempt to load entity or create new entity if it did not previously exist
-			var skuLocationInventoryCalculation = getInventoryService().getSkuLocationInventoryCalculationBySkuIDAndLocationID(data.sku.skuID, data.location.locationID);
+			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(data.sku.skuID, data.location.locationID);
 
 			// Sku and Location entity references should already be populated for existing entity, delete from populate data
-			if (!skuLocationInventoryCalculation.getNewFlag()) {
+			if (!skuLocationQuantity.getNewFlag()) {
 				structDelete(data, 'skuID');
 				structDelete(data, 'locationID');
 			}
 			
 			// Populate with updated calculated values and sku/location relationships
-			skuLocationInventoryCalculation.populate(data);
-			skuLocationInventoryCalculation.updateCalculatedProperties();
+			skuLocationQuantity.populate(data);
+			skuLocationQuantity.updateCalculatedProperties();
 		}
 
 		this.saveSku(arguments.sku);

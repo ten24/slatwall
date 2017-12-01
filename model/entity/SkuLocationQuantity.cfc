@@ -46,10 +46,10 @@
 Notes:
 
 */
-component entityname="SlatwallSkuLocationInventoryCalculation" table="SwSkuLocationInventoryCalculation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="inventoryService" hb_permission="this" hb_processContexts="" hb_auditable="false" {
+component entityname="SlatwallSkuLocationQuantity" table="SwSkuLocationQuantity" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="inventoryService" hb_permission="this" hb_processContexts="" hb_auditable="false" {
 
 	// Persistent Properties
-	property name="skuLocationInventoryCalculationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="skuLocationQuantityID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -104,17 +104,17 @@ component entityname="SlatwallSkuLocationInventoryCalculation" table="SwSkuLocat
 	// Sku (many-to-one)
 	public void function setSku(required any sku) {
 		variables.sku = arguments.sku;
-		if(isNew() or !arguments.sku.hasSkuLocationInventoryCalculation( this )) {
-			arrayAppend(arguments.sku.getSkuLocationInventoryCalculations(), this);
+		if(isNew() or !arguments.sku.hasSkuLocationQuantity( this )) {
+			arrayAppend(arguments.sku.getSkuLocationQuantities(), this);
 		}
 	}
 	public void function removeSku(any sku) {
 		if(!structKeyExists(arguments, "sku")) {
 			arguments.sku = variables.sku;
 		}
-		var index = arrayFind(arguments.sku.getSkuLocationInventoryCalculations(), this);
+		var index = arrayFind(arguments.sku.getSkuLocationQuantities(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.sku.getSkuLocationInventoryCalculations(), index);
+			arrayDeleteAt(arguments.sku.getSkuLocationQuantities(), index);
 		}
 		structDelete(variables, "sku");
 	}
@@ -122,17 +122,17 @@ component entityname="SlatwallSkuLocationInventoryCalculation" table="SwSkuLocat
 	// Location (many-to-one)
 	public void function setLocation(required any location) {
 		variables.location = arguments.location;
-		if(isNew() or !arguments.location.hasSkuLocationInventoryCalculation( this )) {
-			arrayAppend(arguments.location.getSkuLocationInventoryCalculations(), this);
+		if(isNew() or !arguments.location.hasSkuLocationQuantity( this )) {
+			arrayAppend(arguments.location.getSkuLocationQuantities(), this);
 		}
 	}
 	public void function removeLocation(any location) {
 		if(!structKeyExists(arguments, "location")) {
 			arguments.location = variables.location;
 		}
-		var index = arrayFind(arguments.location.getSkuLocationInventoryCalculations(), this);
+		var index = arrayFind(arguments.location.getSkuLocationQuantities(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.location.getSkuLocationInventoryCalculations(), index);
+			arrayDeleteAt(arguments.location.getSkuLocationQuantities(), index);
 		}
 		structDelete(variables, "location");
 	}

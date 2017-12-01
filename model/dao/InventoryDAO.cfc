@@ -705,11 +705,11 @@ Notes:
 			return 0;
 		}
 
-		public any function getSkuLocationInventoryCalculationBySkuIDAndLocationID( required string skuID, locationID){
-			var result = ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationInventoryCalculation sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
+		public any function getSkuLocationQuantityBySkuIDAndLocationID( required string skuID, locationID){
+			var result = ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationQuantity sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
 
 			if (isNull(result)) {
-				return new('SkuLocationInventoryCalculation');
+				return new('SkuLocationQuantity');
 			}
 
 			return result;
