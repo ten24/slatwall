@@ -2527,6 +2527,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					stockReceiverItem.setStock( stock );
 					stockReceiverItem.setOrderItem( orderReturnItem );
 					stockReceiverItem.setStockReceiver( stockReceiver );
+					stockreceiverItem.setCurrencyCode(orderReturnItem.getCurrencyCode());
 
 				}
 				//create a stock adjustment with a comment for items that were added back in

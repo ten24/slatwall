@@ -25,7 +25,7 @@
 			<cfcase value="latExpense">
 			</cfcase>
 		</cfswitch>
-
+		<cfset laCollectionList.addDisplayProperty(displayProperty='currencyCode',columnConfig=displayOptions)/>
 		<cfset laCollectionList.addDisplayProperty(displayProperty='quantityIn',columnConfig=displayOptions)/>
 		<cfset laCollectionList.addDisplayProperty(displayProperty='quantityOut',columnConfig=displayOptions)/>
 		<cfset laCollectionList.addDisplayProperty(displayProperty='createdDateTime',columnConfig=displayOptions)/>

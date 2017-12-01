@@ -76,6 +76,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="cost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
+			
 			<!---<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />--->
 			
 		</hb:HibachiListingDisplay>
