@@ -147,36 +147,6 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 		
      </target>
 
-      <target name="dummy" depends="init">
-
-            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
-                  src="http://${slatwall.test.server}:${slatwall.test.serverport}"
-                  verbose="true"/>
-
-            <!-- Writes all prior test results to file -->
-            <get dest="${slatwall.test.output.xml}/finished${slatwall.outputfile}.xml"
-                  src="http://${url.runner}?&amp;finished=true"
-                  verbose="true"/>
-            <!-- <Create fancy junit reports -->
-            <!-- 
-            <junitreport todir="${slatwall.test.output.xml}/unit">
-                  <fileset dir="${slatwall.test.output.xml}/unit">
-                        <include name="*.xml"/>
-                  </fileset>
-                  <report format="frames" todir="${slatwall.test.output.xml}/unit" />
-            </junitreport>
-            -->
-          
-		<fail message="Failure Found...failing">
-		    <condition>
-		    	<not>
-		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='{"failures":0,"errors":0}'/>
-		   		</not>
-		    </condition>
-		</fail>
-
-      </target>
-
      <target name="run-junit" depends="init" description="Run our tests and produce ANT JUnit reports">
 
          <!-- <Directory Runner
@@ -190,12 +160,12 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.html"
+            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
                   src="http://${slatwall.test.server}:${slatwall.test.serverport}"
                   verbose="true"/>
             
             <!-- Init test runner -->
-            <get dest="${slatwall.test.output.xml}/begin${slatwall.outputfile}.html"
+            <get dest="${slatwall.test.output.xml}/begin${slatwall.outputfile}.xml"
                   src="http://${url.runner}?&amp;init=true"
                   verbose="true"/>
             
@@ -224,7 +194,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                   verbose="true"/>
         	
         	<!-- Writes all prior test results to file -->
-            <get dest="${slatwall.test.output.xml}/done${slatwall.outputfile}.html"
+            <get dest="${slatwall.test.output.xml}/done${slatwall.outputfile}.xml"
                   src="http://${url.runner}?&amp;done=true"
                   verbose="true"/>
             
