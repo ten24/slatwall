@@ -147,6 +147,36 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 		
      </target>
 
+      <target name="dummy" depends="init">
+
+            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
+                  src="http://${slatwall.test.server}:${slatwall.test.serverport}"
+                  verbose="true"/>
+
+            <!-- Writes all prior test results to file -->
+            <get dest="${slatwall.test.output.xml}/finished${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;finished=true"
+                  verbose="true"/>
+            <!-- <Create fancy junit reports -->
+            <!-- 
+            <junitreport todir="${slatwall.test.output.xml}/unit">
+                  <fileset dir="${slatwall.test.output.xml}/unit">
+                        <include name="*.xml"/>
+                  </fileset>
+                  <report format="frames" todir="${slatwall.test.output.xml}/unit" />
+            </junitreport>
+            -->
+          
+		<fail message="Failure Found...failing">
+		    <condition>
+		    	<not>
+		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='{"failures":0,"errors":0}'/>
+		   		</not>
+		    </condition>
+		</fail>
+
+      </target>
+
      <target name="run-junit" depends="init" description="Run our tests and produce ANT JUnit reports">
 
          <!-- <Directory Runner
@@ -160,35 +190,62 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-          <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
-                src="http://${slatwall.test.server}:${slatwall.test.serverport}"
-                verbose="true"/>
-          <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-                
-          <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-                
-           <get dest="${slatwall.test.output.xml}/unit/dao${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.dao&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-                
-           <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
+            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.html"
+                  src="http://${slatwall.test.server}:${slatwall.test.serverport}"
+                  verbose="true"/>
             
+            <!-- Init test runner -->
+            <get dest="${slatwall.test.output.xml}/begin${slatwall.outputfile}.html"
+                  src="http://${url.runner}?&amp;init=true"
+                  verbose="true"/>
+            
+            <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+                                
+            <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+                
+            <get dest="${slatwall.test.output.xml}/unit/dao${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.dao&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+                
+            <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+
             <get dest="${slatwall.test.output.xml}/unit/service${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
             
             <get dest="${slatwall.test.output.xml}/unit/transient${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
         	
-        	
-                
+        	<!-- Writes all prior test results to file -->
+            <get dest="${slatwall.test.output.xml}/done${slatwall.outputfile}.html"
+                  src="http://${url.runner}?&amp;done=true"
+                  verbose="true"/>
+            
+            <!-- Read Result Properties -->
+		<property file="${slatwall.test.output.xml}/unit/test.properties"/>
+		<!-- Echo them out -->
+		<echoproperties regex="^(test).*"/>
+
+            <!-- <Create fancy junit reports -->
+            <!-- May not be merging xunit xml files and resulting in generation of empty TEST-testsuites.xml and blank html files -->
+            <junitreport todir="${slatwall.test.output.xml}/unit">
+                  <fileset dir="${slatwall.test.output.xml}/unit">
+                        <include name="*.xml"/>
+                  </fileset>
+                  <report format="frames" todir="${slatwall.test.output.xml}/unit">
+                        <param name="TITLE" expression="My Awesome TestBox Results"/>
+                  </report>
+            </junitreport>
+
+		<!-- Fail build if they failed -->
+		<fail if="test.failed" message="Failure Found...failing" />
           
 
          <!-- <Bundles Runner
@@ -206,6 +263,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
            
 			
           <!-- <Create fancy junit reports -->
+          <!-- Not working, not merging xml files and results in generatin empty TEST-testsuites.xml and blank html
           <junitreport todir="${slatwall.test.output.xml}/unit">
                <fileset dir="${slatwall.test.output.xml}/unit">
                     <include name="*.xml"/>
@@ -214,13 +272,15 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
                </report>
           </junitreport>
-          
+          -->
+            <!-- 
 		<fail message="Failure Found...failing">
 		    <condition>
 		    	<not>
 		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='{"failures":0,"errors":0}'/>
-		   		</not>
+		   	</not>
 		    </condition>
 		</fail>
+            -->
      </target>
 </project>
