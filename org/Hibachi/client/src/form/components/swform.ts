@@ -325,6 +325,7 @@ class SWForm implements ng.IDirective {
         directive.$inject = ['coreFormPartialsPath','hibachiPathBuilder'];
         return directive;
     }
+    
     // @ngInject
     constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "form.html";
