@@ -53,6 +53,9 @@ component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="tru
         newCollection.setCollectionDescription(arguments.collection.getCollectionDescription());
         newCollection.setCollectionObject(arguments.collection.getCollectionObject());
         newCollection.setCollectionConfig(arguments.collection.getCollectionConfig());
+	    if(!isNull(arguments.collection.getParentCollection())){
+		    newCollection.setParentCollection(arguments.collection.getParentCollection());
+	    }
 
         newCollection = this.saveCollection(newCollection);
 
