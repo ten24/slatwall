@@ -66,6 +66,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
      <property name="junitreport.dir"   value="${report.dir}/junitreport" />
 
      <target name="init" description="Init the tests">
+          <mkdir dir="${slatwall.test.output.html}" />
           <mkdir dir="${slatwall.test.output.xml}/unit" />
           <tstamp prefix="start">
                <format property="TODAY" pattern="MM-dd-YYYY hh:mm:ss aa"/>
@@ -160,12 +161,12 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
+            <get dest="${slatwall.test.output.html}/index${slatwall.outputfile}.html"
                   src="http://${slatwall.test.server}:${slatwall.test.serverport}"
                   verbose="true"/>
             
             <!-- Init test runner -->
-            <get dest="${slatwall.test.output.xml}/begin${slatwall.outputfile}.xml"
+            <get dest="${slatwall.test.output.html}/begin${slatwall.outputfile}.html"
                   src="http://${url.runner}?&amp;init=true"
                   verbose="true"/>
             
@@ -194,7 +195,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                   verbose="true"/>
         	
         	<!-- Writes all prior test results to file -->
-            <get dest="${slatwall.test.output.xml}/done${slatwall.outputfile}.xml"
+            <get dest="${slatwall.test.output.html}/done${slatwall.outputfile}.html"
                   src="http://${url.runner}?&amp;done=true"
                   verbose="true"/>
             
@@ -203,16 +204,8 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
 		<!-- Echo them out -->
 		<echoproperties regex="^(test).*"/>
 
-            <!-- <Create fancy junit reports -->
-            <!-- May not be merging xunit xml files and resulting in generation of empty TEST-testsuites.xml and blank html files -->
-            <junitreport todir="${slatwall.test.output.xml}/unit">
-                  <fileset dir="${slatwall.test.output.xml}/unit">
-                        <include name="*.xml"/>
-                  </fileset>
-                  <report format="frames" todir="${slatwall.test.output.xml}/unit">
-                        <param name="TITLE" expression="My Awesome TestBox Results"/>
-                  </report>
-            </junitreport>
+            <!-- No need to generate junit reports, ANT junitreport fails to process XML with top-level element of '<testsuites></testsuites>' -->
+            <!-- CircleCI processes the xUnit XML reports created by our runner directly and has no issues with '<testsuites></testsuites>' -->
 
 		<!-- Fail build if they failed -->
 		<fail if="test.failed" message="Failure Found...failing" />
