@@ -61,60 +61,65 @@ Notes:
 
 	<cfscript>
 
-	public query function getMinMaxStockTransferDetails(required string toLocationID){
-		var dataQuery = new Query();
-		// dataQuery.setDatasource(application.configBean.getDatasource());
-		// dataQuery.setUsername(application.configBean.getDBUsername());
-		// dataQuery.setPassword(application.configBean.getDBPassword());
-		dataQuery.setSql("
-			SELECT
-			  st.skuID, sk.skuCode, 
-			  st.locationID AS toTopLocationID, st.minQuantity AS toMinQuantity, st.maxQuantity AS toMaxQuantity, 0 AS toOffsetQuantity,
-			  ( SELECT sum(st1.calculatedQATS)
-			    FROM swstock AS st1
-			      JOIN swlocation AS lt1 ON st1.locationID = lt1.locationID
-			    WHERE st1.skuID = st.skuID
-			      AND lt1.locationIDPath LIKE concat('%',st.locationID,'%')
-			  ) AS toSumQATS,
-			  ( SELECT st2.locationID
-			    FROM swstock AS st2
-			    INNER JOIN swlocation AS lt2 ON lt2.locationID = st2.locationID
-			    WHERE st2.skuID = st.skuID
-			      AND lt2.locationIDPath LIKE concat('%',st.locationID,'%')
-			    ORDER BY st2.calculatedQATS DESC LIMIT 1
-			  ) AS toLeafLocationID,
-			  sf.locationID AS fromTopLocationID, sf.minQuantity AS fromMinQuantity, sf.maxQuantity AS fromMaxQuantity, 0 AS fromOffsetQuantity,
-			  ( SELECT sum(sf1.calculatedQATS)
-			    FROM swstock AS sf1
-			      JOIN swlocation AS lf1 ON sf1.locationID = lf1.locationID
-			    WHERE lf1.locationIDPath LIKE concat('%',sf.locationID,'%')
-			      AND sf1.skuID = st.skuID
-			  ) AS fromSumQATS,
-			  sfl.locationID AS fromLeafLocationID, sfl.calculatedQATS as fromCalculatedQATS
-			FROM swstock AS st
-			  INNER JOIN swstock AS sf ON sf.skuID = st.skuID
-			  INNER JOIN swsku AS sk ON sk.skuID = sf.skuID
-			    AND sf.locationID <> st.locationID
-			  INNER JOIN swstock AS sfl ON sfl.skuID = sf.skuID
-			    INNER JOIN swlocation AS lfl ON lfl.locationID = sfl.locationID
-			WHERE st.locationID = '#arguments.toLocationID#'
-			  AND st.skuID = sf.skuID
-			  AND sfl.calculatedQATS > 0
-			  AND lfl.locationIDPath LIKE concat('%',sf.locationID,'%')
-			  AND st.minQuantity > 0
-			  AND st.maxQuantity > 0
-			  AND sf.minQuantity > 0
-			  AND sf.maxQuantity > 0
-			ORDER BY st.locationID, sk.skuCode, sfl.calculatedQATS DESC
+		public query function getMinMaxStockTransferDetails(required string fromLocationID, required string toLocationID){
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				SELECT
+				  st.skuID, sk.skuCode, 
+				  st.locationID AS toTopLocationID, st.minQuantity AS toMinQuantity, st.maxQuantity AS toMaxQuantity, 0 AS toOffsetQuantity,
+				  ( SELECT sum(st1.calculatedQATS)
+				    FROM swstock AS st1
+				      JOIN swlocation AS lt1 ON st1.locationID = lt1.locationID
+				    WHERE st1.skuID = st.skuID
+				      AND lt1.locationIDPath LIKE concat('%',st.locationID,'%')
+				  ) AS toSumQATS,
+				  ( SELECT st2.locationID
+				    FROM swstock AS st2
+				    INNER JOIN swlocation AS lt2 ON lt2.locationID = st2.locationID
+				    WHERE st2.skuID = st.skuID
+				      AND lt2.locationIDPath LIKE concat('%',st.locationID,'%')
+				    ORDER BY st2.calculatedQATS DESC LIMIT 1
+				  ) AS toLeafLocationID,
+				  sf.locationID AS fromTopLocationID, sf.minQuantity AS fromMinQuantity, sf.maxQuantity AS fromMaxQuantity, 0 AS fromOffsetQuantity,
+				  ( SELECT sum(sf1.calculatedQATS)
+				    FROM swstock AS sf1
+				      JOIN swlocation AS lf1 ON sf1.locationID = lf1.locationID
+				    WHERE lf1.locationIDPath LIKE concat('%',sf.locationID,'%')
+				      AND sf1.skuID = st.skuID
+				  ) AS fromSumQATS,
+				  sfl.locationID AS fromLeafLocationID, sfl.calculatedQATS as fromCalculatedQATS
+				FROM swstock AS st
+				  INNER JOIN swstock AS sf ON sf.skuID = st.skuID
+				  INNER JOIN swsku AS sk ON sk.skuID = sf.skuID
+				    AND sf.locationID <> st.locationID
+				  INNER JOIN swstock AS sfl ON sfl.skuID = sf.skuID
+				    INNER JOIN swlocation AS lfl ON lfl.locationID = sfl.locationID
+				WHERE sf.locationID = '#arguments.fromLocationID#'
+				  AND st.locationID = '#arguments.toLocationID#'
+				  AND st.skuID = sf.skuID
+				  AND sfl.calculatedQATS > 0
+				  AND lfl.locationIDPath LIKE concat('%',sf.locationID,'%')
+				  AND st.minQuantity > 0
+				  AND st.maxQuantity > 0
+				  -- AND sf.minQuantity > 0
+				  -- AND sf.maxQuantity > 0
+				ORDER BY st.locationID, sk.skuCode, sfl.calculatedQATS DESC
+			");
 
-		");
+			return dataQuery.execute().getResult();
+		}
 
+		public void function deleteMinMaxStockTransferItems(required string minMaxStockTransferID) {
+			ormExecuteQuery("
+				DELETE SlatwallMinMaxStockTransferItem 
+				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'");
+		}
 
-
-
-		return dataQuery.execute().getResult();
-	}
-
+		public void function deleteMinMaxStockAdustments(required string minMaxStockTransferID) {
+			ormExecuteQuery("
+				DELETE SlatwallStockAdjustment 
+				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'");
+		}
 
 		public numeric function getCurrentMargin(required string stockID){
 			return ORMExecuteQuery("

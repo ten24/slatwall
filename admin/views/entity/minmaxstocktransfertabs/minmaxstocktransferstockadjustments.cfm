@@ -54,7 +54,9 @@ Notes:
 
 	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getStockAdjustmentsSmartList()#"
 							   recordEditAction="admin:entity.editstockadjustment"
-							   recordDetailAction="admin:entity.detailstockadjustment">
+							   recordDetailAction="admin:entity.detailstockadjustment"
+							   recordDetailQueryString="minMaxStockTransferID=#rc.minMaxStockTransfer.getMinMaxStockTransferID()#"
+	>
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
 		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLocation.locationName" title="From" />

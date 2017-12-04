@@ -70,6 +70,7 @@ Notes:
         data-has-action-bar="false"
     >
         <sw-listing-column data-property-identifier="minMaxStockTransferID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="fromLocation.locationName" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="toLocation.locationName" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
     </sw-listing-display>

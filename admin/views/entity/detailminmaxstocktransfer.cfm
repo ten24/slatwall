@@ -54,7 +54,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.minMaxStockTransfer#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxStockTransfer#" edit="#rc.edit#">
-			<hb:HibachiProcessCaller action="admin:entity.preProcessMinMaxStockTransfer" entity="#rc.minMaxStockTransfer#" processContext="createStockTransfers" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessMinMaxStockTransfer" entity="#rc.minMaxStockTransfer#" processContext="createStockAdjustments" type="list" modal="true" />
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.minMaxStockTransfer#">
