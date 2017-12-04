@@ -27,7 +27,7 @@
 	        </div>
 
 			<div class="form-group">
-			    <sw-action-caller
+			    <sw-action-caller data-submit-invalid="true"
 			        data-type="button"
 			        data-class="button blue"
 			        data-text="{{(slatwall.getRequestByAction('login').loading ? 'LOADING...' : 'Login')}}"
@@ -73,7 +73,7 @@
 		        </swf-property-display>
 			</div>
 			<div class="form-group">
-		        <sw-action-caller
+		        <sw-action-caller data-submit-invalid="true"
 		            data-type="button"
 		            data-class="button blue"
 		            data-text="{{(slatwall.getRequestByAction('forgotPassword').loading ? 'LOADING...' : 'Send Me Reset Email')}}"

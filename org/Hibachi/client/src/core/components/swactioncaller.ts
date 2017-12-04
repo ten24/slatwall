@@ -19,6 +19,7 @@ class SWActionCallerController{
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
+    public submitInvalid:boolean;
     public formController:any;
     public form:ng.IFormController;
     //@ngInject
@@ -123,7 +124,7 @@ class SWActionCallerController{
         this.$timeout(()=>{
             if(!this.form){
                 this.$scope.$root.slatwall.doAction(this.action);
-            }else if(this.form.$valid){
+            }else if(this.form.$valid || this.submitInvalid) {
                 this.formController.submit(this.action);
             }
         });
@@ -295,7 +296,8 @@ class SWActionCaller implements ng.IDirective{
         modalFullWidth:"=",
         id:"@",
         isAngularRoute:"=?",
-        eventListeners:'=?'
+        eventListeners:'=?',
+        submitInvalid:'=?'
     };
     public require={formController:"^?swForm",form:"^?form"};
     public controller=SWActionCallerController;
