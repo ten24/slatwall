@@ -108,7 +108,7 @@ component persistent="false" accessors="true" output="false" extends="BaseContro
 			muraUser.save();
 			
 			// Change password on slatwall side
-			if(rc.account.getSlatwallAuthenticationExistsFlag()) {
+			if(rc.account.getNonIntegrationAuthenticationExistsFlag()) {
 				var passwordChangeData = {};
 				passwordChangeData.password = rc.password;
 				passwordChangeData.passwordConfirm = rc.password;

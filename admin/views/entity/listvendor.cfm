@@ -70,7 +70,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" search="true" />
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Vendor'"
 		data-edit="false"
 		data-has-search="true"
@@ -85,4 +85,4 @@ Notes:
 	<sw-listing-column data-property-identifier="accountNumber" search="true" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="vendorWebsite" search="true" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" search="true" ></sw-listing-column>
-</sw-listing-display>
+</sw-listing-display data-using-personal-collection="true">

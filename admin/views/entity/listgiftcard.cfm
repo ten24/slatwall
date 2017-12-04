@@ -61,7 +61,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 			data-collection="'GiftCard'"
 			data-edit="false"
 			data-has-search="true"
@@ -78,6 +78,6 @@ Notes:
 		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
 		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
 		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

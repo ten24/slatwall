@@ -73,7 +73,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Site'"
 		data-edit="false"
 		data-has-search="true"
@@ -89,6 +89,6 @@ Notes:
 		<sw-listing-column data-property-identifier="domainNames" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="app.appName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="allowAdminAccessFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

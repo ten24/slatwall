@@ -71,7 +71,7 @@ Notes:
 
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'SubscriptionBenefit'"
 		data-edit="false"
 		data-has-search="true"
@@ -83,7 +83,7 @@ Notes:
 	>
 		<sw-listing-column data-property-identifier="subscriptionBenefitID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
 		<sw-listing-column data-property-identifier="subscriptionBenefitName" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

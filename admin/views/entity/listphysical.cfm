@@ -71,7 +71,7 @@ Notes:
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'Physical'"
 		data-edit="false"
 		data-has-search="true"
@@ -85,6 +85,6 @@ Notes:
 		<sw-listing-column data-property-identifier="physicalName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

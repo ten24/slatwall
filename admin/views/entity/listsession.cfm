@@ -65,7 +65,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
 </hb:HibachiListingDisplay> --->
 
-    <sw-listing-display
+    <sw-listing-display data-using-personal-collection="true"
         data-collection="'Session'"
         data-edit="false"
         data-has-search="true"
@@ -79,4 +79,4 @@ Notes:
         <sw-listing-column data-property-identifier="lastRequestIPAddress" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
         <sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
-    </sw-listing-display>
+    </sw-listing-display data-using-personal-collection="true">

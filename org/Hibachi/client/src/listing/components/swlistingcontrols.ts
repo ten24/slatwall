@@ -12,8 +12,11 @@ class SWListingControlsController {
     private listingColumns;
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
+    private personalCollectionsClosed:boolean=true;
     private showFilters:boolean;
+    private showPersonalCollections:boolean;
     private showToggleFilters:boolean;
+    private showToggleSearch:boolean;
     private showToggleDisplayOptions:boolean;
     private newFilterPosition;
     private itemInUse;
@@ -31,6 +34,9 @@ class SWListingControlsController {
         public listingService,
         public observerService
     ) {
+        if(angular.isUndefined(this.showToggleSearch)){
+            this.showToggleSearch = true;
+        }
         if(angular.isUndefined(this.showToggleFilters)){
             this.showToggleFilters = true;
         }
@@ -76,7 +82,7 @@ class SWListingControlsController {
 
     public canDisplayColumn = (column) =>{
 
-        if(!this.listingColumns.length){
+        if(!this.listingColumns || !this.listingColumns.length){
             return true;
         }
 
@@ -134,12 +140,17 @@ class SWListingControlsController {
 
     public toggleFilters = ()=>{
         if(this.filtersClosed) {
-            this.filtersClosed = false;
+
             if(this.simple){
-            this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+            }
         }
-        }
+        this.filtersClosed = !this.filtersClosed;
     };
+
+    public togglePersonalCollections = () =>{
+        this.personalCollectionsClosed = !this.personalCollectionsClosed;
+    }
 
     public selectFilterItem = (filterItem) =>{
         this.filtersClosed = false;
@@ -169,8 +180,10 @@ class SWListingControls  implements ng.IDirective{
         tableId : "=?",
         getCollection : "&",
         showFilters : "=?",
+        showToggleSearch: "=?",
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",
+        displayOptionsClosed:"=?",
         simple:"=?"
     };
     public controller = SWListingControlsController;

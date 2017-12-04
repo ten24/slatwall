@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,19 @@
 
 Notes:
 
-*/
-component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	
-	public void function setUp() {
-		super.setup();
-		
-		variables.dao = request.slatwallScope.getDAO("accountDAO");
-	}
-		
-	/**
-	* @test
-	*/
-	public void function inst_ok() {
-		assert(isObject(variables.dao));
-	}
-}
 
+<cfparam name="rc.site" type="any" />
+
+<cfoutput>
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="accountPaymentTerm" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="accountTermCreditLimit" settingObject="#rc.site#" />
+	</swa:SlatwallSettingTable>
+</cfoutput>
 

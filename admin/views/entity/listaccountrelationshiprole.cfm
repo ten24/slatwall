@@ -71,7 +71,7 @@ Notes:
 
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 	    data-collection="'AccountRelationshipRole'"
 	    data-edit="false"
 	    data-has-search="true"
@@ -84,6 +84,6 @@ Notes:
 		<sw-listing-column data-property-identifier="accountRelationshipID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="accountRelationshipRoleName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="parentAccountManagementPermissionGroup.permissionGroupName" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

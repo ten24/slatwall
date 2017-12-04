@@ -78,7 +78,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="total" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'VendorOrder'"
 		data-edit="false"
 		data-has-search="true"
@@ -96,6 +96,6 @@ Notes:
 		<sw-listing-column data-property-identifier="vendorOrderStatusType.typeName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="total" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

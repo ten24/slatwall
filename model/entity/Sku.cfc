@@ -147,10 +147,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="availableSeatCount" persistent="false";
 	property name="averageCost" persistent="false" hb_formatType="currency";
 	property name="averageLandedCost" persistent="false" hb_formatType="currency";
-	property name="currentMargin" persistent="false" hb_formatType="currency";
-	property name="currentLandedMargin" persistent="false" hb_formatType="currency";
+	property name="currentMargin" persistent="false" hb_formatType="percentage";
+	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averageMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageProfit" persistent="false" hb_formatType="currency";
+	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
@@ -216,12 +221,33 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQOH() * getAverageCost();
 	}
 	
+//	public numeric function getCurrentRevenueTotal(){
+//		
+//		return getQuantity('QDOO') * getAveragePriceSold();
+//	}
+	
 	public numeric function getCurrentMargin(){
 		return getDao('skuDao').getCurrentMargin(this.getSkuID());
 	}
 	
 	public numeric function getCurrentLandedMargin(){
 		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID());
+	}
+
+	public numeric function getAverageProfit(){
+		return getDao('skuDao').getAverageProfit(this.getSkuID());
+	}
+	
+	public numeric function getAverageLandedProfit(){
+		return getDao('skuDao').getAverageLandedProfit(this.getSkuID());
+	}
+	
+	public numeric function getAverageMarkup(){
+		return getDao('skuDao').getAverageMarkup(this.getSkuID());
+	}
+	
+	public numeric function getAverageLandedMarkup(){
+		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID());
 	}
 
 	public array function getGiftCardExpirationTermOptions(){
@@ -615,7 +641,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 		// Standard Logic
 		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
+			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
@@ -1238,7 +1264,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getAverageCost(any location){
 		var params.skuID = this.getSkuID();
 		if(!isNull(arguments.location)){
-			params.location=arguments.location;
+			params.locationID=arguments.location.getLocationID();
 		}
 		
 		return getDao('skuDao').getAverageCost(argumentCollection=params);
@@ -1247,7 +1273,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public any function getAverageLandedCost(any location){
 		var params.skuID = this.getSkuID();
 		if(!isNull(arguments.location)){
-			params.location=arguments.location;
+			params.locationID=arguments.location.getLocationID();
 		}
 		
 		return getDao('skuDao').getAverageLandedCost(argumentCollection=params);

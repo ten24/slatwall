@@ -62,7 +62,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="measurementType" />
 </hb:HibachiListingDisplay> --->
 
-    <sw-listing-display
+    <sw-listing-display data-using-personal-collection="true"
         data-collection="'MeasurementUnit'"
         data-edit="false"
         data-has-search="true"
@@ -76,7 +76,7 @@ Notes:
         <sw-listing-column data-property-identifier="unitName" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="unitCode" ></sw-listing-column>
         <sw-listing-column data-property-identifier="measurementType" ></sw-listing-column>
-    </sw-listing-display>
+    </sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

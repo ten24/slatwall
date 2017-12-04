@@ -64,7 +64,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 </hb:HibachiListingDisplay> --->
 
-    <sw-listing-display
+    <sw-listing-display data-using-personal-collection="true"
         data-collection="'StockReceiver'"
         data-edit="false"
         data-has-search="true"
@@ -79,6 +79,6 @@ Notes:
         <sw-listing-column data-property-identifier="boxCount" ></sw-listing-column>
         <sw-listing-column data-property-identifier="receiverType" ></sw-listing-column>
         <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-    </sw-listing-display>
+    </sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

@@ -74,7 +74,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="fileTrackAccessFlag" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'FileGroup'"
 		data-edit="false"
 		data-has-search="true"
@@ -90,6 +90,6 @@ Notes:
 		<sw-listing-column data-property-identifier="fileGroupDescription" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="fileRestrictAccessFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="fileTrackAccessFlag" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

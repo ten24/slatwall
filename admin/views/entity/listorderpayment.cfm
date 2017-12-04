@@ -72,7 +72,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 		data-collection="'OrderPayment'"
 		data-edit="false"
 		data-has-search="true"
@@ -91,6 +91,6 @@ Notes:
 		<sw-listing-column data-property-identifier="amount" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="amountReceived" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="amountCredited" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

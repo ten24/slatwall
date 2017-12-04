@@ -69,7 +69,7 @@ Notes:
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
     data-collection="'AddressZone'"
     data-edit="false"
     data-has-search="true"
@@ -82,4 +82,4 @@ Notes:
 >
     <sw-listing-column data-property-identifier="addressZoneID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="addressZoneName" search="true" tdclass="primary" ></sw-listing-column>
-</sw-listing-display>
+</sw-listing-display data-using-personal-collection="true">

@@ -71,7 +71,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 </hb:HibachiListingDisplay> --->
 
-<sw-listing-display
+<sw-listing-display data-using-personal-collection="true"
 	data-collection="'AttributeSet'"
 	data-edit="false"
 	data-has-search="true"
@@ -86,4 +86,4 @@ Notes:
 	<sw-listing-column data-property-identifier="attributeSetObject" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="globalFlag" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-</sw-listing-display>
+</sw-listing-display data-using-personal-collection="true">

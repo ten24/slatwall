@@ -52,7 +52,7 @@ Notes:
 <cfparam name="rc.productType" type="any" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable>
+	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.productType#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.productType#" />

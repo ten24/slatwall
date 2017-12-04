@@ -46,21 +46,15 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
-
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase"  {
 	
 	public void function setUp() {
 		super.setup();
+		request.slatwallScope.getDao('HibachiDataDao').truncateTablesWithoutDefaultData();
 		
-		variables.dao = request.slatwallScope.getDAO("accountDAO");
 	}
-		
-	/**
-	* @test
-	*/
-	public void function inst_ok() {
-		assert(isObject(variables.dao));
-	}
+	
+	
 }
 
 
