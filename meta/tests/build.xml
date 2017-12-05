@@ -66,6 +66,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
      <property name="junitreport.dir"   value="${report.dir}/junitreport" />
 
      <target name="init" description="Init the tests">
+          <mkdir dir="${slatwall.test.output.html}" />
           <mkdir dir="${slatwall.test.output.xml}/unit" />
           <tstamp prefix="start">
                <format property="TODAY" pattern="MM-dd-YYYY hh:mm:ss aa"/>
@@ -160,35 +161,54 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                 - Labels
                 - ReportPath : The path where reports will be stored, by default it is the ${report.dir} directory.
           -->
-          <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
-                src="http://${slatwall.test.server}:${slatwall.test.serverport}"
-                verbose="true"/>
-          <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-                
-          <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-                
-           <get dest="${slatwall.test.output.xml}/unit/dao${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.dao&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-                
-           <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-            
+            <get dest="${slatwall.test.output.xml}/index${slatwall.outputfile}.xml"
+                  src="http://${slatwall.test.server}:${slatwall.test.serverport}"
+                  verbose="true"/>
+            <sleep seconds="1" />
+            <!-- Init test runner -->
+            <get dest="${slatwall.test.output.xml}/begin${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?init=true"
+                  verbose="true"/>
+            <sleep seconds="1" />
+            <get dest="${slatwall.test.output.xml}/unit/core${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.core&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+            <sleep seconds="1" />             
+            <get dest="${slatwall.test.output.xml}/unit/entity${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.entity&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+            <sleep seconds="1" />
+            <get dest="${slatwall.test.output.xml}/unit/dao${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.dao&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+            <sleep seconds="1" />
+            <get dest="${slatwall.test.output.xml}/unit/process${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.process&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+            <sleep seconds="1" />
             <get dest="${slatwall.test.output.xml}/unit/service${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-            
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.service&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+            <sleep seconds="1" />
             <get dest="${slatwall.test.output.xml}/unit/transient${slatwall.outputfile}.xml"
-                src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
-                verbose="true"/>
-        	
-        	
-                
+                  src="http://${url.runner}?&amp;opt_run=true&amp;target=${test.directory}.transient&amp;recurse=${test.recurse}&amp;reporter=antjunit&amp;labels=${test.labels}"
+                  verbose="true"/>
+        	<sleep seconds="1" />
+        	<!-- Writes all prior test results to file -->
+            <get dest="${slatwall.test.output.xml}/done${slatwall.outputfile}.xml"
+                  src="http://${url.runner}?&amp;done=true"
+                  verbose="true"/>
+            
+            <!-- Read Result Properties -->
+		<property file="${slatwall.test.output.xml}/unit/test.properties"/>
+		<!-- Echo them out -->
+		<echoproperties regex="^(test).*"/>
+
+            <!-- No need to generate junit reports, ANT junitreport fails to process XML with top-level element of '<testsuites></testsuites>' -->
+            <!-- CircleCI processes the xUnit XML reports created by our runner directly and has no issues with '<testsuites></testsuites>' -->
+
+		<!-- Fail build if they failed -->
+		<fail if="test.failed" message="Failure Found...failing" />
           
 
          <!-- <Bundles Runner
@@ -206,6 +226,7 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
            
 			
           <!-- <Create fancy junit reports -->
+          <!-- Not working, not merging xml files and results in generatin empty TEST-testsuites.xml and blank html
           <junitreport todir="${slatwall.test.output.xml}/unit">
                <fileset dir="${slatwall.test.output.xml}/unit">
                     <include name="*.xml"/>
@@ -214,13 +235,15 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
                     <param name="TITLE" expression="My Awesome TestBox Results"/>
                </report>
           </junitreport>
-          
+          -->
+            <!-- 
 		<fail message="Failure Found...failing">
 		    <condition>
 		    	<not>
 		        	<resourcecontains resource="${slatwall.test.output.xml}/unit/results.txt" substring='{"failures":0,"errors":0}'/>
-		   		</not>
+		   	</not>
 		    </condition>
 		</fail>
+            -->
      </target>
 </project>

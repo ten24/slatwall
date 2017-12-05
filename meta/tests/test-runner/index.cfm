@@ -3,16 +3,93 @@
 <cfparam name="url.opt_recurse" default="true">
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
+<cfparam name="url.done"		default="false">
+<cfparam name="url.init"   	    default="false">
+<cfparam name="url.dest"		default="/Slatwall/meta/tests/testresults">
+<cfparam name="url.reportPath"  default="/xml/unit">
+<cfparam name="url.debugPath"  default="/debug">
 <cfif structKeyExists(url,'testBundles')>
 	<cfset url.target = url.testBundles/>
 	<cfset url.opt_run = true/>
 </cfif>
 <cfsetting requesttimeout="3600">
 <cfscript>
+// remove trailing '/' from dest directory
+if (right(url.dest, 1) == '/') {
+	url.dest = mid(url.dest, 1, len(url.dest) - 1);
+}
+
+// prefix reportPath with '/'
+if (left(url.reportPath, 1) != '/') {
+	url.reportPath &= '/';
+}
+
+// prefix debugPath with '/'
+if (left(url.debugPath, 1) != '/') {
+	url.debugPath &= '/';
+}
+
+// Output files for debugging details
+debugDestination = expandPath('#url.dest##url.debugPath#');
+reportOutputFileDest = '#debugDestination#/report-output.xml';
+stackTraceFileDest = '#debugDestination#/stacktrace.html';
+
+// Output files for results
+reportDestination = expandPath('#url.dest##url.reportPath#');
+filedest = reportDestination & "/results.txt";
+testPropertiesDest = reportDestination & '/test.properties';
+
 // create testbox
 testBox = new testbox.system.TestBox();
 // create reporters
 reporters = [ "ANTJunit", "Console", "Codexwiki", "Doc", "Dot", "JSON", "JUnit", "Min", "Raw", "Simple", "Tap", "Text", "XML" ];
+
+void function setupRunner() {
+	application.testrunner = {};
+	application.testrunner.results = [];
+	application.testrunner.totals = {
+		totalDuration = 0,
+		totalPass = 0,
+		totalFail = 0,
+		totalError = 0,
+		totalSkipped = 0
+	};
+}
+
+// Persist test results in testrunner application scope
+if (!structKeyExists(application, "testrunner") || url.init) {
+	setupRunner();
+
+	// Nothing to output, just resetting
+	if (url.init) {
+		abort;
+	}
+}
+
+// Write out results that will be consumed by ANT task build.xml (nothing to output)
+if (url.done) {
+	// Make sure directory exists
+	if (!directoryExists(reportDestination)) {
+		directoryCreate(reportDestination);
+	}
+
+	// Save results in file
+	//fileWrite( filedest, '{"failures":#application.testrunner.totals.totalFail#,"errors":#application.testrunner.totals.totalError#}' );
+
+	// Save results to properties file
+	testPropertiesContent = (application.testrunner.totals.totalFail + application.testrunner.totals.totalError) > 0 ? "test.failed=true" : "test.passed=true";
+	testPropertiesContent &= "#chr(10)#test.duration=#application.testrunner.totals.totalDuration#";
+	testPropertiesContent &= "#chr(10)#test.pass=#application.testrunner.totals.totalPass#";
+	testPropertiesContent &= "#chr(10)#test.fail=#application.testrunner.totals.totalFail#";
+	testPropertiesContent &= "#chr(10)#test.error=#application.testrunner.totals.totalError#";
+	testPropertiesContent &= "#chr(10)#test.skipped=#application.testrunner.totals.totalSkipped#";
+	fileWrite( testPropertiesDest, testPropertiesContent );
+
+	// Clean up
+	structDelete(application, "testrunner");
+	setupRunner();
+	abort;
+}
 
 if( url.opt_run ){
 	// clean up
@@ -20,8 +97,7 @@ if( url.opt_run ){
 		url[ key ] = xmlFormat( trim( url[ key ] ) );
 	}
 	// execute tests
-	if( len( url.target ) ){
-		
+	if( len( url.target ) ){		
 		
 		// directory or CFC, check by existence
 		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
@@ -29,6 +105,24 @@ if( url.opt_run ){
 		} else {
 			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
 		}
+
+		// NOTE: testBox.run report sets the response contentType automatically, override with line below
+		// getPageContext().getResponse().setContentType( "text/html" );
+
+		// Keep track of result objects across requests
+		testResult = testBox.getResult();
+		lock name="testrunner-results" type="exclusive" timeout="30" {
+			arrayAppend(application.testrunner.results, testResult);
+			application.testrunner.totals.totalDuration += testResult.getTotalDuration();
+			application.testrunner.totals.totalPass += testResult.getTotalPass();
+			application.testrunner.totals.totalFail += testResult.getTotalFail();
+			application.testrunner.totals.totalError += testResult.getTotalError();
+			application.testrunner.totals.totalSkipped += testResult.getTotalSkipped();
+		}
+
+		// TestBox does not escape any invalid special characters (eg 0x2 'start of heading' which causes XML parsing errors)
+		results = replaceNoCase(results, "#chr(2)#", "", "all");
+
 		if( isSimpleValue( results ) ){
 			switch( lcase(url.reporter) ){
 				case "xml" : case "text" : case "tap" : {
@@ -44,28 +138,43 @@ if( url.opt_run ){
 				     break;
 				}
 				case "antjunit": {
-					errors = 0;
-					failures = 0;
 					
-					reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
-					filedest = reportdestination & "results.txt";
-					
-//					pc = getpagecontext().getresponse();
-//						pc.setHeader("Content-Type","text/html");
-					if(directoryExists(reportdestination) && fileExists(filedest)){
-						txtData = deserializeJson(fileRead(filedest));
-						errors = txtData.errors;
-						failures = txtData.failures;
+					try {
+						if (!isXML(results)) {
+							throw("XML produced by TestBox is not valid. You can manually inspect raw results '#debugDestination#/report-output.xml' file.");
+						}
+
+						writeOutput( trim(results) ); 
+
+					// Graceful error handling, provide more detailed information for debugging
+					} catch (any e) {
+						// Make sure debug directory exists
+
+						if (!directoryExists(debugDestination)) {
+							writeDump("Create directory");
+							directoryCreate(debugDestination);
+						}
+						
+						// Write file raw results from TestBox
+						fileWrite(reportOutputFileDest, results);
+
+						// Write file stack trace information
+						stackTraceContent = "";
+						savecontent variable="stackTraceContent" {
+							writeDump(e);
+						};
+						fileWrite(stackTraceFileDest, stackTraceContent);
+
+						// Continue with valid XML response
+						writeOutput(('<error>
+							<message>#e.message#</message>
+							<errorCode>#e.errorCode#</errorCode>
+							<detail>#e.detail#</detail>
+							<type>#e.type#</type>
+							<extendedinfo>#e.extendedInfo#</extendedinfo>
+							<stacktrace>#e.stackTrace#</stacktrace>
+						</error>'));
 					}
-					
-					xmlReport = xmlParse( results );
-				    for( thisSuite in xmlReport.testsuites.XMLChildren ){
-				     	errors += thisSuite.XmlAttributes.errors;
-				     	failures += thisSuite.XmlAttributes.failures;
-				    }
-				    
-					fileWrite( filedest, '{"failures":#failures#,"errors":#errors#}' );
-					writeOutput( trim(results) ); 
 					break;
 				}
 				default: { 
