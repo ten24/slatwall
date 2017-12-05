@@ -436,12 +436,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		var location = locationService.getLocation(arguments.entity.getLocation().getLocationID());
 		for(var skuDetails in arguments.entity.getMinMaxSetupCollection().getRecords()) {
-			var sku = skuService.getSku(skuDetails.skuID);
-			var stock = getStockBySkuANDLocation(sku, location);
-			stock.setMinQuantity(arguments.entity.getMinQuantity());
-			stock.setMaxQuantity(arguments.entity.getMaxQuantity());
+			stockDAO.updateStockMinMax(skuDetails.skuID,arguments.entity.getLocation().getLocationID(),arguments.entity.getMinQuantity(),arguments.entity.getMaxQuantity());
 		}
-
 		return arguments.entity;
 	}
 

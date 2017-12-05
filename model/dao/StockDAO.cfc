@@ -60,6 +60,17 @@ Notes:
 		
 
 	<cfscript>
+		public void function updateStockMinMax(required string skuID, required string locationID, required any minQuantity, required any maxQuantity) {
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				UPDATE swStock 
+				SET minQuantity = #arguments.minQuantity#,
+					maxQuantity = #arguments.maxQuantity#
+				WHERE skuID = '#arguments.skuID#'
+					AND locationID  = '#arguments.locationID#'
+			");
+			dataQuery.execute();
+		}
 
 		public query function getMinMaxStockTransferDetails(required string fromLocationID, required string toLocationID){
 			var dataQuery = new Query();
