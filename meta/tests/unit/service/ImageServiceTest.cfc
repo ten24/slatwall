@@ -140,14 +140,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function calculatedImagePath_changeGlobalAssetPathTest(){ 
 		
 		var imageData ={
-			imageFile='test.png',
+			imageID='',
 			directory='product'
 		};
 		var image = createPersistedTestEntity('image',imageData);
 		
-		image = variables.service.saveImage(image, imageData); 
-
-		image.updateCalculatedProperties(); 		
+		image.setImageFile('test.png');//fake file set	
 		
 		assertEquals(image.getImagePath(),image.getCalculatedImagePath());		
 		assertEquals('custom/assets/images/product/test.png',image.getCalculatedImagePath());		
@@ -155,7 +153,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var settingData = {
 			settingID = "",
 			settingName = "globalAssetsImageFolderPath",
-			settingValue = "/custom/assets/img/",
+			settingValue = "/custom/assets/img/"
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 	
