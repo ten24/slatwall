@@ -11,15 +11,8 @@
 	<sw-tab-group id="#getHibachiScope().createHibachiUUID()#">
 		<cfloop array="#rc.sku.getSkuCosts()#" index="skuCost" >
 			<sw-tab-content id="#getHibachiScope().createHibachiUUID()#" name="#skuCost.getCurrency().getCurrencyCode()#">
-				<!---<table class="table table-bordered table-hover">
-					<tr>
-						<td class="primary">
-						</td>
-						<td>
-							
-						</td>
-					</tr>
-				</table>--->
+				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedAverageCost"  edit="false">
+				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedAverageLandedCost"  edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedCurrentMargin"  edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedCurrentLandedMargin" edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedCurrentAssetValue"  edit="false">
