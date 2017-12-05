@@ -486,20 +486,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If change "from" or "to" location delete all related minMaxTransferItems and sotckAdjustments
 		if(!arguments.entity.getNewFlag() && arguments.data.fromLocation.locationID != arguments.entity.getFromLocation().getLocationID() or !arguments.entity.getNewFlag() && arguments.data.toLocation.locationID != arguments.entity.getToLocation().getLocationID()) {
 			// remove stock transfer items on change
-			writeDump(var=arguments.entity.getMinMaxStockTransferID(),top=1);
-			writeDump(var=arguments.entity.hasMinMaxStockTransferItem(),top=1);
 			if(arguments.entity.hasMinMaxStockTransferItem()){
 				stockDAO.deleteMinMaxStockTransferItems(arguments.entity.getMinMaxStockTransferID());
 			}
 			// remove stock adjustments on change
-			writeDump(var=arguments.entity.hasStockAdjustment(),top=1);
 			if(arguments.entity.hasStockAdjustment()){
-				stockDAO.deleteMinMaxStockAdustments(arguments.entity.getMinMaxStockTransferID());
+				stockDAO.deleteMinMaxStockAdjustments(arguments.entity.getMinMaxStockTransferID());
 			}
 		}
 
 		arguments.entity = super.save(argumentcollection=arguments);
-
 
 		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
 		if(!arguments.entity.hasErrors()) {

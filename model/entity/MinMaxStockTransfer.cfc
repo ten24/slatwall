@@ -86,7 +86,7 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentation() {
-		return "To #gettoLocation().getLocationName()# - Created #getFormattedValue('createdDateTime')#";
+		return "From #getFromLocation().getLocationName()# To #getToLocation().getLocationName()# - Created #getFormattedValue('createdDateTime')#";
 	}
 
 	// ==================  END:  Overridden Methods ========================

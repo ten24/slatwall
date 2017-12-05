@@ -110,15 +110,28 @@ Notes:
 		}
 
 		public void function deleteMinMaxStockTransferItems(required string minMaxStockTransferID) {
-			ormExecuteQuery("
-				DELETE SlatwallMinMaxStockTransferItem 
-				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'");
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				DELETE FROM swMinMaxStockTransferItem 
+				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'
+			");
+			dataQuery.execute();
 		}
 
-		public void function deleteMinMaxStockAdustments(required string minMaxStockTransferID) {
-			ormExecuteQuery("
-				DELETE SlatwallStockAdjustment 
-				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'");
+		public void function deleteMinMaxStockAdjustments(required string minMaxStockTransferID) {
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				DELETE FROM swStockAdjustmentItem 
+				WHERE stockAdjustmentID IN
+					(SELECT stockAdjustmentID FROM swStockAdjustment WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#')
+			");
+			dataQuery.execute();
+			var dataQuery2 = new Query();
+			dataQuery2.setSql("
+				DELETE FROM swStockAdjustment
+				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'
+			");
+			dataQuery2.execute();
 		}
 
 	public numeric function getCurrentMargin(required string stockID){
