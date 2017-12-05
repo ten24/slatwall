@@ -135,7 +135,7 @@ class SWListingDisplayController{
 
             this.multipleCollectionDeffered.reject();
         }
-
+console.log('test',this.usingPersonalCollection);
         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]){
 
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
@@ -350,7 +350,7 @@ class SWListingDisplayController{
             this.expandable = false;
         }
         //setup export action
-        if(angular.isDefined(this.exportAction)){
+        if(angular.isUndefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
         //setup print action
@@ -507,7 +507,7 @@ class SWListingDisplayController{
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-        if(this.collectionConfigs.length == 0){
+        //if(this.collectionConfigs.length == 0){
             var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
             if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
                 && (this.selectionService.getSelections(this.tableID).length > 0)) {
@@ -524,9 +524,9 @@ class SWListingDisplayController{
                     }
                 ];
             }
-        } else {
+        //} else {
             //multiCollectionConfig logic
-        }
+        //}
         $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
             .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
