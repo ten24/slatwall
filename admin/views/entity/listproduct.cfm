@@ -99,14 +99,14 @@ Notes:
 		data-show-simple-listing-controls="true"
 	>
 		<sw-listing-column data-property-identifier="productID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productType.productTypeName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="brand.brandName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="productCode" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="defaultSku.price" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="publishedFlag" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="productType.productTypeName" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="brand.brandName" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="productName" tdclass="primary" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="productCode" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="defaultSku.price" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="activeFlag" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="publishedFlag" data-is-exportable="true"></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedQATS" data-is-exportable="true"></sw-listing-column>
 	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
