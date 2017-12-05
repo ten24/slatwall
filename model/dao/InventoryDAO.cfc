@@ -70,7 +70,7 @@ Notes:
 		}
 		
 		// Quantity on hand. Physically at any location
-		public array function getQOH(required string productID, string productRemoteID) {
+		public array function getQOH(required string productID, string productRemoteID, string currencyCode) {
 			var params = [arguments.productID];
 			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
 							sku.skuID as skuID, 
@@ -84,7 +84,13 @@ Notes:
 							LEFT JOIN stock.location location
 						WHERE
 							sku.product.productID = ?
-						GROUP BY
+						";
+			if(structKeyExists(arguments,'currencyCode')){
+				hql &= " AND inventory.currencyCode=:currencyCode ";
+				params['currencyCode'] = arguments.currencyCode;
+			}
+						
+			hql &=" GROUP BY
 							sku.skuID,
 							stock.stockID,
 							location.locationID,

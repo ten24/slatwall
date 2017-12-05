@@ -66,6 +66,16 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
+	property name="calculatedAverageCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAveragePriceSold" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageMarkup" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";

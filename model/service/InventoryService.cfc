@@ -235,7 +235,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	// Quantity On Hand
-	public struct function getQOH(string productID, string productRemoteID) {
+	public struct function getQOH(string productID, string productRemoteID, string currencyCode) {
 		return createInventoryDataStruct( getInventoryDAO().getQOH(argumentCollection=arguments), "QOH" );
 	}
 	

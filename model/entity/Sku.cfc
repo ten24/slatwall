@@ -96,6 +96,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuPrices" singularname="skuPrice" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuPrice" cascade="all-delete-orphan" lazy="extra";
+	property name="skuCosts" singularname="skuCost" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuCost" cascade="all-delete-orphan" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
@@ -607,7 +608,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// START: Quantity Helper Methods
 
-	public numeric function getQuantity(required string quantityType, string locationID, string stockID) {
+	public numeric function getQuantity(required string quantityType, string locationID, string stockID, string currencyCode) {
 
 
 		// Request for calculated quantity
@@ -1139,8 +1140,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 
-	public any function getQOH() {
-		return getQuantity("QOH");
+	public any function getQOH(string currencyCode) {
+		var params = {quantityType="QOH"};
+		if(structKeyExists(arguments,'currencyCode')){
+			params.currencyCode=arguments.currencyCode;
+		}
+		return getQuantity(argumentCollection=params);
 	}
 
 	/**
