@@ -416,15 +416,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	// Stock Adjustment
 	public void function createStockAdjustment(required struct rc) {
-		param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
-
+		
 		arguments.rc.sRedirectAction = 'admin:entity.editstockadjustment';
 
 		// Call the generic logic
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
 
 		// Set the type correctly
-		rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
+		if(isNull(rc.stockAdjustmentType)){
+			param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
+			rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
+		}
 	}
 
 	// Task
