@@ -135,7 +135,7 @@ class SWListingDisplayController{
 
             this.multipleCollectionDeffered.reject();
         }
-console.log('test',this.usingPersonalCollection);
+
         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]){
 
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
@@ -507,7 +507,7 @@ console.log('test',this.usingPersonalCollection);
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-        //if(this.collectionConfigs.length == 0){
+        if(this.collectionConfigs.length == 0){
             var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
             if (selection && !angular.isUndefined(this.selectionService.getSelections(this.tableID))
                 && (this.selectionService.getSelections(this.tableID).length > 0)) {
@@ -524,9 +524,9 @@ console.log('test',this.usingPersonalCollection);
                     }
                 ];
             }
-        //} else {
+        } else {
             //multiCollectionConfig logic
-        //}
+        }
         $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
             .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
