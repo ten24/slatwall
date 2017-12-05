@@ -186,25 +186,26 @@ Notes:
 		return skus;
 	}
 	
-	public any function getAverageCost(required string skuID, any location){
+	public any function getAverageCost(required string skuID, string locationID=""){
 		var params = {skuID=arguments.skuID};
 		
-		var hql = 'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
 			LEFT JOIN i.stock stock
 			LEFT JOIN stock.sku sku
 		';
 		
-		if(!isNull(arguments.location)){
+		if(len(arguments.locationID)){
 			hql &= ' LEFT JOIN stock.location location ';
 		}
 		
-		hql &= ' WHERE sku.skuID=:skuID';
+		hql &= ' WHERE sku.skuID=:skuID AND i.cost IS NOT NULL ';
 		
-		if(!isNull(arguments.location)){
-			hql&= ' AND location.locationID = :location';	
-			params.location = arguments.location;
+		if(len(arguments.locationID)){
+			hql&= ' AND location.locationID = :locationID';	
+			params.locationID = arguments.locationID;
 		}
+		
 		
 		return ORMExecuteQuery(
 			hql,
@@ -213,22 +214,22 @@ Notes:
 		);
 	}
 	
-	public any function getAverageLandedCost(required string skuID, any location){
+	public any function getAverageLandedCost(required string skuID, string locationID=""){
 		var params = {skuID=arguments.skuID};
 		
-		var hql = 'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+		var hql = 'SELECT COALESCE(SUM(i.landedCost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
 			LEFT JOIN i.stock stock
 			LEFT JOIN stock.sku sku';
 			
-		if(!isNull(arguments.location)){
+		if(len(arguments.locationID)){
 			hql &= ' LEFT JOIN stock.location location ';
 		}
-		hql &= ' WHERE sku.skuID = :skuID ';
+		hql &= ' WHERE sku.skuID = :skuID AND i.landedCost IS NOT NULL ';
 		
-		if(!isNull(arguments.location)){
-			hql &= ' AND location.locationID=:location ';	
-			params.location=arguments.location;
+		if(len(arguments.locationID)){
+			hql &= ' AND location.locationID=:locationID ';	
+			params.locationID=arguments.locationID;
 		}
 		
 		return ORMExecuteQuery(
@@ -238,20 +239,47 @@ Notes:
 		);
 	}
 	
+	public any function getAverageProfit(required string skuID){
+		return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageCost(argumentCollection=arguments));
+	}
+	
+	public any function getAverageLandedProfit(required string skuID){
+		return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageLandedCost(argumentCollection=arguments));
+	}
+	
+	public any function getAverageMarkup(required string skuID){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		var averageCost = getAverageCost(argumentCollection=arguments);
+		if(averageCost == 0){
+			return 0;
+		}
+		
+		return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageCost)/averageCost)*100);
+	}
+	
+	public any function getAverageLandedMarkup(required string skuID){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		var averageLandedCost = getAverageLandedCost(argumentCollection=arguments);
+		if(averageLandedCost == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageLandedCost)/averageLandedCost)*100);
+	}
+	
 	public numeric function getCurrentMargin(required string skuID){
-		return ORMExecuteQuery("
-			SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
-			FROM SlatwallSku sku
-			WHERE sku.skuID=:skuID
-		",{skuID=arguments.skuID},true);
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
 	public numeric function getCurrentLandedMargin(required string skuID){
-		return ORMExecuteQuery("
-			SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageLandedCost,0)) / COALESCE(sku.price,0),0)
-			FROM SlatwallSku sku
-			WHERE sku.skuID=:skuID
-		",{skuID=arguments.skuID},true);
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
 	public numeric function getAveragePriceSold(required string skuID){

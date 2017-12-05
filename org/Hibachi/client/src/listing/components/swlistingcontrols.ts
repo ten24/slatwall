@@ -16,6 +16,7 @@ class SWListingControlsController {
     private showFilters:boolean;
     private showPersonalCollections:boolean;
     private showToggleFilters:boolean;
+    private showToggleSearch:boolean;
     private showToggleDisplayOptions:boolean;
     private newFilterPosition;
     private itemInUse;
@@ -33,6 +34,9 @@ class SWListingControlsController {
         public listingService,
         public observerService
     ) {
+        if(angular.isUndefined(this.showToggleSearch)){
+            this.showToggleSearch = true;
+        }
         if(angular.isUndefined(this.showToggleFilters)){
             this.showToggleFilters = true;
         }
@@ -176,8 +180,10 @@ class SWListingControls  implements ng.IDirective{
         tableId : "=?",
         getCollection : "&",
         showFilters : "=?",
+        showToggleSearch: "=?",
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",
+        displayOptionsClosed:"=?",
         simple:"=?"
     };
     public controller = SWListingControlsController;

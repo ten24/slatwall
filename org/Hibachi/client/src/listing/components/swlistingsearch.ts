@@ -34,15 +34,6 @@ class SWListingSearchController {
         public observerService,
         public localStorageService
     ) {
-        if(this.swListingControls){
-            if(angular.isUndefined(this.swListingControls.showToggleFilters)){
-                this.swListingControls.showToggleFilters = true;
-            }
-            if(angular.isUndefined(this.swListingControls.showToggleDisplayOptions)){
-                this.swListingControls.showToggleDisplayOptions = true;
-            }
-        }
-
 
 
     }

@@ -27,6 +27,7 @@
 			        <hb:HibachiListingColumn propertyIdentifier="vendorOrderDeliveryItem.vendorOrderItem.vendorOrder.vendorOrderNumber" />
 			        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode" />
 					<hb:HibachiListingColumn propertyIdentifier="cost" />
+					<hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.calculatedExtendedPrice" />
 				</cfcase> 
 				<cfcase value="latRevenue">
 					<hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />

@@ -227,6 +227,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
+	public struct function getQDOO(string productID, string productRemoteID){
+		return createInventoryDataStruct( getInventoryDAO().getQDOO(argumentCollection=arguments), "QDOO" );
+	}
+	
 	// Quantity On Hand
 	public struct function getQOH(string productID, string productRemoteID) {
 		return createInventoryDataStruct( getInventoryDAO().getQOH(argumentCollection=arguments), "QOH" );
