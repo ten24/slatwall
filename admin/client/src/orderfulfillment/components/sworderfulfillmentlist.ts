@@ -459,7 +459,6 @@ class SWOrderFulfillmentListController {
 
     public addFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
         
-        console.log("Adding Filter");
         this.$timeout(()=>{
             this.refreshFlag = true;
         }, 1);
