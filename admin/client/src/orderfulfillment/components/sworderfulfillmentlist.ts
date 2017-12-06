@@ -111,7 +111,6 @@ class SWOrderFulfillmentListController {
     };
 
     public collectionConfigUpdatedListener = (callBackData) => {
-        console.log("SET UPDATE LISTENER");
         if (this.usingRefresh == true){
             this.refreshFlag=true;
         }
