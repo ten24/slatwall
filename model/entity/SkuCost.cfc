@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="sku.skuCurrencies" {
+component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="sku.skuCurrencies" hb_auditable=false{
 	
 	// Persistent Properties
 	property name="skuCostID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -97,7 +97,7 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
 	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
-	property name="QOH" persistent="fasle";
+	property name="QOH" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
