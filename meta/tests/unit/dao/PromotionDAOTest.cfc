@@ -115,6 +115,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var sku = product.getSkus()[1];
 		
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodID = '',
@@ -187,6 +188,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		
 		//Test promotion with currency defined on the reward only
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodID = '',
@@ -302,6 +304,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		
 		//Test promotion with currency defined on the reward only
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodID = '',
@@ -448,7 +451,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		//requires promotion period
 		
 		var promotionData = {
-
+			activeFlag = true
 		};
 		var promotion = createPersistedTestEntity('promotion',promotionData);
 		
