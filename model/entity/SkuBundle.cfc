@@ -68,7 +68,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	property name="measurementUnitOptions" persistent="false";
 
 	public numeric function getBundleQATS(string locationID){
-		if(structKeyExists(arguments,'locationID')){
+		if(structKeyExists(arguments,'locationID') && len(arguments.locationID)){
 			var skuQATS = getBundledSku().getQuantity(quantityType='QATS',locationID=locationID);
 		}else{
 			var skuQATS = getBundledSku().getQATS();

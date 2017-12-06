@@ -705,6 +705,16 @@ Notes:
 			return 0;
 		}
 
+		public any function getSkuLocationQuantityBySkuIDAndLocationID( required string skuID, locationID){
+			var result = ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationQuantity sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
+
+			if (isNull(result)) {
+				return new('SkuLocationQuantity');
+			}
+
+			return result;
+		}
+		
 		//Quantity Delivered on Order for Sku in Period
 		public any function getSkuOrderQuantityForPeriod(required string skuID, required any fromDateTime, required any toDateTime){
 			var hql = "SELECT NEW MAP(

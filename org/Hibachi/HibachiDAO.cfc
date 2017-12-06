@@ -124,8 +124,12 @@
 	    	// Initate the first flush
 	    	ormFlush();
 
-	    	// Loop over the modifiedEntities to call updateCalculatedProperties
-	    	for(var entity in getHibachiScope().getModifiedEntities()){
+			// Use once and clear to avoid reprocessing in subsequent method invocation or through an infinite recursive loop.
+			var modifiedEntities = getHibachiScope().getModifiedEntities();
+			getHibachiScope().clearModifiedEntities();
+
+			// Loop over the modifiedEntities to call updateCalculatedProperties
+	    	for(var entity in modifiedEntities){
 	    		entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
 	    	}
 

@@ -108,6 +108,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
 	property name="filterByLeafNodesFlag" type="boolean" persistent="false" default="0";
+	property name="filterByNonLeafNodesFlag" type="boolean" persistent="false" default="0";
 	property name="filterGroupAliasMap" type="struct" persistent="false";
 	property name="excludeOrderBy" type="boolean" persistent="false" default="0";
 	property name="permissionAppliedFlag" type="boolean" persistent="false" default="0";
@@ -179,6 +180,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public boolean function getApplyOrderBysToGroupBys(){
 		return variables.applyOrderBysToGroupBys;
+	}
+
+	public void function setFilterByLeafNodesFlag(required boolean value) {
+		// Ensures exclusivity so that both types of leaf node filter flags cannot both be true
+		if (arguments.value && getFilterByNonLeafNodesFlag()) {
+			setFilterByNonLeafNodesFlag(false);
+		}
+		variables.filterByLeafNodesFlag = arguments.value;
+	}
+
+	public void function setFilterByNonLeafNodesFlag(required boolean value) {
+		// Ensures exclusivity so that both types of leaf node filter flags cannot both be true
+		if (arguments.value && getFilterByLeafNodesFlag()) {
+			setFilterByLeafNodesFlag(false);
+		}
+		variables.filterByNonLeafNodesFlag = arguments.value;
 	}
 
 	public void function setFilterDataApplied(required filterDataAppliedflag){
@@ -1614,6 +1631,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return leafNodeHQL;
 	}
 
+	private string function getNonLeafNodeHQL(){
+		var notLeafNodeHQL = "";
+		var parentPropertyName = getService('hibachiService').getParentPropertyByEntityName(getCollectionObject());
+		var parentTableAlias = "_#parentPropertyName#LeafJoin";
+		//TODO: make subquery into othere collection call for elastic search to work better
+		var notLeafNodeSubQuery = "
+			SELECT #parentTableAlias#.#parentPropertyName#.id
+			FROM #getDao('HibachiDao').getApplicationKey()##getCollectionObject()# #parentTableAlias#
+			WHERE #parentTableAlias#.#parentPropertyName# IS NOT NULL
+		";
+
+		notLeafNodeHQL = " #getCollectionConfigStruct().baseEntityAlias#.id IN (#trim(notLeafNodeSubQuery)#) ";
+		
+		return notLeafNodeHQL;
+	}
+
 	private string function getFilterHQL(required array filterGroups){
 		//make the item without a logical operator first
 		var filterHQL = '';
@@ -2896,6 +2929,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 				if(len(leafNodeHQL)){
 					filterHQL &= " #logicalOperator# (#leafNodeHQL#)";
+				}
+			}
+
+			if(getFilterByNonLeafNodesFlag()){
+				var logicalOperator = '';
+				if(len(filterHQL)){
+					logicalOperator = 'AND';
+				}else{
+					filterHQL &= ' where ';
+				}
+				var nonLeafNodeHQL = getNonLeafNodeHQL();
+
+				if(len(nonLeafNodeHQL)){
+					filterHQL &= " #logicalOperator# (#nonLeafNodeHQL#)";
 				}
 			}
 

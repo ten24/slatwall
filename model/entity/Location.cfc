@@ -69,6 +69,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="minMaxStockTransferItemToLeafLocationIDs" singularname="minMaxStockTransferItemToLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItemFromTopLocationIDs" singularname="minMaxStockTransferItemFromTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItemFromLeafLocationIDs" singularname="minMaxStockTransferItemFromLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="locationID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
 
 	// Related Object Properties (Many-to-Many - owner)
 	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="locationID" inversejoincolumn="siteID";
@@ -228,7 +229,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			return getLocationPathName();
 		}
 	}
-	
 	
 	// ==================  END:  Overridden Methods ========================
 		
