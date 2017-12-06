@@ -273,7 +273,6 @@ class SWOrderFulfillmentListController {
             }else if(status == "available"){
                 this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
             }else if(status == "paid"){
-                console.log("Apply Paid Filter");
                 this.orderFulfillmentCollection.addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">", "AND");
             }
 
