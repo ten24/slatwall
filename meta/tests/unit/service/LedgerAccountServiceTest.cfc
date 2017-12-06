@@ -256,7 +256,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
 		request.slatwallScope.flushOrmSession(true);
 
-		for (entity in request.slatwallScope.getModifiedEntities()) {
+		for (var entity in request.slatwallScope.getModifiedEntities()) {
 			debug(entity.getClassName());
 		}
 		
