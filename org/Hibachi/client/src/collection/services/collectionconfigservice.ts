@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class Column{ 
+class Column{
     constructor(
         public propertyIdentifier:string,
         public title:string,
@@ -84,12 +84,12 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
-    
-    
+
+
     get collectionConfigString():string {
         return angular.toJson(this.getCollectionConfig(false));
     }
-    
+
     // @ngInject
     constructor(
         private rbkeyService:any,
@@ -180,7 +180,7 @@ class CollectionConfig {
 
     public getCollectionConfig= (validate=true):any =>{
         if(validate){
-            this.validateFilter(this.filterGroups);            
+            this.validateFilter(this.filterGroups);
         }
         return {
             baseEntityAlias: this.baseEntityAlias,
@@ -200,8 +200,8 @@ class CollectionConfig {
             orderBy:this.orderBy
         };
     };
-    
-    
+
+
 
     public getEntityName= ():string =>{
         return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);
@@ -209,12 +209,9 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
-        if(this.keywords && this.keywords.length && this.keywordColumns.length > 0){
 
-            var columns = this.keywordColumns;
-        } else {
-            var columns = this.columns;
-        }
+        var columns = this.columns;
+
         if(this.keywords && this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
             var filters = this.keywordFilterGroups;
         } else {
@@ -263,13 +260,13 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-            
+
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
-                
+
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_([^_]+)$/,'.$1').substring(1),
                     this.baseEntityAlias + _propertyIdentifier
@@ -278,7 +275,7 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
-        
+
         return _propertyIdentifier;
     };
 
@@ -528,7 +525,7 @@ class CollectionConfig {
         );
         return filter;
     };
-    
+
     public addFilterGroup = (filterGroup:any):CollectionConfig =>{
         var group = {
             filterGroup:[],
@@ -647,6 +644,7 @@ class CollectionConfig {
     };
 
     public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
+
         if(!this.orderBy){
             this.orderBy = [];
         }
@@ -662,19 +660,40 @@ class CollectionConfig {
                 break;
             }
         }
+        var direction = 'desc';
 
-        if(!found){
-            if(singleColumn){
-                this.orderBy = [];
-                for(var i =  0; i < this.columns.length; i++){
-                    if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
-                        this.columns[i]["sorting"]["active"] = false;
-                        this.columns[i]["sorting"]["sortOrder"] = 'asc';
-                    }
+        if(singleColumn){
+            this.orderBy = [];
+
+            for(var i =  0; i < this.columns.length; i++){
+                if(!this.columns[i]["sorting"]){
+                    this.columns[i]["sorting"] = {};
                 }
+                if(angular.isUndefined(this.columns[i]["sorting"]["active"])){
+                    this.columns[i]["sorting"]["active"] = false;
+                }
+                if(this.columns[i]['propertyIdentifier'] == formattedPropertyIdentifier){
+                    this.columns[i]["sorting"]["active"] = true;
+                    this.columns[i]["sorting"]["priority"] = 1;
+                    if(!this.columns[i]["sorting"]["sortOrder"] || this.columns[i]["sorting"]["sortOrder"] === 'desc'){
+                        this.columns[i]["sorting"]["sortOrder"] = 'asc';
+                        direction = 'asc';
+                    }else{
+                        this.columns[i]["sorting"]["sortOrder"] = 'desc';
+                        direction = 'desc';
+                    }
+                }else if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
+                    this.columns[i]["sorting"]["active"] = false;
+                    this.columns[i]["sorting"]["sortOrder"] = 'asc';
+                }
+
             }
-            this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
+
         }
+
+        this.addOrderBy(formattedPropertyIdentifier + '|'+direction, false);
+
+        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
     public removeOrderBy = (formattedPropertyIdentifier:string) => {

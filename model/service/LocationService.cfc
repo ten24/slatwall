@@ -50,6 +50,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	property name="locationDAO" type="any";
 	property name="stockDAO" type="any";
+	property name="skuService" type="any";
+	property name="inventoryService" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -127,12 +129,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
-	
+
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
 	
-	public any function saveLocation(required any location, required struct data) {
+	public any function saveLocation(required any location, struct data={}) {
 		
 		arguments.location = super.save(arguments.location, arguments.data);
 		

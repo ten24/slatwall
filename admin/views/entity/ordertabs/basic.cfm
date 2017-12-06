@@ -11,6 +11,8 @@
 			<!--- Account --->
 			<cfif rc.edit>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
+			<cfelseif !isNull(rc.order.getAccount()) && rc.order.getAccount().getOrganizationFlag()>
+ 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="company">	
 			<cfelseif !isNull(rc.order.getAccount())>
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAccount().getAccountID()#" title="#$.slatwall.rbKey('entity.account')#">
 				<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress" valuelink="mailto:#rc.order.getAccount().getEmailAddress()#">
@@ -18,6 +20,7 @@
 			</cfif>
 
 			<!--- Origin --->
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
 
 			<!--- Order Type --->
@@ -29,7 +32,7 @@
 			</cfif>
 
 			<!--- Default Stock Location --->
-			<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
+			<swa:SlatwallLocationTypeahead property="#rc.order.getDefaultStockLocation()#" locationPropertyName="defaultStockLocation.locationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
 
 			<!--- Order IP Address --->
 			<cfif !isNull(rc.order.getOrderOpenIPAddress())>

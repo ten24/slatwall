@@ -313,7 +313,7 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             urlBase = urlBase + action; //any path
         }else{
-            urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
+            urlBase = this.baseActionPath + action;//public path
         }
 
 
@@ -967,6 +967,7 @@ class PublicService {
     }
 
     public editBillingAddress = (key, formName) =>{
+        this.clearMessages();
         this.billingAddressEditFormIndex = key;
         this.selectedBillingAddress = null
         if(formName){
@@ -1053,7 +1054,8 @@ class PublicService {
     public accountAddressIsSelectedShippingAddress = (key, fulfillmentIndex) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress){
+           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress &&
+           !this.cart.orderFulfillments[fulfillmentIndex].shippingAddress.hasErrors){
             return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[fulfillmentIndex].shippingAddress);
         }        
         return false;
@@ -1162,6 +1164,18 @@ class PublicService {
 
     public shippingMethodUpdateSuccess = () =>{
         return this.hasSuccessfulAction('addShippingMethodUsingShippingMethodID');
+    }
+
+    public updatedBillingAddress = () =>{
+        return this.hasSuccessfulAction('updateAddress') && !this.hasSuccessfulAction('addShippingAddress');
+    }
+
+    public addedBillingAddress = () =>{
+        return this.hasSuccessfulAction('addNewAccountAddress') && !this.hasSuccessfulAction('addShippingAddressUsingAccountAddress');
+    }
+
+    public addedShippingAddress = () =>{
+        return this.hasSuccessfulAction('addNewAccountAddress') && this.hasSuccessfulAction('addShippingAddressUsingAccountAddress');
     }
 
     public emailFulfillmentUpdateSuccess = () =>{

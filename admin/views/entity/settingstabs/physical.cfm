@@ -55,6 +55,8 @@ Notes:
 	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
 		<swa:SlatwallSetting settingName="physicalEligibleExpenseLedgerAccount" />
 		<swa:SlatwallSetting settingName="physicalDefaultExpenseLedgerAccount" /> 
+		<swa:SlatwallSetting settingName="physicalEligibleAssetLedgerAccount" />
+		<swa:SlatwallSetting settingName="physicalDefaultAssetLedgerAccount"  />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

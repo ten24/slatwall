@@ -124,6 +124,7 @@ class SWOrderFulfillmentListController {
 
     };
 
+
     /**
      * Implements a listener for the orderItem selections
      */
@@ -203,6 +204,7 @@ class SWOrderFulfillmentListController {
      private createOrderFulfillmentCollectionWithStatus = (status):void => {
         
         status = status.trim();
+
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
         this.orderFulfillmentCollection.addDisplayProperty("order.orderNumber", "Order Number");
@@ -218,8 +220,6 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
        
-        //"order.paymentAmountDue", "0", ">", {persistent: false}
-        console.log("Status is:", status.trim());
 
         if (status){
             console.log("S", status, status=="available");
@@ -240,6 +240,7 @@ class SWOrderFulfillmentListController {
             this.view = this.views.Fulfillments;
             this.refreshFlag=false;
         });
+
 
 
      }
@@ -298,8 +299,7 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
-        
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status"); 
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
         this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodName", "Shipping", "=");
         //Shipping
@@ -307,6 +307,7 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
         //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
         //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
+
 
         //Build the collection using just the correct filters.
 
@@ -327,7 +328,7 @@ class SWOrderFulfillmentListController {
         //Add the filters.
         filterMap.forEach((v, k) => {
             var systemCode = k;
-            //handle truth
+           //handle truth
             if (filterMap.get(k) === true){
                 if (k){
                     if(k == "unavailable"){
@@ -356,6 +357,7 @@ class SWOrderFulfillmentListController {
         if (this.getCollectionByView(this.getView())){
             this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
         }
+
 
 
      }
@@ -445,10 +447,8 @@ class SWOrderFulfillmentListController {
     }
 
     public getRecordsCount = (collection):any => {
-        
         this.total = collection.recordsCount;
         this.refreshFlag=false;
-        
     }
 
     /**
@@ -458,10 +458,11 @@ class SWOrderFulfillmentListController {
      */
 
     public addFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
-        
+
         this.$timeout(()=>{
             this.refreshFlag = true;
         }, 1);
+
 
         //Always keep the orderNumber filter.
         
@@ -545,6 +546,7 @@ class SWOrderFulfillmentListController {
             console.warn("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
+
         this.createOrderFulfillmentCollection();
         this.createOrderItemCollection();
 
@@ -556,7 +558,9 @@ class SWOrderFulfillmentListController {
         //add both collections into the collection object. Removed 0 elements (insert only).
         this.collections.push(this.orderFulfillmentCollection);
         this.collections.push(this.orderItemCollection);
+
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
+
     }
 
     /**

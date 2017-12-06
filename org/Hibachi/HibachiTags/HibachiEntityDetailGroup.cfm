@@ -65,7 +65,8 @@
 			<div class="panel-group s-pannel-group" id="accordion">
 				<cfloop array="#thistag.tabs#" index="tab">
 					<cfset iteration++ />
-					<div class="j-panel panel panel-default">
+					<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
+					<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true">
 						<a data-toggle="collapse"  href="##collapse#iteration#">
 							<div class="panel-heading">
 								<h4 class="panel-title">
@@ -74,11 +75,22 @@
 								</h4>
 							</div>
 						</a>
-						<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>">
+						
+						
+						<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>" >
 							<content class="s-body-box">
 								<cfoutput>
 									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
-										#tab.tabcontent#
+										<!--- 
+											if is a non-angular content js needs to be able to init html without ng-if preventing compilation
+										 --->
+										<cfif findNoCase('<sw-',tab.tabcontent)>
+											<span ng-if="#tabScope#.active">
+												#tab.tabcontent#
+											</span>
+										<cfelse>
+											#tab.tabcontent#
+										</cfif>
 									</div>
 								</cfoutput>
 							</content><!--- s-body-box --->

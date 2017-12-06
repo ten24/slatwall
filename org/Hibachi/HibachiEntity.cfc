@@ -15,7 +15,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if(!this.getNewFlag() && !listFind('ShortReference,Session,PermissionGroup,Permission,',getClassName())){
+		if(!this.getNewFlag() && !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())){
 			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
 			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
 			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
@@ -102,7 +102,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
 					var nonPersistentProperty = right(property.name, len(property.name)-10);
-					if(listFindNoCase('Product,Sku,Stock',this.getClassName())){
+					if(listFindNoCase('Product,Sku,Stock,SkuLocationQuantity',this.getClassName())){
 						var inventoryProperties = listToArray('QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QC,QE,QNC,QATS,QIATS');
 						for(var inventoryProperty in inventoryProperties){
 							if(structKeyExists(variables,inventoryProperty)){

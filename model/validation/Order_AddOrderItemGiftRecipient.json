@@ -1,0 +1,9 @@
+{
+	"properties":{
+		"orderItem":						[{"required":true}],
+		"recipient":						[{"required":true}]
+	},
+	"populatedPropertyValidation":{
+		"recipient":						[{"validate":"save"}]
+	}
+}

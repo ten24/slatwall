@@ -103,18 +103,20 @@ Notes:
 	function generateRenderedContent() {
 		
 		var site = arguments.slatwallScope.getSite();
-		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
+		var appTemplatePath = site.getApp().getAppRootPath() & '/templates/';  
+ 		var siteTemplatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
 			arguments.slatwallScope.getService('HibachiCacheService').resetCachedKeyByPrefix('content');
 			var cacheList = 
-			   "globalURLKeyBrand,
+			   "globalURLKeyAttribute,
+			    globalURLKeyBrand,
 				globalURLKeyProduct,
 				globalURLKeyProductType,
 				globalURLKeyAccount,
 				globalURLKeyAddress,
-				
+				gloablURLKeyCategory,
 				productDisplayTemplate,
 				productTypeDisplayTemplate,
 				brandDisplayTemplate,
@@ -128,62 +130,25 @@ Notes:
 			site.setResetSettingCache(false);
 		}
 
-
 		if(!isNull(arguments.entityURL)){
-			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
-			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
-			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
-			var isAddressURLKey = arguments.slatwallScope.setting('globalURLKeyAddress') == arguments.entityURL;
-			var isAccountURLKey = arguments.slatwallScope.setting('globalURLKeyAccount') == arguments.entityURL;
-			
-			var entityName = '';
-
-			// First look for the Brand URL Key
-			if (isBrandURLKey) {
-				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
-				if(isNull(brand)){
+			var entityName = getHibachiScope().getEntityURLKeyType(arguments.entityUrl);
+			if(len(entityName)){
+				if(entityName=='Attribute'){
+					var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
+					var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=listFirst(arguments.contentURLTitlePath,'/'),2=true});
+					var attributeOption = entityService.invokeMethod('getAttributeOptionByURLTitle',{1=listLast(arguments.contentURLTitlePath,'/'),2=true});
+					arguments.slatwallScope.setAttributeOption(attributeOption);
+					
+				}else{
+					var entityService = getHibachiScope().getService( "hibachiService" ).getServiceByEntityName( entityName );
+					var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=arguments.contentURLTitlePath,2=true});
+				}
+				
+				if(isNull(entity)){
 					var content = render404(arguments.slatwallScope,site);
 				}
-				arguments.slatwallScope.setBrand( brand );
-				entityName = 'brand';
-			}
-
-			// Look for the Product URL Key
-			if(isProductURLKey) {
-				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
-				if(isNull(product)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setProduct( product );
-				entityName = 'product';
-			}
-
-			// Look for the Product Type URL Key
-			if (isProductTypeURLKey) {
-				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
-				if(isNull(productType)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setProductType( productType );
-				entityName = 'productType';
-			}
-			// Look for the Address URL Key
-			if (isAddressURLKey) {
-				var address = arguments.slatwallScope.getService("addressService").getAddressByURLTitle(arguments.contenturlTitle, true);
-				if(isNull(address)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setRouteEntity( "address", address );
-				entityName = 'address';
-			}
-			// Look for the Address URL Key
-			if (isAccountURLKey) {
-				var account = arguments.slatwallScope.getService("accountService").getAccountByURLTitle(arguments.contenturlTitle, true);
-				if(isNull(account)){
-					var content = render404(arguments.slatwallScope, site);
-				}
-				arguments.slatwallScope.setRouteEntity(  "account", account );
-				entityName = 'account';
+				arguments.slatwallScope.invokeMethod('set#entityName#',{1=entity});
+				arguments.slatwallScope.setRouteEntity(  entityName, entity );
 			}
 			
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
@@ -191,16 +156,7 @@ Notes:
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
 				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
-				if(!isNull(contentTemplateFile)){
-
-					contentPath = templatePath & contentTemplateFile;
-					
-
-					arguments.slatwallScope.setContent(entityTemplateContent);
-				}else{
-					render404(arguments.slatwallScope,site);
-					//throw('no contentTemplateFile for the entity');
-				}
+				 
 			}else{
 				render404(arguments.slatwallScope,site);
 				//throw('no content for entity');
@@ -220,10 +176,17 @@ Notes:
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
 			var contentTemplateFile = content.Setting('contentTemplateFile');
-			//templatePath relative to the slatwallCMS
-			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
 		}
+		
+		if(FileExists(ExpandPath(siteTemplatePath) & contentTemplateFile)){ 
+			var contentPath = siteTemplatePath & contentTemplateFile;
+		} else if (FileExists(ExpandPath(appTemplatePath) & contentTemplateFile)){
+			var contentPath = appTemplatePath & contentTemplateFile; 
+		} else { 
+			render404(arguments.slatwallScope,site);
+			//throw("Requested Template: " & contentTemplateFile & " Doesn't Exist in the Site Or The App");
+		}	
 		
 		arguments.contentPath = contentPath;
 

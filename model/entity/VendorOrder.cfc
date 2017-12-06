@@ -76,6 +76,12 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Calculated Properties
+	property name="calculatedTotal" ormtype="big_decimal";
+	property name="calculatedTotalCost" ormtype="big_decimal";
+	property name="calculatedTotalQuantity" ormtype="big_decimal";
+	property name="calculatedTotalWeight" ormtype="big_decimal";
 
 	// Non persistent properties
 	property name="addVendorOrderItemSkuOptionsSmartList" persistent="false";

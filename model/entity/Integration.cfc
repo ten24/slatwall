@@ -146,7 +146,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getIntegrationPackage()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+			return getService("settingService").getSettingValue(settingName="integration#lcase(getIntegrationPackage())##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
 		}
 		return super.setting(argumentcollection=arguments);
 	}

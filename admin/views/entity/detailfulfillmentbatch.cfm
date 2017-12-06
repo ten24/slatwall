@@ -65,6 +65,7 @@ Notes:
 	</cfif>
 	<cfif arrayLen(rc.fulfillmentBatch.getLocations())>
 		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
+		<span ng-init="$root.slatwall.defaultLocation = '#rc.fulfillmentBatch.getLocations()[1].getLocationID()#'"></span>
 	</cfif>
 	
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>

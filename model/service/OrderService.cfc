@@ -439,21 +439,59 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-        var recipients = arguments.processObject.getRecipients();
-		if(!isNull(recipients) && arguments.processObject.getSku().isGiftCardSku()){
-	        for(var i=1; i<=ArrayLen(recipients);i++){
-				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
-				var recipient = this.newOrderItemGiftRecipient();
-				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
-				if(foundItem){
-					recipientProcessObject.setOrderItem(foundOrderItem);
-				} else {
-					recipientProcessObject.setOrderItem(newOrderItem);
-				}
-				recipientProcessObject.setRecipient(recipient);
-				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+		// Applies only to order items for gift card skus
+		if(arguments.processObject.getSku().isGiftCardSku()){
+			
+			var orderItem = "";
+			if(foundItem){
+				orderItem = foundOrderItem;
+			} else {
+				orderItem = newOrderItem;
 			}
 
+			// Additional processing when gift card codes manually provided or gift gard recipient(s) required
+			if (!arguments.processObject.getSku().getGiftCardAutoGenerateCodeFlag() || arguments.processObject.getSku().getGiftCardRecipientRequiredFlag()) {
+
+				// Retrieve gift card recipient data from order_addOrderItem process object
+				var orderItemGiftCardRecipientData = arguments.processObject.getRecipients();
+
+				if (!isNull(orderItemGiftCardRecipientData)) {
+
+					// Loop over all gift card recipient data.
+					for (var data in orderItemGiftCardRecipientData){
+						
+						// Note: OrderItemGiftRecipient entity is used to handle a couple use cases.
+						// A small subset of its properties might used depending on the context, sku settings, order item fulfillment type
+						// Entity may contain all recipient detail email/contact or simply for storage of manually provided gift card codes
+
+						// Populate using the orderItemGiftRecipient data provided
+						var orderItemGiftRecipient = this.newOrderItemGiftRecipient();
+						orderItemGiftRecipient.populate(data);
+						orderItemGiftRecipient.setOrderItem(orderItem);
+
+						// Set values using process object
+						// This process should really be done using a process like processOrderItem_AddGiftRecipient(..., {orderItemGiftRecipient=...}, 'create') so a new process object for each
+						// Because same instance of a process object will be used for entire life of the order object
+						// TODO: Refactor later
+						addOrderItemGiftRecipientProcessObject = arguments.order.getProcessObject('addOrderItemGiftRecipient', {
+							orderItem = orderItem,
+							recipient = orderItemGiftRecipient
+						});
+						// Allows subproperty validation to occur on these objects
+						addOrderItemGiftRecipientProcessObject.addPopulatedSubProperty('orderItem', orderItem);
+						addOrderItemGiftRecipientProcessObject.addPopulatedSubProperty('recipient', orderItemGiftRecipient);
+						
+						// Run process to associate gift recipient with orderItem
+						this.processOrder(arguments.order, {}, 'addOrderItemGiftRecipient');
+
+						if (addOrderItemGiftRecipientProcessObject.hasErrors()) {
+							if (addOrderItemGiftRecipientProcessObject.getRecipient().hasErrors()) {
+								arguments.order.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
+							}
+						}
+					}
+				}
+			}
 		}
 
 
@@ -625,56 +663,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return arguments.orderItem;
 	}
 
+	// @hint Process to associate orderItem and orderItemGiftRecipient
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
+		var orderItem = arguments.processObject.getOrderItem();
+		var orderItemGiftRecipient = arguments.processObject.getRecipient();
 
-		var item = arguments.processObject.getOrderItem();
+		// Associate account if the recipient's email address matches an existing account email address
+		if(orderItem.getSku().getGiftCardRecipientRequiredFlag() && isNull(orderItemGiftRecipient.getAccount())){
+            if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(orderItemGiftRecipient.getEmailAddress())){
+				orderItemGiftRecipient.setAccount(getAccountService().getAccount(getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(orderItemGiftRecipient.getEmailAddress())));
+            }
+		}
 
-		if(isNull(arguments.processObject.getRecipient())){
-			var recipient = this.newOrderItemGiftRecipient();
+		// Persist relationship between orderItem and orderItemGiftRecipient
+		orderItemGiftRecipient.setOrderItem(orderItem);
+        orderItemGiftRecipient = this.saveOrderItemGiftRecipient(orderItemGiftRecipient);
+
+		// Save order
+		if (!orderItemGiftRecipient.hasErrors()) {
+			arguments.order = this.saveOrder(arguments.order);
+		// Add any orderItemGiftRecipient errors to order
 		} else {
-			var recipient = arguments.processObject.getRecipient();
+			arguments.order.addErrors(orderItemGiftRecipient.getErrors());
 		}
 
-		if(!isNull(arguments.processObject.getFirstName())){
-			recipient.setFirstName(arguments.processObject.getFirstName());
-		}
-
-		if(!isNull(arguments.processObject.getLastName())){
-			recipient.setLastName(arguments.processObject.getLastName());
-		}
-
-		if(isNull(arguments.processObject.getAccount())){
-            if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
-				recipient.setAccount(getService("HibachiService").get("Account", getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
-                recipient.setEmailAddress(arguments.processObject.getEmailAddress());
-            } else {
-				recipient.setEmailAddress(arguments.processObject.getEmailAddress());
-			}
-
-		} else {
-			recipient.setAccount(arguments.processObject.getAccount());
-		}
-
-		if(!isNull(arguments.processObject.getGiftMessage())){
-			recipient.setGiftMessage(arguments.processObject.getGiftMessage());
-		}
-
-		if(!isNull(processObject.getQuantity())){
-        	recipient.setQuantity(processObject.getQuantity());
-        }
-
-        recipient = this.saveOrderItemGiftRecipient(recipient);
-
-        recipient.setOrderItem(item);
-
-
-		if(!recipient.hasErrors()){
-			return this.saveOrder(arguments.order);
-		} else {
-			arguments.order.addErrors(recipient.getErrors());
-			return arguments.order;
-		}
-
+		return arguments.order;
 	}
 
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
@@ -937,6 +950,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Setup Site Origin if using slatwall cms
 		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
 			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		}else if ( !isNull(arguments.processObject.getOrderCreatedSite()) ) {
+			arguments.order.setOrderCreatedSite(arguments.processObject.getOrderCreatedSite());
 		}
 
 		// Setup Account
@@ -1363,7 +1378,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 						// Generate the order requirements list, to see if we still need action to be taken
 						var orderRequirementsList = getOrderRequirementsList( arguments.order );
-	
+						
 						// Verify the order requirements list, to make sure that this order has everything it needs to continue
 						if(len(orderRequirementsList)) {
 	
@@ -1433,7 +1448,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 								}
 							}
-	
+
 							// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
 							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()))) {
 	
@@ -1482,7 +1497,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Look for 'auto' order fulfillments
 								for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 									//don't auto fulfill if the deposit has been paid but not the full amount.
-									createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
+									if (arguments.order.getOrderFulfillments()[i].isAutoFulfillment()) {
+										var orderDelivery = createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
+										if (!isNull(orderDelivery) && orderDelivery.hasMessage('autoFulfillmentMessage')) {
+											arguments.order.addMessage('autoFulfillmentMessage', orderDelivery.getMessages()['autoFulfillmentMessage'][1]);
+										}
+									}
 								}
 								for(var orderItem in order.getOrderItems()){
 									//run calculated props if success on product, sku and order item
@@ -1495,7 +1515,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 					}
 				}
-
 			} else {
 				arguments.order.addError('duplicate', rbKey('validate.processOrder_PlaceOrder.duplicate'));
 			}
@@ -1515,9 +1534,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
-
-		var order = arguments.orderFulfillment.getOrder();
-
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
 		    arguments.orderFulfillment.isAutoFulfillmentReadyToBeFulfilled()
@@ -1526,7 +1542,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var newOrderDelivery = this.newOrderDelivery();
 			var processData = {};
 			processData.order = {};
-			processData.order.orderID = order.getOrderID();
+			processData.order.orderID = arguments.orderFulfillment.getOrder().getOrderID();
 			processData.location.locationID = arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
 			processData.orderFulfillment.orderFulfillmentID = arguments.orderFulfillment.getOrderFulfillmentID();
 
@@ -1840,13 +1856,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 	public any function addOrderFulfillmentItemsToOrderDelivery(required any orderDelivery, required any processObject){
+		// Gift card OrderItems that are not eligible for auto-fulfillment
+		var ineligibleGiftCardOrderItems = [];
+
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
 
 			// Local pointer to the orderItem
 			var thisOrderItem = arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()[i];
 
-			if(thisOrderItem.getQuantityUndelivered() && thisOrderItem.hasAllGiftCardsAssigned()) {
+			// Edge case, we can't assume all manual gift cards have been assigned
+			// This exception occurs when gift card information doesn't exist yet for an orderItem which requires gift recipient and using manual gift card codes
+			// This could be eliminated by updating a requirement that gift card code must be entered when adding the recipient to orderItem
+			// Determine if gift card orderDeliveryItems are ineligible for auto-fulfillment
+			var giftCardOrderItemIneligibleFlag = false;
+			if (thisOrderItem.isGiftCardOrderItem() && thisOrderItem.getSku().getGiftCardRecipientRequiredFlag() && !thisOrderItem.getSku().getGiftCardAutoGenerateCodeFlag()) {
+				giftCardOrderItemIneligibleFlag = true;
+				arrayAppend(ineligibleGiftCardOrderItems, thisOrderItem);
+			}
+
+			if(thisOrderItem.getQuantityUndelivered() && !giftCardOrderItemIneligibleFlag) {
 				// Create a new orderDeliveryItem
 				var orderDeliveryItem = this.newOrderDeliveryItem();
 
@@ -1855,6 +1884,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
 				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
 				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
+			}
+
+			// Add a message to the orderDelivery to inform that items were skipped. It was not an error with intial gift card functionality, and allows other orderItems to auto-fulfill
+			if (arrayLen(ineligibleGiftCardOrderItems)) {
+				orderDelivery.addMessage('autoFulfillmentMessage', rbKey('validate.create.OrderDelivery_Create.giftCardCodes.missingGiftCardCode'));
 			}
 
 		}
@@ -1891,14 +1925,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
 			var orderDeliveryItem = arguments.processObject.getOrderDeliveryItems()[i];
-			addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+			if (orderDeliveryItem.quantity > 0) {
+				addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+			}
 		}
 		return arguments.orderDelivery;
 	}
 
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
-
 		var amountToBeCaptured = 0;
 
 		// If we need to capture payments first, then we do that to make sure the rest of the delivery can take place
@@ -1955,19 +1990,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					)
 				)
 				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
-				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")
 			) {
+				// Prepare orderDelivery to auto-fulfill all "undelivered" orderItems from orderFulfillment
 				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 
 			} else {
+				// Prepare orderDelivery to fulfill subset of "undelivered" orderItems using provided orderDeliveryItems
 				addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 			}
 
+			// Beyond this point orderDelivery.getOrderDeliveryItems() has populated with orderDeliveryItem data from the processObject
+
+			// Manually populating arguments.data.giftCardCodes, necessary when gift card codes were provided using processOrder_addOrderItem() prior to this processOrderDelivery_create()
+			// arguments.data.giftCardCodes will be used for orderDeliveryItem_createGiftCards() process
+			if (!structKeyExists(arguments.data, 'giftCardCodes')) {
+				arguments.data.giftCardCodes = [];
+			}
+			
+			// Normalizing manual gift cards into arguments.data.giftCardCodes as they may be provided directly or need to be looked up from the OrderItemGiftRecipient
+			for (var orderDeliveryItem in orderDelivery.getOrderDeliveryItems()) {
+				var orderItem = orderDeliveryItem.getOrderItem();
+
+				// Need to populate gift card code data needed later during gift card processing (orderItem with recipient will have giftCardCode stored in OrderItemGiftRecipient)
+				if (orderItem.isGiftCardOrderItem() && !orderItem.getSku().getGiftCardAutoGenerateCodeFlag() && !orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
+					var giftCardCreateCount = 1;
+					// Could be partial fulfillment
+					for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+
+						// Check to make sure gift card code has not already been fulfilled and assigned
+						if (!orderItemGiftRecipient.hasAllAssignedGiftCards() && giftCardCreateCount <= orderDeliveryItem.getQuantity()) {
+							arrayAppend(arguments.data.giftCardCodes, {giftCardCode=orderItemGiftRecipient.getManualGiftCardCode(), orderItemID=orderItem.getOrderItemID()});
+							giftCardCreateCount++;
+						}
+					}
+				}
+			}
+			
+			// Clean up if not needed
+			if (!arrayLen(arguments.data.giftCardCodes)) {
+				structDelete(arguments.data, 'giftCardCodes');
+			}
+
+			// Used to maintain state for gift card code processing and validation
+			var orderDeliveryGiftCardCodes = [];
+			var orderDeliveryGiftCardCodesPopulatedFlag = false;
+
 			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
-			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
-
-				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
-
+			for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
+				
 				// If the sku has a subscriptionTerm, then we can process the item to setupSubscription
 				if(!isNull(orderDeliveryItem.getOrderItem().getSku().getSubscriptionTerm())) {
 					orderDeliveryItem = this.processOrderDeliveryItem(orderDeliveryItem, {}, 'setupSubscription');
@@ -1976,6 +2046,57 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// If there are accessContents associated with this sku, then we can setupContentAccess
 				if(arrayLen(orderDeliveryItem.getOrderItem().getSku().getAccessContents())) {
 					orderDeliveryItem = this.processOrderDeliveryItem(orderDeliveryItem, {}, 'setupContentAccess');
+				}
+				
+				// Create gift cards
+				if (orderDeliveryItem.getOrderItem().isGiftCardOrderItem()) {
+					
+					// Manual gift card code orderDeliveryItems require special setup to use provided gift card codes
+					var orderDeliveryItemGiftCardCodes = [];
+					if (!orderDeliveryItem.getOrderItem().getSku().getGiftCardAutoGenerateCodeFlag()) {
+							
+						// find all gift card codes for the specific orderItem
+						for (var giftCardCodeData in arguments.data.giftCardCodes) {
+							if (!isNull(giftCardCodeData.giftCardCode)) {
+								// Note: need to manage two arrays of gift card codes
+								// 1. all gift card codes to be used for processObject validation to ensure no duplicates
+								// 2. the subset of gift card codes associated with each orderDeliveryItem for giftCard creation
+
+								// Keeping references of all gift card codes to be created for processObject validation
+								// Population should only need to execute once and be used for all orderDeliveryItems
+								if (!orderDeliveryGiftCardCodesPopulatedFlag) {
+									arrayAppend(orderDeliveryGiftCardCodes, giftCardCodeData.giftCardCode);
+								}
+
+								// Gift card codes subset for those with this orderItem, matching on orderItemID
+								if (orderDeliveryItem.getOrderItem().getOrderItemID() == giftCardCodeData.orderItemID) {
+									// Add giftCardCode to array for further processing
+									arrayAppend(orderDeliveryItemGiftCardCodes, giftCardCodeData.giftCardCode);
+								}
+							}
+						}
+
+						if (!orderDeliveryGiftCardCodesPopulatedFlag) {
+							orderDeliveryGiftCardCodesPopulatedFlag = true;
+						}
+					}
+
+					// The two gift card structures are not the same (ie. giftCardCodes is a subset of orderDeliveryGiftCardCodes)
+					// It provides more data for the gift card code validation process during processOrderDeliveryItem_createGiftCards
+					var orderDeliveryItemCreateGiftCardsData = {
+						giftCardCodes = orderDeliveryItemGiftCardCodes, // gift card codes that only apply to order deliver item
+						orderDeliveryGiftCardCodes = orderDeliveryGiftCardCodes // all gift card codes for entire order delivery
+					};
+					
+					// Create the actual gift cards whether gift card code is auto generated or manually provided
+					this.processOrderDeliveryItem(orderDeliveryItem, orderDeliveryItemCreateGiftCardsData, 'createGiftCards');
+
+					// Add any gift card generation errors to the orderDelivery
+					if (orderDeliveryItem.getProcessObject('createGiftCards').hasError('giftCardCodes')) {
+						arguments.orderDelivery.addErrors(orderDeliveryItem.getProcessObject('createGiftCards').getErrors());
+						// Halt further processing of orderDeliveryItems
+						break;
+					}
 				}
 
 			}
@@ -1989,7 +2110,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			arguments.processObject.addError('capturableAmount', rbKey('validate.processOrderDelivery_create.captureAmount'));
 		}
-
+		
 
 		// Make sure the orderDelivery doesn't have errors
 		if (!arguments.orderDelivery.hasErrors()) {
@@ -2028,30 +2149,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 
-            		// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
-			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
-
-				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
-
-
-				//bypass auto fulfillment for non auto generated codes
-				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned() && orderDeliveryItem.getOrder().hasGiftCardOrderItems()){
-					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
-						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
-					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
-					}
-				}
-
-
+			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
+			for(var orderDeliveryItem in arguments.orderDelivery.getOrderDeliveryItems()) {
+				
 				if(arguments.orderDelivery.getOrderFulfillment().getFulfillmentMethodType() == "email"){
 					emailFulfillOrderDeliveryItem(orderDeliveryItem, arguments.orderDelivery);
 				}
 
 				// If the order picked up any erros when trying to process giftCard stuff, add those errors to the delivery
 				if(arguments.processObject.getOrder().hasErrors()){
-                 			arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
-              			}
+                	arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
+              	}
 
 			}
 
@@ -2061,12 +2169,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	private any function emailFulfillOrderDeliveryItem(required any orderDeliveryItem, required any orderDelivery){
-		if(orderDeliveryItem.getOrder().hasGiftCardOrderItems()){
-			recipients = orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients();
-
-			for(var recipient in recipients){
+		if(orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
+			for(var recipient in orderDeliveryItem.getOrderItem().getOrderItemGiftRecipients()){
 				for(var giftCard in recipient.getGiftCards()){
-					sendEmail(recipient.getEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
+					sendEmail(giftCard.getOwnerEmailAddress(), getSettingService().getSettingValue(settingname="skuGiftCardEmailFulfillmentTemplate", object=orderDeliveryItem.getSku()), giftCard);
 				}
 			}
 		} else {
@@ -2085,72 +2191,118 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		email = getEmailService().sendEmail(email);
 	}
 
+	public any function processOrderDeliveryItem_createGiftCards(required any orderDeliveryItem, struct data={}, required any processObject) {
+		var orderItem = arguments.orderDeliveryItem.getOrderItem();
+		var term = orderItem.getSku().getGiftCardExpirationTerm();
+		var giftCardCodes = arguments.data.giftCardCodes;
+		
+		if (!orderItem.getSku().getGiftCardRecipientRequiredFlag()) {
+			
+			// Creates a simple lookup of the orderItemGiftRecipient by using giftCardCode as the key
+			var orderItemGiftRecipientsByGiftCardCodeStruct = {};
+			for (var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+				orderItemGiftRecipientsByGiftCardCodeStruct[orderItemGiftRecipient.getManualGiftCardCode()] = orderItemGiftRecipient;
+			}
 
-    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, any giftCardCodes){
+			for (var giftCardCode in giftCardCodes) {
+				
+				var giftCard = this.newGiftCard();
+				var giftCard_create = giftCard.getProcessObject('create');
+				
+				// Expecting a one-to-one relationship between orderItem and orderItemGiftRecipient when manual gift card codes are required
+				// However more refactoring with gift card validation could be done standardize and eliminate these sort of checks
+				if (structKeyExists(orderItemGiftRecipientsByGiftCardCodeStruct, giftCardCode)) {
+					giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipientsByGiftCardCodeStruct[giftCardCode]);
+				}
+				giftCard_create.setOriginalOrderItem(orderItem);
+				giftCard_create.setGiftCardCode(giftCardCode);
+				giftCard_create.setGiftCardPin("");
+				giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
+				giftCard_create.setOwnerAccount(orderItem.getOrder().getAccount());
+				giftCard_create.setOwnerEmailAddress(orderItem.getOrder().getAccount().getEmailAddress());
+				giftCard_create.setOwnerFirstName(orderItem.getOrder().getAccount().getFirstName());
+				giftCard_create.setOwnerLastName(orderItem.getOrder().getAccount().getLastName());
+				giftCard_create.setCreditGiftCardFlag(true);
+				giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+				if (!isNull(term)) {
+					giftCard_create.setGiftCardExpirationTerm(term);
+				}
 
-		var item = orderDelivery.getOrderItem();
-        var quantity = item.getQuantity();
-        var term = item.getSku().getGiftCardExpirationTerm();
-        var recipients = item.getOrderItemGiftRecipients();
-        var giftCardCodeIndex = 1;
+				// Create the gift card
+				giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
 
-        //recipients and cards have already been validated so put them together
-        for(var recipient in recipients){
-            if(!recipient.hasAllAssignedGiftCards()){
-                for(var i=0; i<recipient.getQuantity(); i++){
-                    var card = this.newGiftCard();
-                    var createGiftCard = card.getProcessObject( 'Create' );
+				if(giftCard.hasErrors()){
+					orderItem.getOrder().addErrors(giftCard.getErrors());
+				}
+			}
+		} else {
 
-                    createGiftCard.setOriginalOrderItem(item);
+			// Possible one-to-many relationship between orderItemGiftRecipient and quantity of gift cards to create
+			// Also need to consider case with partial fulfillments existing
 
-                    if(!isNull(term)){
-                        createGiftCard.setGiftCardExpirationTerm(term);
-                    }
+			// Gift cards needs may fully or partially span across multiple OrderItemGiftRecipients attached to orderItem depending on quantities allocated to each
+			var totalGiftCardsNeeded = arguments.orderDeliveryItem.getQuantity();
+			var totalGiftCardsCreated = 0;
 
-                    createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
-                    createGiftCard.setOrderItemGiftRecipient(recipient);
+			// Helps keep track of which provided gift card codes have been allocated during the process
+			var giftCardCodeIndex = 0;
 
-                    if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						createGiftCard.setGiftCardCode(giftCardCodes[giftCardCodeIndex]);
-						giftCardCodeIndex++;
-                    }
 
-                    if(!isNull(recipient.getAccount())){
-                        createGiftCard.setOwnerAccount(recipient.getAccount());
-                        createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                    } else {
-                        if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
-                            createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
-                            createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                        } else {
-                            createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                        }
-                    }
+			for(var orderItemGiftRecipient in orderItem.getOrderItemGiftRecipients()) {
+				// Make sure orderItemGiftRecipient still needs gift cards created, it is possible it does not if prior orderDelivery occurred in partial fulfillment scenario
+				if (totalGiftCardsCreated < totalGiftCardsNeeded && orderItemGiftRecipient.getNumberOfUnassignedGiftCards()) {
 
-                    if(!isNull(recipient.getFirstName())){
-                        createGiftCard.setOwnerFirstName(recipient.getFirstName());
-                    }
+					// Determine how many of the total gift cards needed for this orderDeliveryItem can be allocated to this orderItemGiftRecipient
+					var maxGiftCardsForOrderItemGiftRecipient = min(orderItemGiftRecipient.getNumberOfUnassignedGiftCards(), arguments.orderDeliveryItem.getQuantity());
 
-                    if(!isNull(recipient.getLastName())){
-                        createGiftCard.setOwnerLastName(recipient.getLastName());
-                    }
-
-                    createGiftCard.setCreditGiftCardFlag(true);
-                    createGiftCard.setCurrencyCode(arguments.order.getCurrencyCode());
-
-                    card = getService("giftCardService").process(card, createGiftCard, 'Create');
-
-                    if(card.hasErrors()){
-                        arguments.order.addErrors(card.getErrors());
-                    } else {
-                        var cardData = {};
-                        cardData.entity=card;
-                    }
-                }
-            }
-        }
-        return arguments.order;
-    }
+					for(var i = 0; i < maxGiftCardsForOrderItemGiftRecipient; i++){
+						var giftCard = this.newGiftCard();
+						var giftCard_create = giftCard.getProcessObject('create');
+	
+						giftCard_create.setOrderItemGiftRecipient(orderItemGiftRecipient);
+						giftCard_create.setOriginalOrderItem(orderItem);
+	
+						// Manual gift card code
+						if(!orderItem.getSku().getGiftCardAutoGenerateCodeFlag()){
+							giftCardCodeIndex++;
+							giftCard_create.setGiftCardCode(giftCardCodes[giftCardCodeIndex]);
+							giftCard_create.setGiftCardPin("");
+						}
+	
+						giftCard_create.setOrderPayments(orderItem.getOrder().getOrderPayments());
+	
+						if(!isNull(orderItemGiftRecipient.getAccount())){
+							giftCard_create.setOwnerAccount(orderItemGiftRecipient.getAccount());
+							giftCard_create.setOwnerEmailAddress(orderItemGiftRecipient.getEmailAddress());
+						} else {
+							if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(orderItemGiftRecipient.getEmailAddress())) {
+								giftCard_create.setOwnerAccount(getAccountService().getAccount(getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(orderItemGiftRecipient.getEmailAddress())));
+								giftCard_create.setOwnerEmailAddress(orderItemGiftRecipient.getEmailAddress());
+							} else {
+								giftCard_create.setOwnerEmailAddress(orderItemGiftRecipient.getEmailAddress());
+							}
+						}
+						giftCard_create.setOwnerFirstName(orderItemGiftRecipient.getFirstName());
+						giftCard_create.setOwnerLastName(orderItemGiftRecipient.getLastName());
+						giftCard_create.setCreditGiftCardFlag(true);
+						giftCard_create.setCurrencyCode(orderItem.getOrder().getCurrencyCode());
+						if(!isNull(term)){
+							giftCard_create.setGiftCardExpirationTerm(term);
+						}
+	
+						giftCard = getService("giftCardService").process(giftCard, giftCard_create, 'create');
+						totalGiftCardsCreated++;
+	
+						if(giftCard.hasErrors()){
+							arguments.order.addErrors(giftCard.getErrors());
+						}
+					}
+				}
+			}
+		}
+		
+		return arguments.orderDeliveryItem;
+	}
 
 	private any function populateChildOrderItems(required parentOrderItem, required childOrderItem, required childOrderItemData, required order, required orderFulfillment){
 		// Populate the childOrderItem with the data

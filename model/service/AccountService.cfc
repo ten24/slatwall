@@ -53,7 +53,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="addressService" type="any";
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="giftCardService" type="any";
+	property name="hibachiAuditService" type="any";	
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
@@ -1398,6 +1399,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
 		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
 		if(!arguments.permissionRecordRestriction.hasErrors()){
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions');
 			getService("HibachiCacheService").resetCachedKeyByPrefix("Collection.getPermissionRecordRestrictions");
 		}
 		
@@ -1464,6 +1466,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions');
 		}
 
 		return arguments.permissionGroup;

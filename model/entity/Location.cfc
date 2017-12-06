@@ -46,10 +46,11 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
+component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation"  hb_childPropertyName="childLocations" {
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationCode" ormtype="string";
 	property name="locationIDPath" ormtype="string";
 	property name="locationName" ormtype="string";
 	property name="activeFlag" ormtype="boolean" ;
@@ -64,8 +65,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all" type="array";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
+	property name="minMaxStockTransferItemToTopLocationIDs" singularname="minMaxStockTransferItemToTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemToLeafLocationIDs" singularname="minMaxStockTransferItemToLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemFromTopLocationIDs" singularname="minMaxStockTransferItemFromTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemFromLeafLocationIDs" singularname="minMaxStockTransferItemFromLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="locationID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
 
 	// Related Object Properties (Many-to-Many - owner)
+	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="locationID" inversejoincolumn="siteID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
@@ -125,15 +132,15 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			//Add each of the parents in the chain to the string.
 			var parentLocation = this.getParentLocation();
 			while (!isNull(parentLocation)){
-				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "»");
+				variables.locationPathName = listAppend(variables.locationPathName, parentLocation.getLocationName(), "#chr(187)#");
 				if(isNull(parentLocation.getParentLocation())){
 					break;
 				}
 				parentLocation = parentLocation.getParentLocation();
 			}
 			//Add this location name to the end.
-			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "»");
-			variables.locationPathName = rereplace(variables.locationPathName,'»',' » ','all');
+			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "#chr(187)#");
+			variables.locationPathName = rereplace(variables.locationPathName,'#chr(187)#',' #chr(187)# ','all');
 		}
 		
 		return variables.locationPathName;
@@ -222,7 +229,6 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			return getLocationPathName();
 		}
 	}
-	
 	
 	// ==================  END:  Overridden Methods ========================
 		

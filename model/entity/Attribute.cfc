@@ -68,6 +68,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
 	property name="maxFileSize" hb_populateEnabled="public" ormtype="integer";
 	property name="relatedObjectCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
+	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this attribute.  For Example: http://www.myslatwallsite.com/att/my-url-title/ where att is the global attribute url key, and my-url-title is the urlTitle of this attribtue";
 
 	// Calculated Properties
 
@@ -76,6 +77,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
 	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID";
+	property name="attributeOptionSource" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeOptionSourceID" hb_formFieldType="select";
 
 	// Related Object Properties (one-to-many)
 	property name="attributeOptions" singularname="attributeOption" cfc="AttributeOption" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
@@ -102,7 +104,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="typeSetOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
 	property name="relatedObjectCollectionConfigStruct" persistent="false";
-
+	property name="attributeOptionSourceOptions" type="array" persistent="false";
+	
 	// Deprecated Properties
 	property name="attributeType" persistent="false";
 
@@ -111,6 +114,20 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getAttributeOptionSourceOptions(){
+		if(!structKeyExists(variables,'attributeOptionSourceOptions')){
+			var attributeOptionSourceOptionsCollectionList = getService('attributeService').getAttributeCollectionList();
+			attributeOptionSourceOptionsCollectionList.setDisplayProperties('attributeName|name,attributeID|value');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeInputType','checkboxGroup,multiselect,radioGroup,select','IN');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeOptionSource','NULL','IS');
+			attributeOptionSourceOptionsCollectionList.addFilter('attributeID',getAttributeID(),'!=');
+			variables.attributeOptionSourceOptions = attributeOptionSourceOptionsCollectionList.getRecords();
+			arrayprepend(variables.attributeOptionSourceOptions,{name="None",value=""});
+		}
+		
+		return variables.attributeOptionSourceOptions;
+	}
 	
 	public struct function getRelatedObjectCollectionConfigStruct(){
 		if(!structKeyExists(variables,'relatedObjectCollectionConfigStruct')){
@@ -133,10 +150,17 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
+		
+		if(!isNull(getAttributeOptionSource())){
+    		var currentAttributeOptions = getAttributeOptionSource().getAttributeOptions();
+    	}else{
+    		var currentAttributeOptions = variables.attributeOptions;
+    	}
+		
 		if(!structKeyExists(arguments,"orderby")) {
-			return variables.AttributeOptions;
+			return currentAttributeOptions;
 		} else {
-			return getService("hibachiUtilityService").sortObjectArray(variables.AttributeOptions,arguments.orderby,arguments.sortType,arguments.direction);
+			return getService("hibachiUtilityService").sortObjectArray(currentAttributeOptions,arguments.orderby,arguments.sortType,arguments.direction);
 		}
 	}
 
@@ -228,6 +252,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 		return variables.validationTypeOptions;
     }
+     
+    
 
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
@@ -331,6 +357,29 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeAttribute( this );
+	}
+	
+	public boolean function isValidString(string stringValue){
+		var attributeCodeLength = len(getAttributeCode());
+		return attributeCodeLength > len(arguments.stringValue) && lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue);
+	}
+	
+	public boolean function isValidAttributeCode(){
+		//attribute code cannot begin with a string
+		var isValid = refind("^[a-zA-Z][a-zA-Z0-9_]*$",getAttributeCode());
+		
+		return isValid 
+		&& isValidString("Options")
+		&& isValidString("Count")
+		&& isValidString("AssignedIDList")
+		&& isValidString("OptionsSmartList")
+		&& isValidString("SmartList")
+		&& isValidString("CollectionList")
+		&& isValidString("Struct")
+		&& isValidString("ID")
+		&& isValidString("FileURL")
+		&& isValidString("UploadDirectory")
+		;
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

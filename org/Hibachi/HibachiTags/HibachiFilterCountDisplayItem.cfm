@@ -5,6 +5,7 @@
 	<cfargument name="optionData"/>
 	<cfargument name="template"/>
 	<cfargument name="formatter"/>
+	
 	<cfsavecontent variable="htmlContent" >
 		<cfinclude template="#arguments.template#" >
 	</cfsavecontent>
@@ -44,6 +45,7 @@
 	<cfparam name="attributes.template" default="./tagtemplates/hibachifiltercountdisplayitem.cfm"/>
 	
 	<cfparam name="attributes.rangeData" default=""/>
+	<cfparam name="attributes.showApplyRange" default="true"/>
 	<cfparam name="attributes.discriminatorProperty" default=""/>
 	
 	
@@ -100,6 +102,59 @@
 			<cfset selectedOptions = attributes.hibachiScope.getService('hibachiService').getSelectedOptionsByApplyData(attributes.entityName,attributes.propertyIdentifier)/>
 			<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
 			<cfset attributes.optionData = optionCollectionList.getRecords()/>
+			
+			<!--- if attributes exist then we need to replace the name with the attributeOption --->
+			<cfif attributes.hibachiScope.getService('HibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(attributes.entityName,attributes.propertyIdentifier)>
+				<cfset attributeCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeCollectionList()/>
+				<cfset attributeCollectionList.addFilter('attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
+				<cfset attributeCollectionList.setDisplayProperties('attributeInputType')/>
+				<cfset attributeRecord = attributeCollectionList.getRecords()/>
+				<cfif attributeRecord[1]['attributeInputType'] eq 'Select'>
+					<cfloop array="#attributes.optionData#" index="option">
+						<cfset optionLabelCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeOptionCollectionList()/>
+						<cfset optionLabelCollectionList.addFilter('attribute.attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
+						<cfset optionLabelCollectionList.addFilter('attributeOptionValue',option['name'])/>
+						
+						<cfset optionLabelRecords = optionLabelCollectionList.getRecords()/>
+						<cfif arrayLen(optionLabelRecords)>
+							<cfset optionName = optionLabelRecords[1]['attributeOptionLabel']/>
+							<cfset option['name'] = optionName/>
+						</cfif>
+					</cfloop>
+				<cfelseif attributeRecord[1]['attributeInputType'] eq 'Multiselect'>
+					<cfset newOptionData = []/>
+					<cfset newOptionStruct = {}/>
+					<cfset attributes.comparisonOperator = 'like'/>
+					<cfloop array="#attributes.optionData#" index="option">
+						
+						<cfloop list="#option['value']#" index="listItem">
+							<cfif len(trim(listItem))>
+								<cfif structKeyExists(newOptionStruct,listItem)>
+									<cfset newOptionStruct[listItem]['count'] += option['count']/>
+								<cfelse>
+									<cfset optionLabelCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeOptionCollectionList()/>
+									<cfset optionLabelCollectionList.addFilter('attribute.attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
+									<cfset optionLabelCollectionList.addFilter('attributeOptionValue',listItem)/>
+									
+									<cfset optionLabelRecords = optionLabelCollectionList.getRecords()/>
+									<cfif arrayLen(optionLabelRecords)>
+										<cfset optionName = optionLabelRecords[1]['attributeOptionLabel']/>
+										<cfset newOptionStruct[listItem] = {
+											name=optionName,
+											value=listItem,
+											count=option['count']
+										}/>
+									</cfif>
+									<!--- array append structure by reference to prevent dupes --->
+									<cfset arrayAppend(newOptionData,newOptionStruct[listItem])/>
+								</cfif>
+							</cfif>
+						</cfloop> 
+					</cfloop>
+					<cfset attributes.optionData = newOptionData/>	
+				</cfif>
+			</cfif>
+			<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiUtilityService').arrayOfStructsSort(attributes.optionData,'name','Asc')/>
 			<cfloop array="#selectedOptions#" index="selectedOption">
 				<cfset found = false/>
 				<cfloop array="#attributes.optionData#" index="option">
@@ -114,13 +169,12 @@
 				</cfif>
 			</cfloop>
 		</cfif>
-		
-		<cfset attributes.comparisonOperator = 'in'/>
+		<cfif !len(attributes.comparisonOperator)>
+			<cfset attributes.comparisonOperator = 'in'/>
+		</cfif>
 		
 		<cfset attributes.baseBuildUrl = "#attributes.filterType#:#filterIdentifier#"/>
-		<cfif len(attributes.comparisonOperator)>
-			<cfset attributes.baseBuildUrl &= ":#attributes.comparisonOperator#"/>
-		</cfif>
+		<cfset attributes.baseBuildUrl &= ":#attributes.comparisonOperator#"/>
 		<cfset attributes.baseBuildUrl &= '='/>
 		
 		<!--- create the html now that we have all the data we need --->
@@ -129,6 +183,7 @@
 			<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter)/>
 		<cfelseif isStruct(attributes.optionData)>
 			<cfloop collection="#attributes.optionData#" item="discriminatorName">
+				 
 				<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter)/>
 			</cfloop>
 		</cfif>

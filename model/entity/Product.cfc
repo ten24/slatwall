@@ -84,6 +84,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Related Object Properties (many-to-many - owner)
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
+	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductSite" fkcolumn="productID" inversejoincolumn="siteID";
 
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -203,15 +204,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			variables.productTypeOptions = [];
 
-			if(arrayLen(records) > 1){
-				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
-			}
-
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
 				recordStruct['value']=records[i].getProductTypeID();
 				arrayAppend(variables.productTypeOptions, recordStruct);
+			}
+			variables.productTypeOptions = getService('hibachiUtilityService').arrayOfStructsSort(variables.productTypeOptions,'name','asc');
+			if(arrayLen(records) > 1){
+				ArrayPrepend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
 			}
 		}
 
@@ -303,7 +304,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
+ 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() >= 1;
  	}
 
 	//TODO: Unused function 
@@ -570,7 +571,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		');
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
 		optionCollection.addFilter('skus.calculatedQATS',0,'>');
-		optionCollection.addFilter('skus.activeFlag',1);
+		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
+		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
@@ -718,7 +720,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// First we check to see if that quantityType is defined, if not we need to go out an get the specific struct, or value and cache it
 		if(!structKeyExists(variables, arguments.quantityType)) {
 
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
+			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});

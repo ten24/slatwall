@@ -150,6 +150,7 @@ class OrderFulfillmentService {
 
     //@ngInject
     constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, public $rootScope, public selectionService){
+
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
         this.orderFulfillmentStore = new FluxStore.IStore( this.state, this.orderFulfillmentStateReducer );
@@ -306,7 +307,7 @@ class OrderFulfillmentService {
         if (data['trackingNumer'] == undefined || !data['trackingNumber'].length){
             data['useShippingIntegrationForTrackingNumber'] = state.useShippingIntegrationForTrackingNumber || "false";
         }
-        
+
         //console.log("Batch Information: ", this.state.currentRecordOrderDetail['fulfillmentBatchItem']);
         //Add the orderDelivertyItems as an array with the quantity set to the quantity.
         //Make sure all of the deliveryitems have a quantity set by the user.

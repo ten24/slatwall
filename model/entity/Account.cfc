@@ -301,6 +301,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 		return variables.ordersNotPlacedSmartList;
 	}
+	
+	public any function getOrdersNotPlacedCollectionList() {
+		if(!structKeyExists(variables, "ordersNotPlacedCollectionList")) {
+			var ocl = getService("orderService").getOrderCollectionList();
+			ocl.addFilter('account.accountID', getAccountID());
+			ocl.addFilter('orderStatusType.systemCode', 'ostNotPlaced');
+			ocl.addOrderBy("modifiedDateTime|DESC");
+
+			variables.ordersNotPlacedCollectionList = ocl;
+		}
+		return variables.ordersNotPlacedCollectionList;
+	}	
 
 	public string function getPasswordResetID() {
 		return getService("accountService").getPasswordResetID(account=this);
@@ -484,6 +496,18 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 
 		return activeAuthentications;
+	}
+	
+	public any function getAccountCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

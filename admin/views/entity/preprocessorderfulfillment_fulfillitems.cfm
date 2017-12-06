@@ -74,9 +74,9 @@ Notes:
 				<!--- Location --->
 
 				<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
-					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" fieldName="location.locationID" edit="#rc.edit#">
+					<swa:SlatwallLocationTypeahead property="#rc.order.getPickupLocation()#" locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
 				<cfelse>
-					<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.location')#" fieldName="location.locationID" valueOptions="#$.slatwall.getService('locationService').getLocationOptions()#" fieldType="select" edit="true" />
+					<swa:SlatwallLocationTypeahead locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
 				</cfif>
 				<hr />
 

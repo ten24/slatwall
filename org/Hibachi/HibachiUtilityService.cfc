@@ -3,7 +3,42 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		
+		public function formatStructKeyList(required string str){
+ 		    if (!structKeyExists(server, "lucee")){
+ 		        return str;
+ 		    }
+ 		    var formattedStructKeyList = '';
+ 		    var strArray = listToArray(str, '.');
+ 		    for( var key in strArray){
+ 		        if(isNumeric(left(key, 1))){
+ 		            formattedStructKeyList &= "['#key#']";
+ 		        }else{
+ 		            formattedStructKeyList = listAppend(formattedStructKeyList, key, '.');
+ 		        }
+ 		    };
+ 		    return formattedStructKeyList;
+ 		}	
+ 		
+ 		public any function getQueryLabels(required any query){
+ 			var qryColumns = "";
+ 			for (var column in getMetaData(arguments.query)){
+ 				qryColumns = listAppend(qryColumns, column.name);
+ 			}
+ 			return local.qryColumns;
+ 		}
 
+ 		public string function getSQLType(required any ormtype){
+ 			var types = {
+ 				"big_decimal":"decimal",
+ 				"text":"varchar"
+ 			};
+ 			if(structKeyExists(types, ormtype)){
+ 				return types[ormtype];
+ 			}
+ 			return ormtype;
+ 		}
+ 		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
@@ -16,6 +51,10 @@
 		public string function snakeCaseToTitleCase(required string stringValue){
 			arguments.stringValue = REReplace(stringValue,'-',' ','all');
 			return lowerCaseToTitleCase(arguments.stringValue);
+		}
+		
+		public string function camelCaseToTitleCase(required string stringValue){
+			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
 		
 		/**
@@ -591,7 +630,7 @@
 		}
 
 		// helper method for downloading a file
-		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
+		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown; charset=UTF-8', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}

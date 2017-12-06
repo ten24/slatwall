@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
+	property name="inventoryService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productService" type="any";
@@ -112,7 +113,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var i=1; i<=arrayLen(skus); i++) {
 				var skuID = skus[i].getSkuID();
 				var index = arrayFind(sortedArray, skuID);
-				sortedArrayReturn[index] = skus[i];
+				if(index != 0){
+					sortedArrayReturn[index] = skus[i];
+				}
 			}
 
 			skus = sortedArrayReturn;
@@ -610,7 +613,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		
 		return arguments.sku;
-	} 
+	}
+
+	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
+		
+		var locationCollection = getLocationService().getLocationCollectionList();
+		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
+		var locationRecords = locationCollection.getRecords();
+		
+		// Update calculations for each location
+		for (var locationData in locationRecords) {
+			
+			// Allows us to leverage the populate method to set relationships on new skuLocationQuantity entity when needed
+			var data = {
+				sku = { skuID = arguments.sku.getSkuID() },
+				location = { locationID = locationData.locationID }
+			};
+
+			// Attempt to load entity or create new entity if it did not previously exist
+			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(data.sku.skuID, data.location.locationID);
+
+			// Sku and Location entity references should already be populated for existing entity, delete from populate data
+			if (!skuLocationQuantity.getNewFlag()) {
+				structDelete(data, 'skuID');
+				structDelete(data, 'locationID');
+			}
+			
+			// Populate with updated calculated values and sku/location relationships
+			skuLocationQuantity.populate(data);
+			skuLocationQuantity.updateCalculatedProperties();
+		}
+
+		this.saveSku(arguments.sku);
+		
+		return arguments.sku;
+	}
 
 	// =====================  END: Process Methods ============================
 
@@ -935,7 +972,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return true;
 	}
-
+	
 	// ===================  END: Deprecated Functions =========================
 
 }

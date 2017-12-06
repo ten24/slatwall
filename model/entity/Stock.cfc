@@ -50,6 +50,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// Persistent Properties
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="minQuantity" ormtype="integer" default="0";
+	property name="maxQuantity" ormtype="integer" default="0";
 
 	// Related Object Properties (many-to-one)
 	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
@@ -80,6 +82,15 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	property name="averageCost" persistent="false";
 	property name="averageLandedCost" persistent="false";
+	property name="currentMargin" persistent="false" hb_formatType="percentage";
+	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
+	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
+	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averageMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageProfit" persistent="false" hb_formatType="currency";
+	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -91,7 +102,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
 		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
+			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
@@ -103,6 +114,22 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getAverageProfit(){
+		return getDao('stockDao').getAverageProfit(this.getStockID());
+	}
+	
+	public numeric function getAverageLandedProfit(){
+		return getDao('stockDao').getAverageLandedProfit(this.getStockID());
+	}
+	
+	public numeric function getAverageMarkup(){
+		return getDao('stockDao').getAverageMarkup(this.getStockID());
+	}
+	
+	public numeric function getAverageLandedMarkup(){
+		return getDao('stockDao').getAverageLandedMarkup(this.getStockID());
+	}
 	
 	public numeric function getCurrentMargin(){
 		return getDao('stockDao').getCurrentMargin(this.getStockID());
@@ -124,6 +151,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return getQOH() * getAverageCost();
 	}
 
+//	public numeric function getCurrentRevenueTotal(){
+//		return getQuantity('QDOO') * getAveragePriceSold();
+//	}
+
+	public numeric function getAveragePriceSold(){
+		return getDao('stockDao').getAveragePriceSold(stockID=this.getStockID());
+	}
+
 	public any function getQATS() {
 		return getQuantity("QATS");
 	}
@@ -135,9 +170,9 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public any function getQNC() {
 		return getQuantity("QNC");
 	}
-	
+
 	public boolean function getLocationIsLeafNode(){
-		return getLocation().getChildLocationCount() == 0;
+		return getLocation().getChildLocationsCount() == 0;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
