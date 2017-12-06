@@ -1143,11 +1143,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.placedVendorOrderItemsSmartList;
 	}
 
-	public any function getQATS() {
+	public any function getQATS(string locationID) {
+		if ( structKeyExists(arguments, 'locationID') ){
+			return getQuantity(quantityType="QATS", locationID=arguments.locationID );
+		}	
 		return getQuantity("QATS");
 	}
 
-	public any function getQOH() {
+	public any function getQOH(string locationID) {
+		if ( structKeyExists(arguments, 'locationID') ){
+			return getQuantity(quantityType="QOH", locationID=arguments.locationID );
+		}	
 		return getQuantity("QOH");
 	}
 
