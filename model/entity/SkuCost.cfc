@@ -75,6 +75,7 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedQOH" ormtype="float";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -96,9 +97,13 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
 	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
+	property name="QOH" persistent="fasle";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public numeric function getQOH(){
+		return getSku().getQOH(currencyCode=getCurrency().getCurrencyCode());
+	}
 	
 	public numeric function getAveragePriceSold(){
 		return getSku().getAveragePriceSold(getCurrency().getCurrencyCode());
