@@ -3,7 +3,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 import {Subject, Observable} from 'rxjs';
-import * as FluxStore from   '../../../../../org/hibachi/client/src/core/prototypes/swstore';
+import * as FluxStore from   '../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
 
 /**
@@ -37,9 +37,14 @@ class OrderFulfillmentService {
         //arrays
         accountNames:[],
         orderDeliveryAttributes:[],
-        loading: false
+        loading: false,
+        tableSelections: {
+            table1: [],
+            table2: []
+        }
     };
-
+    private updateLock:Boolean = false;
+    private selectedValue:string = "";
     // Middleware - Logger - add this into the store declaration to log all calls to the reducer.
     public loggerEpic = (...args) => {
         return args;
@@ -144,10 +149,49 @@ class OrderFulfillmentService {
     public orderFulfillmentStore:FluxStore.IStore;
 
     //@ngInject
-    constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, private $rootScope){
+    constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, public $rootScope, public selectionService){
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
         this.orderFulfillmentStore = new FluxStore.IStore( this.state, this.orderFulfillmentStateReducer );
+        this.observerService.attach(this.swSelectionToggleSelectionfulfillmentBatchItemTable2, "swSelectionToggleSelectionfulfillmentBatchItemTable2", "swSelectionToggleSelectionfulfillmentBatchItemTableListener");
+        
+    }
+
+    /** When a row is selected, remove the other selections.  */
+    public swSelectionToggleSelectionfulfillmentBatchItemTable2 = (args) => {
+        if (args.action === "uncheck" || args.selectionid != "fulfillmentBatchItemTable2"){
+            return;
+        }
+        //Are any previously checked?
+        if (args.action === "check" && args.selection != undefined && args.selectionid == "fulfillmentBatchItemTable2"){
+            
+            //set the selection.
+            //save the selected value
+            var current = "";
+            if (this.selectedValue != undefined && this.selectedValue.length){
+                current = this.selectedValue;
+                
+                this.selectedValue = args.selection;
+                //remove that old value
+                
+                this.selectionService.removeSelection("fulfillmentBatchItemTable2", current);
+                this.state.currentSelectedFulfillmentBatchItemID = this.selectedValue;
+                this.state.smFulfillmentBatchItemCollection.getEntity().then((results)=>{
+                    for (var result in results.pageRecords){
+                        let currentRecord = results['pageRecords'][result];
+                        if (currentRecord['fulfillmentBatchItemID'] == this.state.currentSelectedFulfillmentBatchItemID){
+                            //Matched - Save some items from the currentRecord to display.
+                            //Get the orderItems for this fulfillment
+                            this.createOrderFulfillmentItemCollection(currentRecord['orderFulfillment_orderFulfillmentID']);
+                            this.createCurrentRecordDetailCollection(currentRecord);
+                            this.emitUpdateToClient();
+                        }
+                    }
+                });
+            } else {
+                this.selectedValue = args.selection;
+            }
+        }
     }
 
     /** Sets up the batch detail page including responding to listing changes. */
@@ -168,6 +212,8 @@ class OrderFulfillmentService {
                         
                 if (angular.isDefined(update.action.payload)){
                     if (angular.isDefined(update.action.payload.listingID) && update.action.payload.listingID == "fulfillmentBatchItemTable1"){
+                        
+                        //If there is only one item selected, show that detail.
                         if (angular.isDefined(update.action.payload.values) && update.action.payload.values.length == 1){
                             if (this.state.expandedFulfillmentBatchListing){
                                 this.state.expandedFulfillmentBatchListing = !this.state.expandedFulfillmentBatchListing;
@@ -257,13 +303,21 @@ class OrderFulfillmentService {
         data['orderFulfillment']['orderFulfillmentID'] = this.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID'];
         data['trackingNumber'] = state.trackingCode || "";
         
+        if (data['trackingNumer'] == undefined || !data['trackingNumber'].length){
+            data['useShippingIntegrationForTrackingNumber'] = state.useShippingIntegrationForTrackingNumber || "false";
+        }
+        
+        //console.log("Batch Information: ", this.state.currentRecordOrderDetail['fulfillmentBatchItem']);
         //Add the orderDelivertyItems as an array with the quantity set to the quantity.
         //Make sure all of the deliveryitems have a quantity set by the user.
         let idx = 1; //coldfusion indexes at 1
         data['orderDeliveryItems'] = [];
+        
         for (var orderDeliveryItem in state.orderItem){
             if (state.orderItem[orderDeliveryItem] != undefined){
-                data['orderDeliveryItems'].push({orderItem: {orderItemID: orderDeliveryItem}, quantity: state.orderItem[orderDeliveryItem]});
+                if (state.orderItem[orderDeliveryItem] && state.orderItem[orderDeliveryItem] > 0){
+                    data['orderDeliveryItems'].push({orderItem: {orderItemID: orderDeliveryItem}, quantity: state.orderItem[orderDeliveryItem]});
+                }
             }
             idx++;
         }
@@ -297,7 +351,8 @@ class OrderFulfillmentService {
         processObject.data.entityName = "OrderDelivery";
         
         //Basic Information
-        processObject.data['location'] = {'locationID': "402828f95b108573015b165f48760528"};//sets a random location for now until batch issue with location is resolved.
+        processObject.data['location'] = {'locationID': this.$rootScope.slatwall.defaultLocation || "5cacb1d00b20aa339bc5585e13549dda"};//sets a random location for now until batch issue with location is resolved.
+        
         //Shipping information.
         processObject.data['containerLabel'] = data.containerLabel || "";
         processObject.data['shippingIntegration'] = data.shippingIntegration || "";
@@ -332,6 +387,7 @@ class OrderFulfillmentService {
                             this.listingService.getListingPageRecords("fulfillmentBatchItemTable2")[selectedRowIndex][this.listingService.getListingBaseEntityPrimaryIDPropertyName("fulfillmentBatchItemTable1")]);
             
             }
+            //refresh.
             //Scroll to the quantity div.
             //scrollTo(orderItemQuantity_402828ee57e7a75b0157fc89b45b05c4)
 
@@ -571,6 +627,7 @@ class OrderFulfillmentService {
         collection.addDisplayProperty("sku.imagePath", "Path", {persistent: false});
         collection.addDisplayProperty("sku.imageFileName", "File Name", {persistent: false});
         collection.addDisplayProperty("quantity");
+        collection.addDisplayProperty("quantityDelivered");
         collection.addDisplayProperty("orderItemID");
         collection.addFilter("orderFulfillment.orderFulfillmentID", orderFulfillmentID, "=");
         collection.getEntity().then((orderItems)=>{
