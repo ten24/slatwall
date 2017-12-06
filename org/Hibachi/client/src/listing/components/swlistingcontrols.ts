@@ -13,6 +13,7 @@ class SWListingControlsController {
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
     private personalCollectionsClosed:boolean=true;
+    private showExport:boolean; 
     private showFilters:boolean;
     private showPersonalCollections:boolean;
     private showToggleFilters:boolean;
@@ -34,6 +35,9 @@ class SWListingControlsController {
         public listingService,
         public observerService
     ) {
+        if(angular.isUndefined(this.showExport)){
+            this.showExport = true; 
+        }
         if(angular.isUndefined(this.showToggleSearch)){
             this.showToggleSearch = true;
         }
@@ -165,6 +169,10 @@ class SWListingControlsController {
         this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
+    public exportCollection = () =>{
+        this.swListingDisplay.exportCurrentList(); 
+    }
+
 }
 
 class SWListingControls  implements ng.IDirective{
@@ -179,6 +187,7 @@ class SWListingControls  implements ng.IDirective{
         collectionConfig : "=",
         tableId : "=?",
         getCollection : "&",
+        showExport: "=?",
         showFilters : "=?",
         showToggleSearch: "=?",
         showToggleFilters : "=?",
