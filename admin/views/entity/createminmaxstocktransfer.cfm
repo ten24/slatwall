@@ -58,6 +58,7 @@ Notes:
 		<div class="s-top-spacer">
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList>
+					<hb:HibachiPropertyDisplay object="#rc.minMaxStockTransfer#" property="fromLocation" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.minMaxStockTransfer#" property="toLocation" edit="#rc.edit#">
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>

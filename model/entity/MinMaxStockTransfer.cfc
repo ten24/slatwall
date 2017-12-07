@@ -52,7 +52,8 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 	property name="minMaxStockTransferID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Related Object Properties (many-to-one)
-	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
+	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
+	property name="toLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="toLocationID";
 
 	// Related Object Properties (one-to-many)
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" cfc="MinMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="minMaxStockTransferID" inverse="true" cascade="all-delete-orphan";
@@ -85,7 +86,7 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 	// ================== START: Overridden Methods ========================
 
 	public string function getSimpleRepresentation() {
-		return "To #gettoLocation().getLocationName()# - Created #getFormattedValue('createdDateTime')#";
+		return "From #getFromLocation().getLocationName()# To #getToLocation().getLocationName()# - Created #getFormattedValue('createdDateTime')#";
 	}
 
 	// ==================  END:  Overridden Methods ========================
