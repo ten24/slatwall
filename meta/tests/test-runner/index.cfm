@@ -39,7 +39,7 @@ if( url.opt_run ){
 					
 					
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
-				          fileWrite( url.reportpath & "/TEST-" & thisSuite.XMLAttributes.name & ".xml", toString( thisSuite ) );
+				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
 				     }
 					
 				     break;
