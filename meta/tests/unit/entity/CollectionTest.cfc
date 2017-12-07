@@ -4065,6 +4065,153 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	};
 
+	/**
+	* @test
+	*/
+	public void function singleKeywordSearchTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductABC',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductBCD',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'ProductCDE',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'ProductDEF',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productID');
+		myCollection.addDisplayProperty('productName', 'Product Name', {'isSearchable' = true});
+		myCollection.addDisplayProperty('productDescription', 'Product Description', {'isSearchable' = true});
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setKeywords('ProductABC');
+
+		var pageRecords = myCollection.getRecords();
+		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function singleKeywordSearchAndSingleColumnTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductABC',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductBCD',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'ProductCDE',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'ProductDEF',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productID');
+		myCollection.addDisplayProperty('productDescription', 'Product Description', {'isSearchable' = true});
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setKeywords('#uniqueNumberForDescription#');
+
+
+
+		var pageRecords = myCollection.getRecords();
+		assertTrue(arraylen(pageRecords) == 4,  "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function KeywordsSearchTest(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productData1 = {
+			productID = '',
+			productName = 'ProductABC',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData1);
+
+		var productData2 = {
+			productID = '',
+			productName = 'ProductBCD',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData2);
+
+		var productData3 = {
+			productID = '',
+			productName = 'ProductCDE',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData3);
+
+		var productData4 = {
+			productID = '',
+			productName = 'ProductDEF',
+			productDescription = uniqueNumberForDescription
+		};
+		createPersistedTestEntity('product', productData4);
+
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productID');
+		myCollection.addDisplayProperty('productName', 'Product Name', {'isSearchable' = true});
+		myCollection.addDisplayProperty('productDescription', 'Product Description', {'isSearchable' = true});
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.setKeywords('ProductABC #uniqueNumberForDescription#');
+
+		var pageRecords = myCollection.getRecords();
+		assertTrue(arraylen(pageRecords) == 1,  "Wrong amount of products returned! Expecting 1 records but returned #arrayLen(pageRecords)#");
+
+	}
+
 	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user
 		var collectionEntityData = {

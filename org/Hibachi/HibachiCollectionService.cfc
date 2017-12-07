@@ -634,7 +634,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			useElasticSearch = arguments.data['useElasticSearch'];
 		}
 
-		var splitKeywords = false;
+		var splitKeywords = true;
 		if(structKeyExists(arguments.data, 'splitKeywords')){
 			splitKeywords = arguments.data['splitKeywords'];
 		}
