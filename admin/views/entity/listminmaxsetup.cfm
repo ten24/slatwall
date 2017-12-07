@@ -49,18 +49,26 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minMaxSetupSmartList" type="any" />
-
 <cfoutput>
-
-	<hb:HibachiEntityActionBar type="listing" object="#rc.minMaxSetupSmartList#" showCreate="true" />
-
-	<hb:HibachiListingDisplay smartList="#rc.minMaxSetupSmartList#"
-			recordEditAction="admin:entity.editminmaxsetup"
-			recorddetailaction="admin:entity.detailminmaxsetup">
-
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="setupName" />
-	</hb:HibachiListingDisplay>
-
+    <sw-entity-action-bar
+            data-type="listing"
+            data-page-title-rb-key="entity.MinMaxSetup"
+    >
+        <sw-entity-action-bar-button-group>
+            <sw-process-caller data-action="admin:entity.createminmaxsetup" data-title-rb-key="entity.MinMaxSetup.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
+        </sw-entity-action-bar-button-group>
+    </sw-entity-action-bar>
+    <sw-listing-display
+        data-collection="'MinMaxSetup'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editminmaxsetup"
+        record-detail-action="admin:entity.detailminmaxsetup"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="minMaxSetupID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="setupName" tdclass="primary" ></sw-listing-column>
+    </sw-listing-display>
 </cfoutput>

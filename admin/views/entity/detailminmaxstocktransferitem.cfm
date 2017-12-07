@@ -49,12 +49,16 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minmaxsetup" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.minMaxStockTransferItem" type="any">
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.minmaxsetup#" edit="#rc.edit#" sRedirectAction="admin:entity.detailminmaxsetup">
+	<hb:HibachiEntityDetailForm object="#rc.minMaxStockTransferItem#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxStockTransferItem#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
 
-	</hb:HibachiEntityProcessForm>
+		<hb:HibachiEntityDetailGroup object="#rc.minMaxStockTransferItem#">
+			<hb:HibachiEntityDetailItem view="admin:entity/minmaxstocktransferitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		</hb:HibachiEntityDetailGroup>
+
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

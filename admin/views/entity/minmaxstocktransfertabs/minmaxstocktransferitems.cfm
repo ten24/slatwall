@@ -49,21 +49,26 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfset request.slatwallScope.getDAO("stockDAO").getMinMaxStockTransferDetails(toLocationID=rc.minMaxStockTransfer.getToLocation().getLocationID())>
+<!--- <cfset getData = request.slatwallScope.getDAO("stockDAO").getMinMaxStockTransferDetails(fromLocationID=rc.minMaxStockTransfer.getFromLocation().getLocationID(),toLocationID=rc.minMaxStockTransfer.getToLocation().getLocationID())>
+<cfdump var="#getData#" top="1"> --->
 
 <cfparam name="rc.minMaxStockTransfer" default="any" >
 <cfoutput>
+	<cfset minMaxStockTransferItemsCollectionlist = rc.minMaxStockTransfer.getMinMaxStockTransferItemsCollectionlist()/>
+	<cfset minMaxStockTransferItemsCollectionlist.setDisplayProperties(displayPropertiesList='sku.skuCode', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='fromLeafLocation.locationName', title="#$.slatwall.rbKey('entity.MinMaxStockTransfer.fromLocation')#", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='toLeafLocation.locationName', title="#$.slatwall.rbKey('entity.MinMaxStockTransfer.toLocation')#", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='fromSumQATS', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='toSumQATS', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='toMinQuantity', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='toMaxQuantity', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='transferQuantity', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='minMaxStockTransferItemID',columnConfig={isVisible=false,  isSearchable=false, isDeletable=false})/>
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getMinMaxStockTransferItemsSmartList()#"
+	<hb:HibachiListingDisplay collectionList="#minMaxStockTransferItemsCollectionlist#"
 							   recordEditAction="admin:entity.editminmaxstocktransferitem"
-							   recordDetailAction="admin:entity.detailminmaxstocktransferitem">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toTopLocation.locationName" title="To" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLeafLocation.locationName" title="To Location" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromTopLocation.locationName" title="From" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLeafLocation.locationName" title="From Location" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="transferQuantity" title="Transfer Quantity" />
-
+							   recordDetailAction="admin:entity.detailminmaxstocktransferitem"
+							   recordDetailQueryString="redirectAction=admin:entity.detailminmaxstocktransfer&minMaxStockTransferID=#rc.minMaxStockTransfer.getMinMaxStockTransferID()#"
+	>
 	</hb:HibachiListingDisplay>
-
 </cfoutput>

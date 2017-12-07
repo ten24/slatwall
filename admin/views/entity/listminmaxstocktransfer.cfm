@@ -49,18 +49,29 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minMaxStockTransferSmartList" type="any" />
-
 <cfoutput>
+    <sw-entity-action-bar
+            data-type="listing"
+            data-page-title-rb-key="entity.MinMaxStockTransfer"
+    >
+        <sw-entity-action-bar-button-group>
+            <sw-process-caller data-action="admin:entity.createminmaxstocktransfer" data-title-rb-key="entity.MinMaxStockTransfer.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
+        </sw-entity-action-bar-button-group>
+    </sw-entity-action-bar>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.minMaxStockTransferSmartList#" showCreate="true" />
-
-	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransferSmartList#"
-			recordEditAction="admin:entity.editminmaxstocktransfer"
-			recorddetailaction="admin:entity.detailminmaxstocktransfer">
-
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLocation.locationName" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="createdDateTime" />
-	</hb:HibachiListingDisplay>
-
+    <sw-listing-display
+        data-collection="'MinMaxStockTransfer'"
+        data-edit="false"
+        data-has-search="true"
+        record-edit-action="admin:entity.editminmaxstocktransfer"
+        record-detail-action="admin:entity.detailminmaxstocktransfer"
+        data-is-angular-route="false"
+        data-angular-links="false"
+        data-has-action-bar="false"
+    >
+        <sw-listing-column data-property-identifier="minMaxStockTransferID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="fromLocation.locationName" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="toLocation.locationName" tdclass="primary" ></sw-listing-column>
+        <sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
+    </sw-listing-display>
 </cfoutput>
