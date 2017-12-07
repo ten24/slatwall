@@ -634,6 +634,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			useElasticSearch = arguments.data['useElasticSearch'];
 		}
 
+		var splitKeywords = true;
+		if(structKeyExists(arguments.data, 'splitKeywords')){
+			splitKeywords = arguments.data['splitKeywords'];
+		}
+
 		var defaultColumns = false;
 		if(structKeyExists(arguments.data,'defaultColumns')){
 			defaultColumns = arguments.data['defaultColumns'];
@@ -658,6 +663,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
+			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
 			processContext=processContext
 		};
@@ -814,6 +820,9 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'useElasticSearch')){
 				collectionEntity.setUseElasticSearch(collectionOptions.useElasticSearch);
 			} 
+			if(structKeyExists(collectionOptions,'splitKeywords')){
+				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
+			}
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 

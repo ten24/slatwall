@@ -154,6 +154,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.hasManyRelationFilter = false;
 		variables.aliasMap = {};
 		variables.useElasticSearch = false;
+		variables.splitKeywords = true;
 		variables.dirtyReadFlag = false;
 		variables.connection = ormGetSession().connection();
 		variables.filterGroupAliasMap = {};
@@ -1214,10 +1215,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public array function getKeywordArray(){
-		if(!arraylen(variables.keywordArray) && !isNull(variables.splitKeywords) && variables.splitKeywords){
-			variables.keywordArray = ListToArray(getKeywords(),' ');
-		}else{
-			variables.keywordArray=[getKeywords()];
+		if(!arraylen(variables.keywordArray)){
+			if (getSplitKeywords() == true) {
+				variables.keywordArray = ListToArray(getKeywords(), ' ');
+			} else {
+				variables.keywordArray = [getKeywords()];
+			}
 		}
 		return variables.keywordArray;
 	}
@@ -2989,28 +2992,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addPostFiltersFromKeywords(required any collectionConfig) {
 		var keywordArray = getKeywordArray();
 		var keywordCount = arraylen(keywordArray);
+		if(keywordCount == 0){
+			return;
+		}
 		var defaultColumns = false;
 		//If columns config is not passed in, use all the columns
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			var columns = arguments.collectionConfig.columns;
-							}else{
+		}else{
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
-										}
+		}
 		var keywordIndex = 0;
 		//loop through keywords
 		for(var keyword in keywordArray) {
 			var columnIndex = 0;
+			var postFilterGroup = {
+			    "filterGroup" = [],
+				"logicalOperator" = "AND"
+		    };
 			//loop through columns
 			for(var column in columns) {
-				var postFilterGroup = {
-					"filterGroup" = [
-						{
-							"comparisonOperator" = "like",
-							"value"="%#keyword#%"
-						}
-					]
+
+
+				var currentFilter = {
+					"comparisonOperator" = "like",
+					"value"="%#keyword#%"
 				};
+
+
 				if ((
 					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
 					) || (
@@ -3045,28 +3055,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var propertyIdentifier = (!defaultColumns)? getPropertyIdentifierAlias(column.propertyIdentifier) : getPropertyIdentifierAlias(column.name);
 				//If is Attributes
 				if (structKeyExists(column, 'attributeID')) {
-					postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;
-					postFilterGroup.filterGroup[1].attributeID = column.attributeID;
-					postFilterGroup.filterGroup[1].attributeSetObject = column.attributeSetObject;
-					if (keywordCount != 0) postFilterGroup.logicalOperator = "OR";
+					currentFilter['propertyIdentifier'] = propertyIdentifier;
+					currentFilter['attributeID'] = column.attributeID;
+					currentFilter['attributeSetObject'] = column.attributeSetObject;
+					if (keywordCount != 0) currentFilter['logicalOperator'] = "OR";
 				}else{
 					if(len(formatter)){
-						postFilterGroup.filterGroup[1].propertyIdentifier = formatter & '(#propertyIdentifier#)';
+						currentFilter['propertyIdentifier'] = formatter & '(#propertyIdentifier#)';
 					}else{
-						postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;
+						currentFilter['propertyIdentifier'] = propertyIdentifier;
 					}
-					if(keywordCount == 1){
-						postFilterGroup.logicalOperator = "OR";
-					}else{
-						postFilterGroup.logicalOperator = (columnIndex) ? "OR" : "AND";
-					}
+					currentFilter['logicalOperator'] = "OR";
+
 					//remove AND from the frist filterGroup
-					if(columnIndex == 0 && keywordIndex == 0) {
-						structDelete(postFilterGroup, "logicalOperator");
+					if(columnIndex == 0) {
+						structDelete(currentFilter, "logicalOperator");
 					}
 				}
-				addPostFilterGroup(postFilterGroup);
+
+				arrayAppend(postFilterGroup['filterGroup'],currentFilter);
+
 				columnIndex++;
+			}
+			if(keywordIndex == 0) {
+				structDelete(postFilterGroup, "logicalOperator");
+			}
+			if(arraylen(postFilterGroup.filterGroup)){
+				addPostFilterGroup(postFilterGroup);
 			}
 			keywordIndex++;
 		}
@@ -3287,6 +3302,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			variables.useElasticSearch = false;
 		}
 		return variables.useElasticSearch;
+	}
+
+	public boolean function getSplitKeywords(){
+		if(isNull(variables.splitKeywords)){
+			variables.splitKeywords = true;
+		}
+		return variables.splitKeywords;
 	}
 
 	// ==============  END: Overridden Implicit Getters ====================
