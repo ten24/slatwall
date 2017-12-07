@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSkuLocationQuantity" table="SwSkuLocationQuantity" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="inventoryService" hb_permission="this" hb_processContexts="" hb_auditable="false" {
+component entityname="SlatwallSkuLocationQuantity" table="SwSkuLocationQuantity" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="inventoryService" hb_permission="this" hb_processContexts="" hb_auditable=false {
 
 	// Persistent Properties
 	property name="skuLocationQuantityID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

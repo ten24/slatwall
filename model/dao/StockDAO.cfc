@@ -145,7 +145,7 @@ Notes:
 			dataQuery2.execute();
 		}
 
-	public numeric function getCurrentMargin(required string stockID){
+	public numeric function getCurrentMargin(required string stockID, required string currencyCode){
 		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 		if(averagePriceSold == 0){
 			return 0;
@@ -153,7 +153,7 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
-	public numeric function getCurrentLandedMargin(required string stockID){
+	public numeric function getCurrentLandedMargin(required string stockID, required string currencyCode){
 		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 		if(averagePriceSold == 0){
 			return 0;
@@ -161,11 +161,11 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
-	public numeric function getAveragePriceSold(required string stockID){
+	public numeric function getAveragePriceSoldBeforeDiscount(required string stockID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -181,10 +181,80 @@ Notes:
 						  AND
 						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						  AND 
 							stocks.stockID = :stockID
 						GROUP BY stocks.stockID
 						";
-		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID},true);	
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID, currencyCode=arguments.currencyCode},true);	
+		
+		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
+		return averagePriceSold;
+	}
+	
+	public numeric function getAverageDiscountAmount(required string stockID, required string currencyCode){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedDiscountAmount),0) as discountAmount 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+					  	LEFT JOIN
+					  		orderItem.sku sku
+					  	LEFT JOIN
+					  		sku.stocks stocks
+					  		
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						  AND 
+							stocks.stockID = :stockID
+						GROUP BY stocks.stockID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID, currencyCode=arguments.currencyCode},true);	
+		
+		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averageDiscountAmount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['discountAmount']/QDOODetails['QDOO']);
+		return averageDiscountAmount;
+	}
+	
+	public numeric function getAveragePriceSold(required string stockID, required string currencyCode){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+					  	LEFT JOIN
+					  		orderItem.sku sku
+					  	LEFT JOIN
+					  		sku.stocks stocks
+					  		
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						  AND 
+							stocks.stockID = :stockID
+						GROUP BY stocks.stockID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID, currencyCode=arguments.currencyCode},true);	
 		
 		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
 			return 0;
@@ -193,8 +263,8 @@ Notes:
 		return averagePriceSold;
 	}
 		
-	public any function getAverageCost(required string stockID, string locationID=""){
-		var params = {stockID=arguments.stockID};
+	public any function getAverageCost(required string stockID, required string currencyCode, string locationID=""){
+		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
 		
 		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
@@ -205,7 +275,7 @@ Notes:
 			hql &= ' LEFT JOIN stock.location location ';
 		}
 		
-		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL ';
+		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL AND i.currencyCode=:currencyCode ';
 		
 		if(len(arguments.locationID)){
 			hql&= ' AND location.locationID = :locationID';	
@@ -220,8 +290,8 @@ Notes:
 		);
 	}
 	
-	public any function getAverageLandedCost(required string stockID, string locationID=""){
-		var params = {stockID=arguments.stockID};
+	public any function getAverageLandedCost(required string stockID, required string currencyCode, string locationID=""){
+		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
 		
 		var hql = 'SELECT COALESCE(SUM(i.landedCost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
@@ -231,7 +301,7 @@ Notes:
 		if(len(arguments.locationID)){
 			hql &= ' LEFT JOIN stock.location location ';
 		}
-		hql &= ' WHERE stock.stockID = :stockID AND i.landedCost IS NOT NULL ';
+		hql &= ' WHERE stock.stockID = :stockID AND i.landedCost IS NOT NULL AND i.currencyCode=:currencyCode ';
 		
 		if(len(arguments.locationID)){
 			hql &= ' AND location.locationID=:locationID ';	
@@ -245,15 +315,15 @@ Notes:
 		);
 	}
 		
-		public any function getAverageProfit(required string stockID){
+		public any function getAverageProfit(required string stockID, required string currencyCode){
 			return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageCost(argumentCollection=arguments));
 		}
 		
-		public any function getAverageLandedProfit(required string stockID){
+		public any function getAverageLandedProfit(required string stockID, required string currencyCode){
 			return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageLandedCost(argumentCollection=arguments));
 		}
 		
-		public any function getAverageMarkup(required string stockID){
+		public any function getAverageMarkup(required string stockID, required string currencyCode){
 			var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 			var averageCost = getAverageCost(argumentCollection=arguments);
 			if(averageCost == 0){
@@ -263,7 +333,7 @@ Notes:
 			return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageCost)/averageCost)*100);
 		}
 		
-		public any function getAverageLandedMarkup(required string stockID){
+		public any function getAverageLandedMarkup(required string stockID, required string currencyCode){
 			var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 			var averageLandedCost = getAverageLandedCost(argumentCollection=arguments);
 			if(averageLandedCost == 0){

@@ -54,16 +54,8 @@ Notes:
 <cfparam name="rc.ordersNotPlacedSmartList" type="any" />
 <cfparam name="rc.ordersNotPlacedCollectionList" type="any" />
 
-<!---<hb:HibachiListingDisplay smartList="#rc.ordersNotPlacedSmartList#"
-						  recordDetailAction="admin:entity.detailorder"
-						  recordEditAction="admin:entity.editorder">
-
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" />
-	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
-	<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
-</hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />--->
-<hb:HibachiListingDisplay collectionList="#rc.ordersNotPlacedCollectionList#">
+<hb:HibachiListingDisplay collectionList="#rc.ordersNotPlacedCollectionList#"
+	recordEditAction="admin:entity.editorder"
+	recordDetailAction="admin:entity.detailorder"
+>
 </hb:HibachiListingDisplay>

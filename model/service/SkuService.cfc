@@ -672,8 +672,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!arguments.sku.isNew() && previousActiveState == 1 && arguments.sku.getActiveFlag() == 0){
 				sku.setPublishedFlag(false);
 			}
+			//create and calculated skucost for every active currency
+			this.processSku(arguments.sku,{},'createSkuCost');
+			
 		}
 		
+		return arguments.sku;
+	}
+
+	public any function processSku_createSkuCost(required any sku, struct data={}){
+		var activeCurrencies = listToArray(getService('currencyService').getAllActiveCurrencyIDList());
+			
+		for(var activeCurrency in activeCurrencies){
+			//check to see if there is a skucost
+			if(!arguments.sku.getNewFlag()){
+				var skuCost = getDao('skuDao').getSkuCostBySkuIDAndCurrencyCode(arguments.sku.getSkuID(),activeCurrency);
+				if(isNull(skuCost)){
+					skuCost = this.newSkuCost();	
+				}
+			}else{
+				var skuCost = this.newSkuCost();;
+			}
+			
+			var currency = getService('currencyService').getCurrencyByCurrencyCode(activeCurrency);
+			skuCost.setCurrency(currency);
+			skuCost.setSku(arguments.sku);
+			
+			if(skuCost.getNewFlag()){
+				skuCost = this.saveSkuCost(skuCost);	
+			}
+			skuCost.updateCalculatedProperties(true);
+		}	
 		return arguments.sku;
 	}
 

@@ -22,6 +22,8 @@
 		collectionList="#skuCollectionList#"
 		collectionConfigFieldName="skuCollectionConfig"
 		showSimpleListingControls="false"
+		recordEditAction="admin:entity.edit#lcase(skuCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(skuCollectionList.getCollectionObject())#"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>

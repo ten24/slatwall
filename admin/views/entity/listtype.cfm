@@ -91,7 +91,11 @@ Notes:
 	})/>
 	<cfset rc.typeCollectionList.addDisplayAggregate('childTypes','COUNT','childTypesCount')/>
 	
-	<hb:HibachiListingDisplay collectionList="#rc.typeCollectionList#">
+	<hb:HibachiListingDisplay 
+		collectionList="#rc.typeCollectionList#"
+		recordEditAction="admin:entity.edit#lcase(rc.typeCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.typeCollectionList.getCollectionObject())#"
+	>
 	</hb:HibachiListingDisplay>
 
 </cfoutput>

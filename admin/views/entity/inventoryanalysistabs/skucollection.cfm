@@ -14,6 +14,8 @@
 				collectionList="#rc.inventoryAnalysis.getSkuCollection()#"
 				collectionConfigFieldName="skuCollectionConfig"
 				showSimpleListingControls="false"
+				recordEditAction="admin:entity.edit#lcase(rc.inventoryAnalysis.getSkuCollection().getCollectionObject())#"
+				recordDetailAction="admin:entity.detail#lcase(rc.inventoryAnalysis.getSkuCollection().getCollectionObject())#"
 			>
 			</hb:HibachiListingDisplay>
 		</hb:HibachiPropertyList>

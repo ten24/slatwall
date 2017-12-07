@@ -51,6 +51,7 @@ Notes:
 <cfparam name="rc.sku" type="any" />
 <cfparam name="rc.product" type="any">
 
+<cfset activeCurrencies=listToArray(getHibachiScope().getService('currencyService').getAllActiveCurrencyIDList())>
 <cfoutput>
 	<table id="inventory-table" class="table table-bordered table-hover">
 		<tr>
@@ -71,8 +72,10 @@ Notes:
 			</cfif>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qats.full')#">#$.slatwall.rbKey('define.qats')#</div></th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
-			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageCost')#">#$.slatwall.rbKey('define.averageCost')#</div></th>
-			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageLandedCost')#">#$.slatwall.rbKey('define.averageLandedCost')#</div></th>
+			<cfloop array="#activeCurrencies#" index="currencyCode" >
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageCost')#">#$.slatwall.rbKey('define.averageCost')# - #currencyCode#</div></th>
+				<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.averageLandedCost')#">#$.slatwall.rbKey('define.averageLandedCost')# - #currencyCode#</div></th>
+			</cfloop>
 		</tr>
 		<cfset scale = (rc.sku.getInventoryTrackBy() eq 'Quantity') ? 0 : 2 />
 		<tr class="sku">
@@ -93,8 +96,10 @@ Notes:
 			</cfif>
 			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QATS'),scale)#</td>
 			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getQuantity('QIATS'),scale)#</td>
-			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getAverageCost())#</td>
-			<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getAverageLandedCost())#</td>
+			<cfloop array="#activeCurrencies#" index="currencyCode" >
+				<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getAverageCost(currencyCode))#</td>
+				<td>#$.slatwall.getService('hibachiUtilityService').precisionCalculate(rc.sku.getAverageLandedCost(currencyCode))#</td>
+			</cfloop>
 		</tr>
 	</table>
 
