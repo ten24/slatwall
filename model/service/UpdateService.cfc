@@ -185,10 +185,12 @@ Notes:
 
 	<cffunction name="updateCMSApplications">
 		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
-		<cfset var apps = this.getAppSmartList().getRecords()>
-		<cfloop array="#apps#" index="local.app">
-			<cfset getService('appService').updateCMSApp(app)>
-		</cfloop>
+		<cfif getService('settingService').getSettingValue('globalDeploySitesAndApplicationsOnUpdate')>
+			<cfset var apps = this.getAppSmartList().getRecords()>
+			<cfloop array="#apps#" index="local.app">
+				<cfset getService('appService').updateCMSApp(app)>
+			</cfloop>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="runScripts">

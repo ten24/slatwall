@@ -220,6 +220,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalDeploySitesAndApplicationsOnUpdate = {fieldtype="yesno", defaultValue=1}, 
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
