@@ -16,7 +16,7 @@
 				<swa:SlatwallLocationTypeahead locationPropertyName="fromLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.fromlocationname')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
 			<cfelse>
 				<swa:SlatwallLocationTypeahead property="#rc.stockAdjustment.getFromLocation()#" locationPropertyName="fromLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.fromlocationname')#" edit="false" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
-			</cfif>								
+			</cfif>				 				
 		</cfif>
 		<cfif listFindNoCase("satLocationTransfer,satManualIn", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
 			<cfif rc.stockAdjustment.isNew()>
