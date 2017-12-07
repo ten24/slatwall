@@ -275,7 +275,8 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
 		
@@ -288,7 +289,8 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
 		
