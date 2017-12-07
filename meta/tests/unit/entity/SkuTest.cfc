@@ -585,7 +585,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			stockID="",
 			sku={
 				skuID=sku.getSkuID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		arrayAppend(sku.getStocks(),stock);
@@ -596,7 +597,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			quantityIn=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('inventory',inventoryData);	
 		stock.addInventory(inventory);
@@ -606,7 +608,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			stockID="",
 			sku={
 				skuID=sku.getSkuID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var stock2 = createPersistedTestEntity('Stock',stockData2);
 		arrayAppend(sku.getStocks(),stock2);
@@ -617,14 +620,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			quantityIn=7,
 			stock={
 				stockID=stock2.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('inventory',inventoryData2);	
 		stock2.addInventory(inventory2);
 		
 		assertEquals(sku.getQOH(),12,'(5+7)=12');		
-		assertEquals(sku.getAverageCost(),68.75);
-		assertEquals(sku.getCurrentAssetValue(),825);
+		assertEquals(sku.getAverageCost('USD'),68.75);
+		assertEquals(sku.getCurrentAssetValue("USD"),825);
 	}
 }
 
