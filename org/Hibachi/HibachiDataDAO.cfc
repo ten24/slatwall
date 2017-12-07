@@ -172,6 +172,7 @@ Notes:
 			excludelist = listAppend(excludelist,'swaccount');
 			excludelist = listAppend(excludelist,'swaccountauthentication');
 			excludelist = listAppend(excludelist,'swaccountemailaddress');
+			excludelist = listAppend(excludelist,'swaccountaddress');
 			var q = new Query();
 			var sql = "  select table_name 
 		 		 from INFORMATION_SCHEMA.TABLES 
