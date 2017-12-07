@@ -498,7 +498,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			var currentSku = '';
 			var currentOffset = 0;
-			for (row in stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID())) {
+			for (var row in stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID())) {
 			    if(row.skuID != currentSku) {
 			    	currentSku = row.skuID;
 			    	currentOffset = row.toSumQATS-row.toMaxQuantity;
