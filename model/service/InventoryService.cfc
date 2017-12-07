@@ -109,8 +109,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				inventory.setExpenseLedgerAccount(expenseLedgerAccount);
 			}
 			
-			//calculate Landed Cost
-			getHibachiDAO().save( inventory );
+			inventory = getService('inventoryService').saveInventory( inventory );
 			
 			
 		}
@@ -159,7 +158,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					}
 					
 					
-					getHibachiDAO().save( inventory );	
+					getService('inventoryService').saveInventory( inventory );	
 					
 				}
 				break;
@@ -178,7 +177,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
-					getHibachiDAO().save( inventory );
+					getService('inventoryService').saveInventory( inventory );
 				}
 				break;
 			}
@@ -219,7 +218,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
-					getHibachiDAO().save( inventory );
+					getService('inventoryService').saveInventory( inventory );
 				}
 				break;
 			}
@@ -228,6 +227,17 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		
+	}
+	
+	public any function saveInventory(required any inventory, required struct data={}){
+	
+		arguments.inventory = super.save(entity=arguments.inventory, data=arguments.data);
+		
+		if(!inventory.hasErrors()){
+			getService('skuService').processSku(arguments.inventory.getStock().getSku(),{},'createSkuCost');
+		}
+		
+		return arguments.inventory;	
 	}
 	
 	public struct function getQDOO(string productID, string productRemoteID){

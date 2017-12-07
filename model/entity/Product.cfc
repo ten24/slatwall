@@ -715,15 +715,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// Quantity
-	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID) {
-
+	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID, string currencyCode="") {
+		//if no currency code is specified then first level cache key is just the quantitytype otherwise it is composite example QOHUSD
+		var cacheKey = arguments.quantityType&arguments.currencyCode;
 		// First we check to see if that quantityType is defined, if not we need to go out an get the specific struct, or value and cache it
-		if(!structKeyExists(variables, arguments.quantityType)) {
+		if(!structKeyExists(variables, cacheKey)) {
 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
-				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
+				var params = {productID=getProductID(), productRemoteID=getRemoteID()};
+				if(len(arguments.currencyCode)){
+					params.currencyCode=arguments.currencyCode;
+				}
+				variables[ cacheKey] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", params);
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
-				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
+				variables[ cacheKey ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
 			}
@@ -731,44 +736,44 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		// If this is a calculated quantity, then we can just return it
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
-			return variables[ arguments.quantityType ];
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", cacheKey) ) {
+			return variables[ cacheKey ];
 		}
 
 		// If we have a stockID
 		if( structKeyExists( arguments, "stockID" ) ) {
-			if( structKeyExists(variables[ quantityType ].stocks, arguments.stockID) ) {
-				return variables[ arguments.quantityType ].stocks[stockID];
+			if( structKeyExists(variables[ cacheKey ].stocks, arguments.stockID) ) {
+				return variables[ cacheKey ].stocks[stockID];
 			}
 			return 0;
 		}
 
 		// If we have a skuID & locationID
 		if( structKeyExists( arguments, "skuID" ) && structKeyExists(arguments, "locationID") ) {
-			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) && structKeyExists(variables[ quantityType ].skus[ arguments.skuID ].locations, arguments.locationID) ) {
-				return variables[ arguments.quantityType ].skus[ arguments.skuID ].locations[ arguments.locationID ];
+			if( structKeyExists(variables[ cacheKey ].skus, arguments.skuID) && structKeyExists(variables[ cacheKey ].skus[ arguments.skuID ].locations, arguments.locationID) ) {
+				return variables[ cacheKey ].skus[ arguments.skuID ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}
 
 		// If we have a skuID
 		if( structKeyExists( arguments, "skuID") ) {
-			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) ) {
-				return variables[ arguments.quantityType ].skus[ arguments.skuID ][ arguments.quantityType ];
+			if( structKeyExists(variables[ cacheKey ].skus, arguments.skuID) ) {
+				return variables[ cacheKey ].skus[ arguments.skuID ][ arguments.quantityType ];
 			}
 			return 0;
 		}
 
 		// If we have a locationID
 		if( structKeyExists( arguments, "locationID") ) {
-			if( structKeyExists(variables[ arguments.quantityType ].locations, arguments.locationID) ) {
-				return variables[ arguments.quantityType ].locations[ arguments.locationID ];
+			if( structKeyExists(variables[ cacheKey ].locations, arguments.locationID) ) {
+				return variables[ cacheKey ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}
 
 		// If we don't have anything, then just return for the entire product
-		return variables[ arguments.quantityType ][ arguments.quantityType ];
+		return variables[ cacheKey ][ arguments.quantityType ];
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

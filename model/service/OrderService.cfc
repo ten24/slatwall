@@ -2160,7 +2160,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(arguments.processObject.getOrder().hasErrors()){
                 	arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
               	}
-
 			}
 
 			saveOrderFulfillment( orderFulfillment );

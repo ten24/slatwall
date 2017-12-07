@@ -273,6 +273,14 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageLandedCost)/averageLandedCost)*100);
 	}
 	
+	public numeric function getCurrentMarginBeforeDiscount(required string skuID, required string currencyCode){
+		var averagePriceSold = getAveragePriceSoldBeforeDiscount(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
+	}
+	
 	public numeric function getCurrentMargin(required string skuID, required string currencyCode){
 		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
 		if(averagePriceSold == 0){
@@ -289,11 +297,63 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
+	public numeric function getAverageDiscountAmount(required string skuID, required string currencyCode){
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedDiscountAmount),0) as totalDiscountAmount 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						  LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						";
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID,currencyCode=arguments.currencyCode},true);	
+		if(QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averageDiscountAmount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalDiscountAmount']/QDOODetails['QDOO']);
+		return averageDiscountAmount;
+	}
+	
+	public numeric function getAveragePriceSoldBeforeDiscount(required string skuID, required string currencyCode){
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						  LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						";
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID,currencyCode=arguments.currencyCode},true);	
+		if(QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSoldBeforeDiscount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
+		return averagePriceSoldBeforeDiscount;
+	}
+	
 	public numeric function getAveragePriceSold(required string skuID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -410,6 +470,18 @@ Notes:
 		</cfquery> 
 		
 		<cfreturn valueList(getUsedLocationIdsByEventDates.LocationID) />
+	</cffunction>
+	
+	<cffunction name="getSkuCostBySkuIDAndCurrencyCode">
+		<cfargument name="skuID" type="string" />
+		<cfargument name="currencyCode" type="string" />
+		<cfreturn ORMExecuteQuery('
+			FROM SlatwallSkuCost sc 
+			where sc.currency.currencyCode=:currencyCode
+			and sc.sku.skuID = :skuID
+			',{skuID=arguments.skuID,currencyCode=arguments.currencyCode},true)
+		/>
+		
 	</cffunction>
 	
 </cfcomponent>

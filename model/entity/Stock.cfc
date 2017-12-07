@@ -76,6 +76,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAveragePriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageDiscountAmount" ormtype="big_decimal" formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -95,6 +97,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
 	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averageDiscountAmount" persistent="false" formatType="currency";
 	property name="averageMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
@@ -122,6 +126,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getAveragePriceSoldBeforeDiscount(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
+	}
 	
 	public numeric function getAverageProfit(required string currencyCode="USD"){
 		return getDao('stockDao').getAverageProfit(this.getStockID(),arguments.currencyCode);

@@ -132,11 +132,79 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
+	public numeric function getAveragePriceSoldBeforeDiscount(required string stockID, required string currencyCode){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+					  	LEFT JOIN
+					  		orderItem.sku sku
+					  	LEFT JOIN
+					  		sku.stocks stocks
+					  		
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						  AND 
+							stocks.stockID = :stockID
+						GROUP BY stocks.stockID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID, currencyCode=arguments.currencyCode},true);	
+		
+		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
+		return averagePriceSold;
+	}
+	
+	public numeric function getAverageDiscountAmount(required string stockID, required string currencyCode){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedDiscountAmount),0) as discountAmount 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+					  	LEFT JOIN
+					  		orderItem.sku sku
+					  	LEFT JOIN
+					  		sku.stocks stocks
+					  		
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						  AND 
+							stocks.stockID = :stockID
+						GROUP BY stocks.stockID
+						";
+		var QDOODetails = ormExecuteQuery(hql, {stockID=arguments.stockID, currencyCode=arguments.currencyCode},true);	
+		
+		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averageDiscountAmount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['discountAmount']/QDOODetails['QDOO']);
+		return averageDiscountAmount;
+	}
+	
 	public numeric function getAveragePriceSold(required string stockID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem

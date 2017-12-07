@@ -680,21 +680,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				sku.setPublishedFlag(false);
 			}
 			//create and calculated skucost for every active currency
-			var activeCurrencies = listToArray(getService('currencyService').getAllActiveCurrencyIDList());
-			if(!arguments.sku.getNewFlag()){
-				ORMExecuteQuery('DELETE FROM SlatwallSkuCost where sku.skuID=:skuID',{skuID=arguments.sku.getSkuID()});
-			}
-			for(var activeCurrency in activeCurrencies){
-				//check to see if there is a skucost
-				var skuCost = this.newSkuCost();
-				var currency = getService('currencyService').getCurrencyByCurrencyCode(activeCurrency);
-				skuCost.setCurrency(currency);
-				skuCost.setSku(arguments.sku);
-				this.saveSkuCost(skuCost);
-			}			
+			this.processSku(arguments.sku,{},'createSkuCost');
 			
 		}
 		
+		return arguments.sku;
+	}
+
+	public any function processSku_createSkuCost(required any sku, struct data={}){
+		var activeCurrencies = listToArray(getService('currencyService').getAllActiveCurrencyIDList());
+			
+		for(var activeCurrency in activeCurrencies){
+			//check to see if there is a skucost
+			if(!arguments.sku.getNewFlag()){
+				var skuCost = getDao('skuDao').getSkuCostBySkuIDAndCurrencyCode(arguments.sku.getSkuID(),activeCurrency);
+				if(isNull(skuCost)){
+					skuCost = this.newSkuCost();	
+				}
+			}else{
+				var skuCost = this.newSkuCost();;
+			}
+			
+			var currency = getService('currencyService').getCurrencyByCurrencyCode(activeCurrency);
+			skuCost.setCurrency(currency);
+			skuCost.setSku(arguments.sku);
+			
+			if(skuCost.getNewFlag()){
+				skuCost = this.saveSkuCost(skuCost);	
+			}
+			skuCost.updateCalculatedProperties(true);
+		}	
 		return arguments.sku;
 	}
 

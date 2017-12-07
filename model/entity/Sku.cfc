@@ -146,9 +146,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="averageLandedCost" persistent="false" hb_formatType="currency";
 	property name="currentMargin" persistent="false" hb_formatType="percentage";
 	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
+	property name="currentMarginBeforeDiscount" persistent="false" hb_formatType="percentage";
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
 	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averageDiscountAmount" persistent="false" hb_formatType="currency";
 	property name="averageMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
@@ -214,6 +217,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
 		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
+	
+	public numeric function getAveragePriceSoldBeforeDiscount(required string currencyCode="USD"){
+		return getDao('skuDao').getAveragePriceSoldBeforeDiscount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
+	}
+	
+	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageDiscountAmount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
+	}
 
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
 		return getQOH(currencyCode=arguments.currencyCode) * getAverageCost(arguments.currencyCode);
@@ -226,6 +237,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public numeric function getCurrentMargin(required string currencyCode="USD"){
 		return getDao('skuDao').getCurrentMargin(this.getSkuID(),arguments.currencyCode);
+	}
+	
+	public numeric function getCurrentMarginBeforeDiscount(required string currencyCode="USD"){
+		return getDao('skuDao').getCurrentMarginBeforeDiscount(this.getSkuID(),arguments.currencyCode);
 	}
 	
 	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
@@ -1711,7 +1726,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public void function updateCalculatedProperties(boolean runAgain=false) {
 		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
 			super.updateCalculatedProperties(argumentCollection=arguments);
-			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
+			//getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
 		}
 	}
 

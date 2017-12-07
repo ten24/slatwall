@@ -67,12 +67,19 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	
 	property name="calculatedAverageCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="calculatedAverageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
+	
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedCurrentMarginBeforeDiscount" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
+	
 	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAveragePriceSold" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAveragePriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageDiscountAmount" ormtype="big_decimal" formatType="currency";
+	
 	property name="calculatedAverageMarkup" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
+	
 	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedQOH" ormtype="float";
@@ -87,12 +94,19 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	
 	property name="averageCost" persistent="false" hb_formatType="currency";
 	property name="averageLandedCost" persistent="false" hb_formatType="currency";
+	
 	property name="currentMargin" persistent="false" hb_formatType="percentage";
+	property name="currentMarginBeforeDiscount" persistent="false" hb_formatType="percentage";
 	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
+	
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averageDiscountAmount" persistent="false" formatType="currency";
+	
 	property name="averageMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
@@ -100,6 +114,14 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	property name="QOH" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getAveragePriceSoldBeforeDiscount(){
+		return getSku().getAveragePriceSoldBeforeDiscount(getCurrency().getCurrencyCode());
+	}
+	
+	public numeric function getAverageDiscountAmount(){
+		return getSku().getAverageDiscountAmount(getCurrency().getCurrencyCode());
+	}
 	
 	public numeric function getQOH(){
 		return getSku().getQOH(currencyCode=getCurrency().getCurrencyCode());
@@ -115,6 +137,10 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	
 	public numeric function getCurrentMargin(){
 		return getSku().getCurrentMargin(getCurrency().getCurrencyCode());
+	}
+	
+	public numeric function getCurrentMarginBeforeDiscount(){
+		return getSku().getCurrentMarginBeforeDiscount(getCurrency().getCurrencyCode());
 	}
 	
 	public numeric function getCurrentLandedMargin(){
