@@ -57,6 +57,7 @@ component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromot
 	
 	// Related Object Properties (many-to-one)
 	property name="defaultImage" cfc="Image" fieldtype="many-to-one" fkcolumn="defaultImageID";
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID" hb_optionsNullRBKey="define.none";
 	
 	// Related Object Properties (one-to-many)
 	property name="promotionPeriods" singularname="promotionPeriod" cfc="PromotionPeriod" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";    
