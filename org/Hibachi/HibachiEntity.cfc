@@ -402,12 +402,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// Set any one-to-many or many-to-many properties with a blank array as the default value
 			if(structKeyExists(getProperties()[i], "fieldtype") && getProperties()[i].fieldtype == "many-to-many" && ( !structKeyExists(getProperties()[i], "cascade") || !listFindNoCase("all-delete-orphan,delete,delete-orphan", getProperties()[i].cascade) ) ) {
 				var relatedEntities = variables[ getProperties()[i].name ];
-				for(var e = arrayLen(relatedEntities); e >= 1; e--) {
-					this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
-				}
+				if (!isNull(relatedEntities) && isArray(relatedEntities) && arrayLen(relatedEntities)){
+ 					for(var e = arrayLen(relatedEntities); e >= 1; e--) {
+ 						this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
+ 					}
+  				}
 			}
 		}
-
 	}
 
 	// @hint public method that returns the full entityName

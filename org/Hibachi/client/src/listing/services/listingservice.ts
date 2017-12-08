@@ -295,6 +295,14 @@ class ListingService{
         return this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value});
     }
 
+    /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
+    public getAllSelected = (listingID) => {
+        if (!listingID) return -1;
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            this.selectionService.getSelections(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        }
+    }
+
     public clearAllSelections = (listingID) => {
         if (!listingID) return -1;
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
