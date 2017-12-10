@@ -28,6 +28,7 @@ devConfig.plugins =  [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
 	    mangle: false,
+	    minimize: true,
 	    compress: {
 	         // remove warnings
 	            warnings: false,
