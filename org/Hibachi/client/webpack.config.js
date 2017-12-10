@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
+var CompressionPlugin = require("compression-webpack-plugin");
 
 var path = require('path');
 var PATHS = {
@@ -17,7 +18,8 @@ var appConfig = {
     watch:true,
     output: {
         path: PATHS.app,
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        library: 'hibachi'
     },
     // Turn on sourcemaps
     //devtool: 'source-map',
@@ -47,7 +49,29 @@ var appConfig = {
 	},
     plugins: [
         new ForceCaseSensitivityPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
+        new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"}),
+	    new CompressionPlugin({
+	      asset: "[path].gz[query]",
+	      algorithm: "gzip",
+	      test: /\.js$|\.css$|\.html$/,
+	      threshold: 10240,
+	      minRatio: 0
+	    }),
+	    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
+	    new webpack.optimize.OccurrenceOrderPlugin(),
+	    new webpack.optimize.UglifyJsPlugin({
+		    mangle: false,
+		    compress: {
+	         // remove warnings
+	            warnings: false,
+	
+	         // Drop console statements
+	            drop_console: true
+	       },
+		    output: {
+	        	comments: false
+	    	}
+		})
     ]
 
 };

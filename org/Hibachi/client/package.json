@@ -26,7 +26,8 @@
     "vinyl-source-stream": "^1.1.0",
     "webpack": "*",
     "webpack-dev-server": "^1.12.1",
-    "webpack-stream": "*"
+    "webpack-stream": "*",
+    "compression-webpack-plugin": "^1.0.1"
   },
   "scripts": {
     "postbuild":"bower install",

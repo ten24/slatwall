@@ -406,8 +406,9 @@ Notes:
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
 		</cfif>
-		<!--- code split vendor bundle before the other bundles because its common among them. --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/vendor.bundle.js" charset="utf-8"></script>	
+		<!-- code split vendor bundle before the other bundles because its common among them. -->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></script>
+		
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 	</body>
