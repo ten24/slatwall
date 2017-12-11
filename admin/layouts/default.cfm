@@ -173,15 +173,17 @@ Notes:
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" icon="barcode icon-white" type="nav">
-								<hb:HibachiActionCaller action="admin:entity.liststock" type="list">
-								<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
-								<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
-								<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
-								<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
-								<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
-								<li class="divider"></li>
-								<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
-								<hb:HibachiActionCaller action="admin:entity.listminmaxstocktransfer" type="list">
+								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:entity.liststock" type="list">
+									<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
+									<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
+									<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
+									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listminmaxstocktransfer" type="list">
+								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
 							<cfif arrayLen(local.integrationSubsystems)>

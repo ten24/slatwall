@@ -1466,7 +1466,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
-			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions');
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
+			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
 		}
 
 		return arguments.permissionGroup;
