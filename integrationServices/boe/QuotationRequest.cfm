@@ -43,51 +43,20 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-Notes:
-
+	Notes:
+	
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.vendorAddress" type="any">
-<cfparam name="rc.vendor" type="any" default="#rc.vendorAddress.getVendor()#">
-<cfparam name="rc.edit" type="boolean">
-
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.vendorAddress#" edit="#rc.edit#" sRenderItem="detailvendor">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.vendorAddress#" edit="#rc.edit#" 
-								   backAction="admin:entity.detailVendor" 
-								   backQueryString="vendorID=#rc.vendor.getVendorID()#"
-								   cancelAction="admin:entity.detailVendor"
-								   cancelQueryString="vendorID=#rc.vendor.getVendorID()#">
-								   	   
-		</hb:HibachiEntityActionBar>
-			
-		<input type="hidden" name="vendor.vendorID" value="#rc.vendor.getVendorID()#" />
-		<input type="hidden" name="vendorID" value="#rc.vendor.getVendorID()#" />
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.vendorAddress#" property="vendorAddressName" edit="#rc.edit#">
-				<swa:SlatwallAdminAddressDisplay address="#rc.vendorAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" showEmailAddress="true" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-	</hb:HibachiEntityDetailForm>
+	<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+	    <Body>
+	        <GetRate xmlns="http://services.gis.boe.ca.gov/api/taxrates">
+	            <request>
+	                <City>#city#</City>
+	                <State>California</State>
+	                <StreetAddress>#streetAddress#</StreetAddress>
+	                <ZipCode>#postalCode#</ZipCode>
+	            </request>
+	        </GetRate>
+	    </Body>
+	</Envelope>
 </cfoutput>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

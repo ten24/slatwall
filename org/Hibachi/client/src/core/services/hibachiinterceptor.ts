@@ -46,7 +46,8 @@ class HibachiInterceptor implements IInterceptor{
 			appConfig:string,
 			dialogService,
 			utilityService,
-            hibachiPathBuilder
+            hibachiPathBuilder,
+            observerService
 		)=> new HibachiInterceptor(
 			$location,
 			$q,
@@ -57,7 +58,8 @@ class HibachiInterceptor implements IInterceptor{
 			appConfig,
 			dialogService,
 			utilityService,
-            hibachiPathBuilder
+            hibachiPathBuilder,
+            observerService
 		);
 		eventHandler.$inject = [
 			'$location',
@@ -69,7 +71,8 @@ class HibachiInterceptor implements IInterceptor{
 			'appConfig',
 			'dialogService',
 			'utilityService',
-            'hibachiPathBuilder'
+            'hibachiPathBuilder',
+            'observerService'
 		];
 		return eventHandler;
 	}
@@ -89,7 +92,8 @@ class HibachiInterceptor implements IInterceptor{
 		public appConfig:any,
 		public dialogService,
         public utilityService,
-        public hibachiPathBuilder
+        public hibachiPathBuilder,
+        public observerService
 	) {
 
         this.$location = $location;
@@ -155,7 +159,7 @@ class HibachiInterceptor implements IInterceptor{
 		return response;
     }
     public responseError = (rejection): ng.IPromise<any> => {
-
+    	
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
@@ -167,6 +171,9 @@ class HibachiInterceptor implements IInterceptor{
 				};
 				this.alertService.addAlert(message);
 			}
+		}
+		if(rejection.status === 403 || rejection.status == 401){
+			this.observerService.notify('Unauthorized');
 		}
 		if (rejection.status === 499) {
 			// handle the case where the user is not authenticated

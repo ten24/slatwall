@@ -70,7 +70,8 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function getAverageCostTest(){
 		var stockData = {
-			stockID=""
+			stockID="",
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		
@@ -80,11 +81,12 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
 		
-		var averageCost = variables.dao.getAverageCost(stock.getStockID());
+		var averageCost = variables.dao.getAverageCost(stock.getStockID(),'USD');
 		assertEquals(50,averageCost);
 		
 		var inventoryData2 = {
@@ -93,11 +95,12 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
 		
-		averageCost = variables.dao.getAverageCost(stock.getStockID());
+		averageCost = variables.dao.getAverageCost(stock.getStockID(),'USD');
 		assertEquals(42.5,averageCost);
 	}
 	
@@ -114,7 +117,8 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			calculatedAverageCost=11,
 			sku={
 				skuID=sku.getSkuID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		
@@ -124,11 +128,12 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
 		
-		var averageCost = variables.dao.getAverageCost(stock.getStockID());
+		var averageCost = variables.dao.getAverageCost(stock.getStockID(),'USD');
 		assertEquals(50,averageCost);
 		
 		var inventoryData2 = {
@@ -137,10 +142,11 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
-		var currentMargin = variables.dao.getCurrentMargin(stock.getStockID());
+		var currentMargin = variables.dao.getCurrentMargin(stock.getStockID(),"USD");
 		assertEquals(0,currentMargin);
 	}
 	

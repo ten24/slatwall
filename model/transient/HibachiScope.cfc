@@ -306,7 +306,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			productCollectionList.setDistinct(true);
 			productCollectionList.addFilter('activeFlag',1);
 			productCollectionList.addFilter('publishedFlag',1);
-			productCollectionList.addFilter('calculatedQATS','1','>');
+			if (!isNull(getCurrentRequestSiteLocation())){
+				productCollectionList.addFilter("skus.skuLocationQuantities.calculatedQATS","0",">");
+				productCollectionList.addFilter("skus.skuLocationQuantities.location.locationID", getCurrentRequestSiteLocation().getLocationID());
+			}else{
+				productCollectionList.addFilter('calculatedQATS','1','>');
+			}
 			if(
 				isBoolean(getContent().getProductListingPageFlag()) 
 				&& getContent().getProductListingPageFlag() 

@@ -76,8 +76,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAveragePriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAverageDiscountAmount" ormtype="big_decimal" formatType="currency";
+	property name="calculatedAveragePriceSoldBeforeDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";

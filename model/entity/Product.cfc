@@ -547,7 +547,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 
-	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true) {
+	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true, string locationID ) {
 
 		// Setup return structure
 		var skuOptionDetails = {};
@@ -556,7 +556,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var selectedOptionGroupsByOptionID = {};
 
 		var optionCollection = getService('optionService').getOptionCollectionList();
-		optionCollection.setDisplayProperties('
+		
+		var displayProperties = '
 			optionID,
 			optionName,
 			optionCode,
@@ -567,12 +568,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			optionGroup.optionGroupID,
 			optionGroup.sortOrder,
 			skus.calculatedQATS,
-			skus.skuID
-		');
+			skus.skuID'
+		;
+		
+		if (structKeyExists(arguments, 'locationID')){
+			displayProperties = listAppend(displayProperties, 'skus.skuLocationQuantities.calculatedQATS'); 
+		}
+		
+		optionCollection.setDisplayProperties(displayProperties);
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
-		optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		
+		if (structKeyExists(arguments, 'locationID')){
+			optionCollection.addFilter("skus.skuLocationQuantities.location.locationID",arguments.locationID);
+			optionCollection.addFilter("skus.skuLocationQuantities.calculatedQATS",0,'>');
+		} else{
+			optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		}
+		
 		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
 		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
+			
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {

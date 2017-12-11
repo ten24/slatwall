@@ -69,13 +69,13 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 	property name="calculatedAverageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 	
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
-	property name="calculatedCurrentMarginBeforeDiscount" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedCurrentMarginBeforeDiscount" column="calcCurMarginBeforeDiscount" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
 	
 	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAveragePriceSold" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAveragePriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAverageDiscountAmount" ormtype="big_decimal" formatType="currency";
+	property name="calculatedAveragePriceSoldBeforeDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageDiscountAmount" column="calcAverageDiscountAmount" ormtype="big_decimal" formatType="currency";
 	
 	property name="calculatedAverageMarkup" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
@@ -192,6 +192,7 @@ component entityname="SlatwallSkuCost" table="SwSkuCost" persistent="true" acces
 		}
 		structDelete(variables, "sku");
 	}
+	
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

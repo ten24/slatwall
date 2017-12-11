@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,49 +45,33 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "California BoE Tax Rates";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			webServicesUrl = {fieldType="text"},
+			webServicesTimeout = {fieldType="text"},
+			webServicesSoapAction = {fieldType="text"}
+		};
 
-
-<cfparam name="rc.vendorAddress" type="any">
-<cfparam name="rc.vendor" type="any" default="#rc.vendorAddress.getVendor()#">
-<cfparam name="rc.edit" type="boolean">
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.vendorAddress#" edit="#rc.edit#" sRenderItem="detailvendor">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.vendorAddress#" edit="#rc.edit#" 
-								   backAction="admin:entity.detailVendor" 
-								   backQueryString="vendorID=#rc.vendor.getVendorID()#"
-								   cancelAction="admin:entity.detailVendor"
-								   cancelQueryString="vendorID=#rc.vendor.getVendorID()#">
-								   	   
-		</hb:HibachiEntityActionBar>
-			
-		<input type="hidden" name="vendor.vendorID" value="#rc.vendor.getVendorID()#" />
-		<input type="hidden" name="vendorID" value="#rc.vendor.getVendorID()#" />
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.vendorAddress#" property="vendorAddressName" edit="#rc.edit#">
-				<swa:SlatwallAdminAddressDisplay address="#rc.vendorAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" showEmailAddress="true" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		return settings;
+	}
+	
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.boe.model.handler.BoeEventHandler"];
+	}
+	
+}
