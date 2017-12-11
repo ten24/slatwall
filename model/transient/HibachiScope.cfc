@@ -141,7 +141,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			}
 		}
 
-		if(isNull(variables.currentRequestSiteLocation)){
+		if(!structKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
 			return;
 		}
 		return variables.currentRequestSiteLocation;
