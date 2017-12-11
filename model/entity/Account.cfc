@@ -121,7 +121,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non Persistent
-	property name="totalOrderProfit" persistent="false";
+	property name="totalOrderRevenue" persistent="false";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
@@ -160,13 +160,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return currencyCollectionList.getRecords();
 	}
 	
-	public numeric function getTotalOrderProfit(string currencyCode){
+	public numeric function getTotalOrderRevenue(string currencyCode){
 		if(isNew()){
 			return 0;
 		}
 		var accountCollectionList = getService('accountService').getAccountCollectionList();
 		
-		var alias = 'totalOrderProfit';
+		var alias = 'totalOrderRevenue';
 		accountCollectionList.addFilter('accountID',this.getAccountID());
 		accountCollectionList.setDisplayProperties('accountID');
 		accountCollectionList.addFilter('orders.orderStatusType.systemCode','ostNotPlaced,ostCanceled','NOT IN');
