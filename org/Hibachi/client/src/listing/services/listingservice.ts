@@ -411,6 +411,11 @@ class ListingService{
 
                     this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
                     this.getListing(listingID).searching = false;
+
+                    this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
+                    if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
+                        this.getListing(listingID).columnCount++; 
+                    }   
                 });
             }
         });
@@ -501,6 +506,8 @@ class ListingService{
 
             this.setupColumn(listingID,column,collectionConfig,collectionObject);
         }
+
+        
     };
 
     public setupColumn=(listingID:string,column:any, collectionConfig, collectionObject)=>{
