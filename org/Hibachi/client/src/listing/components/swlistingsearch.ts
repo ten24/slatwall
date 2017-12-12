@@ -164,7 +164,7 @@ class SWListingSearchController {
 
         this.swListingDisplay.collectionConfig = this.collectionConfig;
 
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
 
