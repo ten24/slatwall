@@ -51,19 +51,18 @@ Notes:
 
 
 <cfparam name="rc.stock" type="any">
-
+<cfparam name="rc.edit" type="boolean">
 
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="false">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="false">
+	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="#rc.edit#">
 		</hb:HibachiEntityActionBar>
 		
 	
 		
 		<hb:HibachiEntityDetailGroup object="#rc.stock#">
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/accountinginfo" />
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventory" />
 			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventoryhistory" />
 		</hb:HibachiEntityDetailGroup>
