@@ -229,7 +229,6 @@ class SWListingDisplayController{
     }
 
     public getCollectionByPagination = (state) =>{
-        console.log('Listing display Received Event ', this.tableID);
         if(state.type){
             switch(state.type){
                 case 'setCurrentPage':
