@@ -240,7 +240,7 @@
          public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true, folderPath) {
 
             if (isArray(data)){
-                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(ListRemoveDuplicates(columnNames)));
             }
 	    
 			var result = {};
@@ -265,7 +265,7 @@
             if(structKeyExists(arguments,"columns") && !structKeyExists(arguments,"columnNames")){
                 arguments.columnNames = arguments.columns;
             }
-            var columnArray = listToArray(arguments.columns);
+            var columnArray = listToArray(ListRemoveDuplicates(arguments.columns));
             var columnCount = arrayLen(columnArray);
             
             if(arguments.fileType == 'csv'){
