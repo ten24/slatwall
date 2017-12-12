@@ -308,13 +308,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Look for the orderItem in the vendorOrder
 		for(var ai=1; ai<=arrayLen(arguments.stockAdjustment.getStockAdjustmentItems()); ai++) {
 			// If the location, sku, cost & estimated arrival are already the same as an item on the order then we can merge them.  Otherwise seperate
-			if( ( listFindNoCase("satLocationTransfer,satManualOut", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) && arguments.stockAdjustment.getStockAdjustmentItems()[ai].getFromStock().getSku().getSkuID() == arguments.processObject.getSku().getSkuID() )
+			if( 
+				( 
+					listFindNoCase("satLocationTransfer,satManualOut", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) 
+					&& arguments.stockAdjustment.getStockAdjustmentItems()[ai].getFromStock().getSku().getSkuID() == arguments.processObject.getSku().getSkuID()
+					&& arguments.stockAdjustment.getStockAdjustmentItems()[ai].getCurrencyCode() == arguments.processObject.getCurrencyCode() 
+				)
 				||
-				( listFindNoCase("satLocationTransfer,satManualIn", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) && arguments.stockAdjustment.getStockAdjustmentItems()[ai].getToStock().getSku().getSkuID() == arguments.processObject.getSku().getSkuID() )
-				) {
+				( 
+					listFindNoCase("satLocationTransfer,satManualIn", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) 
+					&& arguments.stockAdjustment.getStockAdjustmentItems()[ai].getToStock().getSku().getSkuID() == arguments.processObject.getSku().getSkuID() 
+					&& arguments.stockAdjustment.getStockAdjustmentItems()[ai].getCurrencyCode() == arguments.processObject.getCurrencyCode() 
+				)
+			) {
 
 				foundItem = true;
 				arguments.stockAdjustment.getStockAdjustmentItems()[ai].setQuantity( arguments.stockAdjustment.getStockAdjustmentItems()[ai].getQuantity() + int(arguments.processObject.getQuantity()) );
+				arguments.stockAdjustment.getStockAdjustmentItems()[ai].setCurrencyCode( arguments.processObject.getCurrencyCode() );
+				if(arguments.stockAdjustment.getStockAdjustmentType().getSystemCode() == 'satLocationTransfer'){
+					arguments.stockAdjustment.getStockAdjustmentItems()[ai].setCost( arguments.stockAdjustment.getStockAdjustmentItems()[ai].getFromStock().getAverageCost() );
+				}else{
+					arguments.stockAdjustment.getStockAdjustmentItems()[ai].setCost( arguments.stockAdjustment.getStockAdjustmentItems()[ai].getCost() + arguments.processObject.getCost() );
+				}
+				
 			}
 		}
 
@@ -322,11 +338,19 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			var stockAdjustmentItem = this.newStockAdjustmentItem();
 			stockAdjustmentItem.setQuantity( int(arguments.processObject.getQuantity()) );
+			
+			stockAdjustmentItem.setCurrencyCode(arguments.processObject.getCurrencyCode());
 			if( listFindNoCase("satLocationTransfer,satManualOut", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 				stockAdjustmentItem.setFromStock( fromStock );
 			}
 			if( listFindNoCase("satLocationTransfer,satManualIn", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 				stockAdjustmentItem.setToStock( toStock );
+			}
+			
+			if(arguments.stockAdjustment.getStockAdjustmentType().getSystemCode() == 'satLocationTransfer'){
+				stockAdjustmentItem.setCost(fromStock.getAverageCost());
+			}else{
+				stockAdjustmentItem.setCost(arguments.processObject.getCost());
 			}
 			stockAdjustmentItem.setStockAdjustment( arguments.stockAdjustment );
 
@@ -350,7 +374,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setStockReceiver( stockReceiver );
 				stockReceiverItem.setStockAdjustmentItem( stockAdjustmentItem );
 				stockReceiverItem.setQuantity(stockAdjustmentItem.getQuantity());
-				stockReceiverItem.setCost(0);
+				stockReceiverItem.setCost(stockAdjustmentItem.getCost());
+				stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
 			}
 			this.saveStockReceiver(stockReceiver);
@@ -368,6 +393,8 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockAdjustmentDeliveryItem.setStockAdjustmentItem(stockAdjustmentItem);
 				stockAdjustmentDeliveryItem.setQuantity(stockAdjustmentItem.getQuantity());
 				stockAdjustmentDeliveryItem.setStock(stockAdjustmentItem.getFromStock());
+				stockAdjustmentDeliveryItem.setCost(stockAdjustmentItem.getCost());
+				stockAdjustmentDeliveryItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 			}
 
 			this.saveStockAdjustmentDelivery(stockAdjustmentDelivery);
@@ -400,6 +427,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setStockAdjustmentItem( stockAdjustmentItem );
 					stockReceiverItem.setQuantity( stockAdjustmentItem.getQuantity() );
 					stockReceiverItem.setCost( stockAdjustmentItem.getCost() );
+					stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
 
 				// If this is Out, create delivery
@@ -419,6 +447,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockAdjustmentDeliveryItem.setStockAdjustmentItem( stockAdjustmentItem );
 					stockAdjustmentDeliveryItem.setQuantity( stockAdjustmentItem.getQuantity() );
 					stockAdjustmentDeliveryItem.setCost( stockAdjustmentItem.getCost() );
+					stockAdjustmentDeliveryItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 					stockAdjustmentDeliveryItem.setStock( stockAdjustmentItem.getFromStock() );
 				}
 			}
@@ -498,7 +527,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			var currentSku = '';
 			var currentOffset = 0;
-			for (row in stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID())) {
+			for (var row in stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID())) {
 			    if(row.skuID != currentSku) {
 			    	currentSku = row.skuID;
 			    	currentOffset = row.toSumQATS-row.toMaxQuantity;

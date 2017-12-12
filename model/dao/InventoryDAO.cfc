@@ -70,21 +70,28 @@ Notes:
 		}
 		
 		// Quantity on hand. Physically at any location
-		public array function getQOH(required string productID, string productRemoteID) {
-			var params = [arguments.productID];
+		public array function getQOH(required string productID, string productRemoteID, string currencyCode) {
+			var params = {productID=arguments.productID};
 			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
 							sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
+							location.locationIDPath as locationIDPath
+						)
 						FROM
 							SlatwallInventory inventory
 							LEFT JOIN inventory.stock stock
 							LEFT JOIN stock.sku sku
 							LEFT JOIN stock.location location
 						WHERE
-							sku.product.productID = ?
-						GROUP BY
+							sku.product.productID = :productID
+						";
+			if(structKeyExists(arguments,'currencyCode')){
+				hql &= " AND inventory.currencyCode=:currencyCode ";
+				params['currencyCode'] = arguments.currencyCode;
+			}
+						
+			hql &=" GROUP BY
 							sku.skuID,
 							stock.stockID,
 							location.locationID,
@@ -705,6 +712,16 @@ Notes:
 			return 0;
 		}
 
+		public any function getSkuLocationQuantityBySkuIDAndLocationID( required string skuID, locationID){
+			var result = ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationQuantity sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
+
+			if (isNull(result)) {
+				return new('SkuLocationQuantity');
+			}
+
+			return result;
+		}
+		
 		//Quantity Delivered on Order for Sku in Period
 		public any function getSkuOrderQuantityForPeriod(required string skuID, required any fromDateTime, required any toDateTime){
 			var hql = "SELECT NEW MAP(

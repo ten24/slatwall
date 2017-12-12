@@ -9,6 +9,7 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.Promotion#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.Promotion#" property="promotionName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.Promotion#" property="site" edit="#rc.edit#">	
 			<cfif rc.promotion.isNew()>
 				<hr />
 				<h5>#$.slatwall.rbKey('admin.pricing.detailpromotion.initialperiod')#</h5><br />

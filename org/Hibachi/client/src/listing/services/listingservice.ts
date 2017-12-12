@@ -295,6 +295,14 @@ class ListingService{
         return this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value});
     }
 
+    /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
+    public getAllSelected = (listingID) => {
+        if (!listingID) return -1;
+        for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
+            this.selectionService.getSelections(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+        }
+    }
+
     public clearAllSelections = (listingID) => {
         if (!listingID) return -1;
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
@@ -403,6 +411,11 @@ class ListingService{
 
                     this.getListing(listingID).paginator.setPageRecordsInfo( this.getListing(listingID).collectionData );
                     this.getListing(listingID).searching = false;
+
+                    this.getListing(listingID).columnCount = this.getListing(listingID).columns.length + 1; 
+                    if(this.getListing(listingID).selectable || this.getListing(listingID).multiselectable || this.getListing(listingID).sortable){
+                        this.getListing(listingID).columnCount++; 
+                    }   
                 });
             }
         });
@@ -493,6 +506,8 @@ class ListingService{
 
             this.setupColumn(listingID,column,collectionConfig,collectionObject);
         }
+
+        
     };
 
     public setupColumn=(listingID:string,column:any, collectionConfig, collectionObject)=>{

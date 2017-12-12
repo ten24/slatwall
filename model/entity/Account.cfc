@@ -121,6 +121,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non Persistent
+	property name="totalOrderRevenue" persistent="false";
+	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
 	property name="address" persistent="false";
@@ -151,6 +153,59 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	public array function getOrderCurrencies(){
+		var currencyCollectionList = this.getOrdersCollectionList();
+		currencyCollectionList.setDisplayProperties('currencyCode');
+		currencyCollectionList.setDistinct(true);
+		return currencyCollectionList.getRecords();
+	}
+	
+	public numeric function getTotalOrderRevenue(string currencyCode){
+		if(isNew()){
+			return 0;
+		}
+		var accountCollectionList = getService('accountService').getAccountCollectionList();
+		
+		var alias = 'totalOrderRevenue';
+		accountCollectionList.addFilter('accountID',this.getAccountID());
+		accountCollectionList.setDisplayProperties('accountID');
+		accountCollectionList.addFilter('orders.orderStatusType.systemCode','ostNotPlaced,ostCanceled','NOT IN');
+		accountCollectionList.addDisplayAggregate('orders.calculatedTotal','SUM',alias);
+		//filter by currencyCode if currencyCode specified
+		if(structKeyExists(arguments,'currencyCode')){
+			accountCollectionList.addFilter('orders.currencyCode',arguments.currencyCode);
+		}
+		
+		var records = accountCollectionList.getRecords();
+		if(arraylen(records)){
+			return records[1][alias];
+		}else{
+			return 0;
+		}
+	}
+	
+	public numeric function getTotalOrdersCount(string currencyCode){
+		if(isNew()){
+			return 0;
+		}
+		
+		var propertyCountName = 'orderCount';
+		var propertyCollectionList = getPropertyCountCollectionList('orders',propertyCountName);
+		propertyCollectionList.addFilter('orders.orderStatusType.systemCode','ostNotPlaced,ostCanceled','NOT IN');
+		
+		if(structKeyExists(arguments,'currencyCode')){
+			propertyCollectionList.addFilter('orders.currencyCode',arguments.currencyCode);
+		}
+		
+		var records = propertyCollectionList.getRecords();
+		if(arraylen(records)){
+			return records[1][propertyCountName];
+		}else{
+			return 0;
+		}
+	}
+	
+	
 	
 	public boolean function canDeleteByOwner(){
 		return isNull(getOwnerAccount()) 

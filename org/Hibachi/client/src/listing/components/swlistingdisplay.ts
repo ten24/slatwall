@@ -350,7 +350,7 @@ class SWListingDisplayController{
             this.expandable = false;
         }
         //setup export action
-        if(angular.isDefined(this.exportAction)){
+        if(angular.isUndefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
         //setup print action

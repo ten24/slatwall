@@ -52,6 +52,7 @@ component entityname="SlatwallStockAdjustmentItem" table="SwStockAdjustmentItem"
 	property name="stockAdjustmentItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="float" default=0;
 	property name="cost" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)
 	property name="stockAdjustment" cfc="StockAdjustment" fieldtype="many-to-one" fkcolumn="stockAdjustmentID";

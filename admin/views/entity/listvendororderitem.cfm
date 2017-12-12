@@ -97,6 +97,8 @@ Notes:
 		<sw-listing-column data-property-identifier="stock.sku.product.brand.brandName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="stock.sku.product.calculatedTitle" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="stock.sku.skuCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="stock.calculatedCurrentMargin" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="currencyCode" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="cost" ></sw-listing-column>
 	</sw-listing-display data-using-personal-collection="true">

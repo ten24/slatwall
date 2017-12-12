@@ -50,6 +50,7 @@ component entityname="SlatwallVendorAddress" table="SwVendorAddress" persistent=
 	
 	// Persistent Properties
 	property name="vendorAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="vendorAddressName" ormtype="string" hint="Nickname for this vendor Address"; 
 	
 	// Related Object Properties
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";

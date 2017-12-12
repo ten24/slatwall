@@ -54,6 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Injected, or lazily loaded by ID
 	property name="sku";
 	property name="stock";
+	
 
 	// Data Properties (IDs)
 	property name="skuID";
@@ -62,6 +63,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties (Inputs)
 	property name="quantity";
+	property name="cost";
+	property name="currencyCode" hb_formFieldType="select";
+	property name="currencyCodeOptions" type="array";
 	
 	public numeric function getQuantity() {
 		if(!structKeyExists(variables, "quantity")) {
@@ -69,6 +73,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.quantity;
 	}
+	
+	public array function getCurrencyCodeOptions(){
+		if(!structKeyExists(variables,'currencyCodeOptions')){
+			
+			variables.currencyCodeOptions = getService('currencyService').getCurrencyOptions();
+		}
+		
+		return variables.currencyCodeOptions;
+		
+	} 
 	
 	public any function getSku() {
 		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {

@@ -81,12 +81,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedOptionsHash" ormtype="string";
-	property name="calculatedAverageCost" ormtype="big_decimal";
-	property name="calculatedAverageLandedCost" ormtype="big_decimal";
-//	property name="calculatedAveragePriceSold" ormtype="big_decimal";
-//	property name="calculatedCurrentMargin" ormtype="big_decimal";
-//	property name="calculatedCurrentLandedMargin" ormtype="big_decimal";
-//	property name="calculatedCurrentAssetValue" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -102,6 +96,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuPrices" singularname="skuPrice" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuPrice" cascade="all-delete-orphan" lazy="extra";
+	property name="skuCosts" singularname="skuCost" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuCost" cascade="all-delete-orphan";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
@@ -111,6 +106,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 	property name="minMaxStockTransferItems" singularname="minMaxStockTransferItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="MinMaxStockTransferItem" inverse="true" lazy="extra";
+	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
@@ -150,9 +146,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="averageLandedCost" persistent="false" hb_formatType="currency";
 	property name="currentMargin" persistent="false" hb_formatType="percentage";
 	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
+	property name="currentMarginBeforeDiscount" persistent="false" hb_formatType="percentage";
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
 	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averageDiscountAmount" persistent="false" hb_formatType="currency";
 	property name="averageMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
@@ -215,12 +214,20 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return vendorSkuSmartList;
 	}
 
-	public numeric function getAveragePriceSold(){
-		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID());
+	public numeric function getAveragePriceSold(required string currencyCode="USD"){
+		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
+	}
+	
+	public numeric function getAveragePriceSoldBeforeDiscount(required string currencyCode="USD"){
+		return getDao('skuDao').getAveragePriceSoldBeforeDiscount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
+	}
+	
+	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageDiscountAmount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 
-	public numeric function getCurrentAssetValue(){
-		return getQOH() * getAverageCost();
+	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		return getQOH(currencyCode=arguments.currencyCode) * getAverageCost(arguments.currencyCode);
 	}
 	
 //	public numeric function getCurrentRevenueTotal(){
@@ -228,28 +235,32 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 //		return getQuantity('QDOO') * getAveragePriceSold();
 //	}
 	
-	public numeric function getCurrentMargin(){
-		return getDao('skuDao').getCurrentMargin(this.getSkuID());
+	public numeric function getCurrentMargin(required string currencyCode="USD"){
+		return getDao('skuDao').getCurrentMargin(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getCurrentLandedMargin(){
-		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID());
+	public numeric function getCurrentMarginBeforeDiscount(required string currencyCode="USD"){
+		return getDao('skuDao').getCurrentMarginBeforeDiscount(this.getSkuID(),arguments.currencyCode);
+	}
+	
+	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
+		return getDao('skuDao').getCurrentLandedMargin(this.getSkuID(),arguments.currencyCode);
 	}
 
-	public numeric function getAverageProfit(){
-		return getDao('skuDao').getAverageProfit(this.getSkuID());
+	public numeric function getAverageProfit(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageLandedProfit(){
-		return getDao('skuDao').getAverageLandedProfit(this.getSkuID());
+	public numeric function getAverageLandedProfit(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageLandedProfit(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageMarkup(){
-		return getDao('skuDao').getAverageMarkup(this.getSkuID());
+	public numeric function getAverageMarkup(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageLandedMarkup(){
-		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID());
+	public numeric function getAverageLandedMarkup(required string currencyCode="USD"){
+		return getDao('skuDao').getAverageLandedMarkup(this.getSkuID(),arguments.currencyCode);
 	}
 
 	public array function getGiftCardExpirationTermOptions(){
@@ -613,7 +624,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// START: Quantity Helper Methods
 
-	public numeric function getQuantity(required string quantityType, string locationID, string stockID) {
+	public numeric function getQuantity(required string quantityType, string locationID, string stockID, string currencyCode) {
 
 
 		// Request for calculated quantity
@@ -1141,12 +1152,22 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.placedVendorOrderItemsSmartList;
 	}
 
-	public any function getQATS() {
+	public any function getQATS(string locationID) {
+		if ( structKeyExists(arguments, 'locationID') ){
+			return getQuantity(quantityType="QATS", locationID=arguments.locationID );
+		}	
 		return getQuantity("QATS");
 	}
 
-	public any function getQOH() {
-		return getQuantity("QOH");
+	public any function getQOH(string locationID,string currencyCode) {
+		var params = {quantityType="QOH"};
+		if(structKeyExists(arguments,'currencyCode') && len(arguments.currencyCode)){
+			params.currencyCode=arguments.currencyCode;
+		}
+		if ( structKeyExists(arguments, 'locationID') && len(arguments.locationID) ){
+			params.locationID=arguments.locationID;
+		}
+		return getQuantity(argumentCollection=params);
 	}
 
 	/**
@@ -1267,8 +1288,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return true;
 	}
 
-	public any function getAverageCost(any location){
+	public any function getAverageCost(required string currencyCode, any location){
 		var params.skuID = this.getSkuID();
+		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
 			params.locationID=arguments.location.getLocationID();
 		}
@@ -1276,8 +1298,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getDao('skuDao').getAverageCost(argumentCollection=params);
 	}
 	
-	public any function getAverageLandedCost(any location){
+	public any function getAverageLandedCost(required string currencyCode, any location){
 		var params.skuID = this.getSkuID();
+		params.currencyCode = arguments.currencyCode;
 		if(!isNull(arguments.location)){
 			params.locationID=arguments.location.getLocationID();
 		}
@@ -1700,6 +1723,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return super.onMissingMethod(argumentCollection=arguments);
 	}
 
+	public void function updateCalculatedProperties(boolean runAgain=false) {
+		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
+			super.updateCalculatedProperties(argumentCollection=arguments);
+			getService("skuService").processSku(this, "updateInventoryCalculationsForLocations");
+		}
+	}
 
 	// ==================  END:  Overridden Methods ========================
 

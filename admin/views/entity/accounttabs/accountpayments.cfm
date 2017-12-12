@@ -70,18 +70,11 @@ Notes:
 		isDeletable=false
 	})/>
 	
-	<!---<hb:HibachiListingDisplay smartList="#accountPaymentSL#"
-							   recordDetailAction="admin:entity.detailaccountpayment"
-							   recordEditAction="admin:entity.editaccountpayment">
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="accountPaymentType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="amount" />
-		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
-		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
-
-	</hb:HibachiListingDisplay>--->
-	<hb:HibachiListingDisplay collectionList="#accountPaymentCollectionlist#">
+	<hb:HibachiListingDisplay 
+		collectionList="#accountPaymentCollectionlist#"
+		recordEditAction="admin:entity.editaccountpayment"
+		recordDetailAction="admin:entity.detailaccountpayment"
+	>
 	</hb:HibachiListingDisplay>
 
 	<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn btn-default" icon="plus" />

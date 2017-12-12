@@ -61,7 +61,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function getAverageCostTest(){
 		var stockData = {
-			stockID=""
+			stockID="",
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		
@@ -71,10 +72,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			quantityIn=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('inventory',inventoryData);	
-		assertEquals(stock.getAverageCost(),25);
+		assertEquals(stock.getAverageCost(currencyCode="USD"),25);
 		
 	}
 	
@@ -96,7 +98,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			stockID="",
 			sku={
 				skuID=sku.getSkuID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		arrayAppend(sku.getStocks(),stock);
@@ -107,14 +110,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			quantityIn=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('inventory',inventoryData);	
 		stock.addInventory(inventory);
 		
 		assertEquals(stock.getQOH(),5);		
-		assertEquals(stock.getAverageCost(),25);
-		assertEquals(stock.getCurrentAssetValue(),125);
+		assertEquals(stock.getAverageCost("USD"),25);
+		assertEquals(stock.getCurrentAssetValue("USD"),125);
 	}
 	
 }

@@ -78,6 +78,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="currentDomain";
 	property name="currentRequestSite";
 	property name="currentRequestSitePathType" default="domain"; //enums: domain,sitecode
+	property name="currentRequestSiteLocation";
 	
 	property name="currentProductSmartList";
 	
@@ -126,6 +127,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public string function getCurrentRequestSitePathType(){
 		return variables.currentRequestSitePathType;
+	}
+	
+	public any function getCurrentRequestSiteLocation(){
+		if(!structKeyExists(variables,'currentRequestSiteLocation')){
+			var site = getCurrentRequestSite();
+			if ( !isNull(site) ){
+				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
+				var locations = site.getLocations();
+				if(!isNull(locations) && arrayLen(locations)){
+					variables.currentRequestSiteLocation= locations[1];
+				}
+			}
+		}
+
+		if(!structKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
+			return;
+		}
+		return variables.currentRequestSiteLocation;
 	}
 	
 	public void function setCurrentRequestSitePathType(required string currentRequestSitePathType){
@@ -290,7 +309,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			productCollectionList.setDistinct(true);
 			productCollectionList.addFilter('activeFlag',1);
 			productCollectionList.addFilter('publishedFlag',1);
-			productCollectionList.addFilter('calculatedQATS','1','>');
+			if (!isNull(getCurrentRequestSiteLocation())){
+				productCollectionList.addFilter("skus.skuLocationQuantities.calculatedQATS","0",">");
+				productCollectionList.addFilter("skus.skuLocationQuantities.location.locationID", getCurrentRequestSiteLocation().getLocationID());
+			}else{
+				productCollectionList.addFilter('calculatedQATS','1','>');
+			}
 			if(
 				isBoolean(getContent().getProductListingPageFlag()) 
 				&& getContent().getProductListingPageFlag() 

@@ -207,7 +207,7 @@
 							                        </div>
 							                        <div class="modal-footer">
 								                    	<a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0">Add Batch</button> 
+								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0">Add Batch <i ng-if="swOrderFulfillmentListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button> 
 								                	</div>
 								                </div>
 								            </div>
@@ -383,10 +383,10 @@
 			            </div>
 			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
 			                <div class="s-title" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">
-			                    Fulfillments <span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>
+			                    Fulfillments <!---<span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>--->
 			                </div>
 			                <div class="s-title" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items">
-			                    Fulfillment Items <span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>
+			                    Fulfillment Items <!---<span class="s-number">({{swOrderFulfillmentListController.total||0}})</span>--->
 			                </div>
 			            </div>
 
@@ -410,21 +410,6 @@
 			        </div>
 			    </div>
 				
-				<!--- PARTIAL MODULE --->
-			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('partial');" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">		
-					<!--Small content block-->
-			        <div ng-class="{ 's-sm-content-block s-status s-yellow s-selected': swOrderFulfillmentListController.filters['partial'], 's-sm-content-block s-status s-yellow': !swOrderFulfillmentListController.filters['partial'] }">
-			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
-			                <i class="fa fa-circle"></i>
-			            </div>
-			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
-			                <div class="s-title">
-			                    Partial <span class="s-number"></span>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-				
 				<!--- UNAVAILABLE MODULE --->
 			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('unavailable');">		
 					<!--Small content block-->
@@ -439,11 +424,30 @@
 			            </div>
 			        </div>
 			    </div>
+			    
+			    <!--- PAID MODULE --->
+			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('paid');">		
+					<!--Small content block-->
+			        <div ng-class="{ 's-sm-content-block s-status s-yellow s-selected': swOrderFulfillmentListController.filters['paid'], 's-sm-content-block s-status s-gray': !swOrderFulfillmentListController.filters['paid'] }">
+			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+			                <i class="fa fa-circle"></i>
+			            </div>
+			            <div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content s-single-line">
+			                <div class="s-title">
+			                    Paid <span class="s-number"></span>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
 			</div>
-			
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments">	
+			<div class="row s-detail-content-wrapper" ng-if="(swOrderFulfillmentListController.view != swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.view != swOrderFulfillmentListController.views.Items) || swOrderFulfillmentListController.refreshFlag">
+				<center>
+            		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> LOADING
+				</center>
+			</div>
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments && !swOrderFulfillmentListController.refreshFlag">	
 				<div class="col-xs-12">
-					<div class="s-detail-body">
+					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
 						
 						<sw-listing-display
 							data-collection-config="swOrderFulfillmentListController.orderFulfillmentCollection"
@@ -462,16 +466,16 @@
 							<sw-listing-column data-property-identifier="order.orderOpenDateTime" data-title="Date Placed"></sw-listing-column>
 							<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" data-title="Shipping Method"></sw-listing-column>
 							<sw-listing-column data-property-identifier="shippingAddress.stateCode" data-title="State"></sw-listing-column>
-							<sw-listing-column data-property-identifier="orderFulfillmentInvStatType.typeName" data-title="Status"></sw-listing-column>
+							<sw-listing-column data-property-identifier="estimatedShippingDate" data-title="Estimated Shipping Date"></sw-listing-column>
 						</sw-listing-display>
 				
 					</div>
 				</div>
 			</div>
 			
-			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items">	
+			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items && !swOrderFulfillmentListController.refreshFlag">	
 				<div class="col-xs-12">
-					<div class="s-detail-body">
+					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
 						
 						<sw-listing-display
 							data-collection-config="swOrderFulfillmentListController.orderItemCollection"
