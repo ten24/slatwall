@@ -303,6 +303,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 
 	public any function saveSite(required any site, struct data={}){
+		getService('HibachiCacheService').resetCachedKeyByPrefix('getSiteCodes');
 		//get new flag before persisting
 		var newFlag = arguments.site.getNewFlag();
 
