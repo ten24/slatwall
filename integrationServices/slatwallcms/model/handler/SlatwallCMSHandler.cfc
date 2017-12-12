@@ -150,6 +150,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
        		
 	        //if we obtained a site and it is allowed by the domain name then prepare to render content
 			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
+				arguments.slatwallScope.getService("hibachiEventService").announceEvent(eventName="beforeSlatwallCMSBootstrap");
 				prepareSlatwallScope(arguments.slatwallScope,app,site);
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);
 			}
