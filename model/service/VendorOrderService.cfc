@@ -58,6 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="vendorService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -231,6 +232,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processVendorOrder_receive(required any vendorOrder, required any processObject){
 		
+		// Automatically keep preference history of vendor and product/sku for future convenience
+		var newVendorProductPreferenceFlag = false;
+		for (var vendorOrderItem in arguments.vendorOrder.getVendorOrderItems()) {
+			var product = vendorOrderItem.getSku().getProduct();
+			if (!arguments.vendorOrder.getVendor().hasProduct(product)) {
+				// Add vendor product relationship
+				arguments.vendorOrder.getVendor().addProduct(product);
+				newVendorProductPreferenceFlag = true;
+			}
+		}
+
+		// Persist update vendor products if necessary
+		if (newVendorProductPreferenceFlag) {
+			getVendorService().saveVendor(arguments.vendorOrder.getVendor());
+		}
+
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "vendorOrder" );
 		stockReceiver.setVendorOrder( arguments.vendorOrder );

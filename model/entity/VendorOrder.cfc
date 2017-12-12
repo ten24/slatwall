@@ -230,6 +230,25 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 		return variables.addVendorOrderItemSkuOptionsSmartList;
 	}
 
+	public any function getAddVendorOrderItemAllSkuOptionsSmartList() {
+		if(!structKeyExists(variables, "addVendorOrderItemAllSkuOptionsSmartList")) {
+			// TODO: Needs to be refactored for efficiency, retrieving productIDs assigned to vendor
+			var vendorProducts = ormExecuteQuery("SELECT aslatwallvendor.products FROM SlatwallVendor aslatwallvendor WHERE aslatwallvendor.vendorID = :vendorID", {vendorID = getVendor().getVendorID()});
+			var vendorProductIDs = "";
+			for (var product in vendorProducts) {
+				vendorProductIDs = listAppend(vendorProductIDs, "'#product.getProductID()#'");
+			}
+
+			// Excluding the skus/products that already assigned to vendor
+			variables.addVendorOrderItemAllSkuOptionsSmartList = getService("skuService").getSkuSmartList();
+			if (len(vendorProductIDs)) {
+				variables.addVendorOrderItemAllSkuOptionsSmartList.addWhereCondition("aslatwallsku.product.productID NOT IN ( #vendorProductIDs# )");
+			}
+			variables.addVendorOrderItemAllSkuOptionsSmartList.addOrder('skuCode|ASC');
+		}
+		return variables.addVendorOrderItemAllSkuOptionsSmartList;
+	}
+
 
 	// ============  END:  Non-Persistent Property Methods =================
 
