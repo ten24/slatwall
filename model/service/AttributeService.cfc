@@ -197,11 +197,10 @@ component  extends="HibachiService" accessors="true" {
 
 		if(this.getEntityHasPropertyByEntityName(entityName,customPropertyName)){
 			getService('UpdateService').migrateAttributeToCustomProperty(entityName,customPropertyName,processObject.getOverrideData());
-			return arguments.attribute;
 		} else {
 			arguments.attribute.addError('Custom Property Does Not Exist','This custom property does not exist in the entity.');
-			return arguments.attribute;
 		}
+		return arguments.attribute;
 	}
 	// =====================  END: Process Methods ============================
 
