@@ -52,14 +52,15 @@ Notes:
 <cfparam name="rc.minMaxStockTransfer" default="any" >
 <cfoutput>
 	<cfset stockAdjustmentsCollectionlist = rc.minMaxStockTransfer.getStockAdjustmentsCollectionlist()/>
-	<cfset stockAdjustmentsCollectionlist.setDisplayProperties(displayPropertiesList='stockAdjustmentType.typeName,stockAdjustmentStatusType.typeName', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentType.typeName', title="Type", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentStatusType.typeName', title="Status", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
 	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='fromLocation.locationName', title="From", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
 	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='toLocation.locationName', title="To", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentID',columnConfig={isVisible=false,  isSearchable=false, isDeletable=false})/>
 
 	<hb:HibachiListingDisplay collectionList="#stockAdjustmentsCollectionlist#"
-							   recordEditAction="admin:entity.editminmaxstocktransferitem"
-							   recordDetailAction="admin:entity.detailminmaxstocktransferitem"
-							   recordDetailQueryString="redirectAction=admin:entity.detailminmaxstocktransfer&minMaxStockTransferID=#rc.minMaxStockTransfer.getMinMaxStockTransferID()#"
+							   recordEditAction="admin:entity.editstockadjustment"
+							   recordDetailAction="admin:entity.detailstockadjustment"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>
