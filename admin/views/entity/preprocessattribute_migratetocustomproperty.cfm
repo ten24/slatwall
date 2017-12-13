@@ -55,8 +55,15 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.attribute#" edit="#rc.edit#">
+	
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.attribute#">
-		</hb:HibachiEntityActionBar>
-    <hb:HibachiPropertyDisplay fieldType="checkbox" object="#rc.processObject#" property="overrideData" edit="true" value="false">
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+	    	<hb:HibachiPropertyDisplay fieldType="checkbox" object="#rc.processObject#" property="overrideData" edit="true" value="false">
+			</hb:HibachiPropertyList>
+  </hb:HibachiPropertyRow>
+
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
