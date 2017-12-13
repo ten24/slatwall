@@ -1,6 +1,5 @@
 /*
-
-    Slatwall - An Open Source eCommerce Platform
+  Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
     This program is free software: you can redistribute it and/or modify
@@ -149,7 +148,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 
 	//CUSTOM PROPERTIES BEGIN
-  //CUSTOM PROPERTIES END
+  
+property name="grape" ormType="string";//CUSTOM PROPERTIES END
 	public any function getAverageCost(){
 		return getDao('productDao').getAverageCost(this.getProductID());
 	}
