@@ -52,10 +52,4 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="attribute";
 	// Data Properties
 	property name="overrideData" type="boolean" default="false";
-
-	public any function test(){
-		writeDump(variables.attribute);
-		return variables.attribute.attributeID;
-	}
-
 }
