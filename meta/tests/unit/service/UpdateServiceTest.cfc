@@ -68,58 +68,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function getPropertyStringByAttributeDataTest_InputType_is_Text(){
-		var attributeData = {
-			attributeCode='myTestProperty',
-			attributeInputType='Text'
-		};
-
-		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="string";',propertyString);
-	}
-
-	/**
-	* @test
-	*/
-	public void function getPropertyStringByAttributeDataTest_InputType_is_yesNo(){
-		var attributeData = {
-			attributeCode='myTestProperty',
-			attributeInputType='yesNo'
-		};
-
-		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="boolean" hb_formatType="yesno";',propertyString);
-	}
-
-	/**
-	* @test
-	*/
-	public void function getPropertyStringByAttributeDataTest_InputType_is_checkbox(){
-		var attributeData = {
-			attributeCode='myTestProperty',
-			attributeInputType='checkbox'
-		};
-
-		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="boolean";',propertyString);
-	}
-
-	/**
-	* @test
-	*/
-	public void function getPropertyStringByAttributeDataTest_InputType_is_wysiwyg(){
-		var attributeData = {
-			attributeCode='myTestProperty',
-			attributeInputType='wysiwyg'
-		};
-
-		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="string" hb_formFieldType="wysiwyg";',propertyString);
-	}
-
-	/**
-	* @test
-	*/
 	public void function updateCMSApplicationsTest(){
 		variables.service.updateCMSApplications();
 	}
