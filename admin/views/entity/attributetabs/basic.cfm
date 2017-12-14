@@ -13,6 +13,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeHint" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="defaultValue" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="customPropertyFlag" edit="#rc.edit#">
 			<cfif !isNull(rc.attributeSet) AND !isNull(rc.attributeSet.getAttributeSetObject()) AND rc.attributeSet.getAttributeSetObject() EQ "OrderItem">
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 			</cfif>
@@ -32,7 +33,7 @@
  			<cfif not rc.attribute.isNew()>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="urlTitle" edit="#rc.edit#">
  			</cfif>
- 			
+
  			<cfif listFindNoCase('checkboxGroup,multiselect,radioGroup,select',rc.attribute.getAttributeInputType() ) && (!isNull(rc.attribute.getAttributeOptionSource()) || rc.attribute.getAttributeOptionsCount() eq 0)>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeOptionSource" edit="#rc.edit#">
  			</cfif>

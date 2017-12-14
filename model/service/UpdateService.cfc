@@ -47,19 +47,19 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiService" accessors="true">
-	
+
 	<!--- prepare constants and environment variables --->
 	<cffunction name="init" returntype="void" >
 		<cfscript>
 			getEnvironmentVariables();
-			
+
 		</cfscript>
 	</cffunction>
-	
+
 	<cffunction name="getEnvironmentVariables" returntype="void">
 		<cfscript>
 			variables.lineBreak = getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
-			
+
 			variables.paddingCount = 2;
 			variables.conditionLineBreak="";
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
@@ -70,30 +70,30 @@ Notes:
 				variables.paddingCount = 0;
 				variables.conditionLineBreak=variables.lineBreak;
 			}
-			
+
 		</cfscript>
 	</cffunction>
-	
+
 	<cffunction name="update">
 		<cfargument name="branch" type="string" default="master">
-		
+
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
 		<cftry>
 			<cfset var updateCopyStarted = false />
-			<cfset var zipName  = ''/> 		
+			<cfset var zipName  = ''/>
 			<cfset var isZipFromGithub = false/>
 			<cfif arguments.branch eq 'master'>
-				<cfset zipName  = 'slatwall-latest'/> 	
+				<cfset zipName  = 'slatwall-latest'/>
 			<cfelseif arguments.branch eq 'hotfix'>
-				<cfset zipName = 'slatwall-hotfix'/>	
+				<cfset zipName = 'slatwall-hotfix'/>
 			<cfelseif arguments.branch eq 'develop'>
-				<cfset zipName  = 'slatwall-be'/> 		
+				<cfset zipName  = 'slatwall-be'/>
 			<cfelse>
 				<cfset isZipFromGithub = true/>
 			</cfif>
 			<cfif isZipFromGithub>
-				<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
+				<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />
 			<cfelse>
 				<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.zip" />
 			</cfif>
@@ -147,8 +147,8 @@ Notes:
 						<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
 					</cfif>
 					<cfset updateCopyStarted = true />
-					
-					
+
+
 					<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
 					<!--- Delete .zip file and unzipped folder --->
 					<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
@@ -163,15 +163,15 @@ Notes:
 				<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
 					<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
 				</cfif>
-				<cfset updateCopyStarted = true /> 
+				<cfset updateCopyStarted = true />
 				<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
-			
+
 				<!--- Delete .zip file and unzipped folder --->
 				<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
 				<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
 				<cfset updateCMSApplications()>
 			</cfif>
-			
+
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
 				<cfif updateCopyStarted>
@@ -272,15 +272,38 @@ Notes:
 				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
 				var directories = ArrayToList(directoryList);
 
-				//find which items have an override in the custom folder
+				//find which items have an override in the custom folder or attributes to be copied
+				var attributeDataQuery = getSlatwallScope().getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
 				var matches = 0;
 				var matchArray = [];
+				var queryService = new query();
+				var entityNameToAttributeDataQueryHash = {};
+
+				for (var fileName in directoryListByName){
+
+					var entityName = listFirst(fileName,".");
+					queryService.setName("queryAttributeDataQuery");
+					queryService.setDBType("query");
+					queryService.setAttributes(sourceQuery=attributeDataQuery);
+					queryService.clearParams();
+					queryService.addParam(name="entityNameParam",value="#entityName#",cfsqltype="cf_sql_varchar");
+					var attributeDataQueryByEntity = queryService.execute(sql="SELECT * from sourceQuery where attributeSetObject = :entityNameParam").getResult();
+					if(attributeDataQueryByEntity.recordCount >= 1){
+						matches+=1;
+						entityNameToAttributeDataQueryHash[entityName] = attributeDataQuery;
+						ArrayAppend(matchArray,fileName);
+					}
+				}
+
 				for (var fileName in directoryListCustom){
 
 					var result = ListFind(ArrayToList(directoryListByName), fileName);
+
 					if (result >= 1){
 						matches+=1;
-						ArrayAppend(matchArray, fileName);
+						if(!ArrayFind(matchArray,fileName)){
+							ArrayAppend(matchArray, fileName);
+						}
 					}
 				}
 				if (matches <= 0){
@@ -289,72 +312,73 @@ Notes:
 
 			//iterate over overrides and merge them
 			for (var match in matchArray) {
-				var results = mergeProperties("#match#");
+				var entityName = listFirst(match,".");
+				var results = mergeProperties("#match#",entityNameToAttributeDataQueryHash[entityName]);
 				filewrite(path & '/#match#', results);
 			}
 			return true;
 		}
 	</cfscript>
-	
+
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
 		<cfargument name="entityName" type="string" required="true"/>
 		<cfargument name="customPropertyName" type="string" required="true"/>
 		<cfargument name="overrideDataFlag" type="boolean" default="false" >
-		
+
 		<cfset var entityMetaData = getEntityMetaData(arguments.entityName)/>
 		<cfset var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName)/>
-		
+
 		<cfif getApplicationValue("databaseType") eq "MySQL">
-			
+
 			<cfquery name="local.attributeToCustomProperty">
 				UPDATE #entityMetaData.table# p
-				
+
 				INNER JOIN SwAttributeValue av
-				
+
 				ON p.#primaryIDName# = av.#primaryIDName#
-				
+
 				INNER JOIN SwAttribute a
-				
+
 				ON av.attributeID = a.attributeID
-				
+
 				SET p.#arguments.customPropertyName# = av.attributeValue
-				
+
 				WHERE a.attributeCode = '#arguments.customPropertyName#'
-				
+
 				<cfif NOT overrideDataFlag >
 					AND p.#arguments.customPropertyName# IS NULL
 				</cfif>
-				
+
 			</cfquery>
 		<cfelse>
 			<cfquery name="local.attributeToCustomProperty">
 				UPDATE p
-	
+
 				SET p.#arguments.customPropertyName# = av.attributeValue
-				
+
 				FROM #entityMetaData.table# p
-				
+
 				INNER JOIN SwAttributeValue av
-				
+
 				ON p.#primaryIDName# = av.#primaryIDName#
-				
+
 				INNER JOIN SwAttribute a
-				
-				ON av.attributeID = a.attributeID 
-				
+
+				ON av.attributeID = a.attributeID
+
 				WHERE a.attributeCode = '#arguments.customPropertyName#'
-				
+
 				<cfif NOT overrideDataFlag >
 					AND p.#arguments.customPropertyName# IS NULL
 				</cfif>
-				
+
 			</cfquery>
 		</cfif>
 	</cffunction>
-	
+
 
 	<cfscript>
-		
+
 		public void function checkIfCustomPropertiesExistInBase(required any customMeta, required any baseMeta){
 			// check duplicate properties and if there is a duplicate then write it to log
 			if(structKeyExists(arguments.customMeta,'properties')){
@@ -370,55 +394,77 @@ Notes:
 				}
 			}
 		}
-		
-		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false){
+
+		public string function mergeAttributesIntoPropertyString(required any coreEntityParser, required string propertyString, required string entityName, query attributeDataQueryByEntity){
+			var returnString = arguments.propertyString;
+			for(var attributeData in arguments.attributeDataQueryByEntity){
+				var attributePropertyString = arguments.coreEntityParser.getPropertyStringByAttributeData(attributeData);
+				returnString = returnString & attributePropertyString;
+			}
+			return returnString;
+		}
+
+		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false, query attributeDataQueryByEntity){
+
+			var entityName = arguments.customEntityParser.getEntityName();
+
 			var conditionalLineBreak = variables.conditionLineBreak;
-			
+
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
 				conditionalLineBreak = "";
 			}
 			var newContent = "";
 			//add properties
-			if(len(arguments.customEntityParser.getPropertyString())){
+
+			var propertyString = '';
+			if(!isNull(arguments.customEntityParser.getFilePath())){
+				PropertyString = arguments.customEntityParser.getPropertyString();
+			}
+			propertyString = mergeAttributesIntoPropertyString(arguments.coreEntityParser,propertyString,entityName,arguments.attributeDataQueryByEntity);
+			if(len(PropertyString)){
 				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
 					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
 				}
-				
+
 				if(arguments.coreEntityParser.hasCustomProperties()){
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
-					
-					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS arguments.customEntityParser.getPropertyString()){
+
+					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS PropertyString){
 						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition()-1);
 						var contentAfterCustomPropertiesStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
-						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&customEntityParser.getPropertyString();
+						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&PropertyString;
 						var customPropertyContent = contentBeforeCustomPropertiesStart & combinedPropertyContent & contentAfterCustomPropertiesStart;
-						arguments.coreEntityParser.setFileContent(customPropertyContent);	
+						arguments.coreEntityParser.setFileContent(customPropertyContent);
 					}
 				}else{
-					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString();
-					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
-									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
+					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString(PropertyString);
+					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount)
+									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) &
 									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
 					;
 					arguments.coreEntityParser.setFileContent(newContent);
-				} 
+				}
 			}
 			//add functions
-			if(len(arguments.customEntityParser.getFunctionString())){
+			var functionString = '';
+			if(!isNull(arguments.customEntityParser.getFilePath())){
+				functionString = arguments.customEntityParser.getFunctionString();
+			}
+			if(len(functionString)){
 				if(arguments.purgeCustomProperties && arguments.coreEntityParser.hasCustomFunctions()){
-					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));	
-				}	
-				
+					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));
+				}
+
 				if(arguments.coreEntityParser.hasCustomFunctions()){
 					var customFunctionStartPos = arguments.coreEntityParser.getCustomFunctionStartPosition();
 					var customFunctionEndPos = arguments.coreEntityParser.getCustomFunctionEndPosition();
-					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS arguments.customEntityParser.getFunctionString()){
+					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS functionString){
 						var contentBeforeCustomFunctionsStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentStartPosition()-1);
 						var contentAfterCustomFunctionsStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
 						var combinedFunctionContent = coreEntityParser.getCustomFunctionContent()&variables.lineBreak&customEntityParser.getFunctionString();
 						var customFunctionContent = contentBeforeCustomFunctionsStart & combinedFunctionContent & contentAfterCustomFunctionsStart;
-						arguments.coreEntityParser.setFileContent(customFunctionContent);	
+						arguments.coreEntityParser.setFileContent(customFunctionContent);
 					}
 				}else{
 					var customFunctionString = arguments.customEntityParser.getCustomFunctionStringByFunctionString();
@@ -428,22 +474,24 @@ Notes:
 				}
 			}
 		}
-	
-		public any function mergeProperties(string filename){ 
-	
-		
+
+		public any function mergeProperties(string filename,query attributeDataQueryByEntity){
+
+			var entityName = listFirst(filename,".");
+
 			var customEntityParser = getTransient('HibachiEntityParser');
-			customEntityParser.setFilePath("custom/model/entity/#arguments.fileName#");
-			
+			customEntityParser.setFilePath("custom/model/entity/#arguments.filename#");
+			customEntityParser.setEntityName(entityName);
+
 			//declared file paths
 			var coreEntityParser = getTransient('HibachiEntityParser');
-			coreEntityParser.setFilePath("model/entity/#arguments.fileName#");
-
-			mergeEntityParsers(coreEntityParser,customEntityParser,true);
+			coreEntityParser.setFilePath("model/entity/#arguments.filename#");
+			coreEntityParser.setEntityName(entityName);
+			mergeEntityParsers(coreEntityParser,customEntityParser,true,arguments.attributeDataQueryByEntity);
 
 			return coreEntityParser.getFileContent();
-		
+
 		}
 	</cfscript>
-	 
+
 </cfcomponent>
