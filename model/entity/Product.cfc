@@ -102,7 +102,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
-	// Audit Properties
+	// Audit Properties 
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -150,15 +150,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getAverageCost(){
 		return getDao('productDao').getAverageCost(this.getProductID());
 	}
-
+	
 	public any function getAverageLandedCost(){
 		return getDao('productDao').getAverageLandedCost(this.getProductID());
 	}
-
+	
 	public numeric function getCurrentMargin(){
 		return getDao('productDao').getCurrentMargin(this.getProductID());
 	}
-
+	
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
@@ -226,7 +226,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
             }
         }
         return false;
-    }
+    } 
 
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -307,7 +307,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
  		return this.getOptionGroupCount() gt 0 || this.getSkusCount() >= 1;
  	}
 
-	//TODO: Unused function
+	//TODO: Unused function 
 	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
@@ -390,17 +390,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			skuCollection.addFilter("skuID",getDefaultSku().getSkuID());
 		}
 		var skuCollectionRecords = skuCollection.getRecords();
-
+		
 		// Add all skus's default images
 		var missingImagePath = setting('imageMissingImagePath');
 		var imageAltString = stringReplace(setting('imageAltString'));
-
+		
 		var skuCollectionRecordsCount = arrayLen(skuCollectionRecords);
 		for(var i=1; i<=skuCollectionRecordsCount; i++) {
 			var skuData = skuCollectionRecords[i];
 			if(ArrayFind(filenames, skuData['imageFile']) ==0) {
 				ArrayAppend(filenames, skuData['imageFile']);
-
+				
 				var thisImage = {};
 				thisImage.originalFilename = skuData['imageFile'];
 				thisImage.originalPath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
@@ -416,7 +416,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
 
 					arrayAppend(
-						thisImage.resizedImagePaths,
+						thisImage.resizedImagePaths, 
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
 					);
 				}
@@ -427,14 +427,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
 		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
-
+		
 		var productImagesRecords = productImagesCollectionList.getRecords();
 		var productImagesRecordsCount = arrayLen(productImagesRecords);
 		for(var i=1; i<=productImagesRecordsCount; i++) {
 			var productImageData = productImagesRecords[i];
 			if( ArrayFind(filenames, productImageData['imageID'])==0 ) {
 				ArrayAppend(filenames, productImageData['imageID']);
-
+				
 				var thisImage = {};
 				thisImage.originalFilename = productImageData['imageFile'];
 				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
@@ -450,7 +450,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					thisImage.description = productImageData['imageDescription'];
 				}
 				thisImage.resizedImagePaths = [];
-
+		
 				var resizesCount = arrayLen(arguments.resizeSizes);
 				for(var s=1; s<=resizesCount; s++) {
 
@@ -461,9 +461,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 					arrayAppend(
 						thisImage.resizedImagePaths,
-						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
+						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
 					);
-
+						
 				}
 				arrayAppend(imageGalleryArray, thisImage);
 			}
@@ -556,7 +556,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var selectedOptionGroupsByOptionID = {};
 
 		var optionCollection = getService('optionService').getOptionCollectionList();
-
+		
 		var displayProperties = '
 			optionID,
 			optionName,
@@ -570,24 +570,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			skus.calculatedQATS,
 			skus.skuID'
 		;
-
+		
 		if (structKeyExists(arguments, 'locationID')){
-			displayProperties = listAppend(displayProperties, 'skus.skuLocationQuantities.calculatedQATS');
+			displayProperties = listAppend(displayProperties, 'skus.skuLocationQuantities.calculatedQATS'); 
 		}
-
+		
 		optionCollection.setDisplayProperties(displayProperties);
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
-
+		
 		if (structKeyExists(arguments, 'locationID')){
 			optionCollection.addFilter("skus.skuLocationQuantities.location.locationID",arguments.locationID);
 			optionCollection.addFilter("skus.skuLocationQuantities.calculatedQATS",0,'>');
 		} else{
 			optionCollection.addFilter('skus.calculatedQATS',0,'>');
 		}
-
+		
 		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
 		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
-
+			
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
@@ -1197,7 +1197,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeProduct( this );
 	}
-
+	
 	// Product Listing Pages (one-to-many)
 	public void function addListingPage(required any productListingPage) {
 		arguments.productListingPage.setProduct( this );
