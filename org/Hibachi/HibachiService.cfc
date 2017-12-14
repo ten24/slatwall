@@ -153,7 +153,7 @@
 			}
 			
 			// if the entity still has no errors then we call call the process method
-			if(!arguments.entity.hasErrors()) {
+			if(!arguments.entity.hasErrors() && ( !arguments.entity.hasProcessObject(arguments.processContext) || !invokeArguments[ "processObject" ].hasErrors() ) ) {
 				var methodName = "process#arguments.entity.getClassName()#_#arguments.processContext#";
 				arguments.entity = this.invokeMethod(methodName, invokeArguments);
 				if(isNull(arguments.entity)) {
@@ -162,7 +162,7 @@
 			}	
 			// Announce the after events
 			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
-			if(arguments.entity.hasErrors()) {
+			if(arguments.entity.hasErrors() && ( !arguments.entity.hasProcessObject(arguments.processContext) || !invokeArguments[ "processObject" ].hasErrors() ) ) {
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Failure", invokeArguments);
 			} else {
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Success", invokeArguments);
