@@ -177,6 +177,28 @@ class UtilityService extends BaseService{
     }
     };
 
+    /**
+     * Removes a substring from a string.
+     * str: The original string.
+     * subStr: The string to remove.
+     * returns the modified string.
+     */
+     public listRemove = (str:string, substring:string) => {
+        if (str.indexOf(substring) != -1){
+            //remove it cause its no longer selected.
+            str = str.replace(substring, "");
+            str = str.replace(",,", "");
+            if (str == ","){
+                str = "";
+            }
+            if (str.substring(0, 1) == ',') { 
+                str = str.substring(1);
+            }
+            str = str.substring(0, str.length-1);
+        }
+
+        return str;
+    }
 
     public formatValue=(value,formatType,formatDetails,entityInstance)=>{
         if(angular.isUndefined(formatDetails)){

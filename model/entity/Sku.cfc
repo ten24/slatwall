@@ -79,6 +79,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedQOH" ormtype="integer";
 	property name="calculatedSkuDefinition" ormtype="string";
+	property name="calculatedOptionsHash" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -103,7 +104,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="vendorOrderItems" singularname="vendorOrderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="VendorOrderItem" inverse="true" lazy="extra";
 
 	// Related Object Properties (many-to-many - owner)
-	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
+	property name="options" singularname="option" cfc="Option" type="array" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID";
 	property name="accessContents" singularname="accessContent" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="skuID" inversejoincolumn="contentID";
 	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
@@ -178,6 +179,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="formattedRedemptionAmount" persistent="false";
 	property name="weight" persistent="false"; 
 	property name="allowWaitlistedRegistrations" persistent="false";
+	property name="optionsHash" persistent="false";
 	// Deprecated Properties
 
 
@@ -1007,8 +1009,12 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function getOptionsIDList() {
     	if(!structKeyExists(variables, "optionsIDList")) {
     		variables.optionsIDList = "";
-    		for(var option in getOptions()) {
-	    		variables.optionsIDList = listAppend(variables.optionsIDList, option.getOptionID());
+    		
+    		var optionsCollectionList = getService('OptionService').getOptionCollectionList();
+    		optionsCollectionList.addFilter('skus.skuID',this.getSkuID());
+    		optionsCollectionList.setOrderBy('optionID');
+    		for(var option in optionsCollectionList.getRecords()) {
+	    		variables.optionsIDList = listAppend(variables.optionsIDList, option['optionID']);
 	    	}
     	}
 
