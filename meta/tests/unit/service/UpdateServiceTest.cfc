@@ -75,7 +75,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		debug(propertyString);
 		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="string";',propertyString);
 	}
 
@@ -89,7 +88,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		debug(propertyString);
 		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="boolean" hb_formatType="yesno";',propertyString);
 	}
 
@@ -103,7 +101,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		debug(propertyString);
 		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="boolean";',propertyString);
 	}
 
@@ -117,16 +114,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		var propertyString = variables.service.getPropertyStringByAttributeData(attributeData);
-		debug(propertyString);
 		assertEquals('#request.slatwallScope.getService('HibachiUtilityService').getLineBreakByEnvironment(request.slatwallScope.getApplicationValue("lineBreakStyle"))# property name="myTestProperty" ormtype="string" hb_formFieldType="wysiwyg";',propertyString);
-	}
-
-	/**
-	* @test
-	*/
-	public void function mergeAttributesIntoPropertyStringTest(){
-		//requires valid attribute data in the database
-		debug(variables.service.mergeAttributesIntoPropertyString("","Account"));
 	}
 
 	/**
