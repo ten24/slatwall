@@ -5,6 +5,9 @@
 	<cfargument name="optionData"/>
 	<cfargument name="template"/>
 	<cfargument name="formatter"/>
+	<cfargument name="openTab"/>
+	<cfargument name="optionPriorityList"/>
+	
 	
 	<cfsavecontent variable="htmlContent" >
 		<cfinclude template="#arguments.template#" >
@@ -43,6 +46,10 @@
 	<cfparam name="attributes.formatter" default=""/>
 	<!--- template override --->
 	<cfparam name="attributes.template" default="./tagtemplates/hibachifiltercountdisplayitem.cfm"/>
+	<!--- used to drive whether the tab is open by default --->
+	<cfparam name="attributes.openTab" default="true"/>
+	<!--- used to describe what options should show up vs load in see more --->
+	<cfparam name="attributes.optionPriorityList" default=""/>
 	
 	<cfparam name="attributes.rangeData" default=""/>
 	<cfparam name="attributes.showApplyRange" default="true"/>
@@ -180,11 +187,11 @@
 		<!--- create the html now that we have all the data we need --->
 		<cfset attributes.htmlContent = ""/>
 		<cfif isArray(attributes.optionData)>
-			<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter)/>
+			<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter,attributes.openTab,attributes.optionPriorityList)/>
 		<cfelseif isStruct(attributes.optionData)>
 			<cfloop collection="#attributes.optionData#" item="discriminatorName">
 				 
-				<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter)/>
+				<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter,attributes.openTab,attributes.optionPriorityList)/>
 			</cfloop>
 		</cfif>
 		
