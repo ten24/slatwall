@@ -52,4 +52,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="attribute";
 	// Data Properties
 	property name="overrideData" type="boolean" default="false";
+	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one";
+	property name="attributeCode";
+
+	public boolean function doesEntityHaveProperty(){
+		var entityName = this.getAttribute().getAttributeSet().getAttributeSetObject();
+		if(getService('HibachiService').getEntityHasPropertyByEntityName(entityName,this.getAttribute().getAttributeCode())){
+			return true;
+		}
+		return false;
+	}
 }
