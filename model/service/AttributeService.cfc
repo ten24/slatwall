@@ -188,7 +188,7 @@ component  extends="HibachiService" accessors="true" {
 
 	public any function processAttribute_MigrateToCustomProperty(required any attribute, required any processObject, struct data={}) {
 
-		getService("HibachiTagService").cfSetting(requesttimeout="3600");
+		getService("HibachiTagService").cfSetting(requesttimeout="600");
 
 		//test if custom property exists in entity. If it does, migrate data
 
