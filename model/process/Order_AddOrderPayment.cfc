@@ -243,6 +243,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public array function getPaymentMethodIDOptions() {
+		var paymentMethodIDOptions = [];
 		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
 			variables.paymentMethodIDOptions = [];
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
@@ -255,7 +256,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					});
 			}
 		}
-		return variables.paymentMethodIDOptions;
+		if(getHibachiScope().getAccount().getAdminAccountFlag()){
+			paymentMethodIDOptions = duplicate(variables.paymentMethodIDOptions);
+			arrayAppend(paymentMethodIDOptions, {
+				name = 'None',
+				value = 'none',
+				paymentmethodtype = 'none',
+				allowsaveflag = false
+			});
+		}else{
+			paymentMethodIDOptions = variables.paymentMethodIDOptions;
+		}
+		return paymentMethodIDOptions;
 	}
 
 	public array function getPaymentTermIDOptions() {
