@@ -51,12 +51,12 @@ Notes:
 
 
 <cfparam name="rc.stock" type="any">
-
+<cfparam name="rc.edit" type="boolean">
 
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="false">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="false">
+	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="#rc.edit#">
 		</hb:HibachiEntityActionBar>
 		
 	

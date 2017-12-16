@@ -14,7 +14,7 @@ module FulfillmentsList {
         "partial",
         "available",
     }
-    export type CollectionFilterValue =  "partial"|"available"|"unavailable"|"location";
+    export type CollectionFilterValue =  "partial"|"available"|"unavailable"|"location"|"paid";
 }
 
 /**
@@ -29,7 +29,8 @@ class SWOrderFulfillmentListController {
     private view:number;
     private collections:any;
     private refreshFlag:boolean;
-
+    private usingRefresh:boolean=false;
+    public addingBatch=false;
     public views:any;
     public total:number;
     public formData:{};
@@ -41,7 +42,7 @@ class SWOrderFulfillmentListController {
     constructor(private $hibachi, private $timeout, private collectionConfigService, private observerService, private utilityService, private $location, private $http, private $window, private typeaheadService, private orderFulfillmentService){
 
         //Set the initial state for the filters.
-        this.filters = { "unavailable": false, "partial": false, "available": true };
+        this.filters = { "unavailable": false, "partial": false, "available": false , "paid": false};
         this.collections = [];
 
         //Some setup for the fulfillments collection.
@@ -73,7 +74,8 @@ class SWOrderFulfillmentListController {
         //Attach our listeners for selections on both listing displays.
         this.observerService.attach(this.swSelectionToggleSelectionorderFulfillmentCollectionTableListener, "swSelectionToggleSelectionorderFulfillmentCollectionTable", "swSelectionToggleSelectionorderFulfillmentCollectionTableListener");
         this.observerService.attach(this.swSelectionToggleSelectionorderItemCollectionTableListener, "swSelectionToggleSelectionorderItemCollectionTable", "swSelectionToggleSelectionorderItemCollectionTableListener");
-
+        this.observerService.attach(this.collectionConfigUpdatedListener, "collectionConfigUpdated", "collectionConfigUpdatedListener");
+        
 
         //Subscribe to state changes in orderFulfillmentService
         this.orderFulfillmentService.orderFulfillmentStore.store$.subscribe((state)=>{
@@ -107,6 +109,21 @@ class SWOrderFulfillmentListController {
         }
         this.setProcessObject(processObject);
     };
+
+    public collectionConfigUpdatedListener = (callBackData) => {
+        if (this.usingRefresh == true){
+            this.refreshFlag=true;
+        }
+    };
+
+    public orderFulfillmentCollectionTablepageRecordsUpdatedListener = (callBackData) => {
+        if (callBackData){
+            this.updateCollectionsInView();
+            this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
+        }
+
+    };
+
 
     /**
      * Implements a listener for the orderItem selections
@@ -174,15 +191,19 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
+        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
+        //this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", "ofisAvailable", "=");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
+        this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
+        
+        
      }
 
      private createOrderFulfillmentCollectionWithStatus = (status):void => {
-        delete this.orderFulfillmentCollection;
-        this.view = undefined;
+        
+        status = status.trim();
 
         this.orderFulfillmentCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentID", "ID");
@@ -191,18 +212,75 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
-        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
+        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
+        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "!=");
+        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
+        //Shipping
+        this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+       
 
         if (status){
-            this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", status, "=", "OR");
+            console.log("S", status, status=="available");
+            if(status == "unavailable"){
+                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQATS", "0", "<=");
+            }else if(status == "available"){
+                console.log("Made it.");
+                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQATS", "0", ">");
+            }else if(status == "paid"){
+                this.orderFulfillmentCollection.addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">");
+            }
+        
         }
 
         this.orderFulfillmentCollection.getEntity().then((result)=>{
             //refreshes the page.
             this.collections[0] = this.orderFulfillmentCollection;
+            this.view = this.views.Fulfillments;
+            this.refreshFlag=false;
+        });
+
+
+
+     }
+
+     private createOrderItemCollectionWithStatus = (status):void => {
+        delete this.orderItemCollection;
+        this.view = undefined;
+
+        this.orderItemCollection = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
+        this.orderItemCollection.addDisplayProperty("orderItemID", "ID");
+        this.orderItemCollection.addDisplayProperty("order.orderNumber", "Order Number");
+        this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
+        this.orderItemCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
+        this.orderItemCollection.addDisplayProperty("shippingAddress.stateCode", "State");
+        this.orderItemCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
+        this.orderItemCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "==");
+        this.orderItemCollection.addFilter("fulfillmentMethod.fulfillmentMethodName", "Shipping", "=");
+        //Shipping
+        this.orderItemCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
+        this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
+       
+        //"order.paymentAmountDue", "0", ">", {persistent: false}
+        
+
+        if (status){
+            if (status == "partial"){
+                this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
+            }else if(status == "unavailable"){
+                this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", "<=", "AND");
+            }else if(status == "available"){
+                this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
+            }else if(status == "paid"){
+                this.orderFulfillmentCollection.addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">", "AND");
+            }
+
+        }
+
+        this.orderItemCollection.getEntity().then((result)=>{
+            //refreshes the page.
+            this.collections[0] = this.orderItemCollection;
             this.view = this.views.Fulfillments;
         });
 
@@ -220,9 +298,15 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("order.orderOpenDateTime", "Date Started");
         this.orderFulfillmentCollection.addDisplayProperty("shippingMethod.shippingMethodName", "Shipping Method");
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
-        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
+        this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status"); 
+        this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
+        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
+        //Shipping
+        this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
+        this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
+        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
+        //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
+
 
         //Build the collection using just the correct filters.
 
@@ -242,31 +326,37 @@ class SWOrderFulfillmentListController {
 
         //Add the filters.
         filterMap.forEach((v, k) => {
-            var systemCode = (k == 'available') ? 'ofisAvailable' : ((k == 'partial') ? 'ofisPartial' : ((k == 'unavailable') ? 'ofisUnAvailable' : ((k == 'location') ? 'location' : '' )));
-            //handle truth
+            var systemCode = k;
+           //handle truth
             if (filterMap.get(k) === true){
-                if (systemCode.length){
-                    this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "=", (hasMultipleEnabled ? "OR" : "AND"));
-                    this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
-                    this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
+                if (k){
+                    if(k == "unavailable"){
+                        this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", "=", "AND");
+                    }else if(k == "available"){
+                        this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
+                    }else if(k == "paid"){
+                        
+                        console.log("Apply Paid Filter");
+                        this.orderFulfillmentCollection.addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">", "AND");
+                    }
+        
                 }
+
             }
             //handle false
             if (filterMap.get(k) === false && filterMap.get(k) != undefined){
                 if (systemCode.length){
-                    this.orderFulfillmentCollection.addFilter("orderFulfillmentInvStatType.systemCode", systemCode, "!=", 'AND');
-                    this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
-                    this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
+                    //this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQATS", systemCode, "!=", 'AND');
+                    //this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=", "AND");
+                    //this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=", "AND");
                 }
             }
         });
 
+        if (this.getCollectionByView(this.getView())){
+            this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
+        }
 
-        this.orderFulfillmentCollection.getEntity().then((result)=>{
-            //refreshes the page.
-            this.collections[0] = this.orderFulfillmentCollection;
-            this.view = this.views.Fulfillments;
-        });
 
 
      }
@@ -282,7 +372,8 @@ class SWOrderFulfillmentListController {
         this.orderItemCollection.addDisplayProperty("order.orderOpenDateTime");
         this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.orderItemCollection.addDisplayProperty("sku.product.productName");
-        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.systemCode", "ofstFulfilled", "!=");
+        this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
+        this.orderItemCollection.addFilter("orderFulfillment.fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
         this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
     }
 
@@ -312,6 +403,16 @@ class SWOrderFulfillmentListController {
     //ACTION CREATOR: This will toggle the listing between its 2 states (orderfulfillments and orderitems)
     public toggleOrderFulfillmentListing = () => {
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({type: "TOGGLE_FULFILLMENT_LISTING", payload: {}});
+        //reset the selections because you can't mix and match.
+        this.getProcessObject().data.orderFulfillmentIDList = "";
+        this.getProcessObject().data.orderItemIDList = "";
+        try{
+        this.orderFulfillmentService.listingService.clearAllSelections("orderFulfillmentCollectionTable");
+        this.orderFulfillmentService.listingService.clearAllSelections("orderItemCollectionTable");
+        }catch(e){
+            //no need to say anything.
+        }
+        this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
     }
 
     /**
@@ -337,10 +438,16 @@ class SWOrderFulfillmentListController {
         if (collection){
             collection.getEntity().then((response)=>{
                 this.total = response.recordsCount;
+                this.refreshFlag=false;
             });
             return collection;
         }
 
+    }
+
+    public getRecordsCount = (collection):any => {
+        this.total = collection.recordsCount;
+        this.refreshFlag=false;
     }
 
     /**
@@ -350,46 +457,70 @@ class SWOrderFulfillmentListController {
      */
 
     public addFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
+
         this.$timeout(()=>{
             this.refreshFlag = true;
         }, 1);
 
-        //Always keep the orderNumber filter.
-        if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
 
+        //Always keep the orderNumber filter.
+        
             //If there is only one filter group add a second. otherwise add to the second.
             var filterGroup = [];
             var filter = {};
+            if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
+                if (value == true){
 
-            if (value == true){
+                    if (key == "partial"){
+                        this.createOrderFulfillmentCollectionWithStatus("partial");
+                    }
+                    if (key == "available"){
+                        this.createOrderFulfillmentCollectionWithStatus("available");
+                    }
+                    if (key == "unavailable"){
+                        this.createOrderFulfillmentCollectionWithStatus("unavailable");
+                    }
+                    if (key == "location" && value != undefined){
+                        filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
+                    }
+                    if (key == "paid" && value != undefined){
+                        console.log("Applied Paid Filter");
+                        this.getCollectionByView(this.getView()).addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">");
+                        
+                    }
 
-                if (key == "partial"){
-                    this.createOrderFulfillmentCollectionWithStatus("ofisPartial");
                 }
-                if (key == "available"){
-                     this.createOrderFulfillmentCollectionWithStatus("ofisAvailable");
+                if (value = false){
+                    this.createOrderFulfillmentCollection();
                 }
-                if (key == "unavailable"){
-                     this.createOrderFulfillmentCollectionWithStatus("ofisUnAvailable");
-                }
-                if (key == "location" && value != undefined){
-                     filter = this.getCollectionByView(this.getView()).createFilter("orderFulfillmentItems.stock.location.locationName", value, "=","OR",false);
-                }
+            }else{
+                if (value == true){
+                    
+                    if (key == "partial"){
+                        this.createOrderItemCollectionWithStatus("partial");
+                    }
+                    if (key == "available"){
+                        this.createOrderItemCollectionWithStatus("available");
+                    }
+                    if (key == "unavailable"){
+                        this.createOrderItemCollectionWithStatus("unavailable");
+                    }
+                    if (key == "location" && value != undefined){
+                        filter = this.getCollectionByView(this.getView()).createFilter("stock.location.locationName", value, "=","OR",false);
+                    }
+                    if (key == "paid" && value != undefined){
+                        console.log("Applied Paid Filter");
+                        this.getCollectionByView(this.getView()).addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">");
+                        
+                    }
 
+                }
+                if (value = false){
+                    this.createOrderItemCollection();
+                }
             }
-            if (value = false){
-                this.createOrderFulfillmentCollection();
-            }
-        }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
-            console.warn("Adding orderItem Filters", this.getCollectionByView(this.getView()));
-        }
-        //Calls to auto refresh the collection since a filter was added.
-        let refreshedCollection = this.orderFulfillmentCollection;
-        this.orderFulfillmentCollection = undefined;
-        this.orderFulfillmentCollection = refreshedCollection;
-        this.collections[0] = this.orderFulfillmentCollection;
+        
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
-
     }
 
     /**
@@ -399,9 +530,7 @@ class SWOrderFulfillmentListController {
      */
 
     public removeFilter = (key:FulfillmentsList.CollectionFilterValue, value:boolean):void => {
-        this.$timeout(()=>{
-            this.refreshFlag = true;
-        }, 1);
+        this.refreshFlag = true;
 
         //Always keep the orderNumber filter.
         if (this.getCollectionByView(this.getView()) && this.getCollectionByView(this.getView()).baseEntityName == "OrderFulfillment"){
@@ -410,15 +539,25 @@ class SWOrderFulfillmentListController {
             filterMap.set("available", this.filters['available']);
             filterMap.set("unavailable", this.filters['unavailable']);
             filterMap.set("location", this.filters['location']);
+            filterMap.set("paid", this.filters['paid']);
             this.createOrderFulfillmentCollectionWithFilterMap(filterMap);
         }else if (this.getCollectionByView(this.getView()).baseEntityName == "OrderItem"){
             console.warn("Adding orderItem Filters", this.getCollectionByView(this.getView()));
         }
         //Calls to auto refresh the collection since a filter was added.
-        let refreshedCollection = this.orderFulfillmentCollection;
-        this.orderFulfillmentCollection = undefined;
-        this.orderFulfillmentCollection = refreshedCollection;
-        this.collections[0] = this.orderFulfillmentCollection;
+
+        this.createOrderFulfillmentCollection();
+        this.createOrderItemCollection();
+
+        //some view setup.
+        this.views = FulfillmentsList.Views;
+
+        this.setView(this.views.Fulfillments);
+
+        //add both collections into the collection object. Removed 0 elements (insert only).
+        this.collections.push(this.orderFulfillmentCollection);
+        this.collections.push(this.orderItemCollection);
+
         this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
 
     }
@@ -436,13 +575,18 @@ class SWOrderFulfillmentListController {
             //If this is the fulfillment collection, the location is against, stock.location
             currentCollection.addFilter("stock.location.locationID", locationID, "=");
         }
-        this.refreshCollectionTotal(currentCollection);
+        
+        //this.toggleOrderFulfillmentListing();
+        //this.toggleOrderFulfillmentListing();
+        this.refreshCollectionTotal(this.getCollectionByView(this.getView()));
     }
+
 
     /**
      * Saved the batch using the data stored in the processObject. This delegates to the service method.
      */
     public addBatch = ():void => {
+        this.addingBatch = true;
         if (this.getProcessObject()) {
             this.orderFulfillmentService.addBatch(this.getProcessObject()).then(this.processCreateSuccess, this.processCreateError);
         }
@@ -452,6 +596,7 @@ class SWOrderFulfillmentListController {
      */
     public processCreateSuccess = (result):void => {
         //Redirect to the created fulfillmentBatch.
+        this.addingBatch = false;
         if (result.data && result.data['fulfillmentBatchID']){
             this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
         }
@@ -486,6 +631,7 @@ class SWOrderFulfillmentListController {
      * "locationIDfilter", "locationID", or "accountID" These are the same as the names of the forms.
      */
     public recieveNotification = (message): void => {
+        
         switch (message.payload.name) {
             case "locationIDfilter":
                 //If this is called, then the filter needs to be updated based on this id.

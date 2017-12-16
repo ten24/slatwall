@@ -83,7 +83,7 @@ Notes:
 		<sw-listing-column data-property-identifier="roundingRuleName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="roundingRuleExpression" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="roundingRuleDirection" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

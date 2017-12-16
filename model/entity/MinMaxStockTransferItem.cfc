@@ -50,7 +50,6 @@ component displayname="MinMaxStockTransferItem" entityname="SlatwallMinMaxStockT
 
 	// Persistent Properties
 	property name="minMaxStockTransferItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="toTopLocation" fieldtype="many-to-one" fkcolumn="toTopLocationID" cfc="Location";
 	property name="toMinQuantity" ormtype="integer";
 	property name="toMaxQuantity" ormtype="integer";
 	property name="toOffsetQuantity" ormtype="integer";
@@ -65,6 +64,7 @@ component displayname="MinMaxStockTransferItem" entityname="SlatwallMinMaxStockT
 	// Related Object Properties (many-to-one)
 	property name="minMaxStockTransfer" cfc="MinMaxStockTransfer" fieldtype="many-to-one" fkcolumn="minMaxStockTransferID";
 	property name="sku" fieldtype="many-to-one" fkcolumn="skuID" cfc="Sku" hb_cascadeCalculate="true";
+	property name="toTopLocation" fieldtype="many-to-one" fkcolumn="toTopLocationID" cfc="Location";
 	property name="toLeafLocation" fieldtype="many-to-one" fkcolumn="toLeafLocationID" cfc="Location";
 	property name="fromTopLocation" fieldtype="many-to-one" fkcolumn="fromTopLocationID" cfc="Location";
 	property name="fromLeafLocation" fieldtype="many-to-one" fkcolumn="fromLeafLocationID" cfc="Location";

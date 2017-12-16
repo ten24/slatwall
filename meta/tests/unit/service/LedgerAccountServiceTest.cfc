@@ -255,11 +255,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		vendorOrder = variables.vendorOrderService.process(vendorOrder,vendorOrder_receiveData,'Receive');
 		request.slatwallScope.flushOrmSession(true);
+
+		for (var entity in request.slatwallScope.getModifiedEntities()) {
+			debug(entity.getClassName());
+		}
 		
 		//verify that the vendor order is partially received
 		assertEquals(vendorOrder.getVendorOrderStatusType().getSystemCode(),'vostPartiallyReceived');
 		assertEquals(vendorOrder.getVendorOrderItems()[1].getQuantityUnreceived(),8);
+
 		//clear the session and reload the entity to get the calculated properties to reflect since there is not multiple requests
+
+		// Manually remove references to any modified entites otherwise they could be referenced in other ORM session and conflict when flushORMSession executes
+		request.slatwallScope.clearModifiedEntities();
+
 		//removes first level cache
 		ORMClearSession();
 		sku = variables.service.getSku(sku.getSkuID());

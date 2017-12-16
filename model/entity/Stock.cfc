@@ -66,8 +66,18 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
-	property name="calculatedAverageCost" ormtype="big_decimal";
-	property name="calculatedAverageLandedCost" ormtype="big_decimal";
+	property name="calculatedAverageCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAveragePriceSold" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageMarkup" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
+	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAveragePriceSoldBeforeDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" formatType="currency";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -82,10 +92,17 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	property name="averageCost" persistent="false";
 	property name="averageLandedCost" persistent="false";
-	property name="currentMargin" persistent="false" hb_formatType="currency";
-	property name="currentLandedMargin" persistent="false" hb_formatType="currency";
+	property name="currentMargin" persistent="false" hb_formatType="percentage";
+	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
+	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averageDiscountAmount" persistent="false" formatType="currency";
+	property name="averageMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
+	property name="averageProfit" persistent="false" hb_formatType="currency";
+	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -97,7 +114,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
 		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
+			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
@@ -110,24 +127,56 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public numeric function getCurrentMargin(){
-		return getDao('stockDao').getCurrentMargin(this.getStockID());
+	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
 	}
 	
-	public numeric function getCurrentLandedMargin(){
-		return getDao('stockDao').getCurrentLandedMargin(this.getStockID());
+	public numeric function getAveragePriceSoldBeforeDiscount(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageCost(){
-		return getDao('stockDao').getAverageCost(this.getStockID());
+	public numeric function getAverageProfit(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageProfit(this.getStockID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAverageLandedCost(){
-		return getDao('stockDao').getAverageLandedCost(this.getStockID());
+	public numeric function getAverageLandedProfit(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageLandedProfit(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getAverageMarkup(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageMarkup(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getAverageLandedMarkup(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageLandedMarkup(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getCurrentMargin(required string currencyCode="USD"){
+		return getDao('stockDao').getCurrentMargin(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
+		return getDao('stockDao').getCurrentLandedMargin(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getAverageCost(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageCost(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public numeric function getAverageLandedCost(required string currencyCode="USD"){
+		return getDao('stockDao').getAverageLandedCost(this.getStockID(),arguments.currencyCode);
 	}
 
-	public numeric function getCurrentAssetValue(){
-		return getQOH() * getAverageCost();
+	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		return getQOH() * getAverageCost(arguments.currencyCode);
+	}
+
+//	public numeric function getCurrentRevenueTotal(){
+//		return getQuantity('QDOO') * getAveragePriceSold();
+//	}
+
+	public numeric function getAveragePriceSold(required string currencyCode="USD"){
+		return getDao('stockDao').getAveragePriceSold(this.getStockID(),arguments.currencyCode);
 	}
 
 	public any function getQATS() {

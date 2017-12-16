@@ -102,7 +102,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
 					var nonPersistentProperty = right(property.name, len(property.name)-10);
-					if(listFindNoCase('Product,Sku,Stock',this.getClassName())){
+					if(listFindNoCase('Product,Sku,Stock,SkuLocationQuantity',this.getClassName())){
 						var inventoryProperties = listToArray('QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QC,QE,QNC,QATS,QIATS');
 						for(var inventoryProperty in inventoryProperties){
 							if(structKeyExists(variables,inventoryProperty)){
@@ -402,12 +402,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// Set any one-to-many or many-to-many properties with a blank array as the default value
 			if(structKeyExists(getProperties()[i], "fieldtype") && getProperties()[i].fieldtype == "many-to-many" && ( !structKeyExists(getProperties()[i], "cascade") || !listFindNoCase("all-delete-orphan,delete,delete-orphan", getProperties()[i].cascade) ) ) {
 				var relatedEntities = variables[ getProperties()[i].name ];
-				for(var e = arrayLen(relatedEntities); e >= 1; e--) {
-					this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
-				}
+				if (!isNull(relatedEntities) && isArray(relatedEntities) && arrayLen(relatedEntities)){
+ 					for(var e = arrayLen(relatedEntities); e >= 1; e--) {
+ 						this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
+ 					}
+  				}
 			}
 		}
-
 	}
 
 	// @hint public method that returns the full entityName
@@ -681,18 +682,27 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
-		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
-		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
-		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		if(isNew()){
+			return 0;
+		}
 		var propertyCountName = '#arguments.propertyName#Count';
-		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
+		
+		var propertyCollection = getPropertyCountCollectionList(arguments.propertyName, propertyCountName);
 		var records = propertyCollection.getRecords();
 		if(arraylen(records)){
 			return records[1][propertyCountName];
 		}else{
 			return 0;
 		}
+	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
+		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
+		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
+		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',arguments.propertyCountName);
+		return propertyCollection;
 	}
 
 	// @hint handles encrypting a property based on conventions

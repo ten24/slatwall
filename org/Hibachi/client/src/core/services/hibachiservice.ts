@@ -230,7 +230,7 @@ class HibachiService{
 				}
 			}
 			return new this._jsEntities[entityName];	
-
+ 
 		}
 	
 	};

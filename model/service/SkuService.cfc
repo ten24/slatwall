@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="skuDAO" type="any";
+	property name="inventoryService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productService" type="any";
@@ -612,7 +613,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		
 		return arguments.sku;
-	} 
+	}
+
+	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
+		
+		var locationCollection = getLocationService().getLocationCollectionList();
+		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
+		var locationRecords = locationCollection.getRecords();
+		
+		// Update calculations for each location
+		for (var locationData in locationRecords) {
+
+			// Attempt to load entity or create new entity if it did not previously exist
+			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), locationData.locationID);
+
+			// Sku and Location entity references should already be populated for existing entity
+			if (skuLocationQuantity.getNewFlag()) {
+				skuLocationQuantity.setSku(arguments.sku);
+				skuLocationQuantity.setLocation(getLocationService().getLocation(locationData.locationID));
+			}
+			
+			// Populate with updated calculated values and sku/location relationships
+			skuLocationQuantity.updateCalculatedProperties();
+		}
+
+		this.saveSku(arguments.sku);
+		
+		return arguments.sku;
+	}
 
 	// =====================  END: Process Methods ============================
 
@@ -644,8 +672,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!arguments.sku.isNew() && previousActiveState == 1 && arguments.sku.getActiveFlag() == 0){
 				sku.setPublishedFlag(false);
 			}
+			//create and calculated skucost for every active currency
+			this.processSku(arguments.sku,{},'createSkuCost');
+			
 		}
 		
+		return arguments.sku;
+	}
+
+	public any function processSku_createSkuCost(required any sku, struct data={}){
+		var activeCurrencies = listToArray(getService('currencyService').getAllActiveCurrencyIDList());
+			
+		for(var activeCurrency in activeCurrencies){
+			//check to see if there is a skucost
+			if(!arguments.sku.getNewFlag()){
+				var skuCost = getDao('skuDao').getSkuCostBySkuIDAndCurrencyCode(arguments.sku.getSkuID(),activeCurrency);
+				if(isNull(skuCost)){
+					skuCost = this.newSkuCost();	
+				}
+			}else{
+				var skuCost = this.newSkuCost();;
+			}
+			
+			var currency = getService('currencyService').getCurrencyByCurrencyCode(activeCurrency);
+			skuCost.setCurrency(currency);
+			skuCost.setSku(arguments.sku);
+			
+			if(skuCost.getNewFlag()){
+				skuCost = this.saveSkuCost(skuCost);	
+			}
+			skuCost.updateCalculatedProperties(true);
+		}	
 		return arguments.sku;
 	}
 
@@ -937,7 +994,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return true;
 	}
-
+	
 	// ===================  END: Deprecated Functions =========================
 
 }

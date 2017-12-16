@@ -359,6 +359,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		} else {
 			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
 		}
+		
+		var activeCurrencies = getService('currencyService').getAllActiveCurrencyIDList();
+		
 		var thisDataArr = [];
 		for(var location in smartList.getRecords()) {
 			var thisData = {};
@@ -377,8 +380,13 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
 			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
 			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
-			thisData["averageCost"] = sku.getAverageCost(location.getLocationID());
-			thisData["averageLandedCost"] = sku.getAverageLandedCost(location.getLocationID());
+			
+			for(var currencyCode in activeCurrencies){
+				thisData["averageCost#currencyCode#"] = sku.getAverageCost(location=location,currencyCode=currencyCode);
+				thisData["averageLandedCost#currencyCode#"] = sku.getAverageLandedCost(location=location,currencyCode=currencyCode);	
+			}
+			thisData['activeCurrencies']= activeCurrencies;
+			
 			if(sku.getBundleFlag()){
 				thisData["MQATSBOM"] = sku.getQuantity('MQATSBOM',location.getLocationID());
 			}

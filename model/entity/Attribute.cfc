@@ -358,6 +358,32 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeAttribute( this );
 	}
+	
+	public boolean function isValidString(string stringValue){
+		var attributeCodeLength = len(getAttributeCode());
+
+		return attributeCodeLength < len(arguments.stringValue)
+		|| (attributeCodeLength >= len(arguments.stringValue) 
+		&& lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue));
+	}
+	
+	public boolean function isValidAttributeCode(){
+		//attribute code cannot begin with a string
+		var isValid = refind("^[a-zA-Z][a-zA-Z0-9_]*$",getAttributeCode());
+		
+		return isValid 
+		&& isValidString("Options")
+		&& isValidString("Count")
+		&& isValidString("AssignedIDList")
+		&& isValidString("OptionsSmartList")
+		&& isValidString("SmartList")
+		&& isValidString("CollectionList")
+		&& isValidString("Struct")
+		&& isValidString("ID")
+		&& isValidString("FileURL")
+		&& isValidString("UploadDirectory")
+		;
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

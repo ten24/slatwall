@@ -18,7 +18,7 @@
 			data-is-angular-route="false"
 			data-angular-links="true"
 			data-has-action-bar="true" 
-			data-persisted-collection-config="true" 
+			data-persisted-collection-config="true"
 			data-multiselectable="true"
 			data-multi-slot="true"
 			data-multiselect-field-name="fulfillmentBatchItemID" 
@@ -75,7 +75,7 @@
                             </button>
                             <ul class="dropdown-menu" ng-init="swFulfillmentBatchDetailController.userRequiresPrintList()" ng-show="swFulfillmentBatchDetailController.state.printCollection.length">
                                 <li ng-repeat="printTemplate in swFulfillmentBatchDetailController.state.printCollection" ng-if="swFulfillmentBatchDetailController.state.printCollection.length">
-                                	<a title="{{printTemplate.printTemplateName}}" class="adminentityprocessprint " target="_self" href="/?slatAction=entity.processprint&amp;printTemplateID={{printTemplate.printTemplateID}}&amp;printID=&redirectAction=admin:entity.detailfulfillmentbatch&processContext=addToQueue&fulfillmentBatchID={{swFulfillmentBatchDetailController.state.fulfillmentBatchId}}">{{printTemplate.printTemplateName}}</a>
+                                	<a title="{{printTemplate.printTemplateName}}" class="adminentityprocessprint " target="_self" href="/?slatAction=entity.processprint&amp;printTemplateID={{printTemplate.printTemplateID}}&amp;printID=&processContext=addToQueue&orderFulfillmentID={{swFulfillmentBatchDetailController.state.currentRecordOrderDetail['fulfillmentBatchItem']['orderFulfillment_orderFulfillmentID']}}&&redirectAction=admin:entity.detailfulfillmentbatch&fulfillmentBatchID={{swFulfillmentBatchDetailController.state.fulfillmentBatchId}}">{{printTemplate.printTemplateName}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -291,13 +291,13 @@
                                     <div class="col-xs-9">
                                         <div class="row s-ladel-options">
                                             <div class="col-xs-4 radio">
-                                                <input id="GenerateShippingLabel" type="radio" name="printOption" checked>
+                                                <input id="GenerateShippingLabel" type="radio" name="printOption" ng-click="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == true" ng-init="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == true" ng-model="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber" checked>
                                                 <label for="GenerateShippingLabel" title="helper text should go here to describe item">Generate Shipping Label(s)</label>
                                             </div>
                                             <div class="col-xs-4 radio">
                                                 <input id="ManualShipment" type="radio" name="printOption">
                                                 <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
-                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-model="swFulfillmentBatchDetailController.state.trackingCode">
+                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code..." ng-click="swFulfillmentBatchDetailController.state.useShippingIntegrationForTrackingNumber == false" ng-model="swFulfillmentBatchDetailController.state.trackingCode">
                                             </div>
                                         </div>
                                     </div>
@@ -549,10 +549,10 @@
                                     <div class="col-xs-4" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
                                         <div class="btn-group s-btn-dropdown" role="group"> 
                                             <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill(); swFulfillmentBatchDetailController.state.loading = true">
-						                    	<span><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled'">Capture &amp;</span> Fulfill</span> 
+						                    	<span><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] != 0">Capture &amp;</span> Fulfill</span> 
 						                    </button>
                                             <ul class="dropdown-menu" role="menu">
-												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
+												<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill();swFulfillmentBatchDetailController.state.loading = true">Fulfill</a></li>
 						                    </ul>
                                             <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
 												<span class="caret"></span>

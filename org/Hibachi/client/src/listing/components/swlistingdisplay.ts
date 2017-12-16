@@ -206,8 +206,7 @@ class SWListingDisplayController{
 
                     this.paginator.getCollection = this.getCollection;
 
-                    var getCollectionEventID = this.tableID;
-                    this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
 
                 }
             );
@@ -226,7 +225,7 @@ class SWListingDisplayController{
         if (this.collectionObject){
                 this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
-        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
 
     public getCollectionByPagination = (state) =>{
@@ -248,7 +247,7 @@ class SWListingDisplayController{
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
-                this.observerService.notify('swPaginationUpdate',data);
+                this.observerService.notifyById('swPaginationUpdate',this.tableID, data);
             });
 
         }
@@ -262,8 +261,6 @@ class SWListingDisplayController{
         }
 
         this.paginator.getCollection = this.getCollection;
-
-        var getCollectionEventID = this.tableID;
 
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
@@ -281,11 +278,14 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(this.name!=null){
+        if(this.name != null){
             this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
+
+        this.collectionConfig.setEventID(this.tableID);
+
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -350,7 +350,7 @@ class SWListingDisplayController{
             this.expandable = false;
         }
         //setup export action
-        if(angular.isDefined(this.exportAction)){
+        if(angular.isUndefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
         //setup print action
@@ -361,7 +361,7 @@ class SWListingDisplayController{
         if(angular.isDefined(this.emailAction)){
             this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
         }
-        this.paginator = this.paginationService.createPagination();
+        this.paginator = this.paginationService.createPagination(this.tableID);
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
             this.getChildCount = false;

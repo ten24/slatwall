@@ -81,6 +81,6 @@ Notes:
 	>
 		<sw-listing-column data-property-identifier="scheduleID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="scheduleName" search="true" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>

@@ -561,7 +561,7 @@ component extends="HibachiService"  accessors="true" output="false"
           var accountAddressId = data.accountAddressID;
         }else{
             getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
-       		return;
+          return;
         }
 
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
@@ -573,14 +573,16 @@ component extends="HibachiService"  accessors="true" output="false"
                 var orderFulfillment = fulfillment;
               }else if(!structKeyExists(data,'fulfillmentID')){
                 fulfillment.setShippingAddress(accountAddress.getAddress());
-              	getService("OrderService").saveOrderFulfillment(fulfillment);
+                fulfillment.setAccountAddress(accountAddress);
+                getService("OrderService").saveOrderFulfillment(fulfillment);
               }
             }
             if(!isNull(orderFulfillment) && !orderFulfillment.hasErrors()){
               orderFulfillment.setShippingAddress(accountAddress.getAddress());
+              orderFulfillment.setAccountAddress(accountAddress);
             }
             getOrderService().saveOrder(order);
-          	getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", order.hasErrors());
         }else{
             if(!isNull(accountAddress)){
               this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
@@ -1089,13 +1091,13 @@ component extends="HibachiService"  accessors="true" output="false"
             cart.setAccount( getHibachiScope().getAccount() );
         }
         
-        if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "orderItemID") && structKeyExists(data.orderItem, "quantity") && data.orderItem.quantity > 0 ){
+        if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "orderItemID") && structKeyExists(data.orderItem, "quantity")){
             for (var orderItem in cart.getOrderItems()){
                 if (orderItem.getOrderItemID() == data.orderItem.orderItemID){
                     orderItem.setQuantity(data.orderItem.quantity);
                 }
             }
-		}else if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") && data.orderItem.qty > 0 ){
+		}else if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") ){
             for (var orderItem in cart.getOrderItems()){
                 if (orderItem.getSku().getSkuID() == data.orderItem.sku.skuID){
                     orderItem.setQuantity(data.orderItem.qty);

@@ -82,8 +82,11 @@ Notes:
 	})/>
 	<cfset rc.locationCollectionList.addDisplayAggregate('childLocations','COUNT','childLocationsCount')/>
 
-	<hb:HibachiListingDisplay collectionList="#rc.locationCollectionList#">
-	</hb:HibachiListingDisplay>
 
+	<hb:HibachiListingDisplay collectionList="#rc.locationCollectionList#" 
+		recordEditAction="admin:entity.edit#lcase(rc.locationCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.locationCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

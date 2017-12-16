@@ -90,5 +90,7 @@ Notes:
 })/>
 <hb:HibachiListingDisplay
 	collectionList="#rc.collectionCollectionlist#"
+	recordEditAction="admin:entity.edit#lcase(rc.collectionCollectionlist.getCollectionObject())#"
+	recordDetailAction="admin:entity.detail#lcase(rc.collectionCollectionlist.getCollectionObject())#"
 >
 </hb:HibachiListingDisplay>

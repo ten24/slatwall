@@ -51,15 +51,16 @@ Notes:
 
 <cfparam name="rc.minMaxStockTransfer" default="any" >
 <cfoutput>
+	<cfset stockAdjustmentsCollectionlist = rc.minMaxStockTransfer.getStockAdjustmentsCollectionlist()/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentType.typeName', title="Type", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentStatusType.typeName', title="Status", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='fromLocation.locationName', title="From", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='toLocation.locationName', title="To", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentID',columnConfig={isVisible=false,  isSearchable=false, isDeletable=false})/>
 
-	<hb:HibachiListingDisplay smartList="#rc.minMaxStockTransfer.getStockAdjustmentsSmartList()#"
+	<hb:HibachiListingDisplay collectionList="#stockAdjustmentsCollectionlist#"
 							   recordEditAction="admin:entity.editstockadjustment"
-							   recordDetailAction="admin:entity.detailstockadjustment">
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
-		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="toLocation.locationName" title="To" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromLocation.locationName" title="From" />
-		
+							   recordDetailAction="admin:entity.detailstockadjustment"
+	>
 	</hb:HibachiListingDisplay>
-
 </cfoutput>

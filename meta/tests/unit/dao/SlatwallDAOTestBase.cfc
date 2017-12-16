@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,16 +45,16 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase"  {
+	
+	public void function setUp() {
+		super.setup();
+		request.slatwallScope.getDao('HibachiDataDao').truncateTablesWithoutDefaultData();
+		
+	}
+	
+	
+}
 
-<cfparam name="rc.minmaxsetup" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
 
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.minmaxsetup#" edit="#rc.edit#" sRedirectAction="admin:entity.detailminmaxsetup">
-
-	</hb:HibachiEntityProcessForm>
-</cfoutput>

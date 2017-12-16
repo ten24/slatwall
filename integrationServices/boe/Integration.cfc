@@ -46,11 +46,32 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
+component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+	
+	public any function init() {
+		return this;
+	}
+	
+	public string function getIntegrationTypes() {
+		return "tax";
+	}
+	
+	public string function getDisplayName() {
+		return "California BoE Tax Rates";
+	}
+	
+	public struct function getSettings() {
+		var settings = {
+			webServicesUrl = {fieldType="text"},
+			webServicesTimeout = {fieldType="text"},
+			webServicesSoapAction = {fieldType="text"}
+		};
 
-	// Injected Entity
-	property name="MinMaxSetup";
-
-	// Data Properties
+		return settings;
+	}
+	
+	public array function getEventHandlers() {
+		return ["Slatwall.integrationServices.boe.model.handler.BoeEventHandler"];
+	}
 	
 }

@@ -258,6 +258,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				stockreceiverItem.setStock( stock );
 				stockreceiveritem.setCost( vendorOrderItem.getCost() );
 				stockreceiverItem.setVendorOrderItem( vendorOrderItem );
+				stockreceiverItem.setCurrencyCode(vendorOrderItem.getCurrencyCode());
 				stockreceiverItem.setStockReceiver( stockReceiver );
 				
 			}

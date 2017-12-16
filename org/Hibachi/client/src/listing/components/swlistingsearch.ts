@@ -34,15 +34,6 @@ class SWListingSearchController {
         public observerService,
         public localStorageService
     ) {
-        if(this.swListingControls){
-            if(angular.isUndefined(this.swListingControls.showToggleFilters)){
-                this.swListingControls.showToggleFilters = true;
-            }
-            if(angular.isUndefined(this.swListingControls.showToggleDisplayOptions)){
-                this.swListingControls.showToggleDisplayOptions = true;
-            }
-        }
-
 
 
     }
@@ -173,7 +164,7 @@ class SWListingSearchController {
 
         this.swListingDisplay.collectionConfig = this.collectionConfig;
 
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
 

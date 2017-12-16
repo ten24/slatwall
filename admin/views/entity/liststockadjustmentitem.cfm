@@ -108,7 +108,7 @@ Notes:
     	<sw-listing-column data-property-identifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" ></sw-listing-column>
     	<sw-listing-column data-property-identifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" ></sw-listing-column>
     	<sw-listing-column data-property-identifier="quantity" ></sw-listing-column>
-	</sw-listing-display>
+	</sw-listing-display data-using-personal-collection="true">
 
 </cfoutput>
 

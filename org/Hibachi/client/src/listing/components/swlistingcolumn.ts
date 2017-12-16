@@ -11,6 +11,7 @@ class SWListingColumnController{
     public action:string;
     public queryString:string;
     public isVisible:boolean;
+    public isExportable:boolean; 
     public swListingDisplay:any;
     public fallbackPropertyIdentifiers:string;
     public processObjectProperty:any;
@@ -45,7 +46,9 @@ class SWListingColumnController{
         if(angular.isUndefined(this.isVisible)){
              this.isVisible = true;
         }
-
+        if(angular.isUndefined(this.isExportable)){
+            this.isExportable = true; 
+        }
         if(angular.isUndefined(this.isDeletable)){
              this.isDeletable = true;
         }
@@ -90,6 +93,7 @@ class SWListingColumnController{
             isVisible:this.isVisible,
             isDeletable:this.isDeletable,
             isSearchable:this.search,
+            isExportable:this.isExportable,
             action:this.action,
             queryString:this.queryString,
             persistent:this.persistent
@@ -129,6 +133,7 @@ class SWListingColumn implements ng.IDirective{
         filter:"=?",
         isVisible:"=?",
         isDeletable:"=?",
+        isExportable:"=?",
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",

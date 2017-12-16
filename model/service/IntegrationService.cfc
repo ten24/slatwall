@@ -380,7 +380,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				structDelete(variables, "activeFW1Subsystems");
 			}
 			
-			getHibachiAuthenticationService().clearActionPermissionDetails();
+			getHibachiCacheService().resetCachedKey('actionPermissionDetails');
 			
 			if(arguments.entity.getEnabledFlag()){
 				getHibachiScope().setApplicationValue("initialized",false);
@@ -391,7 +391,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.entity;
 	}
 	
-	public any function processIntegration_pullData(required any integration, required any processObject) {
+	public any function processIntegration_pullData(required any integration, any processObject) {
 		
 		if(arguments.integration.getActiveFlag()){
 			integration.getIntegrationCFC('data').pullData();	
@@ -400,7 +400,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.integration;
 	}
 	
-	public any function processIntegration_pushData(required any integration, required any processObject) {
+	public any function processIntegration_pushData(required any integration, any processObject) {
 		
 		if(arguments.integration.getActiveFlag()){
 			integration.getIntegrationCFC('data').pushData();	

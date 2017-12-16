@@ -71,6 +71,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="quantity" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="cost" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="estimatedReceivalDateTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="shippingWeight" edit="#rc.edit#"/>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
