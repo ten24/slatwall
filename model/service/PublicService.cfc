@@ -61,7 +61,7 @@ component extends="HibachiService"  accessors="true" output="false"
     property name="productService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
-    
+    property name="etaggedCart" type="any";
 
     variables.publicContexts = [];
     variables.responseType = "json";
@@ -845,7 +845,38 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** exposes the cart and account */
     public void function getCartData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getCartData();
+    	pc = getPageContext().getResponse();
+	  	
+	  	if (pc.containsHeader("If-Modified-Since")){
+	  		
+	  		var ifmodifiedheader = getHttpRequestData().headers["If-Modified-Since"];
+	  	}
+	  	
+	  	var threeLetterTC = right(timeFormat(getHibachiScope().getCart().getModifiedDateTime(), "full"), 3);	
+	  	var lastModified = dateFormat(getHibachiScope().getCart().getModifiedDateTime(), "ddd, dd mmm yyyy ") & timeFormat(getHibachiScope().getCart().getModifiedDateTime(), "hh:mm:ss") & " #threeLetterTC#";
+	  	
+	  	if (!isNull(ifmodifiedheader) && ifmodifiedheader == lastModified && !isNull(variables.etaggedCart)){
+	  		arguments.data.ajaxResponse = variables.etaggedCart;
+	  	}else{
+	  		//Get the cart data
+        	arguments.data.ajaxResponse = getHibachiScope().getCartData();
+        	
+        	//Set the cached cart
+        	variables.etaggedCart = arguments.data.ajaxResponse;
+        	
+        	//Generate a new etag and pass it to the client.
+        	pc = getPageContext().getResponse();
+        	pc.setHeader("Last-Modified", lastModified);
+        	
+        	//Set an expired header so Chrome will actually use this stuff...
+        	//var expirationDate = getHibachiScope().getCart().getModifiedDateTime() + 365;
+        	//var expires = dateFormat(expirationDate, "ddd, dd mmm yyyy ") & timeFormat(expirationDate, "hh:mm:ss") & " #threeLetterTC#";
+	  	
+        	//pc.setHeader("Expires", expires);
+        	
+        	//Set the cache control with a max-age
+        	pc.setHeader("Cache-Control", "private, max-age=120");
+        }
     }
     
     public void function getAccountData(any data) {
