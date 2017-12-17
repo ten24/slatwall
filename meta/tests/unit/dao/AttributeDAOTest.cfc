@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,60 +45,20 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO">
+*/
+component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 
-	<cffunction name="getAttributeValuesForEntity" returntype="array" access="public">
-		<cfargument name="primaryIDPropertyIdentifier">
-		<cfargument name="primaryIDValue" />
 
-		<cfreturn ormExecuteQuery("SELECT av FROM SlatwallAttributeValue av INNER JOIN FETCH av.attribute att INNER JOIN FETCH att.attributeSet ats WHERE av.#primaryIDPropertyIdentifier# = ?", [arguments.primaryIDValue], false, {ignoreCase="true"}) />
-	</cffunction>
+	public void function setUp() {
+		super.setup();
 
-	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">
-		<cfargument name="attributeSetObject" required="true" type="string" />
+		variables.dao = request.slatwallScope.getDAO("attributeDAO");
+	}
 
-		<cfset var rs = "" />
-		<cfquery name="rs">
-			SELECT
-				SwAttribute.attributeCode
-			FROM
-				SwAttribute
-			  INNER JOIN
-			  	SwAttributeSet on SwAttribute.attributeSetID = SwAttributeSet.attributeSetID
-			WHERE
-				SwAttributeSet.attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
-		</cfquery>
-		<cfreturn rs />
-	</cffunction>
-
-	<cffunction name="removeAttributeOptionFromAllAttributeValues">
-		<cfargument name="attributeOptionID" type="string" required="true" >
-
-		<cfset var rs = "" />
-
-		<cfquery name="rs">
-			UPDATE
-				SwAttributeValue
-			SET
-				attributeValueOptionID = null
-			WHERE
-				attributeValueOptionID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeOptionID#" />
-		</cfquery>
-	</cffunction>
-
-	<cffunction name = "getAttributeDataQueryByCustomPropertyFlag" returnType = "query">
-			<cfquery name = "attributeDataQuery">
-			    SELECT
-					 	attributeCode, attributeInputType, SwAttributeSet.attributeSetObject
-			    FROM
-					 	SwAttribute
-					INNER JOIN
-						SwAttributeSet on SwAttribute.attributeSetID = SwAttributeSet.attributeSetID
-			    WHERE
-						customPropertyFlag = 1
-			</cfquery>
-			<cfreturn attributeDataQuery/>
-	</cffunction>
-
-</cfcomponent>
+	/**
+	* @test
+	*/
+	public void function inst_ok() {
+		assert(isObject(variables.dao));
+	}
+}
