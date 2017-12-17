@@ -3,7 +3,6 @@ var CompressionPlugin = require("compression-webpack-plugin");
 var webpack = require('webpack');
 var path = require('path');
 var customPath = __dirname;
-console.log("Custom: ", customPath);
 var PATHS = {
     app: path.join(customPath, '/src'),
     lib: path.join(customPath, '/lib')

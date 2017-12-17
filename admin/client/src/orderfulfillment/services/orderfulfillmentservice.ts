@@ -149,7 +149,7 @@ class OrderFulfillmentService {
     public orderFulfillmentStore:FluxStore.IStore;
 
     //@ngInject
-    constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, public $rootScope, public selectionService){
+    constructor(public observerService, public $hibachi, private collectionConfigService, private listingService, public $rootScope, public selectionService){
 
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.

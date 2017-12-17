@@ -30,7 +30,9 @@ export class BaseBootStrapper{
              return $http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
             .then( (resp)=> {
-                this.instantiationKey = resp.data.data.instantiationKey;
+                if (resp && resp.data && resp.data.data && resp.data.data.instantiationKey){
+                    this.instantiationKey = resp.data.data.instantiationKey;
+                }
 
                 var invalidCache = [];
                 try{

@@ -12,14 +12,13 @@ describe('listingService Test',()=>{
         angular.mock.inject((_listingService_)=>{
             // The injector unwraps the underscores (_) from around the parameter names when matching
             listingService = _listingService_;
+            console.log(listingService);
         });
     });
 
     var listingID = 'testlistingID';
 
-   it('getListingPageRecordsUpdateEventString test', ()=>{
-       expect(listingService.getListingPageRecordsUpdateEventString(listingID)).toEqual(listingID+'pageRecordsUpdated');
-   });
+   
 
 
 });
