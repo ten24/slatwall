@@ -184,6 +184,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
+	public void function validate_required_test_return_false_when_null(){
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFirstName(javacast("null",""));
+		assertfalse(variables.service.validate_required(account, 'firstName'));
+	}
+
+
+	/**
+	* @test
+	*/
 	public void function validate_required_test_return_true_if_isSimpleValue_and_hasLength(){
 		var account = request.slatwallScope.newEntity('Account');
 		account.setFirstName("John");
@@ -297,6 +307,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_minLength(account, 'company',2));
 	}
 
+	/**
+	* @test
+	*/
+	public void function validate_minLength_test_return_true_when_null() {
+		var account= request.slatwallScope.newEntity('Account');
+		account.setFirstName(javacast("null",""));
+		assert( variables.service.validate_minLength(account, 'firstName',2));
+	}
+
+
 	// validate_maxLength()
 	/**
 	* @test
@@ -340,6 +360,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_maxLength(account, 'company',20));
 	}
 
+	/**
+	* @test
+	*/
+	public void function validate_maxLength_test_return_true_when_null() {
+		var account= request.slatwallScope.newEntity('Account');
+		account.setFirstName(javacast("null",""));
+		assert( variables.service.validate_maxLength(account, 'firstName',10));
+	}
 
 	// validate_eq()
 	/**
@@ -370,6 +398,43 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_eq(account, 'organizationFlag', true));
 	}
 
+	/**
+	* @test
+	*/
+	public void function validate_eq_test_for_string_value_return_true_when_equal() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFirstName('equal');
+		assert( variables.service.validate_eq(account, 'firstName', 'equal'));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_eq_test_for_string_value_return_false_when_notEqual() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFirstName('equal');
+		assertfalse( variables.service.validate_eq(account, 'firstName', 'notequal'));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_eq_test_for_numeric_value_return_true_when_equal() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(2);
+		assert( variables.service.validate_eq(account, 'failedLoginAttemptCount', 2));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_eq_test_for_numeric_value_return_false_when_notEqual() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(2);
+		assertfalse( variables.service.validate_eq(account, 'failedLoginAttemptCount', 0));
+	}
+
+
 	// validate_neq()
 	/**
 	* @test
@@ -397,6 +462,42 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		assert( variables.service.validate_neq(account, 'superUserFlag', true));
 		assert( variables.service.validate_neq(account, 'organizationFlag', false));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_neq_test_for_string_value_return_true_when_notEqual() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFirstName('equal');
+		assert( variables.service.validate_neq(account, 'firstName', 'notequal'));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_neq_test_for_string_value_return_false_when_equal() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFirstName('equal');
+		assertfalse( variables.service.validate_neq(account, 'firstName', 'equal'));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_neq_test_for_numeric_value_return_true_when_notequal() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(2);
+		assert( variables.service.validate_neq(account, 'failedLoginAttemptCount', 0));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_neq_test_for_numeric_value_return_false_when_equal() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(2);
+		assertfalse( variables.service.validate_neq(account, 'failedLoginAttemptCount', 2));
 	}
 
 	//validate_gtDateTimeProperty()
@@ -505,8 +606,38 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function validate_unique_test_return_true() {
-		var account = request.slatwallScope.newEntity('Account');
-		assert( variables.service.validate_unique(account,"accountID"));
+		var accountData1 = {
+			accountID="",
+			firstName= "thisIsAName"
+		};
+		var account1 = createPersistedTestEntity('account',accountData1);
+
+		var accountData2 = {
+			accountID="",
+			firstName= "thisIsADifferentName"
+		};
+		var account2 = createPersistedTestEntity('account',accountData2);
+
+		assert( variables.service.validate_unique(account2,"firstName"));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_unique_test_return_false() {
+		var accountData1 = {
+			accountID="",
+			firstName= "thisIsAName"
+		};
+		var account1 = createPersistedTestEntity('account',accountData1);
+
+		var accountData2 = {
+			accountID="",
+			firstName= "thisIsAName"
+		};
+		var account2 = createPersistedTestEntity('account',accountData2);
+
+		assertfalse( variables.service.validate_unique(account2,"firstName"));
 	}
 
 	//validate_uniqueOrNull()
@@ -522,9 +653,39 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function validate_uniqueOrNull_test_unique_return_true(){
-		var account = request.slatwallScope.newEntity('Account');
-		assert( variables.service.validate_unique(account,"accountID"));
+	public void function validate_uniqueOrNull_test_for_unique_return_true() {
+		var accountData1 = {
+			accountID="",
+			firstName= "thisIsAName"
+		};
+		var account1 = createPersistedTestEntity('account',accountData1);
+
+		var accountData2 = {
+			accountID="",
+			firstName= "thisIsADifferentName"
+		};
+		var account2 = createPersistedTestEntity('account',accountData2);
+
+		assert( variables.service.validate_uniqueOrNull(account2,"firstName"));
+	}
+
+ 	/**
+	* @test
+	*/
+	public void function validate_uniqueOrNull_test_for_unique_return_false() {
+		var accountData1 = {
+			accountID="",
+			firstName= "thisIsAName"
+		};
+		var account1 = createPersistedTestEntity('account',accountData1);
+
+		var accountData2 = {
+			accountID="",
+			firstName= "thisIsAName"
+		};
+		var account2 = createPersistedTestEntity('account',accountData2);
+
+		assertfalse( variables.service.validate_uniqueOrNull(account2,"firstName"));
 	}
 
 	//validate_regex()
