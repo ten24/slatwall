@@ -134,11 +134,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
 				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
-				variables.currentRequestSiteLocation= site.getLocations()[1];
+				var locations = site.getLocations();
+				if(!isNull(locations) && arrayLen(locations)){
+					variables.currentRequestSiteLocation= locations[1];
+				}
 			}
 		}
 
-		if(isNull(variables.currentRequestSiteLocation)){
+		if(!structKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
 			return;
 		}
 		return variables.currentRequestSiteLocation;

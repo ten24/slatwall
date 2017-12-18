@@ -265,7 +265,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public struct function getEntityPermissionDetails() {
 		
 		// First check to see if this is cached
-		if(!structKeyExists(variables, "entityPermissionDetails")){
+		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
 			// Create place holder struct for the data
 			var entityPermissions = {};
@@ -335,15 +335,16 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			
 			// Update the cached value to be used in the future
-			variables.entityPermissionDetails = entityPermissions;
+			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
+			
 		}
-		return variables.entityPermissionDetails;
+		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
 	}
 	
 	public struct function getActionPermissionDetails(){
 		
 		// First check to see if this is cached
-		if(!structKeyExists(variables, "actionPermissionDetails")){
+		if(!getService('HibachiCacheService').hasCachedValue('actionPermissionDetails')){
 			
 			// Setup the all permisions structure which will later be set to the variables scope
 			var allPermissions={};
@@ -357,10 +358,9 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 				
 			} // End Subsytem Loop
-			
-			variables.actionPermissionDetails = allPermissions;
+			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
 		}
-		return variables.actionPermissionDetails;
+		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}
 	
 	public any function getSubsytemActionPermissionDetails( required string subsystemName ) {
@@ -436,17 +436,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		return listToArray(getApplicationValue("hibachiConfig").authenticationSubsystems);
 	}
 	
-	public void function clearEntityPermissionDetails(){
-		if(structKeyExists(variables, "entityPermissionDetails")) {
-			structDelete(variables, "entityPermissionDetails");
-		}
-	}
-	
-	public void function clearActionPermissionDetails(){
-		if(structKeyExists(variables, "actionPermissionDetails")) {
-			structDelete(variables, "actionPermissionDetails");
-		}
-	}
 	
 	// ============================ PRIVATE HELPER FUNCTIONS =======================================
 	

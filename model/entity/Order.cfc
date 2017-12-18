@@ -1008,17 +1008,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  	}
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(){
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
-			if( 
-				isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) 
-				|| len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0 
-				|| val(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) > 0
-			){
-				return false;
-			}
-		}
-		return true;
+		return getService("orderService").isAllowedToPlaceOrderWithoutPayment(this);
 	}
 
  	public boolean function hasDepositItemsOnOrder(){

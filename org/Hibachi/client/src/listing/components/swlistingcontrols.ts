@@ -75,7 +75,7 @@ class SWListingControlsController {
 
         if(res.action == 'add' || res.action == 'remove'){
 
-            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+            this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
         }
         this.filtersClosed = true;
     };
@@ -120,7 +120,7 @@ class SWListingControlsController {
 
         this.searchText = '';
         this.collectionConfig.setKeywords(this.searchText);
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+        this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
     };
 
     public toggleDisplayOptions= (closeButton:boolean=false)=>{
@@ -138,7 +138,7 @@ class SWListingControlsController {
     public removeFilter = (array, index, reloadCollection:boolean=true)=>{
         array.splice(index, 1);
         if(reloadCollection){
-            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+            this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
         }
     };
 
@@ -166,7 +166,7 @@ class SWListingControlsController {
             this.collectionConfig = collectionConfig;
         }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
+        this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage',payload:1});
     };
 
     public exportCollection = () =>{

@@ -196,7 +196,7 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
         this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
-        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodName", "Shipping", "=");
+        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
         
         
      }
@@ -215,7 +215,7 @@ class SWOrderFulfillmentListController {
         //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentInvStatType.systemCode", "Availability");
         //this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentItems.stock.location.locationID", "Stock Location");
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "!=");
-        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodName", "Shipping", "=");
+        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
         //Shipping
         this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
@@ -300,7 +300,7 @@ class SWOrderFulfillmentListController {
         this.orderFulfillmentCollection.addDisplayProperty("shippingAddress.stateCode", "State");
         this.orderFulfillmentCollection.addDisplayProperty("orderFulfillmentStatusType.typeName", "Status"); 
         this.orderFulfillmentCollection.addFilter("orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
-        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodName", "Shipping", "=");
+        this.orderFulfillmentCollection.addFilter("fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
         //Shipping
         this.orderFulfillmentCollection.addFilter("order.orderStatusType.systemCode", "ostNew", "=");
         this.orderFulfillmentCollection.addFilter("order.orderNumber", "", "!=");
@@ -373,7 +373,7 @@ class SWOrderFulfillmentListController {
         this.orderItemCollection.addDisplayProperty("orderFulfillment.orderFulfillmentStatusType.typeName");
         this.orderItemCollection.addDisplayProperty("sku.product.productName");
         this.orderItemCollection.addFilter("orderFulfillment.orderFulfillmentStatusType.systemCode", "ofstUnfulfilled", "=");
-        this.orderItemCollection.addFilter("orderFulfillment.fulfillmentMethod.fulfillmentMethodName", "Shipping", "=");
+        this.orderItemCollection.addFilter("orderFulfillment.fulfillmentMethod.fulfillmentMethodType", "shipping", "=");
         this.orderItemCollection.addFilter("order.orderNumber", "", "!=");
     }
 

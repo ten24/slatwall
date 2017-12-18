@@ -5,7 +5,36 @@
 	<cfargument name="optionData"/>
 	<cfargument name="template"/>
 	<cfargument name="formatter"/>
+	<cfargument name="openTab"/>
+	<cfargument name="optionPriorityList"/>
+	<cfargument name="orderBy" default="asc"/>
 	
+	<cfif len(arguments.optionPriorityList)>
+		<cfset var currentIndex=arrayLen(arguments.optionData)>
+		<cfset var arrayToPrepend = []/>
+		<cfset arraySet(arrayToPrepend,1,listLen(arguments.optionPriorityList),'')/>
+		<cfloop condition="currentIndex gt 0">
+			<cfset var currentOption = arguments.optionData[currentIndex]/>
+			<cfif listFindNoCase(arguments.optionPriorityList,currentOption['value'])>
+				<cfset var listPosition = listFindnocase(arguments.optionPriorityList,currentOption['value'])/>
+				<cfset var tempValue = currentOption/>
+				<cfset arrayDeleteAt(arguments.optionData,currentIndex)/>
+				<cfset arrayToPrepend[listPosition] = currentOption/>
+			</cfif>
+			<cfset currentIndex-->
+		</cfloop>
+		<cfset currentIndex=arrayLen(arrayToPrepend)>
+		<cfloop condition="currentIndex gt 0">
+			<cfset var currentOption = arrayToPrepend[currentIndex]/>
+			<cfif isSimpleValue(currentOption)>
+				<cfset arrayDeleteAt(arrayToPrepend,currentIndex)/>
+			</cfif>
+			<cfset currentIndex-->
+		</cfloop>
+		
+		<cfset arrayAppend(arrayToPrepend,arguments.optionData,true)/>
+		<cfset arguments.optionData = arrayToPrepend/>
+	</cfif>
 	<cfsavecontent variable="htmlContent" >
 		<cfinclude template="#arguments.template#" >
 	</cfsavecontent>
@@ -43,6 +72,12 @@
 	<cfparam name="attributes.formatter" default=""/>
 	<!--- template override --->
 	<cfparam name="attributes.template" default="./tagtemplates/hibachifiltercountdisplayitem.cfm"/>
+	<!--- used to drive whether the tab is open by default --->
+	<cfparam name="attributes.openTab" default="true"/>
+	<!--- used to describe what options should show up vs load in see more --->
+	<cfparam name="attributes.optionPriorityList" default=""/>
+	<!--- used to decide order --->
+	<cfparam name="attributes.orderBy" default="asc"/>
 	
 	<cfparam name="attributes.rangeData" default=""/>
 	<cfparam name="attributes.showApplyRange" default="true"/>
@@ -154,7 +189,8 @@
 					<cfset attributes.optionData = newOptionData/>	
 				</cfif>
 			</cfif>
-			<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiUtilityService').arrayOfStructsSort(attributes.optionData,'name','Asc')/>
+			<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiUtilityService').arrayOfStructsSort(attributes.optionData,'name',attributes.orderBy)/>
+			
 			<cfloop array="#selectedOptions#" index="selectedOption">
 				<cfset found = false/>
 				<cfloop array="#attributes.optionData#" index="option">
@@ -180,11 +216,11 @@
 		<!--- create the html now that we have all the data we need --->
 		<cfset attributes.htmlContent = ""/>
 		<cfif isArray(attributes.optionData)>
-			<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter)/>
+			<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter,attributes.openTab,attributes.optionPriorityList)/>
 		<cfelseif isStruct(attributes.optionData)>
 			<cfloop collection="#attributes.optionData#" item="discriminatorName">
 				 
-				<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter)/>
+				<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter,attributes.openTab,attributes.optionPriorityList)/>
 			</cfloop>
 		</cfif>
 		

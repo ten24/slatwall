@@ -685,19 +685,24 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(isNew()){
 			return 0;
 		}
-		
-		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
-		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
-		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
-		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
 		var propertyCountName = '#arguments.propertyName#Count';
-		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
+		
+		var propertyCollection = getPropertyCountCollectionList(arguments.propertyName, propertyCountName);
 		var records = propertyCollection.getRecords();
 		if(arraylen(records)){
 			return records[1][propertyCountName];
 		}else{
 			return 0;
 		}
+	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
+		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
+		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
+		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',arguments.propertyCountName);
+		return propertyCollection;
 	}
 
 	// @hint handles encrypting a property based on conventions

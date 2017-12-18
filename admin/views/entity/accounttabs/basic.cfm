@@ -23,11 +23,6 @@
 		<hb:HibachiPropertyList divclass="col-md-6">
 			<hb:HibachiPropertyTable>
 
-				<!--- Term Payment Details --->
-				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.termPaymentDetails')#" />
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false" displayType="table">
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false" displayType="table">
-
 				<!--- Authentication Details --->
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.authenticationDetails')#" hint="#$.slatwall.rbKey("admin.entity.detailaccount.authenticationDetails_hint")#" />
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false" displayType="table">
