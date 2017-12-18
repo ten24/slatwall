@@ -21,21 +21,27 @@ describe("Order Fulfillment Service Tests", () => {
 			var observerService : ObserverService;
 			var $httpBackend: any;
 			var timeout: any;
-	
-			beforeEach(
-				()=>{
-					var $rootScope = {};
-					orderFulfillmentService = new OrderFulfillmentService(new ObserverService(timeout, HistoryService, UtilityService), HibachiService, CollectionConfig, ListingService, $rootScope, SelectionService);
-				}
-			);
-	
-			inject(function (_$filter_, _$httpBackend_, _$timeout_) {
-				$httpBackend = _$httpBackend_;
-				timeout = _$timeout_;
-			});
-	
-			it("Constructor should initialize correctly", () => {
+			var $rootScope;
+			var entitySaveMock;
+			var $hibachi;
+			
+			
+			beforeEach(inject(function($injector) {
+				// Set up the mock http service responses
+				$httpBackend = $injector.get('$httpBackend');
+				$rootScope = $injector.get('$rootScope');
 				
+				//Mock hibachi service next using the injector methods.
+				orderFulfillmentService = new OrderFulfillmentService(new ObserverService(timeout, HistoryService, UtilityService), HibachiService, CollectionConfig, ListingService, $rootScope, SelectionService);
+			
+				// backend definition common for all tests
+				entitySaveMock = $httpBackend.when('POST', 'http://cf10.slatwall/?slatAction=api:main.getInstantiationKey')
+									   .respond({userId: 'userX'}, {'instantiationKey': '1234543212345432123454321'});
+		   
+
+			}));
+
+			it("Constructor should initialize correctly", () => {
 				expect(orderFulfillmentService.orderFulfillmentStore).toBeDefined();
 				expect(orderFulfillmentService).toBeDefined();
 			});
@@ -71,8 +77,138 @@ describe("Order Fulfillment Service Tests", () => {
 					expect(orderFulfillmentService.saveComment).toHaveBeenCalled();
 				});
 
+				it("DELETE_COMMENT_REQUESTED should call deleteComment", () => {
+					
+					spyOn(orderFulfillmentService, "deleteComment");
+					var state = {};
+					var action = {
+						type: "DELETE_COMMENT_REQUESTED",
+						payload: {
+							comment: {
+								comment: "This is a comment",
+								commentID: "123456789"
+							},
+							commentText: "This is the comment"
+						}
+					};
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					expect(orderFulfillmentService.deleteComment).toHaveBeenCalled();
+				});
+
+				it("CREATE_FULFILLMENT_REQUESTED should call fulfillItems", () => {
+					
+					spyOn(orderFulfillmentService, "fulfillItems");
+					var state = {};
+					var action = {
+						type: "CREATE_FULFILLMENT_REQUESTED",
+						payload: {
+							viewState: {}
+						}
+					};
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					expect(orderFulfillmentService.fulfillItems).toHaveBeenCalled();
+				});
+
+				it("SETUP_ORDERDELIVERYATTRIBUTES should call createOrderDeliveryAttributeCollection", () => {
+					
+					spyOn(orderFulfillmentService, "createOrderDeliveryAttributeCollection");
+					var state = {};
+					var action = {
+						type: "SETUP_ORDERDELIVERYATTRIBUTES",
+						payload: {
+							viewState: {}
+						}
+					};
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					expect(orderFulfillmentService.createOrderDeliveryAttributeCollection).toHaveBeenCalled();
+				});
+
 			});
 
+			describe("Actions should update the state", () => {
+				it("TOGGLE_FULFILLMENT_LISTING should toggle the state variable called showFulfillmentListing", () => {
+					var state = {};
+
+					var action = {
+						type: "TOGGLE_FULFILLMENT_LISTING"
+					};
+
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					//showFulfillmentListing starts off as true, so this should be false after toggling once.
+					expect(orderFulfillmentService.state.showFulfillmentListing).toEqual(false);
+
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					//showFulfillmentListing starts off as true, so this should be true after toggling twice.
+					expect(orderFulfillmentService.state.showFulfillmentListing).toEqual(true);
+
+				});
+
+				it("TOGGLE_BATCHLISTING should toggle the state variable called expandedFulfillmentBatchListing", () => {
+					var state = {};
+
+					var action = {
+						type: "TOGGLE_BATCHLISTING"
+					};
+
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					//showFulfillmentListing starts off as true, so this should be false after toggling once.
+					expect(orderFulfillmentService.state.expandedFulfillmentBatchListing).toEqual(false);
+
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					//showFulfillmentListing starts off as true, so this should be true after toggling twice.
+					expect(orderFulfillmentService.state.expandedFulfillmentBatchListing).toEqual(true);
+					
+				});
+
+				it("TOGGLE_LOADER should toggle the state variable called loading", () => {
+					var state = {};
+
+					var action = {
+						type: "TOGGLE_LOADER"
+					};
+
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					
+					//showFulfillmentListing starts off as true, so this should be false after toggling once.
+					expect(orderFulfillmentService.state.loading).toEqual(true);
+
+					orderFulfillmentService.orderFulfillmentStateReducer(state, action);
+					//showFulfillmentListing starts off as true, so this should be true after toggling twice.
+					expect(orderFulfillmentService.state.loading).toEqual(false);
+					
+				})
+			});
+
+			describe("Store should maintain the state", () => {
+				it("emitUpdateToClient should dispatch to the store", () => {
+					var state = {};
+	
+					var action = {
+						type: "TOGGLE_LOADER"
+					};
+	
+					spyOn(orderFulfillmentService.orderFulfillmentStore, "dispatch");
+					
+					orderFulfillmentService.emitUpdateToClient();
+					
+					expect(orderFulfillmentService.orderFulfillmentStore.dispatch).toHaveBeenCalled();
+					
+				})
+			});
+
+			describe("Saving an entity using $hibachi.saveEntity should make a http call", () => {
+				it("addBatch should save the fulfillment batch", () => {
+					var state = {};
+	
+					var action = {
+						type: "TOGGLE_LOADER"
+					};
+					$httpBackend.expectPOST('http://cf10.slatwall/?slatAction=api:main.get').respond(201, '');
+					console.log($httpBackend);
+					//orderFulfillmentService.addBatch({data: {entityName: "FulfillmentBatch"}});
+					
+				})
+			});
 			
 	
 			
