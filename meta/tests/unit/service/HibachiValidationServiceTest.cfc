@@ -608,36 +608,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_maxList(account,'lastname',0) );
 	}
 
+
 	//validate_method()
 	/**
 	* @test
 	*/
-	 public void function validate_method_method_exists() {
+	 public void function validate_method_method_returen_true() {
 		var account = request.slatwallScope.newEntity('Account');
-		account.setfirstname("Mindfire");
-		assert(variables.service.validate_method(account,'firstname','getfirstname'));
+		account.setsuperuserflag("true");
+		assert(variables.service.validate_method(account,'superUserFlag','getsuperUserFlag'));
 
 	}
 
 	/**
 	* @test
 	*/
-	 public void function validate_method_method_dosent_exists() {
+	 public void function validate_method_method_returns_false() {
 		var account = request.slatwallScope.newEntity('Account');
-		account.setfirstname("Mindfire");
-		assert(variables.service.validate_method(account,'firstname','getname'));
-
+		account.setsuperuserflag("false");
+		assertfalse(variables.service.validate_method(account,'superUserFlag','getsuperUserFlag'));
 	}
 
-	/**
-	* @test
-	*/
-	 public void function validate_method_object_dosent_exists() {
-		var account = request.slatwallScope.newEntity('Name');
-		account.setfirstname("Mindfire");
-		assert(variables.service.validate_method(account,'firstname','getname'));
 
-	}
 
 	//validate_minCollection
 	/**
@@ -666,6 +658,143 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setAccountPhoneNumbers(phoneNoArray);
 		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',1) );
 	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_arraylen_less_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assertfalse( variables.service.validate_minCollection(account,'accountPhoneNumbers',6) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_arraylen_equal_to_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',3) );
+	}
+
+	//validate_maxCollection
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_arraylen_greater_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assertfalse( variables.service.validate_maxCollection(account,'accountPhoneNumbers',1) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_arraylen_less_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',6) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_arraylen_equal_to_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',3) );
+	}
+
 }
 
 
