@@ -98,6 +98,9 @@ Notes:
 								</cfif>
 							</cfif>
 							<hr />
+							<cfloop array="#orderFulfillment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+								<swa:SlatwallAdminTabCustomAttributes object="#orderFulfillment#" attributeSet="#attributeSet#" />
+							</cfloop>
 						</cfif>
 					</cfloop>
 				</cfif>
