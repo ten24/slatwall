@@ -34,6 +34,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
     this.publicMethods=listAppend(this.publicMethods, 'authenticateAction');
+    this.publicMethods=listAppend(this.publicMethods, 'batchCalculate');
 
     this.secureMethods='';
     this.secureMethods=listAppend(this.secureMethods, 'getFormResponses');
@@ -74,6 +75,14 @@ component output="false" accessors="true" extends="HibachiController" {
 
         //could possibly check whether we want a different contentType other than json in the future example:xml
 
+    }
+
+    public void function batchCalculate(required struct rc){
+    	if(getHibachiScope().getAccount().getSuperUserFlag()){
+    		
+    		getService('hibachitagservice').cfsetting(requesttimeout=0);
+    		getService('hibachiService').batchUpdateCalculatedPropertiesByEntityName(entityName=rc.entityName,totalPagesComplete=rc.totalPagesComplete);
+    	}
     }
 
     public void function getConfig(required struct rc){

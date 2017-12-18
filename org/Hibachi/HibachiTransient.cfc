@@ -16,6 +16,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return variables.hibachiErrors;
 	}
 
+	public void function clearHibachiErrors(){
+		structDelete(variables,'hibachiErrors');
+	}
+
 	// @hint Returns the messageBean object, if one hasn't been setup yet it returns a new one
 	public any function getHibachiMessages() {
 		if(!structKeyExists(variables, "hibachiMessages")) {
