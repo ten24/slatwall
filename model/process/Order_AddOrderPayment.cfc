@@ -130,7 +130,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public any function getGiftCard(){
 		if(!isNull(getNewOrderPayment().getGiftCardNumber()) && len(getNewOrderPayment().getGiftCardNumber())){
-			return getService("GiftCardService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumber()));
+			return getService("GiftCardService").getGiftCardByGiftCardCode(newOrderPayment.getGiftCardNumber());
 		} else if(!isNull(getGiftCardID())){
 			return getService("GiftCardService").getGiftCard(getGiftCardID());
 		}
