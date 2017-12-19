@@ -116,5 +116,6 @@ Notes:
 				
 			</cfif>
 		</cfloop>
+		<span>Max Image Size:#$.slatwall.setting('imageMaxSize')#MB</span>
 	</div>
 </cfoutput>
