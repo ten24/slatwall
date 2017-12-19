@@ -713,7 +713,24 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',3) );
 	}
 
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_propertyValue_is_null() {
+		var orderItem = request.slatwallScope.newEntity('OrderItem');
+		orderItem.setOrderItemID("orderItem123");
+		assert( variables.service.validate_minCollection(orderItem,'price',3) );
+	}
+
 	//validate_maxCollection
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_propertyValue_is_null() {
+		var orderItem = request.slatwallScope.newEntity('OrderItem');
+		orderItem.setOrderItemID("orderItem123");
+		assert( variables.service.validate_maxCollection(orderItem,'price',3) );
+	}
 	/**
 	* @test
 	*/
