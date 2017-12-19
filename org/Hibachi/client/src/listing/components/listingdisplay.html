@@ -127,8 +127,8 @@
                            data-listing-id="{{swListingDisplay.tableID}}"
                            >
 
-                        <tr data-ng-if="(swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecordsCount == 0) ||
-                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.recordsCount == 0) ">
+                        <tr data-ng-if="(swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecords.length == 0) ||
+                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.records.length == 0) ">
                             <td colspan="{{swListingDisplay.columnCount}}">No Records Found.</td>            
                         </tr>
 
