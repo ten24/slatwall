@@ -47,7 +47,7 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-	<div class="alert alert-info alert-dismissable">Max Image Size:#$.slatwall.setting('imageMaxSize')#MB</div>
+	<div class="alert alert-info alert-dismissable">#$.slatwall.rbKey('admin.entity.producttabs.defaultimages.maximagesizeinfo')##$.slatwall.setting('imageMaxSize')#MB</div>
 	<div class="row s-image-uploader">
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFileStruct">
 			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFileStruct.imageFile#" />
