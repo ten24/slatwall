@@ -71,6 +71,7 @@ class SWListingDisplayController{
     public selectFieldName;
     public selectable:boolean = false;
     public showOrderBy:boolean;
+    public showPrintOptions:boolean; 
     public showSearch:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
@@ -206,7 +207,8 @@ class SWListingDisplayController{
 
                     this.paginator.getCollection = this.getCollection;
 
-                    this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
+                    var getCollectionEventID = this.tableID;
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
                 }
             );
@@ -225,7 +227,7 @@ class SWListingDisplayController{
         if (this.collectionObject){
                 this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
-        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
     }
 
     public getCollectionByPagination = (state) =>{
@@ -247,7 +249,7 @@ class SWListingDisplayController{
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
-                this.observerService.notifyById('swPaginationUpdate',this.tableID, data);
+                this.observerService.notify('swPaginationUpdate',data);
             });
 
         }
@@ -261,6 +263,8 @@ class SWListingDisplayController{
         }
 
         this.paginator.getCollection = this.getCollection;
+
+        var getCollectionEventID = this.tableID;
 
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
@@ -278,14 +282,11 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(this.name != null){
+        if(this.name!=null){
             this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
-
-        this.collectionConfig.setEventID(this.tableID);
-
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -346,6 +347,9 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false; 
+        }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false;
         }
@@ -361,7 +365,7 @@ class SWListingDisplayController{
         if(angular.isDefined(this.emailAction)){
             this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
         }
-        this.paginator = this.paginationService.createPagination(this.tableID);
+        this.paginator = this.paginationService.createPagination();
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
             this.getChildCount = false;
@@ -534,6 +538,25 @@ class SWListingDisplayController{
             .remove();
     };
 
+    public printCurrentList =(printTemplateID)=>{
+
+        var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+
+        $('body').append('<form action="?s=1" method="post" id="formPrint"></form>');
+        
+        $('#formPrint')
+            .append("<input type='hidden' name='" + this.$hibachi.getConfigValue('action') +"' value='entity.processPrint' />")
+            .append("<input type='hidden' name='redirectAction' value='admin:entity.list" + this.baseEntityName.toLowerCase() + "' />")
+            .append("<input type='hidden' name='processContext' value='addToQueue' />")
+            .append("<input type='hidden' name='printID' value='' />")
+            .append("<input type='hidden' name='printTemplateID' value='" + printTemplateID +"' />")
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />");
+        
+        $('#formPrint')
+            .submit()
+            .remove();
+    };
+
     public paginationPageChange=(res)=>{
         this.isCurrentPageRecordsSelected = false;
     };
@@ -666,6 +689,7 @@ class SWListingDisplay implements ng.IDirective{
             showSearch:"<?",
             showSearchFilters:"<?",
             showSimpleListingControls:"<?",
+            showPrintOptions:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",
