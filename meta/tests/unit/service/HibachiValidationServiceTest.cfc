@@ -727,88 +727,94 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function validate_maxCollection_propertyValue_is_null() {
-		var orderItem = request.slatwallScope.newEntity('OrderItem');
-		orderItem.setOrderItemID("orderItem123");
+		var orderItemData = {
+			orderItemID="test" & createUUID()
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
 		assert( variables.service.validate_maxCollection(orderItem,'price',3) );
 	}
+
 	/**
 	* @test
 	*/
 	public void function validate_maxCollection_arraylen_greater_than_constraint_value() {
-		var account = request.slatwallScope.newEntity('Account');
-		account.setAccountID("mindfire123");
 
 		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneOne.setAccount(account);
+
 		accountPhoneOne.setAccountPhoneNumberID("phno1");
 		accountPhoneOne.setPhoneNumber("1111111111");
 
 		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneTwo.setAccount(account);
+
 		accountPhoneTwo.setAccountPhoneNumberID("phno2");
 		accountPhoneTwo.setPhoneNumber("2222222222");
 
 		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneThree.setAccount(account);
+
 		accountPhoneThree.setAccountPhoneNumberID("phno3");
 		accountPhoneThree.setPhoneNumber("3333333333");
 
-		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
-		account.setAccountPhoneNumbers(phoneNoArray);
-		assertfalse( variables.service.validate_maxCollection(account,'accountPhoneNumbers',1) );
+		var accountData = {
+			accountID="test" & createUUID(),
+			accountPhoneNumbers= [accountPhoneOne,accountPhoneTwo,accountPhoneThree]
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
+		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',1) );
 	}
 
 	/**
 	* @test
 	*/
 	public void function validate_maxCollection_arraylen_less_than_constraint_value() {
-		var account = request.slatwallScope.newEntity('Account');
-		account.setAccountID("mindfire123");
+				var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
 
-		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneOne.setAccount(account);
 		accountPhoneOne.setAccountPhoneNumberID("phno1");
 		accountPhoneOne.setPhoneNumber("1111111111");
 
 		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneTwo.setAccount(account);
+
 		accountPhoneTwo.setAccountPhoneNumberID("phno2");
 		accountPhoneTwo.setPhoneNumber("2222222222");
 
 		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneThree.setAccount(account);
+
 		accountPhoneThree.setAccountPhoneNumberID("phno3");
 		accountPhoneThree.setPhoneNumber("3333333333");
 
-		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
-		account.setAccountPhoneNumbers(phoneNoArray);
+		var accountData = {
+			accountID="test" & createUUID(),
+			accountPhoneNumbers= [accountPhoneOne,accountPhoneTwo,accountPhoneThree]
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
 		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',6) );
 	}
-
 	/**
 	* @test
 	*/
 	public void function validate_maxCollection_arraylen_equal_to_constraint_value() {
-		var account = request.slatwallScope.newEntity('Account');
-		account.setAccountID("mindfire123");
+				var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
 
-		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneOne.setAccount(account);
 		accountPhoneOne.setAccountPhoneNumberID("phno1");
 		accountPhoneOne.setPhoneNumber("1111111111");
 
 		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneTwo.setAccount(account);
+
 		accountPhoneTwo.setAccountPhoneNumberID("phno2");
 		accountPhoneTwo.setPhoneNumber("2222222222");
 
 		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
-		accountPhoneThree.setAccount(account);
+
 		accountPhoneThree.setAccountPhoneNumberID("phno3");
 		accountPhoneThree.setPhoneNumber("3333333333");
 
-		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
-		account.setAccountPhoneNumbers(phoneNoArray);
+		var accountData = {
+			accountID="test" & createUUID(),
+			accountPhoneNumbers= [accountPhoneOne,accountPhoneTwo,accountPhoneThree]
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
 		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',3) );
 	}
 
