@@ -96,7 +96,7 @@ module.exports = function(config) {
       subPageTitle: 'Angularjs Typescript Unit Tests',
       groupSuites: true,
       useCompactStyle: true,
-      useLegacyStyle: true
+      useLegacyStyle: false
     },
 
     // web server port

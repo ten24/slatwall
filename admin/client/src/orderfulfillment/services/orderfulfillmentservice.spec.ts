@@ -13,33 +13,66 @@ import {SelectionService} from "../../../../../org/Hibachi/client/src/core/servi
 import {HistoryService} from "../../../../../org/Hibachi/client/src/core/services/historyservice";
 import {UtilityService} from "../../../../../org/Hibachi/client/src/core/services/utilityservice";
 import {ObserverService} from "../../../../../org/Hibachi/client/src/core/services/observerservice";
+import {RequestService} from "../../../../../org/Hibachi/client/src/core/services/requestservice";
 import * as actions from '../../fulfillmentbatch/actions/fulfillmentbatchactions';
 
+
+//this.appConfig = appConfig;
+
+/**
+ * A complete example Unit testing a Slatwall service.
+ */
 describe("Order Fulfillment Service Tests", () => {
-	
+			var module = angular.mock.module;
 			var orderFulfillmentService : any;
 			var observerService : ObserverService;
-			var $httpBackend: any;
-			var timeout: any;
-			var $rootScope;
-			var entitySaveMock;
-			var $hibachi;
-			
-			
-			beforeEach(inject(function($injector) {
-				// Set up the mock http service responses
-				$httpBackend = $injector.get('$httpBackend');
-				$rootScope = $injector.get('$rootScope');
-				
-				//Mock hibachi service next using the injector methods.
-				orderFulfillmentService = new OrderFulfillmentService(new ObserverService(timeout, HistoryService, UtilityService), HibachiService, CollectionConfig, ListingService, $rootScope, SelectionService);
-			
-				// backend definition common for all tests
-				entitySaveMock = $httpBackend.when('POST', 'http://cf10.slatwall/?slatAction=api:main.getInstantiationKey')
-									   .respond({userId: 'userX'}, {'instantiationKey': '1234543212345432123454321'});
-		   
+			var $httpBackend, $rootScope, $hibachi, $q, $http, $timeout, $log, $location, $anchorScroll, $window;
+			//var appConfig:any = this.appConfig;
+			var module = angular.mock.module;
 
-			}));
+			beforeEach(
+				function(){
+					//module
+					module(orderfulfillmentmodule.name, 
+						function($provide){
+							var mockObserverService = jasmine.createSpyObj('mockObserverService', ['attach', 'detachById','detachByEvent','detachByEventAndId','notify','notifyById','notifyAndRecord']);
+							var mockHibachi = jasmine.createSpyObj('mockHibachi', ['saveEntity']);
+							//Add a mock method on hibachi for the saveEntity
+							mockHibachi.saveEntity.and.callFake(function() {
+								$http.post("http://cf10.slatwall/index.cfm/?slataction=api:main.post", {});
+							});
+							var mockCollectionConfig = jasmine.createSpyObj('mockCollectionConfig', ['newCollectionConfig']);
+							var mockListingService = jasmine.createSpyObj('mockListingService', ['getListingPageRecordsUpdateEventString']);
+							var mockSelectionService = jasmine.createSpyObj('mockSelectionService', ['createSelections']);
+							$provide.value('observerService', mockObserverService);
+							$provide.value('$hibachi', mockHibachi);
+							$provide.value('collectionConfigService', mockCollectionConfig);
+							$provide.value('listingService', mockListingService);
+							$provide.value('selectionService', mockListingService);
+					});
+
+					inject(function($injector, _$httpBackend_, _$rootScope_, _$window_, _$q_, _$http_, _$timeout_, _$location_, _$anchorScroll_, _orderFulfillmentService_) {
+						// Set up the mock http service responses
+						
+						$httpBackend = _$httpBackend_;
+						$window = _$window_;
+						$rootScope = _$rootScope_;
+						$q = $q;
+						$http = _$http_;
+						$timeout = _$timeout_;
+						$location = _$location_;
+						$anchorScroll = _$anchorScroll_;
+						orderFulfillmentService = _orderFulfillmentService_;
+						/*orderFulfillmentService = new OrderFulfillmentService(
+							new ObserverService($timeout, HistoryService, UtilityService), 
+								new HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, 
+									new RequestService($injector, 
+										new ObserverService($timeout, HistoryService, UtilityService)), 
+											UtilityService, null, null, appConfig, null, null), 
+												CollectionConfig, ListingService, $rootScope, SelectionService);*/
+				
+					})
+				});
 
 			it("Constructor should initialize correctly", () => {
 				expect(orderFulfillmentService.orderFulfillmentStore).toBeDefined();
@@ -203,9 +236,15 @@ describe("Order Fulfillment Service Tests", () => {
 					var action = {
 						type: "TOGGLE_LOADER"
 					};
-					$httpBackend.expectPOST('http://cf10.slatwall/?slatAction=api:main.get').respond(201, '');
-					console.log($httpBackend);
-					//orderFulfillmentService.addBatch({data: {entityName: "FulfillmentBatch"}});
+					
+					$httpBackend.expect('POST', function(url) {
+						return url.indexOf("http://cf10.slatwall/index.cfm/?slataction=api:main.post") != -1;
+					  })
+					  .respond(200, {successfulAction: 'api:main.post', failureActions: '', messages: '', 'entityID': '1234543212345432123454321'});
+					
+					
+					orderFulfillmentService.addBatch({data: {entityName: "FulfillmentBatch"}});
+					$httpBackend.flush();
 					
 				})
 			});
