@@ -855,7 +855,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		} else if (arrayLen(getAccountEmailAddresses())) {
 			for(var accountEmailAddress in getAccountEmailAddresses()) {
 				if(getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=accountEmailAddress.getEmailAddress(), accountID=getAccountID() )) {
-					variables.primaryEmailAddress = getAccountEmailAddresses()[1];
+					variables.primaryEmailAddress = getAccountEmailAddressesSmartList().getFirstRecord();
 					return variables.primaryEmailAddress;
 				}
 			}
@@ -868,7 +868,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!isNull(variables.primaryPhoneNumber)) {
 			return variables.primaryPhoneNumber;
 		} else if (arrayLen(getAccountPhoneNumbers())) {
-			variables.primaryPhoneNumber = getAccountPhoneNumbers()[1];
+			variables.primaryPhoneNumber = getAccountPhoneNumbersSmartList().getFirstRecord();
 			return variables.primaryPhoneNumber;
 		} else {
 			return getService("accountService").newAccountPhoneNumber();
@@ -879,7 +879,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!isNull(variables.primaryAddress)) {
 			return variables.primaryAddress;
 		} else if (arrayLen(getAccountAddresses())) {
-			variables.primaryAddress = getAccountAddresses()[1];
+			variables.primaryAddress = getAccountAddressesSmartList().getFirstRecord();
 			return variables.primaryAddress;
 		} else {
 			return getService("accountService").newAccountAddress();
@@ -890,7 +890,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!isNull(variables.primaryPaymentMethod)) {
 			return variables.primaryPaymentMethod;
 		} else if (arrayLen(getAccountPaymentMethods())) {
-			variables.primaryPaymentMethod = getAccountPaymentMethods()[1];
+			variables.primaryPaymentMethod = getAccountPaymentMethodsSmartList().getFirstRecord();
 			return variables.primaryPaymentMethod;
 		} else {
 			return getService("accountService").newAccountPaymentMethod();
