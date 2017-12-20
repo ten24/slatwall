@@ -371,6 +371,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!isNull(arguments.processObject.getStock())){
 				newOrderItem.setStock(arguments.processObject.getStock());	
 			}
+
+			if (processObject.getSellOnBackOrderFlag() == true){
+				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
+			}
 			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
@@ -486,6 +490,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						if (addOrderItemGiftRecipientProcessObject.hasErrors()) {
 							if (addOrderItemGiftRecipientProcessObject.getRecipient().hasErrors()) {
+								orderItem.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
 								arguments.order.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
 							}
 						}
