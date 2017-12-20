@@ -78,6 +78,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// Non-persistent properties
 	property name="extendedCost" persistent="false" hb_formatType="currency";
+	property name="grossProfitMargin" persistent="false" hb_formatType="percentage";
 	property name="extendedWeight" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
@@ -86,6 +87,17 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public numeric function getGrossProfitMargin(){
+		if(!isNull(getSku()) && !isNull(getSku().getPrice()) && !isNull(getCost()) && getCost() > 0){
+			return (val(getCost()) - val(getSku().getPrice())) / val(getCost());
+		}
+
+		return 0;
+	}
+
+
+	// ============ START: Non-Persistent Property Methods =================
+
 	public numeric function getLandingAmountByQuantity(){
 		if(!isNull(getVendorOrder()) && !isNull(getQuantity())){
 			var totalQuantity = getVendorOrder().getTotalQuantity();
