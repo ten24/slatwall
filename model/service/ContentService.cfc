@@ -82,6 +82,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(directoryExists(templateDirectory)) {
 			var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
 			var templates = [];
+			
 			for(var directory in directoryList){
 				var template ={};
 				template['name'] = directory.name;
@@ -96,8 +97,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}	
 			}
 			
-			
-			return templates;
+			getService('HibachiUtilityService').structArraySort(arrayOfStructs=templates, key='value', sortType='text');
 		}
 	}
 
