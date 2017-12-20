@@ -97,7 +97,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}	
 			}
 			
-			getService('HibachiUtilityService').structArraySort(arrayOfStructs=templates, key='value', sortType='text');
+			return getService('HibachiUtilityService').structArraySort(arrayOfStructs=templates, key='value', sortType='text');
 		}
 	}
 
