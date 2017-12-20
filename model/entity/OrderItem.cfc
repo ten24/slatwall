@@ -102,6 +102,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="sellOnBackOrderFlag" default="0" ormtype="boolean";
 
 	// Non persistent properties
 	property name="activeEventRegistrations" persistent="false";
