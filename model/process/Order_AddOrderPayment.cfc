@@ -130,9 +130,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public any function getGiftCard(){
 		if(!isNull(getNewOrderPayment().getGiftCardNumber()) && len(getNewOrderPayment().getGiftCardNumber())){
+		
 			return getService("GiftCardService").getGiftCardByGiftCardCode(newOrderPayment.getGiftCardNumber());
+		
 		} else if(!isNull(getGiftCardID())){
+			
 			return getService("GiftCardService").getGiftCard(getGiftCardID());
+		
 		}
 	}
 
@@ -341,9 +345,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public boolean function giftCardNotAlreadyApplied(){
+
 		if(this.hasGiftCard()){
 			var cardID = this.getGiftCard().getGiftCardID();
+			
 			for(var payment in this.getOrder().getOrderPayments()){
+
 				if(!isNull(payment.getGiftCard()) && payment.getGiftCard().getGiftCardID() == cardID){
 					return false;
 				}
@@ -377,6 +384,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		return false;
 
+	}
+	
+	public void function setHibachiErrors( required any errorBean ) {
+		if ( !isnull(this.getGiftCardID() ) ){
+			getHibachiScope().setORMHasErrors( true );			
+		}
+		
+		super.setHibachiErrors(errorBean);
 	}
 
 	// =====================  END: Helper Methods ==========================
