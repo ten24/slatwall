@@ -227,7 +227,7 @@ class SWListingDisplayController{
         if (this.collectionObject){
                 this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
-        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
 
     public getCollectionByPagination = (state) =>{
@@ -249,7 +249,7 @@ class SWListingDisplayController{
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
-                this.observerService.notify('swPaginationUpdate',data);
+                this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
             });
 
         }
