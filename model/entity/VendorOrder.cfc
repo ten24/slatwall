@@ -230,6 +230,16 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 		return variables.addVendorOrderItemSkuOptionsSmartList;
 	}
 
+	public any function getAddVendorOrderItemAllSkuOptionsSmartList() {
+		if(!structKeyExists(variables, "addVendorOrderItemAllSkuOptionsSmartList")) {
+			// Excluding the skus/products that already assigned to vendor
+			variables.addVendorOrderItemAllSkuOptionsSmartList = getService("skuService").getSkuSmartList();
+			variables.addVendorOrderItemAllSkuOptionsSmartList.addWhereCondition("aslatwallsku.product NOT IN ( SELECT aslatwallproduct FROM SlatwallVendor aslatwallvendor JOIN aslatwallvendor.products aslatwallproduct WHERE aslatwallvendor.vendorID = :vendorID )", {vendorID = getVendor().getVendorID()});
+			variables.addVendorOrderItemAllSkuOptionsSmartList.addOrder('skuCode|ASC');
+		}
+		return variables.addVendorOrderItemAllSkuOptionsSmartList;
+	}
+
 
 	// ============  END:  Non-Persistent Property Methods =================
 
