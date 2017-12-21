@@ -52,6 +52,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="vendorOrderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="float" default=0;
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
+	property name="price" ormtype="big_decimal" hb_formatType="currency";
 	property name="shippingWeight" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
@@ -85,6 +86,22 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="quantityUnDelivered" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getPrice(){
+		if( !structKeyExists(variables,"price") ){
+			variables.price = !isNull(getSku().getPrice()) ? getSku().getPrice() : 0; 
+		}
+		
+		return variables.price;
+	}
+	
+	public numeric function getGrossProfitMargin(){
+		if(!isNull(getPrice()) && !isNull(getCost()) && getCost() > 0){
+			return NumberFormat( ( (val(getPrice()) - val(getCost())) / val(getPrice()) ) * 100,'9.99');
+		}
+		
+		return 0;
+	}
 	
 	public numeric function getLandingAmountByQuantity(){
 		if(!isNull(getVendorOrder()) && !isNull(getQuantity())){
