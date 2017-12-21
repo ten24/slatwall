@@ -89,4 +89,12 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 		}
  		return true; 
  	} 
+ 	
+ 	public string function getSimpleRepresentation() {
+ 		if (!isNull(getSku()) && !isNull(getSku().getSkuCode())){
+			return getSku().getSkuCode() & " - " & getCurrencyCode(); 
+		} else {
+			return '';
+		}
+	}
 }
