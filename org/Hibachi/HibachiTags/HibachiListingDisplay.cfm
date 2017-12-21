@@ -246,7 +246,10 @@
 			<!--- Process --->
 			<cfif len(attributes.recordProcessAction) and attributes.recordProcessButtonDisplayFlag>
 				<cfset attributes.administativeCount++ />
-
+				
+				<!-- make sure recordProcessContext is always lower case -->
+				<cfset attributes.recordProcessContext = lCase(attributes.recordProcessContext) />
+				
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processcontext="#attributes.recordProcessContext#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentity="#attributes.recordProcessEntity.getClassName()#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentityid="#attributes.recordProcessEntity.getPrimaryIDValue()#"', " ") />
