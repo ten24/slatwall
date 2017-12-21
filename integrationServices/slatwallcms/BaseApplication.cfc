@@ -144,7 +144,7 @@ Notes:
 					var entity =entityService.invokeMethod('get#entityName#ByURLTitle',{1=arguments.contentURLTitlePath,2=true});
 				}
 				
-				if(isNull(entity)){
+				if(isNull(entity) || entity.getNewFlag()){
 					var content = render404(arguments.slatwallScope,site);
 				}
 				arguments.slatwallScope.invokeMethod('set#entityName#',{1=entity});

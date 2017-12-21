@@ -160,11 +160,16 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 			}
 			
 			if(!responseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
-					responseBean.addShippingMethod(
-						shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
-						totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
-					);
+				try{
+					for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
+						responseBean.addShippingMethod(
+							shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
+							totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
+						);
+				
+					}
+				}catch (any e){
+					responseBean.addError("unknown", "An unexpected error occured when retrieving the shipping rates, please notify system administrator.");
 				}
 			}
 		}
