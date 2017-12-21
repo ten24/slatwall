@@ -103,8 +103,8 @@ Notes:
 	function generateRenderedContent() {
 		
 		var site = arguments.slatwallScope.getSite();
-		var appTemplatePath = site.getApp().getAppRootPath() & '/templates/';  
- 		var siteTemplatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
+		var appTemplatePath = site.getApp().getAppRootPath() & '/templates';
+ 		var siteTemplatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates';
 		var contentPath = '';
 		var templateBody = '';
 		if(!isNull(site.getResetSettingCache()) && site.getResetSettingCache()){
@@ -158,7 +158,8 @@ Notes:
 				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
 				 
 			}else{
-				render404(arguments.slatwallScope,site);
+				var content = render404(arguments.slatwallScope,site);
+				var contentTemplateFile = content.Setting('contentTemplateFile');
 				//throw('no content for entity');
 			}
 		}else{
@@ -179,10 +180,11 @@ Notes:
 			arguments.slatwallScope.setContent(content);
 		}
 		
-		if(FileExists(ExpandPath(siteTemplatePath) & contentTemplateFile)){ 
-			var contentPath = siteTemplatePath & contentTemplateFile;
-		} else if (FileExists(ExpandPath(appTemplatePath) & contentTemplateFile)){
-			var contentPath = appTemplatePath & contentTemplateFile; 
+
+		if(FileExists(ExpandPath(siteTemplatePath) & '/' & contentTemplateFile)){
+			var contentPath = siteTemplatePath & '/' &  contentTemplateFile;
+		} else if (FileExists(ExpandPath(appTemplatePath) & '/' &  contentTemplateFile)){
+			var contentPath = appTemplatePath & '/' &  contentTemplateFile;
 		} else { 
 			render404(arguments.slatwallScope,site);
 			//throw("Requested Template: " & contentTemplateFile & " Doesn't Exist in the Site Or The App");
