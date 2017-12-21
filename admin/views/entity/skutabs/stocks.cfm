@@ -46,28 +46,23 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.stock" type="any">
-<cfparam name="rc.edit" type="boolean" default="false" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.edit" type="boolean">
+<cfset rc.sku.getStocksSmartList().addOrder('location.locationName') />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#" sRedirectAction="admin:entity.detailsku">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="#rc.edit#">
-		</hb:HibachiEntityActionBar>
+	<hb:HibachiListingDisplay smartList="#rc.sku.getStocksSmartList()#"
+			recordDetailAction="admin:entity.detailstock"
+			recordEditAction="admin:entity.editstock"
+			recordEditQueryString="skuID=#rc.sku.getSkuID()#&sRedirectAction=admin:entity.detailsku"
+	>
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="location.locationName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="minQuantity" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="maxQuantity" />
 		
-		<hb:HibachiEntityDetailGroup object="#rc.stock#">
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventory" />
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventoryhistory" />
-		
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.stock.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.stock#" attributeSet="#attributeSet#" />
-			</cfloop>
-		
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiListingDisplay>
+	
 </cfoutput>

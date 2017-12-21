@@ -105,6 +105,7 @@ Notes:
 				<hb:HibachiEntityDetailItem property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/inventory" />
+				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/stocks" />
 				<cfif rc.sku.getBundleFlag() eq true>
 					<hb:HibachiEntityDetailItem view="admin:entity/skutabs/bundledskus" />
 				<cfelse>
