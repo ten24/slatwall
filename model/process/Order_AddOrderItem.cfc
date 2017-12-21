@@ -91,6 +91,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="publicRemoteID";
 	property name="recipients" type="array" hb_populateArray="true";
 	property name="assignedGiftRecipientQuantity";
+	property name="sellOnBackOrderFlag";
 
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
