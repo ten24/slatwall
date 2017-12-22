@@ -46,34 +46,42 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.account" type="any" />
-<cfparam name="rc.ordersNotPlacedSmartList" type="any" />
-<cfparam name="rc.ordersNotPlacedCollectionList" type="any" />
+<cfparam name="rc.skuPrice" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.currencyCode" type="string" />
+<cfparam name="rc.sku" type="any" />
 
-<cfset displayPropertyList = 'orderType.typeName,orderStatusType.typeName,createdDateTime,calculatedTotal'/>
-<cfset rc.ordersNotPlacedCollectionList.setDisplayProperties(
-	displayPropertyList,
-	{
-		isVisible=true,
-		isSearchable=true,
-		isDeletable=true
-	}
-)/>
-
-<cfset rc.ordersNotPlacedCollectionList.addDisplayProperty(displayProperty='orderID',columnConfig={
-	isVisible=false,
-	isSearchable=false,
-	isDeletable=false
-	})
-/>
-
-
-<hb:HibachiListingDisplay collectionList="#rc.ordersNotPlacedCollectionList#"
-	recordEditAction="admin:entity.editorder"
-	recordDetailAction="admin:entity.detailorder"
->
-</hb:HibachiListingDisplay>
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.skuPrice#" edit="#rc.edit#" 
+								saveActionQueryString="skuID=#rc.skuID#"
+								saveActionHash="tabcurrencies">
+								
+		<hb:HibachiEntityActionBar type="detail" object="#rc.skuPrice#" edit="#rc.edit#"
+								   backAction="admin:entity.detailsku"
+								   backQueryString="skuID=#rc.sku.getSkuID()#"
+								   cancelAction="admin:entity.detailsku"
+								   cancelQueryString="skuID=#rc.sku.getSkuID()#" />
+								   
+		<input type="hidden" name="sku.skuID" value="#rc.sku.getSkuID()#" />
+		<input type="hidden" name="currencyCode" value="#rc.currencyCode#" />
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.skuPrice#" property="price" edit="#rc.edit#" value="#rc.sku.getPriceByCurrencyCode( rc.currencyCode )#">
+				<cfif rc.sku.getProduct().getBaseProductType() eq "subscription">
+					<hb:HibachiPropertyDisplay object="#rc.skuPrice#" property="renewalPrice" edit="#rc.edit#" value="#rc.sku.getRenewalPriceByCurrencyCode( rc.currencyCode )#">
+				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.skuPrice#" property="listPrice" edit="#rc.edit#" value="#rc.sku.getListPriceByCurrencyCode( rc.currencyCode )#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+		<cfif !rc.skuPrice.isNew()>
+			<hb:HibachiActionCaller action="admin:entity.deleteskuprice" queryString="skuPriceID=#rc.skuPrice.getSkuPriceID()#&redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" class="btn btn-danger" />
+		</cfif>
+		
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

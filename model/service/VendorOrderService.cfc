@@ -58,6 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="vendorService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -231,6 +232,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processVendorOrder_receive(required any vendorOrder, required any processObject){
 		
+
 		var stockReceiver = getStockService().newStockReceiver();
 		stockReceiver.setReceiverType( "vendorOrder" );
 		stockReceiver.setVendorOrder( arguments.vendorOrder );
@@ -241,8 +243,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(processObject.getBoxCount())) {
 			stockReceiver.setBoxCount( processObject.getBoxCount() );
 		}
-		
+
 		var locationEntity = getLocationService().getLocation( arguments.processObject.getLocationID() );
+
+		// Automatically keep preference history of vendor and product/sku for future convenience
+		var newVendorProductPreferenceFlag = false;
 		
 		for(var thisRecord in arguments.data.vendorOrderItems) {
 			
@@ -253,13 +258,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var stock = getStockService().getStockBySkuAndLocation( vendorOrderItem.getStock().getSku(), locationEntity );
 				
 				var stockReceiverItem = getStockService().newStockReceiverItem();
-			
+
 				stockreceiverItem.setQuantity( thisRecord.quantity );
 				stockreceiverItem.setStock( stock );
 				stockreceiveritem.setCost( vendorOrderItem.getCost() );
 				stockreceiverItem.setVendorOrderItem( vendorOrderItem );
 				stockreceiverItem.setCurrencyCode(vendorOrderItem.getCurrencyCode());
 				stockreceiverItem.setStockReceiver( stockReceiver );
+
+				// Adding vendor to product/sku if no existing relationship
+				var product = vendorOrderItem.getSku().getProduct();
+				if (!arguments.vendorOrder.getVendor().hasProduct(product)) {
+					// Add vendor product relationship
+					arguments.vendorOrder.getVendor().addProduct(product);
+					newVendorProductPreferenceFlag = true;
+				}
 				
 			}
 		}
@@ -283,6 +296,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		arguments.vendorOrder = this.saveVendorOrder(arguments.vendorOrder);
 		
+		// Persist and update vendor products if necessary
+		if (newVendorProductPreferenceFlag) {
+			getVendorService().saveVendor(arguments.vendorOrder.getVendor());
+		}
+
 		return arguments.vendorOrder;
 	}
 	
