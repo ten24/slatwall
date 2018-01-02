@@ -178,7 +178,6 @@ Notes:
 			arguments.slatwallScope.setContent(content);
 		}
 
-
 		if(FileExists(ExpandPath(siteTemplatePath) & '/' & contentTemplateFile)){
 			var contentPath = siteTemplatePath & '/' &  contentTemplateFile;
 		} else if (FileExists(ExpandPath(appTemplatePath) & '/' &  contentTemplateFile)){
