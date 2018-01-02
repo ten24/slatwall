@@ -58,7 +58,7 @@
 					            data-parent-directive-controller-as-name="swTypeaheadInputField"
 					            data-all-records="true">
 					    	
-					    								<!--- Columns --->
+
  							<sw-collection-columns>
  								<sw-collection-column data-property-identifier="locationName" is-searchable="true"></sw-collection-column>
  								<sw-collection-column data-property-identifier="locationID" is-searchable="false"></sw-collection-column>
