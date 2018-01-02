@@ -597,6 +597,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			} else if (!isNull(skuPriceResults) && !isNull(skuPriceResults.getPrice())){
 				return skuPriceResults.getPrice();
 			}
+			var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), currencyCode);  
+			if(!isNull(baseSkuPrice)){
+				return baseSkuPrice.getPrice(); 
+			}
 		}
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode)) {
     		return getCurrencyDetails()[ arguments.currencyCode ].price;
