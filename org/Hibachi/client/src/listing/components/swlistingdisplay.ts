@@ -286,9 +286,7 @@ class SWListingDisplayController{
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
-
-        this.collectionConfig.setEventID(this.tableID);
-
+        
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -352,6 +350,9 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
         }
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false; 
+        }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false;
         }
@@ -375,6 +376,10 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+        if(this.collectionConfig){
+            this.collectionConfig.setEventID(this.tableID);
+        }
+       
         if(angular.isDefined(this.sortableFieldName)){
             this.sortableFieldName = "sorting" + this.tableID;
         }

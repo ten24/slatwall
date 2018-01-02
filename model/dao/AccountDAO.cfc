@@ -53,9 +53,19 @@ Notes:
 		<cfargument name="accountID" type="string" />
 
 		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
+			<cfset var primaryInUseData = ormExecuteQuery(
+				"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID"
+				, {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID}
+				,true
+			)/>
+			<cfreturn not primaryInUseData />
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+		<cfset var primaryInUseData = ormExecuteQuery(
+			"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress"
+			, {emailAddress=lcase(arguments.emailAddress)},
+			true
+		)/>
+		<cfreturn not primaryInUseData />
 	</cffunction>
 
 	<cffunction name="getAccountIDByPrimaryEmailAddress">

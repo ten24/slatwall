@@ -78,7 +78,6 @@ class SWListingControlsController {
     public filterActions =(res)=>{
 
         if(res.action == 'add' || res.action == 'remove'){
-
             this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
         }
         this.filtersClosed = true;
