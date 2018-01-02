@@ -1003,6 +1003,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
 
+		if(ArrayLen(arguments.data.collectionConfig.columns) == 0){
+			var defaultCollectionProperties = this.new(arguments.data.collectionConfig.baseEntityName).getDefaultCollectionProperties();
+			for(var property in defaultCollectionProperties){	
+				collectionEntity.addDisplayProperty(property['name'], '', {isExportable=true});
+			}
+		} 
+
 		var collectionConfigData = getCollectionConfigExportDataByCollection(collectionEntity);
 		getHibachiService().export( argumentCollection=collectionConfigData );
 	}
