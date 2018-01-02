@@ -873,21 +873,35 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if (this.getAccountPhoneNumbersCount()) {
 			variables.primaryPhoneNumber = this.getAccountPhoneNumbersSmartlist().getFirstRecord();
 			return variables.primaryPhoneNumber;
-		} else {
-			return getService("accountService").newAccountPhoneNumber();
 		}
+		
+		//check memory
+		if(hasAccountPhoneNumber()){
+			variables.primaryPhoneNumber = getAccountPhoneNumbers()[1];
+			return variables.primaryPhoneNumber;
+		}
+		return getService("accountService").newAccountPhoneNumber();
+		
 	}
 
 	public any function getPrimaryAddress() {
+		//check for value
 		if(!isNull(variables.primaryAddress)) {
 			return variables.primaryAddress;
 		}
+		//check db value
 		if (this.getAccountAddressesCount()) {
 			variables.primaryAddress = this.getAccountAddressesSmartlist().getFirstRecord();
 			return variables.primaryAddress;
-		} else {
-			return getService("accountService").newAccountAddress();
 		}
+		//check for in memory
+		if(hasAccountAddress()){
+			variables.primaryAddress = getAccountAddresses()[1]; 	
+			return variables.primaryAddress;
+		}
+		//return new one
+		return getService("accountService").newAccountAddress();
+		
 	}
 
 	public any function getPrimaryPaymentMethod() {
@@ -897,9 +911,16 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if (this.getAccountPaymentMethodsCount()) {
 			variables.primaryPaymentMethod = this.getAccountPaymentMethodsSmartList().getFirstRecord();
 			return variables.primaryPaymentMethod;
-		} else {
-			return getService("accountService").newAccountPaymentMethod();
 		}
+		
+		//check for in memory
+		if(hasAccountPaymentMethod()){
+			variables.primaryPaymentMethod = getAccountPaymentMethods()[1]; 	
+			return variables.primaryPaymentMethod;
+		}
+		
+		return getService("accountService").newAccountPaymentMethod();
+		
 	}
 
 	public boolean function getSuperUserFlag() {
