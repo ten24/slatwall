@@ -1458,10 +1458,10 @@
 		<cfargument name="awsSecretAccessKey" type="string" required="true">
 		<cfargument name="minutesValid" type="numeric" required="true" default="1">
 
-		<cfset s3link = "" />
-		<cfset epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
-		<cfset cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
-		<cfset signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
+		<cfset var s3link = "" />
+		<cfset var epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
+		<cfset var cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
+		<cfset var signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
 		<cfset s3link = "https://#arguments.bucketName#.s3.amazonaws.com/#arguments.keyName#?AWSAccessKeyId=#URLEncodedFormat(arguments.awsAccessKeyId)#&Expires=#epochTime#&Signature=#URLEncodedFormat(signature)#" />
 		<cfreturn s3link />
 

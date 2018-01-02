@@ -56,6 +56,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	property name="hibachiTagService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
+	property name="siteService" type="any";
 
 	// @hint Returns an image HTML element with the additional attributes
 	public string function getResizedImage() {
@@ -135,9 +136,9 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
-			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
+			} else if (!isNull(getSiteService().getCurrentRequestSite()) && !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))) {
                 
-                arguments.imagePath = getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath');
+                arguments.imagePath = getSiteService().getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location
 			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {

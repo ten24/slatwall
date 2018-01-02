@@ -376,7 +376,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 			var orderItemCollectionList = this.getOrderItemsCollectionList();
 			orderItemCollectionList.addDisplayAggregate('orderItemID','COUNT','orderItemCount');
-			orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#giftcardProductType.getProductTypeID()#%');
+			orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#giftcardProductType.getProductTypeID()#%','Like');
 			if(arraylen(orderItemCollectionList.getRecords())){
 				variables.giftCardOrderItemsCount = orderItemCollectionList.getRecords()[1]['orderItemCount'] > 0;	
 			}else{

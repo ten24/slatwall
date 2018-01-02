@@ -1030,11 +1030,11 @@ component extends="HibachiService" accessors="true" {
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
 			var fileSize = uploadData.fileSize;
- +			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
- +				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
- +			} else {
- +				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
- +			}
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 			}
 
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
