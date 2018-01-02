@@ -51,7 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("imageService");
+		variables.service = createMock(object=request.slatwallScope.getService('imageService'));
 	}
 		
 	/**
@@ -111,7 +111,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function missingImageSettingTest_siteMissingImagePath(){
-		var siteService = request.slatwallScope.getService('siteService');
+		var siteService = createMock('Slatwall.model.service.SiteService');
 		//Site specific setting, should hit site assertion
 		var siteData = {
 			siteID="#createUuid()#",
@@ -120,18 +120,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			domainNames="#request.slatwallScope.getService('siteService').getCurrentDomain()#"
 		};
 		var site = createPersistedTestEntity(entityName="site",data=siteData);
-		site = variables.service.saveSite(site,siteData);
-
+	
+		
+		siteService.getCurrentRequestSite = function(){
+			return site;
+		};
+		
+		variables.service.setSiteService(siteService);
+		
 		//create setting for siteMissingImagePath
 		var settingData = {
 			settingID = "",
 			settingName = "siteMissingImagePath",
 			settingValue = "/assets/images/sitemissingimage.jpg",
-            site: siteData.siteid
+            site={
+            	siteID=siteData.siteid
+            }
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		imagePath = variables.service.getResizedImagePath('falsepath');
-		assert(imagePath EQ siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
+		
+		debug(site.setting('siteMissingImagePath'));
+		
+		assertEquals(imagePath,siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
 	}
 	
 }

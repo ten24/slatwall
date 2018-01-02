@@ -125,9 +125,13 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="stock.sku.inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
 			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
+			<hb:HibachiListingColumn propertyidentifier="sku.price" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
+			<hb:HibachiListingColumn propertyidentifier="price" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
+
+			<hb:HibachiListingColumn propertyidentifier="grossProfitMargin" />
 			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
 			<hb:HibachiListingColumn propertyidentifier="vendorAlternateSkuCode.alternateSkuCode" />
 			<hb:HibachiListingColumn propertyidentifier="currencyCode" />
@@ -138,6 +142,7 @@ Notes:
 			
 			<sw-tab-group id="#request.slatwallScope.createHibachiUUID()#">
 				<sw-tab-content id="#request.slatwallScope.createHibachiUUID()#" name="#$.slatwall.rbKey('admin.vendororder.addItems.assigned')#">
+					
 					<hb:HibachiListingDisplay smartList="#rc.vendorOrder.getAddVendorOrderItemSkuOptionsSmartList()#"
 											recordProcessAction="admin:entity.processVendorOrder"
 											recordProcessQueryString="vendorOrderItemTypeSystemCode=voitPurchase"
@@ -147,7 +152,7 @@ Notes:
 												
 						<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 						<hb:HibachiListingColumn propertyIdentifier="skuName" />
-						<hb:HibachiListingColumn propertyIdentifier="price" />
+						<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" />
 						<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 						<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 						<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
@@ -174,7 +179,7 @@ Notes:
 												
 						<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 						<hb:HibachiListingColumn propertyIdentifier="skuName" />
-						<hb:HibachiListingColumn propertyIdentifier="price" />
+						<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" />
 						<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 						<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
 						<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />

@@ -134,6 +134,10 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 		return totalQuantityOnBatchCompleted;
 	}
 	
+	public any function removeLocation(required any location) {
+		return getDao("LocationDao").removeBatchLocation(location.getLocationID(), getFulfillmentBatchID());
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

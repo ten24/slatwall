@@ -4,12 +4,22 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	variables.slatwallApplications = {};
 	
 	public any function getSlatwallAdminApplication() {
-		return  createObject("component", "Slatwall.Application");
+		if(!structKeyExists(request,'slatwallAdminApplication')){
+			request.slatwallAdminApplication=createObject("component", "Slatwall.Application");
+		}
+		return request.slatwallAdminApplication;  
 	}
 	
 	public any function getSlatwallCMSApplication(required any site) {
+		if(!structKeyExists(request,'slatwallCmsApplications')){
+			request.slatwallCmsApplications = {};
+		}
 		var applicationDotPath = rereplace(arguments.site.getApp().getAppRootPath(),'/','.','all');
-		return createObject("component", "Slatwall" & applicationDotPath & '.Application');
+		var componentPath = "Slatwall" & applicationDotPath & '.Application';
+		if(!structKeyExists(request.slatwallCmsApplications,componentPath)){
+			request.slatwallCmsApplications[componentPath] = createObject("component", "Slatwall" & applicationDotPath & '.Application'); 
+		}
+		return request.slatwallCmsApplications[componentPath];
 	}
 	
 	public any function getFullSitePath(required any site){
@@ -150,6 +160,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
        		
 	        //if we obtained a site and it is allowed by the domain name then prepare to render content
 			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
+
 				arguments.slatwallScope.getService("hibachiEventService").announceEvent(eventName="beforeSlatwallCMSBootstrap");
 				prepareSlatwallScope(arguments.slatwallScope,app,site);
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);

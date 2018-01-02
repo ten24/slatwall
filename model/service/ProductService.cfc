@@ -1017,6 +1017,8 @@ component extends="HibachiService" accessors="true" {
 		try {
 
 			// Get the upload directory for the current property
+			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
@@ -1027,7 +1029,12 @@ component extends="HibachiService" accessors="true" {
 
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
-			fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+			var fileSize = uploadData.fileSize;
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 			}
 
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
