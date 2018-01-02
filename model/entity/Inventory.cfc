@@ -53,7 +53,7 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="quantityIn" ormtype="float";
 	property name="quantityOut" ormtype="float";
 	property name="cost" ormtype="big_decimal";
-	property name="landedCost" ormtype="big_decimal" hint="This is just the cost plus shipping for VO;
+	property name="landedCost" ormtype="big_decimal" hint="This is just the cost plus shipping for vendor orders";
 	property name="landedAmount" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	
