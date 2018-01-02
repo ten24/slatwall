@@ -248,7 +248,7 @@ class SWListingDisplayController{
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
-                this.observerService.notifyById('swPaginationUpdate',this.tableID, data);
+                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
             });
 
         }
@@ -262,6 +262,8 @@ class SWListingDisplayController{
         }
 
         this.paginator.getCollection = this.getCollection;
+
+        var getCollectionEventID = this.tableID;
 
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
@@ -279,7 +281,7 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(this.name != null){
+        if(this.name!=null){
             this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
@@ -344,6 +346,9 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
+        }
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false; 
         }
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
