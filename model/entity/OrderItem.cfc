@@ -355,14 +355,28 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getDiscountAmount() {
 		var discountAmount = 0;
-
-		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
-		}
-
-		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
-			for(var childOrderItem in this.getChildOrderItems()){
-				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
+		
+		if(getNewFlag()){
+			for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
+				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
+			}
+			
+			if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				for(var childOrderItem in this.getChildOrderItems()){
+					discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
+				}
+			}
+		}else{
+			var promotionAppliedCollectionList = getService('promotionService').getPromotionAppliedCollectionList();
+			promotionAppliedCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			promotionAppliedCollectionList.addDisplayAggregate('discountAmount','SUM','discountAmountSUM');
+			var promotionAppliedSum = promotionAppliedCollectionList.getRecords();
+			
+			if(arrayLen(promotionAppliedSum)){
+				
+				discountAmount = promotionAppliedSum[1]['discountAmountSUM'];
+			}else{
+				discountamount = 0;
 			}
 		}
 
@@ -538,10 +552,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
-
-		for( var i=1; i<=arrayLen(getOrderDeliveryItems()); i++){
-			if(!getOrderDeliveryItems()[i].getNewFlag()) {
-				quantityDelivered += getOrderDeliveryItems()[i].getQuantity();
+		
+		if(!getNewFlag()){
+			var orderDeliveryItemCollectionList = getService('orderService').getOrderDeliveryItemCollectionList();
+			orderDeliveryItemCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			orderDeliveryItemCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
+			var orderDeliveryItemSum = orderDeliveryItemCollectionList.getRecords();
+			
+			if(arrayLen(orderDeliveryItemSum)){
+				quantityDelivered = orderDeliveryItemSum[1]['quantitySum'];	
 			}
 		}
 
@@ -550,6 +569,17 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
+		
+		if(!getNewFlag()){
+			
+			var stockReceiverItemsCollectionList = getService('stockService').getStockReceiverItemCollectionList();
+			stockReceiverItemsCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			stockReceiverItemsCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
+			var stockReceiverItemsSum = stockReceiverItemsCollectionList.getRecords();
+			if(arraylen(stockReceiverItemsSum)){
+				quantityReceived = stockReceiverItemsSum[1]['quantitySUM'];
+			}
+		}
 
 		for( var i=1; i<=arrayLen(getStockReceiverItems()); i++){
 			if(!getStockReceiverItems()[i].getNewFlag()) {

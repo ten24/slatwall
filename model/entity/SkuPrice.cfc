@@ -52,7 +52,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="minQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.minQuantity.null";
 	property name="maxQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.maxQuantity.null";
-	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select";
+	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select" index="PI_CURRENCY_CODE";
 	property name="price" ormtype="big_decimal";
 	property name="listPrice" ormtype="big_decimal";
 	property name="renewalPrice" ormtype="big_decimal";
@@ -91,7 +91,10 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
  	} 
  	
  	public string function getSimpleRepresentation() {
- 		if (!isNull(getSku()) && !isNull(getSku().getSkuCode())){
+		if(
+			!isNull(getSku()) 
+			&& !isNull(getSku().getSkuCode())
+		){
 			return getSku().getSkuCode() & " - " & getCurrencyCode(); 
 		} else {
 			return '';

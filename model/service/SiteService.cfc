@@ -279,6 +279,15 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: DAO Passthrough ===========================
 
+	public string function getSiteCodes(string delimiter=','){
+		var cacheKey = 'getSiteCodes_'&ToBase64(arguments.delimiter);
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)) {
+			getService('HibachiCacheService').setCachedValue(cacheKey,getDao('siteDao').getSiteCodes(arguments.delimiter));
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
+	}
+
+
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
@@ -296,6 +305,7 @@ component  extends="HibachiService" accessors="true" {
 	}
 
 	public any function saveSite(required any site, struct data={}){
+		getService('HibachiCacheService').resetCachedKeyByPrefix('getSiteCodes');
 		//get new flag before persisting
 		var newFlag = arguments.site.getNewFlag();
 
