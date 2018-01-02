@@ -458,7 +458,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					resizeImageData.alt = imageAltString;
 					resizeImageData.missingImagePath = missingImagePath;
 					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
-
+					
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
