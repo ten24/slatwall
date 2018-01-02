@@ -48,7 +48,7 @@
 	<cfif structKeyExists(THISTAG.Parent.attributes,'collectionlist') && isObject(THISTAG.Parent.attributes.collectionlist)>
 		<cfset attributes.collectionList = THISTAG.Parent.attributes.collectionList/> 
 	</cfif>
-	<cfif structKeyExists(THISTAG.Parent.attributes,'template') && len(THISTAG.Parent.attributes.template)>
+	<cfif !structKeyExists(attributes,'template') && structKeyExists(THISTAG.Parent.attributes,'template') && len(THISTAG.Parent.attributes.template)>
 		<cfset attributes.template = THISTAG.Parent.attributes.template/>
 		
 	</cfif>

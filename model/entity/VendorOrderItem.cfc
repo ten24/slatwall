@@ -53,6 +53,8 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="quantity" ormtype="float" default=0;
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="price" ormtype="big_decimal" hb_formatType="currency";
+	property name="skuPrice" ormtype="big_decimal" hb_formatType="currency" hint="Stores the price of the sku at time of order based on currency code.";
+
 	property name="shippingWeight" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
@@ -79,6 +81,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 
 	// Non-persistent properties
 	property name="extendedCost" persistent="false" hb_formatType="currency";
+	property name="grossProfitMargin" persistent="false" hb_formatType="percentage";
 	property name="extendedWeight" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
@@ -102,6 +105,9 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 		
 		return 0;
 	}
+	
+
+	// ============ START: Non-Persistent Property Methods =================
 	
 	public numeric function getLandingAmountByQuantity(){
 		if(!isNull(getVendorOrder()) && !isNull(getQuantity())){

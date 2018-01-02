@@ -50,24 +50,38 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.stock" type="any">
-<cfparam name="rc.edit" type="boolean" default="false" />
+<cfparam name="rc.skuPrice" type="any" />
+<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.currencyCode" type="string" />
+<cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#" sRedirectAction="admin:entity.detailsku">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="#rc.edit#">
-		</hb:HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.skuPrice#" edit="#rc.edit#" 
+								saveActionQueryString="skuID=#rc.skuID#"
+								saveActionHash="tabcurrencies">
+								
+		<hb:HibachiEntityActionBar type="detail" object="#rc.skuPrice#" edit="#rc.edit#"
+								   backAction="admin:entity.detailsku"
+								   backQueryString="skuID=#rc.sku.getSkuID()#"
+								   cancelAction="admin:entity.detailsku"
+								   cancelQueryString="skuID=#rc.sku.getSkuID()#" />
+								   
+		<input type="hidden" name="sku.skuID" value="#rc.sku.getSkuID()#" />
+		<input type="hidden" name="currencyCode" value="#rc.currencyCode#" />
 		
-		<hb:HibachiEntityDetailGroup object="#rc.stock#">
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventory" />
-			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventoryhistory" />
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.skuPrice#" property="price" edit="#rc.edit#" value="#rc.sku.getPriceByCurrencyCode( rc.currencyCode )#">
+				<cfif rc.sku.getProduct().getBaseProductType() eq "subscription">
+					<hb:HibachiPropertyDisplay object="#rc.skuPrice#" property="renewalPrice" edit="#rc.edit#" value="#rc.sku.getRenewalPriceByCurrencyCode( rc.currencyCode )#">
+				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.skuPrice#" property="listPrice" edit="#rc.edit#" value="#rc.sku.getListPriceByCurrencyCode( rc.currencyCode )#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.stock.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.stock#" attributeSet="#attributeSet#" />
-			</cfloop>
+		<cfif !rc.skuPrice.isNew()>
+			<hb:HibachiActionCaller action="admin:entity.deleteskuprice" queryString="skuPriceID=#rc.skuPrice.getSkuPriceID()#&redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" class="btn btn-danger" />
+		</cfif>
 		
-		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

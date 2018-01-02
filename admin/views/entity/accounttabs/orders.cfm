@@ -54,6 +54,23 @@ Notes:
 <cfparam name="rc.ordersPlacedSmartList" type="any" />
 <cfparam name="rc.ordersPlacedCollectionList" type="any" />
 
+<cfset displayPropertyList = 'orderNumber,orderOpenDateTime,orderType.typeName,orderStatusType.typeName,createdDateTime,calculatedTotal'/>
+<cfset rc.ordersPlacedCollectionList.setDisplayProperties(
+	displayPropertyList,
+	{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	}
+)/>
+
+<cfset rc.ordersPlacedCollectionList.addDisplayProperty(displayProperty='orderID',columnConfig={
+	isVisible=false,
+	isSearchable=false,
+	isDeletable=false
+	})
+/>
+
 <hb:HibachiListingDisplay
 	collectionList="#rc.ordersPlacedCollectionList#"
 	recordEditAction="admin:entity.editorder"
