@@ -193,6 +193,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newVendorOrderItem.setStock( deliverToLocation );
 		}
 		newVendorOrderItem.setSku( arguments.processObject.getSku() );
+		newVendorOrderItem.setSkuPrice( arguments.processObject.getSku().getLivePriceByCurrencyCode( arguments.vendorOrder.getCurrencyCode() ) );
 		
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 			

@@ -996,10 +996,10 @@
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
 		}
 		
-		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier, ignoreAttributeCheck=false){
 			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
 			
-			if(!hasAttributeByEntityNameAndPropertyIdentifier){
+			if(!hasAttributeByEntityNameAndPropertyIdentifier || arguments.ignoreAttributeCheck){
 				
 				var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
 					arguments.entityName, 
@@ -1147,7 +1147,8 @@
 			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
 			var relatedEntity = listLast(arguments.propertyIdentifier,'.');
 			propertyMetaData = propsStruct[relatedEntity];
-			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+			
+			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
 				var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 				var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 			}
@@ -1269,7 +1270,7 @@
 					var propsStruct = getPropertiesStructByEntityName(lastEntityName);
 					var relatedEntity = listLast(arguments.propertyIdentifier,'.');
 					propertyMetaData = propsStruct[relatedEntity];
-					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
 						var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 						var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 					}

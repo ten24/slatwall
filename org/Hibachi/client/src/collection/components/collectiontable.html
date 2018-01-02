@@ -19,9 +19,8 @@
 	            	></sw-selection>
 	            	
 	            </td>
-	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible">
-                    <span data-ng-if="column.aggregate" ng-bind="pageRecord[column.aggregate.aggregateAlias]"></span>
-                    <span data-ng-if="!column.aggregate" ng-bind="column.propertyIdentifier.replace(collectionConfig.baseEntityAlias,'').charAt(0) == '.' ? pageRecord[column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','')] : pageRecord[replaceAll(column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'_',''),'.','_')]"></span>
+	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible" class="{{column.type}}">
+                    <span data-ng-bind="::getCellValue(pageRecord, column)"></span>
                 </td>
 	            <td class="s-edit-elements" ng-if="angularLinks === true">
 	            	<a sw-href="{{'/entity/'+collection.collectionObject+'/'+pageRecord[collectionObject.$$getIDName()]}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a>
