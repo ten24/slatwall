@@ -2079,6 +2079,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
+			arrayLen(getRequestAccount().getPermissionGroups()) == 0 ||
 			listFind(excludedEntities, getCollectionObject())
 		){
 			return;
@@ -2584,7 +2585,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				predicate = ":#fromParamID# AND :#toParamID#";
 
 
-			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
+			}else if(listFind('integer,float,big_decimal,string',arguments.filter.ormtype)){
 				var ranges = listToArray(arguments.filter.value,'-');
 				if(arraylen(ranges) > 1){
 					var fromValue = ranges[1];

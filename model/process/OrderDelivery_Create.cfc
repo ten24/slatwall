@@ -273,35 +273,39 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public numeric function getCapturableAmount() {
-		if(!structKeyExists(variables, "capturableAmount")) {
-
-			variables.capturableAmount = 0;
-
-			for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
-				if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
-					var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
-					var thisQuantity = getOrderDeliveryItems()[i].quantity;
-					if(thisQuantity > orderItem.getQuantityUndelivered()) {
-						thisQuantity = orderItem.getQuantityUndelivered();
-					}
-					variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity ));
-				}
-			}
-
-			if(getOrder().getPaymentAmountReceivedTotal() eq 0) {
-				variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount());
-			} else {
-				variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
-			}
-
-			if(variables.capturableAmount < 0) {
+		//Only use this logic if we are capturing authorized payments.
+		if (getCaptureAuthorizedPaymentsFlag()){
+			if(!structKeyExists(variables, "capturableAmount")) {
+	
 				variables.capturableAmount = 0;
-			} else if (variables.capturableAmount > getOrder().getPaymentAmountDue()) {
-				variables.capturableAmount = getOrder().getPaymentAmountDue();
+	
+				for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
+					if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
+						var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
+						var thisQuantity = getOrderDeliveryItems()[i].quantity;
+						if(thisQuantity > orderItem.getQuantityUndelivered()) {
+							thisQuantity = orderItem.getQuantityUndelivered();
+						}
+						variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + ((orderItem.getItemTotal()/orderItem.getQuantity()) * thisQuantity ));
+					}
+				}
+	
+				if(getOrder().getPaymentAmountReceivedTotal() eq 0) {
+					variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount + getOrderFulfillment().getChargeAfterDiscount());
+				} else {
+					variables.capturableAmount = getService('HibachiUtilityService').precisionCalculate(variables.capturableAmount - (getOrder().getPaymentAmountReceivedTotal() - getOrder().getDeliveredItemsAmountTotal()));
+				}
+	
+				if(variables.capturableAmount < 0) {
+					variables.capturableAmount = 0;
+				} else if (variables.capturableAmount > getOrder().getPaymentAmountDue()) {
+					variables.capturableAmount = getOrder().getPaymentAmountDue();
+				}
+	
 			}
-
-		}
-		return variables.capturableAmount;
+			return variables.capturableAmount;
+			}
+		return 0;
 	}
 
 	public boolean function getCaptureAuthorizedPaymentsFlag() {

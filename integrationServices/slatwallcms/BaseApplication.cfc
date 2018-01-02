@@ -129,7 +129,6 @@ Notes:
 			}
 			site.setResetSettingCache(false);
 		}
-
 		if(!isNull(arguments.entityURL)){
 			var entityName = getHibachiScope().getEntityURLKeyType(arguments.entityUrl);
 			if(len(entityName)){
@@ -150,7 +149,6 @@ Notes:
 				arguments.slatwallScope.invokeMethod('set#entityName#',{1=entity});
 				arguments.slatwallScope.setRouteEntity(  entityName, entity );
 			}
-			
 			var entityDisplayTemplateSetting = arguments.slatwallScope.invokeMethod('get#entityName#').setting('#entityName#DisplayTemplate', [site]);
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );
 			if(!isnull(entityTemplateContent)){
@@ -179,7 +177,6 @@ Notes:
 			var contentTemplateFile = content.Setting('contentTemplateFile');
 			arguments.slatwallScope.setContent(content);
 		}
-		
 
 		if(FileExists(ExpandPath(siteTemplatePath) & '/' & contentTemplateFile)){
 			var contentPath = siteTemplatePath & '/' &  contentTemplateFile;

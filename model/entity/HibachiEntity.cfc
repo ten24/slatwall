@@ -183,8 +183,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
-				if (!isNull(invokeMethod("get#attributeEntity.getAttributeCode()#"))){
-					return invokeMethod("get#attributeEntity.getAttributeCode()#");
+				var attributeValue = invokeMethod("get#attributeEntity.getAttributeCode()#");
+				if (!isNull(attributeValue)){
+					if(isSimpleValue(attributeValue)){
+						return attributeValue;
+					}else{
+						return attributeValue.getPrimaryIDValue();
+					}
 				}else{
 					return '';
 				}
@@ -192,8 +197,13 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}else{
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				if (!isNull(invokeMethod("get#arguments.attribute#"))){
-					return invokeMethod("get#arguments.attribute#");
+				var attributeValue = invokeMethod("get#arguments.attribute#");
+				if (!isNull(attributeValue)){
+					if(isSimpleValue(attributeValue)){
+						return attributeValue;
+					}else{
+						return attributeValue.getPrimaryIDValue();
+					}
 				}else{
 					return '';
 				}

@@ -461,12 +461,19 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function saveMinMaxSetup(required any entity, struct data={}, string context="save"){
 
-		arguments.entity = super.save(argumentcollection=arguments);
+		// create, so save and return
+		if(arguments.entity.isNew()) {
+			arguments.entity = super.save(argumentcollection=arguments);
 
-		var location = locationService.getLocation(arguments.entity.getLocation().getLocationID());
-		for(var skuDetails in arguments.entity.getMinMaxSetupCollection().getRecords()) {
-			stockDAO.updateStockMinMax(skuDetails.skuID,arguments.entity.getLocation().getLocationID(),arguments.entity.getMinQuantity(),arguments.entity.getMaxQuantity());
+		// update, so save, set min/max and return
+		} else {
+			arguments.entity = super.save(argumentcollection=arguments);
+			var location = locationService.getLocation(arguments.entity.getLocation().getLocationID());
+			for(var skuDetails in arguments.entity.getMinMaxSetupCollection().getRecords()) {
+				stockDAO.updateStockMinMax(skuDetails.skuID,arguments.entity.getLocation().getLocationID(),arguments.entity.getMinQuantity(),arguments.entity.getMaxQuantity());
+			}
 		}
+
 		return arguments.entity;
 	}
 
@@ -527,10 +534,15 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			var currentSku = '';
 			var currentOffset = 0;
-			for (var row in stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID())) {
+			var minMaxStockTransferDetails = stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID());
+			for (var row in minMaxStockTransferDetails) {
 			    if(row.skuID != currentSku) {
 			    	currentSku = row.skuID;
-			    	currentOffset = row.toSumQATS-row.toMaxQuantity;
+			    	if (row.toSumQATS < row.toMinQuantity) {
+			    		currentOffset = row.toSumQATS-row.toMaxQuantity;
+			    	} else{
+			    		currentOffset = 0;
+			    	}
 			    }
 			    var newMinMaxStockTransferItem = this.newMinMaxStockTransferItem();
 			    newMinMaxStockTransferItem.setMinMaxStockTransfer(arguments.entity);

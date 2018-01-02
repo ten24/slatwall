@@ -59,6 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="skuID";
 	property name="vendorSkuCode";
 	property name="price";
+	property name="currencyCode";
 	property name="cost";
 	property name="quantity";
 	property name="shippingWeight";
@@ -102,11 +103,29 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getPrice() {
 		if(!structKeyExists(variables, "price")) {
 			variables.price = 0;
-			if(!structKeyExists(variables, "sku")) {
-				variables.price = getSku().getPriceByCurrencyCode( getOrder().getCurrencyCode() );
+			if(!isNull(getSku())) {
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode() );
+				if(!isNull(priceByCurrencyCode)) {
+					variables.price = priceByCurrencyCode;
+				} else {
+					variables.price = "N/A";
+				}
 			}
 		}
 		return variables.price;
+	}
+	
+	public string function getCurrencyCode() {
+		if(!structKeyExists(variables, "currencyCode")) {
+			if(!isNull(getVendorOrder()) && !isNull(getVendorOrder().getCurrencyCode())) {
+				variables.currencyCode = getVendorOrder().getCurrencyCode();
+			} else if (!isNull(getSku()) && len(getSku().setting('skuCurrency')) eq 3) {
+				variables.currencyCode = getSku().setting('skuCurrency');
+			} else {
+				variables.currencyCode = 'USD';
+			}
+		}
+		return variables.currencyCode;
 	}
 	
 	public any function getCost() {
