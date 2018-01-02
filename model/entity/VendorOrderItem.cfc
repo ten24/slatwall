@@ -54,6 +54,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="price" ormtype="big_decimal" hb_formatType="currency";
 	property name="skuPrice" ormtype="big_decimal" hb_formatType="currency" hint="Stores the price of the sku at time of order based on currency code.";
+
 	property name="shippingWeight" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";

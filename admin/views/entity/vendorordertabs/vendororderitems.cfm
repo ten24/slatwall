@@ -130,6 +130,7 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="price" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
+
 			<hb:HibachiListingColumn propertyidentifier="grossProfitMargin" />
 			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
 			<hb:HibachiListingColumn propertyidentifier="vendorAlternateSkuCode.alternateSkuCode" />
