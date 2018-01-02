@@ -21,6 +21,9 @@
 	
 	<cfset local.entityName = "" />
 	
+	<!-- make sure recordProcessContext is always lower case -->
+	<cfset attributes.recordProcessContext = lCase(attributes.recordProcessContext) />
+	
 	<!--- Add the process context to the query string --->
 	<cfset attributes.queryString = listAppend(attributes.queryString, "processContext=#attributes.processContext#", "&") />
 	
