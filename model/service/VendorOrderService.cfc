@@ -193,6 +193,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newVendorOrderItem.setStock( deliverToLocation );
 		}
 		newVendorOrderItem.setSku( arguments.processObject.getSku() );
+		newVendorOrderItem.setSkuPrice( arguments.processObject.getSku().getLivePriceByCurrencyCode( arguments.vendorOrder.getCurrencyCode() ) );
 		
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 			
@@ -267,12 +268,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				stockreceiverItem.setStockReceiver( stockReceiver );
 
 				// Adding vendor to product/sku if no existing relationship
-				var product = vendorOrderItem.getSku().getProduct();
-				if (!arguments.vendorOrder.getVendor().hasProduct(product)) {
-					// Add vendor product relationship
-					arguments.vendorOrder.getVendor().addProduct(product);
-					newVendorProductPreferenceFlag = true;
+				if(!isNull(vendorOrderItem.getSku()) && !isNull(vendorOrderItem.getSku().getProduct())){
+					var product = vendorOrderItem.getSku().getProduct();
+					if (!arguments.vendorOrder.getVendor().hasProduct(product)) {
+						// Add vendor product relationship
+						arguments.vendorOrder.getVendor().addProduct(product);
+						newVendorProductPreferenceFlag = true;
+					}
 				}
+				
 				
 			}
 		}

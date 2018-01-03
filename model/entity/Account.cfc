@@ -852,7 +852,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
-		} else if (arrayLen(getAccountEmailAddresses())) {
+		} 
+		if (arrayLen(getAccountEmailAddresses())) {
 			for(var accountEmailAddress in getAccountEmailAddresses()) {
 				if(getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=accountEmailAddress.getEmailAddress(), accountID=getAccountID() )) {
 					variables.primaryEmailAddress = getAccountEmailAddresses()[1];
@@ -867,34 +868,59 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public any function getPrimaryPhoneNumber() {
 		if(!isNull(variables.primaryPhoneNumber)) {
 			return variables.primaryPhoneNumber;
-		} else if (arrayLen(getAccountPhoneNumbers())) {
+		}
+		
+		if (this.getAccountPhoneNumbersCount()) {
+			variables.primaryPhoneNumber = this.getAccountPhoneNumbersSmartlist().getFirstRecord();
+			return variables.primaryPhoneNumber;
+		}
+		
+		//check memory
+		if(hasAccountPhoneNumber()){
 			variables.primaryPhoneNumber = getAccountPhoneNumbers()[1];
 			return variables.primaryPhoneNumber;
-		} else {
-			return getService("accountService").newAccountPhoneNumber();
 		}
+		return getService("accountService").newAccountPhoneNumber();
+		
 	}
 
 	public any function getPrimaryAddress() {
+		//check for value
 		if(!isNull(variables.primaryAddress)) {
 			return variables.primaryAddress;
-		} else if (arrayLen(getAccountAddresses())) {
-			variables.primaryAddress = getAccountAddresses()[1];
-			return variables.primaryAddress;
-		} else {
-			return getService("accountService").newAccountAddress();
 		}
+		//check db value
+		if (this.getAccountAddressesCount()) {
+			variables.primaryAddress = this.getAccountAddressesSmartlist().getFirstRecord();
+			return variables.primaryAddress;
+		}
+		//check for in memory
+		if(hasAccountAddress()){
+			variables.primaryAddress = getAccountAddresses()[1]; 	
+			return variables.primaryAddress;
+		}
+		//return new one
+		return getService("accountService").newAccountAddress();
+		
 	}
 
 	public any function getPrimaryPaymentMethod() {
 		if(!isNull(variables.primaryPaymentMethod)) {
 			return variables.primaryPaymentMethod;
-		} else if (arrayLen(getAccountPaymentMethods())) {
-			variables.primaryPaymentMethod = getAccountPaymentMethods()[1];
-			return variables.primaryPaymentMethod;
-		} else {
-			return getService("accountService").newAccountPaymentMethod();
 		}
+		if (this.getAccountPaymentMethodsCount()) {
+			variables.primaryPaymentMethod = this.getAccountPaymentMethodsSmartList().getFirstRecord();
+			return variables.primaryPaymentMethod;
+		}
+		
+		//check for in memory
+		if(hasAccountPaymentMethod()){
+			variables.primaryPaymentMethod = getAccountPaymentMethods()[1]; 	
+			return variables.primaryPaymentMethod;
+		}
+		
+		return getService("accountService").newAccountPaymentMethod();
+		
 	}
 
 	public boolean function getSuperUserFlag() {

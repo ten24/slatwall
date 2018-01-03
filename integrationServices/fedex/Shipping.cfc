@@ -111,20 +111,25 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
 			// Log all messages from FedEx into the response bean
-			for(var i=1; i<=arrayLen(responseBean.getData().ProcessShipmentReply.Notifications); i++) {
-				responseBean.addMessage(
-					messageName=responseBean.getData().ProcessShipmentReply.Notifications[i].Code.xmltext,
-					message=responseBean.getData().ProcessShipmentReply.Notifications[i].Message.xmltext
-				);
-				if(FindNoCase("Error", responseBean.getData().ProcessShipmentReply.Notifications[i].Severity.xmltext)) {
-					responseBean.addError(responseBean.getData().ProcessShipmentReply.Notifications[i].Code.xmltext, responseBean.getData().ProcessShipmentReply.Notifications[i].Message.xmltext);
+			if (structKeyExists(arguments.xmlResponse, "RateReply")){
+				for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.Notifications); i++) {
+					responseBean.addMessage(
+						messageName=arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext,
+						message=arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext
+					);
+					if(FindNoCase("Error", arguments.xmlResponse.RateReply.Notifications[i].Severity.xmltext)) {
+						responseBean.addError(arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext, arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext);
+					}
 				}
-			}
-			//if no errors then we should convert data to properties
-			if(!responseBean.hasErrors()) {
-				var completedShipmentDetail = responseBean.getData().ProcessShipmentReply.CompletedShipmentDetail;
-				responseBean.setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.trackingIds.trackingNumber.xmlText);
-				responseBean.setContainerLabel(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmlText);
+			
+				if(!responseBean.hasErrors()) {
+					for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
+						responseBean.addShippingMethod(
+							shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
+							totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
+						);
+					}
+				}
 			}
 		}
 		
@@ -149,27 +154,29 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
 			// Log all messages from FedEx into the response bean
-			for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.Notifications); i++) {
-				responseBean.addMessage(
-					messageName=arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext,
-					message=arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext
-				);
-				if(FindNoCase("Error", arguments.xmlResponse.RateReply.Notifications[i].Severity.xmltext)) {
-					responseBean.addError(arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext, arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext);
-				}
-			}
-			
-			if(!responseBean.hasErrors()) {
-				try{
-					for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
-						responseBean.addShippingMethod(
-							shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
-							totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
-						);
-				
+			if (structKeyExists(arguments.xmlResponse, "RateReply")){
+				for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.Notifications); i++) {
+					responseBean.addMessage(
+						messageName=arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext,
+						message=arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext
+					);
+					if(FindNoCase("Error", arguments.xmlResponse.RateReply.Notifications[i].Severity.xmltext)) {
+						responseBean.addError(arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext, arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext);
 					}
-				}catch (any e){
-					responseBean.addError("unknown", "An unexpected error occured when retrieving the shipping rates, please notify system administrator.");
+				}
+			
+				if(!responseBean.hasErrors()) {
+					try{
+						for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
+							responseBean.addShippingMethod(
+								shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
+								totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
+							);
+					
+						}
+					}catch (any e){
+						responseBean.addError("unknown", "An unexpected error occured when retrieving the shipping rates, please notify system administrator.");
+					}
 				}
 			}
 		}
@@ -192,4 +199,3 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	}
 	
 }
-

@@ -10,6 +10,7 @@ class Cart extends BaseEntity{
     public fulfillmentTotal;
     public orderFulfillments:Array<any>=[];
     public account:any;
+    public assignedAccount:any;
     public calculatedTotal:number;
     public orderID;
     //deprecated

@@ -95,6 +95,7 @@ Notes:
 		data-is-angular-route="false"
 		data-angular-links="false"
 		data-has-action-bar="false"
+		data-show-print-options="true"
 	>
 		<sw-listing-column data-property-identifier="skuID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
 		<sw-listing-column data-property-identifier="skuCode" tdclass="primary" ></sw-listing-column>
