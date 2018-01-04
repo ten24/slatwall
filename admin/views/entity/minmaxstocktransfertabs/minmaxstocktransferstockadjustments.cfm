@@ -61,6 +61,7 @@ Notes:
 	<hb:HibachiListingDisplay collectionList="#stockAdjustmentsCollectionlist#"
 							   recordEditAction="admin:entity.editstockadjustment"
 							   recordDetailAction="admin:entity.detailstockadjustment"
+							   usingPersonalCollection="false"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>

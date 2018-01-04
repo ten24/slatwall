@@ -8,7 +8,17 @@
 		<cfset skuCollectionList.setCollectionConfig(rc.minmaxSetup.getSkuCollectionConfig())/>
 	</cfif>
 	
-	<cfset skuCollectionList.setDisplayProperties('skuName,skuCode,skuDescription,skuDefinition',{
+	<cfset skuCollectionList.setDisplayProperties('skuName,skuCode,skuDescription,skuDefinition,calculatedQATS',{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset skuCollectionList.addDisplayProperty('activeFlag',$.slatwall.rbKey('entity.sku.activeFlag'),{
+		isVisible=true,
+		isSearchable=true,
+		isDeletable=true
+	})/>
+	<cfset skuCollectionList.addDisplayProperty('product.activeFlag',$.slatwall.rbKey('entity.product.activeFlag'),{
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true

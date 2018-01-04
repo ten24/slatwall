@@ -96,10 +96,11 @@ component displayname="MinMaxSetup" entityname="SlatwallMinMaxSetup" table="swMi
 			// Create base collection to select active skus
 			var skuCollection = getService('HibachiCollectionService').newCollection();
 			skuCollection.setCollectionObject('Sku');
-			skuCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,skuDefinition,calculatedQATS,activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
+			skuCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,skuDefinition,calculatedQATS,activeFlag,product.activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
 			skuCollection.addDisplayProperty(displayProperty='skuID', columnConfig={isSearchable="false",isVisible="false",isDeletable="false"});
 			skuCollection.addOrderBy('skuCode|ASC');
 			skuCollection.addFilter('activeFlag', 'True', '=');
+			skuCollection.addFilter('product.activeFlag', 'True', '=');
 			return serializeJSON(skuCollection.getCollectionConfigStruct());
 		} else {
 			return variables.skuCollectionConfig;
@@ -111,7 +112,7 @@ component displayname="MinMaxSetup" entityname="SlatwallMinMaxSetup" table="swMi
 		// Apply sku collection config
 		minMaxSetupCollection.setCollectionConfig(this.getSkuCollectionConfig());
 		//SELECT
-		minMaxSetupCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,calculatedSkuDefinition,activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
+		minMaxSetupCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,calculatedSkuDefinition,calculatedQATS,activeFlag,product.activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
 		minMaxSetupCollection.addDisplayProperty(displayProperty='skuID', columnConfig={isSearchable="false",isVisible="false",isDeletable="false"});
 		minMaxSetupCollection.addDisplayAggregate(propertyIdentifier='stocks.calculatedQATS', aggregateFunction='SUM', aggregateAlias='sumQATS', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
 		//WHERE

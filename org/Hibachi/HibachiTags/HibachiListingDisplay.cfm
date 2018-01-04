@@ -80,6 +80,7 @@
 	<cfparam name="attributes.createAction" type="string" default="" />
 	<cfparam name="attributes.createQueryString" type="string" default="" />
 	<cfparam name="attributes.exportAction" type="string" default="" />
+	<cfparam name="attributes.usingPersonalCollection" type="string" default="true" />
 
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
@@ -106,7 +107,7 @@
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 			    edit="true"
-			    data-using-personal-collection="true"
+			    data-using-personal-collection="#attributes.usingPersonalCollection#"
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
