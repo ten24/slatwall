@@ -86,6 +86,6 @@ Notes:
 		<sw-listing-column data-property-identifier="optionGroupID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
 		<sw-listing-column data-property-identifier="optionGroupName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="optionGroupCode" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

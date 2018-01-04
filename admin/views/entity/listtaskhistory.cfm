@@ -82,6 +82,6 @@ Notes:
 		<sw-listing-column data-property-identifier="task.taskName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="successFlag" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="response" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

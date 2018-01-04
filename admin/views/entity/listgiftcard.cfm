@@ -78,6 +78,6 @@ Notes:
 		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
 		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
 		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>
