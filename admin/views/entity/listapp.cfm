@@ -86,6 +86,6 @@ Notes:
 	    <sw-listing-column data-property-identifier="appName" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="appCode" ></sw-listing-column>
 	    <sw-listing-column data-property-identifier="appRootPath" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

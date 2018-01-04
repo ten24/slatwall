@@ -89,6 +89,6 @@ Notes:
 		<sw-listing-column data-property-identifier="domainNames" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="app.appName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="allowAdminAccessFlag" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

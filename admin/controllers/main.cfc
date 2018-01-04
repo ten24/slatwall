@@ -209,10 +209,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function login(required struct rc) {
+	
+		if(getHibachiScope().getLoggedInFlag()){
+			getFW().redirect(action='admin:main.default', queryString="s=1");
+		}
 		getFW().setView("admin:main.login");
 		rc.pageTitle = rc.$.slatwall.rbKey('define.login');
 
-		if(!structKeyExists(rc, "sRedirectURL")) {
+		if(
+			!structKeyExists(rc, "sRedirectURL")
+			|| listFindNoCase('admin:main.login,main.login',rc.sRedirectURL)
+		) {
 			arguments.rc.sRedirectURL = getApplicationValue('baseURL') & '/';
 		}
 		//does authentication exist?

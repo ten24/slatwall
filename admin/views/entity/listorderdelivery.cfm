@@ -86,6 +86,6 @@ Notes:
 		<sw-listing-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="trackingNumber" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>
