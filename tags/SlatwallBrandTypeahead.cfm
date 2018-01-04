@@ -4,7 +4,7 @@
 <cfparam name="attributes.edit" type="boolean" default="false"/>				<!---IE rc.edit value --->
 <cfparam name="attributes.rbKey" type="string" default="entity.brand" />		<!--- entity.brand --->
 <cfparam name="attributes.selectedFormatString" type="string" default="brands >> ${brandName}"/><!--- Store brands >> ${brandName} --->
-<cfparam name="attributes.showActivebrandsFlag" type="boolean" default="false" />
+<cfparam name="attributes.showActiveBrandsFlag" type="boolean" default="false" />
 <cfparam name="attributes.maxrecords" type="string" default="25" />
 
 <cfif thisTag.executionMode is "start">
@@ -29,8 +29,8 @@
 				</label>
 				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
 					<!--- Generic Configured brand --->
-					<cfif !isNull(attributes.property) && !isNull(attributes.property.getbrandID())>
-						<cfset initialEntityID = "#attributes.property.getbrandID()#">
+					<cfif !isNull(attributes.property) && !isNull(attributes.property.getBrandID())>
+						<cfset initialEntityID = "#attributes.property.getBrandID()#">
 					</cfif>
 					<cfif isNull(initialEntityID)>
 						<cfset initialEntityID = "">
