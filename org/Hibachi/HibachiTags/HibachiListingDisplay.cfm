@@ -246,7 +246,7 @@
 			<!--- Process --->
 			<cfif len(attributes.recordProcessAction) and attributes.recordProcessButtonDisplayFlag>
 				<cfset attributes.administativeCount++ />
-
+				
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processcontext="#attributes.recordProcessContext#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentity="#attributes.recordProcessEntity.getClassName()#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentityid="#attributes.recordProcessEntity.getPrimaryIDValue()#"', " ") />
