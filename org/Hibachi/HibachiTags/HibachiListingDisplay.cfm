@@ -80,7 +80,7 @@
 	<cfparam name="attributes.createAction" type="string" default="" />
 	<cfparam name="attributes.createQueryString" type="string" default="" />
 	<cfparam name="attributes.exportAction" type="string" default="" />
-	<cfparam name="attributes.usingPersonalCollection" type="string" default="true" />
+	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
