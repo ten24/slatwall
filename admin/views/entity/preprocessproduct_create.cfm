@@ -78,7 +78,7 @@ Notes:
 
 					<!--- MERCHANDISE --->
 					<cfif rc.processObject.getBaseProductType() eq "merchandise">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
+						<swa:SlatwallBrandTypeahead brandPropertyName="BrandName" edit="true" brandLabelText="#$.slatwall.rbkey('entity.brand_plural')#"></swa:SlatwallBrandTypeahead>
 					</cfif>
 
 					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">

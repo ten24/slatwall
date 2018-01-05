@@ -93,6 +93,6 @@ Notes:
 		<sw-listing-column data-property-identifier="orderItem.sku.eventStartDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="orderItem.sku.eventEndDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="orderItem.sku.calculatedSkuDefinition" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

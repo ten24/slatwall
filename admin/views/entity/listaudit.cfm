@@ -92,4 +92,4 @@ Notes:
 	<sw-listing-column data-property-identifier="baseObject" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="baseID" ></sw-listing-column>
 
-</sw-listing-display data-using-personal-collection="true">
+</sw-listing-display>

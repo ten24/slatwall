@@ -259,6 +259,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
+			imageMaxSize = {fieldType="text",defaultValue="10"},
 
 			// Location
 			locationRequiresQATSForOrdering = {fieldType="yesno",defaultValue=1},

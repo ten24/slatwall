@@ -371,22 +371,20 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
+		if(!structKeyExists(variables,'giftCardOrderItemsCount')){
+			var giftcardProductType = getService('productService').getProductTypeBySystemCode('gift-card');
 
-		var giftCardOrderItems = getOrderDAO().getGiftCardOrderItems(this.getOrderID());
-
-		if(arguments.orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
-			return true;
-		} else if (arguments.orderItemID NEQ ""){
-
-			for(var item in giftCardOrderItems){
-				if(item.getOrderItemID() EQ arguments.orderItemID){
-					return true;
-				}
+			var orderItemCollectionList = this.getOrderItemsCollectionList();
+			orderItemCollectionList.addDisplayAggregate('orderItemID','COUNT','orderItemCount');
+			orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#giftcardProductType.getProductTypeID()#%','Like');
+			if(arraylen(orderItemCollectionList.getRecords())){
+				variables.giftCardOrderItemsCount = orderItemCollectionList.getRecords()[1]['orderItemCount'] > 0;	
+			}else{
+				variables.giftCardOrderItemsCount = 0;
 			}
 
 		}
-
-		return false;
+		return variables.giftCardOrderItemsCount;
 	}
 	
 	/**
@@ -896,30 +894,41 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	public array function getAllAppliedPromotions() {
 		if(!structKeyExists(variables, "allAppliedPromotions")) {
 			variables.allAppliedPromotions = []; 
-			var allAppliedPromotionCollection = getService("promotionService").newCollection().setup("PromotionApplied");
-			allAppliedPromotionCollection.addFilter('order.orderID', getOrderID(), "=");
-			allAppliedPromotionCollection.addFilter('orderItem.order.orderID', getOrderID(), "=", "OR");
-			allAppliedPromotionCollection.addFilter('orderFulfillment.order.orderID', getOrderID(), "=", "OR");
-			allAppliedPromotionCollection.setDisplayProperties("appliedType,promotionAppliedID,promotion.promotionID,promotion.promotionName");
-			var allAppliedPromotions = allAppliedPromotionCollection.getRecords();
 			// get all the promotion codes applied and attached it to applied Promotion Struct
-			var appliedPromotionCodes = getPromotionCodes();
+			var appliedPromotionCodesCollectionList = this.getPromotionCodesCollectionList();
+			appliedPromotionCodesCollectionList.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName,promotion.promotionID');
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=",'OR');
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
+			
+			var appliedPromotionCodes = appliedPromotionCodesCollectionList.getRecords();
+			
+			var promotionCodeCollectionlist = getService('promotionService').getPromotionCodeCollectionList();
+			promotionCodeCollectionlist.addFilter('orders.orderID',getOrderID());
+			promotionCodeCollectionlist.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName,promotion.promotionID');
+			
+			var qualifiedPromotions = '';
+			
 			for(var appliedPromotionCode in appliedPromotionCodes) {
 				promotionToAdd = {}; 
-				promotionToAdd["qualified"] = false; 
-				for(var appliedPromotion in allAppliedPromotions) {
-					if(appliedPromotionCode.getPromotion().getPromotionID() == appliedPromotion.promotion_promotionID) {
-					    promotionToAdd = appliedPromotion; 
 					    promotionToAdd["qualified"] = true; 
-					    break; 
+				promotionToAdd["promotionCodeID"] = appliedPromotionCode['promotionCodeID'];
+				promotionToAdd["promotionCode"] = appliedPromotionCode['promotionCode'];
+                promotionToAdd["promotion_promotionName"] = appliedPromotionCode['promotion_promotionName'];  
+	            promotionToAdd["promotion_promotionID"] = appliedPromotionCode['promotion_promotionID'];
+	            qualifiedPromotions = listAppend(qualifiedPromotions,promotionToAdd["promotion_promotionID"]);
+		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 
 					}   
-				}
-				promotionToAdd["promotionCodeID"] = appliedPromotionCode.getPromotionCodeID();
-				promotionToAdd["promotionCode"] = appliedPromotionCode.getPromotionCode();
-		        if(!structKeyExists(promotionToAdd, "promotion_promotionName")){
-                    promotionToAdd["promotion_promotionName"] = appliedPromotionCode.getPromotion().getPromotionName();  
-		            promotionToAdd["promotion_promotionID"] = appliedPromotionCode.getPromotion().getPromotionID();
-		        }
+			var unQualifiedPromotionCodes = promotionCodeCollectionlist.getRecords();
+			promotionCodeCollectionlist.addFilter('promotion.promotionID',qualifiedPromotions,'NOT IN');
+			
+			for(var unQualifiedPromotionCode in unQualifiedPromotionCodes){
+				promotionToAdd = {}; 
+				promotionToAdd["qualified"] = false;
+				promotionToAdd["promotionCodeID"] = unQualifiedPromotionCode['promotionCodeID'];
+				promotionToAdd["promotionCode"] = unQualifiedPromotionCode['promotionCode'];
+                promotionToAdd["promotion_promotionName"] = unQualifiedPromotionCode['promotion_promotionName'];  
+	            promotionToAdd["promotion_promotionID"] = unQualifiedPromotionCode['promotion_promotionID'];
 		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
 			}
 		}
@@ -957,6 +966,13 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		}
 
 		return getService('HibachiUtilityService').precisionCalculate(amountDelivered - getPaymentAmountReceivedTotal());
+	}
+
+	public any function getRootOrderItemsCollectionList(){
+		var rootOrderItemsCollectionList = getService('orderService').getOrderItemCollectionList();
+		rootOrderItemsCollectionList.addFilter('order.orderID',this.getOrderID());
+		rootOrderItemsCollectionList.addFilter('parentOrderItem','NULL','IS');
+		return rootOrderItemsCollectionList;
 	}
 
 	public any function getRootOrderItems(){

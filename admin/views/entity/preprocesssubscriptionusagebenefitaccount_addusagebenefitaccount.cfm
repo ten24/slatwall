@@ -50,34 +50,21 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.giftCardSmartList" type="any" />
+<cfparam name="rc.subscriptionUsageBenefitAccount" type="any" />
+<cfparam name="rc.subscriptionUsageBenefit" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.subscriptionUsageBenefitAccount#" edit="#rc.edit#" sRedirectAction="admin:entity.editSubscriptionUsageBenefit" sRedirectQS="subscriptionUsageBenefitID=#rc.subscriptionUsageBenefit.getsubscriptionUsageBenefitID()#">
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
+    <hb:HibachiEntityActionBar type="preprocess" object="#rc.subscriptionUsageBenefitAccount#">
+    </hb:HibachiEntityActionBar>
 
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
+    <hb:HibachiPropertyRow>
+        <hb:HibachiPropertyList>
+            <hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
+                <hb:HibachiFormField fieldName="subscriptionUsageBenefitID" value="#rc.subscriptionUsageBenefit.getsubscriptionUsageBenefitID()#" fieldType="hidden">
+        </hb:HibachiPropertyList>
+    </hb:HibachiPropertyRow>
 
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'GiftCard'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailgiftcard"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="giftCardID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display>
-
-</cfoutput>
+</hb:HibachiEntityProcessForm>

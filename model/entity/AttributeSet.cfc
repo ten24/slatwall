@@ -54,7 +54,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetName" ormtype="string";
 	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
 	property name="attributeSetDescription" ormtype="string" length="2000";
-	property name="attributeSetObject" ormtype="string" hb_formFieldType="select";
+	property name="attributeSetObject" ormtype="string" hb_formFieldType="select" index="PI_ATTRIBUTE_SET_OBJECT";
 	property name="globalFlag" ormtype="boolean" default="1";
 	property name="accountSaveFlag" ormtype="boolean";
 	property name="sortOrder" ormtype="integer";

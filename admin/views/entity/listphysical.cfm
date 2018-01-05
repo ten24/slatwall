@@ -85,6 +85,6 @@ Notes:
 		<sw-listing-column data-property-identifier="physicalName" tdclass="primary" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

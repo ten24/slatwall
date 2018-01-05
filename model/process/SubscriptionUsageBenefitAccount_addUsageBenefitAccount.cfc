@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,39 +45,48 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
+
+	// Injected Entity
+	property name="subscriptionUsageBenefitAccount";
+
+	// Lazy / Injected Objects
+
+	// New Properties
+	// Data Properties (ID's)
+	property name="subscriptionUsageBenefitID"  hb_rbKey="entity.subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit";
+	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
+
+	// Data Properties (Inputs)
+
+	// Data Properties (Related Entity Populate)
+
+	// Data Properties (Object / Array Populate)
+
+	// Option Properties
+
+	// Helper Properties
 
 
-<cfparam name="rc.giftCardSmartList" type="any" />
+	// ======================== START: Defaults ============================
 
-<cfoutput>
+	// ========================  END: Defaults =============================
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
+	// =================== START: Lazy Object Helpers ======================
 
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
+	// ===================  END: Lazy Object Helpers =======================
 
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'GiftCard'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailgiftcard"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="giftCardID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display>
+	// ================== START: New Property Helpers ======================
 
-</cfoutput>
+	// ==================  END: New Property Helpers =======================
+
+	// ====================== START: Data Options ==========================
+
+	// ======================  END: Data Options ===========================
+
+	// ===================== START: Helper Methods =========================
+
+	// =====================  END: Helper Methods ==========================
+
+}

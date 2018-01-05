@@ -118,8 +118,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			}else{
 				setCurrentRequestSitePathType('sitecode');
 			}
+			if(isNull(variables.currentRequestSite)){
+				variables.currentRequestSite = getService('siteService').newSite();
+			}
 		}
-		if(isNull(variables.currentRequestSite)){
+		
+		if(variables.currentRequestSite.getNewFlag()){
 			return;
 		}
 		return variables.currentRequestSite;
@@ -134,15 +138,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			var site = getCurrentRequestSite();
 			if ( !isNull(site) ){
 				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
-				var locations = site.getLocations();
-				if(!isNull(locations) && arrayLen(locations)){
-					variables.currentRequestSiteLocation= locations[1];
+				
+				if(site.getLocationsCount()){
+					var locationsSmartList = site.getLocationsSmartlist();
+					variables.currentRequestSiteLocation= locationsSmartList.getFirstRecord();
 				}
 			}
 		}
+		
+		if(!StructKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
+		return;
 
-		if(!structKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
-			return;
 		}
 		return variables.currentRequestSiteLocation;
 	}

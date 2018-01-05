@@ -46,38 +46,40 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-
-<cfparam name="rc.giftCardSmartList" type="any" />
+<cfparam name="rc.subscriptionUsageBenefit" type="any">
 
 <cfoutput>
+    <sw-listing-display
+            data-collection="SubscriptionUsageBenefitAccount"
+            data-multi-slot="true"
+            data-edit="true"
+            data-has-search="true"
+            data-is-angular-route="false"
+            data-angular-links="false"
+            data-has-action-bar="false"
+            data-record-detail-action="admin:entity.detailSubscriptionUsageBenefitAccount"
+            data-name="subscriptionUsageBenefitAccountListingDisplay">
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
+    <sw-collection-configs>
+    <sw-collection-config
+            data-entity-name="SubscriptionUsageBenefitAccount"
+            parent-directive-controller-as-name="swListingDisplay">
 
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
+    <sw-collection-filters>
+            <sw-collection-filter data-property-identifier="subscriptionUsageBenefit.subscriptionUsageBenefitID" data-comparison-operator="=" data-comparison-value="#rc.subscriptionUsageBenefit.getSubscriptionUsageBenefitID()#"></sw-collection-filter>
+</sw-collection-filters>
 
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'GiftCard'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailgiftcard"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="giftCardID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
-		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
-		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerEmailAddress"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerLastName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="ownerFirstName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="giftCardCode"></sw-listing-column>
-	</sw-listing-display>
+    <sw-collection-columns>
+        <sw-collection-column is-only-keyword-column="false" data-property-identifier="account.firstName" ></sw-collection-column>
+        <sw-collection-column is-only-keyword-column="false" data-property-identifier="account.lastName" ></sw-collection-column>
+        <sw-collection-column is-only-keyword-column="false" data-property-identifier="account.primaryEmailAddress.emailAddress" ></sw-collection-column>
+    </sw-collection-columns>
+</sw-collection-config>
+</sw-collection-configs>
 
+    <sw-listing-column data-title="First Name" data-property-identifier="account.firstName" ></sw-listing-column>
+    <sw-listing-column data-title="Last Name" data-property-identifier="account.lastName" ></sw-listing-column>
+    <sw-listing-column data-title="Email Address" data-property-identifier="account.primaryEmailAddress.emailAddress" ></sw-listing-column>
+
+</sw-listing-display>
 </cfoutput>

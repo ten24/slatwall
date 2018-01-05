@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,59 +45,17 @@
 
 Notes:
 
-*/
-component extends="HibachiDAO" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	public boolean function isLocationBeingUsed(required any location) {
-		// Check for stock using this location
-		var params = [arguments.location.getLocationID()];
-		var hql = " SELECT s
-					FROM SlatwallStock s
-					INNER JOIN s.location l
-					WHERE l.locationID = ?    ";
-	
-		return ArrayLen(ormExecuteQuery(hql, params, false, {maxResults=1})) > 0;
-	}
-	
-	public boolean function getLocationCount() {
-		// Check for stock using this location
-		/*var params = [arguments.location.getLocationID()];
-		var hql = " SELECT count(s)
-					FROM SlatwallStock s
-					INNER JOIN s.location l
-					WHERE l.locationID = ?    ";
-	
-		return ArrayLen(ormExecuteQuery(hql, params, false, {maxResults=1}) > 0);
-		*/
+<cfparam name="rc.subscriptionUsageBenefit" type="any">
+<cfparam name="rc.edit" type="boolean">
 
-		var hql = " SELECT new map(count(l) as thecount)
-					FROM SlatwallLocation l     ";
-	
-		var result = ormExecuteQuery(hql);
-
-		if(!structKeyExists(result[1], "thecount")) {
-			return 0;
-		} else {
-			return result[1]["thecount"];
-		}
-	}
-	
-	public numeric function getChildLocationCount(required string locationID){
-		return ORMExecuteQuery('
-			SELECT count(cl)
-			FROM SlatwallLocation l 
-			LEFT JOIN l.childLocations cl
-			WHERE l.locationID=:locationID'
-			,{locationID=arguments.locationID},true
-		);
-	}
-	
-	public numeric function removeBatchLocation(required string locationID, required string fulfillmentBatchID){
-		return ORMExecuteQuery('
-			DELETE from 
-			FROM SwFulfillmentBatchLocation l 
-			WHERE l.locationID=:locationID
-			AND FulfillmentBatchID=:fulfillmentBatchID',
-		{locationID=arguments.locationID, fulfillmentBatchID=arguments.fulfillmentBatchID},true);
-	}
-}
+<hb:HibachiPropertyRow>
+    <hb:HibachiPropertyList>
+        <hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="subscriptionBenefit" edit="false" />
+        <hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="maxUseCount" edit="false" />
+        <hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="accessType" edit="false" />
+    </hb:HibachiPropertyList>
+</hb:HibachiPropertyRow>
