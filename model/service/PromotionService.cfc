@@ -1351,9 +1351,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.promotionPeriod.setEndDateTime(arguments.processObject.getEndDateTime());
 		}
 		
-		var promotionPeriod = this.savePromotionPeriod(arguments.promotionPeriod);
+		this.savePromotionPeriod(arguments.promotionPeriod);
 
-		return promotionPeriod;
+		return arguments.promotionPeriod;
 	}
 
 	// =====================  END: Process Methods ============================
