@@ -61,8 +61,8 @@ Notes:
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="posPin" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="posPinConfirm" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" fieldType="password" property="posPin" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" fieldType="password" property="posPinConfirm" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	
