@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,15 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.minMaxSetup" type="any">
-<cfparam name="rc.edit" type="boolean">
+	// Injected Entity
+	property name="MinMaxSetup";
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.minMaxSetup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxSetup#" edit="#rc.edit#" />
-		<div class="s-top-spacer">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList>
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="setupName" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="location" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="minQuantity" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="maxQuantity" edit="#rc.edit#"/>
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
-		</div>
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+	// Data Properties
+	property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="text/text,text/csv" hb_fileAcceptExtension=".txt,.csv";
+
+	// Chached Properties
+
+}

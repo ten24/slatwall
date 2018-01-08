@@ -49,21 +49,21 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.minMaxSetup" type="any">
-<cfparam name="rc.edit" type="boolean">
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.minMaxSetup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxSetup#" edit="#rc.edit#" />
-		<div class="s-top-spacer">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList>
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="setupName" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="location" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="minQuantity" edit="#rc.edit#"/>
-					<hb:HibachiPropertyDisplay object="#rc.minMaxSetup#" property="maxQuantity" edit="#rc.edit#"/>
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
-		</div>
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+
+<cfparam name="rc.minmaxsetup" type="any">
+<cfparam name="rc.processObject" type="any">
+<cfparam name="rc.edit" type="boolean" />
+
+<hb:HibachiEntityProcessForm entity="#rc.minmaxsetup#" edit="#rc.edit#" enctype="multipart/form-data">
+
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.minmaxsetup#" >
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="uploadFile" edit="#rc.edit#" />
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>

@@ -477,6 +477,75 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.entity;
 	}
 
+	public any function processMinMaxSetup_uploadImport(required any MinMaxSetup, required any processObject) {
+
+		if( !isNull(arguments.processObject.getUploadFile()) ) {
+			// Get the temp directory
+			var tempDir = getHibachiTempDirectory();
+			
+			// Upload file to temp directory
+			var documentData = fileUpload( tempDir,'uploadFile','','makeUnique' );
+			
+			//check uploaded file if its a valid text file
+			if( !listFind("txt,csv", documentData.serverFileExt) ){
+				
+				// Make sure that nothing is persisted
+				getHibachiScope().setORMHasErrors( true );
+				
+				//delete uploaded file if its not a csv file
+				fileDelete( "#tempDir##documentData.serverFile#" );
+				arguments.processObject.addError('invalidFile', getHibachiScope().rbKey('validate.processPhysical_addPhysicalCount.invalidFile'));
+				
+			} else {	
+				var valid = 0; 
+				var rowError = 0;
+				// set meta data
+				var fileName = documentData.serverFile;	
+				// Read the File from temp directory 
+				var fileObj = fileOpen( "#tempDir##fileName#", "read" );
+				// Loop over the records in the file we just read
+				while( !fileIsEof( fileObj ) ) {
+					var fileRow = fileReadLine( fileObj ); 
+
+					// validate csv row
+					// 4 list items
+					// 3 & 4 are valid integers
+					// 1 is valid skuCode
+					// 2 is valid locationCode
+					if( listLen(fileRow) eq 4 
+						and isValid("integer",trim(listGetAt(fileRow,3))) 
+						and isValid("integer",trim(listGetAt(fileRow,4))) ) {
+						var sku = getService("skuService").getSkuBySkuCode(trim(listGetAt(fileRow,1)));
+						var location = getService("locationService").getLocationByLocationCode(trim(listGetAt(fileRow,2)));
+						if ( !isNull(sku) and !isNull(location) ) {
+							stockDAO.updateStockMinMax(sku.getSkuID(),location.getLocationID(),trim(listGetAt(fileRow,3)),trim(listGetAt(fileRow,4)));
+							valid++;
+						} else {
+							rowError++;
+						}
+					} else { 
+						rowError++;
+					}
+
+				}
+				
+				// Close the file object
+				fileClose( fileObj );
+
+				// Add info for how many were matched
+				arguments.minMaxSetup.addMessage('validInfo', getHibachiScope().rbKey('validate.processMinMaxSetup_uploadImport.validInfo', {valid=valid}));
+				
+				// Add message for non-processed rows
+				if(rowError) {
+					arguments.minMaxSetup.addMessage('rowErrorWarning', getHibachiScope().rbKey('validate.processMinMaxSetup_uploadImport', {rowError=rowError}));	
+				}
+
+			}
+		}
+
+		return arguments.MinMaxSetup;
+	}
+
 	public any function processMinMaxStockTransfer_createStockAdjustments(required any MinMaxStockTransfer, required any processObject) {
 
 		var minMaxStockTransferItemsSmartList = arguments.MinMaxStockTransfer.getMinMaxStockTransferItemsSmartList();

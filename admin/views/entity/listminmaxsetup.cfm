@@ -55,6 +55,7 @@ Notes:
             data-page-title-rb-key="entity.MinMaxSetup"
     >
         <sw-entity-action-bar-button-group>
+            <sw-process-caller data-action="entity.preprocessminmaxsetup" data-process-context="uploadimport" data-title-rb-key="entity.MinMaxSetup.process.uploadimport" data-class="adminentitycreateform btn btn-primary deafult-margin" data-icon="'upload'" data-type="link"></sw-process-caller>
             <sw-process-caller data-action="admin:entity.createminmaxsetup" data-title-rb-key="entity.MinMaxSetup.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
         </sw-entity-action-bar-button-group>
     </sw-entity-action-bar>
