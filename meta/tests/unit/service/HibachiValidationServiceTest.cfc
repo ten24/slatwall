@@ -164,12 +164,69 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(account.getErrors().accountCode[1],'Account Code must be unique or empty');
 	}
 
+	// validate_minValue()
+	/**
+	* @test
+	*/
+	public void function validate_minValue_failedLoginAttempts_property_value_less_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(5);
+		assertfalse( variables.service.validate_minValue(account, 'failedLoginAttemptCount',10) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minValue_failedLoginAttempts_property_value_greater_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(15);
+		assert( variables.service.validate_minValue(account, 'failedLoginAttemptCount',10) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minValue_failedLoginAttempts_property_value_equal_to_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(10);
+		assert( variables.service.validate_minValue(account, 'failedLoginAttemptCount',10) );
+	}
+
+	// validate_maxValue()
+	/**
+	* @test
+	*/
+	public void function validate_maxValue_failedLoginAttempts_property_value_less_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(5);
+		assert( variables.service.validate_maxValue(account, 'failedLoginAttemptCount',10) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxValue_failedLoginAttempts_property_value_greater_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(15);
+		assertfalse( variables.service.validate_maxValue(account, 'failedLoginAttemptCount',10) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxValue_failedLoginAttempts_property_value_equal_to_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(10);
+		assert( variables.service.validate_maxValue(account, 'failedLoginAttemptCount',10) );
+	}
+
+
+
 	//validate_required()
 	/**
 	* @test
 	*/
 	public void function validate_required_test_return_true_if_isObject_and_notNull(){
-
 		var account = request.slatwallScope.newEntity('Account');
 		var address = request.slatwallScope.newEntity('Address');
 		var accountAddress = request.slatwallScope.newEntity('AccountAddress');
@@ -189,7 +246,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setFirstName(javacast("null",""));
 		assertfalse(variables.service.validate_required(account, 'firstName'));
 	}
-
 
 	/**
 	* @test
@@ -234,6 +290,63 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse(variables.service.validate_required(account,'accountPhoneNumbers'));
 	}
 
+	// validate_lte()
+	/**
+	* @test
+	*/
+	public void function validate_lte_failedLoginAttempts_property_value_less_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(5);
+		assert( variables.service.validate_lte(account, 'failedLoginAttemptCount','10') );
+
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_lte_failedLoginAttempts_property_value_greater_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(15);
+		assertfalse( variables.service.validate_lte(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_lte_failedLoginAttempts_property_value_equal_to_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(10);
+		assert( variables.service.validate_lte(account, 'failedLoginAttemptCount','10') );
+	}
+
+	// validate_lt()
+	/**
+	* @test
+	*/
+	public void function validate_lt_failedLoginAttempts_property_value_less_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(5);
+		assert( variables.service.validate_lt(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_lt_failedLoginAttempts_property_value_greater_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(15);
+		assertfalse( variables.service.validate_lt(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_lt_failedLoginAttempts_property_value_equal_to_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(10);
+		assertfalse( variables.service.validate_lt(account, 'failedLoginAttemptCount','10') );
+	}
+
 	//validate_null()
 	/**
 	* @test
@@ -262,6 +375,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setCompany(javacast("null",""));
 		assertfalse(variables.service.validate_null(account,'firstName', false));
 		assertfalse(variables.service.validate_null(account,'company', false));
+	}
+
+
+	// validate_gte()
+	/**
+	* @test
+	*/
+	public void function validate_gte_failedLoginAttempts_property_value_less_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(5);
+		assertfalse( variables.service.validate_gte(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gte_failedLoginAttempts_property_value_greater_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(15);
+		assert( variables.service.validate_gte(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gte_failedLoginAttempts_property_value_equal_to_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(10);
+		assert( variables.service.validate_gte(account, 'failedLoginAttemptCount','10') );
 	}
 
 	// validate_minLength()
@@ -316,6 +458,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_minLength(account, 'firstName',2));
 	}
 
+	// validate_gt()
+	/**
+	* @test
+	*/
+	public void function validate_gt_failedLoginAttempts_property_value_less_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(5);
+		assertfalse( variables.service.validate_gt(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gt_failedLoginAttempts_property_value_greater_than_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(15);
+		assert( variables.service.validate_gt(account, 'failedLoginAttemptCount','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gt_failedLoginAttempts_property_value_equal_to_constrint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setFailedLoginAttemptCount(10);
+		assertfalse( variables.service.validate_gt(account, 'failedLoginAttemptCount','10') );
+	}
+
 
 	// validate_maxLength()
 	/**
@@ -358,6 +528,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		assert( variables.service.validate_maxLength(account, 'firstName',10));
 		assert( variables.service.validate_maxLength(account, 'company',20));
+
 	}
 
 	/**
@@ -368,6 +539,48 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setFirstName(javacast("null",""));
 		assert( variables.service.validate_maxLength(account, 'firstName',10));
 	}
+
+
+	// validate_gtNow()
+	/**
+	* @test
+	*/
+	public void function validate_gtNow_createdDateTime_property_value_less_than_current_date() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setcreatedDateTime("2017-12-08 15:42:44");
+		assertfalse( variables.service.validate_gtNow(account, 'createdDateTime','10') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gtNow_createdDateTime_property_value_greater_than_current_date() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setcreatedDateTime("2017-12-23 15:42:44");
+		assert( variables.service.validate_gtNow(account, 'createdDateTime','10') );
+	}
+
+	// validate_ltNow()
+	/**
+	* @test
+	*/
+	public void function validate_ltNow_createdDateTime_property_value_less_than_current_date() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setcreatedDateTime("2017-12-08 15:42:44");
+		assert( variables.service.validate_ltNow(account, 'createdDateTime','10') );
+
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function validate_ltNow_createdDateTime_property_value_greater_than_current_date() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setcreatedDateTime("2017-12-23 15:42:44");
+		assertfalse( variables.service.validate_ltNow(account, 'createdDateTime','10') );
+	}
+
 
 	// validate_eq()
 	/**
@@ -397,6 +610,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_eq(account, 'superUserFlag', false));
 		assert( variables.service.validate_eq(account, 'organizationFlag', true));
 	}
+
 
 	/**
 	* @test
@@ -433,6 +647,72 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setFailedLoginAttemptCount(2);
 		assertfalse( variables.service.validate_eq(account, 'failedLoginAttemptCount', 0));
 	}
+
+	// validate_lteProperty()
+	/**
+	* @test
+	*/
+	public void function validate_lteproperty_calculatedSalePrice_property_value_less_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(10);
+		account.setcalculatedProductRating(100);
+		assert( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_lteproperty_calculatedSalePrice_property_value_equal_to_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(100);
+		assert( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_lteproperty_calculatedSalePrice_property_value_greater_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(10);
+		assertfalse( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+
+	}
+
+
+	// validate_ltProperty()
+	/**
+	* @test
+	*/
+	public void function validate_ltproperty_calculatedSalePrice_property_value_less_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(10);
+		account.setcalculatedProductRating(100);
+		assert( variables.service.validate_ltProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_ltproperty_calculatedSalePrice_property_value_greater_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(10);
+		assertfalse( variables.service.validate_ltProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_ltproperty_calculatedSalePrice_property_value_equal_to_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(100);
+		assertfalse( variables.service.validate_ltProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+
 
 
 	// validate_neq()
@@ -500,6 +780,73 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse( variables.service.validate_neq(account, 'failedLoginAttemptCount', 2));
 	}
 
+
+
+
+	// validate_gteProperty()
+	/**
+	* @test
+	*/
+	public void function validate_gteproperty_calculatedSalePrice_property_value_less_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(10);
+		account.setcalculatedProductRating(100);
+		assertfalse( variables.service.validate_gteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gteproperty_calculatedSalePrice_property_value_greater_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(10);
+		assert( variables.service.validate_gteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gteproperty_calculatedSalePrice_property_value_equal_to_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(100);
+		assert( variables.service.validate_gteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	// validate_gtProperty()
+	/**
+	* @test
+	*/
+	public void function validate_gtproperty_calculatedSalePrice_property_value_less_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(10);
+		account.setcalculatedProductRating(100);
+		assertfalse( variables.service.validate_gtProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+
+ 	/**
+	* @test
+	*/
+	public void function validate_gtproperty_calculatedSalePrice_property_value_greater_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(10);
+		assert( variables.service.validate_gtProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_gtproperty_calculatedSalePrice_property_value_equal_to_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(100);
+		assertfalse( variables.service.validate_gtProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+
 	//validate_gtDateTimeProperty()
 	/**
 	* @test
@@ -509,7 +856,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		order.setOrderOpenDateTime("2017-10-19 18:10:03");
 		order.setOrderCloseDateTime("2017-09-15 8:08:33");
 		assert(variables.service.validate_gtDateTimeProperty(order,'orderOpenDateTime','orderCloseDateTime'));
-
 	}
 
 	/**
@@ -521,6 +867,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		order.setOrderCloseDateTime("2017-10-19 18:10:03");
 		assertfalse(variables.service.validate_gtDateTimeProperty(order,'orderOpenDateTime','orderCloseDateTime'));
 
+	}
+
+
+	// validate_inList()
+	/**
+	* @test
+	*/
+	public void function validate_inList_entry_exists() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("India");
+		myList="USA,Russia,Canada,India,China,Japan,Korea";
+		assert( variables.service.validate_inList(account, 'firstname','#myList#') );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_inList_entry_dosent_exists() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("Sri Lanka");
+		myList="USA,Russia,Canada,India,China,Japan,Korea";
+		assertfalse( variables.service.validate_inList(account, 'firstname','#myList#') );
 	}
 
 	//validate_ltDateTimeProperty()
@@ -574,6 +942,102 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_eqProperty(account, 'firstName', 'lastName'));
 	}
 
+
+
+	// validate_minList()
+	/**
+	* @test
+	*/
+	public void function validate_minList_list_size_less_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assertfalse( variables.service.validate_minList(account, 'firstname',15) );
+
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minList_list_size_greater_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assert( variables.service.validate_minList(account, 'firstname',5) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minList_list_size_equal_to_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assert( variables.service.validate_minList(account, 'firstname',7) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minList_list_is_null() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assertfalse( variables.service.validate_minList(account,'lastname',10) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minList_list_is_null_constraint_value_is_zero() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assert( variables.service.validate_minList(account,'lastname',0) );
+	}
+
+	// validate_maxList()
+	/**
+	* @test
+	*/
+	public void function validate_maxList_list_size_less_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assert( variables.service.validate_maxList(account, 'firstname',15) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxList_list_size_greater_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assertfalse( variables.service.validate_maxList(account, 'firstname',5) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxnList_list_size_equal_to_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assert( variables.service.validate_maxList(account, 'firstname',7) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxList_list_is_null() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assertfalse( variables.service.validate_maxList(account,'lastname',10) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxList_list_is_null_constraint_value_is_zero() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setfirstname("A,B,C,D,E,F,G");
+		assert( variables.service.validate_maxList(account,'lastname',0) );
+	}
+
+
 	// validate_neqProperty()
 	/**
 	* @test
@@ -588,6 +1052,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_neqProperty(account, 'firstName', 'lastName'));
 	}
 
+
 	/**
 	* @test
 	*/
@@ -599,6 +1064,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var account = createPersistedTestEntity('account',accountData);
 		assertfalse( variables.service.validate_neqProperty(account, 'firstName', 'lastName'));
+	}
+
+	//validate_method()
+	/**
+	* @test
+	*/
+	 public void function validate_method_method_returen_true() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setsuperuserflag("true");
+		assert(variables.service.validate_method(account,'superUserFlag','getsuperUserFlag'));
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_method_method_returns_false() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setsuperuserflag("false");
+		assertfalse(variables.service.validate_method(account,'superUserFlag','getsuperUserFlag'));
 	}
 
 	//validate_unique()
@@ -707,9 +1191,193 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse(variables.service.validate_regex(collection,'collectionCode','^[a-zA-Z0-9-_.|:~^]+$'));
 	}
 
+	//validate_minCollection
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_arraylen_greater_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
 
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
 
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
 
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',1) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_arraylen_equal_to_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',3) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_propertyValue_is_null() {
+		var orderItem = request.slatwallScope.newEntity('OrderItem');
+		orderItem.setOrderItemID("orderItem123");
+		assert( variables.service.validate_minCollection(orderItem,'price',3) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_minCollection_arraylen_less_than_constraint_value() {
+		var account = request.slatwallScope.newEntity('Account');
+		account.setAccountID("mindfire123");
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneOne.setAccount(account);
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneTwo.setAccount(account);
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+		accountPhoneThree.setAccount(account);
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
+		account.setAccountPhoneNumbers(phoneNoArray);
+		assertfalse( variables.service.validate_minCollection(account,'accountPhoneNumbers',6) );
+	}
+
+	//validate_maxCollection
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_propertyValue_is_null() {
+		var orderItemData = {
+			orderItemID="test" & createUUID()
+		};
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+		assert( variables.service.validate_maxCollection(orderItem,'price',3) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_arraylen_greater_than_constraint_value() {
+
+		var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var accountData = {
+			accountID="test" & createUUID(),
+			accountPhoneNumbers= [accountPhoneOne,accountPhoneTwo,accountPhoneThree]
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
+		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',1) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_arraylen_less_than_constraint_value() {
+				var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var accountData = {
+			accountID="test" & createUUID(),
+			accountPhoneNumbers= [accountPhoneOne,accountPhoneTwo,accountPhoneThree]
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
+		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',6) );
+	}
+
+	/**
+	* @test
+	*/
+	public void function validate_maxCollection_arraylen_equal_to_constraint_value() {
+				var accountPhoneOne = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneOne.setAccountPhoneNumberID("phno1");
+		accountPhoneOne.setPhoneNumber("1111111111");
+
+		var accountPhoneTwo = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneTwo.setAccountPhoneNumberID("phno2");
+		accountPhoneTwo.setPhoneNumber("2222222222");
+
+		var accountPhoneThree = request.slatwallScope.newEntity('AccountPhoneNumber');
+
+		accountPhoneThree.setAccountPhoneNumberID("phno3");
+		accountPhoneThree.setPhoneNumber("3333333333");
+
+		var accountData = {
+			accountID="test" & createUUID(),
+			accountPhoneNumbers= [accountPhoneOne,accountPhoneTwo,accountPhoneThree]
+		};
+		var account = createPersistedTestEntity('Account',accountData);
+
+		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',3) );
+	}
 }
 
 
