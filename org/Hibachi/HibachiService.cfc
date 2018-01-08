@@ -152,6 +152,7 @@
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
 			}
 			
+			
 			// if the entity still has no errors then we call call the process method
 			if(!arguments.entity.hasErrors()) {
 				var methodName = "process#arguments.entity.getClassName()#_#arguments.processContext#";
