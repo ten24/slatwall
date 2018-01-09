@@ -1841,6 +1841,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		return timeFormat;
 	}
 	
+	function getTabHTMLForTabGroup( element, tab ){
+		
+		if($('#'+tab.TABID).html().trim().length === 0){
+			
+			$('#'+tab.TABID).load(url=window.location.href,data={viewPath:tab.VIEW.split(/\/(.+)/)[1]});
+		}
+		
+	}
+	
 	// =========================  END: HELPER METHODS =================================
 	
 }
