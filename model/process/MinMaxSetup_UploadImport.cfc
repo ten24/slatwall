@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,23 +45,15 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfparam name="rc.minMaxStockTransfer" default="any" >
-<cfoutput>
-	<cfset stockAdjustmentsCollectionlist = rc.minMaxStockTransfer.getStockAdjustmentsCollectionlist()/>
-	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentType.typeName', title="Type", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
-	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentStatusType.typeName', title="Status", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
-	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='fromLocation.locationName', title="From", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
-	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='toLocation.locationName', title="To", columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
-	<cfset stockAdjustmentsCollectionlist.addDisplayProperty(displayProperty='stockAdjustmentID',columnConfig={isVisible=false,  isSearchable=false, isDeletable=false})/>
+	// Injected Entity
+	property name="MinMaxSetup";
 
-	<hb:HibachiListingDisplay collectionList="#stockAdjustmentsCollectionlist#"
-							   recordEditAction="admin:entity.editstockadjustment"
-							   recordDetailAction="admin:entity.detailstockadjustment"
-							   usingPersonalCollection="false"
-	>
-	</hb:HibachiListingDisplay>
-</cfoutput>
+	// Data Properties
+	property name="uploadFile" hb_formFieldType="file" hb_fileAcceptMIMEType="text/text,text/csv" hb_fileAcceptExtension=".txt,.csv";
+
+	// Chached Properties
+
+}

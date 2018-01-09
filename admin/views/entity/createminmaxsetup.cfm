@@ -66,5 +66,4 @@ Notes:
 			</hb:HibachiPropertyRow>
 		</div>
 	</hb:HibachiEntityDetailForm>
-	</span>
 </cfoutput>
