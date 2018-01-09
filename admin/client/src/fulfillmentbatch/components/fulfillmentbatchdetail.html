@@ -266,7 +266,7 @@
                                            <div class="col-md-2">{{oi.quantity}}</div>
                                            
                                            <div class="col-md-2">
-                                            	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" />
+                                            	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
                                            </div>
                                 	</div>
                                 </div>
