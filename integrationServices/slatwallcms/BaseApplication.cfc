@@ -351,6 +351,8 @@ Notes:
 
 		if(fileExists(specificFormTemplateFilePath)){
 			var templatePath = siteTemplatePath & specificFormTemplateFileName;
+		} else if(fileExists(baseTemplatePath & specificFormTemplateFileName)){
+			var templatePath = baseTemplatePath & specificFormTemplateFileName;
 		} else if(fileExists(siteTemplatePath & defaultFormTemplateFileName)){
 			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
 		} else {
