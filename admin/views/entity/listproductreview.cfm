@@ -84,6 +84,6 @@ Notes:
 		<sw-listing-column data-property-identifier="product.defaultSku.price" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>

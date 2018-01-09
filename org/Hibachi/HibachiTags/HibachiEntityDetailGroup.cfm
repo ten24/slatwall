@@ -84,7 +84,7 @@
 										<!--- 
 											if is a non-angular content js needs to be able to init html without ng-if preventing compilation
 										 --->
-										<cfif findNoCase('<sw-',tab.tabcontent)>
+										<cfif findNoCase('<sw-',tab.tabcontent) && !findNoCase('wysiwyg',tab.tabcontent)>
 											<span ng-if="#tabScope#.active">
 												#tab.tabcontent#
 											</span>

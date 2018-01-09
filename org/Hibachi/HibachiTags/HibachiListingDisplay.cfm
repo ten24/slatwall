@@ -246,7 +246,7 @@
 			<!--- Process --->
 			<cfif len(attributes.recordProcessAction) and attributes.recordProcessButtonDisplayFlag>
 				<cfset attributes.administativeCount++ />
-
+				
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processcontext="#attributes.recordProcessContext#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentity="#attributes.recordProcessEntity.getClassName()#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentityid="#attributes.recordProcessEntity.getPrimaryIDValue()#"', " ") />
@@ -468,7 +468,7 @@
 										<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
 									</cfif>
 								</cfsilent>
-								<th style="min-width:70px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
+								<th style="min-width:85px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
 									<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 										#column.title#
 									<cfelse>

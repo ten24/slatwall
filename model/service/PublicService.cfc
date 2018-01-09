@@ -1122,6 +1122,36 @@ component extends="HibachiService"  accessors="true" output="false"
     }
 
     /** 
+     * @http-context updateOrderFulfillmentAddressZone
+     * @description Update Order Fulfillment Address Zone
+     * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     * @ProcessMethod Order_UpdateOrderFulfillmentAddressZone
+     */
+    public any function updateOrderFulfillmentAddressZone(required any data) {
+        
+        var orderFulfillments = getHibachiScope().cart().getOrderFulfillments();
+        //Find a shipping fulfillment.    
+        for (var of in orderFulfillments){
+            if (of.getFulfillmentMethodType() == "shipping"){
+                var orderFulfillment = of; break;
+            }
+        }  
+        
+        if (structKeyExists(data, "addressZoneCode")){
+            var addressZone = getService("AddressService").getAddressZoneByAddressZoneCode(data.addressZoneCode);
+        }     
+        
+        if (!isNull(orderFulfillment) && !isNull(addressZone)){
+            orderFulfillment.setAddressZone(addressZone);
+            orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
+            getService("ShippingService").updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
+            getHibachiScope().addActionResult( "public:cart.updateOrderFulfillmentAddressZone", false);
+        } else {  
+			getHibachiScope().addActionResult( "public:cart.updateOrderFulfillmentAddressZone", true);
+        }
+    }
+
+    /** 
      * @http-context finalizeCart
      * @description Finalize Cart
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data

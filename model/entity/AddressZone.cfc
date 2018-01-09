@@ -51,6 +51,7 @@ component displayname="Address Zone" entityname="SlatwallAddressZone" table="SwA
 	// Persistent Properties
 	property name="addressZoneID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="addressZoneName" ormtype="string";
+	property name="addressZoneCode" ormtype="string" default="";
 	
 	// Related Object Properties (One-To-Many) - These are for doing delete validation to ensure that there are no entities using this address zone
 	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" fieldtype="one-to-many" fkcolumn="addressZoneID" inverse="true";

@@ -852,7 +852,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							});
 						} else {
 							jQuery.each(r.messages, function(i, v){
-								jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
+								jQuery('#' + thisTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + (v.MESSAGE || v.message) + '</div>');
 							});
 						}
 					}

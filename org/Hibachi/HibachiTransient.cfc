@@ -15,6 +15,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 		return variables.hibachiErrors;
 	}
+	
+	public any function setHibachiErrors(any errors){
+		if(structKeyExists(arguments,'errors')){
+			variables.hibachiErrors = arguments.errors;
+		}
+	}
+
+	public void function clearHibachiErrors(){
+		structDelete(variables,'hibachiErrors');
+	}
 
 	// @hint Returns the messageBean object, if one hasn't been setup yet it returns a new one
 	public any function getHibachiMessages() {
@@ -403,15 +413,36 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					var uploadDirectory = this.invokeMethod("get#currentProperty.name#UploadDirectory");
 
 					// If the directory where this file is going doesn't exists, then create it
-					if(!directoryExists(uploadDirectory)) {
-						directoryCreate(uploadDirectory);
+					if(left(uploadDirectory, 5) == 's3://'){
+
+						uploadDirectory = replace(uploadDirectory,'s3://','');
+						var bucket = listLast(uploadDirectory, '@');
+						var loginPart = listFirst(uploadDirectory, '@');
+						var fileName = getService("hibachiUtilityService").getClientFileName(currentProperty.name);
+
+						getService("hibachiUtilityService").uploadToS3(
+							bucketName=bucket,
+							fileName=listLast(form[currentProperty.name], '/'),
+							contentType='application/octet-stream',
+							awsAccessKeyId=listFirst(loginPart, ':'),
+							awsSecretAccessKey=listLast(loginPart, ':'),
+							uploadDir=REReplace(form[currentProperty.name],'[^/]*$',''),
+							keyName=fileName
+						);
+
+						_setProperty(currentProperty.name, fileName);
+					}else{
+						if(!directoryExists(uploadDirectory)) {
+							directoryCreate(uploadDirectory);
+						}
+
+						// Do the upload
+						var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+
+						// Update the property with the serverFile name
+						_setProperty(currentProperty.name, uploadData.serverFile);
 					}
 
-					// Do the upload
-					var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-					
-					// Update the property with the serverFile name
-					_setProperty(currentProperty.name, uploadData.serverFile);
 				} catch(any e) {
 					this.addError(currentProperty.name, rbKey('validate.fileUpload'));
 				}
@@ -455,7 +486,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// @hint pubic method to validate this object
 	public any function validate( string context="" ) {
-
 		getService("hibachiValidationService").validate(object=this, context=arguments.context);
 
 		// If there were sub properties that have been populated, then we should validate each of those
@@ -463,14 +493,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Loop ove each property that was populated
 			for(var propertyName in variables.populatedSubProperties) {
-
+				
 				// setup the correct validation context for this property
 				var propertyContext = getService("hibachiValidationService").getPopulatedPropertyValidationContext( object=this, propertyName=propertyName, originalContext=arguments.context );
+				
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( listLast(getPropertyMetaData(propertyName).cfc,'.') );
-
+				
 				// Make sure that the context is a valid context
 				if( len(propertyContext) && (!isBoolean(propertyContext) || propertyContext) ) {
-
 					// If this was a one-to-many than validate each
 					if(isArray(variables.populatedSubProperties[ propertyName ])) {
 
@@ -488,7 +518,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// If this was a many-to-one, then just validate it
 					} else if (!isNull(variables[ propertyName ])) {
-
 						// Validate the property
 						variables[ propertyName ].validate( propertyContext );
 

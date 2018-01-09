@@ -74,7 +74,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Logical Methods ===========================
 
-	public string function getOrderRequirementsList(required any order) {
+	public string function getOrderRequirementsList(required any order, struct data = {}) {
 		var orderRequirementsList = "";
 
 
@@ -100,7 +100,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-		if(arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()){
+		if(arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)){
 			//If is allowed to place order without payment and there is no payment, skip payment order
 			return orderRequirementsList;
 		}
@@ -371,6 +371,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!isNull(arguments.processObject.getStock())){
 				newOrderItem.setStock(arguments.processObject.getStock());	
 			}
+
+			if (processObject.getSellOnBackOrderFlag() == true){
+				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
+			}
+			
 			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
@@ -401,7 +406,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
 
 			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 			if(
@@ -412,7 +417,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				) && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
-				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
 			}
 
 			// If a stock was passed in assign it to this new item
@@ -486,6 +491,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						if (addOrderItemGiftRecipientProcessObject.hasErrors()) {
 							if (addOrderItemGiftRecipientProcessObject.getRecipient().hasErrors()) {
+								orderItem.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
 								arguments.order.addErrors(addOrderItemGiftRecipientProcessObject.getRecipient().getErrors());
 							}
 						}
@@ -1332,6 +1338,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
+	public boolean function isAllowedToPlaceOrderWithoutPayment(required any order, struct data = {}){
+
+		if(getHibachiScope().getAccount().getAdminAccountFlag() && structKeyExists(arguments.data, 'newOrderPayment.paymentMethod.paymentMethodID') && arguments.data['newOrderPayment.paymentMethod.paymentMethodID'] == 'none'){
+			return true;
+		}
+
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
+			var settingValue = arguments.order.getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder");
+			if(isNull(settingValue) || len(settingValue) == 0 || val(settingValue) > 0){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public any function processOrder_placeOrder(required any order, required struct data) {
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
@@ -1353,10 +1375,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
 							arguments.order.setOrderPlacedSite(getHibachiScope().getSite());
 						}
-	
+
 						//check if is payment is needed to place order and addPayment
-						if(!arguments.order.isAllowedToPlaceOrderWithoutPayment() ||
-							( arguments.order.isAllowedToPlaceOrderWithoutPayment() && arguments.order.getPaymentAmountTotal() > 0)
+						if(!this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) ||
+							( arguments.order.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) && arguments.order.getPaymentAmountTotal() > 0)
 						){
 							// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
 							if (arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()
@@ -1377,7 +1399,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 	
 						// Generate the order requirements list, to see if we still need action to be taken
-						var orderRequirementsList = getOrderRequirementsList( arguments.order );
+						var orderRequirementsList = getOrderRequirementsList( arguments.order, arguments.data );
 						
 						// Verify the order requirements list, to make sure that this order has everything it needs to continue
 						if(len(orderRequirementsList)) {
@@ -1450,7 +1472,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 
 							// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
-							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()))) {
+							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)))) {
 	
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
@@ -1645,7 +1667,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderPayment.getOrderPaymentID() == arguments.data.orderPaymentID) {
 					if(orderPayment.isDeletable()) {
 						arguments.order.removeOrderPayment( orderPayment );
-						this.deleteOrderPayment( arguments.order , orderPayment );
+						this.deleteOrderPayment( orderPayment );
 					} else {
 						orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstRemoved') );
 					}
@@ -3214,13 +3236,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 
-	public any function deleteOrderPayment( required any order, required any orderPayment ) {
+	public any function deleteOrderPayment(required any orderPayment ) {
 
 		// Check delete validation
 		if(arguments.orderPayment.isDeletable()) {
 
 			// Remove the primary fields so that we can delete this entity
-			arguments.order.removeOrderPayment( arguments.orderPayment );
+			arguments.orderPayment.getOrder().removeOrderPayment( arguments.orderPayment );
 
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderPayment );

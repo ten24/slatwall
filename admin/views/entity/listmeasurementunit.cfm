@@ -76,7 +76,7 @@ Notes:
         <sw-listing-column data-property-identifier="unitName" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="unitCode" ></sw-listing-column>
         <sw-listing-column data-property-identifier="measurementType" ></sw-listing-column>
-    </sw-listing-display data-using-personal-collection="true">
+    </sw-listing-display>
 
 </cfoutput>
 

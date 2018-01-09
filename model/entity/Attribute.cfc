@@ -263,14 +263,23 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			unselectedValue['value'] = '';
 
 			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeInputType())) {
-
+				if(!isNull(getAttributeOptionSource())){
+		    		var smartlist = getAttributeOptionSource().getAttributeOptionsSmartList();
+		    	}else{
 				var smartList = this.getAttributeOptionsSmartList();
+				}
 				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
 				smartList.addOrder("sortOrder|ASC");
 				variables.attributeOptionsOptions = smartList.getRecords();
 
-				if(getAttributeInputType() == 'select') {
+				if(
+					getAttributeInputType() == 'select'
+					&& (
+						arraylen(variables.attributeOptionsOptions)
+						&& variables.attributeOptionsOptions[1]['value'] != ''
+					) || !arraylen(variables.attributeOptionsOptions)
+				) {
 					arrayPrepend(variables.attributeOptionsOptions, unselectedValue);
 				}
 

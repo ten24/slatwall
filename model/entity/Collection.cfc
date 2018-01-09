@@ -2079,6 +2079,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(
 			getRequestAccount().getNewFlag() ||
 			getRequestAccount().getSuperUserFlag() ||
+			arrayLen(getRequestAccount().getPermissionGroups()) == 0 ||
 			listFind(excludedEntities, getCollectionObject())
 		){
 			return;
@@ -2423,6 +2424,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return getPropertyNameValues(primaryIDName, arguments.recordCount);
 	}
 
+	public string function getPrimaryIDList(){
+		var primaryIDList = "";
+		var primaryIDRecords = getPrimaryIDs();
+		var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName( getCollectionObject() );
+		for(var primaryIDRecord in primaryIDRecords){
+			primaryIDList = listAppend(primaryIDList,primaryIDRecord[primaryIDName]);
+		}
+		return primaryIDList;
+	}
+
 	public array function getPropertyNameValues(required string propertyName, string recordCount){
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		var propertyMetaData = baseEntityObject.getPropertyMetaData(arguments.propertyName);
@@ -2574,7 +2585,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				predicate = ":#fromParamID# AND :#toParamID#";
 
 
-			}else if(listFind('integer,float,big_decimal',arguments.filter.ormtype)){
+			}else if(listFind('integer,float,big_decimal,string',arguments.filter.ormtype)){
 				var ranges = listToArray(arguments.filter.value,'-');
 				if(arraylen(ranges) > 1){
 					var fromValue = ranges[1];

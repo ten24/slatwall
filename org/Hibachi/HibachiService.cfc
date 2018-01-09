@@ -152,6 +152,7 @@
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
 			}
 			
+			
 			// if the entity still has no errors then we call call the process method
 			if(!arguments.entity.hasErrors()) {
 				var methodName = "process#arguments.entity.getClassName()#_#arguments.processContext#";
@@ -240,7 +241,7 @@
          public any function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv', boolean downloadFile=true, folderPath) {
 
             if (isArray(data)){
-                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+                arguments.data = transformArrayOfStructsToQuery( data, ListToArray(ListRemoveDuplicates(columnNames)));
             }
 	    
 			var result = {};
@@ -265,7 +266,7 @@
             if(structKeyExists(arguments,"columns") && !structKeyExists(arguments,"columnNames")){
                 arguments.columnNames = arguments.columns;
             }
-            var columnArray = listToArray(arguments.columns);
+            var columnArray = listToArray(ListRemoveDuplicates(arguments.columns));
             var columnCount = arrayLen(columnArray);
             
             if(arguments.fileType == 'csv'){
@@ -996,10 +997,10 @@
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
 		}
 		
-		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier, ignoreAttributeCheck=false){
 			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
 			
-			if(!hasAttributeByEntityNameAndPropertyIdentifier){
+			if(!hasAttributeByEntityNameAndPropertyIdentifier || arguments.ignoreAttributeCheck){
 				
 				var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
 					arguments.entityName, 
@@ -1147,7 +1148,8 @@
 			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
 			var relatedEntity = listLast(arguments.propertyIdentifier,'.');
 			propertyMetaData = propsStruct[relatedEntity];
-			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+			
+			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
 				var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 				var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 			}
@@ -1269,7 +1271,7 @@
 					var propsStruct = getPropertiesStructByEntityName(lastEntityName);
 					var relatedEntity = listLast(arguments.propertyIdentifier,'.');
 					propertyMetaData = propsStruct[relatedEntity];
-					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
 						var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 						var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 					}
@@ -1311,6 +1313,43 @@
 				}
 			}
 			return [];
+		}
+		
+		public void function batchUpdateCalculatedPropertiesByEntityName(required string entityName, string totalPagesComplete=0){
+			 
+			var entitySmartList = getHibachiScope().getService('HibachiService').invokeMethod('get#arguments.entityName#SmartList');
+			entitySmartList.addOrder('modifiedDateTime','ASC');
+			//you can choose to do this in larger batches but you data better be valid boi
+			entitySmartList.setPageRecordsShow(1);
+			var currentPageCount = 1;
+			var totalPages = entitySmartList.getTotalPages()-arguments.totalPagesComplete;
+			var entityService = getHibachiScope().getService('HibachiService').getServiceByEntityName( entityName=arguments.entityName );
+			logHibachi('#arguments.entityName#',true);
+			while(currentPageCount <= totalPages && currentPageCount < 250){
+				try{
+					logHibachi('currentPage:#currentPageCount# of #totalPages# for #arguments.entityName#',true);
+					entitySmartList.setCurrentPageDeclaration(currentPageCount);
+					var recordsBatchToProcess = entitySmartList.getPageRecords(true);
+					
+					for(var entity in recordsBatchToProcess){
+						entity.setModifiedDateTime(now());
+						
+						//entityService.invokeMethod('save#arguments.entityName#',{1=entity});
+						entitySave(entity);
+						entity.updateCalculatedProperties(true);
+						//clear errors so we can get past preupdate validation
+					}
+				logHibachi('flushed',true);
+				//commit batch
+				ormFlush();
+				//clear memory
+				ORMClearSession();
+				}catch(any e){
+					logHibachi('error',true);
+				}
+				
+				currentPageCount++;
+			}
 		}
 		
 		

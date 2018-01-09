@@ -86,4 +86,4 @@ Notes:
 	<sw-listing-column data-property-identifier="attributeSetObject" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="globalFlag" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-</sw-listing-display data-using-personal-collection="true">
+</sw-listing-display>

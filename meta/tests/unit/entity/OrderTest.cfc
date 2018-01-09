@@ -1011,9 +1011,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var result = mockOrder.hasGiftCardOrderItems(mockOrderItem.getOrderItemID());
 	 	assertTrue(result, 'The function should return TRUE for the oi accordence with the argument');
 	 	
-	 	var resultFakeOIid = mockOrder.hasGiftCardOrderItems('somefakeOrderitemID');
-	 	assertFalse(resultFakeOIid, 'If the giftCardOrderItem is not same with the arguments, should return False');
-	 	
 	 }
 	/**
 	* @test
@@ -1062,6 +1059,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockOrderWithOrderItem = createPersistedTestEntity('Order', orderData);
 		
+		
+		assertTrue(!isNull(mockOrderWithOrderItem.getOrderItems()[1].getSku().getProduct().getProductType()));
 	 	var result = mockOrderWithOrderItem.hasGiftCardOrderItems();
 	 	assertTrue(result, 'If exist giftCardOrderItem, should return true');
 	 	
@@ -1363,7 +1362,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockOrder = createTestEntity('Order', orderData);
 		
-		var mockOrderService = new Slatwall.model.service.orderService();
+		var mockOrderService = createMock(object=request.slatwallScope.getBean("OrderService"));
 		mockOrderService.getPreviouslyReturnedFulfillmentTotal = getPreviouslyReturnedFulfillmentTotal;//returns 30
 		mockOrder.setOrderService(mockOrderService);
 		

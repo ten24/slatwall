@@ -96,7 +96,7 @@ Notes:
     	<sw-listing-column data-property-identifier="calculatedAverageCost" ></sw-listing-column>
     	<sw-listing-column data-property-identifier="calculatedAverageLandedCost" ></sw-listing-column>
     	<sw-listing-column data-property-identifier="currencyCode" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 
 </cfoutput>

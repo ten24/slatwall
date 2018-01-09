@@ -83,7 +83,7 @@ Notes:
 	>
 		<sw-listing-column data-property-identifier="subscriptionTermID" data-is-visible="false"  data-is-deletable="false"></sw-listing-column>
 		<sw-listing-column data-property-identifier="subscriptionTermName" tdclass="primary" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+	</sw-listing-display>
 
 </cfoutput>
 

@@ -56,8 +56,8 @@ component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="t
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode" length="255";
-	property name="conversionCurrency" cfc="Currency" fieldtype="many-to-one" fkcolumn="conversionCurrencyCode" length="255";
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode" length="255"  index="PI_CURRENCY_CODE";
+	property name="conversionCurrency" cfc="Currency" fieldtype="many-to-one" fkcolumn="conversionCurrencyCode" length="255" index="PI_CONVERSION_CURRENCY_CODE";
 	
 	// Related Object Properties (one-to-many)
 	
