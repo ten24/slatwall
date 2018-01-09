@@ -346,10 +346,13 @@ Notes:
 		var defaultFormTemplateFileName = "slatwall-form.cfm";
 
 		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
-		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
+		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
+		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
 
 		if(fileExists(specificFormTemplateFilePath)){
-			var templatePath = baseTemplatePath & specificFormTemplateFileName;
+			var templatePath = siteTemplatePath & specificFormTemplateFileName;
+		} else if(fileExists(siteTemplatePath & defaultFormTemplateFileName)){
+			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
 		} else {
 			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
 		}
