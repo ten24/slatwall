@@ -73,6 +73,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" count="#rc.promotion.getPromotionPeriodsCount()#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" count="#rc.promotion.getPromotionCodesCount()#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodesredeemed" text="Redeemed Promotion Codes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
 			<!--- Custom Attributes --->
