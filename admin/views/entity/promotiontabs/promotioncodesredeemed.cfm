@@ -52,16 +52,8 @@ Notes:
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
+<cfset getRedeemedPromoCodes = rc.$.slatwall.getDao("PromotionDAO").getRedeemedPromoCodes("#rc.promotion.getPromotionID()#")>
 
-<cfquery name="getRedeemedPromoCodes"> 
-	SELECT * 
-	FROM SwOrderPromotioncode opc
-	INNER JOIN SwOrder o on o.orderID = opc.orderID
-	INNER JOIN SwPromotionCode pc on pc.promotionCodeID = opc.promotionCodeID
-	INNER JOIN SwPromotion p on p.promotionID = pc.promotionID
-	INNER JOIN SwType t on t.typeID = o.orderStatusTypeID
-	WHERE t.systemCode != "ostNotPlaced" and p.promotionID = "#rc.promotion.getPromotionID()#"
-</cfquery>
 <!---<label> Search by Promo Code: &nbsp;<input type="input" ng-model="searchbox"></label>--->
 
 
