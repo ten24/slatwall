@@ -24,6 +24,10 @@
                 <i class="glyphicon glyphicon-plus"></i>
         </button>
     </span>
+    
+    <div ng-show="!swListingSearch.swListingControls.showToggleSearch">
+        <hr >
+    </div>
 
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">

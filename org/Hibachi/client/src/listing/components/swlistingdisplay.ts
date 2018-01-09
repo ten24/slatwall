@@ -71,6 +71,7 @@ class SWListingDisplayController{
     public selectFieldName;
     public selectable:boolean = false;
     public showOrderBy:boolean;
+    public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
     public showSearchFilters = false;
@@ -116,6 +117,10 @@ class SWListingDisplayController{
         // }
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
+        }
+        
+        if(angular.isUndefined(this.showExport)){
+            this.showExport = true;
         }
 
         //promises to determine which set of logic will run
@@ -691,6 +696,7 @@ class SWListingDisplay implements ng.IDirective{
 
             /* Settings */
             showheader:"<?",
+            showExport:"<?",
             showOrderBy:"<?",
             showTopPagination:"<?",
             showSearch:"<?",
