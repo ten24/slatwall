@@ -99,8 +99,8 @@ component displayname="MinMaxSetup" entityname="SlatwallMinMaxSetup" table="swMi
 			skuCollection.setDisplayProperties(displayPropertiesList='skuName,skuCode,skuDescription,skuDefinition,calculatedQATS,activeFlag,product.activeFlag', columnConfig={isSearchable="true",isVisible="true",isDeletable="true"});
 			skuCollection.addDisplayProperty(displayProperty='skuID', columnConfig={isSearchable="false",isVisible="false",isDeletable="false"});
 			skuCollection.addOrderBy('skuCode|ASC');
-			skuCollection.addFilter('activeFlag', 'True', '=');
-			skuCollection.addFilter('product.activeFlag', 'True', '=');
+			skuCollection.addFilter('activeFlag', 1, '=');
+			skuCollection.addFilter('product.activeFlag', 1, '=');
 			return serializeJSON(skuCollection.getCollectionConfigStruct());
 		} else {
 			return variables.skuCollectionConfig;
