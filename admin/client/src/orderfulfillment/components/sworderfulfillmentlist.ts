@@ -221,10 +221,10 @@ class SWOrderFulfillmentListController {
         if (status){
             console.log("S", status, status=="available");
             if(status == "unavailable"){
-                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQATS", "0", "<=");
+                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQOH", "0", "<=");
             }else if(status == "available"){
                 console.log("Made it.");
-                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQATS", "0", ">");
+                this.orderFulfillmentCollection.addFilter("orderFulfillmentItems.sku.calculatedQOH", "0", ">");
             }else if(status == "paid"){
                 this.orderFulfillmentCollection.addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">");
             }
@@ -264,11 +264,11 @@ class SWOrderFulfillmentListController {
 
         if (status){
             if (status == "partial"){
-                this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
+                this.orderFulfillmentCollection.addFilter("sku.calculatedQOH", "0", ">", "AND");
             }else if(status == "unavailable"){
-                this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", "<=", "AND");
+                this.orderFulfillmentCollection.addFilter("sku.calculatedQOH", "0", "<=", "AND");
             }else if(status == "available"){
-                this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
+                this.orderFulfillmentCollection.addFilter("sku.calculatedQOH", "0", ">", "AND");
             }else if(status == "paid"){
                 this.orderFulfillmentCollection.addFilter("order.calculatedPaymentAmountReceivedTotal", "0", ">", "AND");
             }
@@ -328,9 +328,9 @@ class SWOrderFulfillmentListController {
             if (filterMap.get(k) === true){
                 if (k){
                     if(k == "unavailable"){
-                        this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", "=", "AND");
+                        this.orderFulfillmentCollection.addFilter("sku.calculatedQOH", "0", "=", "AND");
                     }else if(k == "available"){
-                        this.orderFulfillmentCollection.addFilter("sku.calculatedQATS", "0", ">", "AND");
+                        this.orderFulfillmentCollection.addFilter("sku.calculatedQOH", "0", ">", "AND");
                     }else if(k == "paid"){
                         
                         console.log("Apply Paid Filter");
