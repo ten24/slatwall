@@ -32,6 +32,8 @@
 		collectionList="#skuCollectionList#"
 		collectionConfigFieldName="skuCollectionConfig"
 		showSimpleListingControls="false"
+		showExport="false"
+		showSearch="false"
 		recordEditAction="admin:entity.edit#lcase(skuCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(skuCollectionList.getCollectionObject())#"
 	>

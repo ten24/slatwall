@@ -59,7 +59,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeHint" hb_populateEnabled="public" ormtype="string";
 	property name="attributeInputType" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="defaultValue" hb_populateEnabled="public" ormtype="string";
-	property name="formEmailConfirmationFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ; 
+	property name="formEmailConfirmationFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ;
 	property name="requiredFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
 	property name="validationMessage" hb_populateEnabled="public" ormtype="string";
@@ -69,7 +69,6 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="maxFileSize" hb_populateEnabled="public" ormtype="integer";
 	property name="relatedObjectCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this attribute.  For Example: http://www.myslatwallsite.com/att/my-url-title/ where att is the global attribute url key, and my-url-title is the urlTitle of this attribtue";
-
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
@@ -105,7 +104,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="validationTypeOptions" persistent="false";
 	property name="relatedObjectCollectionConfigStruct" persistent="false";
 	property name="attributeOptionSourceOptions" type="array" persistent="false";
-	
+
 	// Deprecated Properties
 	property name="attributeType" persistent="false";
 
@@ -114,7 +113,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================
-	
+
 	public array function getAttributeOptionSourceOptions(){
 		if(!structKeyExists(variables,'attributeOptionSourceOptions')){
 			var attributeOptionSourceOptionsCollectionList = getService('attributeService').getAttributeCollectionList();
@@ -125,38 +124,38 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			variables.attributeOptionSourceOptions = attributeOptionSourceOptionsCollectionList.getRecords();
 			arrayprepend(variables.attributeOptionSourceOptions,{name="None",value=""});
 		}
-		
+
 		return variables.attributeOptionSourceOptions;
 	}
-	
+
 	public struct function getRelatedObjectCollectionConfigStruct(){
 		if(!structKeyExists(variables,'relatedObjectCollectionConfigStruct')){
 			variables.relatedObjectCollectionConfigStruct = deserializeJson(getRelatedObjectCollectionConfig());
 		}
 		return variables.relatedObjectCollectionConfigStruct;
 	}
-	
+
 	public string function getRelatedObjectCollectionConfig(){
 		if(!structKeyExists(variables,'relatedObjectCollectionConfig')){
 			var entityCollectionList = getService('HibachiService').getCollectionList(getRelatedObject());
-			
+
 			variables.relatedObjectCollectionConfig = serializeJson(entityCollectionList.getCollectionConfigStruct());
 		}
 		return variables.relatedObjectCollectionConfig;
 	}
-	
+
 	public void function setRelatedObjectCollectionConfig(string relatedObjectCollectionConfig){
 		variables.relatedObjectCollectionConfig = arguments.relatedObjectCollectionConfig;
 	}
 
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
-		
+
 		if(!isNull(getAttributeOptionSource())){
     		var currentAttributeOptions = getAttributeOptionSource().getAttributeOptions();
     	}else{
     		var currentAttributeOptions = variables.attributeOptions;
     	}
-		
+
 		if(!structKeyExists(arguments,"orderby")) {
 			return currentAttributeOptions;
 		} else {
@@ -252,13 +251,13 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 		return variables.validationTypeOptions;
     }
-     
-    
+
+
 
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
 			variables.attributeOptionsOptions = [];
-			
+
 			var unselectedValue = {};
 			unselectedValue['name'] = rbKey('define.select');
 			unselectedValue['value'] = '';
@@ -294,7 +293,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				smartList.addSelect(propertyIdentifier=getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( getRelatedObject() ), alias="value");
 
 				variables.attributeOptionsOptions = smartList.getRecords();
-				
+
 				arrayPrepend(variables.attributeOptionsOptions, unselectedValue);
 
 			} else if(listFindNoCase('typeSelect', getAttributeInputType()) && !isNull(getTypeSet())) {
@@ -367,20 +366,20 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeAttribute( this );
 	}
-	
+
 	public boolean function isValidString(string stringValue){
 		var attributeCodeLength = len(getAttributeCode());
 
 		return attributeCodeLength < len(arguments.stringValue)
-		|| (attributeCodeLength >= len(arguments.stringValue) 
+		|| (attributeCodeLength >= len(arguments.stringValue)
 		&& lcase(right(getAttributeCode(),len(arguments.stringValue)))!=lcase(arguments.stringValue));
 	}
-	
+
 	public boolean function isValidAttributeCode(){
 		//attribute code cannot begin with a string
 		var isValid = refind("^[a-zA-Z][a-zA-Z0-9_]*$",getAttributeCode());
-		
-		return isValid 
+
+		return isValid
 		&& isValidString("Options")
 		&& isValidString("Count")
 		&& isValidString("AssignedIDList")
@@ -439,4 +438,3 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// ==================  END:  Deprecated Methods ========================
 
 }
-

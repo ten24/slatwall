@@ -15,6 +15,8 @@
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
+	<cfparam name="attributes.showExport" type="boolean" default="true"/>
+	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -104,6 +106,8 @@
 				data-is-angular-route="false"
 				data-angular-links="false"
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
+				data-show-export="#attributes.showExport#"
+				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 			    edit="true"

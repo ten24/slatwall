@@ -682,7 +682,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Persist relationship between orderItem and orderItemGiftRecipient
-		orderItemGiftRecipient.setOrderItem(orderItem);
         orderItemGiftRecipient = this.saveOrderItemGiftRecipient(orderItemGiftRecipient);
 
 		// Save order

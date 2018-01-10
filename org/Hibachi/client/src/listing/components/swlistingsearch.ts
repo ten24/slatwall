@@ -217,7 +217,8 @@ class SWListingSearch  implements ng.IDirective{
     public bindToController =  {
         collectionConfig : "<?",
         paginator : "=?",
-        listingId : "@?"
+        listingId : "@?",
+        showToggleSearch:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';

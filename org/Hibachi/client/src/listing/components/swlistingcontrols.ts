@@ -42,6 +42,7 @@ class SWListingControlsController {
         if(angular.isUndefined(this.showExport)){
             this.showExport = true; 
         }
+        
         if(angular.isUndefined(this.showToggleSearch)){
             this.showToggleSearch = true;
         }
