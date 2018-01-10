@@ -911,25 +911,26 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 			
 			for(var appliedPromotionCode in appliedPromotionCodes) {
 				promotionToAdd = {}; 
-					    promotionToAdd["qualified"] = true; 
+				promotionToAdd["qualified"] = true; 
 				promotionToAdd["promotionCodeID"] = appliedPromotionCode['promotionCodeID'];
 				promotionToAdd["promotionCode"] = appliedPromotionCode['promotionCode'];
-                promotionToAdd["promotion_promotionName"] = appliedPromotionCode['promotion_promotionName'];  
-	            promotionToAdd["promotion_promotionID"] = appliedPromotionCode['promotion_promotionID'];
-	            qualifiedPromotions = listAppend(qualifiedPromotions,promotionToAdd["promotion_promotionID"]);
-		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 
-					}   
-			var unQualifiedPromotionCodes = promotionCodeCollectionlist.getRecords();
+				promotionToAdd["promotion_promotionName"] = appliedPromotionCode['promotion_promotionName'];  
+				promotionToAdd["promotion_promotionID"] = appliedPromotionCode['promotion_promotionID'];
+				qualifiedPromotions = listAppend(qualifiedPromotions,promotionToAdd["promotion_promotionID"]);
+				arrayAppend(variables.allAppliedPromotions, promotionToAdd); 
+			}   
+
 			promotionCodeCollectionlist.addFilter('promotion.promotionID',qualifiedPromotions,'NOT IN');
+			var unQualifiedPromotionCodes = promotionCodeCollectionlist.getRecords();
 			
 			for(var unQualifiedPromotionCode in unQualifiedPromotionCodes){
 				promotionToAdd = {}; 
 				promotionToAdd["qualified"] = false;
 				promotionToAdd["promotionCodeID"] = unQualifiedPromotionCode['promotionCodeID'];
 				promotionToAdd["promotionCode"] = unQualifiedPromotionCode['promotionCode'];
-                promotionToAdd["promotion_promotionName"] = unQualifiedPromotionCode['promotion_promotionName'];  
-	            promotionToAdd["promotion_promotionID"] = unQualifiedPromotionCode['promotion_promotionID'];
-		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
+				promotionToAdd["promotion_promotionName"] = unQualifiedPromotionCode['promotion_promotionName'];  
+			    	promotionToAdd["promotion_promotionID"] = unQualifiedPromotionCode['promotion_promotionID'];
+				arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
 			}
 		}
 		return variables.allAppliedPromotions;
