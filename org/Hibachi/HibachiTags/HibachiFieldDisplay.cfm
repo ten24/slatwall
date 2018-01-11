@@ -101,6 +101,7 @@
 									    <p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">****</p>
 										<cfelse>
 											<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+									</cfif>
 								</cfif>
 							</cfif>
 						</div>
