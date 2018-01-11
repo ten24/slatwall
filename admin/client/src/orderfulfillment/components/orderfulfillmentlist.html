@@ -466,7 +466,7 @@
 										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="orderFulfillmentStatusType.systemCode" data-comparison-value="ofstUnfulfilled"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-comparison-value="shipping"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN"  data-comparison-value="shipping,pickup"></sw-collection-filter>
 									</sw-collection-filters>
 									
 									<sw-collection-columns>
@@ -511,7 +511,7 @@
 									<sw-collection-filters>
 										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-comparison-value="shipping"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN" data-comparison-value="shipping,pickup"></sw-collection-filter>
 									</sw-collection-filters>
 									
 									<sw-collection-columns>
