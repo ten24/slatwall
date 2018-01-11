@@ -126,6 +126,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productBundleGroupsCount" type="numeric" persistent="false";
 	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="placedOrderItemsCollectionList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
@@ -1156,6 +1157,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.placedOrderItemsSmartList;
+	}
+	
+	public any function getPlacedOrderItemsCollectionList() {
+		if(!structKeyExists(variables, "placedOrderItemsCollectionList")) {
+			variables.placedOrderItemsCollectionList = getService("OrderService").getOrderItemCollectionList();
+			variables.placedOrderItemsCollectionList.addFilter('sku.product.productID', getProductID());
+			variables.placedOrderItemsCollectionList.addFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		}
+
+		return variables.placedOrderItemsCollectionList;
 	}
 
 	public any function getEventRegistrationsSmartList() {
