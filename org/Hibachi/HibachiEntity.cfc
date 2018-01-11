@@ -858,6 +858,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					return getPropertyOptionsSmartList( propertyName=propertyName );
 				}
 			}
+			// getXXXOptionsCollectionList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
+			if ( right(arguments.missingMethodName, 21) == "OptionsCollectionList") {
+				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-24);
+				if(hasProperty(propertyName)){
+					return getPropertyOptionsCollectionList( propertyName=propertyName );
+				}
+			}
 			// getXXXSmartList()	Where XXX is a one-to-many or many-to-many property where we to return a smartList instead of just an array
 			if ( right(arguments.missingMethodName, 9) == "SmartList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-12);
