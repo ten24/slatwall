@@ -70,7 +70,7 @@ Notes:
 
 		<!--- Setup fieldClass --->
 		<cfset fdAttributes.fieldClass = "" />
-		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) && attribute.getRequiredFlag()>
+		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) AND attribute.getRequiredFlag()>
 			<cfset fdAttributes.fieldClass = listAppend(fdAttributes.fieldClass, "required", " ") />
 		</cfif>
 
@@ -82,8 +82,10 @@ Notes:
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
 					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
-				<cfelse>
+				<cfelseif structKeyExists(thisAttributeValueObject, 'getAttributeValueFormatted')>
 					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValueFormatted() />
+				<cfelse>
+					<cfset fdAttributes.value = thisAttributeValueObject.getSimpleRepresentation() />
 				</cfif>
 				<cfif !len(fdAttributes.value) AND !isNull(attribute.getDefaultValue())>
 					<cfset fdAttributes.value = attribute.getDefaultValue()  />
@@ -100,7 +102,6 @@ Notes:
 		</cfif>
 
 		<cfif listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', attribute.getAttributeInputType())>
-
 			<cfset fdAttributes.valueOptionsCollectionList = attribute.getRelatedObjectCollectionConfig()/>
 
 			<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
@@ -116,15 +117,13 @@ Notes:
 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 			</cfif>
 			
-		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
-			
+		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject) AND thisAttributeValueObject.getClassName() =='AttributeValue'>
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		<cfelseif attribute.getAttributeInputType() eq 'file' AND !isObject(thisAttributeValueObject) >
 			<cfset removeLink = "?slatAction=admin:entity.deleteCustomPropertyFile&#attributes.entity.getPrimaryIDPropertyName()#=#attributes.entity.getPrimaryIDValue()#&entityName=#attribute.getAttributeSet().getAttributeSetObject()#&attributeCode=#attribute.getAttributeCode()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
-
 			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 
 	</cfloop>
