@@ -81,7 +81,11 @@ Notes:
 			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
-					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
+					<cfif thisAttributeValueObject.getClassName == 'AttributeValue'>
+						<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
+					<cfelse>
+						<cfset fdAttributes.value = thisAttributeValueObject.getPrimaryIDValue() />
+					</cfif>
 				<cfelseif structKeyExists(thisAttributeValueObject, 'getAttributeValueFormatted')>
 					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValueFormatted() />
 				<cfelse>
@@ -117,7 +121,7 @@ Notes:
 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 			</cfif>
 			
-		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject) AND thisAttributeValueObject.getClassName() =='AttributeValue'>
+		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject) AND thisAttributeValueObject.getClassName() EQ 'AttributeValue'>
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		<cfelseif attribute.getAttributeInputType() eq 'file' AND !isObject(thisAttributeValueObject) >
