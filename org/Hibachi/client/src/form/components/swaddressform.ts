@@ -46,7 +46,6 @@ class SWAddressFormController {
         if($rootScope.slatwall && !$scope.slatwall){
             $scope.slatwall = $rootScope.slatwall;
         }
-        console.log(this.stateOptions,"addressform");
         let addressName = this.addressName;
         if(this.address){
             this.address.getData = () => {
