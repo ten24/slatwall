@@ -169,7 +169,7 @@ Notes:
 				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
 			}
 
-			if(isNull(content)){
+			if(isNull(content) || isNull(content.getActiveFlag()) || !content.getActiveFlag()){
 				var content = render404(arguments.slatwallScope,site);
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}

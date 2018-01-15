@@ -53,7 +53,7 @@ Notes:
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay smartList="#rc.product.getPlacedOrderItemsSmartList()#"
+	<!--- <hb:HibachiListingDisplay smartList="#rc.product.getPlacedOrderItemsSmartList()#"
 			recordEditAction="admin:entity.editorderitem"
 			recorddetailaction="admin:entity.detailorderitem">
 			
@@ -71,6 +71,20 @@ Notes:
 		</cfif>
 		
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-	</hb:HibachiListingDisplay>
+	</hb:HibachiListingDisplay> --->
 	
+	<cfset placedOrderItemsCollectionlist = rc.product.getPlacedOrderItemsCollectionList()/>
+	<cfset placedOrderItemsCollectionlist.setDisplayProperties('orderItemStatusType.typeName,order.orderNumber,order.orderOpenDateTime,order.orderCloseDateTime,quantity,sku.skuCode,price',{isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.skuDefinition',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
+	<cfif rc.product.getBaseProductType() EQ "event">
+		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventStartDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
+		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventEndDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
+	</cfif>
+	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='orderItemID',columnConfig={isVisible=false, isSearchable=false, isDeletable=false })/>
+	<hb:HibachiListingDisplay collectionList="#placedOrderItemsCollectionlist#" 
+			recordEditAction="admin:entity.editorderitem"
+			recorddetailaction="admin:entity.detailorderitem">
+	>
+	</hb:HibachiListingDisplay>
+
 </cfoutput>

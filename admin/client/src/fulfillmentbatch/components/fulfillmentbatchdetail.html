@@ -217,8 +217,8 @@
                 <div class="s-detail-body s-arrow s-remove-manual-fulfill"><!--- ***Removing s-remove-manual-fulfill will show fulfill all and activate inputs*** --->
                     <div class="s-content-block-wrapper">
                         <div class="s-header"  style="background-color:white">
+                            <a href="#" ng-click="swFulfillmentBatchDetailController.prepopulate = true" class="pull-right">Populate All Quantity Values</a>
                             <h3>Fulfillment Items <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
-                            <a href="#" ng-click="swFulfillmentBatchDetailController.prepopulate = true">Populate All Quantity Values</a>
                         </div>
                         <div class="s-body">
                             <div class="s-table-toolbar">
@@ -266,7 +266,7 @@
                                            <div class="col-md-2">{{oi.quantity}}</div>
                                            
                                            <div class="col-md-2">
-                                            	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" />
+                                            	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
                                            </div>
                                 	</div>
                                 </div>

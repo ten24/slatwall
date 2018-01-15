@@ -52,9 +52,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public any function init(any settingService=getService('settingService')) {
 		setSettingService(settingService);
-		if(!encryptionKeyExists()){
-			createEncryptionKey();
-		}
+		
 		return super.init();
 	}
 	

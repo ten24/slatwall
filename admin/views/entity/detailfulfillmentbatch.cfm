@@ -54,12 +54,15 @@ Notes:
 <cfparam name="rc.edit" type="boolean" default="false" />
 <cfoutput>
 <hb:HibachiEntityDetailForm object="#rc.fulfillmentBatch#" edit="#rc.edit#">
-	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+	
 	<cfset totalFulfilled = rc.fulfillmentBatch.getFulfillmentsCompletedTotal()>
 	<cfset totalOnBatch = rc.fulfillmentBatch.getTotalQuantityOnBatch()>
 	<cfset totalFulfillments = arrayLen( rc.fulfillmentBatch.getFulfillmentBatchItems())>
 	<cfif totalFulfilled gt 0>
 			<cfset totalPercentFulfilled = (totalFulfilled/totalOnBatch)*100 >
+			<cfif totalPercentFulfilled GT 100>
+ 				<cfset totalPercentFulfilled = 100>
+ 			</cfif>
 	<cfelse>
 		<cfset totalPercentFulfilled = 0 >
 	</cfif>
@@ -67,7 +70,8 @@ Notes:
 		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
 		<span ng-init="$root.slatwall.defaultLocation = '#rc.fulfillmentBatch.getLocations()[1].getLocationID()#'"></span>
 	</cfif>
-	
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">	
 			<!--- Icon Properties --->

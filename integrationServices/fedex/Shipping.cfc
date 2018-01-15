@@ -140,8 +140,29 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
 		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
 		var responseBean = processShipmentRequest(processShipmentRequestBean);
-		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
-		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
+		var data =  responseBean.getData();
+ 
+ 		//Tracking
+ 		try{
+ 			if (structKeyExists(data['ProcessShipmentReply'], 'CompletedShipmentDetail')){
+ 			
+ 				arguments.processObject.setTrackingNumber(data['ProcessShipmentReply']['CompletedShipmentDetail']['MasterTrackingId']['TrackingNumber']['xmlText']);
+ 			
+ 			}else{
+ 				arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());	
+ 			}
+ 			//Image
+ 			if (structKeyExists(data['ProcessShipmentReply'], 'CompletedShipmentDetail')){
+ 				//arguments.processObject.setContainerLabel
+ 				arguments.processObject.setContainerLabel(data['ProcessShipmentReply']['CompletedShipmentDetail']['CompletedPackageDetails']['Label']['Parts']['Image']['xmlText']);
+ 			}else{
+ 				arguments.processObject.setContainerLabel(responseBean.getTrackingNumber());	
+ 			}
+ 		}catch(any e){
+ 			arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
+ 			arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
+ 		}
+ 			
 	}
 	
 	private any function getShippingRatesResponseBean(string xmlResponse){
