@@ -81,7 +81,7 @@ Notes:
 			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
 			<cfif isObject(thisAttributeValueObject)>
 				<cfif attributes.edit>
-					<cfif thisAttributeValueObject.getClassName == 'AttributeValue'>
+					<cfif thisAttributeValueObject.getClassName() == 'AttributeValue'>
 						<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
 					<cfelse>
 						<cfset fdAttributes.value = thisAttributeValueObject.getPrimaryIDValue() />
