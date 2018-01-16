@@ -415,7 +415,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					// If the directory where this file is going doesn't exists, then create it
 					if(left(uploadDirectory, 5) == 's3://'){
 
-						var uploadData = fileUpload('ram://', currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+						var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
 
 						uploadDirectory = replace(uploadDirectory,'s3://','');
 						var bucket = listLast(uploadDirectory, '@');
