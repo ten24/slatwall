@@ -1345,6 +1345,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return newPromotionPeriod;
 	}
 
+	public any function processPromotionPeriod_endPromotionPeriod(required any promotionPeriod, required any processObject){
+
+		if(!isNull(arguments.processObject.getEndDateTime()) && len(arguments.processObject.getEndDateTime())) {
+			arguments.promotionPeriod.setEndDateTime(arguments.processObject.getEndDateTime());
+		}
+		
+		this.savePromotionPeriod(arguments.promotionPeriod);
+
+		return arguments.promotionPeriod;
+	}
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
