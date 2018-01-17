@@ -41,6 +41,7 @@ describe("Order Fulfillment Service Tests", () => {
 							mockHibachi.saveEntity.and.callFake(function() {
 								$http.post("http://cf10.slatwall/index.cfm/?slataction=api:main.post", {});
 							});
+							
 							var mockCollectionConfig = jasmine.createSpyObj('mockCollectionConfig', ['newCollectionConfig']);
 							var mockListingService = jasmine.createSpyObj('mockListingService', ['getListingPageRecordsUpdateEventString']);
 							var mockSelectionService = jasmine.createSpyObj('mockSelectionService', ['createSelections']);
@@ -63,14 +64,7 @@ describe("Order Fulfillment Service Tests", () => {
 						$location = _$location_;
 						$anchorScroll = _$anchorScroll_;
 						orderFulfillmentService = _orderFulfillmentService_;
-						/*orderFulfillmentService = new OrderFulfillmentService(
-							new ObserverService($timeout, HistoryService, UtilityService), 
-								new HibachiService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, 
-									new RequestService($injector, 
-										new ObserverService($timeout, HistoryService, UtilityService)), 
-											UtilityService, null, null, appConfig, null, null), 
-												CollectionConfig, ListingService, $rootScope, SelectionService);*/
-				
+						
 					})
 				});
 

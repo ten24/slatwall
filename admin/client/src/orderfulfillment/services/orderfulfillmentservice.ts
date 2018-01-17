@@ -332,7 +332,6 @@ class OrderFulfillmentService {
         if (state.capturableAmount != undefined){
 
             data['capturableAmount'] = state.capturableAmount;
-            data['captureAuthorizedPaymentsFlag'] = false;
             //hidden fields
             data['order'] = {};
             data['order']['orderID'] = this.state.currentRecordOrderDetail['order_orderID'] || "";
