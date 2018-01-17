@@ -70,7 +70,7 @@ Notes:
 		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
 		<span ng-init="$root.slatwall.defaultLocation = '#rc.fulfillmentBatch.getLocations()[1].getLocationID()#'"></span>
 	</cfif>
-	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#" showDelete="#(totalPercentFulfilled lt 100)#"></hb:HibachiEntityActionBar>
 
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">	
