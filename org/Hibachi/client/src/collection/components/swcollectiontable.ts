@@ -92,8 +92,8 @@ class SWCollectionTable{
                     }else{
                         value =  pageRecord[column.propertyIdentifier.replace(scope.collectionConfig.baseEntityAlias+'_','').replace(/\./g,'_')];
                     }
-                    if(angular.isDefined(column.type) && column.type != 'none' && $injector.has(column.type + 'Filter')){
-                        return $filter(column.type)(value);
+                    if(angular.isDefined(column.ormtype) && column.ormtype != 'none' && $injector.has(column.ormtype + 'Filter')){
+                        return $filter(column.ormtype)(value);
                     }else{
                         return value;
                     }
