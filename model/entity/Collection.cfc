@@ -1094,11 +1094,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						columnStruct['ormtype'] = defaultProperty.ormtype;
 					}
 					if(structKeyExists(defaultProperty,"fieldtype")){
-						columnStruct['ormtype'] = defaultProperty.fieldtype;
+						columnStruct['type'] = defaultProperty.fieldtype;
 					}
                     if(structKeyExists(defaultProperty,"hb_formatType")){
-                        columnStruct['ormtype'] = defaultProperty.hb_formatType;
+                        columnStruct['type'] = defaultProperty.hb_formatType;
                     }
+					if(!structKeyExists(columnStruct,'type')){
+						columnStruct['type'] = 'none';
+					}
 
 					arrayAppend(columnsArray,columnStruct);
 				}

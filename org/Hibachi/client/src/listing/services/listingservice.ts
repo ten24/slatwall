@@ -545,10 +545,12 @@ class ListingService{
                 column.ormtype = metadata.ormtype;
             }
 
-            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                column.type = metadata.hb_formatType;
-            } else {
-                column.type = "none";
+            if(angular.isUndefined(column.type) || column.type == 'none'){
+                if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
+                    column.type = metadata.hb_formattype;
+                } else {
+                    column.type = "none";
+                }
             }
 
             if(column.propertyIdentifier){
