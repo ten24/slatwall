@@ -89,6 +89,10 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		}
 	}
 	
+	public boolean function isNotClosed(){
+ 		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
+ 	}
+	
 	public any function getStockAdjustmentItemForSku(required any sku) {
 		return getService("StockService").getStockAdjustmentItemForSku(arguments.sku, this);
 	}
