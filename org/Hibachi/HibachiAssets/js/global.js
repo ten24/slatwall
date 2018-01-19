@@ -1843,9 +1843,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	function getTabHTMLForTabGroup( element, tab ){
 		
-		if($('#'+tab.TABID).html().trim().length === 0){
+		var tabID = tab.TABID || tab.tabid;
+		var view = tab.VIEW || tab.view;
+		
+		if($('#'+tabID).html().trim().length === 0){
 			
-			$('#'+tab.TABID).load(url=window.location.href,data={viewPath:tab.VIEW.split(/\/(.+)/)[1]});
+			$('#'+tabID).load(url=window.location.href,data={viewPath:view.split(/\/(.+)/)[1]});
 		}
 		
 	}
