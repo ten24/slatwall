@@ -433,8 +433,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public array function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			variables.locationIDOptions = getService("locationService").getLocationOptions();
+			if (isNull(getOrder().getDefaultStockLocation())) {
+				variables.locationIDOptions = getService("locationService").getLocationOptions();
+			} else {
+				variables.locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+			}
 		}
+		arrayPrepend(variables.locationIDOptions,{name="Please select a location",value=""});
 		return variables.locationIDOptions;
 	}
 
