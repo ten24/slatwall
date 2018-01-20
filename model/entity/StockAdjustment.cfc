@@ -250,7 +250,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	
 	public void function preInsert(){
 		lock scope="Application" timeout="30" {
-	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber().maxReferenceNumber;
+	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber()[1];
 	 		variables.ReferenceNumber = maxReferenceNumber + 1;
  		}
  		super.preInsert(argumentcollection=arguments);
