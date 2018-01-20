@@ -81,12 +81,12 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	// Deprecated Properties
 	property name="statusCode" persistent="false";		// Use getStockAdjustmentStatusTypeSystemCode()
 	
-	public any function init(){
+	public any function preInsert(){
 		lock scope="Application" timeout="30" {
 	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber().maxReferenceNumber;
 	 		variables.ReferenceNumber = maxReferenceNumber + 1;
  		}
- 		return super.init(argumentcollection=arguments);
+ 		return super.preInsert(argumentcollection=arguments);
 		
 	}
 	
@@ -100,13 +100,10 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		}
 	}
 	
-<<<<<<< Updated upstream
-=======
 	public boolean function isNotClosed(){
 		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
 	}
 	
->>>>>>> Stashed changes
 	public any function getStockAdjustmentItemForSku(required any sku) {
 		return getService("StockService").getStockAdjustmentItemForSku(arguments.sku, this);
 	}
