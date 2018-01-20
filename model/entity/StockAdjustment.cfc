@@ -269,17 +269,4 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	// ===================  END:  Deprecated Methods  =========================
-
-	//CUSTOM FUNCTIONS BEGIN
-
-public boolean function validateLocationTransfer(){
-		if(this.getStockAdjustmentTypeSystemCode() == 'satLocationTransfer'){
-			var fromRoot = listFirst(this.getFromLocation().getLocationIDPath());
-			var toRoot = listFirst(this.getToLocation().getLocationIDPath());
-			return fromRoot == toRoot;
-			
-		}
-		
-		return true;
-	}//CUSTOM FUNCTIONS END
 }
