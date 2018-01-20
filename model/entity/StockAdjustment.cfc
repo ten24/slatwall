@@ -81,15 +81,6 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	// Deprecated Properties
 	property name="statusCode" persistent="false";		// Use getStockAdjustmentStatusTypeSystemCode()
 	
-	public any function preInsert(){
-		lock scope="Application" timeout="30" {
-	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber().maxReferenceNumber;
-	 		variables.ReferenceNumber = maxReferenceNumber + 1;
- 		}
- 		return super.preInsert(argumentcollection=arguments);
-		
-	}
-	
 	// For use with Adjustment Items interface, get one location that we will use for stock lookup. 
 	
 	public any function getOneLocation() {
@@ -258,7 +249,11 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
-		super.preInsert();
+		lock scope="Application" timeout="30" {
+	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber().maxReferenceNumber;
+	 		variables.ReferenceNumber = maxReferenceNumber + 1;
+ 		}
+ 		super.preInsert(argumentcollection=arguments);
 		
 		// Verify Defaults are Set
 		getStockAdjustmentType();
