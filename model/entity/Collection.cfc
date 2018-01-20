@@ -564,6 +564,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				column['ormtype'] = ormtype;
 			}
 			
+			column['type'] = getCollectionEntityObject().getFormatTypeByPropertyIdentifier(arguments.displayProperty);
 		}
 
 		if(structKeyExists(arguments, 'title')){
@@ -1055,6 +1056,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return getCollectionEntityObject().getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
 		}
 		return '';
+	}
+
+	public string function getFormatTypeByPropertyIdentifier(required string propertyIdentifier){
+		if(!isNull(getCollectionEntityObject())){
+			return getCollectionEntityObject().getFormatTypeByPropertyIdentifier(arguments.propertyIdentifier);
+		}
+		return 'none';
 	}
 
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
