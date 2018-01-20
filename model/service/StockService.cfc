@@ -641,6 +641,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			    minMaxStockTransferItemData.fromCalculatedQATS = row.fromCalculatedQATS;
 			   	minMaxStockTransferItemData.timeStamp = now();
 				minMaxStockTransferItemData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
+				minMaxStockTransferItemData.transferQuantity = 0;
 			    if(currentOffset < 0) {
 				    if(minMaxStockTransferItemData.fromSumQATS > 0 && minMaxStockTransferItemData.fromSumQATS >= -currentOffset) {
 				    	minMaxStockTransferItemData.transferQuantity = -currentOffset;
@@ -649,8 +650,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				    	minMaxStockTransferItemData.transferQuantity = minMaxStockTransferItemData.fromSumQATS;
 				    	currentOffset = currentOffset + minMaxStockTransferItemData.fromSumQATS;
 				    }
-			    } else {
-					minMaxStockTransferItemData.transferQuantity = 0;
 			    }
 			    stockDAO.insertMinMaxStockTransferItem(minMaxStockTransferItemData);
 			}
