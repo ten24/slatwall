@@ -375,6 +375,13 @@ Notes:
 		);
 	}
 	
+	public any function getStockAdjustmentMaxReferenceNumber() {
+		var query = new Query();
+		query.setSQL("SELECT max(COALESCE(referenceNumber,0)) as maxReferenceNumber FROM swStockAdjustment;");
+		var queryResult = query.execute();
+		return queryResult.getResult().getRow(1);
+ 	}
+	
 	public any function getAverageLandedCost(required string stockID, required string currencyCode, string locationID=""){
 		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
 		

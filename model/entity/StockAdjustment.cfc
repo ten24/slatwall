@@ -50,6 +50,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	// Persistent Properties
 	property name="stockAdjustmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="referenceNumber" ormtype="integer" generator="increment";
 	
 	// Related Object Properties (many-to-one)
 	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
@@ -81,12 +82,17 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="statusCode" persistent="false";		// Use getStockAdjustmentStatusTypeSystemCode()
 	
 	// For use with Adjustment Items interface, get one location that we will use for stock lookup. 
+	
 	public any function getOneLocation() {
 		if(getStockAdjustmentType().getSystemCode() == "satLocationTransfer" || getStockAdjustmentType().getSystemCode() == "satManualIn") {
 			return getToLocation();
 		} else {
 			return getFromLocation();
 		}
+	}
+	
+	public boolean function isNotClosed(){
+		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
 	}
 	
 	public any function getStockAdjustmentItemForSku(required any sku) {
@@ -243,7 +249,11 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
-		super.preInsert();
+		lock scope="Application" timeout="30" {
+	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber()[1];
+	 		variables.ReferenceNumber = maxReferenceNumber + 1;
+ 		}
+ 		super.preInsert(argumentcollection=arguments);
 		
 		// Verify Defaults are Set
 		getStockAdjustmentType();
