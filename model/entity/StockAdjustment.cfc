@@ -50,6 +50,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	// Persistent Properties
 	property name="stockAdjustmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="referenceNumber" ormtype="integer" generator="increment";
 	
 	// Related Object Properties (many-to-one)
 	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
@@ -80,7 +81,17 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	// Deprecated Properties
 	property name="statusCode" persistent="false";		// Use getStockAdjustmentStatusTypeSystemCode()
 	
+	public any function init(){
+		lock scope="Application" timeout="30" {
+	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber().maxReferenceNumber;
+	 		variables.ReferenceNumber = maxReferenceNumber + 1;
+ 		}
+ 		return super.init(argumentcollection=arguments);
+		
+	}
+	
 	// For use with Adjustment Items interface, get one location that we will use for stock lookup. 
+	
 	public any function getOneLocation() {
 		if(getStockAdjustmentType().getSystemCode() == "satLocationTransfer" || getStockAdjustmentType().getSystemCode() == "satManualIn") {
 			return getToLocation();
@@ -89,6 +100,13 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 		}
 	}
 	
+<<<<<<< Updated upstream
+=======
+	public boolean function isNotClosed(){
+		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
+	}
+	
+>>>>>>> Stashed changes
 	public any function getStockAdjustmentItemForSku(required any sku) {
 		return getService("StockService").getStockAdjustmentItemForSku(arguments.sku, this);
 	}
@@ -259,4 +277,17 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	// ===================  END:  Deprecated Methods  =========================
+
+	//CUSTOM FUNCTIONS BEGIN
+
+public boolean function validateLocationTransfer(){
+		if(this.getStockAdjustmentTypeSystemCode() == 'satLocationTransfer'){
+			var fromRoot = listFirst(this.getFromLocation().getLocationIDPath());
+			var toRoot = listFirst(this.getToLocation().getLocationIDPath());
+			return fromRoot == toRoot;
+			
+		}
+		
+		return true;
+	}//CUSTOM FUNCTIONS END
 }
