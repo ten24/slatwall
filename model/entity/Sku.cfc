@@ -73,7 +73,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
-	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
+	property name="redemptionAmount" hb_formatType="currency" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	property name="inventoryTrackBy" ormtype="string" default="Quantity" hb_formFieldType="select";
 
 	// Calculated Properties
@@ -208,6 +208,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
+	
+	//CUSTOM PROPERTIES BEGIN
+property name="bottlesPerBox" ormtype="integer";
+	property name="barcode" ormtype="string";
+	property name="sellUS" ormtype="boolean" default="true";
+	property name="sellHK" ormtype="boolean" default="true";
+property name="allowBackorder" ormtype="boolean" default="0";//CUSTOM PROPERTIES END
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
@@ -1146,6 +1153,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 
 		return variables.placedOrderItemsSmartList;
+	}
+	
+	public any function getPlacedOrderItemsCollectionList() {
+		if(!structKeyExists(variables, "placedOrderItemsCollectionList")) {
+			variables.placedOrderItemsCollectionList = getService("OrderService").getOrderItemCollectionList();
+			variables.placedOrderItemsCollectionList.addFilter('sku.skuID', getSkuID());
+			variables.placedOrderItemsCollectionList.addFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		}
+
+		return variables.placedOrderItemsCollectionList;
 	}
 
 	public any function getPlacedVendorOrderItemsSmartList() {
