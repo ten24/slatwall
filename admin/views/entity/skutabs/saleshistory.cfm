@@ -60,7 +60,7 @@ Notes:
 		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventEndDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
 	</cfif>
 	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='orderItemID',columnConfig={isVisible=false, isSearchable=false, isDeletable=false })/>
-	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='orderItemStatusType.typeName',title="Status",columnConfig={isvisible=true} )/>
+	<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='orderItemStatusType.typeName',title="#getHibachiScope().rbkey('define.status')#",columnConfig={isvisible=true} )/>
 	<hb:HibachiListingDisplay collectionList="#placedOrderItemsCollectionlist#" 
 			recordEditAction="admin:entity.editorderitem"
 			recorddetailaction="admin:entity.detailorderitem"
