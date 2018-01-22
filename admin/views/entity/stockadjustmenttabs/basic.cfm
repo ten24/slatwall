@@ -22,7 +22,7 @@
 			<cfif rc.stockAdjustment.isNew()>
 				<swa:SlatwallLocationTypeahead locationPropertyName="toLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.tolocationname')#" edit="true" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
 			<cfelse>
-				<swa:SlatwallLocationTypeahead property="#rc.stockAdjustment.getFromLocation()#" locationPropertyName="billToLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.tolocationname')#" edit="false" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
+				<swa:SlatwallLocationTypeahead property="#rc.stockAdjustment.getToLocation()#" locationPropertyName="billToLocation.locationID" locationLabelText="#rc.$.slatwall.rbKey('admin.entity.detailstockadjustment.tolocationname')#" edit="false" showActiveLocationsFlag="true"></swa:SlatwallLocationTypeahead>
 			</cfif>							
 		</cfif>
 	</hb:HibachiPropertyList>

@@ -219,16 +219,19 @@ class HibachiService{
 		}
 	};
 	newEntity= (entityName) =>{
-		var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
 
+		if (entityName != undefined){
+			var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
+			if(angular.element(document.body).injector().has(entityServiceName)){
+				var entityService = angular.element(document.body).injector().get(entityServiceName);
+				let functionObj = entityService['new'+entityName];
+				if (entityService['new'+entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
+					return entityService['new'+entityName]();
+				}
+			}
+			return new this._jsEntities[entityName];	
 
-		if(angular.element(document.body).injector().has(entityServiceName)){
-			var entityService = angular.element(document.body).injector().get(entityServiceName);
-			 if(entityService['new'+entityName]){
-				return entityService['new'+entityName]();
-			 }
 		}
-		return new this._jsEntities[entityName];
 	};
 	getEntityDefinition= (entityName) =>{
 		return this._jsEntities[entityName];
