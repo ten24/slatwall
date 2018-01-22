@@ -580,8 +580,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			stockAdjustmentItemData.stockAdjustmentItemID = lcase(replace(createUUID(),"-","","all"));
 			stockAdjustmentItemData.stockAdjustmentID = stockAdjustmentData.stockAdjustmentID;
 			stockAdjustmentItemData.quantity = minMaxStockTransferItem.getTransferQuantity();
-			stockAdjustmentItemData.cost = arguments.processObject.getAverageCost();
-			stockAdjustmentItemData.currencyCode = arguments.processObject.getCurrencyCode();
+			stockAdjustmentItemData.cost = minMaxStockTransferItem.getsku().getAverageCost(minMaxStockTransferItem.getsku().getCurrencyCode());
+			stockAdjustmentItemData.currencyCode = minMaxStockTransferItem.getsku().getCurrencyCode();
 			stockAdjustmentItemData.fromStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getFromLeafLocation()).getStockID();
 			stockAdjustmentItemData.toStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getToLeafLocation()).getStockID();
 			stockAdjustmentItemData.skuID = minMaxStockTransferItem.getsku().getSkuID();
