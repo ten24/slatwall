@@ -836,7 +836,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			salePrice= myStruct
 		};
 		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
-		writeDump(myStruct);
+
 		assert( variables.service.validate_maxCollection(orderItem,'salePrice',3) );
 	}
 
