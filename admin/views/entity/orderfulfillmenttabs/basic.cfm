@@ -11,7 +11,10 @@
 			<cfif !rc.orderFulfillment.getNewFlag()>
  				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="orderFulfillmentStatusType">
 			</cfif>
-
+			
+			<!--- Estimated Shipping Date --->
+			<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="estimatedShippingDate" edit="#rc.edit#">
+				
 			<!--- Email --->
 			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" edit="#rc.edit#">

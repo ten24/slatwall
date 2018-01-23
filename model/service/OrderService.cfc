@@ -237,6 +237,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Setup 'Shipping' Values
 					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
 
+						// Set estimated delivery date
+						orderFulfillment.setEstimatedShippingDate(arguments.processObject.getEstimatedShippingDate());
+
 						// Check for an accountAddress
 						if(len(arguments.processObject.getShippingAccountAddressID())) {
 
