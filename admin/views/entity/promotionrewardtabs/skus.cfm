@@ -55,10 +55,19 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="skus" edit="#rc.edit#" displayType="plainTitle" />
-	</div>
-	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedSkus" edit="#rc.edit#" displayType="plainTitle" />
-	</div>
+    <cfif rc.edit>
+    	<div class="col-md-6">
+    		<hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllSkus#" value="#collectionIncludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Skus" fieldName="Skus" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    	<div class="col-md-6">
+    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllSkus#" value="#collectionExcludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Skus" fieldName="excludedSkus" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    <cfelse>
+        <div class="col-md-6">
+            <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionIncludedSkus#" value="#collectionIncludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Skus" fieldName="Skus" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    	<div class="col-md-6">
+    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionExcludedSkus#" value="#collectionExcludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Skus" fieldName="excludedSkus" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    </cfif>
 </cfoutput>

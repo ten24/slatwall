@@ -23,6 +23,7 @@
                     data-show-export="swListingDisplay.showExport"
                     data-show-toggle-search="swListingDisplay.showSearch"
                     data-show-print-options="swListingDisplay.showPrintOptions"
+                    data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
@@ -91,7 +92,11 @@
                             <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
-                            <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" data-ng-value="swListingDisplay.multiselectValues" />
+                            <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" value="{{swListingDisplay.multiselectValues.length ? swListingDisplay.multiselectValues : ['']}}" />
+                            <input ng-if="!swListingDisplay.multiselectValues.length" type="hidden"
+                    			data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}"
+                                data-ng-value="' '"
+                    		/>
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
                                     <input type="checkbox"
@@ -220,18 +225,32 @@
                                 </span>
 
                                 <!-- Detail -->
-                                <sw-action-caller
-                                        ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
-                                        data-action="{{swListingDisplay.recordDetailAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
-                                        data-class="btn btn-default btn-xs"
-                                        data-icon="eye-open"
-                                        data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordDetailModal"
-                                        data-is-angular-route="swListingDisplay.isAngularRoute"
-                                >
+                                <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionIdProperty+'='+pageRecord[swListingDisplay.recordDetailActionIdKey]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
                                 </sw-action-caller>
-
+                                </span>
+                                <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                </sw-action-caller>
+                                </span>
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="detailAction"></div>
                                 </span>

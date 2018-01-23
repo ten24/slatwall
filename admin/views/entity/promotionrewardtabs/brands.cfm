@@ -55,10 +55,19 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="brands" edit="#rc.edit#" displaytype="plainTitle" />
-	</div>
-	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
-	</div>
+    <cfif rc.edit>
+    	<div class="col-md-6">
+    		<hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllBrands#" value="#collectionIncludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Brands" fieldName="Brands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    	<div class="col-md-6">
+    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllBrands#" value="#collectionExcludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Brands" fieldName="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    <cfelse>
+        <div class="col-md-6">
+            <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionIncludedBrands#" value="#collectionIncludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Brands" fieldName="Brands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    	<div class="col-md-6">
+    	    <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionExcludedBrands#" value="#collectionExcludedBrands.getPrimaryIDList()#" fieldType="listingMultiselect" title="Excluded Brands" fieldName="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    </cfif>
 </cfoutput>
