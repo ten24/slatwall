@@ -2529,6 +2529,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getPropertyNameValues(required string propertyName, string recordCount){
 		var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
 		var propertyMetaData = baseEntityObject.getPropertyMetaData(arguments.propertyName);
+		var backupColumns = this.getCollectionConfigStruct().columns;
 		var column = {
 
 		};
@@ -2540,13 +2541,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			column['title'] = baseEntityObject.getPropertyTitle(arguments.propertyName);
 		}
 		column['propertyIdentifier'] = "_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.#arguments.propertyName#";
-
 		this.getCollectionConfigStruct().columns = [column];
+		var records = [];
 		if(structKeyExists(arguments, 'recordCount') && arguments.recordCount > 0){
 			setPageRecordsShow(arguments.recordCount);
-			return getPageRecords(formatRecords=false);
+			records = getPageRecords(formatRecords=false);
 		}else{
-			return getRecords(formatRecords=false);
+			records = getRecords(formatRecords=false);
 		}
 		this.getCollectionConfigStruct().columns = backupColumns;
 		clearRecordsCache();
