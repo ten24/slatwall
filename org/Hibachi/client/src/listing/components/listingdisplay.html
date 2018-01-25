@@ -15,7 +15,6 @@
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
-            
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
                     data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
@@ -25,6 +24,7 @@
                     data-show-print-options="swListingDisplay.showPrintOptions"
                     data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
+                    data-personal-collection-identifier="swListingDisplay.personalCollectionIdentifier"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
             </sw-listing-controls>
@@ -95,7 +95,6 @@
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" value="{{swListingDisplay.multiselectValues.length ? swListingDisplay.multiselectValues : ['']}}" />
                             <input ng-if="!swListingDisplay.multiselectValues.length" type="hidden"
                     			data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}"
-                                data-ng-value="' '"
                     		/>
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
