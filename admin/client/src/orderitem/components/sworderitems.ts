@@ -205,6 +205,7 @@ class SWOrderItems{
 				};*/
 
                 scope.paginator = paginationService.createPagination();
+		scope.paginator.notifyById = false;
                 scope.paginator.collection = scope.collection;
                 scope.paginator.getCollection = scope.getCollection;
                 
