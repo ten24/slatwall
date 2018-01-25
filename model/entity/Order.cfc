@@ -235,10 +235,6 @@ property name="saleDesc" ormtype="string";
 		return getOrderStatusType().getSystemCode() != "ostClosed";
 	}
 	
-	public boolean function isNotDeletable(){
-		return getOrderStatusType().getSystemCode() == "ostNotPlaced" || getOrderStatusType().getSystemCode() =="ostCanceled";
-	}
-	
 	public boolean function hasCreditCardPaymentMethod(){
 		if(!structKeyExists(variables,'hasCreditCardPaymentMethodValue')){
 			variables.hasCreditCardPaymentMethodValue = false;
