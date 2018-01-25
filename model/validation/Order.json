@@ -18,6 +18,7 @@
 												{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},
 												{"contexts":"auditRollback","inList":"ostNotPlaced"}
 		],
+		"orderStatusType":[{"contexts":"edit","method":"isNotClosed"},{"contexts":"delete","method":"isNotDeletable"}],
 		"quantityDelivered":				[
 												{"contexts":"cancelOrder","maxValue":0},
 												{"contexts":"createReturn","minValue":1}
