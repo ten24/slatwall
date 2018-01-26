@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfset collectionAllSkus = $.slatwall.getService('SkuService').getSkuCollectionList()  >
-<cfset collectionAllSkus.setDisplayProperties("skuName",{
+<cfset collectionAllSkus.setDisplayProperties("skuCode,product.productName",{
     isVisible=true
 }) >
 <cfset collectionAllSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
@@ -63,7 +63,7 @@ Notes:
 })/>
 
 <cfset collectionIncludedSkus = $.slatwall.getService('SkuService').getSkuCollectionList() >
-<cfset collectionIncludedSkus.setDisplayProperties("skuName",{
+<cfset collectionIncludedSkus.setDisplayProperties("skuCode,product.productName",{
     isVisible=true,
     isSearchable=true,
     isDeletable=false
