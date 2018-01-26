@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#" sRedirectAction="admin:entity.detailsku">
+	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="#rc.edit#" sRedirectAction="admin:entity.detailstock">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="#rc.edit#">
 		</hb:HibachiEntityActionBar>
 		
