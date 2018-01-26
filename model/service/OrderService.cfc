@@ -3409,7 +3409,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 	}
-
+	
+	public any function processOrder_reopenOrder(required any order, struct data={}) {
+ 		arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
+ 		return arguments.order;
+ 	}
 	// ===================  END: Deprecated Functions =========================
 
 }
