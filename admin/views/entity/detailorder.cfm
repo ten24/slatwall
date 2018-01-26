@@ -146,7 +146,7 @@ Notes:
 			</cfloop>
 
 			<!--- Comments --->
-			<swa:SlatwallAdminTabComments object="#rc.order#" childObjects="#rc.order.getOrderItems()#" />
+			<swa:SlatwallAdminTabComments object="#rc.order#" />
 
 		</hb:HibachiEntityDetailGroup>
 
