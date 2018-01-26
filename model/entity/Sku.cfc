@@ -210,11 +210,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// ==================== START: Logical Methods =========================	
 	
 	//CUSTOM PROPERTIES BEGIN
-property name="bottlesPerBox" ormtype="integer";
-	property name="barcode" ormtype="string";
-	property name="sellUS" ormtype="boolean" default="true";
-	property name="sellHK" ormtype="boolean" default="true";
-property name="allowBackorder" ormtype="boolean" default="0";//CUSTOM PROPERTIES END
+	//CUSTOM PROPERTIES END
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
