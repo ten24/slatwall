@@ -49,7 +49,8 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
 	property name="venderOrderDAO" type="any";
-	
+	property name="skuPriceDAO" type="any";
+
 	property name="addressService" type="any";
 	property name="locationService" type="any";
 	property name="productService" type="any";
@@ -195,7 +196,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		newVendorOrderItem.setSku( arguments.processObject.getSku() );
 		newVendorOrderItem.setSkuPrice( arguments.processObject.getSku().getLivePriceByCurrencyCode( arguments.vendorOrder.getCurrencyCode() ) );
-		
+		newVendorOrderItem.setPrice( arguments.processObject.getPrice());
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
 			
 		//if vendor sku code was provided then find existing Vendor Sku or create one
@@ -270,12 +271,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// Adding vendor to product/sku if no existing relationship
 				if(!isNull(vendorOrderItem.getSku()) && !isNull(vendorOrderItem.getSku().getProduct())){
-					var product = vendorOrderItem.getSku().getProduct();
+					var sku = vendorOrderItem.getSku();
+					var product = sku.getProduct();
 					if (!arguments.vendorOrder.getVendor().hasProduct(product)) {
 						// Add vendor product relationship
 						arguments.vendorOrder.getVendor().addProduct(product);
 						newVendorProductPreferenceFlag = true;
 					}
+
+					//Update Sku price with vendor order item price.
+					if(len(vendorOrderItem.getPrice())){
+						if(arguments.vendorOrder.getCurrencyCode() == getSettingService().getSettingValue("skuCurrency"){
+							if(vendorOrderItem.getPrice() != sku.getPrice()){
+								sku.setPrice(vendorOrderItem.getPrice());
+							}
+						}else{
+							var skuPrice = getSkuPriceDAO().getSkuPricesForSkuByCurrencyCode(sku.getSkuID(),arguments.vendorOrder.getCurrencyCode());
+							if(!isNull(skuPrice) && vendorOrderItem.getPrice() != skuPrice.getPrice()){
+								skuPrice.setPrice(vendorOrderItem.getPrice());
+							}
+
+						}
+					}
+
 				}
 				
 				
