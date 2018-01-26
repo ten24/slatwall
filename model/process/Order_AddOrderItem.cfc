@@ -80,6 +80,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
+	property name="estimatedShippingDate" hb_formFieldType="datetime";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";

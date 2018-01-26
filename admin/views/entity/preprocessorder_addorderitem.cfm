@@ -246,6 +246,9 @@ Notes:
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
 
+										<!--- Estimated Shipping Date --->
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="estimatedShippingDate" edit="#rc.edit#" />
+
 										<!--- Account Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
 									</cfif>
