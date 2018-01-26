@@ -304,6 +304,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Persist and update vendor products if necessary
 		if (newVendorProductPreferenceFlag) {
 			getVendorService().saveVendor(arguments.vendorOrder.getVendor());
+
+			if (arguments.vendorOrder.getVendor().hasErrors()) {
+				vendorOrder.addErrors(arguments.vendorOrder.getVendor().getErrors());
+			}
 		}
 
 		return arguments.vendorOrder;
