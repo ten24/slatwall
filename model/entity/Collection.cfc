@@ -1165,11 +1165,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 	
 				var columnsJson = serializeJson(columnsArray);
+        var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 				defaultCollectionConfig = '{
-					"baseEntityName":"#HibachiBaseEntity#",
-					"baseEntityAlias":"_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject))#",
-					"columns":#columnsJson#
-				}';
+          "baseEntityName":"#HibachiBaseEntity#",
+          "baseEntityAlias":"_#properlyCasedShortEntityName#",
+          "columns":#columnsJson#,
+          "filterGroups":[{"filterGroup":[]}]
+        }';
 				setCollectionCacheValue(cacheKey,defaultCollectionConfig);
 			}
 			variables.collectionConfig = duplicate(defaultCollectionConfig);
