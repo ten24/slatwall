@@ -92,6 +92,7 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.account#">
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
 			<hb:HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/giftcards" count="#rc.account.getGiftCardsCount()#" />
