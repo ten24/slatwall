@@ -194,7 +194,7 @@ Notes:
 			dataQuery.setSql("
 				INSERT INTO swStockAdjustmentItem
 					(
-						stockAdjustmentItemID, stockAdjustmentID, quantity, cost, fromStockID, toStockID, skuID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+						stockAdjustmentItemID, stockAdjustmentID, quantity, cost, currencyCode, fromStockID, toStockID, skuID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
 					)
 				VALUES 
 					(
@@ -202,6 +202,7 @@ Notes:
 						'#arguments.stockAdjustmentItemData.stockAdjustmentID#', 
 						#arguments.stockAdjustmentItemData.quantity#, 
 						#arguments.stockAdjustmentItemData.cost#, 
+						'#arguments.stockAdjustmentItemData.currencyCode#', 
 						'#arguments.stockAdjustmentItemData.fromStockID#', 
 						'#arguments.stockAdjustmentItemData.toStockID#', 
 						'#arguments.stockAdjustmentItemData.skuID#', 
