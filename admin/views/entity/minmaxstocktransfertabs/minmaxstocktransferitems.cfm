@@ -69,6 +69,7 @@ Notes:
 							   recordEditAction="admin:entity.editminmaxstocktransferitem"
 							   recordDetailAction="admin:entity.detailminmaxstocktransferitem"
 							   recordDetailQueryString="redirectAction=admin:entity.detailminmaxstocktransfer&minMaxStockTransferID=#rc.minMaxStockTransfer.getMinMaxStockTransferID()#"
+							   usingPersonalCollection="false"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>

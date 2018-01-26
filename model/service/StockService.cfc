@@ -461,17 +461,94 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function saveMinMaxSetup(required any entity, struct data={}, string context="save"){
 
-		arguments.entity = super.save(argumentcollection=arguments);
+		// create, so save and return
+		if(arguments.entity.isNew()) {
+			arguments.entity = super.save(argumentcollection=arguments);
 
-		var location = locationService.getLocation(arguments.entity.getLocation().getLocationID());
-		for(var skuDetails in arguments.entity.getMinMaxSetupCollection().getRecords()) {
-			stockDAO.updateStockMinMax(skuDetails.skuID,arguments.entity.getLocation().getLocationID(),arguments.entity.getMinQuantity(),arguments.entity.getMaxQuantity());
+		// update, so save, set min/max and return
+		} else {
+			arguments.entity = super.save(argumentcollection=arguments);
+			var location = locationService.getLocation(arguments.entity.getLocation().getLocationID());
+			for(var skuDetails in arguments.entity.getMinMaxSetupCollection().getRecords()) {
+				stockDAO.updateStockMinMax(skuDetails.skuID,arguments.entity.getLocation().getLocationID(),arguments.entity.getMinQuantity(),arguments.entity.getMaxQuantity());
+			}
 		}
+
 		return arguments.entity;
+	}
+
+	public any function processMinMaxSetup_uploadImport(required any MinMaxSetup, required any processObject) {
+
+		if( !isNull(arguments.processObject.getUploadFile()) ) {
+			// Get the temp directory
+			var tempDir = getHibachiTempDirectory();
+			
+			// Upload file to temp directory
+			var documentData = fileUpload( tempDir,'uploadFile','','makeUnique' );
+			
+			//check uploaded file if its a valid text file
+			if( !listFind("txt,csv", documentData.serverFileExt) ){
+				
+				// Make sure that nothing is persisted
+				getHibachiScope().setORMHasErrors( true );
+				
+				//delete uploaded file if its not a csv file
+				fileDelete( "#tempDir##documentData.serverFile#" );
+				arguments.processObject.addError('invalidFile', getHibachiScope().rbKey('validate.processPhysical_addPhysicalCount.invalidFile'));
+				
+			} else {	
+				var valid = 0; 
+				var rowError = 0;
+				// set meta data
+				var fileName = documentData.serverFile;	
+				// Read the File from temp directory 
+				var fileObj = fileOpen( "#tempDir##fileName#", "read" );
+				// Loop over the records in the file we just read
+				while( !fileIsEof( fileObj ) ) {
+					var fileRow = fileReadLine( fileObj ); 
+
+					// validate csv row
+					// 4 list items
+					// 3 & 4 are valid integers
+					// 1 is valid skuCode
+					// 2 is valid locationCode
+					if( listLen(fileRow) eq 4 
+						and isValid("integer",trim(listGetAt(fileRow,3))) 
+						and isValid("integer",trim(listGetAt(fileRow,4))) ) {
+						var sku = getService("skuService").getSkuBySkuCode(trim(listGetAt(fileRow,1)));
+						var location = getService("locationService").getLocationByLocationCode(trim(listGetAt(fileRow,2)));
+						if ( !isNull(sku) and !isNull(location) ) {
+							stockDAO.updateStockMinMax(sku.getSkuID(),location.getLocationID(),trim(listGetAt(fileRow,3)),trim(listGetAt(fileRow,4)));
+							valid++;
+						} else {
+							rowError++;
+						}
+					} else { 
+						rowError++;
+					}
+
+				}
+				
+				// Close the file object
+				fileClose( fileObj );
+
+				// Add info for how many were matched
+				arguments.minMaxSetup.addMessage('validInfo', getHibachiScope().rbKey('validate.processMinMaxSetup_uploadImport.validInfo', {valid=valid}));
+				
+				// Add message for non-processed rows
+				if(rowError) {
+					arguments.minMaxSetup.addMessage('rowErrorWarning', getHibachiScope().rbKey('validate.processMinMaxSetup_uploadImport', {rowError=rowError}));	
+				}
+
+			}
+		}
+
+		return arguments.MinMaxSetup;
 	}
 
 	public any function processMinMaxStockTransfer_createStockAdjustments(required any MinMaxStockTransfer, required any processObject) {
 
+		getHibachiTagService().cfSetting(requesttimeout="3600");
 		var minMaxStockTransferItemsSmartList = arguments.MinMaxStockTransfer.getMinMaxStockTransferItemsSmartList();
 		minMaxStockTransferItemsSmartList.addRange('transferQuantity', '1^');
 		minMaxStockTransferItemsSmartList.addOrder('fromLeafLocation.locationName');
@@ -481,26 +558,31 @@ component extends="HibachiService" accessors="true" output="false" {
 		var toLocationID = '';
 		for(var minMaxStockTransferItem in minMaxStockTransferItemsSmartList.getRecords()) {
 			if(fromLocationID != minMaxStockTransferItem.getFromLeafLocation().getLocationID() || toLocationID != minMaxStockTransferItem.getToLeafLocation().getLocationID()) {
-				var newStockAdjustment = this.newStockAdjustment();
-				newStockAdjustment.setFromLocation(minMaxStockTransferItem.getFromLeafLocation());
-				newStockAdjustment.setToLocation(minMaxStockTransferItem.getToLeafLocation());
-				newStockAdjustment.setStockAdjustmentType(getService("typeService").getTypeBySystemCode("satLocationTransfer"));
-				newStockAdjustment.setStockAdjustmentStatusType(getService("typeService").getTypeBySystemCode("sastNew"));
-				newStockAdjustment.setMinMaxStockTransfer(arguments.MinMaxStockTransfer);
-				newStockAdjustment = this.saveNewStockAdjustment(newStockAdjustment);
+				var stockAdjustmentData = {};
+				stockAdjustmentData.stockAdjustmentID = lcase(replace(createUUID(),"-","","all"));
+				stockAdjustmentData.fromLocationID = minMaxStockTransferItem.getFromLeafLocation().getLocationID();
+				stockAdjustmentData.toLocationID = minMaxStockTransferItem.getToLeafLocation().getLocationID();
+				stockAdjustmentData.stockAdjustmentTypeID = getService("typeService").getTypeBySystemCode("satLocationTransfer").getTypeID();
+				stockAdjustmentData.stockAdjustmentStatusTypeID = getService("typeService").getTypeBySystemCode("sastNew").getTypeID();
+				stockAdjustmentData.minMaxStockTransferID = arguments.MinMaxStockTransfer.getMinMaxStockTransferID();
+			   	stockAdjustmentData.timeStamp = now();
+				stockAdjustmentData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
+				stockDAO.insertMinMaxTransferStockAjustment(stockAdjustmentData);
 			}
 			var fromLocationID = minMaxStockTransferItem.getFromLeafLocation().getLocationID();
 			var toLocationID = minMaxStockTransferItem.getToLeafLocation().getLocationID();
 
-			var newStockAdjustmentItem = this.newStockAdjustmentItem();
-			newStockAdjustmentItem.setQuantity(minMaxStockTransferItem.getTransferQuantity());
-			newStockAdjustmentItem.setCost(0);
-			newStockAdjustmentItem.setStockAdjustment(newStockAdjustment);
-			newStockAdjustmentItem.setFromStock(getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getFromLeafLocation()));
-			newStockAdjustmentItem.setToStock(getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getToLeafLocation()));
-			newStockAdjustmentItem.setSku(minMaxStockTransferItem.getsku());
-
-			newStockAdjustmentItem = this.saveNewStockAdjustmentItem(newStockAdjustmentItem);
+			var stockAdjustmentItemData = {};
+			stockAdjustmentItemData.stockAdjustmentItemID = lcase(replace(createUUID(),"-","","all"));
+			stockAdjustmentItemData.stockAdjustmentID = stockAdjustmentData.stockAdjustmentID;
+			stockAdjustmentItemData.quantity = minMaxStockTransferItem.getTransferQuantity();
+			stockAdjustmentItemData.cost = 0;
+			stockAdjustmentItemData.fromStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getFromLeafLocation()).getStockID();
+			stockAdjustmentItemData.toStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getToLeafLocation()).getStockID();
+			stockAdjustmentItemData.skuID = minMaxStockTransferItem.getsku().getSkuID();
+		   	stockAdjustmentItemData.timeStamp = now();
+			stockAdjustmentItemData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
+			stockDAO.insertMinMaxTransferStockAjustmentItem(stockAdjustmentItemData);
 		}
 
 		return arguments.MinMaxStockTransfer;
@@ -508,8 +590,10 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function saveMinMaxStockTransfer(required any entity, struct data={}, string context="save"){
 
+		var setResetMinMaxStockTransferItems = false;
 		// If change "from" or "to" location delete all related minMaxTransferItems and sotckAdjustments
 		if(!arguments.entity.getNewFlag() && arguments.data.fromLocation.locationID != arguments.entity.getFromLocation().getLocationID() or !arguments.entity.getNewFlag() && arguments.data.toLocation.locationID != arguments.entity.getToLocation().getLocationID()) {
+			setResetMinMaxStockTransferItems = true;
 			// remove stock transfer items on change
 			if(arguments.entity.hasMinMaxStockTransferItem()){
 				stockDAO.deleteMinMaxStockTransferItems(arguments.entity.getMinMaxStockTransferID());
@@ -518,52 +602,57 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.entity.hasStockAdjustment()){
 				stockDAO.deleteMinMaxStockAdjustments(arguments.entity.getMinMaxStockTransferID());
 			}
+		} else if (arguments.entity.getNewFlag()) {
+			setResetMinMaxStockTransferItems = true;
 		}
 
 		arguments.entity = super.save(argumentcollection=arguments);
+		ormFlush();
 
-		// If an entity was saved and the activeFlag is now 0 it needs to be removed from all setting values
-		if(!arguments.entity.hasErrors()) {
-
+		if(!arguments.entity.hasErrors() && setResetMinMaxStockTransferItems) {
+			getHibachiTagService().cfSetting(requesttimeout="3600");
 			var currentSku = '';
 			var currentOffset = 0;
-			for (var row in stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID())) {
+			var minMaxStockTransferDetails = stockDAO.getMinMaxStockTransferDetails(fromLocationID=arguments.entity.getFromLocation().getLocationID(),toLocationID=arguments.entity.getToLocation().getLocationID());
+			for (var row in minMaxStockTransferDetails) {
 			    if(row.skuID != currentSku) {
 			    	currentSku = row.skuID;
-			    	currentOffset = row.toSumQATS-row.toMaxQuantity;
+			    	if (row.toSumQATS < row.toMinQuantity) {
+			    		currentOffset = row.toSumQATS-row.toMaxQuantity;
+			    	} else{
+			    		currentOffset = 0;
+			    	}
 			    }
-			    var newMinMaxStockTransferItem = this.newMinMaxStockTransferItem();
-			    newMinMaxStockTransferItem.setMinMaxStockTransfer(arguments.entity);
-			    newMinMaxStockTransferItem.setSku(getSkuService().getSku(row.skuID));
-			    newMinMaxStockTransferItem.setToTopLocation(getLocationService().getLocation(row.toTopLocationID));
-			    newMinMaxStockTransferItem.setToLeafLocation(getLocationService().getLocation(row.toLeafLocationID));
-			    newMinMaxStockTransferItem.setFromTopLocation(getLocationService().getLocation(row.fromTopLocationID));
-			    newMinMaxStockTransferItem.setFromLeafLocation(getLocationService().getLocation(row.fromLeafLocationID));
-			    newMinMaxStockTransferItem.setToMinQuantity(row.toMinQuantity);
-			    newMinMaxStockTransferItem.setToMaxQuantity(row.toMaxQuantity);
-			    newMinMaxStockTransferItem.setToOffsetQuantity(row.toSumQATS-row.toMaxQuantity);
-			    newMinMaxStockTransferItem.setToSumQATS(row.toSumQATS);
-			    newMinMaxStockTransferItem.setFromMinQuantity(row.fromMinQuantity);
-			    newMinMaxStockTransferItem.setFromMaxQuantity(row.fromMaxQuantity);
-			    newMinMaxStockTransferItem.setFromOffsetQuantity(row.fromSumQATS-row.fromMaxQuantity);
-			    newMinMaxStockTransferItem.setFromSumQATS(row.fromSumQATS-row.fromMinQuantity);
-			    newMinMaxStockTransferItem.setFromCalculatedQATS(row.fromCalculatedQATS);
+			    var minMaxStockTransferItemData = {};
+			    minMaxStockTransferItemData.minMaxStockTransferID = arguments.entity.getMinMaxStockTransferID();
+			    minMaxStockTransferItemData.skuID = row.skuID;
+			    minMaxStockTransferItemData.toTopLocationID = row.toTopLocationID;
+			    minMaxStockTransferItemData.toLeafLocationID = row.toLeafLocationID;
+			    minMaxStockTransferItemData.fromTopLocationID = row.fromTopLocationID;
+			    minMaxStockTransferItemData.fromLeafLocationID = row.fromLeafLocationID;
+			    minMaxStockTransferItemData.toMinQuantity = row.toMinQuantity;
+			    minMaxStockTransferItemData.toMaxQuantity = row.toMaxQuantity;
+			    minMaxStockTransferItemData.toOffsetQuantity = row.toSumQATS-row.toMaxQuantity;
+			    minMaxStockTransferItemData.toSumQATS = row.toSumQATS;
+			    minMaxStockTransferItemData.fromMinQuantity = row.fromMinQuantity;
+			    minMaxStockTransferItemData.fromMaxQuantity = row.fromMaxQuantity;
+			    minMaxStockTransferItemData.fromOffsetQuantity = row.fromSumQATS-row.fromMaxQuantity;
+			    minMaxStockTransferItemData.fromSumQATS = row.fromSumQATS-row.fromMinQuantity;
+			    minMaxStockTransferItemData.fromCalculatedQATS = row.fromCalculatedQATS;
+			   	minMaxStockTransferItemData.timeStamp = now();
+				minMaxStockTransferItemData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
+				minMaxStockTransferItemData.transferQuantity = 0;
 			    if(currentOffset < 0) {
-				    if(newMinMaxStockTransferItem.getFromSumQATS() > 0 && newMinMaxStockTransferItem.getFromSumQATS() >= -currentOffset) {
-				    	newMinMaxStockTransferItem.setTransferQuantity(-currentOffset);
+				    if(minMaxStockTransferItemData.fromSumQATS > 0 && minMaxStockTransferItemData.fromSumQATS >= -currentOffset) {
+				    	minMaxStockTransferItemData.transferQuantity = -currentOffset;
 				    	currentOffset = 0;
-					    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
-				    } else if (newMinMaxStockTransferItem.getFromSumQATS() > 0 && row.fromCalculatedQATS < -currentOffset) {
-				    	newMinMaxStockTransferItem.setTransferQuantity(newMinMaxStockTransferItem.getFromSumQATS());
-				    	currentOffset = currentOffset + newMinMaxStockTransferItem.getFromSumQATS();
-					    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
+				    } else if (minMaxStockTransferItemData.fromSumQATS > 0 && row.fromCalculatedQATS < -currentOffset) {
+				    	minMaxStockTransferItemData.transferQuantity = minMaxStockTransferItemData.fromSumQATS;
+				    	currentOffset = currentOffset + minMaxStockTransferItemData.fromSumQATS;
 				    }
-			    } else {
-					newMinMaxStockTransferItem.setTransferQuantity(0);
 			    }
-			    newMinMaxStockTransferItem = this.saveMinMaxStockTransferItem(newMinMaxStockTransferItem);
+			    stockDAO.insertMinMaxStockTransferItem(minMaxStockTransferItemData);
 			}
-
 		}
 
 		return arguments.entity;

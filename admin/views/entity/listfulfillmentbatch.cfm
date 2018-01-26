@@ -54,29 +54,38 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.fulfillmentBatchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
-<!--<hb:HibachiListingDisplay smartList="#rc.fulfillmentBatchSmartList#"
-		recordEditAction="admin:entity.editfulfillmentBatch"
-		recordDetailAction="admin:entity.detailfulfillmentBatch">
 
-	<hb:HibachiListingColumn propertyIdentifier="fulfillmentBatchNumber" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentBatchName" />
-	<hb:HibachiListingColumn propertyIdentifier="description" />
-	<hb:HibachiListingColumn propertyIdentifier="assignedAccount.fullName" />
-</hb:HibachiListingDisplay>-->
-
-<sw-listing-display data-using-personal-collection="true"
-		data-collection="'FulfillmentBatch'"
-		data-edit="false"
-		data-has-search="true"
-		record-edit-action="admin:entity.editfulfillmentbatch"
-		record-detail-action="admin:entity.detailfulfillmentbatch"
-		data-is-angular-route="false"
-		data-angular-links="false"
-		data-has-action-bar="false"
-	>
-		<sw-listing-column data-property-identifier="fulfillmentBatchID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="fulfillmentBatchNumber" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="fulfillmentBatchName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="description" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="assignedAccount.fullName" ></sw-listing-column>
-	</sw-listing-display data-using-personal-collection="true">
+<sw-listing-display 
+	data-base-entity-name="FulfillmentBatch"
+	data-edit="true"
+	data-has-search="true"
+	record-edit-action="admin:entity.editfulfillmentbatch"
+	data-record-detail-action="admin:entity.detailfulfillmentbatch"
+	data-is-angular-route="false"
+	data-angular-links="false"
+	data-has-action-bar="false"
+	data-using-personal-collection="true"
+	data-persisted-collection-config="true"
+	data-name="fulfillmentBatchCollectionTable"
+	data-multi-slot="true"
+		>
+	
+		
+		
+		<sw-collection-configs>
+			<sw-collection-config data-entity-name="FulfillmentBatch" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
+				<sw-collection-columns>
+					<sw-collection-column data-property-identifier="fulfillmentBatchID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
+					<sw-collection-column data-property-identifier="fulfillmentBatchNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+					<sw-collection-column data-property-identifier="fulfillmentBatchName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+		            <sw-collection-column data-property-identifier="description" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+		            <sw-collection-column data-property-identifier="assignedAccount.fullName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+		        </sw-collection-columns>
+				<sw-collection-filters>
+					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-value="ofstUnfulfilled"></sw-collection-filter>
+				</sw-collection-filters>
+			</sw-collection-config>
+		</sw-collection-configs>
+		
+		
+	</sw-listing-display>

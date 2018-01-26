@@ -395,9 +395,8 @@
 			    </div>
 				
 				<!--- AVAILBALE MODULE --->
-			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('available');">
+			    <!---<div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('available');">
 					
-					<!--Small content block-->
 			        <div ng-class="{ 's-sm-content-block s-status s-green s-selected': swOrderFulfillmentListController.filters['available'], 's-sm-content-block s-status s-green': !swOrderFulfillmentListController.filters['available'] }">	
 			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
 			                <i class="fa fa-circle"></i>
@@ -409,10 +408,8 @@
 			            </div>
 			        </div>
 			    </div>
-				
-				<!--- UNAVAILABLE MODULE --->
 			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('unavailable');">		
-					<!--Small content block-->
+					
 			        <div ng-class="{ 's-sm-content-block s-status s-red s-selected': swOrderFulfillmentListController.filters['unavailable'], 's-sm-content-block s-status s-red': !swOrderFulfillmentListController.filters['unavailable'] }">
 			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
 			                <i class="fa fa-circle"></i>
@@ -425,9 +422,8 @@
 			        </div>
 			    </div>
 			    
-			    <!--- PAID MODULE --->
 			    <div class="col-sm-6 col-md-4 col-lg-2 s-detail-module s-md-content-block s-click" ng-click="swOrderFulfillmentListController.toggleFilter('paid');">		
-					<!--Small content block-->
+					
 			        <div ng-class="{ 's-sm-content-block s-status s-yellow s-selected': swOrderFulfillmentListController.filters['paid'], 's-sm-content-block s-status s-gray': !swOrderFulfillmentListController.filters['paid'] }">
 			            <div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
 			                <i class="fa fa-circle"></i>
@@ -438,7 +434,7 @@
 			                </div>
 			            </div>
 			        </div>
-			    </div>
+			    </div>--->
 			</div>
 			<div class="row s-detail-content-wrapper" ng-if="(swOrderFulfillmentListController.view != swOrderFulfillmentListController.views.Fulfillments && swOrderFulfillmentListController.view != swOrderFulfillmentListController.views.Items) || swOrderFulfillmentListController.refreshFlag">
 				<center>
@@ -448,25 +444,43 @@
 			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments && !swOrderFulfillmentListController.refreshFlag">	
 				<div class="col-xs-12">
 					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
-						
+						<!--- data-collection-config="swOrderFulfillmentListController.orderFulfillmentCollection" --->
 						<sw-listing-display
-							data-collection-config="swOrderFulfillmentListController.orderFulfillmentCollection"
+							data-base-entity-name="OrderFulfillment"
 							data-edit="true"
 							data-has-search="true"
 							data-record-detail-action="admin:entity.detailorderfulfillment"
 							data-is-angular-route="false"
 							data-angular-links="false"
-							data-has-action-bar="true" 
+							data-has-action-bar="false"
+							data-using-personal-collection="true"
 							data-persisted-collection-config="true" 
 							data-multiselect-field-name="orderFulfillmentID"
 							data-name="orderFulfillmentCollectionTable"
 							data-multi-slot="true">
 							
-							<sw-listing-column data-property-identifier="order.orderNumber" data-title="Order Number"></sw-listing-column>
-							<sw-listing-column data-property-identifier="order.orderOpenDateTime" data-title="Date Placed"></sw-listing-column>
-							<sw-listing-column data-property-identifier="shippingMethod.shippingMethodName" data-title="Shipping Method"></sw-listing-column>
-							<sw-listing-column data-property-identifier="shippingAddress.stateCode" data-title="State"></sw-listing-column>
-							<sw-listing-column data-property-identifier="estimatedShippingDate" data-title="Estimated Shipping Date"></sw-listing-column>
+							<sw-collection-configs>
+								<sw-collection-config data-entity-name="OrderFulfillment" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
+									
+									<sw-collection-filters>
+										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="orderFulfillmentStatusType.systemCode" data-comparison-value="ofstUnfulfilled"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN"  data-comparison-value="shipping,pickup"></sw-collection-filter>
+									</sw-collection-filters>
+									
+									<sw-collection-columns>
+										<sw-collection-column data-property-identifier="orderFulfillmentID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
+										<sw-collection-column data-property-identifier="orderFulfillmentStatusType.systemCode" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
+										<sw-collection-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="order.orderNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="order.orderOpenDateTime" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="shippingMethod.shippingMethodName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="shippingAddress.stateCode" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="estimatedShippingDate" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							        </sw-collection-columns>
+								</sw-collection-config>
+							</sw-collection-configs>
 						</sw-listing-display>
 				
 					</div>
@@ -476,27 +490,44 @@
 			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Items && !swOrderFulfillmentListController.refreshFlag">	
 				<div class="col-xs-12">
 					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
-						
+						<!--- data-collection-config="swOrderFulfillmentListController.orderItemCollection" --->
 						<sw-listing-display
-							data-collection-config="swOrderFulfillmentListController.orderItemCollection"
+							data-base-entity-name="OrderItem"
 							data-edit="true"
 							data-has-search="true"
-							data-record-detail-action="admin:entity.detailorderfulfillment"
+							data-record-detail-action="admin:entity.detailorderitem"
 							data-is-angular-route="false"
 							data-angular-links="false"
-							data-has-action-bar="true" 
+							data-has-action-bar="false"
+							data-using-personal-collection="true"
 							data-persisted-collection-config="true" 
 							data-multiselect-field-name="orderItemID" 
 							data-name="orderItemCollectionTable" 
 							data-multi-slot="true">
 							
-							<sw-listing-column data-property-identifier="order.orderNumber" data-title="Order Number"></sw-listing-column>
-							<sw-listing-column data-property-identifier="order.orderOpenDateTime" data-title="Date"></sw-listing-column>
-							<sw-listing-column data-property-identifier="sku.product.productName" data-title="Products"></sw-listing-column>
-							<sw-listing-column data-property-identifier="quantity" data-title="QTY"></sw-listing-column>
-							<sw-listing-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-title="Shipping"></sw-listing-column>
-							<sw-listing-column data-property-identifier="orderFulfillment.shippingAddress.stateCode" data-title="State"></sw-listing-column>
-							<sw-listing-column data-property-identifier="orderFulfillment.orderFulfillmentStatusType.typeName" data-title="Status"></sw-listing-column>
+							<sw-collection-configs>
+								<sw-collection-config data-entity-name="OrderItem" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
+									
+									<sw-collection-filters>
+										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN" data-comparison-value="shipping,pickup"></sw-collection-filter>
+									</sw-collection-filters>
+									
+									<sw-collection-columns>
+										<sw-collection-column data-property-identifier="orderItemID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
+										<sw-collection-column data-property-identifier="sku.product.productName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="quantity" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="order.orderNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="order.orderOpenDateTime" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="orderFulfillment.estimatedShippingDate" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+							        </sw-collection-columns>
+								</sw-collection-config>
+							</sw-collection-configs>
+						</sw-listing-display>
+						
 						</sw-listing-display>
 				
 					</div>

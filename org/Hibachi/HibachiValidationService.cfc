@@ -753,7 +753,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue)) {
+		if(isNull(propertyValue) || !len(propertyValue)) {
 			return true;
 		}
 		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
@@ -764,7 +764,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
+		if(isNull(propertyValue) || !len(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
 			return true;
 		}
 		return false;

@@ -51,7 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("vendorOrderService");
+		variables.service = createMock(object=request.slatwallScope.getBean("vendorOrderService"));
 	}
 	
 	public void function processVendorOrder_receiveTest(){
@@ -99,6 +99,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			vendorOrderID="",
 			vendorOrderItems=[
 				{
+					quantity=5,
 					vendorOrderItemID=vendorOrderItem.getVendorOrderItemID()
 				}
 			]

@@ -1120,6 +1120,36 @@ component extends="HibachiService"  accessors="true" output="false"
         
         getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
+    
+     /** 
+     * @http-context updateOrderFulfillmentAddressZone
+     * @description Update Order Fulfillment Address Zone
+     * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     * @ProcessMethod Order_UpdateOrderFulfillmentAddressZone
+     */
+    public any function updateOrderFulfillmentAddressZone(required any data) {
+        
+        var orderFulfillments = getHibachiScope().cart().getOrderFulfillments();
+        //Find a shipping fulfillment.    
+        for (var of in orderFulfillments){
+            if (of.getFulfillmentMethodType() == "shipping"){
+                var orderFulfillment = of; break;
+            }
+        }  
+        
+        if (structKeyExists(data, "addressZoneCode")){
+            var addressZone = getService("AddressService").getAddressZoneByAddressZoneCode(data.addressZoneCode);
+        }     
+        
+        if (!isNull(orderFulfillment) && !isNull(addressZone)){
+            orderFulfillment.setAddressZone(addressZone);
+            orderFulfillment = getService("OrderService").saveOrderFulfillment(orderFulfillment);
+            getService("ShippingService").updateOrderFulfillmentShippingMethodOptions(orderFulfillment);
+            getHibachiScope().addActionResult( "public:cart.updateOrderFulfillmentAddressZone", false);
+        } else {  
+			getHibachiScope().addActionResult( "public:cart.updateOrderFulfillmentAddressZone", true);
+        }
+    }
 
     /** 
      * @http-context finalizeCart
@@ -1370,6 +1400,24 @@ component extends="HibachiService"  accessors="true" output="false"
         }
     }
     
+    public void function getStateCodeOptionsByAddressZoneCode( required struct data ) {
+        if(!structKeyExists(data,addressZoneCode) || data.addressZoneCode == 'undefined'){
+            data.addressZoneCode = 'US';
+        }
+        var addressZoneLocations = getAddressService().getAddressZoneByAddressZoneCode('US').getAddressZoneLocations();
+        cacheKey = "PublicService.getStateCodeOptionsByAddressZoneCode#arguments.data.addressZoneCode#";
+        stateCodeOptions = "";
+        if(getHibachiCacheService().hasCachedValue(cacheKey)){
+            stateCodeOptions = getHibachiCacheService().getCachedValue(cacheKey);
+        }else{
+            for(var addressZoneLocation in addressZoneLocations){
+                stateCodeOptions = listAppend(stateCodeOptions,addressZoneLocation.getStateCode());
+            }
+            getHibachiCacheService().setCachedValue(cacheKey,stateCodeOptions);
+        }
+          arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
+    }
+    
     /** Given a country - this returns all of the address options for that country */
     public void function getAddressOptionsByCountryCode( required data ) {
         param name="data.countryCode" type="string" default="US";
@@ -1462,4 +1510,3 @@ component extends="HibachiService"  accessors="true" output="false"
     }
     
 }
-

@@ -24,6 +24,10 @@
                 <i class="glyphicon glyphicon-plus"></i>
         </button>
     </span>
+    
+    <div ng-show="!swListingSearch.swListingControls.showToggleSearch">
+        <hr >
+    </div>
 
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
@@ -89,5 +93,19 @@
                 data-ng-click="swListingSearch.swListingControls.exportCollection()">
             <i class="fa fa-download"></i>
         </button>
+    </span>
+    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
+        <button type="button"
+                class="btn btn-sm btn-default dropdown-toggle"
+                data-toggle="dropdown">
+            <i class="fa fa-print"></i>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li ng-repeat="printTemplate in swListingSearch.printTemplateOptions">
+                <a ng-click="swListingSearch.swListingControls.printCollection(printTemplate.printTemplateID)">
+                    <span ng-bind="printTemplate.printTemplateName"></span>
+                </a>
+            </li>
+        </ul>
     </span>
 </div>

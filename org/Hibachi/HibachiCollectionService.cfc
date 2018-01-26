@@ -1,9 +1,10 @@
 component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiService" type="any";
 	property name="aliasMap" type="struct";
+	property name="collectionCache" type="struct";
 	
 	
- 
+	
 	// ===================== START: Logical Methods ===========================
 	public string function getCollectionObjectByCasing(required collection, required string casing){
 		switch(arguments.casing){
@@ -24,6 +25,14 @@ component output="false" accessors="true" extends="HibachiService" {
 			hibachiPropertyIdentifier = listRest(hibachiPropertyIdentifier,'.');
 		}
 		return hibachiPropertyIdentifier;
+	}
+	
+	public struct function getCollectionCache(){
+		if(!structKeyExists(variables,'collectionCache')){
+			variables.collectionCache = {};
+		}
+		
+		return variables.collectionCache;
 	}
 
 	//returns meta data about the objects properties
@@ -468,6 +477,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	*/
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
+		
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
@@ -555,7 +565,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		} else if (right(modifiedURL, 1) eq "?") {
 			modifiedURL = "?c=1";
 		}
-
+		
 		return modifiedURL;
 	}
 
@@ -1002,6 +1012,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.data.collectionConfig.columns = getExportableColumnsByCollectionConfig(arguments.data.collectionConfig);
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
+
+		if(ArrayLen(arguments.data.collectionConfig.columns) == 0){
+			var defaultCollectionProperties = this.new(arguments.data.collectionConfig.baseEntityName).getDefaultCollectionProperties();
+			for(var property in defaultCollectionProperties){	
+				collectionEntity.addDisplayProperty(property['name'], '', {isExportable=true});
+			}
+		} 
 
 		var collectionConfigData = getCollectionConfigExportDataByCollection(collectionEntity);
 		getHibachiService().export( argumentCollection=collectionConfigData );

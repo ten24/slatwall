@@ -15,10 +15,14 @@
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
+            
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
                     data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-show-filters="swListingDisplay.showFilters"
+                    data-show-export="swListingDisplay.showExport"
+                    data-show-toggle-search="swListingDisplay.showSearch"
+                    data-show-print-options="swListingDisplay.showPrintOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 

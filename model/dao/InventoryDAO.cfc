@@ -596,7 +596,12 @@ Notes:
 			var QROVO = getQROVO(productID=arguments.productID);
 			var QROVOHashMap = {};
 			for(var i=1;i <= arrayLen(QROVO);i++){
-				QROVOHashMap["#QROVO[i]['skuID']#"] = QROVO[i]; 
+				var skuKey = QROVO[i]['skuID'];
+				if (!structKeyExists(QROVOHashMap, skuKey)) {
+					QROVOHashMap[skuKey] = [];
+				}
+				
+				arrayAppend(QROVOHashMap[skuKey], QROVO[i]);
 			}
 			var QNROVO = [];
 			
@@ -621,8 +626,20 @@ Notes:
 				}
 				
 				var quantityReceived = 0;
-				if(structKeyExists(QROVOHashMap,'#QOVOData['skuID']#')){
-					quantityReceived = QROVOHashMap['#QOVOData['skuID']#']['QROVO'];
+				if(structKeyExists(QROVOHashMap,record['skuID'])){
+					var selectedQROVOData = QROVOHashMap[record['skuID']][1];
+
+					// Check if we need to match QROVO data record with a specific stockID
+					if (arrayLen(QROVOHashMap[record['skuID']]) > 1) {
+						for (var QROVOData in QROVOHashMap[record['skuID']]) {
+							if (structKeyExists(QROVOData, 'stockID') && QROVOData['stockID'] == record['stockID']) {
+								selectedQROVOData = QROVOData;
+								break;
+							}
+						}
+					}
+
+					quantityReceived = selectedQROVOData['QROVO'];
 				}
 				record['QNROVO'] = QOVOData['QOVO'] - quantityReceived;
 				arrayAppend(QNROVO,record);

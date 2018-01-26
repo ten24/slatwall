@@ -23,6 +23,7 @@ class SWListingSearchController {
     public personalCollections:any;
     public selectedPersonalCollection:any;
     public collectionNameSaveIsOpen:boolean=false;
+    public printTemplateOptions:any[];
 
     //@ngInject
     constructor(
@@ -44,6 +45,21 @@ class SWListingSearchController {
         this.selectedSearchColumn={title:'All'};
 
         this.configureSearchableColumns(this.selectedSearchColumn);
+
+        if(this.swListingControls.showPrintOptions){
+            //load the options
+            var printTemplateOptionsCollection = this.collectionConfig.newCollectionConfig('PrintTemplate');
+            printTemplateOptionsCollection.addFilter('printTemplateObject', this.swListingDisplay.collectionConfig.baseEntityName);
+            printTemplateOptionsCollection.setAllRecords(true); 
+            printTemplateOptionsCollection.getEntity().then(
+                (response)=>{
+                    this.printTemplateOptions = response.records; 
+                }, 
+                (reason)=>{
+                    throw("swListingSearch couldn't load printTemplateOptions because: " + reason);
+                }
+            );
+        }
     }
 
     public selectSearchColumn = (column?)=>{
@@ -201,7 +217,8 @@ class SWListingSearch  implements ng.IDirective{
     public bindToController =  {
         collectionConfig : "<?",
         paginator : "=?",
-        listingId : "@?"
+        listingId : "@?",
+        showToggleSearch:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';

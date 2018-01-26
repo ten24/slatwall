@@ -66,7 +66,9 @@ Notes:
 									   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
 									   cancelAction="admin:entity.detailAttributeSet"
 									   cancelQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
-									   deleteQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#&redirectAction=admin:entity.detailAttributeSet" />
+									   deleteQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#&redirectAction=admin:entity.detailAttributeSet">
+		    <hb:HibachiProcessCaller entity="#rc.attribute#" action="admin:entity.preprocessAttribute" queryString="RedirectAction=admin:entity.detailattribute" modal="true" processContext="migrateToCustomProperty" type="list" />
+			</hb:HibachiEntityActionBar>
 
 			<cfif rc.edit>
 

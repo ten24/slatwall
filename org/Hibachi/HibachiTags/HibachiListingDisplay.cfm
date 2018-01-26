@@ -15,6 +15,8 @@
 	<cfparam name="attributes.collectionList" type="any" default=""/>
 	<cfparam name="attributes.collectionConfigFieldName" type="any" default=""/>
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
+	<cfparam name="attributes.showExport" type="boolean" default="true"/>
+	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -80,6 +82,7 @@
 	<cfparam name="attributes.createAction" type="string" default="" />
 	<cfparam name="attributes.createQueryString" type="string" default="" />
 	<cfparam name="attributes.exportAction" type="string" default="" />
+	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
@@ -103,10 +106,12 @@
 				data-is-angular-route="false"
 				data-angular-links="false"
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
+				data-show-export="#attributes.showExport#"
+				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 			    edit="true"
-			    data-using-personal-collection="true"
+			    data-using-personal-collection="#attributes.usingPersonalCollection#"
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
@@ -246,7 +251,7 @@
 			<!--- Process --->
 			<cfif len(attributes.recordProcessAction) and attributes.recordProcessButtonDisplayFlag>
 				<cfset attributes.administativeCount++ />
-
+				
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processcontext="#attributes.recordProcessContext#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentity="#attributes.recordProcessEntity.getClassName()#"', " ") />
 				<cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-processentityid="#attributes.recordProcessEntity.getPrimaryIDValue()#"', " ") />
@@ -468,7 +473,7 @@
 										<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
 									</cfif>
 								</cfsilent>
-								<th style="min-width:70px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
+								<th style="min-width:85px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
 									<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 										#column.title#
 									<cfelse>

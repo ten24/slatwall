@@ -15,7 +15,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="modifiedByAccount" persistent="false";
 
 	public void function postLoad(){
-		if(!this.getNewFlag() && !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())){
+		if(
+			!this.getNewFlag() 
+			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
+			&& !getHibachiScope().getAccount().getSuperUserFlag()
+		){
 			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
 			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
 			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());

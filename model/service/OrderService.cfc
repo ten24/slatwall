@@ -376,6 +376,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
 			}
 			
+			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
 			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
@@ -405,7 +406,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
 
 			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
 			if(
@@ -416,7 +417,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				) && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
-				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode(), arguments.processObject.getQuantity() ) );
 			}
 
 			// If a stock was passed in assign it to this new item
@@ -681,7 +682,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Persist relationship between orderItem and orderItemGiftRecipient
-		orderItemGiftRecipient.setOrderItem(orderItem);
         orderItemGiftRecipient = this.saveOrderItemGiftRecipient(orderItemGiftRecipient);
 
 		// Save order
@@ -1374,7 +1374,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
 							arguments.order.setOrderPlacedSite(getHibachiScope().getSite());
 						}
-	
+
 						//check if is payment is needed to place order and addPayment
 						if(!this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) ||
 							( arguments.order.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) && arguments.order.getPaymentAmountTotal() > 0)

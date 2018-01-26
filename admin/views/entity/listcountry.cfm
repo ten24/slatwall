@@ -81,4 +81,4 @@ Notes:
     <sw-listing-column data-property-identifier="countryCode" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="countryName" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="activeFlag" ></sw-listing-column>
-</sw-listing-display data-using-personal-collection="true">
+</sw-listing-display>

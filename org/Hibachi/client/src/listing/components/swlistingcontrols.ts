@@ -16,6 +16,7 @@ class SWListingControlsController {
     private showExport:boolean; 
     private showFilters:boolean;
     private showPersonalCollections:boolean;
+    private showPrintOptions:boolean; 
     private showToggleFilters:boolean;
     private showToggleSearch:boolean;
     private showToggleDisplayOptions:boolean;
@@ -35,9 +36,13 @@ class SWListingControlsController {
         public listingService,
         public observerService
     ) {
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false;
+        }
         if(angular.isUndefined(this.showExport)){
             this.showExport = true; 
         }
+        
         if(angular.isUndefined(this.showToggleSearch)){
             this.showToggleSearch = true;
         }
@@ -74,7 +79,6 @@ class SWListingControlsController {
     public filterActions =(res)=>{
 
         if(res.action == 'add' || res.action == 'remove'){
-
             this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
         }
         this.filtersClosed = true;
@@ -173,6 +177,10 @@ class SWListingControlsController {
         this.swListingDisplay.exportCurrentList(); 
     }
 
+    public printCollection = (printTemplateID) =>{
+        this.swListingDisplay.printCurrentList(printTemplateID);
+    }
+
 }
 
 class SWListingControls  implements ng.IDirective{
@@ -189,6 +197,7 @@ class SWListingControls  implements ng.IDirective{
         getCollection : "&",
         showExport: "=?",
         showFilters : "=?",
+        showPrintOptions: "=?",
         showToggleSearch: "=?",
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",

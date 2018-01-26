@@ -21,6 +21,7 @@ class PublicService {
     public cartDataPromise:any;
     public countryDataPromise:any;
     public stateDataPromise:any;
+    public addressZoneStateDataPromise:any;
     public lastSelectedShippingMethod:any;
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -1590,4 +1591,3 @@ class PublicService {
 
 }
 export {PublicService};
-

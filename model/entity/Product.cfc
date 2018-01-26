@@ -126,6 +126,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productBundleGroupsCount" type="numeric" persistent="false";
 	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="placedOrderItemsCollectionList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
@@ -414,7 +415,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 					var resizeImageData = arguments.resizeSizes[s];
 					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
-
+					resizeImageData.missingImagePath = missingImagePath;
 					arrayAppend(
 						thisImage.resizedImagePaths, 
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
@@ -458,7 +459,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					resizeImageData.alt = imageAltString;
 					resizeImageData.missingImagePath = missingImagePath;
 					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
-
+					
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
@@ -1156,6 +1157,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.placedOrderItemsSmartList;
+	}
+	
+	public any function getPlacedOrderItemsCollectionList() {
+		if(!structKeyExists(variables, "placedOrderItemsCollectionList")) {
+			variables.placedOrderItemsCollectionList = getService("OrderService").getOrderItemCollectionList();
+			variables.placedOrderItemsCollectionList.addFilter('sku.product.productID', getProductID());
+			variables.placedOrderItemsCollectionList.addFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		}
+
+		return variables.placedOrderItemsCollectionList;
 	}
 
 	public any function getEventRegistrationsSmartList() {

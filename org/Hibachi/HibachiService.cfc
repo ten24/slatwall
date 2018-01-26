@@ -152,6 +152,7 @@
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
 			}
 			
+			
 			// if the entity still has no errors then we call call the process method
 			if(!arguments.entity.hasErrors()) {
 				var methodName = "process#arguments.entity.getClassName()#_#arguments.processContext#";
@@ -868,13 +869,20 @@
 		}
 		
 		public any function getPropertyIsPersistentByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
-			var propertyMetaData = getPropertiesStructByEntityName(
-				getLastEntityNameInPropertyIdentifier(
-					arguments.entityName,
-					arguments.propertyIdentifier
-				)
-			)[listLast(arguments.propertyIdentifier, ".")];
-			return !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
+			var cacheKey = 'getPropertyIsPersistentByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
+			
+			if(!structKeyExists(variables,cacheKey)){
+				var propertyMetaData = getPropertiesStructByEntityName(
+					getLastEntityNameInPropertyIdentifier(
+						arguments.entityName,
+						arguments.propertyIdentifier
+					)
+				)[listLast(arguments.propertyIdentifier, ".")];
+				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
+			}
+			
+			
+			return variables[cacheKey];
 		}
 
 		// @hint returns a property of a given entity
@@ -982,13 +990,18 @@
 		
 		// @hint returns the primary id property name of a given entityName
 		public string function getPrimaryIDPropertyNameByEntityName( required string entityName ) {
-			var idColumnNames = getIdentifierColumnNamesByEntityName( arguments.entityName );
+			var cacheKey = 'getPrimaryIDPropertyNameByEntityName'&arguments.entityName;
 			
-			if( arrayLen(idColumnNames)) {
-				var shortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
-				shortEntityName = lcase(shortEntityName.charAt(0)) & shortEntityName.subString(1);
-				return replaceNoCase(replaceNoCase(idColumnNames[1],shortEntityName,shortEntityName),"code","Code");
+			if(!structKeyExists(variables,cacheKey)){
+				var idColumnNames = getIdentifierColumnNamesByEntityName( arguments.entityName );
+			
+				if( arrayLen(idColumnNames)) {
+					var shortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
+					shortEntityName = lcase(shortEntityName.charAt(0)) & shortEntityName.subString(1);
+					variables[cacheKey] = replaceNoCase(replaceNoCase(idColumnNames[1],shortEntityName,shortEntityName),"code","Code");
+				}
 			}
+			return variables[cacheKey];
 		}
 		
 		// @hint returns true or false based on an entityName, and checks if that property exists for that entity 
@@ -996,52 +1009,71 @@
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
 		}
 		
-		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
-			var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier, ignoreAttributeCheck=false){
+		
+			var cacheKey = 'getPropertyIsObjectByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier&arguments.ignoreAttributeCheck;
+		
+			if(!structKeyExists(variables,cacheKey)){
+				var hasAttributeByEntityNameAndPropertyIdentifier=getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier);
 			
-			if(!hasAttributeByEntityNameAndPropertyIdentifier){
-				
-				var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
-					arguments.entityName, 
-					arguments.propertyIdentifier
-				);
-				
-				var propertiesStructByEntityName = getPropertiesStructByEntityName(
-					lastEntityNameInPropertyIdentifier
-				);
-				
-				var lastItemInPropertyIdentfier = listLast(arguments.propertyIdentifier, ".");
-				
-				
-				return structKeyExists(propertiesStructByEntityName,lastItemInPropertyIdentfier) && structKeyExists(
-					propertiesStructByEntityName[lastItemInPropertyIdentfier],'cfc'
-				);
-			} else {
-				return false;
+				if(!hasAttributeByEntityNameAndPropertyIdentifier || arguments.ignoreAttributeCheck){
+					
+					var lastEntityNameInPropertyIdentifier = getLastEntityNameInPropertyIdentifier(
+						arguments.entityName, 
+						arguments.propertyIdentifier
+					);
+					
+					var propertiesStructByEntityName = getPropertiesStructByEntityName(
+						lastEntityNameInPropertyIdentifier
+					);
+					
+					var lastItemInPropertyIdentfier = listLast(arguments.propertyIdentifier, ".");
+					
+					
+					variables[cacheKey] = structKeyExists(propertiesStructByEntityName,lastItemInPropertyIdentfier) && structKeyExists(
+						propertiesStructByEntityName[lastItemInPropertyIdentfier],'cfc'
+					);
+				} else {
+					variables[cacheKey] = false;
+				}
+			
 			}
+			return variables[cacheKey];
+			
 		}
 		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasPropertyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			try {
-				return getEntityHasPropertyByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), propertyName=listLast(arguments.propertyIdentifier, ".") );	
-			} catch(any e) {
-				return false;	
+			var cacheKey = 'getHasPropertyByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
+			
+			if(!structKeyExists(variables,cacheKey)){
+				try {
+					variables[cacheKey] = getEntityHasPropertyByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), propertyName=listLast(arguments.propertyIdentifier, ".") );	
+				} catch(any e) {
+					variables[cacheKey] = false;	
+				}
 			}
+			return variables[cacheKey];
 		}
 		
 		
 		// @hint traverses a propertyIdentifier to find the last entityName in the list... this is then used by the hasProperty and hasAttribute methods()
 		public string function getLastEntityNameInPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			if(listLen(arguments.propertyIdentifier, ".") gt 1) {
-				var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
-					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
+			var cacheKey = 'getLastEntityNameInPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
+			
+			if(!structKeyExists(variables,cacheKey)){
+				if(listLen(arguments.propertyIdentifier, ".") gt 1) {
+					var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
+					if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
+						throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
+					}
+					return getLastEntityNameInPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
 				}
-				return getLastEntityNameInPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
+				variables[cacheKey] = arguments.entityName;
 			}
 			
-			return arguments.entityName;
+			
+			return variables[cacheKey];
 		}
 		
 			
@@ -1062,10 +1094,15 @@
 		
 		// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			return getEntityHasAttributeByEntityName( 
-				entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), 
-				attributeCode=listLast(arguments.propertyIdentifier, "._") 
-			);
+			var cacheKey = 'getHasAttributeByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
+			if(!structKeyExists(variables,cacheKey)){
+				variables[cacheKey] = getEntityHasAttributeByEntityName( 
+					entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), 
+					attributeCode=listLast(arguments.propertyIdentifier, "._") 
+				);
+			}
+			
+			return variables[cacheKey];
 		}
 		
 		// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
@@ -1091,8 +1128,11 @@
 		}
 		
 		
-		public array function getOptionsByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier){
+		public array function getOptionsByEntityNameAndPropertyIdentifier(
+			required any collectionList, required string entityName, required string propertyIdentifier
+		){
 			var entityCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
+			
 			return entityCollectionList.getRecords();
 		}
 		
@@ -1110,6 +1150,7 @@
 				var optionsCollectionList = getOptionsCollectionListByEntityNameAndPropertyIdentifier(argumentCollection=arguments);
 				optionsCollectionList.addFilter(arguments.propertyIdentifier&'.'&arguments.discriminatorProperty&'.#primaryIDName#',record['value']);
 				optionsCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+				
 				var optionsCollectionRecords = optionsCollectionList.getRecords();
 				
 				optionData[record['name']] = optionsCollectionRecords;
@@ -1124,6 +1165,7 @@
 		}
 		
 		private any function getOptionsCollectionListByEntityName(required string entityName){
+			
 			var optionsCollectionList = this.getCollectionList(arguments.entityName);
 			var primaryIDName = getPrimaryIDPropertyNameByEntityName(arguments.entityName);
 			var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(arguments.entityName);
@@ -1133,70 +1175,94 @@
 			optionsCollectionList.setDisplayProperties(displayProperties);
 			optionsCollectionList.setOrderBy(simpleRepresentationName);
 			optionsCollectionList.setApplyOrderBysToGroupBys(false);
+			
 			return optionsCollectionList;
 		}
 		
 		
 		
 		public any function getOptionsCollectionListByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier, required string inversePropertyIdentifier){
-			var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
 			
-			var displayProperties = '';
-			var propertyMetaData = {};
-			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
-			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
-			var relatedEntity = listLast(arguments.propertyIdentifier,'.');
-			propertyMetaData = propsStruct[relatedEntity];
-			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
-				var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
-				var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+			var cacheString = 'getOptionsCollectionListByEntityNameAndPropertyIdentifier'&serializeJson(arguments.collectionList.getCollectionConfigStruct()) & arguments.entityName & arguments.propertyIdentifier;
+			if(structKeyExists(arguments,'inversePropertyIdentifier')){
+				cacheString &= arguments.inversePropertyIdentifier;
 			}
 			
-			var displayProperties = "";
-			if(structKeyExists(propertyMetaData,'fieldtype')){
-				//applyfilters by inversePropertyIdentifier
-				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
-					entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
-					entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
+			var cacheKey = hash( cacheString, 'md5');
+			
+			
+			if(!structKeyExists(variables,cacheKey)){
+				var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
+			
+				var displayProperties = '';
+				var propertyMetaData = {};
+				var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
+				var propsStruct = getPropertiesStructByEntityName(lastEntityName);
+				var relatedEntity = listLast(arguments.propertyIdentifier,'.');
+				propertyMetaData = propsStruct[relatedEntity];
+				
+				if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
+					var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+					var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 				}
 				
-				
-				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
-				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
-				switch(propertyMetaData.fieldtype){
-					case 'many-to-one':
-						break;
-					case 'one-to-many':
-						
-						break;
-					case 'many-to-many':
-						break;
+				var displayProperties = "";
+				if(structKeyExists(propertyMetaData,'fieldtype')){
+					//applyfilters by inversePropertyIdentifier
+					
+					if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+						entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
+						entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
+					}
+					
+					
+					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
+					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
+					switch(propertyMetaData.fieldtype){
+						case 'many-to-one':
+							break;
+						case 'one-to-many':
+							
+							break;
+						case 'many-to-many':
+							break;
+					}
+					entityCollectionList.setDisplayProperties(displayProperties);
+					var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
+					entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'NULL','IS NOT');
+					entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
+					entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
+					
+				}else if(structKeyExists(propertyMetaData,'ormtype')) {
+					
+					if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+						entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
+						entityCollectionList.removeFilter(arguments.propertyIdentifier);
+					}
+					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
+					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
+					switch(propertyMetaData.ormtype){
+						case 'big_decimal':
+							break;
+						case 'string':
+							break;
+						case 'integer':
+							break;
+					}
+					entityCollectionList.setDisplayProperties(displayProperties);
+					var excludesList = arguments.propertyIdentifier;
+					entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
+					entityCollectionList.setOrderBy(arguments.propertyIdentifier);
+					
 				}
-				entityCollectionList.setDisplayProperties(displayProperties);
-				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier&'.'&primaryIDName);
-				entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
-				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
-			}else if(structKeyExists(propertyMetaData,'ormtype')) {
-				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
-					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
-					entityCollectionList.removeFilter(arguments.propertyIdentifier);
-				}
-				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
-				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
-				switch(propertyMetaData.ormtype){
-					case 'big_decimal':
-						break;
-					case 'string':
-						break;
-					case 'integer':
-						break;
-				}
-				entityCollectionList.setDisplayProperties(displayProperties);
-				entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
-				entityCollectionList.addDisplayAggregate(arguments.propertyIdentifier,'Count','count');
-				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
+				entityCollectionList.applyData(data=url,excludesList=excludesList);
+				entityCollectionList.setDirtyReadFlag(true);
+				entityCollectionList.setApplyOrderBysToGroupBys(false);
+				variables[cacheKey] = entityCollectionList;
+			}else{
+				entityCollectionList = variables[cacheKey];
 			}
-			entityCollectionList.setApplyOrderBysToGroupBys(false);
+			
 			return entityCollectionList;
 		}
 		
@@ -1240,8 +1306,9 @@
 					entityCollectionList.addFilter(arguments.propertyIdentifier,range.maxValue,'<=');
 				}
 				//calling getRecords until getRecordsCount behaves correctly aka knowing when to group by
-				entityCollectionList.getRecords();
+				
 				option['count'] = entityCollectionList.getRecordsCount();
+				
 				arrayAppend(options,option);
 			}
 			
@@ -1269,7 +1336,7 @@
 					var propsStruct = getPropertiesStructByEntityName(lastEntityName);
 					var relatedEntity = listLast(arguments.propertyIdentifier,'.');
 					propertyMetaData = propsStruct[relatedEntity];
-					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier)){
+					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
 						var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
 						var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 					}

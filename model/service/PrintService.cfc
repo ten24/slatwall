@@ -81,6 +81,7 @@ Notes:
 				var templateObject = getServiceByEntityName( printTemplate.getPrintTemplateObject() ).invokeMethod("get#printTemplate.getPrintTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
 			} else if(structKeyExists(arguments.data, "collectionConfig")){ 
 				var templateObject = getHibachiCollectionService().newCollection(printTemplate.getPrintTemplateObject()); 
+
 				templateObject.setCollectionObject(printTemplate.getPrintTemplateObject());
 				var collectionConfigStruct = deserializeJson(arguments.data.collectionConfig);  	
 				templateObject.setCollectionConfigStruct(collectionConfigStruct);
