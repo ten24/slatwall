@@ -428,6 +428,7 @@
 					<thead>
 
 						<tr>
+							<input type="hidden" name="OrderBy" value="" />
 							<!--- Selectable --->
 							<cfif thistag.selectable>
 								<cfset class="select">

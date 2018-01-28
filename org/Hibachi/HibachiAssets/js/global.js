@@ -562,6 +562,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 			
 			data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
+
+			jQuery("input[name='OrderBy']").val(data[ 'OrderBy' ]);
 			
 			listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 		});
@@ -1295,7 +1297,11 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 					
 			// Loop over each column of the header to set data[ 'actionCallerAttributes' ]
 	 		data[ 'methodIdentifier' ] = {};
-	 		
+	 	
+			if(data['OrderBy'] == null){
+				data[ 'OrderBy' ] = jQuery("input[name='OrderBy']").val();
+			}
+
 	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
 				if( jQuery(cv).hasClass('data') ) {
 					if( jQuery(cv).data('methodidentifier') !== undefined ) {
