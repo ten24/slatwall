@@ -563,7 +563,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			
 			data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
 
-			jQuery("input[name='OrderBy']").val(data[ 'OrderBy' ]);
+			jQuery(this).closest("input[name='OrderBy']").val(data[ 'OrderBy' ]);
 			
 			listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 		});
@@ -1299,7 +1299,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	 		data[ 'methodIdentifier' ] = {};
 	 	
 			if(data['OrderBy'] == null){
-				data[ 'OrderBy' ] = jQuery("input[name='OrderBy']").val();
+				data[ 'OrderBy' ] = jQuery('#' + tableID).data('OrderBy');
 			}
 
 	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
