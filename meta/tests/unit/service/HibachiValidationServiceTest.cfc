@@ -1261,7 +1261,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
 		account.setAccountPhoneNumbers(phoneNoArray);
-		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',6) );
+		assertfalse( variables.service.validate_minCollection(account,'accountPhoneNumbers',6) );
 	}
 
 	//validate_maxCollection
