@@ -87,8 +87,8 @@ Notes:
 	}) >
 	<cfset local.collectionNonActiveList.addDisplayProperty(displayProperty="orderPaymentID",columnConfig={isVisible=false})>
 	<cfset local.collectionNonActiveList.addFilter("order.orderID",rc.order.getOrderID())>
-	<cfset local.collectionNonActiveList.addFilter("orderPaymentStatusType.systemCode","opstInvalid")>
-	<cfset local.collectionNonActiveList.addFilter("orderPaymentStatusType.systemCode","opstRemoved","=","OR")>
+	<cfset local.collectionNonActiveList.addFilter(propertyIdentifier="orderPaymentStatusType.systemCode",value="opstInvalid",filterGroupAlias="nonActive")>
+	<cfset local.collectionNonActiveList.addFilter(propertyIdentifier="orderPaymentStatusType.systemCode",value="opstRemoved",comparisonOperator="=",logicalOperator="OR",filterGroupAlias="nonActive")>
 </cfsilent>
 
 <cfoutput>
