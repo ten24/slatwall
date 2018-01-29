@@ -53,7 +53,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		variables.service = request.slatwallScope.getService("hibachiValidationService");
 	}
-  
+
 	// validate_dataType()
 	/**
 	* @test
@@ -102,7 +102,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var validation = variables.service.getValidationStruct(order);
 		addToDebug(validation);
 	}
-  
+
 	/**
 	* @test
 	*/
@@ -552,7 +552,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function validate_gtNow_createdDateTime_property_value_greater_than_current_date() {
 		var account = request.slatwallScope.newEntity('Account');
-		account.setcreatedDateTime("2050-12-23 15:42:44");			//change later according to current date
+		account.setcreatedDateTime("2050-12-23 15:42:44");			//date is to be modified later after this date
 		assert( variables.service.validate_gtNow(account, 'createdDateTime','10') );
 	}
 
@@ -671,7 +671,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setcalculatedProductRating(100);
 		assert( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
 	}
-	
+
   // validate_ltProperty()
 	/**
 	* @test
@@ -853,7 +853,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse(variables.service.validate_gtDateTimeProperty(order,'orderOpenDateTime','orderCloseDateTime'));
 
 	}
-  
+
 	// validate_inList()
 	/**
 	* @test
@@ -864,7 +864,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		myList="USA,Russia,Canada,India,China,Japan,Korea";
 		assert( variables.service.validate_inList(account, 'firstname','#myList#') );
 	}
-  
+
 	/**
 	* @test
 	*/
@@ -1332,7 +1332,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',6) );
 	}
-  
+
 	/**
 	* @test
 	*/
