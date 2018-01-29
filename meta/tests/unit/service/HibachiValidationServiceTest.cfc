@@ -102,6 +102,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var validation = variables.service.getValidationStruct(order);
 		addToDebug(validation);
 	}
+
 	/**
 	* @test
 	*/
@@ -220,8 +221,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_maxValue(account, 'failedLoginAttemptCount',10) );
 	}
 
-
-
 	//validate_required()
 	/**
 	* @test
@@ -298,7 +297,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = request.slatwallScope.newEntity('Account');
 		account.setFailedLoginAttemptCount(5);
 		assert( variables.service.validate_lte(account, 'failedLoginAttemptCount','10') );
-
 	}
 
 	/**
@@ -347,7 +345,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse( variables.service.validate_lt(account, 'failedLoginAttemptCount','10') );
 	}
 
-	//validate_null()
+//validate_null()
 	/**
 	* @test
 	*/
@@ -376,7 +374,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse(variables.service.validate_null(account,'firstName', false));
 		assertfalse(variables.service.validate_null(account,'company', false));
 	}
-
 
 	// validate_gte()
 	/**
@@ -486,7 +483,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse( variables.service.validate_gt(account, 'failedLoginAttemptCount','10') );
 	}
 
-
 	// validate_maxLength()
 	/**
 	* @test
@@ -556,7 +552,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function validate_gtNow_createdDateTime_property_value_greater_than_current_date() {
 		var account = request.slatwallScope.newEntity('Account');
-		account.setcreatedDateTime("2017-12-23 15:42:44");
+		account.setcreatedDateTime("2050-12-23 15:42:44");			//date is to be modified later after this date
 		assert( variables.service.validate_gtNow(account, 'createdDateTime','10') );
 	}
 
@@ -568,19 +564,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = request.slatwallScope.newEntity('Account');
 		account.setcreatedDateTime("2017-12-08 15:42:44");
 		assert( variables.service.validate_ltNow(account, 'createdDateTime','10') );
-
 	}
-
 
 	/**
 	* @test
 	*/
 	public void function validate_ltNow_createdDateTime_property_value_greater_than_current_date() {
 		var account = request.slatwallScope.newEntity('Account');
-		account.setcreatedDateTime("2017-12-23 15:42:44");
+		account.setcreatedDateTime("2050-12-23 15:42:44");		//change later according to current date
 		assertfalse( variables.service.validate_ltNow(account, 'createdDateTime','10') );
 	}
-
 
 	// validate_eq()
 	/**
@@ -662,6 +655,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
+	public void function validate_lteproperty_calculatedSalePrice_property_value_greater_than_calculatedProductRating() {
+		var account = request.slatwallScope.newEntity('Product');
+		account.setcalculatedSalePrice(100);
+		account.setcalculatedProductRating(10);
+		assertfalse( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
+	}
+
+	/**
+	* @test
+	*/
 	public void function validate_lteproperty_calculatedSalePrice_property_value_equal_to_calculatedProductRating() {
 		var account = request.slatwallScope.newEntity('Product');
 		account.setcalculatedSalePrice(100);
@@ -669,19 +672,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
 	}
 
-	/**
-	* @test
-	*/
-	public void function validate_lteproperty_calculatedSalePrice_property_value_greater_than_calculatedProductRating() {
-		var account = request.slatwallScope.newEntity('Product');
-		account.setcalculatedSalePrice(100);
-		account.setcalculatedProductRating(10);
-		assertfalse( variables.service.validate_lteProperty(account, 'calculatedSalePrice','calculatedProductRating') );
-
-	}
-
-
-	// validate_ltProperty()
+  // validate_ltProperty()
 	/**
 	* @test
 	*/
@@ -711,9 +702,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setcalculatedProductRating(100);
 		assertfalse( variables.service.validate_ltProperty(account, 'calculatedSalePrice','calculatedProductRating') );
 	}
-
-
-
 
 	// validate_neq()
 	/**
@@ -780,9 +768,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse( variables.service.validate_neq(account, 'failedLoginAttemptCount', 2));
 	}
 
-
-
-
 	// validate_gteProperty()
 	/**
 	* @test
@@ -826,6 +811,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 
+
  	/**
 	* @test
 	*/
@@ -845,7 +831,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		account.setcalculatedProductRating(100);
 		assertfalse( variables.service.validate_gtProperty(account, 'calculatedSalePrice','calculatedProductRating') );
 	}
-
 
 	//validate_gtDateTimeProperty()
 	/**
@@ -868,7 +853,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertfalse(variables.service.validate_gtDateTimeProperty(order,'orderOpenDateTime','orderCloseDateTime'));
 
 	}
-
 
 	// validate_inList()
 	/**
@@ -942,8 +926,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_eqProperty(account, 'firstName', 'lastName'));
 	}
 
-
-
 	// validate_minList()
 	/**
 	* @test
@@ -952,7 +934,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = request.slatwallScope.newEntity('Account');
 		account.setfirstname("A,B,C,D,E,F,G");
 		assertfalse( variables.service.validate_minList(account, 'firstname',15) );
-
 	}
 
 	/**
@@ -1037,7 +1018,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert( variables.service.validate_maxList(account,'lastname',0) );
 	}
 
-
 	// validate_neqProperty()
 	/**
 	* @test
@@ -1070,7 +1050,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	 public void function validate_method_method_returen_true() {
+	 public void function validate_method_method_returns_true() {
 		var account = request.slatwallScope.newEntity('Account');
 		account.setsuperuserflag("true");
 		assert(variables.service.validate_method(account,'superUserFlag','getsuperUserFlag'));
@@ -1243,7 +1223,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
 		account.setAccountPhoneNumbers(phoneNoArray);
+
 		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',3) );
+
 	}
 
 	/**
@@ -1279,7 +1261,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var phoneNoArray = [accountPhoneOne,accountPhoneTwo,accountPhoneThree];
 		account.setAccountPhoneNumbers(phoneNoArray);
-		assertfalse( variables.service.validate_minCollection(account,'accountPhoneNumbers',6) );
+		assert( variables.service.validate_minCollection(account,'accountPhoneNumbers',6) );
 	}
 
 	//validate_maxCollection
@@ -1378,6 +1360,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assert( variables.service.validate_maxCollection(account,'accountPhoneNumbers',3) );
 	}
+
 }
 
 
