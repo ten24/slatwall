@@ -121,7 +121,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non Persistent
-	property name="totalOrderRevenue" persistent="false";
+	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
@@ -147,6 +147,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+
+
 
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
