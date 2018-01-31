@@ -455,6 +455,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Set the status to closed
 		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );
 
+		// Set reference number
+		lock scope="Application" timeout="30" {
+			var maxReferenceNumber = getStockDAO().getStockAdjustmentMaxReferenceNumber();
+			if( arrayIsDefined(maxReferenceNumber,1) ) {
+				arguments.stockAdjustment.setReferenceNumber(maxReferenceNumber[1] + 1);
+			} else {
+				arguments.stockAdjustment.setReferenceNumber(1);
+			}
+		}
+
 		return arguments.stockAdjustment;
 
 	}

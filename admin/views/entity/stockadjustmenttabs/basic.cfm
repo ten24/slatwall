@@ -9,6 +9,10 @@
 		<cfif rc.edit>
 			<input type="hidden" name="stockAdjustmentType.typeID" value="#rc.stockadjustment.getStockAdjustmentType().getTypeID()#" />
 		</cfif>
+
+		<cfif len(rc.stockAdjustment.getReferenceNumber())>
+			<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="referenceNumber" edit="false">
+		</cfif>
 		<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentType" edit="false">
 		<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentStatusType" edit="false">
 		<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>

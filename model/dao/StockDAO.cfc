@@ -462,6 +462,10 @@ Notes:
 			}
 	
 		}
+
+		public any function getStockAdjustmentMaxReferenceNumber() {
+			return ormExecuteQuery("SELECT max(cast(aslatwallstockadjustment.referenceNumber as int)) as maxReferenceNumber FROM SlatwallStockAdjustment aslatwallstockadjustment");
+		}
 		
 		public array function getEstimatedReceival(required string productID) {
 			var params = [arguments.productID];
