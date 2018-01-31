@@ -51,7 +51,7 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 	// Persistent Properties
 	property name="minMaxStockTransferID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	
-	property name="minMaxStockTransferItemsCollection" ormtype="string" length="8000";
+	property name="minMaxStockTransferItemsCollection" column="minMaxStockTransferItemsCollec" ormtype="string" length="8000";
 
 	// Related Object Properties (many-to-one)
 	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";

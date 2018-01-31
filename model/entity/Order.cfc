@@ -106,7 +106,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotalAfterItemDiscounts" column="calculatedSubTotalAfterItemDis" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItems" ormtype="integer";
 	property name="calculatedTotalQuantity" ormtype="integer";
