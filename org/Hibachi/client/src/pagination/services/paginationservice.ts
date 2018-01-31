@@ -22,6 +22,7 @@ class Pagination{
     ];
     public autoScrollPage = 1;
     public autoScrollDisabled = false;
+    public notifyById = true;
     public getCollection;
 
     //@ngInject
@@ -41,7 +42,7 @@ class Pagination{
     public pageShowOptionChanged = (pageShowOption) => {
         this.setPageShow(pageShowOption.value);
         this.currentPage = 1;
-        this.observerService.notifyById('swPaginationAction', this.uuid, {type:'setPageShow', payload:this.getPageShow()});
+        this.notify('swPaginationAction', {type:'setPageShow', payload:this.getPageShow()});
     };
 
     public getTotalPages=():number =>{
@@ -86,7 +87,7 @@ class Pagination{
     public setCurrentPage=(currentPage:number):void =>{
         this.currentPage = currentPage;
         //this.observerService.notifyById('swPaginationAction', this.uuid,{action:'pageChange', currentPage});
-        this.observerService.notifyById('swPaginationAction', this.uuid,{type:'setCurrentPage', payload:this.getCurrentPage()});
+        this.notify('swPaginationAction', {type:'setCurrentPage', payload:this.getCurrentPage()});
     };
     public previousPage=():void =>{
         if(this.getCurrentPage() == 1) return;
@@ -95,7 +96,7 @@ class Pagination{
     public nextPage=():void =>{
         if(this.getCurrentPage() < this.getTotalPages()){
             this.setCurrentPage(this.getCurrentPage() + 1);
-            this.observerService.notifyById('swPaginationAction', this.uuid,{type:'nextPage', payload:this.getCurrentPage()});
+            this.notify('swPaginationAction', {type:'nextPage', payload:this.getCurrentPage()});
         }
     };
     public hasPrevious=():boolean =>{
@@ -162,6 +163,14 @@ class Pagination{
             this.totalPagesArray.push(i);
         }
     };
+
+    public notify(event, parameters){
+        if(this.notifyById === true){
+            this.observerService.notifyById(event, this.uuid, parameters);
+        }else{
+            this.observerService.notify(event, parameters);
+        }
+    }
 
 
 }

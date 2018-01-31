@@ -57,6 +57,7 @@ class CollectionController{
 		}
 
 		$scope.paginator = paginationService.createPagination();
+        $scope.paginator.notifyById = false;
 
 		$scope.appendToCollection = function(){
 			if($scope.paginator.getPageShow() === 'Auto'){
