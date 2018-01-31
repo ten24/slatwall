@@ -177,7 +177,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
 	
-	
+
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -1542,7 +1542,9 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 
+
 	// ===================  END:  ORM Event Hooks  =========================
 
 	
 }
+
