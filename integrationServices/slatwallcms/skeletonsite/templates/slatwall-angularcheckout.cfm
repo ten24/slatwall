@@ -24,7 +24,7 @@
 	                <h3 ng-show="slatwall.isSigningIn()">Sign in to your Account</h3>
 	                <h3 ng-show="slatwall.hasAccount()">Account - {{slatwall.account.firstName}} {{slatwall.account.lastName}}</h3>
 	                <p ng-show="slatwall.hasAccount()">Not you? 
-	                	<sw-action-caller
+	                	<sw-action-caller data-submit-invalid="true"
 					        data-action="logout"
 					        data-type="ajaxlink"
 					        data-text="Logout">
@@ -121,7 +121,7 @@
 								    data-action="placeOrder"
 								    data-name="PlaceOrder">
                                     <div class="form-group">
-									    <sw-action-caller
+									    <sw-action-caller data-submit-invalid="true"
 									        data-type="button"
 									        data-class="button blue"
 									        data-text="{{((slatwall.getRequestByAction('placeOrder').loading || slatwall.hasSuccessfulAction('placeOrder')) ? 'LOADING...' : 'Place Order')}}"

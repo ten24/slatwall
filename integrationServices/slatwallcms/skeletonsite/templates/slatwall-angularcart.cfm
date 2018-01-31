@@ -170,7 +170,7 @@ Notes:
 						        	</div>
 						        	<div class="col-sm-6">
 						        		<span ng-if="!slatwall.loadingThisRequest('updateOrderItemQuantity',{'orderItem.orderItemID':orderItem.orderItemID})">
-								        	<sw-action-caller
+								        	<sw-action-caller data-submit-invalid="true"
 								        		data-type="link"
 								        		data-title="Update">
 								        	</sw-action-caller>
@@ -236,7 +236,7 @@ Notes:
 								<div class="controls">
 									
 									<!--- Clear Cart Button, links to a slatAction that clears the cart --->
-									<sw-action-caller 
+									<sw-action-caller  data-submit-invalid="true"
 										data-action="clearOrder"
 										data-type="button"
 										data-class="btn btn-default"
@@ -244,7 +244,7 @@ Notes:
 									</sw-action-caller>
 									
 									<!--- Checkout, saves any attribute values added--->
-									<sw-action-caller 
+									<sw-action-caller  data-submit-invalid="true"
 										data-action="finalizeCart"
 										data-type="button"
 										data-class="btn btn-default"
