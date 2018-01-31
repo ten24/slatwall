@@ -432,7 +432,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
-
+		
 			try{
 				var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
 				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});

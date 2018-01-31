@@ -74,7 +74,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		smartList.joinRelatedProperty("SlatwallVendorOrder","vendor");
 			
-		smartList.addKeywordProperty(propertyIdentifier="vendorOrderNumber", weight=9);
 		smartList.addKeywordProperty(propertyIdentifier="vendor.vendorName", weight=4);	
 		
 		return smartList;
