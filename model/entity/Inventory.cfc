@@ -53,8 +53,9 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="quantityIn" ormtype="float";
 	property name="quantityOut" ormtype="float";
 	property name="cost" ormtype="big_decimal";
-	property name="landedCost" ormtype="big_decimal";
+	property name="landedCost" ormtype="big_decimal" hint="This is just the cost plus shipping for vendor orders";
 	property name="landedAmount" ormtype="big_decimal";
+	property name="currencyCode" ormtype="string" length="3";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -69,6 +70,7 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
 	property name="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="many-to-one" fkcolumn="vendorOrderDeliveryItemID";
 	property name="stockAdjustmentDeliveryItem" cfc="StockAdjustmentDeliveryItem" fieldtype="many-to-one" fkcolumn="stockAdjustmentDeliveryItemID";
+	property name="assetLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="assetLedgerAccountID";
 	property name="cogsLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="cogsLedgerAccountID";
 	property name="expenseLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="expenseLedgerAccountID";
 	property name="inventoryLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="inventoryLedgerAccountID";

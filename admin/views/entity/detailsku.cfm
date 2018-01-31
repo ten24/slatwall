@@ -89,6 +89,7 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.sku#">
 			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/skutabs/accountinginfo" />
 			<cfif rc.product.getBaseProductType() EQ "subscription">
 				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/subscription" />
 			<cfelseif rc.product.getBaseProductType() eq "event">
@@ -104,6 +105,7 @@ Notes:
 				<hb:HibachiEntityDetailItem property="accessContents" />
 			<cfelseif rc.product.getBaseProductType() eq "merchandise">
 				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/inventory" />
+				<hb:HibachiEntityDetailItem view="admin:entity/skutabs/stocks" />
 				<cfif rc.sku.getBundleFlag() eq true>
 					<hb:HibachiEntityDetailItem view="admin:entity/skutabs/bundledskus" />
 				<cfelse>

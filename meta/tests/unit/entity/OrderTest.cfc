@@ -63,6 +63,33 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse( variables.entity.hasErrors() );
 	}
 		
+	//prevent duplicate ordernumbers
+	/**
+	* @test 
+	*/
+	public void function confirmOrderNumberOpenDateCloseDatePaymentAmountTest(){
+		
+		var orderNumbers = {};
+		var iterationCount = 100;
+		for(var i=1;i<=iterationCount;i++){
+			thread name="#createUUID()#" orderNumbers="#orderNumbers#"{
+				var orderData = {
+					orderID="",
+					orderStatusType={
+						//ostNew
+						typeID="444df2b5c8f9b37338229d4f7dd84ad1"
+					}
+				};
+				order = createPersistedTestEntity('Order',orderData);
+				
+				attributes.orderNumbers[order.getOrderNumber()]=order.getOrderNumber();				
+			}
+			
+		}
+		threadJoin();
+		assertEquals(iterationCount, structCount(orderNumbers),'has duplicates');
+	}
+		
 	/**
 	* @test
 	*/
@@ -847,7 +874,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	mockOrder.setOrderService(orderService);
 	 	
 	 	mockOrder.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-		assertEquals(11, mockOrder.getOrderNumber(), 'The OrderNumber should be 10 + 1 = 11, the test fails');
 	 	assertEquals(now(), mockOrder.getOrderOpenDateTime(), 'OpenDateTime should be now()');
 	 	assertEquals(CGI.REMOTE_ADDR, mockOrder.getOrderOpenIPAddress(), 'The address should be 127.0.0.1');
 	 	
@@ -985,9 +1011,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var result = mockOrder.hasGiftCardOrderItems(mockOrderItem.getOrderItemID());
 	 	assertTrue(result, 'The function should return TRUE for the oi accordence with the argument');
 	 	
-	 	var resultFakeOIid = mockOrder.hasGiftCardOrderItems('somefakeOrderitemID');
-	 	assertFalse(resultFakeOIid, 'If the giftCardOrderItem is not same with the arguments, should return False');
-	 	
 	 }
 	/**
 	* @test
@@ -1036,6 +1059,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockOrderWithOrderItem = createPersistedTestEntity('Order', orderData);
 		
+		
+		assertTrue(!isNull(mockOrderWithOrderItem.getOrderItems()[1].getSku().getProduct().getProductType()));
 	 	var result = mockOrderWithOrderItem.hasGiftCardOrderItems();
 	 	assertTrue(result, 'If exist giftCardOrderItem, should return true');
 	 	
@@ -1337,7 +1362,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockOrder = createTestEntity('Order', orderData);
 		
-		var mockOrderService = new Slatwall.model.service.orderService();
+		var mockOrderService = createMock(object=request.slatwallScope.getBean("OrderService"));
 		mockOrderService.getPreviouslyReturnedFulfillmentTotal = getPreviouslyReturnedFulfillmentTotal;//returns 30
 		mockOrder.setOrderService(mockOrderService);
 		

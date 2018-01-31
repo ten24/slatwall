@@ -56,6 +56,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="address" type="any";
 	property name="site" type="any";
 	property name="app" type="any";
+	property name="category" type="any";
+	property name="attribute" type="any";
+	property name="attributeOption" type="any";
 	
 	// Slatwall specific request smartList properties
 	property name="productSmartList" type="any";
@@ -72,14 +75,86 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="currentContent";
 	property name="currentProduct";
 	property name="currentProductType";
+	property name="currentDomain";
+	property name="currentRequestSite";
+	property name="currentRequestSitePathType" default="domain"; //enums: domain,sitecode
+	property name="currentRequestSiteLocation";
 	
 	property name="currentProductSmartList";
 	
 	// ================= Overrides =================================
 	
 	public any function getCurrentRequestSite() {
-		var domain = listFirst(cgi.HTTP_HOST,':');
-		return getDAO('siteDAO').getSiteByDomainName(domain);
+		
+		if(!structKeyExists(variables,'currentRequestSite')){
+			if ( len( getContextRoot() ) ) {
+				var cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+				var cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+			} else {
+				var cgiScriptName = CGI.SCRIPT_NAME;
+				var cgiPathInfo = CGI.PATH_INFO;
+			}
+			var pathInfo = cgiPathInfo;
+			 if ( len( pathInfo ) > len( cgiScriptName ) && left( pathInfo, len( cgiScriptName ) ) == cgiScriptName ) {
+	            // canonicalize for IIS:
+	            pathInfo = right( pathInfo, len( pathInfo ) - len( cgiScriptName ) );
+	        } else if ( len( pathInfo ) > 0 && pathInfo == left( cgiScriptName, len( pathInfo ) ) ) {
+	            // pathInfo is bogus so ignore it:
+	            pathInfo = '';
+	        }
+	        //take path and  parse it
+	        var pathArray = listToArray(pathInfo,'/');
+	        var pathArrayLen = arrayLen(pathArray);
+    		
+    		if(pathArrayLen){
+    			
+    			variables.currentRequestSite = getService('siteService').getSiteBySiteCode(pathArray[1]);
+    		}
+        		
+			if(isNull(variables.currentRequestSite)){
+				var domain = getCurrentDomain();
+				variables.currentRequestSite = getDAO('siteDAO').getSiteByDomainName(domain);
+				setCurrentRequestSitePathType('domain');	
+			}else{
+				setCurrentRequestSitePathType('sitecode');
+			}
+			if(isNull(variables.currentRequestSite)){
+				variables.currentRequestSite = getService('siteService').newSite();
+			}
+		}
+		
+		if(variables.currentRequestSite.getNewFlag()){
+			return;
+		}
+		return variables.currentRequestSite;
+	}
+	
+	public string function getCurrentRequestSitePathType(){
+		return variables.currentRequestSitePathType;
+	}
+	
+	public any function getCurrentRequestSiteLocation(){
+		if(!structKeyExists(variables,'currentRequestSiteLocation')){
+			var site = getCurrentRequestSite();
+			if ( !isNull(site) ){
+				//Though the relationship is a many-to-many we're only dealing with 1 location as of now
+				
+				if(site.getLocationsCount()){
+					var locationsSmartList = site.getLocationsSmartlist();
+					variables.currentRequestSiteLocation= locationsSmartList.getFirstRecord();
+				}
+			}
+		}
+		
+		if(!StructKeyExists(variables, 'currentRequestSiteLocation') || isNull(variables.currentRequestSiteLocation)){
+		return;
+
+		}
+		return variables.currentRequestSiteLocation;
+	}
+	
+	public void function setCurrentRequestSitePathType(required string currentRequestSitePathType){
+		variables.currentRequestSitePathType = arguments.currentRequestSitePathType;
 	}
 
 	public any function getCurrentDomain() {
@@ -116,7 +191,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	// ================= Entity Helper Methods =====================
-	
+	//Attribute
+	public any function getAttribute() {
+		if(!structKeyExists(variables, "attribute")) {
+			variables.attribute = getService("AttributeService").newAttribute();
+		}
+		return variables.attribute;
+	}
+	//Attribute Option
+	public any function getAttributeOption() {
+		if(!structKeyExists(variables, "attributeOption")) {
+			variables.attributeOption = getService("AttributeService").newAttributeOption();
+		}
+		return variables.attributeOption;
+	}
 	// Brand
 	public any function getBrand() {
 		if(!structKeyExists(variables, "brand")) {
@@ -162,12 +250,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return variables.address;
 	}
 	
+	// Category
+	public any function getCategory() {
+		if(!structKeyExists(variables, "category")) {
+			variables.address = getService("categoryService").newCategory();
+		}
+		return variables.category;
+	}
+	
 	// Display Route Entity
 	public any function getRouteEntity(string entityName = ""){
 		if (
 			len(arguments.entityName)
 			&& structKeyExists(variables, "routeEntity") 
-			&& structKeyExists(variables.routEntity,arguments.entityName) 
+			&& structKeyExists(variables.routeEntity,arguments.entityName) 
 			&& !isNull(variables.routeEntity[arguments.entityName])
 		) {
 			arguments.entityName = lcase(arguments.entityName);
@@ -219,7 +315,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			productCollectionList.setDistinct(true);
 			productCollectionList.addFilter('activeFlag',1);
 			productCollectionList.addFilter('publishedFlag',1);
-			productCollectionList.addFilter('calculatedQATS','1','>');
+			if (!isNull(getCurrentRequestSiteLocation())){
+				productCollectionList.addFilter("skus.skuLocationQuantities.calculatedQATS","0",">");
+				productCollectionList.addFilter("skus.skuLocationQuantities.location.locationID", getCurrentRequestSiteLocation().getLocationID());
+			}else{
+				productCollectionList.addFilter('calculatedQATS','1','>');
+			}
 			if(
 				isBoolean(getContent().getProductListingPageFlag()) 
 				&& getContent().getProductListingPageFlag() 
@@ -255,7 +356,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// Adds a PrintID to the print queue.
 	public string function addToPrintQueue(required string printID) {
-		var cookieData = cookie.printQueue;
+		var cookieData = getPrintQueue();
 		var newPrintQueue = listAppend(cookieData, printID);
 		getService('HibachiTagService').cfCookie('printQueue', newPrintQueue);
 	}
@@ -315,7 +416,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
-			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urltitle,orderItems.sku.product.baseProductType,
+			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,
 			orderItems.sku.product.brand.brandName,
 			orderItems.sku.product.productType.productTypeName,
 			orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,

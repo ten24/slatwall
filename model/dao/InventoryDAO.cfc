@@ -70,21 +70,28 @@ Notes:
 		}
 		
 		// Quantity on hand. Physically at any location
-		public array function getQOH(required string productID, string productRemoteID) {
-			var params = [arguments.productID];
+		public array function getQOH(required string productID, string productRemoteID, string currencyCode) {
+			var params = {productID=arguments.productID};
 			var hql = "SELECT NEW MAP(coalesce( sum(inventory.quantityIn), 0 ) - coalesce( sum(inventory.quantityOut), 0 ) as QOH, 
 							sku.skuID as skuID, 
 							stock.stockID as stockID, 
 							location.locationID as locationID, 
-							location.locationIDPath as locationIDPath)
+							location.locationIDPath as locationIDPath
+						)
 						FROM
 							SlatwallInventory inventory
 							LEFT JOIN inventory.stock stock
 							LEFT JOIN stock.sku sku
 							LEFT JOIN stock.location location
 						WHERE
-							sku.product.productID = ?
-						GROUP BY
+							sku.product.productID = :productID
+						";
+			if(structKeyExists(arguments,'currencyCode')){
+				hql &= " AND inventory.currencyCode=:currencyCode ";
+				params['currencyCode'] = arguments.currencyCode;
+			}
+						
+			hql &=" GROUP BY
 							sku.skuID,
 							stock.stockID,
 							location.locationID,
@@ -589,7 +596,12 @@ Notes:
 			var QROVO = getQROVO(productID=arguments.productID);
 			var QROVOHashMap = {};
 			for(var i=1;i <= arrayLen(QROVO);i++){
-				QROVOHashMap["#QROVO[i]['skuID']#"] = QROVO[i]; 
+				var skuKey = QROVO[i]['skuID'];
+				if (!structKeyExists(QROVOHashMap, skuKey)) {
+					QROVOHashMap[skuKey] = [];
+				}
+				
+				arrayAppend(QROVOHashMap[skuKey], QROVO[i]);
 			}
 			var QNROVO = [];
 			
@@ -614,8 +626,20 @@ Notes:
 				}
 				
 				var quantityReceived = 0;
-				if(structKeyExists(QROVOHashMap,'#QOVOData['skuID']#')){
-					quantityReceived = QROVOHashMap['#QOVOData['skuID']#']['QROVO'];
+				if(structKeyExists(QROVOHashMap,record['skuID'])){
+					var selectedQROVOData = QROVOHashMap[record['skuID']][1];
+
+					// Check if we need to match QROVO data record with a specific stockID
+					if (arrayLen(QROVOHashMap[record['skuID']]) > 1) {
+						for (var QROVOData in QROVOHashMap[record['skuID']]) {
+							if (structKeyExists(QROVOData, 'stockID') && QROVOData['stockID'] == record['stockID']) {
+								selectedQROVOData = QROVOData;
+								break;
+							}
+						}
+					}
+
+					quantityReceived = selectedQROVOData['QROVO'];
 				}
 				record['QNROVO'] = QOVOData['QOVO'] - quantityReceived;
 				arrayAppend(QNROVO,record);
@@ -704,6 +728,33 @@ Notes:
 		public numeric function getQS(string stockID, string skuID, string productID, string stockRemoteID, string skuRemoteID, string productRemoteID) {
 			return 0;
 		}
+
+		public any function getSkuLocationQuantityBySkuIDAndLocationID( required string skuID, locationID){
+			var result = ormExecuteQuery( "SELECT sli FROM SlatwallSkuLocationQuantity sli INNER JOIN sli.sku ss INNER JOIN sli.location ll WHERE ss.skuID = :skuID AND ll.locationID = :locationID", {skuID=arguments.skuID, locationID=arguments.locationID}, true ); 
+
+			if (isNull(result)) {
+				return new('SkuLocationQuantity');
+			}
+
+			return result;
+		}
+		
+		//Quantity Delivered on Order for Sku in Period
+		public any function getSkuOrderQuantityForPeriod(required string skuID, required any fromDateTime, required any toDateTime){
+			var hql = "SELECT NEW MAP(
+						coalesce( sum(orderDeliveryItem.quantity), 0 ) as quantity
+					)
+					FROM SlatwallOrderItem orderItem
+					  	LEFT JOIN orderItem.orderDeliveryItems orderDeliveryItem
+				  	  	LEFT JOIN orderItem.sku sku
+					WHERE sku.skuID = :skuID
+						AND orderItem.order.orderStatusType.systemCode IN ('ostClosed','ostProcessing')
+						AND orderItem.order.orderCloseDateTime BETWEEN :fromDateTime AND :toDateTime
+						AND orderItem.orderItemType.systemCode = 'oitSale'";
+
+			return ormExecuteQuery(hql, {skuID=arguments.skuID,fromDateTime=arguments.fromDateTime,toDateTime=arguments.toDateTime}, true);
+		}
+
 	</cfscript>
 
 </cfcomponent>

@@ -76,7 +76,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return variables.orderPayment;
 		} else {
 			// return latest subscription order payment
-			return getSubscriptionUsage().getUniquePreviousSubscriptionOrderPayments()[arrayLen(getSubscriptionUsage().getUniquePreviousSubscriptionOrderPayments())];
+			var uniquePreviousSubscriptionOrderPayments = getSubscriptionUsage().getUniquePreviousSubscriptionOrderPayments();  
+			var uniquePreviousSubscriptionOrderPaymentsCount = arrayLen(uniquePreviousSubscriptionOrderPayments);	
+			if(uniquePreviousSubscriptionOrderPaymentsCount != 0){
+				return uniquePreviousSubscriptionOrderPayments[uniquePreviousSubscriptionOrderPaymentsCount];
+			}
 		}
 	}
 

@@ -186,68 +186,189 @@ Notes:
 		return skus;
 	}
 	
-	public any function getAverageCost(required string skuID){
-			
-		return ORMExecuteQuery(
-			'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+	public any function getAverageCost(required string skuID, required string currencyCode, string locationID=""){
+		var params = {
+			skuID=arguments.skuID,
+			currencyCode=arguments.currencyCode
+		};
+		
+		
+		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
 			FROM SlatwallInventory i 
 			LEFT JOIN i.stock stock
 			LEFT JOIN stock.sku sku
-			WHERE sku.skuID=:skuID
-			',
-			{skuID=arguments.skuID},
-			true
-		);
-	}
-	
-	public any function getAverageLandedCost(required string skuID){
+		';
+		
+		if(len(arguments.locationID)){
+			hql &= ' LEFT JOIN stock.location location ';
+		}
+		
+		hql &= ' WHERE sku.skuID=:skuID AND i.cost IS NOT NULL AND i.currencyCode=:currencyCode ';
+		
+		if(len(arguments.locationID)){
+			hql&= ' AND location.locationID = :locationID';	
+			params.locationID = arguments.locationID;
+		}
+		
 		
 		return ORMExecuteQuery(
-			'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
-			FROM SlatwallInventory i 
-			LEFT JOIN i.stock stock
-			LEFT JOIN stock.sku sku
-			WHERE sku.skuID = :skuID
-			',
-			{skuID=arguments.skuID},
+			hql,
+			params,
 			true
 		);
 	}
 	
-	public numeric function getCurrentMargin(required string skuID){
-		return ORMExecuteQuery("
-			SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
-			FROM SlatwallSku sku
-			WHERE sku.skuID=:skuID
-		",{skuID=arguments.skuID},true);
+	public any function getAverageLandedCost(required string skuID, required string currencyCode, string locationID=""){
+		var params = {
+			skuID=arguments.skuID,
+			currencyCode=arguments.currencyCode
+		};
+		
+		var hql = 'SELECT COALESCE(SUM(i.landedCost*i.quantityIn)/SUM(i.quantityIn),0)
+			FROM SlatwallInventory i 
+			LEFT JOIN i.stock stock
+			LEFT JOIN stock.sku sku';
+			
+		if(len(arguments.locationID)){
+			hql &= ' LEFT JOIN stock.location location ';
+		}
+		hql &= ' WHERE sku.skuID = :skuID AND i.landedCost IS NOT NULL AND i.currencyCode=:currencyCode ';
+		
+		if(len(arguments.locationID)){
+			hql &= ' AND location.locationID=:locationID ';	
+			params.locationID=arguments.locationID;
+		}
+		
+		return ORMExecuteQuery(
+			hql,
+			params,
+			true
+		);
 	}
 	
-	public numeric function getCurrentLandedMargin(required string skuID){
-		return ORMExecuteQuery("
-			SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(sku.calculatedAverageLandedCost,0)) / COALESCE(sku.price,0),0)
-			FROM SlatwallSku sku
-			WHERE sku.skuID=:skuID
-		",{skuID=arguments.skuID},true);
+	public any function getAverageProfit(required string skuID, required string currencyCode){
+		return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageCost(argumentCollection=arguments));
 	}
 	
-	public numeric function getAveragePriceSold(required string skuID){
-		 
+	public any function getAverageLandedProfit(required string skuID, required string currencyCode){
+		return getService('hibachiUtilityService').precisionCalculate(getAveragePriceSold(argumentCollection=arguments) - getAverageLandedCost(argumentCollection=arguments));
+	}
+	
+	public any function getAverageMarkup(required string skuID, required string currencyCode){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		var averageCost = getAverageCost(argumentCollection=arguments);
+		if(averageCost == 0){
+			return 0;
+		}
+		
+		return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageCost)/averageCost)*100);
+	}
+	
+	public any function getAverageLandedMarkup(required string skuID, required string currencyCode){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		var averageLandedCost = getAverageLandedCost(argumentCollection=arguments);
+		if(averageLandedCost == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate(((averagePriceSold-averageLandedCost)/averageLandedCost)*100);
+	}
+	
+	public numeric function getCurrentMarginBeforeDiscount(required string skuID, required string currencyCode){
+		var averagePriceSold = getAveragePriceSoldBeforeDiscount(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
+	}
+	
+	public numeric function getCurrentMargin(required string skuID, required string currencyCode){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageProfit(argumentCollection=arguments) / averagePriceSold) * 100);
+	}
+	
+	public numeric function getCurrentLandedMargin(required string skuID, required string currencyCode){
+		var averagePriceSold = getAveragePriceSold(argumentCollection=arguments);
+		if(averagePriceSold == 0){
+			return 0;
+		}
+		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
+	}
+	
+	public numeric function getAverageDiscountAmount(required string skuID, required string currencyCode){
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.price),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedDiscountAmount),0) as totalDiscountAmount 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
 						  LEFT JOIN
 					  		orderDeliveryItem.orderItem orderItem
 						WHERE
-							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
 						  AND
 						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
 							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
 						";
-		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID},true);	
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID,currencyCode=arguments.currencyCode},true);	
+		if(QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averageDiscountAmount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalDiscountAmount']/QDOODetails['QDOO']);
+		return averageDiscountAmount;
+	}
+	
+	public numeric function getAveragePriceSoldBeforeDiscount(required string skuID, required string currencyCode){
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						  LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						";
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID,currencyCode=arguments.currencyCode},true);	
+		if(QDOODetails['QDOO']==0){
+			return 0;
+		}
+		var averagePriceSoldBeforeDiscount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
+		return averagePriceSoldBeforeDiscount;
+	}
+	
+	public numeric function getAveragePriceSold(required string skuID, required string currencyCode){
+		 
+		var hql = "SELECT NEW MAP(
+							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
+							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
+						) 
+						FROM
+							SlatwallOrderDeliveryItem orderDeliveryItem
+						  LEFT JOIN
+					  		orderDeliveryItem.orderItem orderItem
+						WHERE
+							orderDeliveryItem.orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostCanceled')
+						  AND
+						  	orderDeliveryItem.orderItem.orderItemType.systemCode = 'oitSale'
+						  AND 
+							orderDeliveryItem.orderItem.sku.skuID = :skuID
+						  AND 
+						  	orderDeliveryItem.orderItem.currencyCode = :currencyCode
+						";
+		var QDOODetails = ormExecuteQuery(hql, {skuID=arguments.skuID,currencyCode=arguments.currencyCode},true);	
 		if(QDOODetails['QDOO']==0){
 			return 0;
 		}
@@ -349,6 +470,18 @@ Notes:
 		</cfquery> 
 		
 		<cfreturn valueList(getUsedLocationIdsByEventDates.LocationID) />
+	</cffunction>
+	
+	<cffunction name="getSkuCostBySkuIDAndCurrencyCode">
+		<cfargument name="skuID" type="string" />
+		<cfargument name="currencyCode" type="string" />
+		<cfreturn ORMExecuteQuery('
+			FROM SlatwallSkuCost sc 
+			where sc.currency.currencyCode=:currencyCode
+			and sc.sku.skuID = :skuID
+			',{skuID=arguments.skuID,currencyCode=arguments.currencyCode},true)
+		/>
+		
 	</cffunction>
 	
 </cfcomponent>

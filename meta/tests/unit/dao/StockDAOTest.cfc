@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
@@ -70,7 +70,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getAverageCostTest(){
 		var stockData = {
-			stockID=""
+			stockID="",
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		
@@ -80,12 +81,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
 		
-		var averageCost = variables.dao.getAverageCost(stock.getStockID());
-		assertEquals(10,averageCost);
+		var averageCost = variables.dao.getAverageCost(stock.getStockID(),'USD');
+		assertEquals(50,averageCost);
 		
 		var inventoryData2 = {
 			inventoryID="",
@@ -93,12 +95,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
 		
-		averageCost = variables.dao.getAverageCost(stock.getStockID());
-		assertEquals(8.5,averageCost);
+		averageCost = variables.dao.getAverageCost(stock.getStockID(),'USD');
+		assertEquals(42.5,averageCost);
 	}
 	
 	public void function getCurrentMarginTest(){
@@ -114,7 +117,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			calculatedAverageCost=11,
 			sku={
 				skuID=sku.getSkuID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
 		
@@ -124,12 +128,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
 		
-		var averageCost = variables.dao.getAverageCost(stock.getStockID());
-		assertEquals(10,averageCost);
+		var averageCost = variables.dao.getAverageCost(stock.getStockID(),'USD');
+		assertEquals(50,averageCost);
 		
 		var inventoryData2 = {
 			inventoryID="",
@@ -137,11 +142,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			quantityin=5,
 			stock={
 				stockID=stock.getStockID()
-			}
+			},
+			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
-		var currentMargin = variables.dao.getCurrentMargin(stock.getStockID());
-		assertEquals(0.857143,currentMargin,'(77-11)/77');
+		var currentMargin = variables.dao.getCurrentMargin(stock.getStockID(),"USD");
+		assertEquals(0,currentMargin);
 	}
 	
 	

@@ -3,10 +3,58 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		
+		public function formatStructKeyList(required string str){
+ 		    if (!structKeyExists(server, "lucee")){
+ 		        return str;
+ 		    }
+ 		    var formattedStructKeyList = '';
+ 		    var strArray = listToArray(str, '.');
+ 		    for( var key in strArray){
+ 		        if(isNumeric(left(key, 1))){
+ 		            formattedStructKeyList &= "['#key#']";
+ 		        }else{
+ 		            formattedStructKeyList = listAppend(formattedStructKeyList, key, '.');
+ 		        }
+ 		    };
+ 		    return formattedStructKeyList;
+ 		}	
+ 		
+ 		public any function getQueryLabels(required any query){
+ 			var qryColumns = "";
+ 			for (var column in getMetaData(arguments.query)){
+ 				qryColumns = listAppend(qryColumns, column.name);
+ 			}
+ 			return local.qryColumns;
+ 		}
 
+ 		public string function getSQLType(required any ormtype){
+ 			var types = {
+ 				"big_decimal":"decimal",
+ 				"text":"varchar"
+ 			};
+ 			if(structKeyExists(types, ormtype)){
+ 				return types[ormtype];
+ 			}
+ 			return ormtype;
+ 		}
+ 		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
 			var roundingmode = createObject('java','java.math.RoundingMode');
 			return javacast('bigdecimal',arguments.value).setScale(arguments.scale,roundingmode.HALF_EVEN);
+		}
+		
+		public string function lowerCaseToTitleCase(required string stringValue){
+			return REReplace(arguments.stringValue, "\b(\S)(\S*)\b", "\u\1\L\2", "all");
+		}
+		
+		public string function snakeCaseToTitleCase(required string stringValue){
+			arguments.stringValue = REReplace(stringValue,'-',' ','all');
+			return lowerCaseToTitleCase(arguments.stringValue);
+		}
+		
+		public string function camelCaseToTitleCase(required string stringValue){
+			return rereplace(rereplace(arguments.stringValue,"(^[a-z])","\u\1"),"([A-Z])"," \1","all");
 		}
 		
 		/**
@@ -244,7 +292,6 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
-  		
 	  	/**
 	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
 	    * Resources: 
@@ -583,7 +630,7 @@
 		}
 
 		// helper method for downloading a file
-		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
+		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown; charset=UTF-8', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
@@ -924,8 +971,16 @@
 				var thisRow = [];
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
+
+					var value = arguments.queryData[colArray[j]][i];
+
+					// Determine if formatting datetime stamp needed
+					if (isDate(value)) {
+						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
+					}
+
 					// create our row
-					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
@@ -1403,4 +1458,36 @@
 		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
+
+	<cffunction name="getSignedS3ObjectLink" access="public" output="false" returntype="string">
+		<cfargument name="bucketName" type="string" required="true">
+		<cfargument name="keyName" type="string" required="true">
+		<cfargument name="awsAccessKeyId" type="string" required="true">
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		<cfargument name="minutesValid" type="numeric" required="true" default="1">
+
+		<cfset var s3link = "" />
+		<cfset var epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
+		<cfset var cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
+		<cfset var signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
+		<cfset s3link = "https://#arguments.bucketName#.s3.amazonaws.com/#arguments.keyName#?AWSAccessKeyId=#URLEncodedFormat(arguments.awsAccessKeyId)#&Expires=#epochTime#&Signature=#URLEncodedFormat(signature)#" />
+		<cfreturn s3link />
+
+	</cffunction>
+
+	<cffunction name="getClientFileName" returntype="string" output="false" hint="">
+	    <cfargument name="fieldName" required="true" type="string" hint="Name of the Form field" />
+
+	    <cfset var tmpPartsArray = Form.getPartsArray() />
+
+	    <cfif IsDefined("tmpPartsArray")>
+	        <cfloop array="#tmpPartsArray#" index="local.tmpPart">
+	            <cfif local.tmpPart.isFile() AND local.tmpPart.getName() EQ arguments.fieldName>
+	                <cfreturn local.tmpPart.getFileName() />
+	            </cfif>
+	        </cfloop>
+	    </cfif>
+
+	    <cfreturn "" />
+	</cffunction>
 </cfcomponent>

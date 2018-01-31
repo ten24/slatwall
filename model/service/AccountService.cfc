@@ -53,7 +53,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="addressService" type="any";
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="giftCardService" type="any";
+	property name="hibachiAuditService" type="any";	
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
@@ -308,7 +309,21 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-	
+	public any function processAccount_changePosPin(required any account, required any processObject) {
+
+		var existingPosPin = arguments.account.getPosPin();
+
+		// Set the password
+		var newPosPin = getHashedAndSaltedPassword(arguments.processObject.getPosPin(), arguments.account.getAccountID());
+		
+		if(!isNull(existingPosPin) && existingPosPin == newPosPin)
+		{
+			arguments.account.addError("samePosPin",rbKey('admin.entity.account.samePosPin'));
+		} else {
+			arguments.account.setPosPin(newPosPin);
+		}
+		return arguments.account;
+	}
 	public any function saveAccount(required any account, struct data={}, string context="save"){
 		
 		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
@@ -1398,6 +1413,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
 		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
 		if(!arguments.permissionRecordRestriction.hasErrors()){
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions');
 			getService("HibachiCacheService").resetCachedKeyByPrefix("Collection.getPermissionRecordRestrictions");
 		}
 		
@@ -1464,6 +1480,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
+			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
 		}
 
 		return arguments.permissionGroup;

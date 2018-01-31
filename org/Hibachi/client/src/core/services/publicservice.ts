@@ -21,6 +21,7 @@ class PublicService {
     public cartDataPromise:any;
     public countryDataPromise:any;
     public stateDataPromise:any;
+    public addressZoneStateDataPromise:any;
     public lastSelectedShippingMethod:any;
     public http:ng.IHttpService;
     public confirmationUrl:string;
@@ -313,7 +314,7 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             urlBase = urlBase + action; //any path
         }else{
-            urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
+            urlBase = this.baseActionPath + action;//public path
         }
 
 
@@ -557,7 +558,8 @@ class PublicService {
         return (
             this.cart.orderFulfillments[fulfillmentIndex] &&
             this.isShippingFulfillment(this.cart.orderFulfillments[fulfillmentIndex]) && 
-            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress &&
+            this.cart.orderFulfillments[fulfillmentIndex].data.shippingAddress.addressID
         );
     }
 
@@ -908,6 +910,7 @@ class PublicService {
             errors = errors.concat(errArray);
         }
         this.cart.errors.runPlaceOrderTransaction = errors;
+        this.edit = '';
     }
 
     /** Returns errors from placeOrder request*/
@@ -919,16 +922,21 @@ class PublicService {
 
     /** Returns errors from addOrderPayment request. */
     public addOrderPaymentError = () =>{
-        return this.cart.errors.addOrderPayment || (angular.isDefined(this.errors) ? this.errors['ADDORDERPAYMENT'] : false);
+        if(this.cart.errors.addOrderPayment) return this.cart.errors.addOrderPayment;
+        if(this.cart.errors.runPlaceOrderTransaction) return this.cart.errors.runPlaceOrderTransaction;
+        return angular.isDefined(this.errors) ? this.errors['ADDORDERPAYMENT'] : false;
     }
 
     /** Returns errors from addBillingAddress request. */
     public addBillingAddressError = () =>{
+        if(this.loadingThisRequest('addOrderPayment',{},false)) return false;
+        if(this.errors && this.errors.copied) return this.addBillingAddressErrors;
+        
         this.addBillingAddressErrors = this.cart.errors.addBillingAddress || (angular.isDefined(this.errors) ? this.errors['addBillingAddress'] : false);
+
         if(!this.billingAddressEditFormIndex && this.errors && this.hasFailureAction('addBillingAddress')){
             let addressProperties = this.$hibachi.newAddress().data;
             for(let property in this.errors){
-                
                 if(addressProperties.hasOwnProperty(property)){
 
                     this.addBillingAddressErrors = this.addBillingAddressErrors || [];
@@ -938,7 +946,10 @@ class PublicService {
                     })
                 }
             }
+            this.errors.copied = 1;
         }
+        
+        return this.addBillingAddressErrors;
     }
 
     /** Returns errors from addGiftCard request. */
@@ -960,6 +971,7 @@ class PublicService {
     }
 
     public editBillingAddress = (key, formName) =>{
+        this.clearMessages();
         this.billingAddressEditFormIndex = key;
         this.selectedBillingAddress = null
         if(formName){
@@ -989,6 +1001,13 @@ class PublicService {
     }
 
     public hideBillingAddressForm = ()=>{
+        if(this.billingAddressEditFormIndex != undefined){
+            let index = this.billingAddressEditFormIndex;
+            if(this.billingAddressEditFormIndex == 'new'){
+                index = this.account.accountAddresses.length - 1;
+            }
+            this.selectBillingAddress(index);
+        }
         this.billingAddressEditFormIndex = undefined;
         this.billingAddress = {};
     }
@@ -1039,7 +1058,8 @@ class PublicService {
     public accountAddressIsSelectedShippingAddress = (key, fulfillmentIndex) =>{
         if(this.account && 
            this.account.accountAddresses &&
-           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress){
+           this.cart.orderFulfillments[fulfillmentIndex].shippingAddress &&
+           !this.cart.orderFulfillments[fulfillmentIndex].shippingAddress.hasErrors){
             return this.addressesMatch(this.account.accountAddresses[key].address, this.cart.orderFulfillments[fulfillmentIndex].shippingAddress);
         }        
         return false;
@@ -1148,6 +1168,18 @@ class PublicService {
 
     public shippingMethodUpdateSuccess = () =>{
         return this.hasSuccessfulAction('addShippingMethodUsingShippingMethodID');
+    }
+
+    public updatedBillingAddress = () =>{
+        return this.hasSuccessfulAction('updateAddress') && !this.hasSuccessfulAction('addShippingAddress');
+    }
+
+    public addedBillingAddress = () =>{
+        return this.hasSuccessfulAction('addNewAccountAddress') && !this.hasSuccessfulAction('addShippingAddressUsingAccountAddress');
+    }
+
+    public addedShippingAddress = () =>{
+        return this.hasSuccessfulAction('addNewAccountAddress') && this.hasSuccessfulAction('addShippingAddressUsingAccountAddress');
     }
 
     public emailFulfillmentUpdateSuccess = () =>{
@@ -1559,4 +1591,3 @@ class PublicService {
 
 }
 export {PublicService};
-

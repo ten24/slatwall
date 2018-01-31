@@ -86,7 +86,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
 	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
-
+	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="orderItemID" cfc="FulfillmentBatchItem" inverse="true";
+	
 	// Related Object Properties (many-to-many)
 
 	property name="shippingMethodOptionSplitShipments" singularname="shippingMethodOptionSplitShipment" cfc="ShippingMethodOptionSplitShipment" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" inversejoincolumn="shipMethodOptSplitShipmentID" fkcolumn="orderItemID";
@@ -101,6 +102,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="sellOnBackOrderFlag" default="0" ormtype="boolean";
 
 	// Non persistent properties
 	property name="activeEventRegistrations" persistent="false";
@@ -128,6 +130,29 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
  	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
+
+	// @hint Returns options that can act as placeholders for gift card codes that remain to be assigned to fulfill order item quantity
+	public array function getProvidedGiftCardCodePlaceholderOptions( maxPlaceholders = getQuantityUndelivered() ) {
+		
+		// Only needed for gift card order items that will have gift card code manually provided and assigned
+		var options = [];
+		if (isGiftCardOrderItemAndManuallyProvideGiftCardCodes() && getQuantityUndelivered() > 0) {
+			// gift card code is one-to-one with order item quantity (eg. order item quantity is 5, then 5 gift card codes are required)
+			for (var q = 1; q <= arguments.maxPlaceholders; q++ ) {
+				var placeholder = {
+					name = "#getSku().getFormattedRedemptionAmount()# - #getSimpleRepresentation()#",
+					value = '',
+					skuID = getSku().getSkuID(),
+					orderItemID = getOrderItemID(),
+					sku = getSku()
+				};
+
+				arrayAppend(options, placeholder);
+			}
+		}
+		
+		return options;
+	}
  	
 	public numeric function getNumberOfUnassignedGiftCards(){
 
@@ -135,11 +160,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		}
 
-		var orderItemGiftRecipients = this.getOrderItemGiftRecipients();
 		var count = this.getQuantity();
 
-		for(var recipient in orderItemGiftRecipients){
-			count = count - recipient.getQuantity();
+		// Deduct quantity assigned to each orderItemGiftRecipient for total orderItem quantity
+		for(var orderItemGiftRecipient in this.getOrderItemGiftRecipients()){
+			count = count - orderItemGiftRecipient.getQuantity();
 		}
 
 		return count;
@@ -158,6 +183,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return this.getSku().isGiftCardSku();
 	}
 
+	public boolean function isGiftCardOrderItemAndManuallyProvideGiftCardCodes() {
+		return getSku().isGiftCardSku() && !getSku().getGiftCardAutoGenerateCodeFlag();
+	}
+
     public any function getAllOrderItemGiftRecipientsSmartList(){
         var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList();
         orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
@@ -174,18 +203,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag') && getOrderItemType().getSystemCode() neq 'oitReturn') {
-				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
-					maxQTY = getStock().getQuantity('QATS');
-					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
-						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
-					}
-				} else if(getSku().getQATS() <= maxQTY) {
+				
+				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY && getStock().getLocation().setting('locationRequiresQATSForOrdering')) {
 					
-					maxQTY = getSku().getQATS();
-					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
-						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+					maxQTY = getStock().getQuantity('QATS');
+				
+				} else if( getSku().getQATS() <= maxQTY ){
+					
+					if ( isNull( this.getOrder().getDefaultStockLocation() ) ){
+						maxQTY = getSku().getQATS();
+					}else{
+						maxQTY = getSku().getQuantity(quantityType='QATS', locationID=this.getOrder().getDefaultStockLocation().getLocationID() );
 					}
 				}
+				
+				if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
+					maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
+				}
+				
 			}
 		}
 		return maxQTY;
@@ -320,14 +355,28 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getDiscountAmount() {
 		var discountAmount = 0;
-
-		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
-		}
-
-		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
-			for(var childOrderItem in this.getChildOrderItems()){
-				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
+		
+		if(getNewFlag()){
+			for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
+				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
+			}
+			
+			if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				for(var childOrderItem in this.getChildOrderItems()){
+					discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
+				}
+			}
+		}else{
+			var promotionAppliedCollectionList = getService('promotionService').getPromotionAppliedCollectionList();
+			promotionAppliedCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			promotionAppliedCollectionList.addDisplayAggregate('discountAmount','SUM','discountAmountSUM');
+			var promotionAppliedSum = promotionAppliedCollectionList.getRecords();
+			
+			if(arrayLen(promotionAppliedSum)){
+				
+				discountAmount = promotionAppliedSum[1]['discountAmountSUM'];
+			}else{
+				discountamount = 0;
 			}
 		}
 
@@ -503,10 +552,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
-
-		for( var i=1; i<=arrayLen(getOrderDeliveryItems()); i++){
-			if(!getOrderDeliveryItems()[i].getNewFlag()) {
-				quantityDelivered += getOrderDeliveryItems()[i].getQuantity();
+		
+		if(!getNewFlag()){
+			var orderDeliveryItemCollectionList = getService('orderService').getOrderDeliveryItemCollectionList();
+			orderDeliveryItemCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			orderDeliveryItemCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
+			var orderDeliveryItemSum = orderDeliveryItemCollectionList.getRecords();
+			
+			if(arrayLen(orderDeliveryItemSum)){
+				quantityDelivered = orderDeliveryItemSum[1]['quantitySum'];	
 			}
 		}
 
@@ -515,6 +569,17 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
+		
+		if(!getNewFlag()){
+			
+			var stockReceiverItemsCollectionList = getService('stockService').getStockReceiverItemCollectionList();
+			stockReceiverItemsCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			stockReceiverItemsCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
+			var stockReceiverItemsSum = stockReceiverItemsCollectionList.getRecords();
+			if(arraylen(stockReceiverItemsSum)){
+				quantityReceived = stockReceiverItemsSum[1]['quantitySUM'];
+			}
+		}
 
 		for( var i=1; i<=arrayLen(getStockReceiverItems()); i++){
 			if(!getStockReceiverItems()[i].getNewFlag()) {
@@ -760,6 +825,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
 		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
+	
+	// Fulfillment Batches (one-to-many)
+	public void function addFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.setOrderItem(this);
+	}
+	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
+	   arguments.fulfillmentBatchItem.removeOrderItem(this);
+	}
+	
 
 	// ShippingMethodOptionSplitShipment (many-to-many - owner)
 	public void function addShippingMethodOptionSplitShipment(required any shippingMethodOptionSplitShipment) {

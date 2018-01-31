@@ -6,18 +6,36 @@
 
 <cfoutput>
 	<!--- ledger account inventory listing --->
+
+
 	<cfif ListFindNoCase('latAsset,latExpense,latRevenue,latCogs',rc.ledgerAccount.getLedgerAccountType().getSystemCode())>
-		<cfset laSmartList = rc.ledgerAccount.getInventorySmartList()/>
-		<cfset laSmartList.addOrder('createdDateTime|DESC')/>
-		<hb:HibachiListingDisplay smartList="#laSmartList#"
+		<cfset laCollectionList = rc.ledgeraccount.getInventoryCollectionList()/>
+		<cfset laCollectionList.setOrderBy('createdDateTime|DESC')/>
+		<cfset displayOptions = {isVisible=true}/>
+		<cfswitch expression="#rc.ledgerAccount.getLedgerAccountType().getSystemCode()#">
+			<cfcase value="latCogs">
+				<cfset laCollectionList.setDisplayProperties('vendorOrderDeliveryItem.vendorOrderItem.vendorOrder.vendorOrderNumber,stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode,cost,landedAmount,landedCost',displayOptions)/>
+			</cfcase>
+			<cfcase value="latAsset">
+				<cfset laCollectionList.setDisplayProperties('vendorOrderDeliveryItem.vendorOrderItem.vendorOrder.vendorOrderNumber,stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode,cost,orderDeliveryItem.orderItem.calculatedExtendedPrice',displayOptions)/>
+			</cfcase>
+			<cfcase value="latRevenue">
+				<cfset laCollectionList.setDisplayProperties('orderDeliveryItem.orderItem.order.orderNumber,orderDeliveryItem.orderItem.calculatedExtendedPrice',displayOptions)/>
+			</cfcase>
+			<cfcase value="latExpense">
+			</cfcase>
+		</cfswitch>
+		<cfset laCollectionList.addDisplayProperty(displayProperty='currencyCode',columnConfig=displayOptions)/>
+		<cfset laCollectionList.addDisplayProperty(displayProperty='quantityIn',columnConfig=displayOptions)/>
+		<cfset laCollectionList.addDisplayProperty(displayProperty='quantityOut',columnConfig=displayOptions)/>
+		<cfset laCollectionList.addDisplayProperty(displayProperty='createdDateTime',columnConfig=displayOptions)/>
+		<cfset laCollectionList.addDisplayProperty(displayProperty='inventoryID',columnConfig={isVisible=false})/>
+
+
+		<hb:HibachiListingDisplay collectionlist="#laCollectionList#"
+			recordEditAction="admin:entity.edit#lcase(laCollectionList.getCollectionObject())#"
+			recordDetailAction="admin:entity.detail#lcase(laCollectionList.getCollectionObject())#"
 		>
-			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-	        <hb:HibachiListingColumn propertyIdentifier="quantityIN" />
-	        <hb:HibachiListingColumn propertyIdentifier="quantityOUT" />
-	        <hb:HibachiListingColumn propertyIdentifier="stockReceiverItem.vendorOrderItem.vendorAlternateSkuCode.alternateSkuCode" />
-	        <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.orderItem.order.orderNumber" />
-	        <!---<hb:HibachiListingColumn propertyIdentifier="stockAdjustmentDeliveryItem.stockAdjustmentItem.stockAdjustment.stockAdjustmentID" />--->
-			
 		</hb:HibachiListingDisplay>
     </cfif>
 </cfoutput>

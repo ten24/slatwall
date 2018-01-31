@@ -9,10 +9,37 @@
 	
 <cfelse>
 	
-	
-		
-	
 	<cfoutput>
+		<script>
+			var updateApplyHref = function(id,baseBuildUrl){
+	        	var minValue = $('##min'+id).val() || '';
+	            var maxValue = $('##max'+id).val() || '';
+	            
+//	            remove previous params
+				var urlAndQueryParams = window.location.toString().split('?');
+				var queryParams = urlAndQueryParams[1].split("&");
+				var baseBuildUrlExistsFlag = false;
+				for(var i = 0; i < queryParams.length; i++){
+					if(queryParams[i].includes(baseBuildUrl)){
+						queryParams[i] = baseBuildUrl + minValue + "^" + maxValue;
+						baseBuildUrlExistsFlag = true;
+					}
+				}
+				var url = urlAndQueryParams[0];
+				if(queryParams && queryParams.length){
+					url += "?" + queryParams.join("&");
+				}
+				if(!baseBuildUrlExistsFlag){
+					if(urlAndQueryParams.length > 1){
+						url += "&";
+					} else {
+						url += "?";
+					}
+					url += baseBuildUrl + minValue + "^" + maxValue;
+				} 
+	            $('##apply'+id).attr('href',url);
+	        }
+		</script>
 		<div class="widget shop-categories">
     		<div class="widget-content">
     			<form action="##">

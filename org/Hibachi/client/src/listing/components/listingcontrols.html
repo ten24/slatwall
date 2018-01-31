@@ -1,13 +1,13 @@
 <div class="s-table-inner-nav s-detail-hidden-content">
     <div class="s-search-wrapper">
-        <span sw-listing-search data-collection-config="swListingControls.collectionConfig"
-                               data-paginator="swListingControls.paginator"
-                               data-get-collection="swListingControls.getCollection"
-                               data-toggle-filters="swListingControls.toggleFilters()"
-                               data-toggle-display-options="swListingControls.toggleDisplayOptions()"
-                               data-show-toggle-filters="swListingControls.showToggleFilters"
-                               data-show-toggle-display-options="swListingControls.showToggleDisplayOptions"
-         ></span>    
+        <span sw-listing-search  data-collection-config="swListingControls.collectionConfig"
+              data-paginator="swListingControls.paginator"
+              data-listing-id="{{ swListingControls.tableId }}"
+         ></span>
+        <!-- PERSONAL COLLECTIONS -->
+        <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.personalCollectionsClosed" id="j-personal-collections">
+            personal collections
+        </div>
         <!-- DISPLAY OPTIONS -->
         <div ng-if="swListingControls.collectionConfig" data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
@@ -21,7 +21,6 @@
                         data-joins="swListingControls.collectionConfig.joins"
                         data-group-bys="swListingControls.collectionConfig.groupBys"
 						data-properties-list="swListingControls.filterPropertiesList"
-						data-save-collection="swListingControls.saveCollection()"
 						data-callbacks="swListingControls.callbacks"
 						data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
 						data-base-entity-name="swListingControls.collectionConfig.baseEntityName"
@@ -33,7 +32,6 @@
 						data-column="column"
 						data-columns="swListingControls.collectionConfig.columns"
 						data-column-index="$index"
-						data-save-collection="swListingControls.saveCollection()"
 						data-properties-list="swListingControls.filterPropertiesList"
 						data-callbacks="swListingControls.callbacks"
 						data-order-by="swListingControls.collectionConfig.orderBy"
@@ -43,6 +41,7 @@
         </div>
         <!-- //DISPLAY OPTIONS -->
         <!-- ADD FILTER -->
+
         <div data-collapse="swListingControls.filtersClosed" id="j-advanced-filter">
             <span>&nbsp;</span>
             <div
@@ -52,7 +51,6 @@
                 data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
                 data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
                 data-filter-properties-list="swListingControls.filterPropertiesList"
-                data-save-collection="swListingControls.saveCollection()"
                 data-simple="swListingControls.simple">
             </div>
             <div ng-if="!swListingControls.simple">
@@ -63,14 +61,12 @@
 							<div class="row">
 								<!--filterGroups gets taken apart here -->
 								<ul class="s-filter-list list-unstyled"
-                sw-filter-groups
-                data-collection-config="swListingControls.collectionConfig"
-                data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
-                data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
-                data-filter-properties-list="swListingControls.filterPropertiesList"
+                                    sw-filter-groups
+                                    data-collection-config="swListingControls.collectionConfig"
+                                    data-filter-group="swListingControls.collectionConfig.filterGroups[0]"
+                                    data-filter-group-item="swListingControls.collectionConfig.filterGroups[0].filterGroup"
+                                    data-filter-properties-list="swListingControls.filterPropertiesList"
 	                                data-simple="swListingControls.simple"
-	                                
-                data-save-collection="swListingControls.saveCollection()"
 									>
 								</ul>
 							</div>
@@ -83,7 +79,7 @@
         </div>
         <!--  //ADD FILTER -->
     </div>
-    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters">
+    <div class="s-filter-wrapper"  ng-show="swListingControls.showFilters || swListingControls.simple">
         <div class="s-filters">
             <!-- Filter -->
             <div class="btn-group"

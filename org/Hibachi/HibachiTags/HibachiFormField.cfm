@@ -1,4 +1,4 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.fieldType" type="string" />
 	<cfparam name="attributes.fieldName" type="string" />
@@ -17,7 +17,7 @@
 	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
-	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#true#" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
 	<!---
 		attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1

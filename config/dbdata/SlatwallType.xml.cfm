@@ -42,6 +42,8 @@
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8b" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8b" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Product Type" systemCode="cttProductType" sortOrder="4" />
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8d" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8d" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Address" systemCode="cttAddress" sortOrder="5" />
 		<Record typeID="444df331c2c2c3b093212519e8c1ae8f" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,444df331c2c2c3b093212519e8c1ae8f" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Account" systemCode="cttAccount" sortOrder="6" />
+		<Record typeID="447df331c2c2c3b093212519e8c1ae8g" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b093212519e8c1ae8g" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Category" systemCode="cttCategory" sortOrder="7" />
+		<Record typeID="447df331c2c2c3b033312519e8c1ae8h" typeIDPath="444df32f9fb5d68f03f1af307b3d0644,447df331c2c2c3b033312519e8c1ae8h" parentTypeID="444df32f9fb5d68f03f1af307b3d0644" typeName="Attribute" systemCode="cttAttribute" sortOrder="7" />
 
 		<Record typeID="bb6fd9cff5afa5112ad66560b6a887dd" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd" parentTypeID="NULL" typeName="Event Registration Status Types" systemCode="eventRegistrationStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="b89ae134f66e795e53c858b92360ded7" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b89ae134f66e795e53c858b92360ded7" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" typeName="Attended" systemCode="erstAttended" sortOrder="1" />
@@ -93,6 +95,11 @@
 		<Record typeID="b718b6fadf084bdaa01e47f5cc1a8265" typeIDPath="af48db70f32b49328d9549d7fcf63589,b718b6fadf084bdaa01e47f5cc1a8265" parentTypeID="af48db70f32b49328d9549d7fcf63589" typeName="Unfulfilled" systemCode="ofstUnfulfilled" sortOrder="1" />
 		<Record typeID="159118d67de3418d9951fc629688e194" typeIDPath="af48db70f32b49328d9549d7fcf63589,159118d67de3418d9951fc629688e194" parentTypeID="af48db70f32b49328d9549d7fcf63589" typeName="Fulfilled" systemCode="ofstFulfilled" sortOrder="2" />
 		<Record typeID="fefc92c1d8184017aa65cdc882bdf636" typeIDPath="af48db70f32b49328d9549d7fcf63589,fefc92c1d8184017aa65cdc882bdf636" parentTypeID="af48db70f32b49328d9549d7fcf63589" typeName="Partially Fulfilled" systemCode="ofstPartiallyFulfilled" sortOrder="3" />
+		
+		<Record typeID="af48db70f32b49328d9549d7fcf63590" typeIDPath="af48db70f32b49328d9549d7fcf63590" parentTypeID="NULL" typeName="Order Fulfillment Inventory Status Types" systemCode="orderFulfillmentInvStatType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="b718b6fadf084bdaa01e47f5cc1a8266" typeIDPath="af48db70f32b49328d9549d7fcf63590,b718b6fadf084bdaa01e47f5cc1a8266" parentTypeID="af48db70f32b49328d9549d7fcf63590" typeName="Available" systemCode="ofisAvailable" sortOrder="1" />
+		<Record typeID="159118d67de3418d9951fc629688e195" typeIDPath="af48db70f32b49328d9549d7fcf63590,159118d67de3418d9951fc629688e195" parentTypeID="af48db70f32b49328d9549d7fcf63590" typeName="Unavailable" systemCode="ofisUnAvailable" sortOrder="2" />
+		<Record typeID="fefc92c1d8184017aa65cdc882bdf637" typeIDPath="af48db70f32b49328d9549d7fcf63590,fefc92c1d8184017aa65cdc882bdf637" parentTypeID="af48db70f32b49328d9549d7fcf63590" typeName="Partial" systemCode="ofisPartial" sortOrder="3" />
 
 		<Record typeID="5accbf4bc2f3ffcf702d75529a6692b6" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6" parentTypeID="NULL" typeName="Physical Status Types" systemCode="physicalStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="5accbf4cb81693960a8cf9c6ada9d220" typeIDPath="5accbf4bc2f3ffcf702d75529a6692b6,5accbf4cb81693960a8cf9c6ada9d220" parentTypeID="5accbf4bc2f3ffcf702d75529a6692b6" typeName="Open" systemCode="pstOpen" sortOrder="1" />

@@ -68,6 +68,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="phoneNumber" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountCreatedSite" edit="#rc.edit#">
 				
 				<!--- Authentication --->
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
@@ -76,6 +77,9 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
 				
+				<!--- Organization Flag --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#">
+
 				<!--- Parent Account --->
 				<cfif structKeyExists(rc,'parentAccountID')>
 					<input type="hidden" name="parentAccountID" value="#rc.parentAccountID#" />

@@ -80,7 +80,8 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		param name="arguments.rc.propertyIdentifiers" default="";
 		param name="arguments.rc.adminAttributes" default="";
 		param name="arguments.rc.fieldName" default="";
-	
+		param name="arguments.rc.methodIdentifier" default="";
+		
 		var smartList = getHibachiService().getServiceByEntityName( entityName=rc.entityName ).invokeMethod( "get#getHibachiService().getProperlyCasedShortEntityName( rc.entityName )#SmartList", {1=rc} );
 		
 		if( arguments.rc.fieldName == "assignedAccountAccountID-autocompletesearch" ){
@@ -94,6 +95,11 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		var admin = {};
 		if(len(arguments.rc.adminAttributes) && arguments.rc.adminAttributes neq "null" && isJSON(arguments.rc.adminAttributes)) {
 			admin = deserializeJSON(arguments.rc.adminAttributes);
+		}
+		
+		var methodIdentifier = {};
+		if(len(arguments.rc.methodIdentifier) && isJSON(arguments.rc.methodIdentifier) && arguments.rc.methodIdentifier != "null") {
+			methodIdentifier = deserializeJSON(arguments.rc.methodIdentifier);
 		}
 		
 		rc.ajaxResponse[ "recordsCount" ] = smartList.getRecordsCount();
@@ -120,7 +126,14 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			
 			// Add the simple values from property identifiers
 			for(var p=1; p<=arrayLen(piArray); p++) {
-				var value = record.getValueByPropertyIdentifier( propertyIdentifier=piArray[p], formatValue=true );
+				if(structKeyExists(methodIdentifier, piArray[p])) {
+					var attData = duplicate(methodIdentifier[piArray[p]]);
+					var value = record.invokeMethod(attData.methodName, attData.methodArguments);
+				} else {
+					var value = record.getValueByPropertyIdentifier( propertyIdentifier=piArray[p], formatValue=true );	
+				}
+
+				
 				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
 					thisRecord[ piArray[p] ] = value & " ";
 				} else {
@@ -131,9 +144,15 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			// Add any process object values
 			if(arrayLen(popArray)) {
 				var processObject = getTransient("#arguments.rc.processEntity#_#arguments.rc.processContext#");
-				processObject.invokeMethod("set#record.getClassName()#", {1=record});
+				if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
+					processObject.invokeMethod("set#arguments.rc.recordAlias#", {1=record});
+				}else{
+					processObject.invokeMethod("set#record.getClassName()#", {1=record});
+				}
 				processObject.invokeMethod("set#record.getPrimaryIDPropertyName()#", {1=record.getPrimaryIDValue()});
 				processObject.invokeMethod("set#rc.processEntity#", {1=processEntity});
+
+
 				for(var p=1; p<=arrayLen(popArray); p++) {
 					var attributes = {
 						object=processObject,
@@ -141,6 +160,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						edit=true,
 						displayType='plain'
 					};
+
 					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(template="./HibachiTags/HibachiPropertyDisplay.cfm", attributeCollection=attributes);
 				}
 			}
@@ -151,11 +171,11 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 				// Add the admin buttons
 				if(structKeyExists(admin, "detailAction")) {
 					if(structKeyExists(admin,"detailActionProperty")){
-						detailActionProperty=listlast(admin.detailActionProperty,'.');
-						detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
+						var detailActionProperty=listlast(admin.detailActionProperty,'.');
+						var detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
 					}else{
-						detailActionProperty=record.getPrimaryIDPropertyName();
-						detailActionPropertyValue=record.getPrimaryIDValue();
+						var detailActionProperty=record.getPrimaryIDPropertyName();
+						var detailActionPropertyValue=record.getPrimaryIDValue();
 					}
 					var attributes = {
 						action=admin.detailAction,
@@ -211,6 +231,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					if(structKeyExists(admin,"processActionProperty")){
 						var processActionProperty=listlast(admin.processActionProperty,'.');
 						var processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.processActionProperty);
+					}else if(structKeyExists(arguments.rc, 'recordAlias') && len(arguments.rc.recordAlias)){
+						var processActionProperty=arguments.rc.recordAlias & 'ID';
+						var processActionPropertyValue=record.getPrimaryIDValue();
 					}else{
 						var processActionProperty=record.getPrimaryIDPropertyName();
 						var processActionPropertyValue=record.getPrimaryIDValue();
@@ -336,6 +359,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		} else {
 			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
 		}
+		
+		var activeCurrencies = getService('currencyService').getAllActiveCurrencyIDList();
+		
 		var thisDataArr = [];
 		for(var location in smartList.getRecords()) {
 			var thisData = {};
@@ -354,11 +380,23 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
 			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
 			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			
+			for(var currencyCode in activeCurrencies){
+				thisData["averageCost#currencyCode#"] = sku.getAverageCost(location=location,currencyCode=currencyCode);
+				thisData["averageLandedCost#currencyCode#"] = sku.getAverageLandedCost(location=location,currencyCode=currencyCode);	
+			}
+			thisData['activeCurrencies']= activeCurrencies;
+			
 			if(sku.getBundleFlag()){
 				thisData["MQATSBOM"] = sku.getQuantity('MQATSBOM',location.getLocationID());
 			}
 			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
 			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
+			if ( location.setting('locationExcludeFromQATS') ){
+				thisData["ExcludedLocation"] = true;
+			}else{
+				thisData["ExcludedLocation"] = false;
+			}
 			ArrayAppend(thisDataArr,thisData);
 		}
 		arguments.rc.ajaxResponse["inventoryData"] = thisDataArr;

@@ -53,10 +53,11 @@ component displayname="Promotion" entityname="SlatwallPromotion" table="SwPromot
 	property name="promotionName" ormtype="string";
 	property name="promotionSummary" ormtype="string" length="1000";
 	property name="promotionDescription" ormtype="string" length="4000";
-	property name="activeFlag" ormtype="boolean" default="1";
+	property name="activeFlag" ormtype="boolean" default="0";
 	
 	// Related Object Properties (many-to-one)
 	property name="defaultImage" cfc="Image" fieldtype="many-to-one" fkcolumn="defaultImageID";
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID" hb_optionsNullRBKey="define.none";
 	
 	// Related Object Properties (one-to-many)
 	property name="promotionPeriods" singularname="promotionPeriod" cfc="PromotionPeriod" fieldtype="one-to-many" fkcolumn="promotionID" cascade="all-delete-orphan" inverse="true";    

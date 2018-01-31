@@ -109,8 +109,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Get this sku's taxCategory
 				var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
 
-				// Make sure the taxCategory isn't null
-				if(!isNull(taxCategory)) {
+				// Make sure the taxCategory isn't null and is active
+				if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 
 					// Setup the orderItem level taxShippingAddress
 					structDelete(taxAddresses, "taxShippingAddress");
@@ -258,8 +258,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Get this sku's taxCategory
 					var taxCategory = this.getTaxCategory(orderItem.getSku().setting('skuTaxCategory'));
 	
-					// Make sure the taxCategory isn't null
-					if(!isNull(taxCategory)) {
+					// Make sure the taxCategory isn't null and is active
+					if(!isNull(taxCategory) && taxCategory.getActiveFlag()) {
 	
 						// Setup the orderItem level taxShippingAddress
 						structDelete(taxAddresses, "taxShippingAddress");
@@ -403,7 +403,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Remove all existing tax calculations
 			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem( orderItem );
+				var appliedTax = orderItem.getAppliedTaxes()[ta];
+				if(isNull(appliedTax.getManualTaxAmountFlag()) || !appliedTax.getManualTaxAmountFlag()){
+					appliedTax.removeOrderItem( orderItem );
+				}
 			}
 
 		}

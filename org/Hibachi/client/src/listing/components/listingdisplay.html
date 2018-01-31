@@ -1,5 +1,5 @@
 <div class="row s-detail-content-wrapper">
-    
+
     <!-- These will not contain any real markup -->
     <span ng-if="swListingDisplay.multiSlot">
         <div  ng-transclude="columns"></div>
@@ -8,19 +8,22 @@
         <div  ng-transclude="disableRules"></div>
     </span>
     <!-------------------------------------------->
-    
+
     <!-- The s-shrink-view class can be removed to show expanded view -->
     <div class="col-xs-12 s-results-listing">
         <div class="s-detail-body">
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
+            
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
                     data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
-                    data-get-collection="swListingDisplay.getCollection"
-                    data-paginator="swListingDisplay.paginator"
                     data-show-filters="swListingDisplay.showFilters"
+                    data-show-export="swListingDisplay.showExport"
+                    data-show-toggle-search="swListingDisplay.showSearch"
+                    data-show-print-options="swListingDisplay.showPrintOptions"
+                    data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
@@ -49,6 +52,12 @@
                                 <ul class="dropdown-menu pull-right">
                                     <li>
                                         <a href data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
+                                    </li>
+                                    <li>
+                                        <a href data-ng-click="swListingDisplay.printCurrentList()">Print</a>
+                                    </li>
+                                    <li>
+                                        <a href data-ng-click="swListingDisplay.emailCurrentList()">Email</a>
                                     </li>
                                     <li>
                                         <a href
@@ -86,25 +95,28 @@
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" data-ng-value="swListingDisplay.multiselectValues" />
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
-                                    <input type="checkbox" 
-                                           id="exampleID" 
-                                           data-ng-model="swListingDisplay.isCurrentPageRecordsSelected" 
-                                           data-ng-click="swListingDisplay.selectCurrentPageRecords()" 
+                                    <input type="checkbox"
+                                           id="exampleID"
+                                           data-ng-model="swListingDisplay.isCurrentPageRecordsSelected"
+                                           data-ng-click="swListingDisplay.selectCurrentPageRecords()"
                                            data-ng-disabled="!swListingDisplay.edit">
                                     <label for="exampleID"></label>
                                 </div>
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
+
                             <th data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
+
                                 <a href data-ng-if="!(column.persistent == false) && !column.hasHeaderView && !column.hasCellView" data-ng-click="swListingDisplay.toggleOrderBy(column)" class="s-sort-arrows">
                                     <svg data-ng-show="swListingDisplay.showOrderBy" class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                                         <g transform="translate(0.5, 0.5)">
-                                            <polygon class="s-ascending" data-ng-class="{'s-active':swListingDisplay.columnOrderBy(column) == 'DESC'}" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon>
-                                            <polygon class="s-descending" data-ng-class="{'s-active':swListingDisplay.columnOrderBy(column) == 'ASC'}" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon>
+                                            <polygon class="s-ascending" data-ng-class="{'s-active':swListingDisplay.columnOrderByIndex(column) == 'DESC'}" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon>
+                                            <polygon class="s-descending" data-ng-class="{'s-active':swListingDisplay.columnOrderByIndex(column) == 'ASC'}" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon>
                                         </g>
                                     </svg>
-                                </a>
+                                </a><span ng-show="column.sorting.priority > 1" ng-bind="':'+column.sorting.priority"></span>
                                 <span data-ng-if="column.hasHeaderView">
                                     <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
                                 </span>
@@ -113,12 +125,17 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords" 
-                           sw-draggable-container 
-                           data-draggable="swListingDisplay.sortable" 
+                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
+                           sw-draggable-container
+                           data-draggable="swListingDisplay.sortable"
                            data-draggable-records="swListingDisplay.collectionData.pageRecords"
                            data-listing-id="{{swListingDisplay.tableID}}"
                            >
+
+                        <tr data-ng-if="(swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecords.length == 0) ||
+                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.records.length == 0) ">
+                            <td colspan="{{swListingDisplay.columnCount}}">No Records Found.</td>            
+                        </tr>
 
                         <tr data-ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords"
                             data-ng-show="pageRecord.dataIsVisible !== false"
@@ -186,42 +203,53 @@
                                     data-record-index="pageRecordKey"
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
-                                    data-expandable-rules="swListingDisplay.expandableRules"
-                                    
-                            >
+                                    data-expandable-rules="swListingDisplay.expandableRules">
                             	<sw-listing-display-cell
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-page-record="pageRecord"
                                     data-cell-view="{{column.cellView}}"
-                                    data-expandable-rules="swListingDisplay.expandableRules"
-                            	>
+                                    data-expandable-rules="swListingDisplay.expandableRules">
                             	</sw-listing-display-cell>
 							</td>
 
                             <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
-                                
+
                                 <!-- Save -->
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="saveAction"></div>
                                 </span>
-                                
+
                                 <!-- Detail -->
-                                <sw-action-caller
-                                        ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
-                                        data-action="{{swListingDisplay.recordDetailAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
-                                        data-class="btn btn-default btn-xs"
-                                        data-icon="eye-open"
-                                        data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordDetailModal"
-                                        data-is-angular-route="swListingDisplay.isAngularRoute"
-                                >
-                                </sw-action-caller>
-                                
+                                <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionIdProperty+'='+pageRecord[swListingDisplay.recordDetailActionIdKey]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                    </sw-action-caller>
+                                </span>
+                                <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                    </sw-action-caller>
+                                </span>
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="detailAction"></div>
-                                </span> 
+                                </span>
                                 <!--Edit-->
                                 <sw-action-caller
                                         ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
@@ -234,7 +262,7 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="editAction"></div>
                                 </span>
@@ -251,7 +279,7 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="deleteAction"></div>
                                 </span>
@@ -268,7 +296,7 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
-                                
+
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="addAction"></div>
                                 </span>

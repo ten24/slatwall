@@ -84,6 +84,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Related Object Properties (many-to-many - owner)
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
+	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductSite" fkcolumn="productID" inversejoincolumn="siteID";
 
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -125,6 +126,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productBundleGroupsCount" type="numeric" persistent="false";
 	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
+	property name="placedOrderItemsCollectionList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
@@ -203,15 +205,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			variables.productTypeOptions = [];
 
-			if(arrayLen(records) > 1){
-				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
-			}
-
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
 				recordStruct['value']=records[i].getProductTypeID();
 				arrayAppend(variables.productTypeOptions, recordStruct);
+			}
+			variables.productTypeOptions = getService('hibachiUtilityService').arrayOfStructsSort(variables.productTypeOptions,'name','asc');
+			if(arrayLen(records) > 1){
+				ArrayPrepend(variables.productTypeOptions, {name=getHibachiScope().RBKey('processObject.Product_Create.selectProductType'),value=""});
 			}
 		}
 
@@ -303,7 +305,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Non-Persistent Helpers
 
 	public boolean function getAllowAddOptionGroupFlag() {
- 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() eq 1;
+ 		return this.getOptionGroupCount() gt 0 || this.getSkusCount() >= 1;
  	}
 
 	//TODO: Unused function 
@@ -316,11 +318,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	public string function getProductURL() {
-		return "/#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		return getService('ProductService').getProductUrlByUrlTitle(getUrlTitle());
 	}
 
 	public string function getListingProductURL() {
-		return "#setting('globalURLKeyProduct')#/#getURLTitle()#/";
+		var productUrl = getProductUrl();
+		return right(productUrl,len(productUrl)-1);
 	}
 
 	public string function getTemplate() {
@@ -412,7 +415,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 					var resizeImageData = arguments.resizeSizes[s];
 					resizeImageData.imagePath = getService('imageService').getProductImagePathByImageFile(skuData['imageFile']);
-
+					resizeImageData.missingImagePath = missingImagePath;
 					arrayAppend(
 						thisImage.resizedImagePaths, 
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData)
@@ -456,7 +459,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					resizeImageData.alt = imageAltString;
 					resizeImageData.missingImagePath = missingImagePath;
 					resizeImageData.imagePath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
-
+					
 					arrayAppend(
 						thisImage.resizedImagePaths,
 						getService("imageService").getResizedImagePath(argumentCollection=resizeImageData) 
@@ -545,7 +548,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
 
-	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true) {
+	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true, string locationID ) {
 
 		// Setup return structure
 		var skuOptionDetails = {};
@@ -554,7 +557,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		var selectedOptionGroupsByOptionID = {};
 
 		var optionCollection = getService('optionService').getOptionCollectionList();
-		optionCollection.setDisplayProperties('
+		
+		var displayProperties = '
 			optionID,
 			optionName,
 			optionCode,
@@ -565,11 +569,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			optionGroup.optionGroupID,
 			optionGroup.sortOrder,
 			skus.calculatedQATS,
-			skus.skuID
-		');
+			skus.skuID'
+		;
+		
+		if (structKeyExists(arguments, 'locationID')){
+			displayProperties = listAppend(displayProperties, 'skus.skuLocationQuantities.calculatedQATS'); 
+		}
+		
+		optionCollection.setDisplayProperties(displayProperties);
 		optionCollection.addFilter('skus.product.productID',this.getProductID());
-		optionCollection.addFilter('skus.calculatedQATS',0,'>');
-		optionCollection.addFilter('skus.activeFlag',1);
+		
+		if (structKeyExists(arguments, 'locationID')){
+			optionCollection.addFilter("skus.skuLocationQuantities.location.locationID",arguments.locationID);
+			optionCollection.addFilter("skus.skuLocationQuantities.calculatedQATS",0,'>');
+		} else{
+			optionCollection.addFilter('skus.calculatedQATS',0,'>');
+		}
+		
+		optionCollection.addFilter('skus.activeFlag',arguments.activeFlag);
+		optionCollection.addFilter('skus.publishedFlag',arguments.publishedFlag);
+			
 		var optionRecords = optionCollection.getRecords();
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
@@ -712,15 +731,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// Quantity
-	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID) {
-
+	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID, string currencyCode="") {
+		//if no currency code is specified then first level cache key is just the quantitytype otherwise it is composite example QOHUSD
+		var cacheKey = arguments.quantityType&arguments.currencyCode;
 		// First we check to see if that quantityType is defined, if not we need to go out an get the specific struct, or value and cache it
-		if(!structKeyExists(variables, arguments.quantityType)) {
+		if(!structKeyExists(variables, cacheKey)) {
 
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
-				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
+			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
+				var params = {productID=getProductID(), productRemoteID=getRemoteID()};
+				if(len(arguments.currencyCode)){
+					params.currencyCode=arguments.currencyCode;
+				}
+				variables[ cacheKey] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", params);
 			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
-				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
+				variables[ cacheKey ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
 			}
@@ -728,44 +752,44 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		// If this is a calculated quantity, then we can just return it
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
-			return variables[ arguments.quantityType ];
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", cacheKey) ) {
+			return variables[ cacheKey ];
 		}
 
 		// If we have a stockID
 		if( structKeyExists( arguments, "stockID" ) ) {
-			if( structKeyExists(variables[ quantityType ].stocks, arguments.stockID) ) {
-				return variables[ arguments.quantityType ].stocks[stockID];
+			if( structKeyExists(variables[ cacheKey ].stocks, arguments.stockID) ) {
+				return variables[ cacheKey ].stocks[stockID];
 			}
 			return 0;
 		}
 
 		// If we have a skuID & locationID
 		if( structKeyExists( arguments, "skuID" ) && structKeyExists(arguments, "locationID") ) {
-			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) && structKeyExists(variables[ quantityType ].skus[ arguments.skuID ].locations, arguments.locationID) ) {
-				return variables[ arguments.quantityType ].skus[ arguments.skuID ].locations[ arguments.locationID ];
+			if( structKeyExists(variables[ cacheKey ].skus, arguments.skuID) && structKeyExists(variables[ cacheKey ].skus[ arguments.skuID ].locations, arguments.locationID) ) {
+				return variables[ cacheKey ].skus[ arguments.skuID ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}
 
 		// If we have a skuID
 		if( structKeyExists( arguments, "skuID") ) {
-			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) ) {
-				return variables[ arguments.quantityType ].skus[ arguments.skuID ][ arguments.quantityType ];
+			if( structKeyExists(variables[ cacheKey ].skus, arguments.skuID) ) {
+				return variables[ cacheKey ].skus[ arguments.skuID ][ arguments.quantityType ];
 			}
 			return 0;
 		}
 
 		// If we have a locationID
 		if( structKeyExists( arguments, "locationID") ) {
-			if( structKeyExists(variables[ arguments.quantityType ].locations, arguments.locationID) ) {
-				return variables[ arguments.quantityType ].locations[ arguments.locationID ];
+			if( structKeyExists(variables[ cacheKey ].locations, arguments.locationID) ) {
+				return variables[ cacheKey ].locations[ arguments.locationID ];
 			}
 			return 0;
 		}
 
 		// If we don't have anything, then just return for the entire product
-		return variables[ arguments.quantityType ][ arguments.quantityType ];
+		return variables[ cacheKey ][ arguments.quantityType ];
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
@@ -1133,6 +1157,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 
 		return variables.placedOrderItemsSmartList;
+	}
+	
+	public any function getPlacedOrderItemsCollectionList() {
+		if(!structKeyExists(variables, "placedOrderItemsCollectionList")) {
+			variables.placedOrderItemsCollectionList = getService("OrderService").getOrderItemCollectionList();
+			variables.placedOrderItemsCollectionList.addFilter('sku.product.productID', getProductID());
+			variables.placedOrderItemsCollectionList.addFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled','IN');
+		}
+
+		return variables.placedOrderItemsCollectionList;
 	}
 
 	public any function getEventRegistrationsSmartList() {

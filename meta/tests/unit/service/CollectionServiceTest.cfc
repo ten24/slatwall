@@ -105,7 +105,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		permission.setPermissionGroup(permissionGroup);
 		permissionGroup.addPermission(permission);
 		
-		request.slatwallScope.getService('HibachiAuthenticationService').clearEntityPermissionDetails();
+		request.slatwallScope.getService('HibachiCacheService').resetCachedKey("EntityPermissionDetails");
 		
 		assert(!isNull(permission.getPermissionGroup()));
 		
@@ -589,6 +589,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(!isNull(accountCollection.getAccountCollection()));
 
 	}
+	
 }
 
 

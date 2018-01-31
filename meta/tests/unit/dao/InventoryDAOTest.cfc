@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
@@ -188,6 +188,79 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var result = variables.dao.getQOH(mockProduct.getProductID());
 		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
 	}
+	
+	/**
+	* @test
+	*/
+	public any function getQOHTest_currencyCode() {
+		var mockProduct = createMockProduct();
+		var mockLocation = createMockLocation();
+		var mockSku = createMockSku(mockProduct.getProductID());
+		var mockSku2 = createMockSku(mockProduct.getProductID());
+		
+		var stockData = {
+			stockID = '',
+			sku = {
+				skuID = mockSku.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock = createPersistedTestEntity('Stock', stockData);
+		
+		var stockData2 = {
+			stockID = '',
+			sku = {
+				skuID = mockSku2.getSkuID()
+			},
+			location = {
+				locationID = mockLocation.getLocationID()
+			}
+		};
+		var mockStock2 = createPersistedTestEntity('Stock', stockData2);
+		
+		var inventoryData1 = {
+			inventoryID = '',
+			stock =  {
+				stockID = mockStock.getStockID()
+			},
+			quantityIn = 100,
+			quantityOut = 30,
+			currencyCode='USD'
+		};
+		var mockInventory1 = createPersistedTestEntity('Inventory', inventoryData1);
+		
+		var inventoryData2 = {
+			inventoryID = '',
+			stock =  {
+				stockID = mockStock.getStockID()
+			},
+			quantityIn = 200,
+			quantityOut = 20,
+			currencyCode='USD'
+		};
+		var mockInventory2 = createPersistedTestEntity('Inventory', inventoryData2);
+		
+		var inventoryData3 = {
+			inventoryID = '',
+			stock =  {
+				stockID = mockStock2.getStockID()
+			},
+			quantityIn = 22,
+			quantityOut = 11,
+			currencyCode='AED'
+		};
+		var mockInventory3 = createPersistedTestEntity('Inventory', inventoryData3);
+		
+		var currencyCode = 'USD';
+		var result = variables.dao.getQOH(productID=mockProduct.getProductID(),currencyCode='USD');
+		
+		assertEquals(250, result[1].QOH, 'It should be (100 + 200) - (30 + 20) = 250');
+		
+		result = variables.dao.getQOH(productID=mockProduct.getProductID(),currencyCode='AED');
+		assertEquals(11, result[1].QOH, 'It should be (22) - (11) = 11');
+	}
 		
 	/**
 	* @test
@@ -269,7 +342,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				orderItemID = mockOrderItem.getOrderItemID()
 			}]
 		};
-		var mockOrder = createPersistedTestEntity('Order', orderData);
+		
+		var mockOrder = createTestEntity('Order', orderData);
+		injectMethod(mockOrder, this, 'returnVoid', 'preInsert');
+		persistTestEntity(mockOrder);
 		
 		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem1);
 		mockOrderItem.addOrderDeliveryItem(mockOrderDeliveryItem2);

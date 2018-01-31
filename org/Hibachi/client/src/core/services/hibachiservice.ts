@@ -219,16 +219,20 @@ class HibachiService{
 		}
 	};
 	newEntity= (entityName) =>{
-		var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
 
-
-		if(angular.element(document.body).injector().has(entityServiceName)){
-			var entityService = angular.element(document.body).injector().get(entityServiceName);
-			 if(entityService['new'+entityName]){
-				return entityService['new'+entityName]();
-			 }
+		if (entityName != undefined){
+			var entityServiceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
+			if(angular.element(document.body).injector().has(entityServiceName)){
+				var entityService = angular.element(document.body).injector().get(entityServiceName);
+				let functionObj = entityService['new'+entityName];
+				if (entityService['new'+entityName] != undefined && !!(functionObj && functionObj.constructor && functionObj.call && functionObj.apply)){
+					return entityService['new'+entityName]();
+				}
+			}
+			return new this._jsEntities[entityName];	
+ 
 		}
-		return new this._jsEntities[entityName];
+	
 	};
 	getEntityDefinition= (entityName) =>{
 		return this._jsEntities[entityName];
@@ -355,7 +359,7 @@ class HibachiService{
 	getPropertyDisplayOptions = (entityName,options) => {
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayOptions&entityName='+entityName;
 		var params:any = {};
-		params.property = options.property || '';
+		params.property = options.property || options.propertyIdentifier || '';
 		if(angular.isDefined(options.argument1))  {
 			params.argument1 = options.argument1;
 		}
@@ -416,6 +420,7 @@ class HibachiService{
 
 		return request.promise;
 	};
+
 	getExistingCollectionsByBaseEntity= (entityName) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;

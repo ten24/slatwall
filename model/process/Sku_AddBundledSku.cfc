@@ -91,7 +91,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public array function getMeasurementUnitOptions(){
-		if(!isNull(getBundleSku()) && getBundleSku().getInventoryTrackBy() != 'Quantity'){
+		if(!isNull(getBundleSku()) && getBundleSku().getInventoryTrackBy() == 'Measurement'){
 			var measurementUnitCollection = getService('hibachiService').getMeasurementUnitCollectionList();
 			measurementUnitCollection.setDisplayProperties('unitCode,unitName');
 			measurementUnitCollection.addFilter('measurementType', getBundleSku().getInventoryMeasurementUnit().getMeasurementType());

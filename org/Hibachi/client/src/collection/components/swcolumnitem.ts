@@ -5,38 +5,55 @@ class SWColumnItem{
 		var directive:ng.IDirectiveFactory = (
 			$log,
 			hibachiPathBuilder,
-			collectionPartialsPath
+			collectionPartialsPath,
+            observerService
 		) => new SWColumnItem(
 			$log,
 			hibachiPathBuilder,
-			collectionPartialsPath
+			collectionPartialsPath,
+            observerService
 		);
 		directive.$inject = [
 			'$log',
 			'hibachiPathBuilder',
-			'collectionPartialsPath'
+			'collectionPartialsPath',
+            'observerService'
 		];
 		return directive;
 	}
+	//@ngInject
 	constructor(
 		$log,
 		hibachiPathBuilder,
-		collectionPartialsPath
+		collectionPartialsPath,
+        observerService
 	){
 
 		return {
 			restrict: 'A',
-			require:"^swDisplayOptions",
+			require:{
+                swDisplayOptions:"?^swDisplayOptions",
+				swListingControls:"?^swListingControls"
+            },
 			scope:{
 				column:"=",
 				columns:"=",
 				columnIndex:"=",
-				saveCollection:"&",
-				propertiesList:"=",
+				saveCollection:"&?",
+				propertiesList:"<",
 				orderBy:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
-			link: function(scope, element,attrs,displayOptionsController){
+			link: function(scope, element,attrs,controller,observerService){
+                if(!scope.saveCollection && controller.swListingControls){
+
+                    scope.saveCollection = ()=>{
+						controller.swListingControls.collectionConfig.columns=scope.columns;
+						controller.swDisplayOptions.columns=scope.columns;
+                        controller.swListingControls.saveCollection();
+                    }
+                }
+
                 scope.editingDisplayTitle=false;
 
                 scope.editDisplayTitle = function(){
@@ -55,7 +72,6 @@ class SWColumnItem{
                     scope.editingDisplayTitle = false;
                 };
 
-				$log.debug('displayOptionsController');
 				if(angular.isUndefined(scope.column.sorting)){
 					scope.column.sorting = {
 						active:false,
@@ -65,7 +81,6 @@ class SWColumnItem{
 				}
 
 				scope.toggleVisible = function(column){
-					$log.debug('toggle visible');
 					if(angular.isUndefined(column.isVisible)){
 						column.isVisible = false;
 					}
@@ -74,7 +89,6 @@ class SWColumnItem{
 				};
 
 				scope.toggleSearchable = function(column){
-					$log.debug('toggle searchable');
 					if(angular.isUndefined(column.isSearchable)){
 						column.isSearchable = false;
 					}
@@ -209,12 +223,12 @@ class SWColumnItem{
 				};
 
 				scope.removeColumn = function(columnIndex){
-					$log.debug('remove column');
-					$log.debug(columnIndex);
-					removeSorting(scope.columns[columnIndex],true);
-					displayOptionsController.removeColumn(columnIndex);
-					updateOrderBy();
-					scope.saveCollection();
+                    if(scope.columns[columnIndex].isDeletable){
+						removeSorting(scope.columns[columnIndex],true);
+                        controller.swDisplayOptions.removeColumn(columnIndex);
+                        updateOrderBy();
+                        scope.saveCollection();
+                    }
 				};
 			}
 		};

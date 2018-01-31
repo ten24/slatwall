@@ -103,7 +103,7 @@
 		            
 		            <ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
 		            
-		            <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber#</ns:PhoneNumber>
+		            <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber()#</ns:PhoneNumber>
 	           </ns:Contact>
 	        	<ns:Address>
 	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
@@ -143,7 +143,7 @@
            
            <ns:LabelSpecification>
 	           <ns:LabelFormatType>COMMON2D</ns:LabelFormatType>
-	           <ns:ImageType>PDF</ns:ImageType>
+	           <ns:ImageType>#trim(setting('labelImageType'))#</ns:ImageType>
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
 	        

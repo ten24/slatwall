@@ -82,8 +82,13 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].secureMethods, itemName)) {
 				
 				var pgOK = false;
-				for(var p=1; p<=arrayLen(arguments.account.getPermissionGroups()); p++){
-					pgOK = authenticateSubsystemSectionItemActionByPermissionGroup(subsystem=subsystemName, section=sectionName, item=itemName, permissionGroup=arguments.account.getPermissionGroups()[p]); 
+				var accountPermissionGroups = arguments.account.getPermissionGroups();
+				for(var p=1; p<=arrayLen(accountPermissionGroups); p++){
+					pgOK = authenticateSubsystemSectionItemActionByPermissionGroup(subsystem=subsystemName, section=sectionName, item=itemName, permissionGroup=accountPermissionGroups[p]);
+					if(pgOK){
+						break;
+					}
+
 				}
 				
 				if(pgOk) {
@@ -176,8 +181,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		// Loop over each permission group for this account, and ckeck if it has access
-		for(var i=1; i<=arrayLen(arguments.account.getPermissionGroups()); i++){
-			var pgOK = authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=arguments.account.getPermissionGroups()[i]);
+		var accountPermissionGroups = arguments.account.getPermissionGroups();
+		for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
+			var pgOK = authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=accountPermissionGroups[i]);
 			if(pgOK) {
 				return true;
 			}
@@ -249,8 +255,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		// Loop over each permission group for this account, and ckeck if it has access
-		for(var i=1; i<=arrayLen(arguments.account.getPermissionGroups()); i++){
-			var pgOK = authenticateEntityPropertyByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, permissionGroup=arguments.account.getPermissionGroups()[i]);
+		var accountPermissionGroups = arguments.account.getPermissionGroups();
+		for(var i=1; i<=arrayLen(accountPermissionGroups); i++){
+			var pgOK = authenticateEntityPropertyByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, permissionGroup=accountPermissionGroups[i]);
 			if(pgOK) {
 				return true;
 			}
@@ -265,7 +272,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	public struct function getEntityPermissionDetails() {
 		
 		// First check to see if this is cached
-		if(!structKeyExists(variables, "entityPermissionDetails")){
+		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
 			
 			// Create place holder struct for the data
 			var entityPermissions = {};
@@ -335,15 +342,16 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			
 			// Update the cached value to be used in the future
-			variables.entityPermissionDetails = entityPermissions;
+			getService('HibachiCacheService').setCachedValue('entityPermissionDetails',entityPermissions);
+			
 		}
-		return variables.entityPermissionDetails;
+		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
 	}
 	
 	public struct function getActionPermissionDetails(){
 		
 		// First check to see if this is cached
-		if(!structKeyExists(variables, "actionPermissionDetails")){
+		if(!getService('HibachiCacheService').hasCachedValue('actionPermissionDetails')){
 			
 			// Setup the all permisions structure which will later be set to the variables scope
 			var allPermissions={};
@@ -357,10 +365,9 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 				
 			} // End Subsytem Loop
-			
-			variables.actionPermissionDetails = allPermissions;
+			getService('HibachiCacheService').setCachedValue('actionPermissionDetails',allPermissions);
 		}
-		return variables.actionPermissionDetails;
+		return getService('HibachiCacheService').getCachedValue('actionPermissionDetails');
 	}
 	
 	public any function getSubsytemActionPermissionDetails( required string subsystemName ) {
@@ -436,17 +443,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		return listToArray(getApplicationValue("hibachiConfig").authenticationSubsystems);
 	}
 	
-	public void function clearEntityPermissionDetails(){
-		if(structKeyExists(variables, "entityPermissionDetails")) {
-			structDelete(variables, "entityPermissionDetails");
-		}
-	}
-	
-	public void function clearActionPermissionDetails(){
-		if(structKeyExists(variables, "actionPermissionDetails")) {
-			structDelete(variables, "actionPermissionDetails");
-		}
-	}
 	
 	// ============================ PRIVATE HELPER FUNCTIONS =======================================
 	
@@ -526,6 +522,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Pull the permissions detail struct out of the permission group
 		var permissions = arguments.permissionGroup.getPermissionsByDetails();
 		
+		if( structKeyExists(permissions.entity.entities, arguments.entityName)  && arguments.propertyName == this.getPrimaryIDPropertyNameByEntityName(arguments.entityName)){
+			return true;
+		}
+
 		// Check first to see if this entity was defined
 		if(structKeyExists(permissions.entity.entities, arguments.entityName) && structKeyExists(permissions.entity.entities[arguments.entityName].properties, arguments.propertyName) && !isNull(permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag"))) {
 			if( permissions.entity.entities[ arguments.entityName ].properties[ arguments.propertyName ].invokeMethod("getAllow#arguments.crudType#Flag") ) {

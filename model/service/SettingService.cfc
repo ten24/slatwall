@@ -85,6 +85,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"productType",
 			"product",
 			"content",
+			"category",
 			"account",
 			"address",
 			"image",
@@ -94,23 +95,29 @@ component extends="HibachiService" output="false" accessors="true" {
 			"site",
 			"task",
 			"sku",
-			"physical"
+			"attribute",
+			"physical",
+			"location",
+			"integration"
 		];
 	}
 
 	public struct function getSettingLookupOrder() {
 		return {
 			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
+			location=["locationIDPath"],
 			locationConfiguration = ["location.locationID"	],
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
 			content = ["contentIDPath","site.siteID"],
+			category = ["categoryIDPath",'site.siteID'],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
 			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
-			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
+			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ],
+			account = ["accountCreatedSite.siteID"]
 		};
 	}
 
@@ -141,6 +148,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			addressMetaDescriptionString = {fieldType="textarea", defaultValue="${name}"},
 			addressMetaKeywordsString = {fieldType="textarea", defaultValue="${name}"},
 
+			//Attribute
+			attributeDisplayTemplate = {fieldType="select"},
+
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
 			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
@@ -160,6 +170,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			contentTemplateCacheInSeconds = {fieldType="text",defaultValue="0"},
 			contentEnableTrackingFlag = {fieldType="yesno",defaultValue=0},
+			
+			//Category
+			categoryDisplayTemplate = {fieldType="select"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
@@ -207,6 +220,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
 			globalCurrencyType = {fieldType="select",defaultValue="Local"},
 			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
+			globalDeploySitesAndApplicationsOnUpdate = {fieldtype="yesno", defaultValue=1}, 
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
 			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
 			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
@@ -229,11 +243,13 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
 			globalSmartListGetAllRecordsLimit = {fieldType="text",defaultValue=250},
 			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
+			globalURLKeyAttribute = {fieldType="text",defaultValue="att"},
 			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalURLKeyAccount = {fieldType="text",defaultValue="ac"},
 			globalURLKeyAddress = {fieldType="text",defaultValue="ad"},
+			globalURLKeyCategory = {fieldType="text",defaultValue="cat"},
 			globalUsageStats = {fieldType="yesno",defaultValue=0},
 			globalUseExtendedSession = {fieldtype="yesno", defaultValue=0},
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
@@ -243,7 +259,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
+			imageMaxSize = {fieldType="text",defaultValue="10"},
 
+			// Location
+			locationRequiresQATSForOrdering = {fieldType="yesno",defaultValue=1},
+			locationExcludeFromQATS = {fieldType="yesno",defaultValue=0},
+			
 			// Location Configuration
 			locationConfigurationCapacity = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
@@ -266,6 +287,16 @@ component extends="HibachiService" output="false" accessors="true" {
 				defaultValue=getLedgerAccountService().getExpenseLedgerAccountIDList()
 			},
 			physicalDefaultExpenseLedgerAccount = {fieldType="select", defaultValue="54ce88cfbe2ae9636311ce9c189d9c18"},
+			physicalEligibleAssetLedgerAccount = {
+				fieldType="listingMultiselect", 
+				listingMultiselectEntityName="LedgerAccount",
+				listingMultiselectFilters=[{
+					propertyIdentifier="ledgerAccountType.systemCode",
+					value="latAsset"
+				}],
+				defaultValue=getLedgerAccountService().getAssetLedgerAccountIDList()
+			},
+			physicalDefaultAssetLedgerAccount = {fieldType="select", defaultValue="a54668fcc2ff2c8413c7b85b6927a850"},
 
 			// Product
 			productDisplayTemplate = {fieldType="select"},
@@ -320,6 +351,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
+			skuGiftCardRecipientRequired = {fieldType="yesno", defaultValue=1},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
@@ -393,7 +425,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
  
 	private string function extractPackageNameBySettingName (required string settingName){
-		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[a-zA-Z])',arguments.settingName,1,true);
+		var substringInfo = REFIND('\integration(?!.*\\)(.*?)(?=[A-Z])',arguments.settingName,1,true);
 		var substring = Mid(arguments.settingName,substringInfo.pos[1],substringInfo.len[1]);
 		var packageName = Mid(substring,12,len(substring));
 		return packageName;
@@ -433,6 +465,16 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Address", arguments.settingObject.getSite().getSiteID() );
 				}
 				return getContentService().getDisplayTemplateOptions( "address" );
+			case "attributeDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "attribute", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "attribute" );
+			case "categoryDisplayTemplate":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getContentService().getDisplayTemplateOptions( "category", arguments.settingObject.getSite().getSiteID() );
+				}
+				return getContentService().getDisplayTemplateOptions( "category" );
 			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
@@ -547,6 +589,9 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getHibachiEventService().getEntityEventNameOptions('before');
 			case "physicalDefaultExpenseLedgerAccount":
 				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latExpense');
+				return optionsSL.getRecords();
+			case "physicalDefaultAssetLedgerAccount":
+				var optionsSL = getLedgerAccountService().getLedgerAccountOptionsSmartlist('latAsset');
 				return optionsSL.getRecords();
 		}
 
@@ -723,7 +768,24 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-		// Build out the cached key
+		// Automatically add the site-level context, we may find a setting value within the context of the site handling the request
+		if (!isNull(getHibachiScope().getCurrentRequestSite())) {
+
+			// Make sure a site entity does not already exist in the filterEntities, we do not want to unecessarily add the additional site combo that can't exist
+			var siteFound = false;
+			for(var entity in arguments.filterEntities) {
+				if (entity.getClassName() == 'Site') {
+					siteFound = true;
+					break;
+				}
+			}
+
+			if (!siteFound) {
+				arrayAppend(arguments.filterEntities, getHibachiScope().getCurrentRequestSite());
+			}
+		}
+
+		// Build out the cached key (handles sites)
 		var cacheKey = "setting_#arguments.settingName#";
 		if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 			cacheKey &= "_#arguments.object.getPrimaryIDValue()#";
@@ -733,6 +795,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				cacheKey &= "_#entity.getPrimaryIDValue()#";
 			}
 		}
+
 		// Get the setting details using the cacheKey to try and get it from cache first
 		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
 	}
@@ -750,11 +813,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public boolean function isGlobalSetting(required string settingName){
-		return left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration";
+		return left(arguments.settingName, 6) == "global";
 	}
 
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
-
+		
 		// Create some placeholder Var's
 		var foundValue = false;
 		var settingRecord = "";
@@ -763,13 +826,36 @@ component extends="HibachiService" output="false" accessors="true" {
 			settingValueFormatted = "",
 			settingID = "",
 			settingRelationships = {},
-			settingInherited = false
+			settingInherited = false,
+			settingValueResolvedLevel = "undefined",
+			siteProvided = false,
+			siteContext = {
+				siteID = "",
+				siteCode = ""
+			}
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
+
+		// Method argument validation for site-level setting value resolution
+		if (isNull(arguments.object) || arguments.object.getClassName() != 'Site') {
+			for (var entity in arguments.filterEntities) {
+				if (entity.getClassName() == 'Site') {
+					settingDetails.siteProvided = true;
+					settingDetails.siteContext.siteID = entity.getSiteID();
+					settingDetails.siteContext.siteCode = entity.getSiteCode();
+					break;
+				}
+			}
+		} else {
+			settingDetails.siteProvided = true;
+			settingDetails.siteContext.siteID = arguments.object.getSiteID();
+			settingDetails.siteContext.siteCode = arguments.object.getSiteCode();
+		}
 
 		//if we have a default value initialize it
 		if(structKeyExists(settingMetaData, "defaultValue")) {
 			settingDetails.settingValue = settingMetaData.defaultValue;
+			settingDetails.settingValueResolvedLevel = "global.metadata";
 
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
@@ -787,6 +873,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				settingDetails.settingValue = settingRecord.settingValue;
 				settingDetails.settingID = settingRecord.settingID;
 				settingDetails.settingInherited = false;
+				settingDetails.settingValueResolvedLevel = "global";
 			}
 
 		// If this is not a global setting, but one with a prefix, then we need to check the relationships
@@ -800,24 +887,54 @@ component extends="HibachiService" output="false" accessors="true" {
 			// If an object was passed in, then first we can look for relationships based on that persistent object
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 
-				// First Check to see if there is a setting the is explicitly defined to this object
+				// Setup settingRelationships based on filterEntities with all primary keys and values
 				settingDetails.settingRelationships[ arguments.object.getPrimaryIDPropertyName() ] = arguments.object.getPrimaryIDValue();
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
 
-				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-				if(settingRecord.recordCount) {
-					foundValue = true;
-					settingDetails.settingValue = settingRecord.settingValue;
-					settingDetails.settingID = settingRecord.settingID;
-					settingDetails.settingInherited = false;
-				} else {
-					structClear(settingDetails.settingRelationships);
+				// Attempting lowest object level value resolution with consideration for site context if necessary
+				// A site exists
+				if (settingDetails.siteProvided) {
+					// Trying object-site level value resolution with the siteID and any other specified relationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingInherited = false;
+						settingDetails.settingValueResolvedLevel = 'object.site';
+					}
 				}
+
+				// Attempt object level value resolution without site context if necessary
+				if (!foundValue) {
+					// Delete any siteID from settingRelationship if present
+					structDelete(settingDetails.settingRelationships, 'siteID');
+
+					// Now try just object level value resolution without siteID in settingRelationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingInherited = false;
+						settingDetails.settingValueResolvedLevel = 'object';
+
+						// object-site inherits from object
+						if (settingDetails.siteProvided) {
+							settingDetails.settingInherited = true;
+						}
+
+					// Still not found, resets settingRelationships for next step: ancestor lookup, it re-processes the filterEntities
+					} else {
+						structClear(settingDetails.settingRelationships);
+					}
+				}
+				
 				// If we haven't found a value yet, check to see if there is a lookup order
 				if(!foundValue && structKeyExists(getSettingLookupOrder(), arguments.object.getClassName()) && structKeyExists(getSettingLookupOrder(), settingPrefix)) {
-
+					
 					var hasPathRelationship = false;
 					var pathList = "";
 					var relationshipKey = "";
@@ -849,24 +966,51 @@ component extends="HibachiService" output="false" accessors="true" {
 							}
 							settingDetails.settingRelationships[ relationshipKey ] = relationshipValue;
 						}
+						
+						// Setup settingRelationships based on filterEntities with all primary keys and values
 						for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 							settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 						}
 
-						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-						if(settingRecord.recordCount) {
-							foundValue = true;
-							settingDetails.settingValue = settingRecord.settingValue;
-							settingDetails.settingID = settingRecord.settingID;
-
-							// Add custom logic for cmsContentID
-							if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
-								settingDetails.settingInherited = false;
-							} else {
-								settingDetails.settingInherited = true;
+						// Site was provided so we need to try and resolve on object's ancestor-site level and possibly object's ancestor level after
+						if (settingDetails.siteProvided) {
+							// Trying object's ancestor-site level value resolution with the siteID and any other specified relationships
+							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+							if(settingRecord.recordCount) {
+								foundValue = true;
+								settingDetails.settingValue = settingRecord.settingValue;
+								settingDetails.settingID = settingRecord.settingID;
+								settingDetails.settingValueResolvedLevel = "ancestor.site";
+	
+								// Add custom logic for cmsContentID
+								if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
+									settingDetails.settingInherited = false;
+								} else {
+									settingDetails.settingInherited = true;
+								}
 							}
-						} else {
-							structClear(settingDetails.settingRelationships);
+						}
+
+						// Attempt object's ancestor level value resolution without site context if necessary
+						if (!foundValue) {
+							// Delete any siteID from settingRelationship if present
+							structDelete(settingDetails.settingRelationships, 'siteID'); 
+							settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+							if(settingRecord.recordCount) {
+								foundValue = true;
+								settingDetails.settingValue = settingRecord.settingValue;
+								settingDetails.settingID = settingRecord.settingID;
+								settingDetails.settingValueResolvedLevel = "ancestor";
+	
+								// Add custom logic for cmsContentID
+								if(structKeyExists(settingDetails.settingRelationships, "cmsContentID") && settingDetails.settingRelationships.cmsContentID == arguments.object.getValueByPropertyIdentifier('cmsContentID')) {
+									settingDetails.settingInherited = false;
+								} else {
+									settingDetails.settingInherited = true;
+								}
+							} else {
+								structClear(settingDetails.settingRelationships);
+							}
 						}
 
 						if(nextPathListIndex==0) {
@@ -877,21 +1021,49 @@ component extends="HibachiService" output="false" accessors="true" {
 				}
 			}
 
-			// If we still haven't found a value yet, lets look for this with no relationships
+			// Look at the highest-levels if we still haven't found a value yet, no lower-level relationships associated with setting value
 			if(!foundValue) {
-				settingDetails.settingRelationships = {};
+				structClear(settingDetails.settingRelationships);
+
+				// Setup settingRelationships based on filterEntities with all primary keys and values
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
-				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
-				if(settingRecord.recordCount) {
-					foundValue = true;
-					settingDetails.settingValue = settingRecord.settingValue;
-					settingDetails.settingID = settingRecord.settingID;
-					if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
-						settingDetails.settingInherited = true;
-					} else {
-						settingDetails.settingInherited = false;
+
+				// Site was auto provided so we need to try and resolve on object's site level and possibly global level also
+				if (settingDetails.siteProvided) {
+					// Trying site level value resolution with the siteID and any other specified relationships
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingValueResolvedLevel = "site";
+
+						if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+							settingDetails.settingInherited = true;
+						} else {
+							settingDetails.settingInherited = false;
+						}
+					}
+				}
+
+				// Attempt global level value resolution without site context
+				if (!foundValue) {
+					structDelete(settingDetails.settingRelationships, 'siteID');
+
+					settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
+					if(settingRecord.recordCount) {
+						foundValue = true;
+						settingDetails.settingValue = settingRecord.settingValue;
+						settingDetails.settingID = settingRecord.settingID;
+						settingDetails.settingValueResolvedLevel = "global";
+
+						if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+							settingDetails.settingInherited = true;
+						} else {
+							settingDetails.settingInherited = false;
+						}
 					}
 				}
 			}
@@ -1034,8 +1206,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			}
 
 
-			for(var serverInstance in this.getServerInstanceSmartList().getRecords()){
+			var serverInstance = getBeanFactory().getBean('hibachiCacheService').getServerInstanceByServerInstanceIPAddress(getHibachiScope().getServerInstanceIPAddress(),true);
+			var serverInstanceSmartList = this.getServerInstanceSmartList();
+			serverInstanceSmartList.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#serverinstance.serverInstanceID != '#serverInstance.getServerInstanceID()#'");
+			for(var serverInstance in serverInstanceSmartList.getRecords()){
 				serverInstance.setServerInstanceExpired(true);
+
 			}
 		}
 
