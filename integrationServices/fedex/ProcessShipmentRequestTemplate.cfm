@@ -72,7 +72,7 @@
         <ns:RequestedShipment>
 	        <ns:ShipTimestamp>#DateFormat(Now(),'yyyy-mm-dd')#T#TimeFormat(Now(),'hh:mm:ss')#</ns:ShipTimestamp>
 	        <ns:DropoffType>REGULAR_PICKUP</ns:DropoffType>
-	        <ns:ServiceType>STANDARD_OVERNIGHT</ns:ServiceType>
+	        <ns:ServiceType>#arguments.requestBean.getShippingIntegrationMethod()#</ns:ServiceType>
 	        <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
 	        <ns:TotalWeight>
 	            <ns:Units>LB</ns:Units>
