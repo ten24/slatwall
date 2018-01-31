@@ -213,7 +213,7 @@ Notes:
 
 									<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
 									<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
-										<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
+										<cfif option['value'] eq rc.processObject.getFulfillmentMethodID()>
 											<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
 										</cfif>
 									</cfloop>
@@ -245,6 +245,9 @@ Notes:
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
+
+										<!--- Estimated Shipping Date --->
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="estimatedShippingDate" edit="#rc.edit#" />
 
 										<!--- Account Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />

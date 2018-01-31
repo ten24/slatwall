@@ -41029,7 +41029,10 @@
 	            $scope.propertyName = 'collectionConfig';
 	        }
 	        $scope.paginator = paginationService.createPagination();
+<<<<<<< HEAD
 	        $scope.paginator.notifyById = false;
+=======
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	        $scope.appendToCollection = function () {
 	            if ($scope.paginator.getPageShow() === 'Auto') {
 	                $log.debug('AppendToCollection');
@@ -42087,8 +42090,13 @@
 	                    else {
 	                        value = pageRecord[column.propertyIdentifier.replace(scope.collectionConfig.baseEntityAlias + '_', '').replace(/\./g, '_')];
 	                    }
+<<<<<<< HEAD
 	                    if (angular.isDefined(column.type) && column.type != 'none' && $injector.has(column.type + 'Filter')) {
 	                        return $filter(column.type)(value);
+=======
+	                    if (angular.isDefined(column.ormtype) && column.ormtype != 'none' && $injector.has(column.ormtype + 'Filter')) {
+	                        return $filter(column.ormtype)(value);
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	                    }
 	                    else {
 	                        return value;
@@ -48414,14 +48422,21 @@
 	        ];
 	        this.autoScrollPage = 1;
 	        this.autoScrollDisabled = false;
+<<<<<<< HEAD
 	        this.notifyById = true;
+=======
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	        this.getSelectedPageShowOption = function () {
 	            return _this.selectedPageShowOption;
 	        };
 	        this.pageShowOptionChanged = function (pageShowOption) {
 	            _this.setPageShow(pageShowOption.value);
 	            _this.currentPage = 1;
+<<<<<<< HEAD
 	            _this.notify('swPaginationAction', { type: 'setPageShow', payload: _this.getPageShow() });
+=======
+	            _this.observerService.notifyById('swPaginationAction', _this.uuid, { type: 'setPageShow', payload: _this.getPageShow() });
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	        };
 	        this.getTotalPages = function () {
 	            return _this.totalPages;
@@ -48465,7 +48480,11 @@
 	        this.setCurrentPage = function (currentPage) {
 	            _this.currentPage = currentPage;
 	            //this.observerService.notifyById('swPaginationAction', this.uuid,{action:'pageChange', currentPage});
+<<<<<<< HEAD
 	            _this.notify('swPaginationAction', { type: 'setCurrentPage', payload: _this.getCurrentPage() });
+=======
+	            _this.observerService.notifyById('swPaginationAction', _this.uuid, { type: 'setCurrentPage', payload: _this.getCurrentPage() });
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	        };
 	        this.previousPage = function () {
 	            if (_this.getCurrentPage() == 1)
@@ -48475,7 +48494,11 @@
 	        this.nextPage = function () {
 	            if (_this.getCurrentPage() < _this.getTotalPages()) {
 	                _this.setCurrentPage(_this.getCurrentPage() + 1);
+<<<<<<< HEAD
 	                _this.notify('swPaginationAction', { type: 'nextPage', payload: _this.getCurrentPage() });
+=======
+	                _this.observerService.notifyById('swPaginationAction', _this.uuid, { type: 'nextPage', payload: _this.getCurrentPage() });
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	            }
 	        };
 	        this.hasPrevious = function () {
@@ -48543,6 +48566,7 @@
 	        this.selectedPageShowOption = this.pageShowOptions[0];
 	        this.observerService.attach(this.setPageRecordsInfo, 'swPaginationUpdate', this.uuid);
 	    }
+<<<<<<< HEAD
 	    Pagination.prototype.notify = function (event, parameters) {
 	        if (this.notifyById === true) {
 	            this.observerService.notifyById(event, this.uuid, parameters);
@@ -48551,6 +48575,8 @@
 	            this.observerService.notify(event, parameters);
 	        }
 	    };
+=======
+>>>>>>> 61e8e9bd58fc99947896dfebfb75aea717e0b7b7
 	    return Pagination;
 	}());
 	exports.Pagination = Pagination;

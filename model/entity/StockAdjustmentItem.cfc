@@ -70,6 +70,10 @@ component entityname="SlatwallStockAdjustmentItem" table="SwStockAdjustmentItem"
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 		
+	public boolean function isNotClosed(){
+		return variables.stockAdjustment.getStockAdjustmentStatusType().getSystemCode() != "sastClosed";
+	}	
+		
 	// For use with Adjustment Items interface, get one stock that we will use displaying sku info. 
 	public any function getOneStock() {
 		if(!isNull(variables.fromStock)) {

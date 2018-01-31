@@ -429,6 +429,7 @@ class SWOrderItem{
 					deletePromise.then(function(result){
  						if(!result.errors || !Object.keys(result.errors).length){
  							delete scope.orderItem;
+							window.location.reload();
  						}
                         scope.paginator.getCollection();
 					});

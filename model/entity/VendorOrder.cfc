@@ -86,12 +86,17 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	// Non persistent properties
 	property name="addVendorOrderItemSkuOptionsSmartList" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
+	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="costDistributionTypeOptions" persistent="false";
 	property name="totalCost" persistent="false" hb_formatType="currency";
 	property name="totalQuantity" persistent="false" hb_formatType="currency";
 	property name="totalWeight" persistent="false" hb_formatType="currency";
+	
+	public string function getStatusCode() {
+		return getVendorOrderStatusType().getSystemCode();
+	}
 
 	public numeric function getTotalQuantity(){
 		if(!structKeyExists(variables,'totalQuantity')){

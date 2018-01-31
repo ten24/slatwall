@@ -86,7 +86,7 @@ Notes:
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderNumber,orderOpenDateTime,"/>	
 	</cfif>
-	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,orderType.typeName,orderStatusType.typeName,orderOrigin.orderOriginName,createdDateTime,calculatedTotal'/>
+	<cfset displayPropertyList &= 'account.firstName,account.lastName,account.company,orderOrigin.orderOriginName,createdDateTime,calculatedTotal'/>
 	<cfset rc.orderCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
@@ -95,7 +95,8 @@ Notes:
 			isDeletable=true
 		}
 	)/>
-	
+	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderType.typeName",title="#getHibachiScope().rbkey('entity.order.orderType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
+	<cfset rc.orderCollectionList.addDisplayProperty(displayProperty="orderStatusType.typeName",title="#getHibachiScope().rbkey('entity.order.orderStatusType')#",columnConfig={isVisible=true,isSearchable=true,isDeletable=true} ) />
 	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='orderID',columnConfig={
 		isVisible=false,
 		isSearchable=false,
@@ -103,6 +104,7 @@ Notes:
 	})/>
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
+		usingPersonalCollection="true"
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"
 	>

@@ -436,6 +436,37 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
 		}
 	}
+	
+	public void function detailStockAdjustment(required struct rc){
+		super.genericDetailMethod('StockAdjustment',arguments.rc);
+	}
+	
+	public void function editStockAdjustmentItem(required struct rc){
+		var stockAdjustment = getService('StockService').getStockAdjustmentItem(arguments.rc.stockAdjustmentItemID).getStockAdjustment();
+		var statusType = stockAdjustment.getstockAdjustmentStatusType().getSystemCode();
+		if(statusType == "sastClosed"){
+			getHibachiScope().showMessage(rbkey('validate.edit.StockAdjustmentItem'),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailstockadjustmentitem",maintainQueryString=true,rc=arguments.rc);
+		} else {
+			arguments.rc.fRedirectAction = 'admin:entity.editstockadjustmentitem';
+			// Call the generic logic
+			super.genericDetailMethod('StockAdjustmentItem',arguments.rc);
+		}
+	}
+	
+	public void function editStockAdjustment(required struct rc) {
+		var stockAdjustment = getService('StockService').getStockAdjustment(arguments.rc.stockAdjustmentID);
+		var statusType = stockAdjustment.getstockAdjustmentStatusType().getSystemCode();
+		
+		if(statusType == "sastClosed"){
+			getHibachiScope().showMessage(rbkey("validate.edit.StockAdjustment"),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailstockadjustment",maintainQueryString=true,rc=arguments.rc);
+		} else {
+			arguments.rc.fRedirectAction = 'admin:entity.editstockadjustment';
+			// Call the generic logic
+			super.genericEditMethod(entityName="StockAdjustment", rc=arguments.rc);
+		}
+	}
 
 	// Task
 	public void function saveTask(required struct rc){

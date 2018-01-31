@@ -19,7 +19,7 @@
 	            	></sw-selection>
 	            	
 	            </td>
-	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible" class="{{column.type}}">
+	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible" class="{{column.ormtype}}">
                     <span data-ng-bind="::getCellValue(pageRecord, column)"></span>
                 </td>
 	            <td class="s-edit-elements" ng-if="angularLinks === true">

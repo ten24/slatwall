@@ -87,6 +87,7 @@
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
+		<cfdump var="#attributes.multiselectFieldName#" abort="1">
 		<cfoutput>
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
@@ -94,12 +95,14 @@
 			<span ng-init="
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
 			"></span>
-			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
+				data-title="'#attributes.title#'"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
-			    data-edit="false"
+			    data-collection="#scopeVariableID#"
+			    data-edit="#attributes.edit#"
+			    data-name="#scopeVariableID#"
 				data-has-search="true"
 				record-edit-action="#attributes.recordEditAction#"
 				record-detail-action="#attributes.recordDetailAction#"
@@ -110,8 +113,13 @@
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
-			    edit="true"
-			    data-using-personal-collection="#attributes.usingPersonalCollection#"
+	 			data-using-personal-collection="#attributes.usingPersonalCollection#"
+			    <cfif len(attributes.multiselectFieldName)>
+				  data-multiselectable="#attributes.multiselectFieldName#"
+	 			  data-multiselect-field-name="#attributes.multiselectFieldName#"
+	 			  data-multiselect-values="#attributes.multiselectValues#"
+	 			  data-multi-slot="true"
+				</cfif>
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>
@@ -433,6 +441,7 @@
 					<thead>
 
 						<tr>
+							<input type="hidden" name="OrderBy" value="" />
 							<!--- Selectable --->
 							<cfif thistag.selectable>
 								<cfset class="select">
@@ -473,7 +482,7 @@
 										<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
 									</cfif>
 								</cfsilent>
-								<th style="min-width:85px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
+								<th style="min-width:120px" class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif><cfif structKeyExists(column, "methodIdentifier") AND len(column.methodIdentifier)> data-methodIdentifier='#column.methodIdentifier#'</cfif>>
 									<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
 										#column.title#
 									<cfelse>

@@ -59,8 +59,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="testOrderFlag" ormtype="boolean";
-	// Calculated Properties
-	property name="calculatedTotal" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -102,6 +100,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	//Calculated Properties
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalItems" ormtype="integer";
+	property name="calculatedTotalQuantity" ormtype="integer";
+	property name="calculatedTotalSaleQuantity" ormtype="integer";
+	property name="calculatedTotalReturnQuantity" ormtype="integer";
+	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 
 	// Non persistent properties
 	property name="addOrderItemSkuOptionsSmartList" persistent="false";
@@ -115,6 +126,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="dynamicChargeOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="dynamicCreditOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="eligiblePaymentMethodDetails" persistent="false";
+	property name="eligibleSavedAccountPaymentMethods" persistent="false";
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
@@ -164,6 +176,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
+	
 
 	public void function init(){
 		setOrderService(getService('orderService'));
@@ -207,6 +220,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 		return true;
+	}
+	
+	public boolean function isNotClosed(){
+		return getOrderStatusType().getSystemCode() != "ostClosed";
 	}
 	
 	public boolean function hasCreditCardPaymentMethod(){
@@ -507,6 +524,40 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			variables.eligiblePaymentMethodDetails = getService("paymentService").getEligiblePaymentMethodDetailsForOrder( order=this );
 		}
 		return variables.eligiblePaymentMethodDetails;
+	}
+
+	public array function getEligibleSavedAccountPaymentMethods() {
+		if(!structKeyExists(variables, "eligibleSavedAccountPaymentMethods")) {
+			variables.eligibleSavedAccountPaymentMethods = [];
+			
+			if (!isNull(getAccount()) && isArray(getEligiblePaymentMethodDetails())) {
+
+				var eligiblePaymentMethodIDList = "";
+
+				// Create list of eligible paymentMethodID for order to use for accountPaymentMethod filtering
+				for (var eligiblePaymentMethodBean in getEligiblePaymentMethodDetails()) {
+					eligiblePaymentMethodIDList = listAppend(eligiblePaymentMethodIDList, eligiblePaymentMethodBean.getPaymentMethod().getPaymentMethodID());
+				}
+
+				/* TODO: Can't use collections without refactoring HibachiUtilityService.buildPropertyIdentifierDataStruct 
+				var accountPaymentMethodCollection = getAccount().getAccountPaymentMethodsCollectionList();
+				accountPaymentMethodCollection.addFilter('paymentMethod.paymentMethodID','#eligiblePaymentMethodIDList#','IN');
+				accountPaymentMethodCollection.addFilter('activeFlag', 1);
+				variables.eligibleSavedAccountPaymentMethods = accountPaymentMethodCollection.getRecords();
+				*/
+				if(len(eligiblePaymentMethodIDList)){
+					var accountPaymentMethodSmartList = getAccount().getAccountPaymentMethodsSmartList();
+					accountPaymentMethodSmartList.addInFilter('paymentMethod.paymentMethodID','#eligiblePaymentMethodIDList#');
+					accountPaymentMethodSmartList.addFilter('activeFlag', 1);
+					variables.eligibleSavedAccountPaymentMethods = accountPaymentMethodSmartList.getRecords();
+				}else{ 
+					variables.eligibleSavedAccountPaymentMethods = [];
+					
+				}
+			}
+		}
+		
+		return variables.eligibleSavedAccountPaymentMethods;
 	}
 
 	public numeric function getItemDiscountAmountTotal() {
@@ -1491,5 +1542,9 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 
+
 	// ===================  END:  ORM Event Hooks  =========================
+
+	
 }
+

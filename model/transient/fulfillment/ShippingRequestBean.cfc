@@ -72,7 +72,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="shipFromStateCode" type="string" default="";
 	property name="shipFromPostalCode" type="string" default="";
 	property name="shipFromCountryCode" type="string" default="";
-
+	property name="shippingIntegrationMethod" type="string" default="";
 	property name="contactPersonName" type="string" default="";
 	property name="contactCompany" type="string" default="";
 	property name="contactPhoneNumber" type="string" default="";
@@ -102,6 +102,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		populateShippingItemsWithOrderFulfillment(arguments.orderFulfillment);
 		populateShipToWithOrderFulfillment( arguments.orderFulfillment );
 		populateContactWithOrderFulfillment( arguments.orderFulfillment );
+		populateShippingMethodRateNameFromOrderFulfillment(arguments.orderFulfillment);
 	}
 
 	public void function populateContactWithOrderFulfillment(required any orderFulfillment){
@@ -185,6 +186,14 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 
 	public void function populateShippingItemsWithOrderFulfillment(required any orderFulfillment){
 		populateShippingItemsWithOrderFulfillmentItems(arguments.orderFulfillment.getOrderFulfillmentItems());
+	}
+	
+	public void function populateShippingMethodRateNameFromOrderFulfillment( required any orderFulfillment ){
+		var name = "STANDARD_OVERNIGHT";
+		if (!isNull(orderFulfillment) && !isNull(orderFulfillment.getShippingMethodRate()) && !isNull(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod()) && len(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod())){
+			name = orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod();
+		}
+		this.setShippingIntegrationMethod(name);
 	}
 
 	public void function populateShippingItemsWithOrderFulfillmentItems(required array orderFulfillmentItems, boolean clear=false) {
