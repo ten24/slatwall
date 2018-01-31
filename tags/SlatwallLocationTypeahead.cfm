@@ -6,6 +6,8 @@
 <cfparam name="attributes.selectedFormatString" type="string" default="Store Locations >> ${locationName}"/><!--- Store Locations >> ${locationName} --->
 <cfparam name="attributes.showActiveLocationsFlag" type="boolean" default="false" />
 <cfparam name="attributes.ignoreParentLocationsFlag" type="boolean" default="false" />
+<cfparam name="attributes.topLevelLocationID" type="string" default="" />
+<cfparam name="attributes.selectedLocationID" type="string" default="" />
 <cfparam name="attributes.maxrecords" type="string" default="25" />
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
@@ -23,17 +25,16 @@
    				</cfif>
 			</div>
 			</cfif>
-			<div ng-show="'#attributes.edit#' == 'true'" ng-cloak>
-				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4" style="padding-left: 0px;">
+			<div class="form-group" ng-show="'#attributes.edit#' == 'true'" ng-cloak>
+				<label for="#attributes.locationPropertyName#" class="control-label col-sm-4">
 					<span class="s-title">#attributes.locationLabelText#</span>
 				</label>
-				<div class="col-sm-8" style="padding-left:10px;padding-right:0px">
+				<div class="col-sm-8">
 					<!--- Generic Configured Location --->
-					<cfif !isNull(attributes.property) && !isNull(attributes.property.getLocationID())>
-						<cfset initialEntityID = "#attributes.property.getLocationID()#">
-					</cfif>
-					<cfif isNull(initialEntityID)>
-						<cfset initialEntityID = "">
+					<cfif not len(attributes.selectedLocationID)>
+						<cfif !isNull(attributes.property) && !isNull(attributes.property.getLocationID())>
+							<cfset attributes.selectedLocationID = attributes.property.getLocationID()>
+						</cfif>
 					</cfif>
 					<sw-typeahead-input-field
 							data-entity-name="Location"
@@ -48,7 +49,7 @@
 					        data-filter-flag="true"
 					        data-selected-format-string="#attributes.selectedFormatString#"
 					        data-field-name="#attributes.locationPropertyName#"
-					        data-initial-entity-id="#initialEntityID#"
+					        data-initial-entity-id="#attributes.selectedLocationID#"
 					        data-max-records="#attributes.maxrecords#"
 					        data-order-by-list="locationName|ASC">
 
@@ -77,6 +78,9 @@
 		                        	</cfif>
 		                        	<cfif attributes.ignoreParentLocationsFlag EQ true>
 		                        		<sw-collection-filter data-property-identifier="parentLocation" data-comparison-operator="is not" data-comparison-value="null"></sw-collection-filter>
+									</cfif>
+									<cfif len(attributes.topLevelLocationID)>
+										<sw-collection-filter data-property-identifier="locationIDPath" data-comparison-operator="like" data-comparison-value="%#attributes.topLevelLocationID#%"></sw-collection-filter>
 		                        	</cfif>
 		                        </sw-collection-filters>
 					    	</cfif>

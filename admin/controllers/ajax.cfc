@@ -70,6 +70,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	this.anyAdminMethods=listAppend(this.anyAdminMethods,'updateSortOrder');
 	
 	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods,'updateInventoryTable');
 	
 	public void function before(required struct rc) {
 		getFW().setView("admin:ajax.default");
@@ -104,7 +105,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		
 		rc.ajaxResponse[ "recordsCount" ] = smartList.getRecordsCount();
 		rc.ajaxResponse[ "pageRecords" ] = [];
-		rc.ajaxResponse[ "pageRecordsCount" ] = arrayLen(smartList.getPageRecords());
+		rc.ajaxResponse[ "pageRecordsCount" ] = arrayLen(smartListPageRecords);
 		rc.ajaxResponse[ "pageRecordsShow"] = smartList.getPageRecordsShow();
 		rc.ajaxResponse[ "pageRecordsStart" ] = smartList.getPageRecordsStart();
 		rc.ajaxResponse[ "pageRecordsEnd" ] = smartList.getPageRecordsEnd();
@@ -117,7 +118,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			var processEntity = getHibachiService().getServiceByEntityName( entityName=rc.processEntity ).invokeMethod( "get#getHibachiService().getProperlyCasedShortEntityName( rc.processEntity )#", {1=rc.processEntityID} );
 		}
 		
-		for(var i=1; i<=arrayLen(smartListPageRecords); i++) {
+		for(var i=1; i<=rc.ajaxResponse[ "pageRecordsCount" ]; i++) {
 			
 			var record = smartListPageRecords[i];
 			

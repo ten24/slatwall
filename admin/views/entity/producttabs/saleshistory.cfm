@@ -74,7 +74,7 @@ Notes:
 	</hb:HibachiListingDisplay> --->
 	
 	<cfset placedOrderItemsCollectionlist = rc.product.getPlacedOrderItemsCollectionList()/>
-	<cfset placedOrderItemsCollectionlist.setDisplayProperties('order.account.calculatedFullName,order.orderNumber,order.orderOpenDateTime,order.orderCloseDateTime,quantity,price',{isVisible=true, isSearchable=true, isDeletable=true})/>
+	<cfset placedOrderItemsCollectionlist.setDisplayProperties('order.account.calculatedFullName,order.orderNumber,sku.skuCode,order.orderOpenDateTime,order.orderCloseDateTime,quantity,price',{isVisible=true, isSearchable=true, isDeletable=true})/>
 	<cfif rc.product.getBaseProductType() EQ "event">
 		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventStartDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
 		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventEndDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>

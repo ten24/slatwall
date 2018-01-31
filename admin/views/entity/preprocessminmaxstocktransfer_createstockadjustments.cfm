@@ -55,6 +55,9 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.minmaxstocktransfer#" edit="#rc.edit#" sRedirectAction="admin:entity.detailminmaxstocktransfer">
-
+        <hb:HibachiPropertyList>
+             
+            <hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#" />
+        </hb:HibachiPropertyList>
 	</hb:HibachiEntityProcessForm>
 </cfoutput>

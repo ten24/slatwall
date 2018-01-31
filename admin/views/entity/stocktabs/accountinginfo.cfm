@@ -7,13 +7,13 @@
 <cfoutput>
 	<!--- get all actively used currencies--->
 	
-	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAverageCost"  edit="false">
-	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAverageLandedCost"  edit="false">
+	<hb:HibachiPropertyDisplay object="#rc.stock#" property="averageCost"  edit="false">
+	<hb:HibachiPropertyDisplay object="#rc.stock#" property="averageLandedCost"  edit="false">
 	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedCurrentMargin" edit="false">
 	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedCurrentLandedMargin" edit="false">
 	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedCurrentAssetValue" edit="false">
 	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAveragePriceSold" edit="false">
-	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAveragePriceSoldBeforeDiscount"   edit="false">
+	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAveragePriceSoldAfterDiscount"   edit="false">
 	<hb:HibachiPropertyDisplay object="#rc.stock#" property="calculatedAverageDiscountAmount"   edit="false">
 
 </cfoutput>

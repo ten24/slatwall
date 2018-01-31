@@ -54,7 +54,7 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.fulfillmentBatchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
-
+<span ng-init="multislot = true"></span>
 <sw-listing-display 
 	data-base-entity-name="FulfillmentBatch"
 	data-edit="true"
@@ -67,7 +67,7 @@ Notes:
 	data-using-personal-collection="true"
 	data-persisted-collection-config="true"
 	data-name="fulfillmentBatchCollectionTable"
-	data-multi-slot="true"
+	data-multi-slot="multislot"
 		>
 	
 		
