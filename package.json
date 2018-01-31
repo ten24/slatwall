@@ -75,7 +75,6 @@
     "buildHibachi:prod": "cd org/Hibachi/client && webpack --config webpack-production.config.js -p",
     "buildFrontend": "cd org/Hibachi/client && webpack --config webpack-frontend-develop.config.js",
     "buildFrontend:prod": "cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p",
-    "buildPOS": "cd integrationServices/slatwallpos/client && webpack --config webpack-pos-develop.config.js",
     "buildSpec": "cd admin/client && webpack --config webpack-test.config.js",
     "buildCSS": "lessc admin/client/css/main.less admin/client/css/main.css"
   },
