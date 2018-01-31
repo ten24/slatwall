@@ -64,6 +64,7 @@ Notes:
 	<cfset local.collectionChargeList.addFilter("order.orderID",rc.order.getOrderID())>
 	<cfset local.collectionChargeList.addFilter('orderPaymentType.systemCode', 'optCharge') >
 	<cfset local.collectionChargeList.addFilter('orderPaymentStatusType.systemCode', 'opstActive')>
+
 	
 	
 	<cfset local.collectionCreditList = $.slatwall.getService('orderService').getOrderPaymentCollectionList()  >
@@ -89,6 +90,7 @@ Notes:
 	<cfset local.collectionNonActiveList.addFilter("order.orderID",rc.order.getOrderID())>
 	<cfset local.collectionNonActiveList.addFilter(propertyIdentifier="orderPaymentStatusType.systemCode",value="opstInvalid",filterGroupAlias="nonActive")>
 	<cfset local.collectionNonActiveList.addFilter(propertyIdentifier="orderPaymentStatusType.systemCode",value="opstRemoved",comparisonOperator="=",logicalOperator="OR",filterGroupAlias="nonActive")>
+
 </cfsilent>
 
 <cfoutput>
