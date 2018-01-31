@@ -147,7 +147,7 @@ Notes:
 
 									<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
 									<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
-										<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
+										<cfif option['value'] eq rc.processObject.getFulfillmentMethodID()>
 											<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
 										</cfif>
 									</cfloop>

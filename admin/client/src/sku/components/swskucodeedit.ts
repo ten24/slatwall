@@ -13,7 +13,7 @@ class SWSkuCodeEditController{
     public eligibleCurrencyCodeList:string;
     public filterOnCurrencyCode:string;
     public bundledSkuSkuId:string;
-    public bundledSkuSkuCode:string; 
+    public bundledSkuSkuCode:string;
     public bundledSkuCurrencyCode:string;
     public bundledSkuPrice:string;
     public formName:string;
@@ -46,6 +46,7 @@ class SWSkuCodeEditController{
         private $filter,
         private $timeout
     ){
+        console.log('skucodeedit');
         if(angular.isDefined(this.pageRecord)){
             this.pageRecord.edited = false;
         }

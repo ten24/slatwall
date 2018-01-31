@@ -313,7 +313,7 @@ class PublicService {
         if (action.indexOf(":") !== -1){
             urlBase = urlBase + action; //any path
         }else{
-            urlBase = urlBase + "index.cfm/api/scope/" + action;//public path
+            urlBase = this.baseActionPath + action;//public path
         }
 
 
@@ -908,6 +908,7 @@ class PublicService {
             errors = errors.concat(errArray);
         }
         this.cart.errors.runPlaceOrderTransaction = errors;
+        this.edit = '';
     }
 
     /** Returns errors from placeOrder request*/
@@ -919,7 +920,9 @@ class PublicService {
 
     /** Returns errors from addOrderPayment request. */
     public addOrderPaymentError = () =>{
-        return this.cart.errors.addOrderPayment || (angular.isDefined(this.errors) ? this.errors['ADDORDERPAYMENT'] : false);
+        if(this.cart.errors.addOrderPayment) return this.cart.errors.addOrderPayment;
+        if(this.cart.errors.runPlaceOrderTransaction) return this.cart.errors.runPlaceOrderTransaction;
+        return angular.isDefined(this.errors) ? this.errors['ADDORDERPAYMENT'] : false;
     }
 
     /** Returns errors from addBillingAddress request. */
