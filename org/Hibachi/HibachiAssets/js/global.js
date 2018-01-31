@@ -558,8 +558,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 			
 			data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
-			
-			listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
+
+			var tableID = jQuery(this).closest('.table').attr('id'); 
+ 
+			jQuery('#' + tableID).find("input[name='OrderBy']").val(data[ 'OrderBy' ]);
+
+			listingDisplayUpdate( tableID, data);
+
 		});
 	
 		// Listing Display - Filtering
@@ -1291,7 +1296,11 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 					
 			// Loop over each column of the header to set data[ 'actionCallerAttributes' ]
 	 		data[ 'methodIdentifier' ] = {};
-	 		
+	 	
+			if(data['OrderBy'] == null){
+				data[ 'OrderBy' ] =jQuery('#' + tableID).find("input[name='OrderBy']").val(); 
+			}
+
 	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
 				if( jQuery(cv).hasClass('data') ) {
 					if( jQuery(cv).data('methodidentifier') !== undefined ) {
