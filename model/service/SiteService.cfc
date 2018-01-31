@@ -250,15 +250,15 @@ component  extends="HibachiService" accessors="true" {
 			createDefaultContentPages(arguments.site);
 		}
 		if(!arguments.createTemplates){
-			var siteTemplatesPath = arguments.site.getSitePath()&'templates/'; 
-			if(DirectoryExists(siteTemplatesPath)){ 
-				DirectoryDelete(siteTemplatesPath,true); 
+			var siteTemplatesPath = arguments.site.getSitePath()&'templates/';
+			if(DirectoryExists(siteTemplatesPath)){
+				DirectoryDelete(siteTemplatesPath,true);
 			}
-			var siteTagsPath = arguments.site.getSitePath()&'tags/'; 
-			if(DirectoryExists(siteTagsPath)){ 
-				DirectoryDelete(siteTagsPath,true); 
+			var siteTagsPath = arguments.site.getSitePath()&'tags/';
+			if(DirectoryExists(siteTagsPath)){
+				DirectoryDelete(siteTagsPath,true);
 			}
-		} 
+		}
 
 		// create 6 content nodes for this site, and map to the appropriate templates
 			// home (urlTitle == '') -> /custom/apps/slatwallcms/site1/templates/home.cfm
@@ -279,6 +279,7 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: DAO Passthrough ===========================
 
+
 	public string function getSiteCodes(string delimiter=','){
 		var cacheKey = 'getSiteCodes_'&ToBase64(arguments.delimiter);
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)) {
@@ -286,6 +287,7 @@ component  extends="HibachiService" accessors="true" {
 		}
 		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
+
 
 
 	// ===================== START: DAO Passthrough ===========================
@@ -329,7 +331,7 @@ component  extends="HibachiService" accessors="true" {
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-			var createTemplatesFlag = true; 
+			var createTemplatesFlag = true;
 			if(structKeyExists(data, "useAppTemplatesFlag") && arguments.data.useAppTemplatesFlag){
 				createTemplatesFlag = !arguments.data.useAppTemplatesFlag;
 			}
