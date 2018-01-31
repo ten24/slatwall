@@ -84,6 +84,11 @@
 	<cfparam name="attributes.exportAction" type="string" default="" />
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
 
+
+	<cfparam name="attributes.multiselectable" type="boolean" default="false" />
+	<cfparam name="attributes.multiselectFieldName" type="string" default="" />
+	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
+	<cfparam name="attributes.multiselectValues" type="string" default="" />
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
@@ -99,7 +104,7 @@
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-base-entity-name="{{#scopeVariableID#.baseEntityName}}"
 			    data-collection-config="#scopeVariableID#"
-			    data-edit="false"
+			    data-edit="#attributes.edit#"
 				data-has-search="true"
 				record-edit-action="#attributes.recordEditAction#"
 				record-detail-action="#attributes.recordDetailAction#"
@@ -110,8 +115,13 @@
 				data-show-search="#attributes.showSearch#"
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
-			    edit="true"
+			    <!--- edit="true" --->
 			    data-using-personal-collection="#attributes.usingPersonalCollection#"
+			    data-multi-slot="true"
+			    data-multiselectable="#attributes.multiselectable#"
+				data-multiselect-field-name="#attributes.multiselectFieldName#"
+				data-multiselect-property-identifier="#attributes.multiselectPropertyIdentifier#"
+				data-multiselect-values="#attributes.multiselectValues#"
 			    <cfif structKeyExists(entityMetaData,'HB_CHILDPROPERTYNAME')>
 			    	child-property-name="#entityMetaData.HB_CHILDPROPERTYNAME#"
 			    </cfif>

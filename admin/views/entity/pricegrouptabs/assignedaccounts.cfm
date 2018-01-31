@@ -52,7 +52,7 @@ Notes:
 <cfparam name="rc.priceGroup" type="any" />
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
+	<!--- <hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
 						      
 		<hb:HibachiListingColumn propertyIdentifier="firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="lastName" />
@@ -61,5 +61,26 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
 		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
 	
+	</hb:HibachiListingDisplay> --->
+
+	<cfset accountsOptionsCollectionlist = rc.priceGroup.getAccountsOptionsCollectionList()/>
+	<cfset accountsOptionsCollectionlist.setDisplayProperties('firstName,lastName,company,primaryPhoneNumber.phoneNumber,primaryEmailAddress.emailAddress,guestAccountFlag',{
+	    isVisible=true,
+	    isSearchable=true,
+	    isDeletable=true
+	})/>
+	<cfset accountsOptionsCollectionlist.addDisplayProperty(displayProperty='accountID',columnConfig={
+	    isVisible=false,
+	    isSearchable=false,
+	    isDeletable=false
+	})/>
+	<hb:HibachiListingDisplay collectionList="#accountsOptionsCollectionlist#" 
+								multiselectable="true"
+								multiselectFieldName="accounts" 
+								multiselectPropertyIdentifier="accountID" 
+								multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" 
+								edit="#rc.edit#"
+	>
 	</hb:HibachiListingDisplay>
+
 </cfoutput>
