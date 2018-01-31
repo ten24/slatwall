@@ -100,6 +100,19 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	//Calculated Properties
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalItems" ormtype="integer";
+	property name="calculatedTotalQuantity" ormtype="integer";
+	property name="calculatedTotalSaleQuantity" ormtype="integer";
+	property name="calculatedTotalReturnQuantity" ormtype="integer";
+	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
 
 	// Non persistent properties
 	property name="addOrderItemSkuOptionsSmartList" persistent="false";
@@ -164,17 +177,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
 	
-	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedSubTotal" persistent="true" hb_formatType="currency";
-	property name="calculatedFulfillmentTotal" persistent="true" hb_formatType="currency";
-	property name="calculatedDiscountTotal" persistent="true" hb_formatType="currency";
-	property name="calculatedSubTotalAfterItemDiscounts" persistent="true" hb_formatType="currency";
-	property name="calculatedTaxTotal" persistent="true" hb_formatType="currency";
-	property name="calculatedTotalItems" persistent="true";
-	property name="calculatedTotalQuantity" persistent="true";
-	property name="calculatedTotalSaleQuantity" persistent="true";
-	property name="calculatedTotalReturnQuantity" persistent="true";
-	property name="calculatedTotalDepositAmount" persistent="true" hb_formatType="currency";
 
 	public void function init(){
 		setOrderService(getService('orderService'));
@@ -1540,4 +1542,9 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 
+
 	// ===================  END:  ORM Event Hooks  =========================
+
+	
+}
+

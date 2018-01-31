@@ -61,13 +61,14 @@ class SWListingDisplayController{
     public processObjectProperties;
     public recordAddAction:string;
     public recordDetailAction:string;
+    public recordDetailActionIdProperty:string;
+    public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
     public recordEditAction:string;
     public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
     public searching:boolean = false;
     public searchText;
-
     public selectFieldName;
     public selectable:boolean = false;
     public showOrderBy:boolean;
@@ -77,6 +78,7 @@ class SWListingDisplayController{
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
+    public showToggleDisplayOptions:boolean;
     public sortable:boolean = false;
     public sortableFieldName:string;
     public sortProperty;
@@ -355,8 +357,8 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
         }
-        if(angular.isUndefined(this.showPrintOptions)){
-            this.showPrintOptions = false; 
+        if(angular.isUndefined(this.showToggleDisplayOptions)){
+            this.showToggleDisplayOptions = true; 
         }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false;
@@ -634,6 +636,8 @@ class SWListingDisplay implements ng.IDirective{
             recordEditDisabled:"<?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
+            recordDetailActionIdProperty:"@?",
+            recordDetailActionIdKey:"@?",
             recordDetailQueryString:"@?",
             recordDetailModal:"<?",
             recordDeleteAction:"@?",
@@ -699,6 +703,7 @@ class SWListingDisplay implements ng.IDirective{
             showExport:"<?",
             showOrderBy:"<?",
             showTopPagination:"<?",
+            showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
             showSimpleListingControls:"<?",

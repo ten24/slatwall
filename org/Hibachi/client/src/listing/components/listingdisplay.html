@@ -23,6 +23,7 @@
                     data-show-export="swListingDisplay.showExport"
                     data-show-toggle-search="swListingDisplay.showSearch"
                     data-show-print-options="swListingDisplay.showPrintOptions"
+                    data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
@@ -220,18 +221,32 @@
                                 </span>
 
                                 <!-- Detail -->
-                                <sw-action-caller
-                                        ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
-                                        data-action="{{swListingDisplay.recordDetailAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
-                                        data-class="btn btn-default btn-xs"
-                                        data-icon="eye-open"
-                                        data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordDetailModal"
-                                        data-is-angular-route="swListingDisplay.isAngularRoute"
-                                >
-                                </sw-action-caller>
-
+                                <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionIdProperty+'='+pageRecord[swListingDisplay.recordDetailActionIdKey]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                    </sw-action-caller>
+                                </span>
+                                <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                    </sw-action-caller>
+                                </span>
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="detailAction"></div>
                                 </span>

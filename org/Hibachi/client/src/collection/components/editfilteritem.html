@@ -70,7 +70,9 @@
                             {{selectedFilterProperty.displayPropertyIdentifier}} {{selectedFilterProperty.selectedCriteriaType.comparisonOperator}} <strong data-ng-bind="filterItem.value | truncate:25"></strong>
                         </div>
                     </div>
-                    <button class="btn btn-primary"
+                    <button 
+                            type="button"
+                            class="btn btn-primary"
                             data-ng-click="saveFilter(selectedFilterProperty,filterItem,cancelFilterItem)">
                         Add Filter
                     </button>
