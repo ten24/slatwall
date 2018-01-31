@@ -47,6 +47,7 @@
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
 	ng-click="swActionCaller.submit()"
+	ng-keypress="(keyEvent.which === 13)? swActionCaller.submit() : false"
 	ng-disabled="swActionCaller.disabled"
 	><i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>
