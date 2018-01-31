@@ -67,7 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			if(structKeyExists(data, question.getAttributeCode())){
 				//create and store the new attribute value
 				var newAttributeValue = getService("attributeService").newAttributeValue();
-				newAttributeValue.setAttributeValue(evaluate("data." & question.getAttributeCode()));
+				newAttributeValue.setAttributeValue(data[question.getAttributeCode()]);
 				newAttributeValue.setAttribute(question);
 				newAttributeValue.setFormResponse(this.getNewFormResponse());
 				newAttributeValue.setAttributeValueType(question.getAttributeInputType());

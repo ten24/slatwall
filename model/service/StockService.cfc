@@ -455,6 +455,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Set the status to closed
 		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );
 
+		// Set reference number
+		lock scope="Application" timeout="30" {
+			var maxReferenceNumber = getStockDAO().getStockAdjustmentMaxReferenceNumber();
+			if( arrayIsDefined(maxReferenceNumber,1) ) {
+				arguments.stockAdjustment.setReferenceNumber(maxReferenceNumber[1] + 1);
+			} else {
+				arguments.stockAdjustment.setReferenceNumber(1);
+			}
+		}
+
 		return arguments.stockAdjustment;
 
 	}
@@ -553,6 +563,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		minMaxStockTransferItemsSmartList.addRange('transferQuantity', '1^');
 		minMaxStockTransferItemsSmartList.addOrder('fromLeafLocation.locationName');
 		minMaxStockTransferItemsSmartList.addOrder('toLeafLocation.locationName');
+		// remove any existing stock adjustments
+		if(arguments.entity.hasStockAdjustment()){
+			stockDAO.deleteMinMaxStockAdjustments(arguments.minMaxStockTransfer.getMinMaxStockTransferID());
+		}
 
 		var fromLocationID = '';
 		var toLocationID = '';
@@ -576,7 +590,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			stockAdjustmentItemData.stockAdjustmentItemID = lcase(replace(createUUID(),"-","","all"));
 			stockAdjustmentItemData.stockAdjustmentID = stockAdjustmentData.stockAdjustmentID;
 			stockAdjustmentItemData.quantity = minMaxStockTransferItem.getTransferQuantity();
-			stockAdjustmentItemData.cost = 0;
+			stockAdjustmentItemData.cost = minMaxStockTransferItem.getsku().getAverageCost(minMaxStockTransferItem.getsku().getCurrencyCode());
+			stockAdjustmentItemData.currencyCode = minMaxStockTransferItem.getsku().getCurrencyCode();
 			stockAdjustmentItemData.fromStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getFromLeafLocation()).getStockID();
 			stockAdjustmentItemData.toStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getToLeafLocation()).getStockID();
 			stockAdjustmentItemData.skuID = minMaxStockTransferItem.getsku().getSkuID();

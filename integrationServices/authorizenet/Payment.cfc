@@ -180,9 +180,8 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 
 		var response = getTransient('CreditCardTransactionResponseBean');
 		arguments.requestData = deserializeJSON(arguments.requestData);
-
-		var responseData = deserializeJSON(arguments.rawResponse.fileContent).transactionResponse;
-
+		
+		var responseData = deserializeJSON(removeSpecialCharacters(arguments.rawResponse)).transactionResponse;
 
 		// Populate the data with the raw response & request
 		var data = {
@@ -205,7 +204,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 			}else if (structKeyExists(responseData, 'messages')){
 				response.addError(responseData.messages.message[1].code, responseData.messages.message[1].text);
 			}else{
-				var allresponse = deserializeJSON(arguments.rawResponse.fileContent);
+				var allresponse =  deserializeJSON(removeSpecialCharacters(arguments.rawResponse));
 				if(structKeyExists(allresponse, 'messages')) {
 					response.addError(allresponse.messages.message[1].code, allresponse.messages.message[1].text);
 				}else{
@@ -299,9 +298,9 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 
 		var response = getTransient('CreditCardTransactionResponseBean');
 		requestData = deserializeJSON(requestData);
-
-		var responseData = deserializeJSON(rawResponse.fileContent);
-
+		
+		var responseData =  deserializeJSON(removeSpecialCharacters(rawResponse));
+		
 		// Populate the data with the raw response & request
 		var data = {
 			responseData = arguments.rawResponse,
@@ -311,7 +310,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		response.setData(data);
 
 		// Set the response Code
-		response.setStatusCode(responseData.messages.message[1].code);;
+		response.setStatusCode(responseData.messages.message[1].code);
 
 		// Check to see if it was successful
 		if(right(response.getStatusCode(),1) != 1) {
@@ -336,6 +335,14 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		}
 
 		return response;
+	}
+	
+	private any function removeSpecialCharacters( any rawResponse ){
+		if (structKeyExists(rawResponse, "fileContent")){
+			var raw = rawResponse.fileContent;
+			raw=REReplace(raw, '[^\x00-\x7F]', ' ', "ALL");
+			return raw;
+		}
 	}
 
 }

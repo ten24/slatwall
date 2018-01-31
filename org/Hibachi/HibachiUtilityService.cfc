@@ -971,8 +971,16 @@
 				var thisRow = [];
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
+
+					var value = arguments.queryData[colArray[j]][i];
+
+					// Determine if formatting datetime stamp needed
+					if (isDate(value)) {
+						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
+					}
+
 					// create our row
-					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));

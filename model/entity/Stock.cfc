@@ -110,7 +110,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	//Derived Properties
 	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
+	//Simple
+	public string function getSimpleRepresentation() {
+		if(!isNull(getSku().getSkuCode()) && len(getLocation().getLocationName())) {
+			var representation = getSku().getSkuCode() & " - " & getLocation().getLocationName();
+		} 
 
+		return representation;
+	}
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
 		if( !structKeyExists(variables, arguments.quantityType) ) {
