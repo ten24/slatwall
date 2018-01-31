@@ -1114,8 +1114,15 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			quantityDelivered += getOrderItems()[i].getQuantityDelivered();
+		if(!getNewFlag()){
+			var orderDeliveryItemCollectionList = getService('orderService').getOrderDeliveryItemCollectionList();
+			orderDeliveryItemCollectionList.addFilter('orderItem.order.orderID',getOrderID());
+			orderDeliveryItemCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
+			var orderDeliveryItemSum = orderDeliveryItemCollectionList.getRecords();
+			
+			if(arrayLen(orderDeliveryItemSum)){
+				quantityDelivered = orderDeliveryItemSum[1]['quantitySum'];	
+			}
 		}
 		return quantityDelivered;
 	}
@@ -1126,8 +1133,15 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			quantityReceived += getOrderItems()[i].getQuantityReceived();
+		
+		if(!getNewFlag()){
+			var stockReceiverItemsCollectionList = getService('stockService').getStockReceiverItemCollectionList();
+			stockReceiverItemsCollectionList.addFilter('orderItem.order.orderID',getOrderID());
+			stockReceiverItemsCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
+			var stockReceiverItemsSum = stockReceiverItemsCollectionList.getRecords();
+			if(arraylen(stockReceiverItemsSum)){
+				return stockReceiverItemsSum[1]['quantitySUM'];
+			}
 		}
 		return quantityReceived;
 	}

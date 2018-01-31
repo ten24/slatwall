@@ -81,10 +81,16 @@ component extends="HibachiService" accessors="true" output="false" {
 				inventory.setCost(arguments.stockReceiverItem.getCost());
 				inventory.setLandedCost(arguments.stockReceiverItem.getLandedCost());
 				inventory.setLandedAmount(arguments.stockReceiverItem.getLandingAmount());
+				// calculate average cost
+				var stock = arguments.stockReceiverItem.getStock();
+				if(val(arguments.stockReceiverItem.getCost()) != 0){
+					stock.updateAverageCost(arguments.stockReceiverItem.getCost(), arguments.stockReceiverItem.getQuantity());
+					//arguments.stockReceiverItem.getVendorOrderItem().getVendorOrder().getShippingAndHandlingCost()
+					stock.updateAverageLandedCost(arguments.stockReceiverItem.getCost(), arguments.stockReceiverItem.getQuantity(), 0);
+				}
+				
 				if(arguments.stockReceiverItem.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
-					//set the cogs ledger account 
-					var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuCogsLedgerAccount'));
-					inventory.setCogsLedgerAccount(cogsLedgerAccount);
+					//set the assets ledger account 
 					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuAssetLedgerAccount'));
 					inventory.setAssetLedgerAccount(assetLedgerAccount);
 				}
@@ -147,14 +153,15 @@ component extends="HibachiService" accessors="true" output="false" {
 					var inventory = this.newInventory();
 					inventory.setQuantityOut( arguments.entity.getQuantity() );
 					inventory.setStock( arguments.entity.getStock() );
+					inventory.setCogs(arguments.entity.getStock().getAverageCost());
 					inventory.setOrderDeliveryItem( arguments.entity );
 					inventory.setCurrencyCode(arguments.entity.getOrderItem().getCurrencyCode());
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the revenue ledger account 
 						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
 						inventory.setRevenueLedgerAccount(revenueLedgerAccount);
-						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
-						inventory.setAssetLedgerAccount(assetLedgerAccount);
+						var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
+						inventory.setCogsLedgerAccount(cogsLedgerAccount);
 					}
 					
 					
@@ -168,12 +175,14 @@ component extends="HibachiService" accessors="true" output="false" {
 					var inventory = this.newInventory();
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
+					inventory.setCost(arguments.entity.getVendorOrderItem().getCost());
+					inventory.setLandedCost(arguments.entity.getVendorOrderItem().getLandedCost());
+					inventory.setLandedAmount(arguments.entity.getVendorOrderItem().getLandingAmount());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
 					inventory.setCurrencyCode(arguments.entity.getVendorOrderItem().getCurrencyCode());
+
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the inventory ledger account 
-						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
-						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
 						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
 						inventory.setAssetLedgerAccount(assetLedgerAccount);
 					}
@@ -205,18 +214,14 @@ component extends="HibachiService" accessors="true" output="false" {
 					var inventory = this.newInventory();
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
+					inventory.setCogs(arguments.entity.getStock().getAverageCost());
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
-					inventory.setCost(arguments.entity.getCost());
-					inventory.setLandedCost(arguments.entity.getCost());
-					inventory.setLandedAmount(arguments.entity.getCost());
 					inventory.setCurrencyCode(arguments.entity.getCurrencyCode());
 
 					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
 						//set the inventory ledger account 
-						var inventoryLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
-						inventory.setInventoryLedgerAccount(inventoryLedgerAccount);
-						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
-						inventory.setAssetLedgerAccount(assetLedgerAccount);
+						var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
+						inventory.setCogsLedgerAccount(cogsLedgerAccount);
 					}
 					getService('inventoryService').saveInventory( inventory );
 				}

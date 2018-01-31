@@ -51,7 +51,7 @@ component entityname="SlatwallStockAdjustmentItem" table="SwStockAdjustmentItem"
 	// Persistent Properties
 	property name="stockAdjustmentItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="float" default=0;
-	property name="cost" ormtype="big_decimal";
+	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)

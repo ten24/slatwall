@@ -70,7 +70,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// @hint Validates to check if received quantities exceed vendor order items unreceived quantities
 	public boolean function validateVendorOrderItemsQuantities() {
-		for (data in getVendorOrderItems()) {
+		for (var data in getVendorOrderItems()) {
 			var vendorOrderItem = getService('vendorOrderService').getVendorOrderItem( data.vendorOrderItem.vendorOrderItemID );
 			if (data.quantity > vendorOrderItem.getQuantityUnreceived()) {
 				return false;

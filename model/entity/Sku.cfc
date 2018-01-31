@@ -150,7 +150,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
 	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
-	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="averageDiscountAmount" persistent="false" hb_formatType="currency";
 	property name="averageMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
@@ -220,8 +220,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getDao('skuDao').getAveragePriceSold(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 	
-	public numeric function getAveragePriceSoldBeforeDiscount(required string currencyCode="USD"){
-		return getDao('skuDao').getAveragePriceSoldBeforeDiscount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
+	public numeric function getAveragePriceSoldAfterDiscount(required string currencyCode="USD"){
+		return getDao('skuDao').getAveragePriceSoldAfterDiscount(skuID=this.getSkuID(),currencyCode=arguments.currencyCode);
 	}
 	
 	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){

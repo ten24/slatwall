@@ -146,6 +146,13 @@ component extends="HibachiDAO" {
 		return ORMExecuteQuery('SELECT COALESCE(sum(cost*quantity),0) FROM SlatwallVendorOrderItem where vendorOrder=:vendorOrder',{vendorOrder=arguments.vendorOrder},true);
 	}
 	
+	public any function getVendorOrderMaxVendorOrderNumber() {
+		var query = new Query();
+		query.setSQL("SELECT max(COALESCE(vendorOrderNumber,0)) as maxVendorOrderNumber FROM swVendorOrder;");
+		var queryResult = query.execute();
+		return queryResult.getResult().getRow(1);
+ 	}
+	
 	
 }
 

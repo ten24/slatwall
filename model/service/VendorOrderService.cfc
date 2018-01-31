@@ -50,7 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	property name="venderOrderDAO" type="any";
 	property name="skuPriceDAO" type="any";
-
+	
 	property name="addressService" type="any";
 	property name="locationService" type="any";
 	property name="productService" type="any";
@@ -227,10 +227,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
-		
+		getHibachiScope().addModifiedEntity(arguments.vendorOrder);
 		this.saveVendorOrderItem(newVendorOrderItem);
-		
 		return arguments.vendorOrder;
+	}
+	
+	public boolean function deleteVendorOrderItem(required any vendorOrderItem){
+		var deleteOK = super.delete(arguments.vendorOrderItem);
+		if(deleteOK){
+			getHibachiScope().addModifiedEntity(arguments.vendorOrderItem.getVendorOrder());	
+		}
+		return deleteOK;
 	}
 	
 	public any function processVendorOrder_receive(required any vendorOrder, required any processObject){
@@ -252,6 +259,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Automatically keep preference history of vendor and product/sku for future convenience
 		var newVendorProductPreferenceFlag = false;
 		
+		
+		
 		for(var thisRecord in arguments.data.vendorOrderItems) {
 			
 			if(val(thisRecord.quantity) gt 0) {
@@ -259,7 +268,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var foundItem = false;
 				var vendorOrderItem = this.getVendorOrderItem( thisRecord.vendorOrderItem.vendorOrderItemID );
 				var stock = getStockService().getStockBySkuAndLocation( vendorOrderItem.getStock().getSku(), locationEntity );
-				
+			
 				var stockReceiverItem = getStockService().newStockReceiverItem();
 
 				stockreceiverItem.setQuantity( thisRecord.quantity );
@@ -278,7 +287,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.vendorOrder.getVendor().addProduct(product);
 						newVendorProductPreferenceFlag = true;
 					}
-
+					
 					//Update Sku price with vendor order item price.
 					if(len(vendorOrderItem.getPrice())){
 						if(arguments.vendorOrder.getCurrencyCode() == getSettingService().getSettingValue("skuCurrency")){
@@ -290,10 +299,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(!isNull(skuPrice) && vendorOrderItem.getPrice() != skuPrice.getPrice()){
 								skuPrice.setPrice(vendorOrderItem.getPrice());
 							}
-
+							
 						}
 					}
-
+					
 				}
 				
 				

@@ -53,9 +53,9 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="minQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.minQuantity.null";
 	property name="maxQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.maxQuantity.null";
 	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select" index="PI_CURRENCY_CODE";
-	property name="price" ormtype="big_decimal";
-	property name="listPrice" ormtype="big_decimal";
-	property name="renewalPrice" ormtype="big_decimal";
+	property name="price" ormtype="big_decimal" hb_formatType="currency";
+	property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
+	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="expiresDateTime" ormtype="timestamp";
 
 	// Calculated Properties

@@ -365,6 +365,33 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	public any function getBillingAccountAddressOptions(string accountID){
+		if (!isNull(getAccount()) && !isNull(getAccount().getAccountID())){
+			arguments.accountID = getAccount().getAccountID();
+		}
+		if (isNull(variables.billingAccountAddressOptions)){
+			variables.billingAccountAddressOptions = [];
+			var accountAddressSmartList = getService("AddressService").getAccountAddressCollectionList();
+			accountAddressSmartList.addFilter("account.accountID", "#arguments.accountID#");
+			accountAddressSmartList.addDisplayProperty("accountAddressName");
+			accountAddressSmartList.addDisplayProperty("accountAddressID");
+			accountAddressSmartList.addDisplayProperty("address.streetAddress");
+			accountAddressSmartList.addDisplayProperty("address.postalCode");
+			var options = accountAddressSmartList.getRecords();
+			var index = 1;
+			for (var option in options){
+				if (index == 1){
+					arrayAppend(variables.billingAccountAddressOptions, {selected="selected",value="#option['accountAddressID']#", name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}else{
+					arrayAppend(variables.billingAccountAddressOptions, {value="#option['accountAddressID']#", name="#option['accountAddressName']#-#option['address_streetAddress']# #option['address_postalCode']#"});
+				}
+				index++;
+			}
+			
+			arrayPrepend(variables.billingAccountAddressOptions, {value="new", name="New"});
+		}
+		return variables.billingAccountAddressOptions;
+	}
 
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
