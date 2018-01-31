@@ -13,7 +13,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License 
+    You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     Linking this program statically or dynamically with other modules is
@@ -56,7 +56,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = variables.entityService.newCollection();
 		variables.entity.setCollectionObject('Account');
 	}
-	
+
 	public boolean function returnFalse(){
 		return false;
 	}
@@ -179,7 +179,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionParams = collectionEntity.getHqlParams();
 		assert( collectionParams[listFirst(StructKeyList(collectionParams))] ==  'BigBoy');
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -188,24 +188,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		collectionEntity.setDisplayProperties('firstName');
 		collectionEntity.addDisplayAggregate('firstName',"COUNT",'itemCount');
 		collectionEntity.addOrderBy('firstName');
-		
+
 		var pageRecords = collectionEntity.getPageRecords();
 	}
-	
+
 	/**
 	* @test
 	*/
 	public void function getLeafNodesOnlyTest(){
 		//TODO: setup up heirarchy with leaf nodes to assert
-		
+
 		var productTypeCollectionList = request.slatwallScope.getService('hibachiService').getProductTypeCollectionList();
 		productTypeCollectionList.setFilterByLeafNodesFlag(true);
 		debug(productTypeCollectionList.getHQL());
 		debug(productTypeCollectionList.getPageRecords());
-		
+
 		assert(productTypeCollectionList.getFilterByLeafNodesFlag());
 	}
-	
+
 	//test that if we trun enforce auth off but also aren't authenticated that only 1st level props are available
 	/**
 	* @test
@@ -220,16 +220,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		skuCollection.getPageRecords();
 		//test checks to make sure that if the user is public and authentication isn't enforced that all dot chained properties must be declared explicity in authorized Properties via backend
 		assert(!arrayFind(skuCollection.getAuthorizedProperties(),'product_productName'));
-		
+
 		//manually adding to the whitelist
 		skuCollection.addAuthorizedProperty('product.productName');
-		
+
 		skuCollection.getPageRecords();
 		assert(arrayFind(skuCollection.getAuthorizedProperties(),'product_productName'));
-		
+
 		skuCollection.addDisplayProperty('product.productCode');
 		assert(arrayFind(skuCollection.getAuthorizedProperties(),'product_productCode'));
-		
+
 	}
 	/**
 	* @test
@@ -302,24 +302,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		
+
 		var pageRecords = collectionEntity.getPageRecords();
-		
+
 		assert(isArray(pageRecords));
-		
+
 	}
-	
+
 	/**
 	* @test
 	*/
 	public void function applyDataTest_pageShowTest(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
-		
+
 		var data = {};
 		data['p:show'] =2;
-		
+
 		collectionEntity.applyData(data);
-		
+
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 	}
 	/**
@@ -327,11 +327,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function applyDataTest_pageShowTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
-		
+
 		var queryString = '?p:show=2&p:current=3';
-		
+
 		collectionEntity.applyData(queryString);
-		
+
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
 	}
@@ -340,9 +340,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function applyDataTest_filterTest_queryString(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
-		
+
 		var queryString = '?f:firstName:eq=Ryan';
-		
+
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
 		assert(filter.propertyIdentifier == '_account.firstName');
@@ -379,9 +379,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function applyDataTest_filterRangeTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
-		
+
 		var queryString = '?r:price=20^100';
-		
+
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
@@ -394,25 +394,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function applyDataTest_filterStartRangeTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
-		
+
 		var queryString = '?r:price=20^';
-		
+
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
 		assertEquals(filter.comparisonOperator,'>=');
 		assertEquals(filter.value,'20');
 		assert(collectionEntity.getHQL() CONTAINS '_sku.price >= ');
-		
+
 	}
 	/**
 	* @test
 	*/
 	public void function applyDataTest_filterEndRangeTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
-		
+
 		var queryString = '?r:price=^100';
-		
+
 		collectionEntity.applyData(queryString);
 		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[2].filterGroup[1];
 		assertEquals(filter.propertyIdentifier,'_sku.price');
@@ -425,14 +425,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function applyDataTest_orderByTest_queryString(){
 		var collectionEntity = variables.entityService.getSkuCollectionList();
-		
+
 		var queryString = '?orderby=price|DESC,skuName|ASC';
 		collectionEntity.applyData(queryString);
-		
+
 		var orderBy = collectionEntity.getCollectionConfigStruct().orderBy;
 		assertEquals(orderBy[1].propertyIdentifier,'_sku.price');
 		assertEquals(orderBy[1].direction,'DESC');
-		
+
 		assertEquals(orderBy[2].propertyIdentifier,'_sku.skuName');
 		assertEquals(orderBy[2].direction,'ASC');
 		assert(collectionEntity.getHQL() CONTAINS 'ORDER BY _sku.price DESC ,_sku.skuName ASC');
@@ -502,8 +502,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
-	}	
-	
+	}
+
 	/**
 	* @test
 	*/
@@ -551,18 +551,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2", "OR");
 		var pageRecords = myProductCollection.getPageRecords();
-		
+
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
-		
+
 		myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productDescription',uniqueNumberForTest);
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
 		var pageRecords = myProductCollection.getPageRecords();
-		
+
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
-		
+
 	}
 	/**
 	* @test
@@ -634,7 +634,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -787,8 +787,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 	}
-	
-	
+
+
 	/**
 	* @test
 	*/
@@ -978,7 +978,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		assertTrue(pageRecords[1]['skuCount'] == 2);
 	}
-	
+
 
 	/**
 	* @test
@@ -1473,7 +1473,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function getPropertyIdentifierAliasTest(){
 		var propertyIdentifier = 'productName';
-		
+
 		var collectionData = {
 			collectionID="",
 			collectionObject='Product'
@@ -1496,17 +1496,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				aggregateAlias = "Account_firstName"
 			}
 		};
-		
+
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		//addToDebug(aggregateHQL);
 		assertFalse(Compare("COUNT( firstName) as Account_firstName",trim(aggregateHQL)));
 	}
-	
+
 	/**
 	* @test
 	*/
-	
+
 	public void function getAggregateHQLTest_hasObject(){
 		makePublic(variables.entity,"getAggregateHQL");
 		var column={
@@ -1516,7 +1516,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				aggregateAlias = "Account_accountAuthentications"
 			}
 		};
-		
+
 		//addToDebug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(column);
 		debug(aggregateHQL);
@@ -2695,7 +2695,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('Collection',collectionData);
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -2933,7 +2933,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(REFind('_account\.createdDateTime BETWEEN :P[a-f0-9]{32} AND :P[a-f0-9]{32}', collectionEntity.getHQL()) > 0);
 		//addToDebug("HQL: #collectionEntity.getHQL()#");
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -3452,14 +3452,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		accountCollectionList.addFilter('accountID','test');
 		accountCollectionList.addFilter('accountID','tester','=','OR');
 		accountCollectionList.addFilter('accountID','testee','=','AND');
-		
+
 		accountCollectionList.removeFilter(propertyIdentifier='accountID',value='testee');
 		assert(arrayLen(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup)==2);
 		assert(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[1].value == 'test');
 		assert(accountCollectionList.getCollectionConfigStruct().filterGroups[1].filterGroup[2].value == 'tester');
 
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -4028,6 +4028,259 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		addToDebug(HQL);
 	}
 
+
+// ************ New test cases added by Mindfire ************//
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_for_default_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		data['p:show'] = -2;
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?p:show=2';
+
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),2);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_queryString_default_pageshow(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?p:current=3';
+
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_queryString_default_pageshow_default_currentPageDeclaration(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '';
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assertfalse(filter.value == 'Mindfire');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_comparisonOperator(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assertfalse(filter.comparisonOperator == '>');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assertfalse(filter.propertyIdentifier == '_account.lastName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_hql(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assertfalse(collectionEntity.getHQL() Contains '_account.lastName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_for_default_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		data['p:show'] = -2;
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?p:show=2';
+
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),2);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_queryString_default_pageshow(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?p:current=3';
+
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_queryString_default_pageshow_default_currentPageDeclaration(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '';
+		collectionEntity.applyData(queryString);
+
+		assertEquals(collectionEntity.getPageRecordsShow(),10);
+		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assertfalse(filter.value == 'Mindfire');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_comparisonOperator(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assertfalse(filter.comparisonOperator == '>');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assertfalse(filter.propertyIdentifier == '_account.lastName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_hql(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assertfalse(collectionEntity.getHQL() Contains '_account.lastName = ');
+	}
+
 	public void function getRecordOptionsTest(){
 		var recordOptions = variables.entity.getRecordOptions();
 		assert(structKeyExists(recordOptions[1],'name') && structKeyExists(recordOptions[1],'value'));
@@ -4399,6 +4652,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
 		//addToDebug(result);
 	}*/
+
+
 }
 
 /*

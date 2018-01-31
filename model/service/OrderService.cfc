@@ -237,6 +237,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Setup 'Shipping' Values
 					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
 
+						// Set estimated delivery date
+						orderFulfillment.setEstimatedShippingDate(arguments.processObject.getEstimatedShippingDate());
+
 						// Check for an accountAddress
 						if(len(arguments.processObject.getShippingAccountAddressID())) {
 
@@ -1008,6 +1011,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		returnOrder.setAccount( arguments.order.getAccount() );
 		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
+		returnOrder.setOrderCreatedSite( arguments.order.getOrderCreatedSite() );
 		returnOrder.setReferencedOrder( arguments.order );
 		returnOrder.setReferencedOrderType('return');
 
@@ -3406,7 +3410,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 	}
-
+	
+	public any function processOrder_reopenOrder(required any order, struct data={}) {
+ 		arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
+ 		return arguments.order;
+ 	}
 	// ===================  END: Deprecated Functions =========================
 
 }

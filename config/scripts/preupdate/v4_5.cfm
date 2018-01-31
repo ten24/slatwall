@@ -21,7 +21,7 @@
 		</cfquery> 
 	</cfif>
 	<!--- Just in case the it picks up on the entity first --->
-	<cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
+	<!--- <cfif this.ormSettings.dialect eq 'MicrosoftSQLServer'>
 	    <cfquery name="local.updateSwProductListingPage" datasource="#this.datasource.name#">
 	        UPDATE SwProductListingPage SET productListingPageID=REPLACE(newid(),'-','')
 	    </cfquery>
@@ -33,6 +33,6 @@
 	    <cfquery name="local.updateSwProductListingPage" datasource="#this.datasource.name#"> 
 	        UPDATE SwProductListingPage SET productListingPageID=REPLACE(sys_guid(),'-','')
 	    </cfquery> 
-	</cfif>
+	</cfif> --->
 	<cflog file="Slatwall" text="General Log - Preupdate Script v4_5 has run with no errors">
 </cfif>

@@ -50,6 +50,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	// Persistent Properties
 	property name="stockAdjustmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="referenceNumber" ormtype="integer" generator="increment";
 	
 	// Related Object Properties (many-to-one)
 	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
@@ -88,6 +89,10 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 			return getFromLocation();
 		}
 	}
+	
+	public boolean function isNotClosed(){
+ 		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
+ 	}
 	
 	public any function getStockAdjustmentItemForSku(required any sku) {
 		return getService("StockService").getStockAdjustmentItemForSku(arguments.sku, this);

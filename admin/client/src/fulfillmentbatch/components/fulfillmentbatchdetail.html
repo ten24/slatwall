@@ -14,7 +14,9 @@
 			data-collection-config="swFulfillmentBatchDetailController.state.lgFulfillmentBatchItemCollection"
 			data-edit="true"
 			data-has-search="true"
-			data-record-detail-action="admin:entity.detailfulfillmentBatchItem"
+			data-record-detail-action="admin:entity.detailorderfulfillment"
+			data-record-detail-action-id-property="orderFulfillmentID"
+			data-record-detail-action-id-key="orderFulfillment_orderFulfillmentID"
 			data-is-angular-route="false"
 			data-angular-links="true"
 			data-has-action-bar="true" 
@@ -41,7 +43,9 @@
 			data-collection-config="swFulfillmentBatchDetailController.state.smFulfillmentBatchItemCollection"
 			data-edit="true"
 			data-has-search="false"
-			data-record-detail-action="admin:entity.detailfulfillmentBatchItem"
+			data-record-detail-action="admin:entity.detailorderfulfillment"
+			data-record-detail-action-id-property="orderFulfillmentID"
+			data-record-detail-action-id-key="orderFulfillment_orderFulfillmentID"
 			data-is-angular-route="false"
 			data-angular-links="true"
 			data-has-action-bar="true" 
@@ -244,8 +248,8 @@
                                     	<div class="col-md-2">&nbsp</div>
                                         <div class="col-md-2"><strong>Item Name</strong></div>
                                         <div class="col-md-2"><strong>Sku Code</strong></div>
+					<div class="col-md-2"><strong>Qty Ordered</strong></div>
                                         <div class="col-md-2"><strong>Qty Delivered</strong></div>
-                                        <div class="col-md-2"><strong>Qty Ordered</strong></div>
                                         <div class="col-md-2">&nbsp</div>
                                     </div><br>
                                     <span ng-init="swFulfillmentBatchDetailController.orderItem = {}"></span>
@@ -261,9 +265,9 @@
                                            
                                            <div class="col-md-2">{{oi['sku_skuCode']}}</div>
                                            
-                                           <div class="col-md-2">{{oi.quantityDelivered}}</div>
-                                           
                                            <div class="col-md-2">{{oi.quantity}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.quantityDelivered}}</div>
                                            
                                            <div class="col-md-2">
                                             	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
@@ -492,7 +496,7 @@
                 </div>
                 
                 <!--- Start Custom Attributes --->
-                <div class="s-detail-body s-arrow">
+                <div class="s-detail-body s-arrow" ng-if="swFulfillmentBatchDetailController.state.orderDeliveryAttributes && swFulfillmentBatchDetailController.state.orderDeliveryAttributes.length">
                     <div class="s-content-block-wrapper">
                         <div class="s-header">
                             <h3>Order Delivery Custom Properties <i class="fa fa-info-circle s-tooltip-hint"></i></h3>

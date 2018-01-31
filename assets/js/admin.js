@@ -2,10 +2,8 @@ $(document).ready(function(e){
 	$('body').on('change', '.slatwall-address-countryCode', function(e){
 		
 		var country = $.slatwall.getEntity('Country', jQuery(this).val() );
-		
 		// Loop over the keys in the country to show/hide fields and also to update the labels
 		for (var key in country) {
-			
 			if (country.hasOwnProperty(key)) {
 				
 				if ( key.substring(key.length - 5, key.length) === "Label" ) {
@@ -14,9 +12,11 @@ $(document).ready(function(e){
 					jQuery( this ).closest('.slatwall-address-container').find( classSelector ).closest('.control-group').find('label').html(country[key]);
 					
 				} else if ( key.substring(key.length - 8, key.length) === "ShowFlag" ) {
-					
+					if(typeof country[key] == "string" && country[key].trim().toLowerCase() == "no"){
+						country[key] = false;
+					}
 					var classSelector = '.slatwall-address-' + key.substring(0, key.length - 8);
-					var block = jQuery( this ).closest('.slatwall-address-container').find( classSelector ).closest('.control-group');
+					var block = jQuery( this ).closest('.slatwall-address-container').find( classSelector ).closest('.form-group');
 					if( country[key] && jQuery(block).hasClass('hide') ) {
 						jQuery(block).removeClass('hide');
 					} else if ( !country[key] && !jQuery(block).hasClass('hide') ) {
@@ -24,13 +24,15 @@ $(document).ready(function(e){
 					}
 					
 				} else if ( key.substring(key.length - 12, key.length) === "RequiredFlag" ) {
-					
+					if(typeof country[key] == "string" && country[key].trim().toLowerCase() == "no"){
+						country[key] = false;
+					}
 					var classSelector = '.slatwall-address-' + key.substring(0, key.length - 12);
 					var input = jQuery( this ).closest('.slatwall-address-container').find( classSelector );
-					if( !country[key] && jQuery(block).hasClass('required') ) {
-						jQuery(block).removeClass('required');
-					} else if ( country[key] && !jQuery(block).hasClass('required') ) {
-						jQuery(block).addClass('required');
+					if( !country[key] && jQuery(input).hasClass('required') ) {
+						jQuery(input).removeClass('required');
+					} else if ( country[key] && !jQuery(input).hasClass('required') ) {
+						jQuery(input).addClass('required');
 					}
 					
 				}

@@ -81,8 +81,16 @@ Notes:
 				var templateObject = getServiceByEntityName( printTemplate.getPrintTemplateObject() ).invokeMethod("get#printTemplate.getPrintTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
 			} else if(structKeyExists(arguments.data, "collectionConfig")){ 
 				var templateObject = getHibachiCollectionService().newCollection(printTemplate.getPrintTemplateObject()); 
-				templateObject.setCollectionObject(printTemplate.getPrintTemplateObject());	
-				templateObject.setCollectionConfigStruct(deserializeJson(arguments.data.collectionConfig));
+
+				templateObject.setCollectionObject(printTemplate.getPrintTemplateObject());
+				var collectionConfigStruct = deserializeJson(arguments.data.collectionConfig);  	
+				templateObject.setCollectionConfigStruct(collectionConfigStruct);
+				if(structKeyExists(collectionConfigStruct, "keywords")){
+					templateObject.setKeywords(collectionConfigStruct.keywords); 
+				}
+				if(structKeyExists(collectionConfigStruct, "currentPage")){
+					templateObject.setCurrentPageDeclaration(collectionConfigStruct.currentPage); 
+				}
 			} 
 			
 			if(!isNull(templateObject)) {

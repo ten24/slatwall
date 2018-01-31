@@ -1165,11 +1165,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 	
 				var columnsJson = serializeJson(columnsArray);
+
+        var properlyCasedShortEntityName = lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject));
 				defaultCollectionConfig = '{
-					"baseEntityName":"#HibachiBaseEntity#",
-					"baseEntityAlias":"_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject))#",
-					"columns":#columnsJson#
-				}';
+          "baseEntityName":"#HibachiBaseEntity#",
+          "baseEntityAlias":"_#properlyCasedShortEntityName#",
+          "columns":#columnsJson#,
+          "filterGroups":[{"filterGroup":[]}]
+        }';
+
 				setCollectionCacheValue(cacheKey,defaultCollectionConfig);
 			}
 			variables.collectionConfig = duplicate(defaultCollectionConfig);
@@ -1357,14 +1361,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getCacheName() {
-		// Take the stateStruct, serialize it, and turn that list it into a an array
-		var valueArray = listToArray(serializeJSON(getStateStruct()));
-
-		// Sort the array so that the values always end up the same
-		arraySort(valueArray,"text");
-
-		// Turn the array back into a list, lcase, and hash for the name
-		return hash(lcase(arrayToList(valueArray,",")));
+		//If this is cacheable then check if the cachename has been set...
+		if (getCacheable()){
+			if (!structKeyExists(variables, "cacheName")){
+				
+				// Take the stateStruct, serialize it, and turn that list it into a an array
+				var valueArray = listToArray(serializeJSON(getStateStruct()));
+		
+				// Sort the array so that the values always end up the same
+				arraySort(valueArray,"text");
+				
+				// Turn the array back into a list, lcase, and hash for the name
+				variables.cacheName = hash(lcase(arrayToList(valueArray,",")));
+			}
+			return variables.cacheName;
+		}
+		return "";
 	}
 
 	//restrict allowed operators to prevent sql injection
@@ -2284,9 +2296,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		applyPermissions();
 		if(arguments.formatRecords){
-			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
-
-			variables.pageRecords =	formattedRecords;
+			//If we are caching this (someone set setCacheable(true) on the collectionList)
+			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue("pageRecords-#getCacheName()#")){
+				variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-#getCacheName()#");
+			
+			} else {
+				
+				var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{},false).pageRecords;
+				variables.pageRecords =	formattedRecords;
+				
+				//If this is cacheable but we don't have a cached value, then set one.
+				if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-#getCacheName()#")){
+					getService("hibachiCacheService").setCachedValue("pageRecords-#getCacheName()#", variables.pageRecords);
+				}
+			}
 		}else{
 			try{
 
@@ -2338,7 +2361,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 								variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 							}
+							
+							//If we are caching this (someone set setCacheable(true) on the collectionList)
+							if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
+								variables.pageRecords = getService("hibachiCacheService").getCachedValue("pageRecords-" & getCacheName());
+							
+							} else {
+								//Get the pageRecords
+								variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});	
+								
+								//If this is cacheable but we don't have a cached value yet, then set one.
+								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("pageRecords-" & getCacheName())){
+									getService("hibachiCacheService").setCachedValue("pageRecords-" & getCacheName(), variables.pageRecords);
+								}
+							}
 							variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+							
 							if( getDirtyReadFlag() ) {
 								variables.connection.setTransactionIsolation(currentTransactionIsolation);
 							}
@@ -2376,7 +2414,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables,'records');
 		structDelete(variables,'pageRecords');
 		structDelete(variables,'recordsCount');
+
+		if (getCacheable()){
+			structDelete(variables,'cacheName');
+		}
+		
 		this.setExcludeOrderBy(false);
+
 	}
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
@@ -2388,8 +2432,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
-
-			variables.records =	formattedRecords;
+			//If we are caching this (someone set setCacheable(true) on the collectionList)
+			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
+				variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
+			} else {
+				//Get the pageRecords
+				variables.records =	formattedRecords;
+				//If this is cacheable but we don't have a cached value yet, then set one.
+				if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
+					getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
+				}
+			}
 		}else{
 			try{
 				//If we are returning only the exportable records, then check and pass through.
@@ -2428,7 +2481,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 								variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 							}
-							variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+							
+							//If we are caching this (someone set setCacheable(true) on the collectionList)
+							if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
+								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
+							} else {
+								//Get the pageRecords
+								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+							
+								//If this is cacheable but we don't have a cached value yet, then set one.
+								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
+									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
+								}
+							}
+							
 							if( getDirtyReadFlag() ) {
 								variables.connection.setTransactionIsolation(currentTransactionIsolation);
 							}
@@ -3293,7 +3359,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public struct function getStateStruct() {
 		var stateStruct = {};
 		//TODO:change what the state variables are, evaluate the value of them
-		stateStruct.collectionConfig = duplicate(variables.collectionConfig);
+		stateStruct.collectionConfig = duplicate(variables.collectionConfigStruct);
 		stateStruct.keywords = duplicate(variables.keywords);
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
 
