@@ -54,7 +54,9 @@ Notes:
 <cfoutput>
 	
 	<cfset placedOrderItemsCollectionlist = rc.sku.getPlacedOrderItemsCollectionList()/>
+
 	<cfset placedOrderItemsCollectionlist.setDisplayProperties('order.account.calculatedFullName,order.orderNumber,sku.skuCode,order.orderOpenDateTime,order.orderCloseDateTime,quantity,price',{isVisible=true, isSearchable=true, isDeletable=true})/>
+
 	<cfif rc.sku.getBaseProductType() EQ "event">
 		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventStartDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
 		<cfset placedOrderItemsCollectionlist.addDisplayProperty(displayProperty='sku.eventEndDateTime',columnConfig={isVisible=true, isSearchable=true, isDeletable=true })/>
