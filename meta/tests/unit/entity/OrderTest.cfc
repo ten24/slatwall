@@ -1166,17 +1166,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var mockOrderPayment4 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
 	 	
 	 	var orderData = {
-	 		orderID = '',
-	 		orderPayments = [
-		 		{
-		 			orderPaymentID = mockOrderPayment1.getOrderPaymentID()
-		 		},
-		 		{
-		 			orderPaymentID = mockOrderPayment4.getOrderPaymentID()
-		 		}
-	 		]
+	 		orderID = ''
+	 	
 	 	};
 	 	var mockOrderTwoPayments = createPersistedTestEntity('Order', orderData);
+	 	
+	 	
+	 	
+	 	mockOrderTwoPayments.addOrderPayment(mockOrderPayment4);
+	 	ormflush();
+	 	mockOrderTwoPayments.addOrderPayment(mockOrderPayment1);
+	 	ormflush();
 	 	
 	 	var resultTwoPayments = mockOrderTwoPayments.getDynamicChargeOrderPayment();
 	 	assertEquals(mockOrderPayment4.getOrderPaymentID(), resultTwoPayments.getOrderPaymentID(), 'When two orderPayments involved, the second should be returned');
