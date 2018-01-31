@@ -281,7 +281,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					//Update Sku price with vendor order item price.
 					if(len(vendorOrderItem.getPrice())){
-						if(arguments.vendorOrder.getCurrencyCode() == getSettingService().getSettingValue("skuCurrency"){
+						if(arguments.vendorOrder.getCurrencyCode() == getSettingService().getSettingValue("skuCurrency")){
 							if(vendorOrderItem.getPrice() != sku.getPrice()){
 								sku.setPrice(vendorOrderItem.getPrice());
 							}
