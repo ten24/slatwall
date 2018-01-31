@@ -236,7 +236,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-						newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
+						var taxAmount = (originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity();
+						newAppliedTax.setTaxLiabilityAmount( taxamount );
 
 						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
 						newAppliedTax.setTaxImpositionName( originalAppliedTax.getTaxImpositionName() );
