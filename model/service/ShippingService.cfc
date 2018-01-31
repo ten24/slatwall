@@ -369,7 +369,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(methodResponse.getShippingProviderMethod() == shippingMethodRate.getShippingIntegrationMethod()) {
 							var qualifiedRateOption = newQualifiedRateOption(
 								shippingMethodRate,
-								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate),
+								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate, arguments.orderFulfillment),
 								false, 
 								thisResponseBean
 							);

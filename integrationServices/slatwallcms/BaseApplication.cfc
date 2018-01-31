@@ -324,6 +324,19 @@ Notes:
 		}
 	}
 
+	public string function getContentBodyByUrlTitlePath(required string urlTitlePath){
+		var contentBody = "";
+		
+		var contentCollectionList = getHibachiScope().getService('contentService').getContentCollectionList();
+		contentCollectionList.setDisplayProperties('contentBody');
+		contentCollectionList.addFilter('urlTitlePath',arguments.urlTitlePath);
+		var contentRecords = contentCollectionList.getPageRecords();
+		if(arraylen(contentRecords)){
+			contentBody = contentRecords[1]['contentBody'];
+		}
+		return contentBody;
+	}
+	
 	/** Returns the content given a urlTitle or the default content if no urlTitle is given. */
     public any function getContentByUrlTitlePath(urlTitlePath){
 

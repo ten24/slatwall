@@ -53,7 +53,7 @@ component entityname="SlatwallVendorSku" table="SwVendorSku" persistent="true" a
 
 	// Calculated Properties
 	property name="calculatedLastCostCurrencyCode" ormtype="string";
-	property name="calculatedLastCost" ormtype="big_decimal";
+	property name="calculatedLastCost" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedQuantity" ormtype="integer";
 
 	// Related Object Properties (many-to-one)

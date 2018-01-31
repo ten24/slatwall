@@ -95,6 +95,21 @@ Notes:
 				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="removePrimaryAddress">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				primaryAddressID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
 
 	<cffunction name="removeAccountAddressFromOrderFulfillments">
 		<cfargument name="accountAddressID" type="string" required="true" >
@@ -119,6 +134,20 @@ Notes:
 		<cfquery name="rs">
 			UPDATE
 				SwOrderPayment
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
+		<cffunction name="removeAccountAddressFromAccountPaymentMethods">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccountPaymentMethod
 			SET
 				billingAccountAddressID = null
 			WHERE

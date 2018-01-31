@@ -64,8 +64,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
 
 	// Data Properties (Inputs)
-	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
-	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
+	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
+	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 
 	property name="saveGiftCardToAccountFlag" hb_formFieldType="yesno";
 

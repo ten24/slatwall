@@ -100,10 +100,23 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
         var resizedImagePaths = [];
-        var skus = [];
+        //var skus = [];
+        
+        var skuCollectionList = getService('skuService').getSkuCollectionList();
+        skuCollectionList.setDisplayProperties('skuID,imageFile');
+        skuCollectionList.addFilter('skuID',arguments.skuIDList,'IN');
+        var skuRecords = skuCollectionList.getRecords();
+        for(var skuRecord in skuRecords){
+        	ArrayAppend(
+        		resizedImagePaths, 
+        		getService('imageService').getResizedImagePath(
+        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#skuRecord['imageFile']#"
+        		)
+        	);
+        }
 
         //smart list to load up sku array
-        var skuSmartList = getSkuService().getSkuSmartList();
+        /*var skuSmartList = getSkuService().getSkuSmartList();
         skuSmartList.addInFilter('skuID', arguments.skuIDList);
 
         if( skuSmartList.getRecordsCount() > 0){
@@ -112,7 +125,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
             for  (var sku in skus){
                 ArrayAppend(resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));
             }
-        }
+        }*/
         return resizedImagePaths;
     }
     

@@ -315,12 +315,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 			
-			// Check the fullfillment for a pickup location.
+			// Set Stock reference, check the fullfillment for a pickup location
 			if (!isNull(orderFulfillment.getPickupLocation())){
 				
 				// The item being added to the cart should have its stockID added based on that location
 				var location = orderFulfillment.getPickupLocation();
-				var stock = getService("StockService").getStockBySkuAndLocation(sku=processObject.getSku(), location=location);
+				var stock = getService("StockService").getStockBySkuAndLocation(sku=arguments.processObject.getSku(), location=location);
 				
 				//If we found a stock for that location, then set the stock to the process.
 				if (!isNull(stock)){
@@ -336,6 +336,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						foundItem = true;
 						var foundOrderItem = orderItem;
 						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
+						if(!isNull(arguments.processObject.getSellOnBackOrderFlag()) && arguments.processObject.getSellOnBackorderFlag()){
+							foundOrderItem.setSellOnBackOrderFlag(arguments.processObject.getSellOnBackorderFlag());
+						}
 						foundOrderItem.validate(context='save');
 						if(foundOrderItem.hasErrors()) {
 							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
@@ -819,7 +822,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 
 			newOrderPayment.setAccountPaymentMethod(newAccountPaymentMethod);
-
+			if(newAccountPaymentMethod.hasErrors()){
+				newOrderPayment.addErrors(newAccountPaymentMethod.getErrors());
+			}
 		}
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
@@ -845,6 +850,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//if promo has a max use and the promo has been used more than the max use than display the over max use message
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
+		//If promo site does not match order site, display incorrect site message
+		} else if( !isNull(pc.getPromotion().getSite()) && pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() ) {
+			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
 		} else {
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
 			if(!arguments.order.hasPromotionCode( pc )) {
@@ -956,8 +964,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
 		//Setup Site Origin if using slatwall cms
-		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
-			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		if(!isNull(getHibachiScope().getCurrentRequestSite()) && getHibachiScope().getCurrentRequestSite().isSlatwallCMS()){
+			arguments.order.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 		}else if ( !isNull(arguments.processObject.getOrderCreatedSite()) ) {
 			arguments.order.setOrderCreatedSite(arguments.processObject.getOrderCreatedSite());
 		}
@@ -1145,6 +1153,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         //set the site placed so that it is available on return orders.
         if (!isNull( arguments.order.getOrderPlacedSite()) && isObject( arguments.order.getOrderPlacedSite())){
             newOrder.setOrderPlacedSite( arguments.order.getOrderPlacedSite() );
+        }
+
+        //set the site created so that it is available on return orders.
+        if (!isNull( arguments.order.getOrderCreatedSite()) && isObject( arguments.order.getOrderCreatedSite())){
+            newOrder.setOrderCreatedSite( arguments.order.getOrderCreatedSite() );
         }
 
 		if (referencedOrderFlag == true){
@@ -1989,7 +2002,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				}
  				
 				
-				// Setup the tracking number if we have it
+				
+				 // Setup the tracking number using shipping integration if trackingNumber not manually provided
+				if ((isNull(arguments.processObject.getTrackingNumber()) || !len(arguments.processObject.getTrackingNumber())) && arguments.processObject.getUseShippingIntegrationForTrackingNumber()) {
+					var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.processObject.getShippingIntegration());
+					
+					// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
+					if(structKeyExists(shippingIntegrationCFC, 'processShipmentRequest')){
+						shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(arguments.processObject);
+					}
+				}
+
 				if(
 					!isNull(arguments.processObject.getTrackingNumber())
 					&& len(arguments.processObject.getTrackingNumber())
@@ -2128,8 +2151,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Save the orderDelivery
 			arguments.orderDelivery = this.saveOrderDelivery(arguments.orderDelivery);
+			this.saveOrderFulfillment( arguments.processObject.getOrderFulfillment() );
 
-			// Update the orderStatus
+			//must flush otherwise the dao won't get the correct amount.
+			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
+				ormFlush();
+			}
+			
+			// Update the orderFulfillmentStatus
+			if (arguments.processObject.getOrderFulfillment().getQuantityUnDelivered() == 0) {
+				arguments.processObject.getOrderFulfillment().setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstFulfilled") );
+				
+				for (var item in arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()){
+					item.setOrderItemStatusType( getTypeService().getTypeBySystemCode("oistFulfilled"));
+				}
+			}
+			
 			this.processOrder(arguments.orderDelivery.getOrder(), {updateItems=true}, 'updateStatus');
 
 		} else {

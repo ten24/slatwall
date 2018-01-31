@@ -82,6 +82,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="statusCode" persistent="false";		// Use getStockAdjustmentStatusTypeSystemCode()
 	
 	// For use with Adjustment Items interface, get one location that we will use for stock lookup. 
+	
 	public any function getOneLocation() {
 		if(getStockAdjustmentType().getSystemCode() == "satLocationTransfer" || getStockAdjustmentType().getSystemCode() == "satManualIn") {
 			return getToLocation();
@@ -91,8 +92,8 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	public boolean function isNotClosed(){
- 		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
- 	}
+		return variables.stockAdjustmentStatusType.getSystemCode() != "sastClosed";
+	}
 	
 	public any function getStockAdjustmentItemForSku(required any sku) {
 		return getService("StockService").getStockAdjustmentItemForSku(arguments.sku, this);
@@ -248,7 +249,11 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	// =================== START: ORM Event Hooks  =========================
 	
 	public void function preInsert(){
-		super.preInsert();
+		lock scope="Application" timeout="30" {
+	 		var maxReferenceNumber = getDAO('StockDAO').getStockAdjustmentMaxReferenceNumber()['maxReferenceNumber'];
+	 		variables.ReferenceNumber = maxReferenceNumber + 1;
+ 		}
+ 		super.preInsert(argumentcollection=arguments);
 		
 		// Verify Defaults are Set
 		getStockAdjustmentType();
@@ -264,4 +269,6 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	// ===================  END:  Deprecated Methods  =========================
+
+	
 }

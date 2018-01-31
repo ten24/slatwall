@@ -50,7 +50,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="amount" hb_populateEnabled="public" ormtype="big_decimal";
+	property name="amount" hb_populateEnabled="public" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";

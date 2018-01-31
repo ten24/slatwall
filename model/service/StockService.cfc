@@ -58,6 +58,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	// Inject DAO's
 	property name="stockDAO" type="any";
 
+	// ====================== START: Save Overrides ===========================
+	public any function saveStock(required any stock, struct data={}, string context="save") {
+		var calculatedCurrentSkuPrice = stock.getCurrentSkuPrice();
+		stock.setCalculatedCurrentSkuPrice(calculatedCurrentSkuPrice);
+		return stock;
+	}
+	
 	public any function getStockBySkuAndLocation(required any sku, required any location){
 		var stock = getStockDAO().getStockBySkuAndLocation(argumentCollection=arguments);
 
@@ -80,6 +87,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 
 		return stock;
+	}
+
+	public any function getStockBySkuIDAndLocationID(required any skuID, required any locationID){
+		arguments.sku = getService('skuService').getSku(arguments.skuID);
+		arguments.location = getService('locationService').getLocation(arguments.locationID);
+		
+
+		return getStockBySkuAndLocation(argumentCollection=arguments);
 	}
 
 	public any function getStockAdjustmentItemForSku(required any sku, required any stockAdjustment){
@@ -377,6 +392,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setCost(stockAdjustmentItem.getCost());
 				stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
+				getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock());
 			}
 			this.saveStockReceiver(stockReceiver);
 		}
@@ -395,6 +411,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockAdjustmentDeliveryItem.setStock(stockAdjustmentItem.getFromStock());
 				stockAdjustmentDeliveryItem.setCost(stockAdjustmentItem.getCost());
 				stockAdjustmentDeliveryItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
+				getHibachiScope().addModifiedEntity(stockAdjustmentItem.getFromStock());
 			}
 
 			this.saveStockAdjustmentDelivery(stockAdjustmentDelivery);
@@ -454,16 +471,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		// Set the status to closed
 		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );
-
-		// Set reference number
-		lock scope="Application" timeout="30" {
-			var maxReferenceNumber = getStockDAO().getStockAdjustmentMaxReferenceNumber();
-			if( arrayIsDefined(maxReferenceNumber,1) ) {
-				arguments.stockAdjustment.setReferenceNumber(maxReferenceNumber[1] + 1);
-			} else {
-				arguments.stockAdjustment.setReferenceNumber(1);
-			}
-		}
 
 		return arguments.stockAdjustment;
 
@@ -559,23 +566,22 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processMinMaxStockTransfer_createStockAdjustments(required any MinMaxStockTransfer, required any processObject) {
 
 		getHibachiTagService().cfSetting(requesttimeout="3600");
-		var minMaxStockTransferItemsSmartList = arguments.MinMaxStockTransfer.getMinMaxStockTransferItemsSmartList();
-		minMaxStockTransferItemsSmartList.addRange('transferQuantity', '1^');
-		minMaxStockTransferItemsSmartList.addOrder('fromLeafLocation.locationName');
-		minMaxStockTransferItemsSmartList.addOrder('toLeafLocation.locationName');
-		// remove any existing stock adjustments
-		if(arguments.entity.hasStockAdjustment()){
-			stockDAO.deleteMinMaxStockAdjustments(arguments.minMaxStockTransfer.getMinMaxStockTransferID());
-		}
+
+		var minMaxStockTransferItemsCollectionList = arguments.MinMaxStockTransfer.getMinMaxStockTransferItemsCollectionList();
+		
+		minMaxStockTransferItemsCollectionList.addFilter('transferQuantity', '1', '>=');
+		minMaxStockTransferItemsCollectionList.setOrderBy('fromLeafLocation.locationName,toLeafLocation.locationName');
+		minMaxStockTransferItemsCollectionList.setDisplayProperties('fromLeafLocation.locationID,toLeafLocation.locationID,transferQuantity,sku.skuID');
+
 
 		var fromLocationID = '';
 		var toLocationID = '';
-		for(var minMaxStockTransferItem in minMaxStockTransferItemsSmartList.getRecords()) {
-			if(fromLocationID != minMaxStockTransferItem.getFromLeafLocation().getLocationID() || toLocationID != minMaxStockTransferItem.getToLeafLocation().getLocationID()) {
+		for(var minMaxStockTransferItem in minMaxStockTransferItemsCollectionList.getRecords()) {
+			if(fromLocationID != minMaxStockTransferItem['fromLeafLocation_locationID'] || toLocationID != minMaxStockTransferItem['toLeafLocation_locationID']) {
 				var stockAdjustmentData = {};
 				stockAdjustmentData.stockAdjustmentID = lcase(replace(createUUID(),"-","","all"));
-				stockAdjustmentData.fromLocationID = minMaxStockTransferItem.getFromLeafLocation().getLocationID();
-				stockAdjustmentData.toLocationID = minMaxStockTransferItem.getToLeafLocation().getLocationID();
+				stockAdjustmentData.fromLocationID = minMaxStockTransferItem['fromLeafLocation_locationID'];
+				stockAdjustmentData.toLocationID = minMaxStockTransferItem['toLeafLocation_locationID'];
 				stockAdjustmentData.stockAdjustmentTypeID = getService("typeService").getTypeBySystemCode("satLocationTransfer").getTypeID();
 				stockAdjustmentData.stockAdjustmentStatusTypeID = getService("typeService").getTypeBySystemCode("sastNew").getTypeID();
 				stockAdjustmentData.minMaxStockTransferID = arguments.MinMaxStockTransfer.getMinMaxStockTransferID();
@@ -583,18 +589,19 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockAdjustmentData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
 				stockDAO.insertMinMaxTransferStockAjustment(stockAdjustmentData);
 			}
-			var fromLocationID = minMaxStockTransferItem.getFromLeafLocation().getLocationID();
-			var toLocationID = minMaxStockTransferItem.getToLeafLocation().getLocationID();
+			var fromLocationID = minMaxStockTransferItem['fromLeafLocation_locationID'];
+			var toLocationID = minMaxStockTransferItem['toLeafLocation_locationID'];
 
 			var stockAdjustmentItemData = {};
 			stockAdjustmentItemData.stockAdjustmentItemID = lcase(replace(createUUID(),"-","","all"));
 			stockAdjustmentItemData.stockAdjustmentID = stockAdjustmentData.stockAdjustmentID;
-			stockAdjustmentItemData.quantity = minMaxStockTransferItem.getTransferQuantity();
-			stockAdjustmentItemData.cost = minMaxStockTransferItem.getsku().getAverageCost(minMaxStockTransferItem.getsku().getCurrencyCode());
-			stockAdjustmentItemData.currencyCode = minMaxStockTransferItem.getsku().getCurrencyCode();
-			stockAdjustmentItemData.fromStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getFromLeafLocation()).getStockID();
-			stockAdjustmentItemData.toStockID = getStockBySkuAndLocation(minMaxStockTransferItem.getsku(),minMaxStockTransferItem.getToLeafLocation()).getStockID();
-			stockAdjustmentItemData.skuID = minMaxStockTransferItem.getsku().getSkuID();
+			stockAdjustmentItemData.quantity = minMaxStockTransferItem['transferQuantity'];
+			stockAdjustmentItemData.currencyCode = arguments.processObject.getCurrencyCode();
+			var stock = getStockBySkuIDAndLocationID(minMaxStockTransferItem['sku_skuID'],minMaxStockTransferItem['fromLeafLocation_locationID']);
+			stockAdjustmentItemData.cost = stock.getAverageCost();
+			stockAdjustmentItemData.fromStockID = stock.getStockID();
+			stockAdjustmentItemData.toStockID = getStockBySkuIDAndLocationID(minMaxStockTransferItem['sku_skuID'],minMaxStockTransferItem['toLeafLocation_locationID']).getStockID();
+			stockAdjustmentItemData.skuID = minMaxStockTransferItem['sku_skuID'];
 		   	stockAdjustmentItemData.timeStamp = now();
 			stockAdjustmentItemData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
 			stockDAO.insertMinMaxTransferStockAjustmentItem(stockAdjustmentItemData);

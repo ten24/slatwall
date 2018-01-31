@@ -52,5 +52,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="MinMaxStockTransfer";
 
 	// Data Properties
+    
+    property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
 	
+    public array function getCurrencyCodeOptions() {
+        return getService("currencyService").getCurrencyOptions();
+    }
+    
+    
+     
 }

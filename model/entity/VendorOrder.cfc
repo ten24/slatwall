@@ -50,7 +50,7 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 
 	// Persistent Properties
 	property name="vendorOrderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="vendorOrderNumber" ormtype="string";
+	property name="vendorOrderNumber" ormtype="integer" generator="increment";
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
 	property name="currencyCode" ormtype="string" length="3" hb_formFieldType="select";
 	property name="shippingAndHandlingCost" ormtype="big_decimal" hb_formatType="currency" default="0";
@@ -78,8 +78,8 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Calculated Properties
-	property name="calculatedTotal" ormtype="big_decimal";
-	property name="calculatedTotalCost" ormtype="big_decimal";
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalCost" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalQuantity" ormtype="big_decimal";
 	property name="calculatedTotalWeight" ormtype="big_decimal";
 
@@ -336,7 +336,11 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
-		super.preInsert();
+		lock scope="Application" timeout="5" {
+	 		var maxVendorOrderNumber = getDAO('vendorOrderDAO').getVendorOrderMaxVendorOrderNumber()['maxVendorOrderNumber'];
+	 		variables.vendorOrderNumber = maxVendorOrderNumber + 1;
+ 		}
+ 		super.preInsert(argumentcollection=arguments);
 
 		// Verify Defaults are Set
 		getVendorOrderType();

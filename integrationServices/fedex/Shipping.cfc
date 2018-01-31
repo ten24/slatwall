@@ -60,8 +60,10 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 			PRIORITY_OVERNIGHT="FedEx Priority Overnight",
 			STANDARD_OVERNIGHT="FedEx Standard Overnight",
 			FEDEX_2_DAY="FedEx 2 Day",
+			FEDEX_2_DAY_AM="FedEx 2Day A.M.",
 			FEDEX_EXPRESS_SAVER="FedEx Express Saver",
 			FEDEX_GROUND="FedEx Ground",
+			GROUND_HOME_DELIVERY="FedEx Ground Home Delivery",
 			INTERNATIONAL_ECONOMY="FedEx International Economy",
 			INTERNATIONAL_PRIORITY="FedEx International Priority"
 		};
@@ -101,6 +103,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.xmlResponse);
+		
 		if(isNull(responseBean.getData()) || 
 			(
 				!isNull(responseBean.getData()) && structKeyExists(responseBean.getData(),'Fault')
@@ -124,6 +127,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 			
 				if(!responseBean.hasErrors()) {
 					for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
+					
 						responseBean.addShippingMethod(
 							shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
 							totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext

@@ -64,6 +64,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="quantity";
 	property name="cost";
+	property name="costOptions" type="array";
 	property name="currencyCode" hb_formFieldType="select";
 	property name="currencyCodeOptions" type="array";
 	
@@ -74,10 +75,99 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.quantity;
 	}
 	
+	public any function getDefaultSkuCurrencyCode(  ){
+		
+		var stockAdjustment = getStockAdjustment();
+		if ( !isNull( stockAdjustment.getFromLocation() ) ){
+			var baseLocation =  stockAdjustment.getFromLocation();
+		}else if (!isNull( stockAdjustment.getToLocation() )){
+			var baseLocation =  stockAdjustment.getToLocation();
+		}
+			
+		// Find the topmost (root) location 
+		if (!baseLocation.isRootLocation()){
+			var rootLocation = baseLocation.getRootLocation();
+		}else{
+			var rootLocation = baseLocation;
+		}
+			
+		// Figure out the currency in use for this location to set the defaults.
+		if ( !isNull( stockAdjustment )  && !isNull( rootLocation ) && !isNull( rootLocation.getSites() ) && !isNull( rootLocation.getSites()[1].setting( "skuCurrency" ) )){
+			//This filters down to the one average cost for this locations currency.
+			return trim(rootLocation.getSites()[1].setting( 'skuCurrency' ));
+		}
+	}
+	
+	public array function getCostOptions(){
+		
+		if(!structKeyExists(variables,'costOptions')){
+			variables.costOptions = [];	
+			var costOptionsCollection = getSku().getSkuCostsCollectionList();
+			costOptionsCollection.setDisplayProperties("calculatedAverageCost,currency.currencyCode");
+			
+			//Now find the currency for this location so we can filter on the correct cost.
+			var defaultSkuCurrency = this.getDefaultSkuCurrencyCode( );
+			
+			// Figure out the currency in use for this location to set the defaults.
+			if ( !isNull( defaultSkuCurrency ) ){
+				//This filters down to the one average cost for this locations currency.
+				costOptionsCollection.addFilter("currency.currencyCode", "#defaultSkuCurrency#");
+			}
+			
+			// We could have multiple options if it didn't find the default currency in which case they should be editable.
+			var records = costOptionsCollection.getRecords();
+			
+			//This will usually have only one record, but could have more when no default currency is found on the root.
+			for (var record in records){
+				var skuCostOption = {
+					name = "#record['currency_currencyCode']# - #dollarFormat(record['calculatedAverageCost'])#",
+					value = "#record.calculatedAverageCost#"
+				};
+				
+				// Make this non-editable if there was only one option available.
+				if (trim(record['currency_currencyCode']) == defaultSkuCurrency){
+					skuCostOption['selected'] = "selected";
+				}
+				
+				// return the cost options.
+				arrayAppend( variables.costOptions, skuCostOption );
+			}
+			
+		}
+		
+		return variables.costOptions;
+		
+	} 
+	
+	public any function getCost(){
+		var stockAdjustment = getStockAdjustment();
+		if ( !isNull( stockAdjustment.getFromLocation() ) ){
+			var baseLocation =  stockAdjustment.getFromLocation();
+		}else if (!isNull( stockAdjustment.getToLocation() )){
+			var baseLocation =  stockAdjustment.getToLocation();
+		}
+		var stock = getService("StockService").getStockBySkuAndLocation( getSku(), baseLocation );
+		
+		if(!isNull(stock)){
+			return stock.getAverageCost();
+		}
+		return 0;
+	} 
+	
 	public array function getCurrencyCodeOptions(){
 		if(!structKeyExists(variables,'currencyCodeOptions')){
 			
 			variables.currencyCodeOptions = getService('currencyService').getCurrencyOptions();
+			
+			var defaultSkuCurrencyCode = this.getDefaultSkuCurrencyCode( );
+			if (!isNull(defaultSkuCurrencyCode)){
+				//Set the default for this location to selected.
+				for (var option in variables.currencyCodeOptions){
+					if (option['value'] == defaultSkuCurrencyCode){
+						option['selected'] = "selected";
+					}
+				}
+			}			
 		}
 		
 		return variables.currencyCodeOptions;

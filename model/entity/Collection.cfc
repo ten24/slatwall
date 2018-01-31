@@ -906,13 +906,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 
 					if (comparison == 'like'){
-						var dataToFilterOnArray = listToArray(dataToFilterOn);
+						var dataToFilterOnArray = listToArray(dataToFilterOn,'|');
 
 						for(var i=1; i <= arraylen(dataToFilterOnArray);i++){
 							var item = dataToFilterOnArray[i];
 							var filterData = {
 								propertyIdentifier=prop,
-								value='%#item#%',
+								value='#item#%',
 								comparisonOperator=comparison
 							};
 
@@ -3410,7 +3410,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(len(arguments.comparisonOperator)){
 			key &= ":#arguments.comparisonOperator#";
 		}
-		return structKeyExists(url,key) && listFindNoCase(url[key],arguments.value,',');
+		var delimiter = ',';
+		if(arguments.comparisonOperator=='like'){
+			delimiter = '|';
+		}
+		
+		return structKeyExists(url,key) && listFindNoCase(url[key],arguments.value,delimiter);
 	}
 
 	public boolean function isRangeApplied(required string range, required string value){

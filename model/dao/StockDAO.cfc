@@ -166,15 +166,21 @@ Notes:
 		}
 
 		public void function insertMinMaxTransferStockAjustment(required struct stockAdjustmentData) {
+			
+			lock scope="Application" timeout="30" {
+	 			var maxReferenceNumber = getStockAdjustmentMaxReferenceNumber()['maxReferenceNumber'];
+		 		var referenceNumber = maxReferenceNumber + 1;
+	 		}
 			var dataQuery = new Query();
 			dataQuery.setSql("
 				INSERT INTO swStockAdjustment
 					(
-						stockAdjustmentID, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, minMaxStockTransferID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+						stockAdjustmentID,referenceNumber, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, minMaxStockTransferID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
 					)
 				VALUES 
 					(
 						'#arguments.stockAdjustmentData.stockAdjustmentID#', 
+						'#referenceNumber#',
 						'#arguments.stockAdjustmentData.fromLocationID#', 
 						'#arguments.stockAdjustmentData.toLocationID#', 
 						'#arguments.stockAdjustmentData.stockAdjustmentTypeID#', 
@@ -247,11 +253,11 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
-	public numeric function getAveragePriceSoldBeforeDiscount(required string stockID, required string currencyCode){
+	public numeric function getAveragePriceSoldAfterDiscount(required string stockID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
+							COALESCE( sum(orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalAfterDiscount 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -277,7 +283,7 @@ Notes:
 		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
 			return 0;
 		}
-		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalAfterDiscount']/QDOODetails['QDOO']);
 		return averagePriceSold;
 	}
 	
@@ -319,7 +325,7 @@ Notes:
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalEarned 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -348,33 +354,21 @@ Notes:
 		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalEarned']/QDOODetails['QDOO']);
 		return averagePriceSold;
 	}
-		
+	
 	public any function getAverageCost(required string stockID, required string currencyCode, string locationID=""){
-		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
-		
-		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
-			FROM SlatwallInventory i 
-			LEFT JOIN i.stock stock
-		';
-		
-		if(len(arguments.locationID)){
-			hql &= ' LEFT JOIN stock.location location ';
+		var stock = getService('stockService').getStock(arguments.stockID);
+		if(isNull(stock)){
+			return 0;
 		}
-		
-		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL AND i.currencyCode=:currencyCode ';
-		
-		if(len(arguments.locationID)){
-			hql&= ' AND location.locationID = :locationID';	
-			params.locationID = arguments.locationID;
-		}
-		
-		
-		return ORMExecuteQuery(
-			hql,
-			params,
-			true
-		);
+		return val(stock.getAverageCost());
 	}
+
+	public any function getStockAdjustmentMaxReferenceNumber() {
+		var query = new Query();
+		query.setSQL("SELECT max(COALESCE(referenceNumber,0)) as maxReferenceNumber FROM swStockAdjustment;");
+		var queryResult = query.execute();
+		return queryResult.getResult().getRow(1);
+ 	}
 	
 	public any function getAverageLandedCost(required string stockID, required string currencyCode, string locationID=""){
 		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
@@ -461,10 +455,6 @@ Notes:
 				return;
 			}
 	
-		}
-
-		public any function getStockAdjustmentMaxReferenceNumber() {
-			return ormExecuteQuery("SELECT max(cast(aslatwallstockadjustment.referenceNumber as int)) as maxReferenceNumber FROM SlatwallStockAdjustment aslatwallstockadjustment");
 		}
 		
 		public array function getEstimatedReceival(required string productID) {

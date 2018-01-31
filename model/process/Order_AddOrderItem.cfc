@@ -55,11 +55,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="stock" hb_rbKey="entity.stock";
 	property name="sku" hb_rbKey="entity.sku";
 	property name="product" hb_rbKey="entity.product";
+	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	property name="location" hb_rbKey="entity.location";
 	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
-	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 
 	// New Properties
 
@@ -235,6 +235,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.fulfillmentRefundAmount = 0;
 		}
 		return variables.fulfillmentRefundAmount;
+	}
+
+	public string function getPickupLocationID() {
+
+		// pickupLocationID has been explicitly set
+		if (structKeyExists(variables, 'pickupLocationID')) {
+			return variables.pickupLocationID;
+		
+		// No pickupLocationID explicitly set, check if we have an locationID that was explicitly set and use that value instead
+		} else if (!isNull(getLocationID())) {
+			return getLocationID();
+		}
+
+		// Neither pickupLocationID or locationID exists
 	}
 
 	public any function getQuantity() {
@@ -438,9 +452,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				variables.locationIDOptions = getService("locationService").getLocationOptions();
 			} else {
 				variables.locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+				arrayPrepend(variables.locationIDOptions,{name=rbKey('define.select'),value=""});
 			}
 		}
-		arrayPrepend(variables.locationIDOptions,{name="Please select a location",value=""});
 		return variables.locationIDOptions;
 	}
 
@@ -685,6 +699,37 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 
 		return true;
+	}
+
+	// @hint Validation method to verify location is child of top level location
+	public boolean function hasValidStockLocation() {
+		var locationValidFlag = true;
+		
+		// Only apply location check to shipping and pickup fulfillment types
+		if (listFindNoCase('shipping,pickup', getFulfillmentMethodType()) && !isNull(getOrder().getDefaultStockLocation())) {
+			// Assume locationID cannot be found in list of valid child locationIDs
+			locationValidFlag = false;
+
+			// locationIDOptions using defaultStockLocation as top level
+			var locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+			
+			if (!isNull(getStock())) {
+				
+				// Verifying to make sure provided location is a child location of the defaultStockLocation.
+				for (var locationIDOption in locationIDOptions) {
+					if (locationIDOption['value'] == getStock().getLocation().getLocationID()) {
+						// Location found and valid
+						locationValidFlag = true;
+						break;
+					}
+				}
+			}
+			
+			// Else no location has been provided with the added order item.
+		}
+
+		// No validation required
+		return locationValidFlag;
 	}
 
 	// =====================  END: Validation Methods ======================

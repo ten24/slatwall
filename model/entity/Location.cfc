@@ -56,6 +56,7 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)
+	property name="currencyCode" ormtype="string" length="3" hb_formFieldType="select";
 	property name="primaryAddress" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="locationAddressID";
 	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID";
 	
@@ -146,10 +147,35 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 		return variables.locationPathName;
 	}
 	
+	public boolean function isRootLocation(  ){
+		return isNull(this.getParentLocation());
+	}
+	
+	public any function getRootLocation(  ){
+		
+		// If we don't have a parent, we are a root.
+		if (isNull( this.getParentLocation() )){
+			return this;
+		}
+		// Else, find the root.
+		var rootLocation = this.getParentLocation();
+		while (!isNull(rootLocation)){
+			if(isNull(rootLocation.getParentLocation())){
+				break;
+			}
+			rootLocation = rootLocation.getParentLocation();
+		}
+		return rootLocation;
+	}
+	
 	public any function getLocationOptions(){
 		return getService("locationService").getLocationOptions(this.getLocationID());
 	}
 	
+	public array function getCurrencyCodeOptions() {
+		return getService("currencyService").getCurrencyOptions();
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
