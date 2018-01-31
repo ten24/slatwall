@@ -17,3 +17,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			collectionList.addDisplayProperty("permissionGroupID|value");
 			collectionList.addDisplayProperty("permissionGroupName|name");
 			collectionList.addOrderBy("permissionGroupName|ASC");
+
+			variables.fromPermissionGroupOptions = collectionList.getRecords();
+		}
+		return variables.fromPermissionGroupOptions;
+	}
+}
