@@ -31,6 +31,7 @@ class SWFulfillmentBatchDetailController  {
                 stateChanges.action.type == actions.SETUP_ORDERDELIVERYATTRIBUTES ||
                 stateChanges.action.type == actions.TOGGLE_LOADER)){
                 //set the new state.
+                this.orderItem = {};
                 this.state = stateChanges;
             }
 
@@ -101,6 +102,7 @@ class SWFulfillmentBatchDetailController  {
     public userCaptureAndFulfill = () => {
         //request the fulfillment process.
         this.state.orderItem = this.orderItem;
+        
         this.orderFulfillmentService.orderFulfillmentStore.dispatch({
             type: actions.CREATE_FULFILLMENT_REQUESTED,
             payload: { viewState:this.state }

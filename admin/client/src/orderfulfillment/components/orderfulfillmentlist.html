@@ -31,7 +31,7 @@
 							                                    
 							                                    <div class="form-group">
 							                                    	
-							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Batch Location <span class="s-label-desc">(optional)</span></label>
+							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Batch Location <span class="s-label-desc"></span></label>
 							                                        <div class="col-sm-8">
 																		
 																		<!--- Single Location Picker  --->
@@ -144,15 +144,15 @@
 							                                    </div>
 																
 																<div class="form-group">
-							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Assign Batch <span class="s-label-desc">(optional)</span></label>
+							                                        <label for="orderFulfillmentID" class="control-label col-sm-4">Assign Batch <span class="s-label-desc"></span></label>
 							                                        <div class="col-sm-8">
 																		<!--- Single Assigned Account Picker  --->
 																		<div class="s-select-list-wrapper s-search" id="j-single-location-view">
 																		    <sw-typeahead-input-field
 																				data-entity-name="Account"
 																		        data-property-to-save="accountID"
-																		        data-property-to-show="lastName"
-																		        data-properties-to-load="accountID,lastName,firstName"
+																		        data-property-to-show="primaryEmailAddress_emailAddress"
+																		        data-properties-to-load="accountID,lastName,firstName,primaryEmailAddress.emailAddress"
 																		        data-show-add-button="true"
 																		        data-show-view-button="true"
 																		        data-placeholder-rb-key="entity.account"
@@ -168,8 +168,11 @@
 																		            data-parent-directive-controller-as-name="swTypeaheadInputField"
 																		            data-all-records="false"
 																		            data-page-show="50">
-																		
+																				
+																				
+																				
 																				<sw-collection-columns>
+																					<sw-collection-column data-property-identifier="primaryEmailAddress_emailAddress" data-is-searchable="true"></sw-collection-column>
 																					<sw-collection-column data-property-identifier="firstName" data-is-searchable="true"></sw-collection-column>
 																			        <sw-collection-column data-property-identifier="lastName" data-is-searchable="true"></sw-collection-column>
 																			        <sw-collection-column data-property-identifier="accountID"></sw-collection-column>
@@ -181,7 +184,7 @@
 																		
 																		    </sw-collection-config>
 																			
-																			    <span sw-typeahead-search-line-item data-property-identifier="lastName">&nbsp;</span><span sw-typeahead-search-line-item data-property-identifier="firstName">&nbsp;</span><br>
+																			<span sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress_emailAddress">&nbsp;</span> <span sw-typeahead-search-line-item data-property-identifier="lastName">&nbsp;</span><span sw-typeahead-search-line-item data-property-identifier="firstName">&nbsp;</span><br>
 																			    	
 																		</sw-typeahead-input-field>
 																			
@@ -207,7 +210,7 @@
 							                        </div>
 							                        <div class="modal-footer">
 								                    	<a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0">Add Batch <i ng-if="swOrderFulfillmentListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button> 
+								                    	<button class="# btn btn-success" title="Add" ng-click="swOrderFulfillmentListController.addBatch()" ng-disabled="swOrderFulfillmentListController.getTotalFulfillmentsSelected() == 0 || !swOrderFulfillmentListController.getProcessObject().data || !swOrderFulfillmentListController.getProcessObject()['data']['locationID']">Add Batch <i ng-if="swOrderFulfillmentListController.addingBatch == true" class="fa fa-spinner fa-pulse fa-fw"></i></button> 
 								                	</div>
 								                </div>
 								            </div>
@@ -318,6 +321,7 @@
             		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> LOADING
 				</center>
 			</div>
+			<span ng-init="multislot = true"></span>
 			<div class="row s-detail-content-wrapper" ng-if="swOrderFulfillmentListController.view == swOrderFulfillmentListController.views.Fulfillments && !swOrderFulfillmentListController.refreshFlag">	
 				<div class="col-xs-12">
 					<div class="s-detail-body" ng-init="swOrderFulfillmentListController.refreshFlag = false">
@@ -334,23 +338,27 @@
 							data-persisted-collection-config="true" 
 							data-multiselect-field-name="orderFulfillmentID"
 							data-name="orderFulfillmentCollectionTable"
-							data-multi-slot="true">
+							data-multi-slot="multislot">
 							
 							<sw-collection-configs>
 								<sw-collection-config data-entity-name="OrderFulfillment" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
 									
 									<sw-collection-filters>
 										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderType.systemCode" data-comparison-operator="=" data-comparison-value="otSalesOrder"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ostNew,ostProcessing"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="orderFulfillmentStatusType.systemCode" data-comparison-value="ofstUnfulfilled"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN"  data-comparison-value="shipping,pickup"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderCreatedSite.siteCode" data-comparison-operator="="  data-comparison-value="ny"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="orderFulfillmentStatusType.systemCode"  data-comparison-operator="!="  data-comparison-value="ofstFulfilled"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="="  data-comparison-value="shipping"></sw-collection-filter>
 									</sw-collection-filters>
 									
 									<sw-collection-columns>
 										<sw-collection-column data-property-identifier="orderFulfillmentID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
 										<sw-collection-column data-property-identifier="orderFulfillmentStatusType.systemCode" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
-										<sw-collection-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
+										<sw-collection-column data-property-identifier="fulfillmentMethod.fulfillmentMethodType" title="Fulfillment Method Type" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
 							            <sw-collection-column data-property-identifier="order.orderNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+							            <sw-collection-column data-property-identifier="order.account.calculatedFullName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
 							            <sw-collection-column data-property-identifier="order.orderOpenDateTime" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 							            <sw-collection-column data-property-identifier="shippingMethod.shippingMethodName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 							            <sw-collection-column data-property-identifier="shippingAddress.stateCode" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
@@ -380,22 +388,30 @@
 							data-persisted-collection-config="true" 
 							data-multiselect-field-name="orderItemID" 
 							data-name="orderItemCollectionTable" 
-							data-multi-slot="true">
+							data-multi-slot="multislot">
 							
 							<sw-collection-configs>
 								<sw-collection-config data-entity-name="OrderItem" data-parent-directive-controller-as-name="swListingDisplay" data-filter-flag="true" data-collection-config-property="collectionConfig" data-parent-deferred-property="singleCollectionDeferred">
 									
 									<sw-collection-filters>
 										<sw-collection-filter data-property-identifier="order.orderNumber" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderType.systemCode" data-comparison-operator="=" data-comparison-value="otSalesOrder"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderStatusType.systemCode" data-comparison-operator="NOT IN" data-comparison-value="ostClosed,ostCanceled"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN" data-comparison-value="shipping,pickup"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="order.orderCreatedSite.siteCode" data-comparison-operator="="  data-comparison-value="ny"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="orderFulfillment.orderFulfillmentStatusType.systemCode"  data-comparison-operator="!="  data-comparison-value="ofstFulfilled"></sw-collection-filter>
+										<sw-collection-filter data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN"  data-comparison-value="shipping,pickup"></sw-collection-filter>
+									
 									</sw-collection-filters>
 									
 									<sw-collection-columns>
 										<sw-collection-column data-property-identifier="orderItemID" data-is-exportable="true"  data-is-visible="false"></sw-collection-column>
-										<sw-collection-column data-property-identifier="sku.product.productName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-										<sw-collection-column data-property-identifier="quantity" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
 										<sw-collection-column data-property-identifier="order.orderNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="sku.skuCode" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="sku.calculatedSkuDefinition" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="quantity" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="sku.calculatedQOH" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+										<sw-collection-column data-property-identifier="stock.location.locationName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 										<sw-collection-column data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
 							            <sw-collection-column data-property-identifier="order.orderOpenDateTime" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 							            <sw-collection-column data-property-identifier="orderFulfillment.shippingMethod.shippingMethodName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
@@ -414,4 +430,11 @@
 			
 		</div>	
 	</div>
-<section>
+<section>			
+
+
+
+
+
+
+
