@@ -76,6 +76,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'settings');
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
+	this.secureMethods=listAppend(this.secureMethods, 'listaccount');
+	this.secureMethods=listAppend(this.secureMethods, 'listsku');
+	this.secureMethods=listAppend(this.secureMethods, 'listproduct');
+	this.secureMethods=listAppend(this.secureMethods, 'listproductreview');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderitem');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderpayment');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderfulfillment');
+	this.secureMethods=listAppend(this.secureMethods, 'listfulfillmentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listlocation');
+	this.secureMethods=listAppend(this.secureMethods, 'listsite');
+	this.secureMethods=listAppend(this.secureMethods, 'listtype');
+	this.secureMethods=listAppend(this.secureMethods, 'listproducttype');
+	this.secureMethods=listAppend(this.secureMethods, 'listbrand');
+	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
+	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
+	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -208,6 +224,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
 			}
 		}
+		if(!isNull(rc.orderID) && getService('orderService').getOrder(rc.orderID).validate('edit').hasErrors()){
+			getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+		}
+		
 		genericEditMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";

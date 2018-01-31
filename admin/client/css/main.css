@@ -6247,13 +6247,14 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   width: 100%;
-  position: absolute;
+  position: relative;
+  z-index: 9999;
   left: 0px;
-  top: 27px;
+  top: 0px;
   right: 0px;
 }
 .s-search-results-wrapper .dropdown-menu {
-  top: 3px;
+  top: 0px;
   border-color: #CCC;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -6394,6 +6395,11 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper .s-input-btn {
   position: relative;
 }
+
+.s-select-list-wrapper .s-input-btn input {
+  height: 31px;
+}
+
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
@@ -6552,6 +6558,7 @@ sw-sku-thumbnail .thumbnail .caption {
 /*-- List Select Component Without Add --*/
 .s-select-list-wrapper.s-search .input-group-btn button.btn-default {
   border-right: 1px solid #CCC;
+  border-left: 1px solid #CCC;
 }
 /*-- Toggle Component --*/
 .stacked .s-toggle-switch {
@@ -8347,4 +8354,7 @@ table.s-detail-content-table tbody tr.s-done {
 .paginationpages1 {
   display: none;
 }
-.currency { text-align: right; }
+.currency { 
+  text-align: right; 
+  float:right; 
+}

@@ -90,7 +90,7 @@ Notes:
 							<!--- Shipping --->
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "shipping">
 								<!--- Estimated Shipping Date --->
-								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="estimatedShippingDate" edit="#rc.edit#" />
+								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="estimatedShippingDate" fieldName="orderFulfillments[#ofIndex#].estimatedShippingDate" edit="#rc.edit#" />
 
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingMethod")>
 									<cfset rc.placeOrderNeedsFulfillmentCharge = true />

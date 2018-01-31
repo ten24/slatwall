@@ -17,7 +17,7 @@
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedCurrentLandedMargin" edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedCurrentAssetValue"  edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedAveragePriceSold"   edit="false">
-				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedAveragePriceSoldBeforeDiscount"   edit="false">
+				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedAveragePriceSoldAfterDiscount"   edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedAverageDiscountAmount"   edit="false">
 				<hb:HibachiPropertyDisplay object="#skuCost#" property="calculatedQOH"   edit="false">
 			</sw-tab-content>

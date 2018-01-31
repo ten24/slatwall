@@ -53,6 +53,7 @@ Notes:
 <cfdump var="#getData#" top="1"> --->
 
 <cfparam name="rc.minMaxStockTransfer" default="any" >
+
 <cfoutput>
 	<cfset minMaxStockTransferItemsCollectionlist = rc.minMaxStockTransfer.getMinMaxStockTransferItemsCollectionlist()/>
 	<cfset minMaxStockTransferItemsCollectionlist.setDisplayProperties(displayPropertiesList='sku.skuCode', columnConfig={isVisible=true, isSearchable=true, isDeletable=true})/>
@@ -66,10 +67,13 @@ Notes:
 	<cfset minMaxStockTransferItemsCollectionlist.addDisplayProperty(displayProperty='minMaxStockTransferItemID',columnConfig={isVisible=false,  isSearchable=false, isDeletable=false})/>
 
 	<hb:HibachiListingDisplay collectionList="#minMaxStockTransferItemsCollectionlist#"
-							   recordEditAction="admin:entity.editminmaxstocktransferitem"
-							   recordDetailAction="admin:entity.detailminmaxstocktransferitem"
-							   recordDetailQueryString="redirectAction=admin:entity.detailminmaxstocktransfer&minMaxStockTransferID=#rc.minMaxStockTransfer.getMinMaxStockTransferID()#"
-							   usingPersonalCollection="false"
+		collectionConfigFieldName="minMaxStockTransferItemsCollection"
+		showExport="false"
+		showSearch="false"
+	   recordEditAction="admin:entity.editminmaxstocktransferitem"
+	   recordDetailAction="admin:entity.detailminmaxstocktransferitem"
+	   recordDetailQueryString="redirectAction=admin:entity.detailminmaxstocktransfer&minMaxStockTransferID=#rc.minMaxStockTransfer.getMinMaxStockTransferID()#"
+	   usingPersonalCollection="true"
 	>
 	</hb:HibachiListingDisplay>
 </cfoutput>

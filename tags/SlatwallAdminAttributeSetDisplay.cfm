@@ -100,7 +100,7 @@ Notes:
 		<cfelseif !isNull(attribute.getDefaultValue())>
 			<cfset fdAttributes.value = attribute.getDefaultValue() />
 		</cfif>
-		<cfif attribute.getAttributeInputType() == "date">
+		<cfif attribute.getAttributeInputType() EQ "date">
 			<cfset fdAttributes.value = DateFormat(fdAttributes.value,"mmm dd, yyyy")>
 		</cfif>
 		<!---Setup Value Options --->
@@ -127,7 +127,7 @@ Notes:
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject) AND thisAttributeValueObject.getClassName() EQ 'AttributeValue'>
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
-		<cfelseif attribute.getAttributeInputType() eq 'file' AND !isObject(thisAttributeValueObject) >
+		<cfelseif isObject(attributes.entity) AND attribute.getAttributeInputType() eq 'file' AND (isNull(thisattributeValueObject) OR not isObject(thisAttributeValueObject)) >
 			<cfset removeLink = "?slatAction=admin:entity.deleteCustomPropertyFile&#attributes.entity.getPrimaryIDPropertyName()#=#attributes.entity.getPrimaryIDValue()#&entityName=#attribute.getAttributeSet().getAttributeSetObject()#&attributeCode=#attribute.getAttributeCode()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>

@@ -56,7 +56,9 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#">
+                <hb:HibachiProcessCaller entity="#rc.permissionGroup#" action="admin:entity.preprocesspermissiongroup" processContext="clonepermission" type="list" modal="true" />
+		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
 			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />

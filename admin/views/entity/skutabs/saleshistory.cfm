@@ -67,6 +67,7 @@ Notes:
 			recordEditAction="admin:entity.editorderitem"
 			recorddetailaction="admin:entity.detailorderitem"
 			usingPersonalCollection="true"
+			personalCollectionIdentifier="SalesHistory"
 			>
 	</hb:HibachiListingDisplay>
 	

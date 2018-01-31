@@ -87,7 +87,9 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="extendedPrice" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display data-using-personal-collection="true"
+	<sw-listing-display 
+		data-using-personal-collection="true"
+		data-personal-collection-identifier="OrderItem"
 		data-collection="'OrderItem'"
 		data-edit="false"
 		data-has-search="true"
