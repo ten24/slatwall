@@ -26,6 +26,7 @@ class SWListingColumnController{
     public persistent:boolean;
     public isDeletable:boolean;
     public column:any;
+    public formatType:string;
 
     //@ngInject
     constructor(

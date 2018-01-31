@@ -83,11 +83,11 @@
 	<cfparam name="attributes.createQueryString" type="string" default="" />
 	<cfparam name="attributes.exportAction" type="string" default="" />
 	<cfparam name="attributes.usingPersonalCollection" type="string" default="false" />
+	<cfparam name="attributes.personalCollectionIdentifier" type="string" default="" />
 
 <cfelse>
 	<!--- if we have a collection list then use angular and exit --->
 	<cfif isObject(attributes.collectionList)>
-		<cfdump var="#attributes.multiselectFieldName#" abort="1">
 		<cfoutput>
 			<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 			<cfset entityMetaData = getMetaData(attributes.collectionList.getCollectionEntityObject())/>
@@ -95,6 +95,7 @@
 			<span ng-init="
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
 			"></span>
+			
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"
@@ -106,6 +107,7 @@
 				data-has-search="true"
 				record-edit-action="#attributes.recordEditAction#"
 				record-detail-action="#attributes.recordDetailAction#"
+				record-detail-modal="#attributes.recordDetailModal#"
 				data-is-angular-route="false"
 				data-angular-links="false"
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"
@@ -114,6 +116,9 @@
 				data-has-action-bar="false"
 				data-expandable="#attributes.expandable#"
 	 			data-using-personal-collection="#attributes.usingPersonalCollection#"
+	 			<cfif len(attributes.personalCollectionIdentifier)>
+					data-personal-collection-identifier="#attributes.personalCollectionIdentifier#"
+ 				</cfif>
 			    <cfif len(attributes.multiselectFieldName)>
 				  data-multiselectable="#attributes.multiselectFieldName#"
 	 			  data-multiselect-field-name="#attributes.multiselectFieldName#"

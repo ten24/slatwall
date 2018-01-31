@@ -12,6 +12,7 @@ class HibachiService{
 
 	public _deferred = {};
     public _resourceBundle = {};
+    public usePublicRoutes:boolean = false;
 	//@ngInject
 	constructor(
 		private $window:ng.IWindowService,

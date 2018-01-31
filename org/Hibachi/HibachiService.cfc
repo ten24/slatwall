@@ -68,7 +68,11 @@
 		
 		public any function getCollectionList(string entityName, struct data={}){
 			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
-			collection.setCollectionObject(arguments.entityName);
+			var addDefaultColumns = true;
+			if(structKeyExists(arguments.data, 'defaultColumns')){
+				addDefaultColumns = arguments.data.defaultColumns;
+			}
+			collection.setCollectionObject(arguments.entityName,addDefaultColumns);
 			return collection;
 		}
 		
@@ -1183,85 +1187,81 @@
 		
 		public any function getOptionsCollectionListByEntityNameAndPropertyIdentifier(required any collectionList, required string entityName, required string propertyIdentifier, required string inversePropertyIdentifier){
 			
-			var cacheString = 'getOptionsCollectionListByEntityNameAndPropertyIdentifier'&serializeJson(arguments.collectionList.getCollectionConfigStruct()) & arguments.entityName & arguments.propertyIdentifier;
-			if(structKeyExists(arguments,'inversePropertyIdentifier')){
-				cacheString &= arguments.inversePropertyIdentifier;
+			var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
+		
+			var displayProperties = '';
+			var propertyMetaData = {};
+			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
+			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
+			var relatedEntity = listLast(arguments.propertyIdentifier,'.');
+			propertyMetaData = propsStruct[relatedEntity];
+			
+			
+			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
+				var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+				var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 			}
 			
-			var cacheKey = hash( cacheString, 'md5');
-			
-			
-			if(!structKeyExists(variables,cacheKey)){
-				var entityCollectionList = this.invokeMethod('get#arguments.entityname#CollectionList');
-			
-				var displayProperties = '';
-				var propertyMetaData = {};
-				var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
-				var propsStruct = getPropertiesStructByEntityName(lastEntityName);
-				var relatedEntity = listLast(arguments.propertyIdentifier,'.');
-				propertyMetaData = propsStruct[relatedEntity];
-				
-				if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
-					var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
-					var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
+			var displayProperties = "";
+			if(structKeyExists(propertyMetaData,'fieldtype')){
+				//applyfilters by inversePropertyIdentifier
+				var entityMetaData = getEntityMetaData(propertyMetaData.cfc);
+				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+					entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
+					entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
 				}
 				
-				var displayProperties = "";
-				if(structKeyExists(propertyMetaData,'fieldtype')){
-					//applyfilters by inversePropertyIdentifier
-					
-					if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
-						entityCollectionList.applyRelatedFilterGroups(arguments.inversePropertyIdentifier,duplicate(arguments.collectionList.getCollectionConfigStruct()['filterGroups']));
-						entityCollectionList.removeFilter(arguments.propertyIdentifier&'.'&primaryIDName);
-					}
-					
-					
-					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
-					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
-					switch(propertyMetaData.fieldtype){
-						case 'many-to-one':
-							break;
-						case 'one-to-many':
-							
-							break;
-						case 'many-to-many':
-							break;
-					}
-					entityCollectionList.setDisplayProperties(displayProperties);
-					var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
-					entityCollectionList.addFilter(arguments.propertyIdentifier&'.'&simpleRepresentationName,'NULL','IS NOT');
-					entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
-					entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
-					
-				}else if(structKeyExists(propertyMetaData,'ormtype')) {
-					
-					if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
-						entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
-						entityCollectionList.removeFilter(arguments.propertyIdentifier);
-					}
-					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
-					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
-					switch(propertyMetaData.ormtype){
-						case 'big_decimal':
-							break;
-						case 'string':
-							break;
-						case 'integer':
-							break;
-					}
-					entityCollectionList.setDisplayProperties(displayProperties);
-					var excludesList = arguments.propertyIdentifier;
-					entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
-					entityCollectionList.setOrderBy(arguments.propertyIdentifier);
-					
+				
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
+				if(structKeyExists(entityMetaData,'hb_parentPropertyName')){
+					var primaryIDNamePath = '#primaryIDName#Path';
+					displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDNamePath&'|IDPath');
 				}
-				entityCollectionList.applyData(data=url,excludesList=excludesList);
-				entityCollectionList.setDirtyReadFlag(true);
-				entityCollectionList.setApplyOrderBysToGroupBys(false);
-				variables[cacheKey] = entityCollectionList;
-			}else{
-				entityCollectionList = variables[cacheKey];
+				
+				switch(propertyMetaData.fieldtype){
+					case 'many-to-one':
+						break;
+					case 'one-to-many':
+						
+						break;
+					case 'many-to-many':
+						break;
+				}
+				entityCollectionList.setDisplayProperties(displayProperties);
+				var excludesList = arguments.propertyIdentifier&'.'&primaryIDName;
+				entityCollectionList.setDistinct(true);
+				
+				//entityCollectionList.addDisplayAggregate(getPrimaryIDPropertyNameByEntityName(entityCollectionList.getCollectionObject()),'Count','count',true);
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
+				
+			}else if(structKeyExists(propertyMetaData,'ormtype')) {
+				
+				if(structKeyExists(arguments.collectionList.getCollectionConfigStruct(),'filterGroups')){
+					entityCollectionList.setCollectionConfigStruct(duplicate(arguments.collectionList.getCollectionConfigStruct()));
+					entityCollectionList.removeFilter(arguments.propertyIdentifier);
+				}
+				
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
+				switch(propertyMetaData.ormtype){
+					case 'big_decimal':
+						break;
+					case 'string':
+						break;
+					case 'integer':
+						break;
+				}
+				entityCollectionList.setDisplayProperties(displayProperties);
+				var excludesList = arguments.propertyIdentifier;
+				entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
+				
 			}
+			entityCollectionList.applyData(data=url,excludesList=excludesList);
+			entityCollectionList.setDirtyReadFlag(true);
+			entityCollectionList.setApplyOrderBysToGroupBys(false);
+			
 			
 			return entityCollectionList;
 		}
@@ -1307,12 +1307,25 @@
 				}
 				//calling getRecords until getRecordsCount behaves correctly aka knowing when to group by
 				
-				option['count'] = entityCollectionList.getRecordsCount();
+				//option['count'] = entityCollectionList.getRecordsCount();
 				
 				arrayAppend(options,option);
 			}
 			
 			return options;
+		}
+		
+		public string function getAttributeCacheKey(){
+			var attributeCacheKey = '';
+			var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
+			if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
+				attributeCacheKey = getService('HibachiCacheService').getCachedValue(modelCacheKey);
+			}else if (hasService('attributeService')){
+				var attributeMetaData = getService('attributeService').getAttributeModel();
+				attributeCacheKey = hash(serializeJson(attributeMetaData),'MD5');
+				getService('HibachiCacheService').setCachedValue(modelCacheKey,attributeCacheKey);
+			}
+			return attributeCacheKey;
 		}
 		
 		public array function getSelectedOptionsByApplyData(required string entityName, required string propertyIdentifier){
@@ -1380,40 +1393,67 @@
 			return [];
 		}
 		
-		public void function batchUpdateCalculatedPropertiesByEntityName(required string entityName, string totalPagesComplete=0){
-			 
-			var entitySmartList = getHibachiScope().getService('HibachiService').invokeMethod('get#arguments.entityName#SmartList');
+		public void function batchUpdateCalculatedPropertiesByEntityName(required struct rc){
+			
+			var entitySmartList = getHibachiScope().getService('HibachiService').invokeMethod('get#arguments.rc.entityName#SmartList');
 			entitySmartList.addOrder('modifiedDateTime','ASC');
+			
 			//you can choose to do this in larger batches but you data better be valid boi
 			entitySmartList.setPageRecordsShow(1);
 			var currentPageCount = 1;
-			var totalPages = entitySmartList.getTotalPages()-arguments.totalPagesComplete;
-			var entityService = getHibachiScope().getService('HibachiService').getServiceByEntityName( entityName=arguments.entityName );
-			logHibachi('#arguments.entityName#',true);
+			var totalPages = entitySmartList.getTotalPages()-arguments.rc.totalPagesComplete;
+			var entityService = getHibachiScope().getService('HibachiService').getServiceByEntityName( entityName=arguments.rc.entityName );
+			logHibachi('#arguments.rc.entityName#',true);
 			while(currentPageCount <= totalPages && currentPageCount < 250){
-				try{
-					logHibachi('currentPage:#currentPageCount# of #totalPages# for #arguments.entityName#',true);
-					entitySmartList.setCurrentPageDeclaration(currentPageCount);
-					var recordsBatchToProcess = entitySmartList.getPageRecords(true);
+				
+				
+				entitySmartList.setCurrentPageDeclaration(currentPageCount);
+				var recordsBatchToProcess = entitySmartList.getPageRecords(true);
+				
+				
+				
+				for(var entity in recordsBatchToProcess){
+					var primaryIDValue = entity.getPrimaryIDValue();
+					var threadName = 'runentity'&createUUID();
+					thread name="#threadName#" 
+						entityName="#arguments.rc.entityName#" 
+						entityID="#primaryIDValue#" 
+						currentPageCount="#currentPageCount#"
+						totalPages="#totalPages#"
+					{
+						getHibachiScope().getService("HibachiTagService").cfsetting(requesttimeout="1200");
+						try{
+							logHibachi('currentPage:#attributes.currentPageCount# of #attributes.totalPages# for #attributes.entityName#',true);
+							var entityService = getHibachiScope().getService('HibachiService').getServiceByEntityName( entityName=attributes.entityName );
+							var entity = entityService.invokeMethod('get#attributes.entityName#',{1=attributes.entityID});
+							entity.setModifiedDateTime(now());
 					
-					for(var entity in recordsBatchToProcess){
-						entity.setModifiedDateTime(now());
+							//entityService.invokeMethod('save#arguments.rc.entityName#',{1=entity});
+							entitySave(entity);
+							entity.updateCalculatedProperties(true);
+							logHibachi('flushed',true);
+							//commit batch
+							ormFlush();
+							
+						}catch(any e){
+							logHibachi('#attributes.entityID# - error #e.message#',true);
+							throw(e);
+						}
 						
-						//entityService.invokeMethod('save#arguments.entityName#',{1=entity});
-						entitySave(entity);
-						entity.updateCalculatedProperties(true);
-						//clear errors so we can get past preupdate validation
 					}
-				logHibachi('flushed',true);
-				//commit batch
-				ormFlush();
-				//clear memory
-				ORMClearSession();
-				}catch(any e){
-					logHibachi('error',true);
+					
+				}
+				if(currentPageCount % 150 == 0){
+					threadJoin();
 				}
 				
 				currentPageCount++;
+			}
+			if(currentPageCount < totalPages && arguments.rc.totalPagesComplete != 0 && arguments.rc.totalPagesComplete % 5000 >= 250 ){
+				arguments.rc.totalPagesComplete += 250;
+				this.batchUpdateCalculatedPropertiesByEntityName(arguments.rc);
+			}else{
+				arguments.rc.maxTotalPages = entitySmartList.getTotalPages();
 			}
 		}
 		

@@ -488,6 +488,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var modifiedURL = "?";
 		variables.dataKeyDelimiter = ":";
 		variables.valuedelimiter = ",";
+		
 		// Turn the old query string into a struct
 		var oldQueryKeys = {};
 
@@ -516,18 +517,23 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
 						structDelete(newQueryKeys, key);
 					} else if(arguments.appendValues) {
-						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
-							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
-							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
+						var delimiter = variables.valuedelimiter;
+						if(right(key,4) == 'like'){
+							delimiter = '|';
+						}
+					
+						for(var i=1; i<=listLen(newQueryKeys[key], delimiter); i++) {
+							var thisVal = listGetAt(newQueryKeys[key], i, delimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
 							if(findCount) {
-								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
+								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, delimiter);
 								if(arguments.toggleKeys) {
 									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
 								}
 							}
 						}
 						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
-								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
+								modifiedURL &= "#key#=#oldQueryKeys[key]##delimiter##newQueryKeys[key]#&";
 						} else if(len(oldQueryKeys[key])) {
 							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 						}

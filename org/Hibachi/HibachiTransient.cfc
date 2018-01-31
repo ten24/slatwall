@@ -582,6 +582,21 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return "";
 	}
 	
+	public string function getSingularNameByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		if(
+			!isNull(object) 
+			&& !isSimpleValue(object)
+			&& structKeyExists(object.getPropertyMetaData( propertyName ),'fieldtype')
+			&& object.getPropertyMetaData( propertyName ).fieldtype == 'one-to-many'
+		) {
+			return object.getPropertyMetaData( propertyName ).singularName;
+		}
+		return "";
+	}
+	
 	public string function getFormatTypeByPropertyIdentifier( required string propertyIdentifier ) {
 		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
 		var object = getService('HibachiService').getEntityObject(entityName);
