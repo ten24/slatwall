@@ -209,8 +209,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// ==================== START: Logical Methods =========================	
 	
-	//CUSTOM PROPERTIES BEGIN
-	//CUSTOM PROPERTIES END
+	
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
 		vendorSkuSmartList.addFilter('sku.skuID',this.getSkuID());
