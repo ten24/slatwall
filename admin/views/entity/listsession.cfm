@@ -79,4 +79,4 @@ Notes:
         <sw-listing-column data-property-identifier="lastRequestIPAddress" tdclass="primary" ></sw-listing-column>
         <sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
         <sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
-    </sw-listing-display data-using-personal-collection="true">
+    </sw-listing-display>

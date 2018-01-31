@@ -86,12 +86,17 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	// Non persistent properties
 	property name="addVendorOrderItemSkuOptionsSmartList" persistent="false";
 	property name="currencyCodeOptions" persistent="false";
+	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="costDistributionTypeOptions" persistent="false";
 	property name="totalCost" persistent="false" hb_formatType="currency";
 	property name="totalQuantity" persistent="false" hb_formatType="currency";
 	property name="totalWeight" persistent="false" hb_formatType="currency";
+	
+	public string function getStatusCode() {
+		return getVendorOrderStatusType().getSystemCode();
+	}
 
 	public numeric function getTotalQuantity(){
 		if(!structKeyExists(variables,'totalQuantity')){
@@ -228,6 +233,16 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 			variables.addVendorOrderItemSkuOptionsSmartList.addFilter('product.vendors.vendorID',this.getVendorID());
 		}
 		return variables.addVendorOrderItemSkuOptionsSmartList;
+	}
+
+	public any function getAddVendorOrderItemAllSkuOptionsSmartList() {
+		if(!structKeyExists(variables, "addVendorOrderItemAllSkuOptionsSmartList")) {
+			// Excluding the skus/products that already assigned to vendor
+			variables.addVendorOrderItemAllSkuOptionsSmartList = getService("skuService").getSkuSmartList();
+			variables.addVendorOrderItemAllSkuOptionsSmartList.addWhereCondition("aslatwallsku.product NOT IN ( SELECT aslatwallproduct FROM SlatwallVendor aslatwallvendor JOIN aslatwallvendor.products aslatwallproduct WHERE aslatwallvendor.vendorID = :vendorID )", {vendorID = getVendor().getVendorID()});
+			variables.addVendorOrderItemAllSkuOptionsSmartList.addOrder('skuCode|ASC');
+		}
+		return variables.addVendorOrderItemAllSkuOptionsSmartList;
 	}
 
 

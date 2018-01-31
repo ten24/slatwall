@@ -739,8 +739,8 @@ component extends="HibachiService" accessors="true" {
 	public any function getBaseIDForEntity(any entity) {
 		var baseID = arguments.entity.getPrimaryIDValue();
 
-		// AttributeValue needs to reference related entity instead of itself
-		if (arguments.entity.getClassName() == "AttributeValue") {
+		// AttributeValue needs to reference related entity instead of itself excluding forms
+		if (arguments.entity.getClassName() == "AttributeValue" && isNull(arguments.entity.getAttribute().getForm()) ) {
 			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
 			if(!isNull(baseObjectEntity)) {
 				baseID = baseObjectEntity.getPrimaryIDValue();	
@@ -754,8 +754,9 @@ component extends="HibachiService" accessors="true" {
 		var baseObject = arguments.entity.getClassName();
 
 		// AttributeValue needs to reference related entity instead of itself
-		if (arguments.entity.getClassName() == "AttributeValue") {
+		if (arguments.entity.getClassName() == "AttributeValue" && isNull(arguments.entity.getAttribute().getForm()) ) {
 			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
+			
 			if(!isNull(baseObjectEntity)) {
 				baseObject = baseObjectEntity.getClassName();	
 			}
@@ -767,7 +768,9 @@ component extends="HibachiService" accessors="true" {
 	public any function getBaseTitleForEntity(any entity) {
 		var baseTitle = "";
 		var baseObjectEntity = arguments.entity;
-		if (arguments.entity.getClassName() == "AttributeValue") {
+		
+		// AttributeValue needs to reference related entity instead of itself excluding forms
+		if (arguments.entity.getClassName() == "AttributeValue" && isNull(arguments.entity.getAttribute().getForm()) ){
 			var baseObjectEntity = arguments.entity.invokeMethod("get#arguments.entity.getAttributeValueType()#");
 		}
 		try {

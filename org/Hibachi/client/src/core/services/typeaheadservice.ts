@@ -2,7 +2,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import * as Prototypes from '../prototypes/Observable';
 import * as TypeaheadStore from '../prototypes/swstore';
 import {Observable, Subject} from 'rxjs';
 

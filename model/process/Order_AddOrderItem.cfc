@@ -80,6 +80,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
+	property name="estimatedShippingDate" hb_formFieldType="datetime";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
@@ -91,6 +92,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="publicRemoteID";
 	property name="recipients" type="array" hb_populateArray="true";
 	property name="assignedGiftRecipientQuantity";
+	property name="sellOnBackOrderFlag";
 
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -432,8 +434,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public array function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			variables.locationIDOptions = getService("locationService").getLocationOptions();
+			if (isNull(getOrder().getDefaultStockLocation())) {
+				variables.locationIDOptions = getService("locationService").getLocationOptions();
+			} else {
+				variables.locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+			}
 		}
+		arrayPrepend(variables.locationIDOptions,{name="Please select a location",value=""});
 		return variables.locationIDOptions;
 	}
 

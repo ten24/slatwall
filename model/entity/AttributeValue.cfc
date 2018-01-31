@@ -91,6 +91,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
 	property name="type" cfc="Type" fieldtype="many-to-one" fkcolumn="typeID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
@@ -691,6 +692,25 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "site");
 	}
+	
+	// Stock (many-to-one)
+	public void function setStock(required any stock) {
+		variables.stock = arguments.stock;
+		if(isNew() or !arguments.stock.hasAttributeValue( this )) {
+			arrayAppend(arguments.stock.getAttributeValues(), this);
+		}
+	}
+	public void function removeStock(any stock) {
+		if(!structKeyExists(arguments, "stock")) {
+			arguments.stock = variables.stock;
+		}
+		var index = arrayFind(arguments.stock.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.stock.getAttributeValues(), index);
+		}
+		structDelete(variables, "stock");
+	}
+
 
 	// Subscription Benefit (many-to-one)
 	public void function setSubscriptionBenefit(required any subscriptionBenefit) {

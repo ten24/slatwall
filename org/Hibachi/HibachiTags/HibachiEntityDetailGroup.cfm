@@ -43,7 +43,9 @@
 
 		<cfif not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag)>
 			<cfif fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
-				<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
+				<cfif !len(tab.property) OR !attributes.object.isPersistent() OR attributes.hibachiScope.authenticateEntityProperty(attributes.hibachiScope.getService('hibachiUtilityService').hibachiTernary(request.context.edit, 'update', 'read'), attributes.object.getClassName(), tab.property)>
+					<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
+				</cfif>
 			<cfelseif len(tab.property)>
 				<cfsavecontent variable="tab.tabcontent">
 					<hb:HibachiPropertyDisplay object="#attributes.object#" property="#tab.property#" edit="#request.context.edit#" displaytype="plain" />
@@ -64,38 +66,40 @@
 			<cfset iteration = 0 />
 			<div class="panel-group s-pannel-group" id="accordion">
 				<cfloop array="#thistag.tabs#" index="tab">
-					<cfset iteration++ />
-					<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
-					<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true">
-						<a data-toggle="collapse"  href="##collapse#iteration#">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
-									<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
-								</h4>
-							</div>
-						</a>
-						
-						
-						<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>" >
-							<content class="s-body-box">
-								<cfoutput>
-									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
-										<!--- 
-											if is a non-angular content js needs to be able to init html without ng-if preventing compilation
-										 --->
-										<cfif findNoCase('<sw-',tab.tabcontent)>
-											<span ng-if="#tabScope#.active">
+					<cfif len(tab.tabcontent) GT 0>
+						<cfset iteration++ />
+						<cfset tabScope = "hibachiEntityDetailGroup#rereplace(createUUID(),'-','','all')##iteration#"/>
+						<div class="j-panel panel panel-default" ng-init="#tabScope#.active=#tab.open#" ng-click="#tabScope#.active=true">
+							<a data-toggle="collapse"  href="##collapse#iteration#">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
+										<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+									</h4>
+								</div>
+							</a>
+
+
+							<div id="collapse#iteration#" class="panel-collapse collapse<cfif tab.open> in</cfif>" >
+								<content class="s-body-box">
+									<cfoutput>
+										<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="#tab.tabid#">
+											<!---
+												if is a non-angular content js needs to be able to init html without ng-if preventing compilation
+											 --->
+											<cfif findNoCase('<sw-',tab.tabcontent) && !findNoCase('wysiwyg',tab.tabcontent)>
+												<span ng-if="#tabScope#.active">
+													#tab.tabcontent#
+												</span>
+											<cfelse>
 												#tab.tabcontent#
-											</span>
-										<cfelse>
-											#tab.tabcontent#
-										</cfif>
-									</div>
-								</cfoutput>
-							</content><!--- s-body-box --->
-						</div><!--- panel-collapse collapse in --->
-					</div><!--- j-panel panel-default --->
+											</cfif>
+										</div>
+									</cfoutput>
+								</content><!--- s-body-box --->
+							</div><!--- panel-collapse collapse in --->
+						</div><!--- j-panel panel-default --->
+					</cfif>
 				</cfloop>
 				<cfif isObject(attributes.object)>
 					<!---system tab --->

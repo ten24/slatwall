@@ -971,8 +971,16 @@
 				var thisRow = [];
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
+
+					var value = arguments.queryData[colArray[j]][i];
+
+					// Determine if formatting datetime stamp needed
+					if (isDate(value)) {
+						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
+					}
+
 					// create our row
-					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
@@ -1450,4 +1458,36 @@
 		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
+
+	<cffunction name="getSignedS3ObjectLink" access="public" output="false" returntype="string">
+		<cfargument name="bucketName" type="string" required="true">
+		<cfargument name="keyName" type="string" required="true">
+		<cfargument name="awsAccessKeyId" type="string" required="true">
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		<cfargument name="minutesValid" type="numeric" required="true" default="1">
+
+		<cfset var s3link = "" />
+		<cfset var epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
+		<cfset var cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
+		<cfset var signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
+		<cfset s3link = "https://#arguments.bucketName#.s3.amazonaws.com/#arguments.keyName#?AWSAccessKeyId=#URLEncodedFormat(arguments.awsAccessKeyId)#&Expires=#epochTime#&Signature=#URLEncodedFormat(signature)#" />
+		<cfreturn s3link />
+
+	</cffunction>
+
+	<cffunction name="getClientFileName" returntype="string" output="false" hint="">
+	    <cfargument name="fieldName" required="true" type="string" hint="Name of the Form field" />
+
+	    <cfset var tmpPartsArray = Form.getPartsArray() />
+
+	    <cfif IsDefined("tmpPartsArray")>
+	        <cfloop array="#tmpPartsArray#" index="local.tmpPart">
+	            <cfif local.tmpPart.isFile() AND local.tmpPart.getName() EQ arguments.fieldName>
+	                <cfreturn local.tmpPart.getFileName() />
+	            </cfif>
+	        </cfloop>
+	    </cfif>
+
+	    <cfreturn "" />
+	</cffunction>
 </cfcomponent>

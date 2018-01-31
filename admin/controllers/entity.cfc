@@ -213,6 +213,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
 			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
 		}
+		
+		if(structKeyExists(rc,'viewPath')){
+			request.layout = false;
+			getFW().setView("admin:entity.ajax");
+			
+			rc.templatePath = "./#rc.viewPath#.cfm";
+			
+		}
 	}
 
 	public void function listOrder(required struct rc) {
@@ -423,7 +431,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
 
 		// Set the type correctly
-		if(isNull(rc.stockAdjustmentType)){
+		if(isNull(rc.stockAdjustmentType) || isValid('string',rc.stockAdjustmentType)){
 			param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
 			rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
 		}

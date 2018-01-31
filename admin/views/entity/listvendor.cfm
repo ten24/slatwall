@@ -56,7 +56,7 @@ Notes:
 
 	<!--- Create --->
 	<hb:HibachiEntityActionBarButtonGroup>
-		<hb:HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
+		<hb:HibachiActionCaller action="admin:entity.createvendor" entity="vendor" modal="true" class="btn btn-primary" icon="plus icon-white" />
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
 
@@ -85,4 +85,4 @@ Notes:
 	<sw-listing-column data-property-identifier="accountNumber" search="true" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="vendorWebsite" search="true" ></sw-listing-column>
 	<sw-listing-column data-property-identifier="primaryEmailAddress.emailAddress" search="true" ></sw-listing-column>
-</sw-listing-display data-using-personal-collection="true">
+</sw-listing-display>

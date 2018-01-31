@@ -84,6 +84,7 @@ class OrderBy{
 
 class CollectionConfig {
     public collection: any;
+    private eventID:string;
 
 
     get collectionConfigString():string {
@@ -463,7 +464,7 @@ class CollectionConfig {
         if(isKeywordFilter){
             this.keywordFilterGroups[0].filterGroup.push(filter);
         }
-        this.observerService.notify('collectionConfigUpdated', {
+        this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
         return this;
@@ -496,7 +497,7 @@ class CollectionConfig {
         );
 
         this.filterGroups[0].filterGroup.push(filter);
-        this.observerService.notify('collectionConfigUpdated', {
+        this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
         return this;
@@ -543,7 +544,7 @@ class CollectionConfig {
         }
 
         this.filterGroups[0].filterGroup.push(group);
-        this.observerService.notify('collectionConfigUpdated', {
+        this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
         return this;
@@ -551,7 +552,7 @@ class CollectionConfig {
 
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
-        this.observerService.notify('collectionConfigUpdated', {
+        this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
         return this;
@@ -606,7 +607,7 @@ class CollectionConfig {
                 readOnly
             )
         );
-        this.observerService.notify('collectionConfigUpdated', {
+        this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
         return this;
@@ -693,7 +694,7 @@ class CollectionConfig {
 
         this.addOrderBy(formattedPropertyIdentifier + '|'+direction, false);
 
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
+        this.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
     };
 
     public removeOrderBy = (formattedPropertyIdentifier:string) => {
@@ -749,6 +750,11 @@ class CollectionConfig {
         return this;
     };
 
+    private setEventID=(eventID):CollectionConfig=>{
+        this.eventID = eventID;
+        return this;
+    };
+
     public hasFilters=():boolean=>{
         return (this.filterGroups.length && this.filterGroups[0].filterGroup.length);
     };
@@ -783,7 +789,7 @@ class CollectionConfig {
             if((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)){
                 var index = currentGroup.indexOf(filter);
                 if(index > -1) {
-                    this.observerService.notify('filterItemAction', {
+                    this.notify('filterItemAction', {
                         action: 'remove',
                         filterItemIndex: index
                     });
@@ -803,6 +809,14 @@ class CollectionConfig {
     public setColumns=(columns)=>{
         this.columns = columns;
         return this;
+    }
+
+    private notify(name, data){
+        if(angular.isDefined(this.eventID)){
+            this.observerService.notifyById(name, this.eventID, data);
+        }else{
+            this.observerService.notify(name, data);
+        }
     }
 
 }

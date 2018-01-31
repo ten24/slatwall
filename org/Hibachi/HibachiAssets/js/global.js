@@ -162,16 +162,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
 				
-	            var selectedValue = jQuery(this).val() || '';
-				
-	            if(bindData.valueAttribute.length) {
-					var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
-				}
+	            var selectedValue = '';
 	
-				if( jQuery( '#' + bindData.id ).hasClass('hide') 
-	                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
-	                     || bindData.showValues === '*' && selectedValue.length) 
-	            ) {
+	            if(bindData.valueAttribute.length) {
+					var selectedValue = jQuery(this).children(":selected").attr(bindData.valueAttribute) || '';
+				}
+				if( jQuery( '#' + bindData.id ).hasClass('hide') && ( bindData.showValues && selectedValue && bindData.showValues.length && selectedValue.length && bindData.showValues.indexOf(selectedValue) != -1 || bindData.showValues === '*' && selectedValue.length)) {
 					
 	                jQuery( '#' + bindData.id ).removeClass('hide');
 	                
@@ -852,7 +848,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							});
 						} else {
 							jQuery.each(r.messages, function(i, v){
-								jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
+								jQuery('#' + thisTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + (v.MESSAGE || v.message) + '</div>');
 							});
 						}
 					}
@@ -1839,6 +1835,18 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			timeFormat = timeFormat.replace('tt', 'TT');
 		}
 		return timeFormat;
+	}
+	
+	function getTabHTMLForTabGroup( element, tab ){
+		
+		var tabID = tab.TABID || tab.tabid;
+		var view = tab.VIEW || tab.view;
+		
+		if($('#'+tabID).html().trim().length === 0){
+			
+			$('#'+tabID).load(url=window.location.href,data={viewPath:view.split(/\/(.+)/)[1]});
+		}
+		
 	}
 	
 	// =========================  END: HELPER METHODS =================================

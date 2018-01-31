@@ -15,10 +15,15 @@
             <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
             </div>
+            
             <sw-listing-controls data-ng-if="swListingDisplay.hasSearch !== false && swListingDisplay.collectionConfig != null && !swListingDisplay.customListingControls"
                     data-table-id="swListingDisplay.tableID"
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-show-filters="swListingDisplay.showFilters"
+                    data-show-export="swListingDisplay.showExport"
+                    data-show-toggle-search="swListingDisplay.showSearch"
+                    data-show-print-options="swListingDisplay.showPrintOptions"
+                    data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
                     data-ng-if="swListingDisplay.hasSearch !== false">
 
@@ -127,8 +132,8 @@
                            data-listing-id="{{swListingDisplay.tableID}}"
                            >
 
-                        <tr data-ng-if="(swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecordsCount == 0) ||
-                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.recordsCount == 0) ">
+                        <tr data-ng-if="(swListingDisplay.collectionData.pageRecords != null && swListingDisplay.collectionData.pageRecords.length == 0) ||
+                                        (swlistingDisplay.collectionData.records != null && swListingDisplay.collectionData.records.length == 0) ">
                             <td colspan="{{swListingDisplay.columnCount}}">No Records Found.</td>            
                         </tr>
 
@@ -216,18 +221,32 @@
                                 </span>
 
                                 <!-- Detail -->
-                                <sw-action-caller
-                                        ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
-                                        data-action="{{swListingDisplay.recordDetailAction}}"
-                                        data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
-                                        data-class="btn btn-default btn-xs"
-                                        data-icon="eye-open"
-                                        data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordDetailModal"
-                                        data-is-angular-route="swListingDisplay.isAngularRoute"
-                                >
-                                </sw-action-caller>
-
+                                <span ng-if="swListingDisplay.recordDetailActionIdProperty && swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.recordDetailActionIdProperty+'='+pageRecord[swListingDisplay.recordDetailActionIdKey]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                    </sw-action-caller>
+                                </span>
+                                <span ng-if="!swListingDisplay.recordDetailActionIdProperty || !swListingDisplay.recordDetailActionIdKey">
+                                    <sw-action-caller
+                                            ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
+                                            data-action="{{swListingDisplay.recordDetailAction}}"
+                                            data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+                                            data-class="btn btn-default btn-xs"
+                                            data-icon="eye-open"
+                                            data-iconOnly="true"
+                                            data-modal="swListingDisplay.recordDetailModal"
+                                            data-is-angular-route="swListingDisplay.isAngularRoute"
+                                    >
+                                    </sw-action-caller>
+                                </span>
                                 <span ng-if="swListingDisplay.multiSlot">
                                     <div ng-transclude="detailAction"></div>
                                 </span>

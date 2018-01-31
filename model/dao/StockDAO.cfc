@@ -120,11 +120,97 @@ Notes:
 			return dataQuery.execute().getResult();
 		}
 
+		public void function insertMinMaxStockTransferItem(required struct minMaxStockTransferItemData) {
+			var minMaxStockTransferItemID = lcase(replace(createUUID(),"-","","all"));
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				INSERT INTO swMinMaxStockTransferItem
+					(
+						minMaxStockTransferItemID, minMaxStockTransferID, skuID, toTopLocationID, toLeafLocationID, fromTopLocationID, fromLeafLocationID, toMinQuantity, toMaxQuantity, toOffsetQuantity, toSumQATS, fromMinQuantity, fromMaxQuantity, fromOffsetQuantity, fromSumQATS, fromCalculatedQATS, transferQuantity, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+					)
+				VALUES 
+					(
+						'#minMaxStockTransferItemID#', 
+						'#arguments.minMaxStockTransferItemData.minMaxStockTransferID#', 
+						'#arguments.minMaxStockTransferItemData.skuID#', 
+						'#arguments.minMaxStockTransferItemData.toTopLocationID#', 
+						'#arguments.minMaxStockTransferItemData.toLeafLocationID#', 
+						'#arguments.minMaxStockTransferItemData.fromTopLocationID#', 
+						'#arguments.minMaxStockTransferItemData.fromLeafLocationID#', 
+						#arguments.minMaxStockTransferItemData.toMinQuantity#, 
+						#arguments.minMaxStockTransferItemData.toMaxQuantity#, 
+						#arguments.minMaxStockTransferItemData.toOffsetQuantity#, 
+						#arguments.minMaxStockTransferItemData.toSumQATS#, 
+						#arguments.minMaxStockTransferItemData.fromMinQuantity#, 
+						#arguments.minMaxStockTransferItemData.fromMaxQuantity#, 
+						#arguments.minMaxStockTransferItemData.fromOffsetQuantity#, 
+						#arguments.minMaxStockTransferItemData.fromSumQATS#, 
+						#arguments.minMaxStockTransferItemData.fromCalculatedQATS#, 
+						#arguments.minMaxStockTransferItemData.transferQuantity#, 
+						#arguments.minMaxStockTransferItemData.timeStamp#, 
+						#arguments.minMaxStockTransferItemData.timeStamp#, 
+						'#arguments.minMaxStockTransferItemData.administratorID#', 
+						'#arguments.minMaxStockTransferItemData.administratorID#'
+					);
+			");
+			dataQuery.execute();
+		}
+
 		public void function deleteMinMaxStockTransferItems(required string minMaxStockTransferID) {
 			var dataQuery = new Query();
 			dataQuery.setSql("
 				DELETE FROM swMinMaxStockTransferItem 
 				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'
+			");
+			dataQuery.execute();
+		}
+
+		public void function insertMinMaxTransferStockAjustment(required struct stockAdjustmentData) {
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				INSERT INTO swStockAdjustment
+					(
+						stockAdjustmentID, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, minMaxStockTransferID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+					)
+				VALUES 
+					(
+						'#arguments.stockAdjustmentData.stockAdjustmentID#', 
+						'#arguments.stockAdjustmentData.fromLocationID#', 
+						'#arguments.stockAdjustmentData.toLocationID#', 
+						'#arguments.stockAdjustmentData.stockAdjustmentTypeID#', 
+						'#arguments.stockAdjustmentData.stockAdjustmentStatusTypeID#', 
+						'#arguments.stockAdjustmentData.minMaxStockTransferID#', 
+						#arguments.stockAdjustmentData.timeStamp#, 
+						#arguments.stockAdjustmentData.timeStamp#, 
+						'#arguments.stockAdjustmentData.administratorID#', 
+						'#arguments.stockAdjustmentData.administratorID#'
+					);
+			");
+			dataQuery.execute();
+		}
+
+		public void function insertMinMaxTransferStockAjustmentItem(required struct stockAdjustmentItemData) {
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				INSERT INTO swStockAdjustmentItem
+					(
+						stockAdjustmentItemID, stockAdjustmentID, quantity, cost, currencyCode, fromStockID, toStockID, skuID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+					)
+				VALUES 
+					(
+						'#arguments.stockAdjustmentItemData.stockAdjustmentItemID#', 
+						'#arguments.stockAdjustmentItemData.stockAdjustmentID#', 
+						#arguments.stockAdjustmentItemData.quantity#, 
+						#arguments.stockAdjustmentItemData.cost#, 
+						'#arguments.stockAdjustmentItemData.currencyCode#', 
+						'#arguments.stockAdjustmentItemData.fromStockID#', 
+						'#arguments.stockAdjustmentItemData.toStockID#', 
+						'#arguments.stockAdjustmentItemData.skuID#', 
+						#arguments.stockAdjustmentItemData.timeStamp#, 
+						#arguments.stockAdjustmentItemData.timeStamp#, 
+						'#arguments.stockAdjustmentItemData.administratorID#', 
+						'#arguments.stockAdjustmentItemData.administratorID#'
+					);
 			");
 			dataQuery.execute();
 		}

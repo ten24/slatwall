@@ -94,7 +94,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></script>
 		<!--- Trigger Print Window --->
-		<cfif listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
+		<cfif $.slatwall.getLoggedInFlag() and listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
 				var printWindow = window.open('#request.slatwallScope.getBaseURL()#?slatAction=admin:print.default', '_blank');
 			</script>

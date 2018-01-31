@@ -309,7 +309,21 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-	
+	public any function processAccount_changePosPin(required any account, required any processObject) {
+
+		var existingPosPin = arguments.account.getPosPin();
+
+		// Set the password
+		var newPosPin = getHashedAndSaltedPassword(arguments.processObject.getPosPin(), arguments.account.getAccountID());
+		
+		if(!isNull(existingPosPin) && existingPosPin == newPosPin)
+		{
+			arguments.account.addError("samePosPin",rbKey('admin.entity.account.samePosPin'));
+		} else {
+			arguments.account.setPosPin(newPosPin);
+		}
+		return arguments.account;
+	}
 	public any function saveAccount(required any account, struct data={}, string context="save"){
 		
 		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){

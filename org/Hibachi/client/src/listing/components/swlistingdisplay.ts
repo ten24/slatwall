@@ -61,20 +61,24 @@ class SWListingDisplayController{
     public processObjectProperties;
     public recordAddAction:string;
     public recordDetailAction:string;
+    public recordDetailActionIdProperty:string;
+    public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
     public recordEditAction:string;
     public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
     public searching:boolean = false;
     public searchText;
-
     public selectFieldName;
     public selectable:boolean = false;
     public showOrderBy:boolean;
+    public showExport:boolean;
+    public showPrintOptions:boolean; 
     public showSearch:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
+    public showToggleDisplayOptions:boolean;
     public sortable:boolean = false;
     public sortableFieldName:string;
     public sortProperty;
@@ -115,6 +119,10 @@ class SWListingDisplayController{
         // }
         if(angular.isUndefined(this.usingPersonalCollection)){
             this.usingPersonalCollection=false;
+        }
+        
+        if(angular.isUndefined(this.showExport)){
+            this.showExport = true;
         }
 
         //promises to determine which set of logic will run
@@ -206,8 +214,7 @@ class SWListingDisplayController{
 
                     this.paginator.getCollection = this.getCollection;
 
-                    var getCollectionEventID = this.tableID;
-                    this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
 
                 }
             );
@@ -226,7 +233,7 @@ class SWListingDisplayController{
         if (this.collectionObject){
                 this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
-        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
 
     public getCollectionByPagination = (state) =>{
@@ -248,7 +255,7 @@ class SWListingDisplayController{
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
-                this.observerService.notify('swPaginationUpdate',data);
+                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
             });
 
         }
@@ -286,6 +293,7 @@ class SWListingDisplayController{
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
+        
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -346,6 +354,12 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false; 
+        }
+        if(angular.isUndefined(this.showToggleDisplayOptions)){
+            this.showToggleDisplayOptions = true; 
+        }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false;
         }
@@ -361,7 +375,7 @@ class SWListingDisplayController{
         if(angular.isDefined(this.emailAction)){
             this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
         }
-        this.paginator = this.paginationService.createPagination();
+        this.paginator = this.paginationService.createPagination(this.tableID);
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
             this.getChildCount = false;
@@ -369,6 +383,10 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+        if(this.collectionConfig){
+            this.collectionConfig.setEventID(this.tableID);
+        }
+       
         if(angular.isDefined(this.sortableFieldName)){
             this.sortableFieldName = "sorting" + this.tableID;
         }
@@ -534,6 +552,25 @@ class SWListingDisplayController{
             .remove();
     };
 
+    public printCurrentList =(printTemplateID)=>{
+
+        var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+
+        $('body').append('<form action="?s=1" method="post" id="formPrint"></form>');
+        
+        $('#formPrint')
+            .append("<input type='hidden' name='" + this.$hibachi.getConfigValue('action') +"' value='entity.processPrint' />")
+            .append("<input type='hidden' name='redirectAction' value='admin:entity.list" + this.baseEntityName.toLowerCase() + "' />")
+            .append("<input type='hidden' name='processContext' value='addToQueue' />")
+            .append("<input type='hidden' name='printID' value='' />")
+            .append("<input type='hidden' name='printTemplateID' value='" + printTemplateID +"' />")
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />");
+        
+        $('#formPrint')
+            .submit()
+            .remove();
+    };
+
     public paginationPageChange=(res)=>{
         this.isCurrentPageRecordsSelected = false;
     };
@@ -599,6 +636,8 @@ class SWListingDisplay implements ng.IDirective{
             recordEditDisabled:"<?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
+            recordDetailActionIdProperty:"@?",
+            recordDetailActionIdKey:"@?",
             recordDetailQueryString:"@?",
             recordDetailModal:"<?",
             recordDeleteAction:"@?",
@@ -661,11 +700,14 @@ class SWListingDisplay implements ng.IDirective{
 
             /* Settings */
             showheader:"<?",
+            showExport:"<?",
             showOrderBy:"<?",
             showTopPagination:"<?",
+            showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
             showSimpleListingControls:"<?",
+            showPrintOptions:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",

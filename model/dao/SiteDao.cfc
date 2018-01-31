@@ -70,4 +70,5 @@ Notes:
 		</cfquery>
 		<cfreturn ValueList(local.siteCodes.siteCode,arguments.delimiter) />
 	</cffunction>
+
 </cfcomponent>
