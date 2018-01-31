@@ -99,6 +99,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			vendorOrderID="",
 			vendorOrderItems=[
 				{
+					quantity=5,
 					vendorOrderItemID=vendorOrderItem.getVendorOrderItemID()
 				}
 			]

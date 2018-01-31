@@ -35,7 +35,7 @@
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<cfparam name="attributes.ignoreHTMLEditFormat" type="boolean" default="false" />	<!--- hint: use at own risk. Recommended only if value is not directly from db --->
 	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" /> 		<!--- If set to false, will hide select box if no options are available --->
-
+ 
 	<cfif !attributes.ignoreHTMLEditFormat>
 		<cfset attributes.value = request.context.fw.getHibachiScope().hibachiHtmlEditFormat(attributes.value)/>
 	</cfif>
@@ -183,8 +183,12 @@
 		<cfcase value="plainTitle">
 			<cfif attributes.edit>
 				<cfoutput>
-					<hb:HibachiFormField attributecollection="#attributes#" />
-					<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+					<cfif structKeyExists(attributes,'valueOptionsCollectionList') AND isObject(attributes.valueOptionsCollectionList)>
+						<hb:HibachiListingDisplay edit="true" collectionList="#attributes.valueOptionsCollectionList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#"></hb:HibachiListingDisplay>
+					<cfelse>	
+						<hb:HibachiFormField attributecollection="#attributes#" />
+						<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+					</cfif>
 				</cfoutput>
 			<cfelse>
 				<cfoutput>
@@ -195,6 +199,7 @@
 							<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist))>
 								<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="false"></hb:HibachiListingDisplay>
 							<cfelseif structKeyExists(attributes,'valueOptionsCollectionList')>
+								<hb:HibachiListingDisplay collectionList="#attributes.valueOptionsCollectionList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="false"></hb:HibachiListingDisplay>
 							</cfif>
 						<cfelse>
 							#attributes.value#

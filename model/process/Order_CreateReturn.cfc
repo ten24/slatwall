@@ -133,4 +133,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.orderTypeCode;
 	}
+	
+	public boolean function orderItemsWithinOrginalQuantity(){
+		
+		if ( !isnull(this.getOrderItems()) ){
+			
+			for (var orderItem in this.getOrderItems()){
+
+				var orginalItem = getService("OrderService").getOrderItem(orderItem.referencedOrderItem.orderItemID);
+				if (orderItem.quantity > orginalItem.getQuantityDelivered()){
+					return false;
+				}
+			}			
+		}
+		
+		return true;
+		
+	}
 }
