@@ -60,7 +60,6 @@ class SWTypeaheadSearchController {
                 private $http,
                 private requestService
      ){
-        
         this.dropdownOpen = false;
         
            this.requestService = requestService;
@@ -217,6 +216,10 @@ class SWTypeaheadSearchController {
     
 
 	public search = (search:string)=>{
+	    if(!search.length){
+	        this.closeThis();
+	        return;
+	    }
         this.rSearch(search);
 
         if(this._timeoutPromise){
@@ -328,7 +331,7 @@ class SWTypeaheadSearchController {
         this.viewFunction()();
     };
 
-    public closeThis = (clickOutsideArgs) =>{
+    public closeThis = (clickOutsideArgs?) =>{
 
         this.hideSearch = true;
 

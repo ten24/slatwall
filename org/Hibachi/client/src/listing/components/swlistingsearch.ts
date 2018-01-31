@@ -16,7 +16,7 @@ class SWListingSearchController {
     private itemInUse;
     private getCollection;
     private listingId;
-    public swListingDisplay;
+    public swListingDisplay:any;
     public searchableOptions;
     public swListingControls;
     public hasPersonalCollections:boolean=false;
@@ -24,6 +24,7 @@ class SWListingSearchController {
     public selectedPersonalCollection:any;
     public collectionNameSaveIsOpen:boolean=false;
     public printTemplateOptions:any[];
+    public personalCollectionIdentifier:string;
 
     //@ngInject
     constructor(
@@ -35,11 +36,13 @@ class SWListingSearchController {
         public observerService,
         public localStorageService
     ) {
-
-
+       
     }
 
     public $onInit=()=>{
+        if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
+            this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
+        }
         //snapshot searchable options in the beginning
         this.searchableOptions = angular.copy(this.swListingDisplay.collectionConfig.columns);
         this.selectedSearchColumn={title:'All'};
@@ -88,7 +91,7 @@ class SWListingSearchController {
     }
 
     public savePersonalCollection=(collectionName?)=>{
-        if(this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]){
+        if(this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){
             var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
             if(selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]){
 
@@ -110,6 +113,7 @@ class SWListingSearchController {
             var serializedJSONData={
                 'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString,
                 'collectionName':collectionName,
+                'collectionDescription':this.personalCollectionIdentifier,
                 'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
@@ -121,7 +125,7 @@ class SWListingSearchController {
                 "",
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
-                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject'
+                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
                 },
                 'save'
             ).then((data)=>{
@@ -134,7 +138,8 @@ class SWListingSearchController {
                 selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
                     collectionID:data.data.collectionID,
                     collectionObject:data.data.collectionObject,
-                    collectionName:data.data.collectionName
+                    collectionName:data.data.collectionName,
+                    collectionDescription:data.data.collectionDescription
                 }
                 this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
                 this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
@@ -152,9 +157,12 @@ class SWListingSearchController {
     public getPersonalCollections = ()=>{
         if(!this.hasPersonalCollections){
             var personalCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject');
+            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
             personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
+            if(angular.isDefined(this.personalCollectionIdentifier)){
+                personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
+            }
             personalCollectionList.setAllRecords(true);
             personalCollectionList.getEntity().then((data)=>{
                 this.personalCollections = data.records;

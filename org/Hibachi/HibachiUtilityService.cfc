@@ -3,6 +3,16 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		public string function getDatabaseUUID(){
+			switch(getHibachiScope().getApplicationValue('databaseType')){
+				case 'Oracle10g':
+					return 'LOWER(SYS_GUID())';
+				case 'MySQL':
+					return "LOWER(REPLACE(CAST(UUID() as char character set utf8),'-',''))";
+				case 'MicrosoftSQLServer':
+					return "LOWER(REPLACE(newid(),'-',''))";
+			}
+		}
 		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){

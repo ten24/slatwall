@@ -238,7 +238,13 @@ class ListingService{
         if(propertyIdentifier){
             var propertyIdentifierWithoutAlias = '';
             if(propertyIdentifier.indexOf('_') === 0){
-                propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
+                 var underscoreCount = (propertyIdentifier.match(new RegExp("_", "g")||[])).length;
+                 if(underscoreCount > 1){
+                     var properSubStr = propertyIdentifier.substring(1);
+                     propertyIdentifierWithoutAlias = properSubStr.substring(properSubStr.indexOf('_')+1,properSubStr.length);
+                 }else{
+                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1);
+                 }
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
@@ -248,6 +254,7 @@ class ListingService{
     };
 
     public getPageRecordValueByColumn = (pageRecord, column) =>{
+        
         var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)] || "";
 
         //try to find the property again if we need to...
@@ -536,7 +543,6 @@ class ListingService{
 
 
             var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
-
             if(metadata && angular.isDefined(metadata.persistent)){
                 column.persistent = metadata.persistent;
             }
@@ -544,11 +550,12 @@ class ListingService{
             if(metadata && angular.isDefined(metadata.ormtype)){
                 column.ormtype = metadata.ormtype;
             }
-
-            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                column.type = metadata.hb_formatType;
-            } else {
-                column.type = "none";
+            if(angular.isUndefined(column.type) || column.type == 'none'){
+                if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
+                    column.type = metadata.hb_formattype;
+                } else {
+                    column.type = "none";
+                }
             }
 
             if(column.propertyIdentifier){

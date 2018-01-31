@@ -606,7 +606,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 						
 		// Add formatter based on dbtype
  		var formatter = '';
- 		if(getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
+ 		if(getHibachiScope().hasApplicationValue("databaseType") && getHibachiScope().getApplicationValue("databaseType")=="Oracle10g"){
  			formatter = "LOWER";
  		}
  
