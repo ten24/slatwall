@@ -3359,8 +3359,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public struct function getStateStruct() {
 		var stateStruct = {};
 		//TODO:change what the state variables are, evaluate the value of them
+		if(!structKeyExists(variables,'collectionConfigStruct')){
+			variables.collectionConfigStruct = getCollectionConfigStruct();
+		}
 		stateStruct.collectionConfig = duplicate(variables.collectionConfigStruct);
-		stateStruct.keywords = duplicate(variables.keywords);
+		if(!structKeyExists(variables,'keywords')){
+			stateStruct.keywords = duplicate(variables.keywords);
+		}
+		
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
 
 		return stateStruct;
