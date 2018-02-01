@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 
-		variables.entityService = request.slatwallScope.getService("hibachiCollectionService");
+		variables.entityService = variables.mockService.getHibachiCollectionServiceMock();
 		variables.entity = variables.entityService.newCollection();
 		variables.entity.setCollectionObject('Account');
 	}
@@ -171,7 +171,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	* @test
 	*/
 	public void function sessionBasedFiltersTest(){
-		var collectionEntity = request.slatwallScope.getService('HibachiCollectionService').getAccountCollectionList();
+		var collectionEntity = variables.entityService.getAccountCollectionList();
 		collectionEntity.setDisplayProperties('firstName');
 		collectionEntity.addFilter('firstName', '${account.firstName}');
 
@@ -590,7 +590,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var productWithoutActiveSkus = createPersistedTestEntity('product', productWithoutActiveSkusData);
 
-
+		//skus will default as active
 		var productWithActiveSkusData = {
 			productID = '',
 			productName = 'ProductUnitTest',
@@ -622,17 +622,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//By default Active flag is true.
 		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
 
-
-
 		var myProductCollection = variables.entityService.getProductCollectionList();
-		myProductCollection.setDisplayProperties('productName,productDescription');
+		myProductCollection.setDisplayProperties('productName,productDescription,activeFlag');
 		myProductCollection.addFilter('productName','ProductUnitTest');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myProductCollection.addFilter('skus.activeFlag','YES');
 		var pageRecords = myProductCollection.getPageRecords();
 
-		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
-
+		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 	}
 
 	/**
@@ -1145,67 +1142,69 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	*/
 	public void function addFilterSUMAggregateTest(){
 
-	var uniqueNumberForDescription = createUUID();
-
-
-	var productWithSkusData1 = {
-		productID = '',
-		productName = 'ProductUnitTest1',
-		productDescription = uniqueNumberForDescription,
-		skus = [
-		{
-			skuID = '',
-			price = '10',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '20',
-			skuCode= createUUID()
-		}
-			]
-	};
-	createPersistedTestEntity('product', productWithSkusData1);
-
-
-	var productWithSkusData2 = {
-		productID = '',
-		productName = 'ProductUnitTest2',
-		productDescription = uniqueNumberForDescription,
-		skus = [
-		{
-			skuID = '',
-			price = '10',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '20',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '30',
-			skuCode= createUUID()
-		},
-		{
-			skuID = '',
-			price = '40',
-			skuCode= createUUID()
-		}
-			]
-	};
-
-	createPersistedTestEntity('product', productWithSkusData2);
-
-	var myProductCollection = variables.entityService.getProductCollectionList();
-	myProductCollection.setDisplayProperties('productName');
-	myProductCollection.addFilter('skus.price','30', '=', 'AND', 'SUM');
-	myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
-	var pageRecords = myProductCollection.getPageRecords();
-
-	assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
-}
+		var uniqueNumberForDescription = createUUID();
+	
+	
+		var productWithSkusData1 = {
+			productID = '',
+			productName = 'ProductUnitTest1',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			}
+				]
+		};
+		var product1 = createPersistedTestEntity('product', productWithSkusData1);
+	
+	
+		var productWithSkusData2 = {
+			productID = '',
+			productName = 'ProductUnitTest2',
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '40',
+				skuCode= createUUID()
+			}
+				]
+		};
+	
+		var product2 = createPersistedTestEntity('product', productWithSkusData2);
+	
+		var myProductCollection = variables.entityService.getProductCollectionList();
+		myProductCollection.setDisplayProperties('productName');
+		myProductCollection.addFilter('skus.price','30', '=', 'AND', 'SUM');
+		myProductCollection.addFilter('productID','#product1.getProductID()#,#product2.getProductID()#','IN');
+		
+		var recordCount = myProductCollection.getRecordsCount();
+		assert(recordCount > 0);
+		var pageRecords = myProductCollection.getPageRecords();
+		assert(arraylen(pageRecords) == 1 && pageRecords[1]['productName'] == 'ProductUnitTest1');
+	}
 
 	/**
 	* @test

@@ -3145,10 +3145,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			if(len(aggregateFilters) > 0){
 				aggregateFilters =  ' HAVING #aggregateFilters#';
-				if(arguments.excludeSelectAndOrderBy == true && !arguments.excludeGroupBy){
+				
+				if(!arguments.excludeGroupBy){
 					groupByHQL = "GROUP BY _#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id";
+					
 				}
 			}
+			
 
 			addPostFiltersFromKeywords(collectionConfig);
 
