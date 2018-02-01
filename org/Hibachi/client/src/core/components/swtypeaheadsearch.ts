@@ -15,6 +15,7 @@ class SWTypeaheadSearchController {
     public searchText:string;
     public results:any[] = [];
     public validateRequired:boolean; 
+    public uniqueResults:boolean;
     public columns:any[] = [];
     public filters:any[] = [];
     public addFunction;
@@ -375,6 +376,7 @@ class SWTypeaheadSearch implements ng.IDirective{
         showAddButton:"=?",
         showViewButton:"=?",
         validateRequired:"=?",
+        uniqueResults:"<?",
         clickOutsideArguments:"=?",
         propertyToShow:"=?",
         hideSearch:"=?",
@@ -417,8 +419,12 @@ class SWTypeaheadSearch implements ng.IDirective{
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
                 var target = element.find(".dropdown-menu");
+                var uniqueFilter = '';
+                if($scope.swTypeaheadSearch.uniqueResults){
+                    uniqueFilter = ` | unique:'` + typeaheadService.getTypeaheadPrimaryIDPropertyName($scope.swTypeaheadSearch.typeaheadDataKey)+`'`;
+                }
                 var listItemTemplateString = `
-                    <li ng-repeat="item in swTypeaheadSearch.results" class="dropdown-item" ng-class="{'s-selected':item.selected}"></li>
+                    <li ng-repeat="item in swTypeaheadSearch.results` + uniqueFilter + `" class="dropdown-item" ng-class="{'s-selected':item.selected}"></li>
                 `;
 
                 var anchorTemplateString = `
