@@ -50,7 +50,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase"  {
 	
 	public void function setUp() {
 		super.setup();
-		request.slatwallScope.getDao('HibachiDataDao').truncateTablesWithoutDefaultData();
+		//request.slatwallScope.getDao('HibachiDataDao').truncateTablesWithoutDefaultData();
 		
 	}
 	

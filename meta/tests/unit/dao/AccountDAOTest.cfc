@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.dao = request.slatwallScope.getDAO("accountDAO");
+		variables.dao = variables.mockService.getAccountDaoMock();
 	}
 		
 	/**

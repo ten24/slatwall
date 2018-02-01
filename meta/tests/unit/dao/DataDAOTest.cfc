@@ -51,7 +51,7 @@ Notes:
 	<cffunction name="setup">
 		<cfset super.setup() />
 
-		<cfset variables.dao = request.slatwallScope.getDAO("hibachiDataDAO") />
+		<cfset variables.dao = variables.mockService.getHibachiDataDAOMock() />
 	</cffunction>
 
 	<cffunction name="getShortReferenceID_1Test">

@@ -51,8 +51,8 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
-		variables.dao = request.slatwallScope.getDAO("promotionDAO");
-		variables.currencyService=request.slatwallScope.getBean("currencyService");
+		variables.dao = variables.mockService.getPromotionDAOMock();
+		variables.currencyService=variables.mockService.getCurrencyServiceMock();
 	}
 	
 	private void function setupTestCurrencies(){

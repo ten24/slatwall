@@ -13,6 +13,12 @@ component extends="testbox.system.BaseSpec"{
 			ServiceMock.setHibachiDao(hibachiDao);
 			
 			return ServiceMock;
+		}else if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('DAOMock')) == 'DAOMock'){
+			
+			var DAOName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('DAOMock'));
+			var DAOMock = createMock('Slatwall.model.dao.#daoName#');
+			
+			return DAOMock;
 		}
 	}
 	

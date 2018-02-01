@@ -50,11 +50,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public any function setup(){
 		super.setup();
-		var mockService = createMock('Slatwall.meta.tests.unit.mockService');
+		
 		
 		variables.HibachiValidationService = createMock('Slatwall.org.Hibachi.HibachiValidationService');
-		variables.HibachiService = createMock('Slatwall.model.service.HibachiService');
-		variables.SettingService = mockService.getSettingServiceMock();
+		variables.HibachiService = variables.mockService.getHibachiServiceMock();;
+		variables.SettingService = variables.mockService.getSettingServiceMock();
 	}
 		
 	/**
