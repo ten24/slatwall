@@ -353,7 +353,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// ============ START: Non-Persistent Property Methods =================
 
-	public numeric function getDiscountAmount(boolean forceCalculationFlag = false) {
+	public numeric function getDiscountAmount(boolean forceCalculationFlag = true) {
 		var discountAmount = 0;
 		
 		if(getNewFlag() || arguments.forceCalculationFlag){
