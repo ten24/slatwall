@@ -421,7 +421,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var target = element.find(".dropdown-menu");
                 var uniqueFilter = '';
                 if($scope.swTypeaheadSearch.uniqueResults){
-                    uniqueFilter = ` | unique:'` + typeaheadService.getTypeaheadPrimaryIDPropertyName($scope.swTypeaheadSearch.typeaheadDataKey)+`'`;
+                    uniqueFilter = ` | unique:'` + this.typeaheadService.getTypeaheadPrimaryIDPropertyName($scope.swTypeaheadSearch.typeaheadDataKey)+`'`;
                 }
                 var listItemTemplateString = `
                     <li ng-repeat="item in swTypeaheadSearch.results` + uniqueFilter + `" class="dropdown-item" ng-class="{'s-selected':item.selected}"></li>
