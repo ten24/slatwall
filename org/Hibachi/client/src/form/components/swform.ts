@@ -15,6 +15,7 @@ class SWFormController {
     public object:any;
     public events: any;
     public name: string;
+    public errorClass:string;
     //onSuccessEvents
     public onSuccess:string;
     //onErrorEvents
@@ -173,8 +174,16 @@ class SWFormController {
             angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
                     this.$timeout(()=> {
+                        
+                        /**
+                        if an error class has been attached to this form
+                        by its children propertydisplay or errorDisplay, use it.
+                        Otherwise, just add a generic 'error' class
+                        to the error message **/
+                        let errorClass = this.errorClass ? this.errorClass : "error";
+                        
                         errors[key].forEach((error)=>{
-                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+                            primaryElement.append("<div class='" + errorClass + "' name='" + key + "Error'>" + error + "</div>");
                         })
                     }, 0);
             }, this);
