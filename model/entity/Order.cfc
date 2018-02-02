@@ -716,31 +716,33 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPayment() {
-		var dynamicChargeOrderPayment = javaCast("null", "");
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
-				if(isNull(dynamicChargeOrderPayment) || (orderPayment.getCreatedDateTime() > dynamicChargeOrderPayment.getCreatedDateTime() && !orderPayment.getNewFlag())) {
-					dynamicChargeOrderPayment = orderPayment;
-				}
-			}
-		}
-		if(!isNull(dynamicChargeOrderPayment)) {
-			return dynamicChargeOrderPayment;
+	
+		var orderPaymentsSmartList = this.getOrderPaymentsSmartList();
+		orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode','opstActive');
+		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCharge');
+		orderPaymentsSmartList.addOrder('createdDateTime','ASC');
+		
+		var orderPayments = orderPaymentsSmartList.getRecords();
+		
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getDynamicAmountFlag()) {
+				return orderPayment;
+			} 
 		}
 	}
 
 	public any function getDynamicCreditOrderPayment() {
-		var returnOrderPayment = javaCast("null", "");
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCredit' && orderPayment.getDynamicAmountFlag()) {
-				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
-					returnOrderPayment = orderPayment;
-				}
+		var orderPaymentsSmartList = this.getOrderPaymentsSmartList();
+		orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode','opstActive');
+		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCredit');
+		
+		var orderPayments = orderPaymentsSmartList.getRecords();
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getDynamicAmountFlag()) {
+				return orderPayment;
 			}
 		}
-		if(!isNull(returnOrderPayment)) {
-			return returnOrderPayment;
-		}
+		
 	}
 
 	public any function getDynamicChargeOrderPaymentAmount() {

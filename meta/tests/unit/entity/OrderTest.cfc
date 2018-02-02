@@ -1129,12 +1129,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 			orderPaymentID = mockOrderPayment2.getOrderPaymentID()
 	 		}]
 	 	};
+	 	
 	 	var mockOrderSystemCode = createPersistedTestEntity('Order', orderData);
 	 	
 	 	var resultSystemCode = mockOrderSystemCode.getDynamicChargeOrderPayment();
 	 	assertTrue(isNull(resultSystemCode), 'The orderPaymentTYpe.systemCode fails ');
 	 	
-	 	//Testing the getDynamicAmountFlag()
+	 		//Testing the getDynamicAmountFlag()
 	 	var mockOrderPayment3 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b', amount = 500); //optCharge
 	 	
 	 	var orderData = {
@@ -1171,12 +1172,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	};
 	 	var mockOrderTwoPayments = createPersistedTestEntity('Order', orderData);
 	 	
-	 	
-	 	
 	 	mockOrderTwoPayments.addOrderPayment(mockOrderPayment4);
 	 	ormflush();
 	 	mockOrderTwoPayments.addOrderPayment(mockOrderPayment1);
 	 	ormflush();
+	 	
+	 	
 	 	
 	 	var resultTwoPayments = mockOrderTwoPayments.getDynamicChargeOrderPayment();
 	 	assertEquals(mockOrderPayment4.getOrderPaymentID(), resultTwoPayments.getOrderPaymentID(), 'When two orderPayments involved, the second should be returned');
