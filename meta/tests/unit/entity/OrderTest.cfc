@@ -1275,6 +1275,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	var mockOrder = createPersistedTestEntity('Order', orderData);
 	 	
 	 	var resultSL = mockOrder.getPaymentMethodOptionsSmartList();
+	 	resultSL.addINFilter('paymentMethodType','creditCard,giftCard');
 	 	assertTrue(resultSL.getRecordsCount() == 2);
 	 	var resultSLRecords = mockOrder.getPaymentMethodOptionsSmartList().getRecords(refresh = true);
 	 	assertEquals('Credit Card', resultSLRecords[1].getPaymentMethodName(),'The first default paymentMethod should be Credit Card');
