@@ -60,9 +60,10 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ====================== START: Save Overrides ===========================
 	public any function saveStock(required any stock, struct data={}, string context="save") {
-		var calculatedCurrentSkuPrice = stock.getCurrentSkuPrice();
-		stock.setCalculatedCurrentSkuPrice(calculatedCurrentSkuPrice);
-		return stock;
+		var calculatedCurrentSkuPrice = arguments.stock.getCurrentSkuPrice();
+		arguments.stock.setCalculatedCurrentSkuPrice(calculatedCurrentSkuPrice);
+		arguments.stock = super.save(entity=arguments.stock, data=arguments.data);
+		return arguments.stock;
 	}
 	
 	public any function getStockBySkuAndLocation(required any sku, required any location){
