@@ -557,8 +557,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public any function getAccountCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
-		collectionList.addDisplayProperty('siteID|value');
-		collectionList.addDisplayProperty('siteName|name');
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
 
 		var options = [{value ="", name="None"}];
 

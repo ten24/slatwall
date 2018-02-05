@@ -390,8 +390,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 		if(!structKeyExists(variables,'giftCardOrderItemsCount')){
 			var giftcardProductType = getService('productService').getProductTypeBySystemCode('gift-card');
-
 			var orderItemCollectionList = this.getOrderItemsCollectionList();
+			orderItemCollectionList.setDisplayProperties('order.orderID');
 			orderItemCollectionList.addDisplayAggregate('orderItemID','COUNT','orderItemCount');
 			orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#giftcardProductType.getProductTypeID()#%','Like');
 			if(arraylen(orderItemCollectionList.getRecords())){
@@ -1223,8 +1223,8 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	
 	public any function getOrderCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
-		collectionList.addDisplayProperty('siteID|value');
-		collectionList.addDisplayProperty('siteName|name');
+		
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
 		
 		var options = [{value ="", name="None"}];
 		
