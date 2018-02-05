@@ -720,12 +720,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var orderPaymentsSmartList = this.getOrderPaymentsSmartList();
 		orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode','opstActive');
 		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCharge');
-		orderPaymentsSmartList.addOrder('createdDateTime','ASC');
+		orderPaymentsSmartList.addOrder('createdDateTime','DESC');
 		
 		var orderPayments = orderPaymentsSmartList.getRecords();
 		
 		for(var orderPayment in orderPayments) {
 			if(orderPayment.getDynamicAmountFlag()) {
+				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+					returnOrderPayment = orderPayment;
+				}
 				return orderPayment;
 			} 
 		}

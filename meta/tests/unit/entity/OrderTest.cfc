@@ -1610,6 +1610,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var MockOrderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData);
 		
+		var invalidType = request.slatwallScope.getService('TypeService').getTypeBySystemCode('opstInvalid');
+		
+		mockOrderPayment.setOrderPaymentStatusType(invalidType);
+		
 		var orderData = {
 			orderID = '',
 			orderPayments = [
@@ -1621,8 +1625,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockOrder = createPersistedTestEntity('Order', orderData);
 		
 		//inject the getStatusCode() method
-		injectMethod(mockOrderPayment, this, 'returnOpstInvalid', 'getStatusCode');
-		
 		var result = mockOrder.getDynamicChargeOrderPayment();
 		assertTrue(isNull(result));
 	}
