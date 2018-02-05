@@ -53,6 +53,7 @@ Notes:
 <cfparam name="rc.category" type="any">
 <cfparam name="rc.edit" type="boolean">
 
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.category#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.category#" edit="#rc.edit#" />

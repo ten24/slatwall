@@ -369,6 +369,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}else{
 			var promotionAppliedCollectionList = getService('promotionService').getPromotionAppliedCollectionList();
 			promotionAppliedCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			promotionAppliedCollectionList.setDisplayProperties('orderItem.orderItemID');
 			promotionAppliedCollectionList.addDisplayAggregate('discountAmount','SUM','discountAmountSUM');
 			var promotionAppliedSum = promotionAppliedCollectionList.getRecords();
 			
@@ -567,6 +568,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			
 			var stockReceiverItemsCollectionList = getService('stockService').getStockReceiverItemCollectionList();
 			stockReceiverItemsCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
+			stockReceiverItemsCollectionList.setDisplayProperties('orderItem.orderItemID');
 			stockReceiverItemsCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
 			var stockReceiverItemsSum = stockReceiverItemsCollectionList.getRecords();
 			if(arraylen(stockReceiverItemsSum)){

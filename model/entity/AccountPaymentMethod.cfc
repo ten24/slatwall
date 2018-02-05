@@ -371,13 +371,10 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		}
 		if (isNull(variables.billingAccountAddressOptions)){
 			variables.billingAccountAddressOptions = [];
-			var accountAddressSmartList = getService("AddressService").getAccountAddressCollectionList();
-			accountAddressSmartList.addFilter("account.accountID", "#arguments.accountID#");
-			accountAddressSmartList.addDisplayProperty("accountAddressName");
-			accountAddressSmartList.addDisplayProperty("accountAddressID");
-			accountAddressSmartList.addDisplayProperty("address.streetAddress");
-			accountAddressSmartList.addDisplayProperty("address.postalCode");
-			var options = accountAddressSmartList.getRecords();
+			var accountAddressCollectionList = getService("AddressService").getAccountAddressCollectionList();
+			accountAddressCollectionList.addFilter("account.accountID", "#arguments.accountID#");
+			accountAddressCollectionList.setDisplayProperties("accountAddressName,accountAddressID,address.streetAddress,address.postalCode");
+			var options = accountAddressCollectionList.getRecords();
 			var index = 1;
 			for (var option in options){
 				if (index == 1){
