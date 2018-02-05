@@ -1679,7 +1679,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = mockOrder.getDynamicCreditOrderPayment();
 		assertFalse(isNull(result));
-		assertEquals(mockOrderPayment2.getOrderPaymentID(), result.getOrderPaymentID(), 'The filter of orderPayments fails');
+		assertEquals(mockOrderPayment1.getOrderPaymentID(), result.getOrderPaymentID(), 'The filter of orderPayments fails');
 		
 	}
 		
@@ -1695,6 +1695,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			//getDynamicAmountFlag() TRUE
 		};
 		var MockOrderPayment = createPersistedTestEntity('OrderPayment', orderPaymentData);
+		var invalidType = request.slatwallScope.getService('TypeService').getTypeBySystemCode('opstInvalid');
+		
+		mockOrderPayment.setOrderPaymentStatusType(invalidType);
 		
 		var orderData = {
 			orderID = '',
@@ -1706,8 +1709,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockOrder = createPersistedTestEntity('Order', orderData);
 		
-		//inject the getStatusCode() method
-		injectMethod(mockOrderPayment, this, 'returnOpstInvalid', 'getStatusCode');
 		
 		var result = mockOrder.getDynamicCreditOrderPayment();
 		assertTrue(isNull(result));

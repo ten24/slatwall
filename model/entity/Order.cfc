@@ -716,7 +716,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPayment() {
-	
+		
 		var orderPaymentsSmartList = this.getOrderPaymentsSmartList();
 		orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode','opstActive');
 		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCharge');
