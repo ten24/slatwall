@@ -138,6 +138,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
 			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
 			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountDisableGravatars = {fieldType="yesno",defaultValue=0},
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
