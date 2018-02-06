@@ -1682,7 +1682,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Check to see if this item is the same ID as the one passed in to remove
 				if(orderPayment.getOrderPaymentID() == arguments.data.orderPaymentID) {
 					if(orderPayment.isDeletable()) {
-						arguments.order.removeOrderPayment( orderPayment );
 						this.deleteOrderPayment( orderPayment );
 					} else {
 						orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstRemoved') );
