@@ -740,7 +740,6 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_create(required any product, required any processObject) {
-
 		// GENERATE - CONTENT ACCESS SKUS
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 
@@ -893,7 +892,11 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-
+		
+		if(!isNull(arguments.processObject.getBrand())){
+			arguments.product.setBrand(arguments.processObject.getBrand());
+		}
+		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
 
@@ -1214,4 +1217,3 @@ component extends="HibachiService" accessors="true" {
 	// ======================  END: Private Helper ============================
 
 }
-
