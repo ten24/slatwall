@@ -73,13 +73,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getShippingIntegration(){
 		if(
-			!structKeyExists(variables,'shippingIntegration') 
-			&& !isNull(getOrderFulfillment().getShippingMethodRate())
+			!isNull(getOrderFulfillment().getShippingMethodRate())
 			&& !isNull(getOrderFulfillment().getShippingMethodRate().getShippingIntegration())
 		){
-			variable.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
+			variables.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
+		} else {
+			variables.shippingIntegration = "";
 		}
-		return variable.shippingIntegration;
+		return variables.shippingIntegration;
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
