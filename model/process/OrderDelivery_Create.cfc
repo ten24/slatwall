@@ -104,44 +104,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return false;
 	}
 	
-	public string function getTrackingNumber(){
-		
-		if(!structKeyExists(variables,'trackingNumber') ){
-			//get tracking number from integration if specified
-			if(getUseShippingIntegrationForTrackingNumber()){
-				processShipmentRequest();
-			}else{
-				return "";
-			}
-		}
-		return variables.trackingNumber;
-	}
-	
-	public string function getContainerLabel(){
-		if(!structKeyExists(variables,'containerLabel')){
-			//get tracking number from integration if specified
-			if(getUseShippingIntegrationForTrackingNumber()){
-				processShipmentRequest();
-			}else{
-				return "";
-			}
-		}
-		return variables.containerLabel;
-	}
-
-	
-	public void function processShipmentRequest(){
-		var selectedIntegration = getShippingIntegration();
-		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
-		//create OrderDelivery and get tracking Number and generate label if shipping.cfc has method
-		if(structKeyExists(shippingIntegrationCFC,'processShipmentRequest')){
-  			shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
- 		} else {
- 			this.setTrackingNumber("");
- 			this.setContainerLabel("");
-  		}
-		
-	}
 	
 	
 	public boolean function hasAllGiftCardCodes(){
