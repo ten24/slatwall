@@ -189,7 +189,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			sl.addSelect('fulfillmentMethodType', 'fulfillmentMethodType');
 			
 			var eligibleFulfillmentMethods = '';
-			for(var orderItem in getOrderFulfillment().getOrderFulfillmentItems()){
+			var orderFulfillmentItems = getOrderFulfillment().getOrderFulfillmentItems();
+			for(var orderItem in orderFulfillmentItems){
 				var sku = orderItem.getSku();
 				if(!isNull(sku)) {
 					if(!len(eligibleFulfillmentMethods)){
