@@ -133,6 +133,17 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		structDelete(variables, "shippingAddress");
 	}
 
+	public void function removeShippingMethod() {
+		structDelete(variables, "shippingMethod");
+	}
+	
+	public void function removePickupLocation() {
+		structDelete(variables, "pickupLocation");
+	}
+	public void function removeEmailAddress() {
+		structDelete(variables, "emailAddress");
+	}
+
 	public boolean function hasValidShippingMethodRate() {
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
 	}
