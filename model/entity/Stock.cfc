@@ -195,6 +195,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	*/
 	
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
+		writeDump(getAverageCost(arguments.currencyCode));
 		return getQOH() * getAverageCost(arguments.currencyCode);
 	}
 
@@ -245,6 +246,13 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	public numeric function getAverageCost(){
+		if( !structKeyExists(variables, 'averageCost')){
+			variables.averageCost = 0;
+		}
+		
+		return variables.averageCost;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
