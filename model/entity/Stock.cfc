@@ -195,7 +195,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	*/
 	
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
-		writeDump(getAverageCost(arguments.currencyCode));
 		return getQOH() * getAverageCost(arguments.currencyCode);
 	}
 
