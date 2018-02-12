@@ -51,31 +51,18 @@ Notes:
 
 
 <cfparam name="rc.orderPayment" type="any" />
+<cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderPayment#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.orderPayment.getOrder().getOrderID()#"
-								   deleteQueryString="redirectAction=admin:entity.detailOrder&orderID=#rc.orderPayment.getOrder().getOrderID()#">
-			<hb:HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="createTransaction" type="list" modal="true">
-			<hb:HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="updateAmount" type="list" modal="true">
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiEntityDetailGroup object="#rc.orderPayment#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif rc.orderPayment.getPaymentMethodType() eq "termPayment">
-				<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
-			</cfif>
-
-			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/paymenttransactions" />
-			
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.orderPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderPayment#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.orderPayment#" edit="#rc.edit#">
+	
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderPayment#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="amount" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
