@@ -1786,7 +1786,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}else{
 				if(!getExcludeOrderBy()){
 					var orderBy = getDefaultOrderBy();
-					groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+					if(!getHasDisplayAggregate()){
+						groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+					}
 				}
 			}
 		}
@@ -1842,7 +1844,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
-		if(orderByCount == 0){
+		if(orderByCount == 0 && !getHasDisplayAggregate()){
 			arrayAppend(arguments.orderby,getDefaultOrderBy());
 			orderByCount++;
 		}
@@ -1861,7 +1863,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				orderByHQL &= ',';
 			}
 		}
-		return orderByHQL;
+
+		// Condition to remove the ORDER BY from query if no orderBy added
+		if( orderByHQL == ' ORDER BY '){
+			return "";
+		}else{
+			return orderByHQL;
+		}
 	}
 
 	public any function getNonPersistentColumn(){
@@ -2835,7 +2843,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
-					arrayAppend(groupBys,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
+					if(!getHasDisplayAggregate()){
+						arrayAppend(groupBys,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
+					}
 				}else{
 					//add a group by for all order bys
 					for(var orderBy in collectionConfig.orderBy){
