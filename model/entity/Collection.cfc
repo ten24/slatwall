@@ -2844,7 +2844,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
 					if(!getHasDisplayAggregate()){
-						arrayAppend(groupBys,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
+						arrayAppend(groupBys,getDefaultOrderBy().propertyIdentifier);
 					}
 				}else{
 					//add a group by for all order bys
