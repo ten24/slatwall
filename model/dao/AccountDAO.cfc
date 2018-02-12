@@ -79,7 +79,7 @@ Notes:
 		<cfreturn getAccountIDByPrimaryEmailAddress.accountID />
 
 	</cffunction>
-
+	
 	<cffunction name="removeAccountAuthenticationFromSessions">
 		<cfargument name="accountAuthenticationID" type="string" required="true" >
 
@@ -106,6 +106,21 @@ Notes:
 				SwAccount
 			SET
 				primaryAddressID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+	
+		<cffunction name="removeOwnerAccount">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				ownerAccountID = null
 			WHERE
 				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
@@ -387,4 +402,3 @@ Notes:
 	</cffunction>
 
 </cfcomponent>
-
