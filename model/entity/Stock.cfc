@@ -62,7 +62,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="stockID" cascade="all-delete-orphan" inverse="true";
-	
 	//Calculated Properties
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
@@ -108,8 +107,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	//Derived Properties
 	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
-	//Simple	
-
+	//Simple
 	
 	public string function getSimpleRepresentation() {
 		if(!isNull(getSku().getSkuCode()) && len(getLocation().getLocationName())) {
@@ -195,7 +193,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	*/
 	
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
-		return getQOH() * getAverageCost(arguments.currencyCode);
+		return val(getQOH() * getAverageCost(arguments.currencyCode));
 	}
 
 //	public numeric function getCurrentRevenueTotal(){
@@ -245,13 +243,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
-	public numeric function getAverageCost(){
-		if( !structKeyExists(variables, 'averageCost')){
-			variables.averageCost = 0;
-		}
-		
-		return variables.averageCost;
-	}
 
 	// ==================  END:  Overridden Methods ========================
 
@@ -259,6 +250,4 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// ===================  END:  ORM Event Hooks  =========================	
 	
-	
-		
 }
