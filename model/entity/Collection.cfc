@@ -1000,9 +1000,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 				if (!isNull(pageShow)){
-					this.setPageRecordsShow(pageShow);
-				}
+					if(pageShow >= 1)
+					{
+						this.setPageRecordsShow(pageShow);
+					}
 
+				}
 
 			}
 		}
