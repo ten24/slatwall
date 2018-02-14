@@ -3945,7 +3945,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		data['p:show'] = -2;
 		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
+		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
 	}
 
 	/**
