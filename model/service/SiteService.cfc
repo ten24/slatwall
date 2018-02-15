@@ -162,6 +162,11 @@ component  extends="HibachiService" accessors="true" {
 				name='404',
 				urlTitle="404",
 				contentTemplateFile="default.cfm"
+			},
+			{
+				name='Missing Partial',
+				urlTitle="missing-partial",
+				contentTemplateFile="slatwall-missing-partial.cfm"
 			}
 		];
 
