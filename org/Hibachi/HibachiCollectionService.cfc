@@ -496,7 +496,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
 			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
 				var keyValuePair = listGetAt(oldQueryString, i, "&");
-				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+				//added final list last argument, include empty values, set to true to avoid problem of duplicating query key when it's empty
+				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=",true);
 			}
 		}
 
