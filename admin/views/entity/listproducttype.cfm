@@ -91,9 +91,11 @@ Notes:
 	})/>
 	<cfset rc.productTypeCollectionList.addDisplayAggregate('childProductTypes','COUNT','childProductTypesCount')/>
 	
-	<hb:HibachiListingDisplay collectionList="#rc.productTypeCollectionList#"
+	<hb:HibachiListingDisplay
+		collectionList="#rc.productTypeCollectionList#"
 		recordEditAction="admin:entity.edit#lcase(rc.productTypeCollectionList.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.productTypeCollectionList.getCollectionObject())#"
+		usingPersonalCollection="true"
 	>
 	</hb:HibachiListingDisplay>
 
