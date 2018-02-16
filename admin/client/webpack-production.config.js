@@ -21,7 +21,7 @@ devConfig.plugins =  [
       algorithm: "gzip",
       test: /\.js$|\.css$|\.html$/,
       threshold: 10240,
-      minRatio: 0.2
+      minRatio: 0.8
     }),
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
