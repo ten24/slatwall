@@ -186,4 +186,40 @@ component extends="testbox.system.BaseSpec"{
 		return currencyService;
 	}
 
+	public any function getHibachiServiceMock(){
+		var hibachiValidationServiceMock = createMock('Slatwall.model.service.HibachiService');
+
+		return hibachiValidationServiceMock;
+	}
+
+	public any function getHibachiUtilityServiceMock(){
+		var settingService = createMock('Slatwall.model.service.settingService');
+
+		var hibachiUtilityService = onMissingMethod('getHibachiUtilityServiceMock',{});
+
+		hibachiUtilityService.setsettingService(settingService);
+
+		return hibachiUtilityService;
+	}
+
+	public any function getHibachiYamlServiceMock(){
+		var hibachiYamlServiceMock = createMock('Slatwall.org.Hibachi.HibachiYamlService');
+
+		return hibachiYamlServiceMock;
+	}
+
+	public any function getImageServiceMock(){
+
+		var hibachiTagService = createMock('Slatwall.org.Hibachi.HibachiTagService');
+		var settingService = createMock('Slatwall.model.service.settingService');
+		var skuService = createMock('Slatwall.model.service.skuService');
+
+		var imageService = onMissingMethod('getImageServiceMock',{});
+
+		imageService.sethibachiTagService(hibachiTagService);
+		imageService.setsettingService(settingService);
+		imageService.setskuService(skuService);
+
+		return imageService;
+	}
 }
