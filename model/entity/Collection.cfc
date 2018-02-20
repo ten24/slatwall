@@ -829,7 +829,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop)){
 					var dataToFilterOn = data[key]; //value of the filter.
 
-					dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 					var comparison = "=";
 					try{
 						comparison = listToArray(key,':')[3];
@@ -873,7 +872,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(hasPropertyByPropertyIdentifier(prop) && getPropertyIdentifierIsPersistent(prop) && listFind(trim(arguments.excludesList),trim(prop)) == 0 ){
 					var dataToFilterOn = data[key]; //value of the filter.
 
-					dataToFilterOn = urlDecode(dataToFilterOn); //make sure its url decoded.
 					var comparison = "=";
 					try{
 						comparison = listToArray(key,':')[3];
