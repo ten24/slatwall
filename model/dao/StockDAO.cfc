@@ -175,7 +175,7 @@ Notes:
 			dataQuery.setSql("
 				INSERT INTO swStockAdjustment
 					(
-						stockAdjustmentID,referenceNumber, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, minMaxStockTransferID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+						stockAdjustmentID,referenceNumber, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, #!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? 'minMaxStockTransferID,' : ''# createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
 					)
 				VALUES 
 					(
@@ -185,7 +185,7 @@ Notes:
 						'#arguments.stockAdjustmentData.toLocationID#', 
 						'#arguments.stockAdjustmentData.stockAdjustmentTypeID#', 
 						'#arguments.stockAdjustmentData.stockAdjustmentStatusTypeID#', 
-						'#arguments.stockAdjustmentData.minMaxStockTransferID#', 
+						'#!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? arguments.stockAdjustmentData.minMaxStockTransferID & ',' : ''#'
 						#arguments.stockAdjustmentData.timeStamp#, 
 						#arguments.stockAdjustmentData.timeStamp#, 
 						'#arguments.stockAdjustmentData.administratorID#', 
