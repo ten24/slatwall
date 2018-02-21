@@ -272,6 +272,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return autoRenewalReminderSubscriptionUsage(arguments.subscriptionUsage, arguments.data);
 		}
 	}
+	
+	
 
 	private void function manualRenewalReminderSubscriptionUsage(required any subscriptionUsage, struct data={}) {
 		param name="arguments.data.eventName" type="string" default="subscriptionUsageRenewalReminder";
