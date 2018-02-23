@@ -55,7 +55,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
-		var shippingMethodRatesSmartList = shippingMethod.getShippingMethodRatesSmartList();
+		var shippingMethodRatesSmartList = getService('shippingService').getShippingMethodRateSmartList();
+		shippingMethodRatesSmartList.addFilter('shippingMethod.shippingMethodID',shippingMethod.getShippingMethodID());
 		shippingMethodRatesSmartList.addFilter('activeFlag',1);
 		
 		var subTotalAfterDiscounts = arguments.orderFulfillment.getSubtotalAfterDiscounts();
@@ -67,7 +68,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #totalShippingWeight#');
 		
 		var totalShippingQuantity = arguments.orderFulfillment.getTotalShippingQuantity();
-		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentQuantity,0) <= #totalShippingQuantity#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentQuantity,0) <= :totalShippingQuantity', {totalShippingQuantity=totalShippingQuantity} );
 		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentQuantity,100000000) >= #totalShippingQuantity#');
 		
 		var records = shippingMethodRatesSmartList.getRecords();
