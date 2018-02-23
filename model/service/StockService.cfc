@@ -59,12 +59,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="stockDAO" type="any";
 
 	// ====================== START: Save Overrides ===========================
-	public any function saveStock(required any stock, struct data={}, string context="save") {
-		var calculatedCurrentSkuPrice = stock.getCurrentSkuPrice();
-		stock.setCalculatedCurrentSkuPrice(calculatedCurrentSkuPrice);
-		return stock;
-	}
-	
 	public any function getStockBySkuAndLocation(required any sku, required any location){
 		var stock = getStockDAO().getStockBySkuAndLocation(argumentCollection=arguments);
 

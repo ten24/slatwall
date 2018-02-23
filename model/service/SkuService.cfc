@@ -634,7 +634,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Populate with updated calculated values and sku/location relationships
-			skuLocationQuantity.updateCalculatedProperties();
+			skuLocationQuantity.updateCalculatedProperties(true);
 		}
 
 		this.saveSku(arguments.sku);

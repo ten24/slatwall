@@ -60,6 +60,7 @@ Notes:
     </sw-entity-action-bar>
 
     <sw-listing-display
+        data-using-personal-collection="true"
         data-collection="'MinMaxStockTransfer'"
         data-edit="false"
         data-has-search="true"

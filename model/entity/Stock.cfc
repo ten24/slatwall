@@ -61,7 +61,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="stockID" cascade="all-delete-orphan" inverse="true";
 	
 	//Calculated Properties
 	property name="calculatedQATS" ormtype="float";
@@ -245,6 +245,13 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	public numeric function getAverageCost(){
+		if( !structKeyExists(variables, 'averageCost')){
+			variables.averageCost = 0;
+		}
+		
+		return variables.averageCost;
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
