@@ -671,7 +671,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//Get Active Skulls from Active Products
 
-		var mySkuCollection = variables.entityService.getSkuCollectionList();
+		var mySkuCollection = variables.entityService.getSkusCollectionList();
 		mySkuCollection.setDisplayProperties('skuID');
 		mySkuCollection.addFilter('activeFlag','YES');
 		mySkuCollection.addFilter('product.activeFlag','YES');
@@ -1405,6 +1405,116 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addOrderBy('productDesc|asc');
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
+
+
+	/**
+	* @test
+	*/
+	public void function verify_cached_collectionList_present(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '300',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = productWithSkus.getskusCollectionlist();
+		myCollection.setDisplayProperties('skuName');
+		myCollection.addDisplayAggregate('price','SUM','priceSum');
+		myCollection.addFilter('skuDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('skuDesc|asc');
+
+		var myCollectionNew = productWithSkus.getskusCollectionlist();
+		myCollectionNew.setDisplayProperties('skuCode');
+		myCollectionNew.addDisplayAggregate('price','AVG','priceAvg');
+		myCollectionNew.addFilter('skuName',uniqueNumberForDescription);
+		myCollectionNew.addOrderBy('skuDesc|desc');
+
+		// assertions for mycollection
+		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollection.getHQL()));
+		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollection.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollection.getHQL()));
+
+		// assertions for mycollectionNew
+		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollectionNew.getHQL()));
+		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollectionNew.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function verify_new_collectionList_created(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '300',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = productWithSkus.getskusCollectionlist();
+		myCollection.setDisplayProperties('skuName');
+		myCollection.addDisplayAggregate('price','SUM','priceSum');
+		myCollection.addFilter('skuDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('skuDesc|asc');
+
+		var myCollectionNew = productWithSkus.getskusCollectionlist(isNew=true);
+		myCollectionNew.setDisplayProperties('skuCode');
+		myCollectionNew.addDisplayAggregate('price','AVG','priceAvg');
+		myCollectionNew.addFilter('skuName',uniqueNumberForDescription);
+		myCollectionNew.addOrderBy('skuDesc|desc');
+
+		// assertions for mycollection
+		assertTrue(FindNoCase("_sku.skuName as skuName",myCollection.getHQL()));
+		asserttrue(FindNoCase("SUM(COALESCE(_sku.price,0)) as priceSum",myCollection.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc asc",myCollection.getHQL()));
+
+		// assertions for mycollectionNew
+		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollectionNew.getHQL()));
+		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollectionNew.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
+	}
+
 
 	/**
 	* @test
