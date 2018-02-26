@@ -671,7 +671,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		//Get Active Skulls from Active Products
 
-		var mySkuCollection = variables.entityService.getSkusCollectionList();
+		var mySkuCollection = variables.entityService.getSkuCollectionList();
 		mySkuCollection.setDisplayProperties('skuID');
 		mySkuCollection.addFilter('activeFlag','YES');
 		mySkuCollection.addFilter('product.activeFlag','YES');
