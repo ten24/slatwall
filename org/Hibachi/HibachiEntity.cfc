@@ -821,7 +821,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
 					//condition to choose between new and cached collectionList
-					if(arguments.missingMethodArguments[1] == true){
+					if( structKeyExists(arguments.missingMethodArguments, 'isNew') && arguments.missingMethodArguments["isNew"]){
 						return getPropertyCollectionList( propertyName=propertyName, isNew=true);
 					}else{
 					return getPropertyCollectionList( propertyName=propertyName );
