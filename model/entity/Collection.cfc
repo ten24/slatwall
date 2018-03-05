@@ -663,12 +663,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifierAlias = propertyIdentifier;
 		}
 
-		var orderBy = {
-			"propertyIdentifier"= propertyIdentifierAlias,
-			"direction"=direction
-		};
+		var flag=0;// variable used as flag to mark if new propertyIdentifier already exists or not- 1 - means exists,0- means doesn't exist
 
-		arrayAppend(collectionConfig.orderBy,orderBy);
+		for(obj in collectionConfig.orderBy){
+
+			if(obj.propertyIdentifier == propertyIdentifierAlias){
+				obj.direction = direction;
+				flag=1;
+			}
+		}
+		if(flag==0){
+				var orderBy = {
+					"propertyIdentifier"= propertyIdentifierAlias,
+					"direction"=direction
+				};
+				arrayAppend(collectionConfig.orderBy,orderBy); //|[{direction={asc},propertyIdentifier={_product.productName}}]
+		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
