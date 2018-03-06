@@ -1923,7 +1923,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				}
  				
 				
-				// Setup the tracking number if we have it
+				
+				 // Setup the tracking number using shipping integration if trackingNumber not manually provided
+				if (isNull(arguments.processObject.getTrackingNumber()) || !len(arguments.processObject.getTrackingNumber()) && arguments.processObject.getUseShippingIntegrationForTrackingNumber()) {
+					var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.processObject.getShippingIntegration());
+					
+					// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
+					if(structKeyExists(shippingIntegrationCFC, 'processShipmentRequest')){
+						shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(arguments.processObject);
+					}
+				}
+
 				if(
 					!isNull(arguments.processObject.getTrackingNumber())
 					&& len(arguments.processObject.getTrackingNumber())
