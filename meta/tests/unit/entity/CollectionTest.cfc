@@ -1515,6 +1515,45 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
 	}
 
+	/**
+	* @test
+	*/
+	public void function verify_duplicate_propertyIdentifier_for_orderBy_donot_exists(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '300',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = productWithSkus.getskusCollectionlist();
+		myCollection.setDisplayProperties('skuName');
+		myCollection.addOrderBy('skuDesc|asc');
+		myCollection.addOrderBy('skuDesc|desc');
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollection.getHQL())); // contains skuDesc|desc in hql
+		assertFalse(FindNoCase("_sku.skuDesc asc",myCollection.getHQL())); // donot contains skuDesc|asc in hql
+	}
 
 	/**
 	* @test
