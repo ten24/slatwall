@@ -663,16 +663,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifierAlias = propertyIdentifier;
 		}
 
-		var orderByExists=false;// variable used as flag to mark if new propertyIdentifier already exists or not- 1 - means exists,0- means doesn't exist
+		var orderByExists=false;// variable used as flag to mark if new propertyIdentifier already exists or not
 
 		for(var orderBy in collectionConfig.orderBy){
 
-			if(
-				orderBy.propertyIdentifier == propertyIdentifierAlias
-				&& orderBy.direction == direction
-			){
+			if(	orderBy.propertyIdentifier == propertyIdentifierAlias ){
 				orderBy.direction = direction;
-				orderByExists=1;
+				orderByExists = true;
 			}
 		}
 		if(!orderByExists){
