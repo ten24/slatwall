@@ -102,6 +102,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
 	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
 	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
+	property name="statusCode" persistent="false";
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
@@ -131,6 +132,17 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	public void function removeShippingAddress() {
 		structDelete(variables, "shippingAddress");
+	}
+
+	public void function removeShippingMethod() {
+		structDelete(variables, "shippingMethod");
+	}
+	
+	public void function removePickupLocation() {
+		structDelete(variables, "pickupLocation");
+	}
+	public void function removeEmailAddress() {
+		structDelete(variables, "emailAddress");
 	}
 
 	public boolean function hasValidShippingMethodRate() {
@@ -374,6 +386,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return getOrder().getStatusCode();
 	}
 
+	public any function getStatusCode() {
+		return getOrderFulfillmentStatusType().getSystemCode();
+	}
+	
 	public numeric function getQuantityUndelivered() {
     	var quantityUndelivered = 0;
 

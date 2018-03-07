@@ -2504,6 +2504,89 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderFulfillment;
 	}
 
+	
+	public any function processOrderFulfillment_changeFulfillmentMethod(required any orderFulfillment, required any processObject){
+		
+		if(isNull(arguments.processObject.getFulfillmentMethod())){
+			return arguments.orderFulfillment;
+		}
+		//Set new fulfillment method
+		arguments.orderFulfillment.setFulfillmentMethod(arguments.processObject.getFulfillmentMethod());
+		
+		var newFulfillmentMethodType = arguments.processObject.getFulfillmentMethod().getFulfillmentMethodType();
+		
+		//Clear unnecessary information
+		if(newFulfillmentMethodType != 'shipping'){
+			arguments.orderFulfillment.removeShippingAddress();
+			arguments.orderFulfillment.removeShippingMethod();
+		}
+		if(newFulfillmentMethodType != 'pickup'){
+			arguments.orderFulfillment.removePickupLocation();
+		}
+		if(newFulfillmentMethodType != 'email'){
+			arguments.orderFulfillment.removeEmailAddress();
+		}
+		
+		//Set Necessary information
+		if(newFulfillmentMethodType == 'shipping'){
+			//Try to get address from accountAddress
+			var accountAddress = arguments.processObject.getShippingAccountAddress();
+			if(!isNull(accountAddress)){
+				arguments.orderFulfillment.setAccountAddress(accountAddress);
+				arguments.orderFulfillment.setShippingAddress(accountAddress.getAddress());
+				arguments.orderFulfillment.getOrder().setShippingAccountAddress(accountAddress);
+				arguments.orderFulfillment.getOrder().setShippingAddress(accountAddress.getAddress());
+			//Else try to get address from new address form
+			}else if(!isNull(arguments.processObject.getShippingAddress())){
+				var shippingAddress = arguments.processObject.getShippingAddress();
+				getService('addressService').saveAddress(shippingAddress);
+				if(!shippingAddress.hasErrors()){
+					arguments.orderFulfillment.setShippingAddress(shippingAddress);
+					arguments.orderFulfillment.getOrder().setShippingAddress(shippingAddress);
+					if(arguments.processObject.getSaveShippingAccountAddressFlag()){
+						//Create/save account address
+						var accountAddress = getService('addressService').newAccountAddress();
+						accountAddress.setAccountAddressName(arguments.processObject.getSaveShippingAccountAddressName());
+						accountAddress.setAddress(shippingAddress);
+						accountAddress.setAccount(arguments.orderFulfillment.getOrder().getAccount());
+						getService('addressService').saveAccountAddress(accountAddress);
+						if(!accountAddress.hasErrors()){
+							arguments.orderFulfillment.setAccountAddress(accountAddress);
+							arguments.orderFulfillment.getOrder().setShippingAccountAddress(accountAddress);
+						}else{
+							arguments.orderFulfillment.addErrors(accountAddress.getErrors());
+						}
+					}
+				}else{
+					arguments.orderFulfillment.addErrors(shippingAddress.getErrors());
+				}
+			}
+		}
+		if(newFulfillmentMethodType == 'pickup'){
+			if(!isNull(arguments.processObject.getPickupLocation())){
+				arguments.orderFulfillment.setPickupLocation(arguments.processObject.getPickupLocation());
+			}
+		}
+		if(newFulfillmentMethodType == 'email'){
+			var emailAddress = arguments.processObject.getEmailAddress();
+			if(!isNull(emailAddress)){
+				arguments.orderFulfillment.setEmailAddress(emailAddress);
+				if(arguments.processObject.getSaveAccountEmailAddressFlag() && isNull(arguments.processObject.getAccountEmailAddress())){
+					var accountEmailAddress = getService('accountService').newAccountEmailAddress();
+					accountEmailAddress.setAccount(arguments.orderFulfillment.getOrder().getAccount());
+					accountEmailAddress.setEmailAddress(emailAddress);
+					getService('accountService').saveAccountEmailAddress(accountEmailAddress);
+					if(accountEmailAddress.hasErrors()){
+						arguments.orderFulfillment.addErrors(accountEmailAddress.getErrors());
+					}
+				}
+			}
+		}
+		this.saveOrderFulfillment(arguments.orderFulfillment);
+		return arguments.orderFulfillment;
+		
+	}
+
 	// Process: Order Item
 	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
 

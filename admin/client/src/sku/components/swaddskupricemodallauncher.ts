@@ -51,6 +51,7 @@ class SWAddSkuPriceModalLauncherController{
         //these are populated in the link function initially
         this.skuPrice = this.entityService.newEntity('SkuPrice'); 
         this.skuPrice.$$setSku(this.sku);
+        
         if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
         }
@@ -79,16 +80,20 @@ class SWAddSkuPriceModalLauncherController{
     public save = () => {
         this.observerService.notify("updateBindings");
         var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
+
         var savePromise = this.skuPrice.$$save();
+      
         savePromise.then(
             (response)=>{ 
                this.saveSuccess = true; 
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
+                
                 //temporarily overriding for USD need to get this setting accessable to client side
                 if( angular.isDefined(this.listingID) && 
                     this.skuPrice.data.currencyCode == "USD"
                 ){
                    var pageRecords = this.listingService.getListingPageRecords(this.listingID);
+                   
                    for(var i=0; i < pageRecords.length; i++){
                         if( angular.isDefined(pageRecords[i].skuID) &&
                             pageRecords[i].skuID == this.sku.data.skuID
@@ -126,13 +131,15 @@ class SWAddSkuPriceModalLauncherController{
                 //error callback
                 this.saveSuccess = false; 
             }
-        ).finally(()=>{
+        ).finally(()=>{       
             if(this.saveSuccess){
                 
                 for(var key in this.skuPrice.data){
-                    this.skuPrice.data[key] = null;
+                    if (key != 'sku' && key !='currencyCode'){
+                        this.skuPrice.data[key] = null;
+                    }
                 }
-                
+
                 this.formService.resetForm(this.formName);
                 this.initData();
 
@@ -215,6 +222,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                 var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
                 if(angular.isDefined(currentScope.pageRecord)){ 
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
+                    
                     //sku record case
                     if(angular.isDefined(currentScope.pageRecord.skuID)){    
 

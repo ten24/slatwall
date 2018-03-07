@@ -1,5 +1,4 @@
 component extends="framework.one" {
-
 	// ======= START: ENVIORNMENT CONFIGURATION =======
 
 	// =============== configApplication
@@ -222,9 +221,8 @@ component extends="framework.one" {
     public void function setupSubsystem( module ) {
 
     }
-
-
-	public any function bootstrap() {
+    
+    public void function createHibachiScope(){
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
@@ -232,6 +230,11 @@ component extends="framework.one" {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
         }
+	}
+
+
+	public any function bootstrap() {
+		
 		
 		setupGlobalRequest();
 
@@ -243,7 +246,7 @@ component extends="framework.one" {
 
 	public any function reloadApplication() {
 		setupApplicationWrapper();
-
+		createHibachiScope();
 		lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="20" {
 			if( !structKeyExists(application, getHibachiInstanceApplicationScopeKey()) ) {
 				application[ getHibachiInstanceApplicationScopeKey() ] = {};
@@ -258,7 +261,7 @@ component extends="framework.one" {
 	}
 
 	public void function setupGlobalRequest() {
-		
+		createHibachiScope();
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
@@ -527,7 +530,8 @@ component extends="framework.one" {
 		&& url[variables.framework.reload] == variables.framework.password;
 	}
 
-	public void function verifyApplicationSetup(reloadByServerInstance=false) {
+	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
+		createHibachiScope();
 		if(
 			(
 				hasReloadKey()
@@ -809,7 +813,7 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					if(updated && structKeyExists(request, "action")){
+					if(!arguments.noredirect && updated && structKeyExists(request, "action")){
 
 						redirect(action=request.action,queryString='updated=true');
 					}
