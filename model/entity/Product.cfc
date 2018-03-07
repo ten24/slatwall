@@ -150,6 +150,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 
+	public boolean function getDeferredRevenueFlag(){
+		if(!structKeyExists(variables,'deferredRevenueFlag')){
+			return false;
+		}
+		return variables.deferredRevenueFlag;
+	}
+
 	public any function getAverageCost(){
 		return getDao('productDao').getAverageCost(this.getProductID());
 	}

@@ -57,5 +57,6 @@ Notes:
         <hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="subscriptionBenefit" edit="false" />
         <hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="maxUseCount" edit="false" />
         <hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="accessType" edit="false" />
+        
     </hb:HibachiPropertyList>
 </hb:HibachiPropertyRow>
