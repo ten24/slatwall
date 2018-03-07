@@ -46,10 +46,10 @@
 Notes:
 
 */
-component displayname="SubscriptionUsageOrderDeliveryItem" entityname="SlatwallSubscriptionUsageOrderDeliveryItem" table="SwSubscriptionUsageOrderDeliveryItem" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts=""  {
+component displayname="SubscriptionOrderDeliveryItem" entityname="SlatwallSubscriptionOrderDeliveryItem" table="SwSubscriptionUsageOrderDeliveryItem" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts=""  {
 
 	// Persistent Properties
-	property name="subscriptionUsageOrderDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="subscriptionOrderDeliveryItemItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionOrderItem" cfc="SubscriptionOrderItem" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemID";
