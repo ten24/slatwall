@@ -202,6 +202,7 @@ component extends="HibachiService"  accessors="true" output="false"
         if(account.hasErrors()){
             addErrors(data, getHibachiScope().getAccount().getProcessObject("logout").getErrors());
         }
+        arguments.data.ajaxResponse['token'] = '';
         return account;
     }   
     
