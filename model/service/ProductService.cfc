@@ -1106,6 +1106,16 @@ component extends="HibachiService" accessors="true" {
 		}
 		return arguments.product;
 	}
+	
+	public any function getProductsScheduledForDeliveryCollectionList(){
+		var productCollectionList = this.getProductCollectionList();
+		
+		productCollectionList.addFilter('nextDeliveryScheduleDate',now(),'<');
+		productCollectionList.addFilter('activeFlag',true);
+		productCollectionList.addFilter('publishedFlag',true);
+		
+		return productCollectionList;
+	}
 
 	public any function saveProductType(required any productType, struct data={}) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {

@@ -130,6 +130,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return orderRequirementsList;
 	}
+	
+	public any function createOrderDeliveriesBySubscriptionSkus(){
+		var productsScheduledForDeliveryCollectionList = getProductsScheduledForDeliveryCollectionList();
+		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,defaultSku.skuID');
+		var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getRecords();
+	}
 
 
 	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {

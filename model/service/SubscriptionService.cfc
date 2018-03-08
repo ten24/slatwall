@@ -183,7 +183,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		this.saveSubscriptionOrderItem(subscriptionOrderItem);
 	}
-
+	
 	// setup subscription benefits for use by accounts
 	public void function setupSubscriptionBenefitAccess(required any subscriptionUsageBenefit) {
 		// add this benefit to access
@@ -272,7 +272,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return autoRenewalReminderSubscriptionUsage(arguments.subscriptionUsage, arguments.data);
 		}
 	}
-	
 	
 
 	private void function manualRenewalReminderSubscriptionUsage(required any subscriptionUsage, struct data={}) {
