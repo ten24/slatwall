@@ -764,18 +764,19 @@
 		// ========================== MANUALLY CALLED MURA =================================
 		
 		public void function autoLoginLogoutFromSlatwall( required any $ ) {
-			
+			var integrationMuraAccountSyncType = $.slatwall.setting("integrationMuraAccountSyncType");
+
 			// Check to see if the current mura user is logged in (or logged out), and if we should automatically login/logout the slatwall account
-			if( $.slatwall.setting("integrationMuraAccountSyncType") != "none"
+			if( integrationMuraAccountSyncType != "none"
 					&& !$.slatwall.getLoggedInFlag()
 					&& $.currentUser().isLoggedIn()
 					&& (
-						$.slatwall.setting("integrationMuraaccountSyncType") == "all"
-						|| ($.slatwall.setting("integrationMuraAccountSyncType") == "systemUserOnly" && $.currentUser().getUserBean().getType() eq 2) 
-						|| ($.slatwall.setting("integrationMuraAccountSyncType") == "siteUserOnly" && $.currentUser().getUserBean().getType() eq 1)
+						integrationMuraAccountSyncType == "all"
+						|| (integrationMuraAccountSyncType == "systemUserOnly" && $.currentUser().getUserBean().getType() eq 2) 
+						|| (integrationMuraAccountSyncType == "siteUserOnly" && $.currentUser().getUserBean().getType() eq 1)
 					)) {
-				
-				
+
+
 				// Sync this account (even though it says all, it is just going to sync this single mura user)
 				syncMuraAccounts( $=$, accountSyncType="all", superUserSyncFlag=$.slatwall.setting("integrationMuraSuperUserSyncFlag"), muraUserID=$.currentUser('userID'));
 				
