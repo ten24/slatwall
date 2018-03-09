@@ -51,14 +51,17 @@ Notes:
 
 <cfparam name="rc.subscriptionUsage" type="any" />
 
+<cfset subscriptionOrderDeliveryItemSmartList = $.slatwall.getService('orderService').getSubscriptionOrderDeliveryItemSmartList()/>
+<cfset subscriptionOrderDeliveryItemSmartList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',rc.subscriptionUsage.getSubscriptionUsageID())/>
+
 <cfoutput>
 	<hb:HibachiListingDisplay 
-		smartList="#rc.subscriptionUsage.getSubscriptionOrderDeliveryItemsSmartList()#"
+	    smartlist="#subscriptionOrderDeliveryItemSmartList#"
 		recordDetailAction="admin:entity.detailOrder"
 	>
-	    <hb:HibachiListingColumn propertyIdentifier="orderDeliveryItem.quantity" />
+	    <hb:HibachiListingColumn propertyIdentifier="quantity" />
 		<hb:HibachiListingColumn propertyIdentifier="subscriptionOrderItem.orderItem.order.orderNumber" />
-		hb:HibachiListingColumn tdclass="primary" propertyIdentifier="susbcriptionOrderItem.orderItem.sku.product.productName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItem.orderItem.sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="subscriptionOrderItem.orderItem.sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="subscriptionOrderItem.subscriptionOrderItemType.systemCode" />
 	</hb:HibachiListingDisplay>

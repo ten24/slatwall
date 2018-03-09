@@ -145,6 +145,26 @@ Notes:
 
 			return ormExecuteQuery(hql, params);
 		}
+		
+		public void function insertSubscriptionOrderDeliveryItem(required string subscriptionOrderItemID,numeric quantity=1){
+			var q = new query();
+			
+			var subscriptionOrderDeliveryItemID = createHibachiUUID();
+			q.addParam(name='subscriptionOrderDeliveryItemID',value=subscriptionOrderDeliveryItemID);
+			q.addParam(name='subscriptionOrderItemID',value=arguments.subscriptionOrderItemID);
+			q.addParam(name='quantity',value=arguments.quantity);
+			q.addParam(name='createdByAccountID',value=getHibachiScope().getAccount().getAccountID());
+			q.addParam(name='createdDateTime',value=now(),cfsqltype="cf_sql_timestamp");
+			q.addParam(name='modifiedByAccountID',value=getHibachiScope().getAccount().getAccountID());
+			q.addParam(name='modifiedDateTime',value=now(),cfsqltype="cf_sql_timestamp");
+			
+			var sql = "INSERT INTO swsubscriptionorderdeliveryitem (subscriptionOrderDeliveryItemID,subscriptionOrderItemID,quantity,createdByAccountID,createdDateTime,modifiedByAccountID,modifiedDateTime) 
+						VALUES (:subscriptionOrderDeliveryItemID,:subscriptionOrderItemID,:quantity,:createdByAccountID,:createdDateTime,:modifiedByAccountID,:modifiedDateTime)";
+			
+			q.setSQL(sql);
+			
+			q.execute();
+		}
 
 	</cfscript>
 

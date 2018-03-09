@@ -1107,12 +1107,17 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	public any function getProductsScheduledForDeliveryCollectionList(){
+	public any function getProductsScheduledForDeliveryCollectionList(required string dateTime){
 		var productCollectionList = this.getProductCollectionList();
 		
-		productCollectionList.addFilter('nextDeliveryScheduleDate',now(),'<');
-		productCollectionList.addFilter('activeFlag',true);
-		productCollectionList.addFilter('publishedFlag',true);
+		productCollectionList.addFilter('deferredRevenueFlag',true);
+		//productCollectionList.addFilter('activeFlag',true);
+		//productCollectionList.addFilter('publishedFlag',true);
+		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver',0,'>');
+		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+		
+		productCollectionList.addFilter('nextDeliveryScheduleDate',arguments.dateTime,'<','OR','','nextDeliveryScheduleDateFilterGroup');
+		productCollectionList.addFilter('nextDeliveryScheduleDate','NULL','IS','OR','','nextDeliveryScheduleDateFilterGroup');
 		
 		return productCollectionList;
 	}

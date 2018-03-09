@@ -50,8 +50,17 @@ component displayname="SubscriptionOrderDeliveryItem" entityname="SlatwallSubscr
 
 	// Persistent Properties
 	property name="subscriptionOrderDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="quantity" ormtype="integer";
+	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionOrderItem" cfc="SubscriptionOrderItem" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemID";
-	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
 	
+	// Remote Properties
+	property name="remoteID" ormtype="string";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 }

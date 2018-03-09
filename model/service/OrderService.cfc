@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="orderDAO";
+	property name="productDAO";
 
 	property name="accountService";
 	property name="addressService";
@@ -131,19 +132,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderRequirementsList;
 	}
 	
-	public any function createOrderDeliveriesBySubscriptionSkus(){
+	public any function createSubscritpionOrderDeliveries(){
 	
-		//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
-		var productsScheduledForDeliveryCollectionList = getProductsScheduledForDeliveryCollectionList();
-		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID');
-		
-		var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getPrimaryIDs();
-		
-		//find all orders that require delivery based on the term
-		/*var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
-		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',productsScheduledForDelivery,'IN');
-		
-		var subscriptionOrderItemCollectionList.getRecords();*/
+		transaction{
+			var currentDateTime = now();
+			//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
+			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(currentDateTime);
+			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID');
+			
+			var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getPrimaryIDList();
+			
+			
+			//find all order items that require delivery based on the term
+			var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
+			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',productsScheduledForDelivery,'IN');
+			//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
+			//subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.activeFlag',1);
+			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+			subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionUsageID,orderItem.sku.subscriptionTerm.itemsToDeliver');
+			subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
+			
+			var subscriptionOrderItemRecords = subscriptionOrderItemCollectionList.getRecords();
+			
+			//create a delivery for each item
+			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
+				//insert subscriptionOrderDeliveryItem related to 
+				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['orderItem_sku_subscriptionTerm_itemsToDeliver']){
+					getOrderDao().insertSubscriptionOrderDeliveryItem(subscriptionOrderItemRecord['subscriptionOrderItemID']);
+				}
+			}
+			
+			var productsScheduledForDeliveryArray = listToArray(productsScheduledForDelivery);
+			for(var productID in productsScheduledForDeliveryArray){
+				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
+				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+				deliveryScheduleDateCollectionList.addFilter('product.productID',productID);
+				deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',currentDateTime,'>');
+				deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue');
+				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getRecords();
+				
+				if(arrayLen(deliveryScheduleDateRecords)){
+					getProductDAO().updateNextDeliveryScheduleDate(productID,deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']);
+				}
+			}
+		}
 	}
 
 
