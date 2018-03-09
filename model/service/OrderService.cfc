@@ -138,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var currentDateTime = now();
 			//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
 			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(currentDateTime);
-			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID');
+			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
 			
 			var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getPrimaryIDList();
 			
@@ -163,14 +163,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
-			var productsScheduledForDeliveryArray = listToArray(productsScheduledForDelivery);
-			for(var productID in productsScheduledForDeliveryArray){
+			var productsScheduledForDeliveryRecords = productsScheduledForDeliveryCollectionList.getRecords(true);
+			
+			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
 				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
 				deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
-				deliveryScheduleDateCollectionList.addFilter('product.productID',productID);
-				deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',currentDateTime,'>');
-				deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue');
-				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getRecords();
+				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
+				
+				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
+				if(productsScheduledForDeliveryRecord['startInCurrentPeriodFlag']){
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',currentDateTime,'<');
+					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue|DESC');
+				}else{
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',currentDateTime,'>');
+					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue');
+				}
+				
+				deliveryScheduleDateCollectionList.setPageRecordsShow(1);
+				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords();
 				
 				if(arrayLen(deliveryScheduleDateRecords)){
 					getProductDAO().updateNextDeliveryScheduleDate(productID,deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']);
