@@ -51,6 +51,7 @@ component displayname="DeliveryScheduleDate" entityname="SlatwallDeliverySchedul
 	// Persistent Properties
 	property name="deliveryScheduleDateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="deliveryScheduleDateValue" ormtype="timestamp" description="list of scheduled deliveryDates";
+	property name="completedFlag" ormtype="boolean" default="0";
 	
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";

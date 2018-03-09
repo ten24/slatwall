@@ -61,6 +61,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 	property name="deferredRevenueFlag" ormtype="boolean" description="This field identifies a product as having deferred revenue";
 	property name="nextDeliveryScheduleDate" ormtype="timestamp" description="This field is repopulated by deliveryScheduleDate";
+	property name="startInCurrentPeriodFlag" ormtype="boolean" default="0";
  
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal" hb_formatType="currency" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";

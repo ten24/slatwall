@@ -147,7 +147,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
 			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',productsScheduledForDelivery,'IN');
 			//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
-			//subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.activeFlag',1);
+			//subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionStatus.effectiveDateTime',currentDateTime,'<=');
+			
 			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
 			subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionUsageID,orderItem.sku.subscriptionTerm.itemsToDeliver');
 			subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');

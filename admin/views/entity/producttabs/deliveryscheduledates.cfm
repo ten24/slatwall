@@ -49,6 +49,8 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
+    
+    <hb:HibachiPropertyDisplay object="#rc.product#" property="startInCurrentPeriodFlag" edit="#rc.edit#">
     <sw-product-delivery-schedule-dates
         data-product-id="#rc.product.getProductID()#"    
     >
