@@ -132,9 +132,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function createOrderDeliveriesBySubscriptionSkus(){
+	
+		//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
 		var productsScheduledForDeliveryCollectionList = getProductsScheduledForDeliveryCollectionList();
-		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,defaultSku.skuID');
-		var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getRecords();
+		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID');
+		
+		var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getPrimaryIDs();
+		
+		//find all orders that require delivery based on the term
+		/*var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',productsScheduledForDelivery,'IN');
+		
+		var subscriptionOrderItemCollectionList.getRecords();*/
 	}
 
 

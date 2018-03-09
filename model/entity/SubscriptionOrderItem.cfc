@@ -53,11 +53,12 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	
 	property name="subscriptionOrderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=subscriptionOrderItemType";
 	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-
+	property name="subscriptionOrderDeliveryItems" singularname="subscriptionOrderDeliveryItem" cfc="SubscriptionOrderDeliveryItem" type="array" fieldtype="one-to-many" fkcolumn="subscriptionOrderItemID" cascade="all-delete-orphan" inverse="true";
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties

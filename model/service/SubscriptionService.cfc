@@ -423,7 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.subscriptionUsage;
 	}
-
+	
 	public any function processSubscriptionUsage_renew(required any subscriptionUsage, required any processObject, struct data={}) {
 
 		var order = arguments.processObject.getOrder();
