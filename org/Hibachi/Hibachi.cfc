@@ -1132,6 +1132,13 @@ component extends="framework.one" {
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();
 		var response = context.getResponse();
+		
+		//this will only run if we are updating from fw/1 2.2 to fw/1 4.x
+		if(exception.cause.message == "Element CACHE.ROUTES.REGEX is undefined in a CFML structure referenced as part of an expression."){
+			structDelete(application,variables.framework.applicationKey);
+			applicationStop();
+			location('?reload=true&update=true',false);
+		}
 		if(variables.framework.hibachi.errorDisplayFlag && structKeyExists(request,'context') && structKeyExists(request.context,'apiRequest') && request.context.apiRequest){
 			writeDump(exception); abort;
 		}
