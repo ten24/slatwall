@@ -76,7 +76,7 @@ test:
     # Run Unit Tests
 
     #- sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";:
-        timeout: 1800
+    #    timeout: 1800
 
   post:
     # Kill the Sauce Labs tunnel
