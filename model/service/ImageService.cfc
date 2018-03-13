@@ -54,8 +54,24 @@ Notes:
 component persistent="false" extends="HibachiService" output="false" accessors="true" {
 
 	property name="hibachiTagService" type="any";
+	property name="optionService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
+
+
+	public any function processImage_setAsDefault(required any image, any processObject, any data){
+		if(!isNull(image.getOption())){
+			var option = image.getOption(); 
+			option.setDefaultImage(arguments.image);
+			option = getOptionService().saveOption(option);
+			getHibachiScope().addModifiedEntity(option);
+			if(option.hasErrors()){
+				image.addErrors(option.getErrors()); 
+			} 
+		} 		
+
+		return arguments.image; 
+	} 
 
 	// @hint Returns an image HTML element with the additional attributes
 	public string function getResizedImage() {
@@ -440,6 +456,14 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+
+	public any function saveImage(required any image, struct data={}){
+		arguments.image = super.save(arguments.image, arguments.data); 
+		if(!isNull(arguments.image.getOption()) && arguments.image.getOption().getImagesCount() == 1){
+			arguments.image = this.processImage(arguments.image, {}, 'setAsDefault'); 
+		} 
+		return arguments.image; 
+	}
 
 	// ======================  END: Save Overrides ============================
 

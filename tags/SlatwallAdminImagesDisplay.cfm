@@ -81,6 +81,11 @@
 									<div class="btn-group" role="group">
 										<hb:HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn btn-default" aria-label="Edit Image" iconOnly="true" icon="pencil" />
 									</div>
+									<cfif attributes.object.getClassName() EQ 'Option'>
+										<div class="btn-group" role="group">
+											<hb:HibachiProcessCaller entity="#image#" action="admin:entity.processImage" processContext="setAsDefault" class="btn btn-default" aria-label="Set Default Image" iconOnly="true" icon="star" />
+										</div> 	
+									</cfif> 
 									<div class="btn-group" role="group">
 										<hb:HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn btn-default s-remove" iconOnly="true" icon="trash" confirm="true" aria-label="Remove Image" />
 									</div>

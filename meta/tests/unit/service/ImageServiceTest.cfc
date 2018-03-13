@@ -65,12 +65,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var product = createPersistedTestEntity('Product',productData);
 		
-		
+	
 		var imageData ={
 			image=""
 		};
 		var image = createTestEntity('image',imageData);
-		
+			
 		var data = {
 			product={
 				productID=product.getProductID()
@@ -122,16 +122,42 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var site = createPersistedTestEntity(entityName="site",data=siteData);
 		site = variables.service.saveSite(site,siteData);
 
-		//create setting for siteMissingImagePath
+	//create setting for siteMissingImagePath
 		var settingData = {
 			settingID = "",
 			settingName = "siteMissingImagePath",
 			settingValue = "/assets/images/sitemissingimage.jpg",
             site: siteData.siteid
-		};
+		};	
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		imagePath = variables.service.getResizedImagePath('falsepath');
 		assert(imagePath EQ siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
 	}
+
+	/**
+	* @test
+	*/
+	public void function calculatedImagePath_changeGlobalAssetPathTest(){ 
+		
+		var imageData ={
+			imageID='',
+			directory='product'
+		};
+		var image = createPersistedTestEntity('image',imageData);
+		
+		image.setImageFile('test.png');//fake file set	
+		
+		assertEquals(image.getImagePath(),image.getCalculatedImagePath());		
+		assertEquals('custom/assets/images/product/test.png',image.getCalculatedImagePath());		
+		//create setting for siteMissingImagePath
+		var settingData = {
+			settingID = "",
+			settingName = "globalAssetsImageFolderPath",
+			settingValue = "/custom/assets/img/"
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+	
+		assertEquals('custom/assets/img/product/test.png', image.getCalculatedImagePath());		
+	} 
 	
 }
