@@ -43,7 +43,9 @@
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1 class="actionbar-title">#attributes.pageTitle#</h1>
+						<cfset hasItemEntityName = structKeyExists(request,'context') AND structKeyExists(request.context,'entityactiondetails') AND structKeyExists(request.context.entityactiondetails,'itementityname')/>
+						<h1 class="actionbar-title">#attributes.pageTitle#<cfif hasItemEntityName><span ng-if="$root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#'].collectionName"></span></cfif></h1>
+
 					</div>
 
 					<div class="col-md-6">

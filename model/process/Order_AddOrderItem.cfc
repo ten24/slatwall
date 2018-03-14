@@ -55,11 +55,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="stock" hb_rbKey="entity.stock";
 	property name="sku" hb_rbKey="entity.sku";
 	property name="product" hb_rbKey="entity.product";
+	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	property name="location" hb_rbKey="entity.location";
 	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
-	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 
 	// New Properties
 
@@ -80,6 +80,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
+	property name="estimatedShippingDate" hb_formFieldType="datetime";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
@@ -91,6 +92,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="publicRemoteID";
 	property name="recipients" type="array" hb_populateArray="true";
 	property name="assignedGiftRecipientQuantity";
+	property name="sellOnBackOrderFlag";
 
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -233,6 +235,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.fulfillmentRefundAmount = 0;
 		}
 		return variables.fulfillmentRefundAmount;
+	}
+
+	public string function getPickupLocationID() {
+
+		// pickupLocationID has been explicitly set
+		if (structKeyExists(variables, 'pickupLocationID')) {
+			return variables.pickupLocationID;
+		
+		// No pickupLocationID explicitly set, check if we have an locationID that was explicitly set and use that value instead
+		} else if (!isNull(getLocationID())) {
+			return getLocationID();
+		}
+
+		// Neither pickupLocationID or locationID exists
 	}
 
 	public any function getQuantity() {
@@ -432,7 +448,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public array function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			variables.locationIDOptions = getService("locationService").getLocationOptions();
+			if (isNull(getOrder().getDefaultStockLocation())) {
+				variables.locationIDOptions = getService("locationService").getLocationOptions();
+			} else {
+				variables.locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+				arrayPrepend(variables.locationIDOptions,{name=rbKey('define.select'),value=""});
+			}
 		}
 		return variables.locationIDOptions;
 	}
@@ -596,7 +617,122 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return true;
 	}
 
+	public array function getRecipientManualGiftCardCodes() {
+		var manualGiftCardCodes = [];
+
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					arrayAppend(manualGiftCardCodes, recipient.manualGiftCardCode);
+				}
+			}
+		}
+
+		return manualGiftCardCodes;
+	}
+
 	// =====================  END: Helper Methods ==========================
+
+	// =====================  START: Validation Methods ====================
+
+	public boolean function hasProvidedManualGiftCardCodes() {
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (!structKeyExists(recipient, "manualGiftCardCode")) {
+					// Recipient data is missing 'manualGiftCardCode' property key
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify gift card codes are unique and not presently in use
+	public boolean function hasUniqueGiftCardCodes() {
+		
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					if (!getDAO("giftCardDAO").verifyUniqueGiftCardCode(recipient.manualGiftCardCode)) {
+						// Invalid gift card code, it is not unique because it already exists in database
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify the length of the gift card codes
+	public boolean function hasProperGiftCardCodeLengths() {
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					if (len(recipient.manualGiftCardCode) != getSku().setting('skuGiftCardCodeLength')) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify gift card codes contain no duplicates within provided gift codes of the orderDelivery
+	public boolean function hasNoDuplicateGiftCardCodesInOrderDelivery() {
+
+		if (!isNull(getRecipients())) {
+			for (var recipient in getRecipients()) {
+				if (structKeyExists(recipient, "manualGiftCardCode")) {
+					if (len(recipient.manualGiftCardCode) == getSku().setting('skuGiftCardCodeLength')) {
+						// Check through all manual gift card codes provided for duplicates
+						var matchedElements = arrayFindAllNoCase(getRecipientManualGiftCardCodes(), recipient.manualGiftCardCode);
+						if (arrayLen(matchedElements) > 1) {
+							// Invalid gift card code, duplicate code, same code was found multiple times in the provided array
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// @hint Validation method to verify location is child of top level location
+	public boolean function hasValidStockLocation() {
+		var locationValidFlag = true;
+		
+		// Only apply location check to shipping and pickup fulfillment types
+		if (listFindNoCase('shipping,pickup', getFulfillmentMethodType()) && !isNull(getOrder().getDefaultStockLocation())) {
+			// Assume locationID cannot be found in list of valid child locationIDs
+			locationValidFlag = false;
+
+			// locationIDOptions using defaultStockLocation as top level
+			var locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+			
+			if (!isNull(getStock())) {
+				
+				// Verifying to make sure provided location is a child location of the defaultStockLocation.
+				for (var locationIDOption in locationIDOptions) {
+					if (locationIDOption['value'] == getStock().getLocation().getLocationID()) {
+						// Location found and valid
+						locationValidFlag = true;
+						break;
+					}
+				}
+			}
+			
+			// Else no location has been provided with the added order item.
+		}
+
+		// No validation required
+		return locationValidFlag;
+	}
+
+	// =====================  END: Validation Methods ======================
 
 	public any function populate( required struct data={} ) {
 		// Call the super populate to do all the standard logic

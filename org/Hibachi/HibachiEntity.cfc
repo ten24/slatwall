@@ -14,6 +14,34 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
 
+	public void function postLoad(){
+		if(
+			!this.getNewFlag() 
+			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
+			&& !getHibachiScope().getAccount().getSuperUserFlag()
+		){
+			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
+			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
+			entityCollectionList.setDisplayProperties(primaryIDName);
+			entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
+			entityCollectionList.setCheckDORPermissions(true);
+
+			var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+			//if the collection returns a record then 
+			if(!entityCollectionRecordsCount){
+				throwNoAccess();				
+			}
+		}
+	}
+	
+	private void function throwNoAccess(){
+		var context = getPageContext();
+		status = 403;
+		context.getResponse().setStatus(status, "no access");
+		throw(type="Application",message='no access to #getClassName()#');
+	}
+	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
 		variables.processObjects = {};
@@ -54,9 +82,20 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public string function getFileUrlByPropertyName(required string propertyName){
 		return getURLFromPath(invokeMethod('get#arguments.propertyName#UploadDirectory')) & invokeMethod('get#arguments.propertyName#');
 	}
+	
+	public boolean function getCalculatedUpdateRunFlag(){
+		if(structKeyExists(variables,'calculatedUpdateRunFlag')){
+			return variables.calculatedUpdateRunFlag;	
+		}
+		return false;
+	}
+	
+	public void function setCalculatedUpdateRunFlag(boolean calculatedUpdateRunFlagValue){
+		variables.calculatedUpdateRunFlag = arguments.calculatedUpdateRunFlagValue;
+	}
 
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(any runAgain=false) {
+	public void function updateCalculatedProperties(boolean runAgain=false) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;
@@ -67,7 +106,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
                 if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
 					//prior to invoking we should remove any first level caching that would cause a stale calculation
 					var nonPersistentProperty = right(property.name, len(property.name)-10);
-					if(listFindNoCase('Product,Sku,Stock',this.getClassName())){
+					if(listFindNoCase('Product,Sku,Stock,SkuLocationQuantity',this.getClassName())){
 						var inventoryProperties = listToArray('QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QC,QE,QNC,QATS,QIATS');
 						for(var inventoryProperty in inventoryProperties){
 							if(structKeyExists(variables,inventoryProperty)){
@@ -367,12 +406,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// Set any one-to-many or many-to-many properties with a blank array as the default value
 			if(structKeyExists(getProperties()[i], "fieldtype") && getProperties()[i].fieldtype == "many-to-many" && ( !structKeyExists(getProperties()[i], "cascade") || !listFindNoCase("all-delete-orphan,delete,delete-orphan", getProperties()[i].cascade) ) ) {
 				var relatedEntities = variables[ getProperties()[i].name ];
-				for(var e = arrayLen(relatedEntities); e >= 1; e--) {
-					this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
-				}
+				if (!isNull(relatedEntities) && isArray(relatedEntities) && arrayLen(relatedEntities)){
+ 					for(var e = arrayLen(relatedEntities); e >= 1; e--) {
+ 						this.invokeMethod("remove#getProperties()[i].singularname#", {1=relatedEntities[e]});
+ 					}
+  				}
 			}
 		}
-
 	}
 
 	// @hint public method that returns the full entityName
@@ -646,18 +686,27 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
-		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
-		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
-		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		if(isNew()){
+			return 0;
+		}
 		var propertyCountName = '#arguments.propertyName#Count';
-		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',propertyCountName);
+		
+		var propertyCollection = getPropertyCountCollectionList(arguments.propertyName, propertyCountName);
 		var records = propertyCollection.getRecords();
 		if(arraylen(records)){
 			return records[1][propertyCountName];
 		}else{
 			return 0;
 		}
+	}
+	
+	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
+		arguments.propertyName = getPropertiesStruct()[arguments.propertyName].name;
+		var propertyCollection = getService("hibachiService").getCollectionList(getClassName());
+		propertyCollection.addFilter(getPrimaryIDPropertyName(),getPrimaryIDValue());
+		propertyCollection.setDisplayProperties(getPrimaryIDPropertyName());
+		propertyCollection.addDisplayAggregate(arguments.propertyName,'COUNT',arguments.propertyCountName);
+		return propertyCollection;
 	}
 
 	// @hint handles encrypting a property based on conventions
@@ -1016,8 +1065,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
 				}
 			}
-			writeDump(getErrors());
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
+			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
 		}
 
 		var timestamp = now();

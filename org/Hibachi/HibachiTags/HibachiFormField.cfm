@@ -1,4 +1,4 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.fieldType" type="string" />
 	<cfparam name="attributes.fieldName" type="string" />
@@ -17,7 +17,7 @@
 	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
-	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#true#" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="#false#" />
 	<!---
 		attributes.fieldType have the following options:
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
@@ -103,7 +103,7 @@
 		<cfcase value="listingMultiselect">
 			<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist)) >
 				
-			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="true"></hb:HibachiListingDisplay>
+				<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="true"></hb:HibachiListingDisplay>
 			<cfelseif structKeyExists(attributes,'valueOptionsCollectionList') >
 				<cfoutput>
 					<cfset scopeVariableID = 'valueOptionsCollectionList#rereplace(createUUID(),'-','','all')#'/>
@@ -127,7 +127,7 @@
 		</cfcase>
 		<cfcase value="listingSelect">
 			<cfif structKeyExists(attributes,'valueOptionsSmartList') && (isObject(attributes.valueOptionsSmartList) || len(attributes.valueOptionsSmartlist)) >
-			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" selectFieldName="#attributes.fieldName#" selectvalue="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
+				<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" selectFieldName="#attributes.fieldName#" selectvalue="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
 			<cfelseif structKeyExists(attributes,'valueOptionsCollectionList') >
 				<cfoutput>
 					<cfset scopeVariableID = 'valueOptionsCollectionList#rereplace(createUUID(),'-','','all')#'/>
@@ -213,30 +213,30 @@
 		<cfcase value="select">
 			<cfoutput>
 				<cfif arrayLen(attributes.valueOptions) || attributes.showEmptySelectBox >
-				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
-					<cfloop array="#attributes.valueOptions#" index="option">
-						<cfset thisOptionName = "" />
-						<cfset thisOptionValue = "" />
-						<cfset thisOptionData = "" />
-						<cfif isSimpleValue(option)>
-							<cfset thisOptionName = option />
-							<cfset thisOptionValue = option />
-						<cfelse>
-							<cfloop collection="#option#" item="key">
-								<cfif structkeyExists(option,key)>
-									<cfif key eq "name">
-										<cfset thisOptionName = option[ key ] />
-									<cfelseif key eq "value">
-										<cfset thisOptionValue = option[ key ] />
-									<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-										<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+					<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
+						<cfloop array="#attributes.valueOptions#" index="option">
+							<cfset thisOptionName = "" />
+							<cfset thisOptionValue = "" />
+							<cfset thisOptionData = "" />
+							<cfif isSimpleValue(option)>
+								<cfset thisOptionName = option />
+								<cfset thisOptionValue = option />
+							<cfelse>
+								<cfloop collection="#option#" item="key">
+									<cfif structkeyExists(option,key)>
+										<cfif key eq "name">
+											<cfset thisOptionName = option[ key ] />
+										<cfelseif key eq "value">
+											<cfset thisOptionValue = option[ key ] />
+										<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
+											<cfset thisOptionData = listAppend(thisOptionData, '#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+										</cfif>
 									</cfif>
-								</cfif>
-							</cfloop>
-						</cfif>
-						<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
-					</cfloop>
-				</select>
+								</cfloop>
+							</cfif>
+							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
+						</cfloop>
+					</select>
 				</cfif>
 			</cfoutput>
 		</cfcase>

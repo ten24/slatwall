@@ -2988,6 +2988,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockPromotionPeriod = createPersistedTestEntity('PromotionPeriod', promotionPeriodData);
 		
 		var promotionData = {
+			activeFlag = true,
 			promotionid = '',
 			promotionPeriods = [{
 					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
@@ -3062,6 +3063,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var promotionData = {
 			promotionid = '',
+			activeFlag = true,
 			promotionPeriods = [{
 					promotionPeriodID = mockPromotionPeriod.getPRomotionPeriodID()
 				}]

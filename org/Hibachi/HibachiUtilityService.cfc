@@ -3,6 +3,16 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		public string function getDatabaseUUID(){
+			switch(getHibachiScope().getApplicationValue('databaseType')){
+				case 'Oracle10g':
+					return 'LOWER(SYS_GUID())';
+				case 'MySQL':
+					return "LOWER(REPLACE(CAST(UUID() as char character set utf8),'-',''))";
+				case 'MicrosoftSQLServer':
+					return "LOWER(REPLACE(newid(),'-',''))";
+			}
+		}
 		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){
@@ -26,6 +36,17 @@
  				qryColumns = listAppend(qryColumns, column.name);
  			}
  			return local.qryColumns;
+ 		}
+
+ 		public string function getSQLType(required any ormtype){
+ 			var types = {
+ 				"big_decimal":"decimal",
+ 				"text":"varchar"
+ 			};
+ 			if(structKeyExists(types, ormtype)){
+ 				return types[ormtype];
+ 			}
+ 			return ormtype;
  		}
  		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
@@ -281,7 +302,6 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
-
 	  	/**
 	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
 	    * Resources: 
@@ -620,11 +640,11 @@
 		}
 
 		// helper method for downloading a file
-		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
+		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown; charset=UTF-8', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
-
+		
 		public string function getIdentityHashCode(required any value) {
 			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
@@ -1448,4 +1468,36 @@
 		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
+
+	<cffunction name="getSignedS3ObjectLink" access="public" output="false" returntype="string">
+		<cfargument name="bucketName" type="string" required="true">
+		<cfargument name="keyName" type="string" required="true">
+		<cfargument name="awsAccessKeyId" type="string" required="true">
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		<cfargument name="minutesValid" type="numeric" required="true" default="1">
+
+		<cfset var s3link = "" />
+		<cfset var epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
+		<cfset var cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
+		<cfset var signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
+		<cfset s3link = "https://#arguments.bucketName#.s3.amazonaws.com/#arguments.keyName#?AWSAccessKeyId=#URLEncodedFormat(arguments.awsAccessKeyId)#&Expires=#epochTime#&Signature=#URLEncodedFormat(signature)#" />
+		<cfreturn s3link />
+
+	</cffunction>
+
+	<cffunction name="getClientFileName" returntype="string" output="false" hint="">
+	    <cfargument name="fieldName" required="true" type="string" hint="Name of the Form field" />
+
+	    <cfset var tmpPartsArray = Form.getPartsArray() />
+
+	    <cfif IsDefined("tmpPartsArray")>
+	        <cfloop array="#tmpPartsArray#" index="local.tmpPart">
+	            <cfif local.tmpPart.isFile() AND local.tmpPart.getName() EQ arguments.fieldName>
+	                <cfreturn local.tmpPart.getFileName() />
+	            </cfif>
+	        </cfloop>
+	    </cfif>
+
+	    <cfreturn "" />
+	</cffunction>
 </cfcomponent>

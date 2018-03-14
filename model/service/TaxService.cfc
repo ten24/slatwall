@@ -130,6 +130,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// If this rate has an integration, then try to pull the data from the response bean for that integration
 							if(!isNull(taxCategoryRate.getTaxIntegration())) {
 
+								// if account is tax exempt return after removing any tax previously applied to order
+								if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
+									continue;
+								}
+
 								// Look for all of the rates responses for this interation, on this orderItem
 								if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
 
@@ -231,7 +236,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
-						newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
+						var taxAmount = (originalAppliedTax.getTaxAmount()/orderItem.getReferencedOrderItem().getQuantity())*orderitem.getQuantity();
+						newAppliedTax.setTaxLiabilityAmount( taxamount );
 
 						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
 						newAppliedTax.setTaxImpositionName( originalAppliedTax.getTaxImpositionName() );
@@ -403,7 +409,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Remove all existing tax calculations
 			for(var ta=arrayLen(orderItem.getAppliedTaxes()); ta >= 1; ta--) {
-				orderItem.getAppliedTaxes()[ta].removeOrderItem( orderItem );
+				var appliedTax = orderItem.getAppliedTaxes()[ta];
+				if(isNull(appliedTax.getManualTaxAmountFlag()) || !appliedTax.getManualTaxAmountFlag()){
+					appliedTax.removeOrderItem( orderItem );
+				}
 			}
 
 		}
