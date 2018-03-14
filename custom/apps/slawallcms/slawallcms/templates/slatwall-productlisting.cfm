@@ -27,12 +27,13 @@
 	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
-    <cfset productCollectionList.addFilter("activeFlag",1) />
-    <cfset productCollectionList.addFilter("publishedFlag",1) />
-    <cfset productCollectionList.setDisplayProperties("urlTitle,productType.productTypeName,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")/>
+    <cfset productCollectionList.addFilter("activeFlag",1)>
+    <cfset productCollectionList.addFilter("publishedFlag",1)>
+    <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />
+    <cfset productCollectionList.setDisplayProperties("urlTitle,productType.productTypeName,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
     <!--- This allows filters applied to collection list --->
-    <cfset productCollectionList.applyData()/>
-    <cfset productCollection = productCollectionList.getPageRecords() />
+    <cfset productCollectionList.applyData()>
+    <cfset productCollection = productCollectionList.getPageRecords()>
 
     <div class="row mb-4">
         <div class="col-sm-3">

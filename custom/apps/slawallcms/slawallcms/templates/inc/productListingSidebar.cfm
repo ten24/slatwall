@@ -1,7 +1,17 @@
+<cfimport prefix="hb" taglib="../../../../../../org/Hibachi/HibachiTags"/>
 <cfoutput>
 <button class="btn btn-primary btn-block mb-4" type="button" data-toggle="collapse" data-target="##sidebarCollapse" aria-expanded="false" aria-controls="sidebarCollapse">
     Filter Options
 </button>
+
+<!---
+<hb:HibachiFilterCountDisplay hibachiScope="#$.slatwall#" collectionList="#productCollectionList#">
+
+    <hb:HibachiFilterCountDisplayItem propertyIdentifier="productName" template="../../../custom/tags/templates/hibachifiltercountdisplayitem.cfm">
+    
+</hb:HibachiFilterCountDisplay>
+--->
+
 <div class="collapse show" id="sidebarCollapse">
     <div id="accordion">
         <div class="card mb-4">
