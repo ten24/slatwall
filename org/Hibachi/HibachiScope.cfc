@@ -19,6 +19,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="modifiedEntities" type="array";
 	property name="hibachiAuthenticationService" type="any";
 	property name="isAWSInstance" type="boolean" default="0";
+	property name="entityURLKeyType" type="string";
+	property name="permissionGroupCacheKey" type="string";
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -35,6 +37,76 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setModifiedEntities( [] );
 		
 		return super.init();
+	}
+	
+	//get the users personal collection options
+	public array function getCollectionOptions(){
+		//if new account then you have no personal collections
+		var collectionOptions = [];
+		
+		if(getAccount().getNewFlag()){
+			return collectionOptions;
+		}
+		
+		var collectionCollectionList = getService('HibachiCollectionService').getCollectionCollectionList();
+		collectionCollectionList.setDisplayProperties('collectionName|name,collectionID|value');
+		collectionCollectionList.addFilter('accountOwner.accountID',getAccount().getAccountID());
+		return collectionCollectionList.getRecords();
+	}
+	
+	public string function getPermissionGroupCacheKey(){
+		if(!structKeyExists(variables,'permissionGroupCacheKey')){
+			var permissionGroupCacheKey = "";
+		
+			if(
+				!isNull(getAccount()) 
+			){
+				var permissionGroupCountCollectionList = getService('accountService').getAccountCollectionList();
+				permissionGroupCountCollectionList.addFilter('accountID',getAccount().getAccountID());
+				permissionGroupCountCollectionList.setPermissionAppliedFlag(true);
+				permissionGroupCountCollectionList.setDisplayProperties('accountID');
+				permissionGroupCountCollectionList.addDisplayAggregate('permissionGroups','COUNT','permissionGroupsCount');
+				var records = permissionGroupCountCollectionList.getRecords();
+				if(arraylen(records) && records[1]['permissionGroupsCount']){
+					var permissionGroupCollectionList = getAccount().getPermissionGroupsCollectionList();
+					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+					var permissionGroupRecords = permissionGroupCollectionList.getRecords();
+					for(var permissionGroupRecord in permissiongroupRecords){
+						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+					}
+				}
+				
+			}
+			variables.permissionGroupCacheKey = permissionGroupCacheKey;
+		}
+		
+		
+		return variables.permissionGroupCacheKey;
+	}
+	
+	public string function getEntityURLKeyType(string entityURLKey=""){
+		if(!structKeyExists(variables,'entityURLKeyType')){
+			//in priority of assumed use
+			if(setting('globalURLKeyProduct') == arguments.entityURLKey){
+				variables.entityURLKeyType='Product';
+			}else if(setting('globalURLKeyProductType') == arguments.entityURLKey){
+				variables.entityURLKeyType='ProductType';
+			}else if(setting('globalURLKeyCategory') == arguments.entityURLKey){
+				variables.entityURLKeyType='Category';
+			}else if(setting('globalURLKeyBrand') == arguments.entityURLKey){
+				variables.entityURLKeyType='Brand';
+			}else if(setting('globalURLKeyAccount') == arguments.entityURLKey){
+				variables.entityURLKeyType='Account';	
+			}else if(setting('globalURLKeyAddress') == arguments.entityURLKey){
+				variables.entityURLKeyType='Address';
+			}else if(setting('globalURLKeyAttribute') == arguments.entityURLKey){
+				variables.entityURLKeyType='Attribute';
+			}else{
+				variables.entityURLKeyType="";
+			}
+			
+		}
+		return variables.entityURLKeyType;
 	}
 	
 	public string function getServerInstanceIPAddress(){
@@ -84,6 +156,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	// @hint facade method to check the application scope for a value
+	public void function clearSessionValue(required any key) {
+		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
+			structDelete(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key);
+		}
+	}
+	
+	// @hint facade method to check the session scope for a value
 	public boolean function hasSessionValue(required any key) {
 		param name="session" default="#structNew()#";
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
@@ -93,16 +172,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return false;
 	}
 	
-	// @hint facade method to get values from the application scope
+	// @hint facade method to get values from the session scope
 	public any function getSessionValue(required any key) {
 		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
 			return session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
 		}
 		
-		throw("You have requested a value for '#arguments.key#' from the core application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
+		throw("You have requested a value for '#arguments.key#' from the session that does not exist.");
 	}
 	
-	// @hint facade method to set values in the application scope 
+	// @hint facade method to set values in the session scope 
 	public void function setSessionValue(required any key, required any value) {
 		var sessionKey = "";
 		if(structKeyExists(COOKIE, "JSESSIONID")) {
@@ -229,9 +308,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("get#arguments.entityName#SmartList", {1=arguments.data});
 	}
 	
-	public void function flushORMSession(){
+	public void function flushORMSession(boolean runCalculatedPropertiesAgain=false){
 		if(!getORMHasErrors()) {
-			getDAO( "hibachiDAO" ).flushORMSession();
+			getDAO( "hibachiDAO" ).flushORMSession(argumentCollection=arguments);
 		}
 	}
 	
@@ -292,6 +371,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
+		param name="request.context" default="#structNew()#";
 		param name="request.context['messages']" default="#arrayNew(1)#";
 		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
 		var messageStruct = {};
@@ -302,7 +382,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	
 	// ========================== HELPER DELIGATION METHODS ===============================
 	
-	public string function hibachiHTMLEditFormat(required any html){
+	public string function hibachiHTMLEditFormat(string html=""){
 		return getService('hibachiUtilityService').hibachiHTMLEditFormat(arguments.html);
 	}
 	
@@ -311,6 +391,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		var keyValue = getService("hibachiRBService").getRBKey(arguments.key, getRBLocale());
 		if(structKeyExists(arguments, "replaceStringData") && findNoCase("${", keyValue)) {
 			keyValue = getService("hibachiUtilityService").replaceStringTemplate(keyValue, arguments.replaceStringData);
+		}
+		
+		if(findNoCase('_missing',keyValue)){
+			return listFirst(keyValue);
 		}
 		return keyValue;
 	}

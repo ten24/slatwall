@@ -129,10 +129,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			taxRateItemRequestBean.setExtendedPrice(arguments.orderItem.getExtendedPrice());
 		}
 		if(!isNull(arguments.orderItem.getDiscountAmount())) {
-			taxRateItemRequestBean.setDiscountAmount(arguments.orderItem.getDiscountAmount());
+			taxRateItemRequestBean.setDiscountAmount(arguments.orderItem.getDiscountAmount(forceCalculationFlag=true));
 		}
 		if(!isNull(arguments.orderItem.getExtendedPriceAfterDiscount())) {
-			taxRateItemRequestBean.setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedPriceAfterDiscount());
+			taxRateItemRequestBean.setExtendedPriceAfterDiscount(arguments.orderItem.getExtendedPriceAfterDiscount(forceCalculationFlag=true));
 		}
 		
 		if(!isNull(taxAddress)) {

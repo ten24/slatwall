@@ -7,14 +7,14 @@
 			    <p class="shippingMethodOption" 
 			    ng-repeat="option in slatwall.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions track by $index" 
 			    ng-click="slatwall.selectShippingMethod(option, fulfillmentIndex)">
-			    	<span class="loader-wrapper" ng-show="slatwall.loadingThisRequest('addShippingMethodUsingShippingMethodID',{fulfillmentID:fulfillmentID,shippingMethodID:option.value})">
-						<i class="fa fa-spinner fa-spin fa-fw"></i>
-					</span>
 			    	<input type="radio" name="cb{{option.shippingMethodCode}}{{fulfillmentIndex}}" id="check{{optionValue}}{{fulfillmentIndex}}"
 				    	ng-checked="slatwall.isSelectedShippingMethod(option, fulfillmentIndex)"
 				    	ng-hide="slatwall.loadingThisRequest('addShippingMethodUsingShippingMethodID',{fulfillmentID:fulfillmentID,shippingMethodID:option.value})"/>
 			        <label for="cb{{option.shippingMethodCode}}">{{option.name}}</label>
 				</p>
 			</div>
+			<span class="loader-wrapper" ng-show="slatwall.loadingThisRequest('addShippingMethodUsingShippingMethodID',{fulfillmentID:fulfillmentID,shippingMethodID:option.value})">
+				<i class="fa fa-spinner fa-spin fa-fw"></i>
+			</span>
 	</div>
 </div>

@@ -4,6 +4,27 @@
 	<cfproperty name="hibachiAuditService" type="any" />
 
 	<cfscript>
+		
+		public string function getTablesWithDefaultData(){
+			var dbdataDirPath = expandPath('/Slatwall') & '/config/dbdata';
+		
+			var dbdataDirList = directoryList(dbdataDirPath,false,'name');
+			
+			var tablesWithDefaultData = '';
+			
+			for(var fileName in dbdataDirList){
+				//remove .xml.cfm suffix
+				var entityName = left(filename,len(filename)-8);
+				//remove Slatwall prefix
+				entityName = right(entityName,len(entityName)-len('Slatwall'));
+				var tableName = request.slatwallScope.getService('HibachiService').getTableNameByEntityName(entityName);
+				tablesWithDefaultData = listAppend(tablesWithDefaultData,tableName);
+			}
+			tablesWithDefaultData = listAppend(tablesWithDefaultData,'swintegration');
+			
+			return tablesWithDefaultData;
+		}
+		
 		public any function get( required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
@@ -27,6 +48,7 @@
 
 		public any function list( string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			// Adds the Applicatoin Prefix to the entityName when needed.
+			
 			if(left(arguments.entityName, len(getApplicationKey()) ) != getApplicationKey()) {
 				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
 			}
@@ -98,13 +120,17 @@
 	    	entityReload(arguments.entity);
 	    }
 
-	    public void function flushORMSession() {
+	    public void function flushORMSession(boolean runCalculatedPropertiesAgain=false) {
 	    	// Initate the first flush
 	    	ormFlush();
 
-	    	// Loop over the modifiedEntities to call updateCalculatedProperties
-	    	for(var entity in getHibachiScope().getModifiedEntities()){
-	    		entity.updateCalculatedProperties();
+			// Use once and clear to avoid reprocessing in subsequent method invocation or through an infinite recursive loop.
+			var modifiedEntities = getHibachiScope().getModifiedEntities();
+			getHibachiScope().clearModifiedEntities();
+
+			// Loop over the modifiedEntities to call updateCalculatedProperties
+	    	for(var entity in modifiedEntities){
+	    		entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
 	    	}
 
 	    	// flush again to persist any changes done during ORM Event handler

@@ -48,6 +48,12 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
+	public any function setup(){
+		super.setup();
+		variables.hibachiService = variables.mockService.getHibachiServiceMock();
+		
+	}
+	
 	/**
 	* @test
 	*/
@@ -57,8 +63,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		
+		
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(
 					structkeyExists(property,'fieldtype') 
@@ -84,7 +91,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var allSpelledProperly = true;
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if(
 					structkeyExists(property,'cfc') 
@@ -124,7 +131,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 			if(!listFindNoCase(entitiesWithNoAuditPropsRequired, entityName)) {
 
-				var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+				var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 				var auditPropertiesFoundCount = 0;
 
 				for(var property in properties) {
@@ -173,7 +180,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in allEntities) {
 
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 
 				// If logic finds an audit property, break from this entity's properties loop
@@ -202,7 +209,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		for(var entityName in allEntities) {
 
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 
 				if(left(property.name, 10) eq "calculated"){
@@ -253,7 +260,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
 			if(len(getMetaData(entity).table) > 30) {
-				addToDebug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
+				debug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 				pass = false;
 			}
 		}
@@ -422,7 +429,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function all_smart_list_search_dont_have_errors() {
 		// Get all entities
 		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-
+		
 		// Entities that cause known errors
 		var exceptionErrorEntities = [];
 
@@ -432,9 +439,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
-
+		
 			try{
-				var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+				var entityService = variables.hibachiService.getServiceByEntityName( entityName );
 				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
 				smartList.getPageRecords();
 			} catch (any e) {
@@ -466,7 +473,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
 
-			var entityService = request.slatwallScope.getService("hibachiService").getServiceByEntityName( entityName );
+			var entityService = variables.hibachiService.getServiceByEntityName( entityName );
 			var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
 			if(arrayLen(smartList.getPageRecords())) {
 				arrayAppend(nonFilteredEntities, entityName);
@@ -489,7 +496,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var criminalsMessage = "";
 
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				
 				if (
@@ -522,7 +529,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var criminalsMessage = "";
 
 		for(var entityName in allEntities) {
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			var properties = variables.hibachiService.getPropertiesByEntityName(entityName);
 			for(var property in properties) {
 				if (
 						(

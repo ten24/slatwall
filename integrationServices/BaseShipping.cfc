@@ -89,7 +89,10 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		httpRequest.setResolveurl(false);
 		if(arguments.format == 'xml'){
 			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
-			return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+			var result = httpRequest.send().getPrefix();
+			if (!isNull(result) && structKeyExists(result, "fileContent")){
+				return XmlParse(REReplace(result.fileContent, "^[^<]*", "", "one"));	
+			}
 		}else{
 			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
 			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));

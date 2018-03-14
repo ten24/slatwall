@@ -57,7 +57,21 @@ Notes:
 			UPDATE SwSession SET orderID = null WHERE orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="getDeliveredQuantitySum" access="public" returntype="any">
+			<cfargument name="orderItemID" type="string" required="true" />
 
+			<cfset var rs = "" />
+
+			<cfquery name="rs">
+					SELECT COALESCE(sum(odi.quantity),0) as deliveredQuantity
+						FROM SwOrderDeliveryItem odi
+						INNER JOIN SwOrderItem oi on oi.orderItemID = odi.orderItemID 
+						WHERE odi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+			</cfquery>
+			<cfreturn rs.deliveredQuantity>
+	</cffunction>
+		
 	<cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
 			var results = ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
@@ -65,7 +79,10 @@ Notes:
 				return results[1];
 			}
 		}
-
+		
+		
+		
+	
 		public struct function getQuantityPriceSkuAlreadyReturned(required any orderID, required any skuID) {
 			var params = [arguments.orderID, arguments.skuID];
 
@@ -210,7 +227,10 @@ Notes:
 			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem oi
     		LEFT JOIN SwSku s ON s.skuID = oi.skuID
     		LEFT JOIN SwProduct p ON s.productID = p.productID
-    		WHERE p.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
+    		LEFT JOIN SwProductType pt on p.productTypeID = pt.productTypeID
+    		
+    		where pt.productTypeIDPath LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4%" />
+
     		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 

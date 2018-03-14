@@ -51,7 +51,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("imageService");
+		variables.service = createMock('Slatwall.model.service.ImageService');
+		variables.siteService = createMock('Slatwall.model.service.SiteService');
+		variables.service.setSiteService(variables.siteService);
+		variables.HibachiEventService = createMock('Slatwall.org.Hibachi.HibachiEventService');
+		variables.service.setHibachiEventService(variables.HibachiEventService);
 	}
 		
 	/**
@@ -94,7 +98,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//Test default, should hit global assertion
 		var imagePath = variables.service.getResizedImagePath('falsepath');
-		assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
+		assertEquals(imagePath,"#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
 	}
 		
 	/**
@@ -104,14 +108,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Test custom file, should hit custom assertion
 		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg');
 		imagePath = variables.service.getResizedImagePath('falsepath');
-		assert(imagePath EQ "#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
+		assertEquals(imagePath,"#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
 	}
 		
 	/**
 	* @test
 	*/
 	public void function missingImageSettingTest_siteMissingImagePath(){
-		var siteService = request.slatwallScope.getService('siteService');
+		var siteService = createMock(object=request.slatwallScope.getService('siteService'));
 		//Site specific setting, should hit site assertion
 		var siteData = {
 			siteID="#createUuid()#",
@@ -120,18 +124,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			domainNames="#request.slatwallScope.getService('siteService').getCurrentDomain()#"
 		};
 		var site = createPersistedTestEntity(entityName="site",data=siteData);
-		site = variables.service.saveSite(site,siteData);
-
+	
+		
+		siteService.getCurrentRequestSite = function(){
+			return site;
+		};
+		
+		variables.service.setSiteService(siteService);
+		
 		//create setting for siteMissingImagePath
 		var settingData = {
 			settingID = "",
 			settingName = "siteMissingImagePath",
 			settingValue = "/assets/images/sitemissingimage.jpg",
-            site: siteData.siteid
+            site={
+            	siteID=siteData.siteid
+            }
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
 		imagePath = variables.service.getResizedImagePath('falsepath');
-		assert(imagePath EQ siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
+		
+		debug(site.setting('siteMissingImagePath'));
+		
+		assertEquals(imagePath,siteService.getCurrentRequestSite().setting('siteMissingImagePath'));
 	}
 	
 }

@@ -64,8 +64,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
 
 	// Data Properties (Inputs)
-	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
-	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
+	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno" hb_populateEnabled="public";
+	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName" hb_populateEnabled="public";
 
 	property name="saveGiftCardToAccountFlag" hb_formFieldType="yesno";
 
@@ -130,9 +130,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public any function getGiftCard(){
 		if(!isNull(getNewOrderPayment().getGiftCardNumber()) && len(getNewOrderPayment().getGiftCardNumber())){
-			return getService("GiftCardService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumber()));
+		
+			return getService("GiftCardService").getGiftCardByGiftCardCode(newOrderPayment.getGiftCardNumber());
+		
 		} else if(!isNull(getGiftCardID())){
+			
 			return getService("GiftCardService").getGiftCard(getGiftCardID());
+		
 		}
 	}
 
@@ -243,6 +247,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public array function getPaymentMethodIDOptions() {
+		var paymentMethodIDOptions = [];
 		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
 			variables.paymentMethodIDOptions = [];
 			var epmDetails = getService('paymentService').getEligiblePaymentMethodDetailsForOrder( getOrder() );
@@ -255,7 +260,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					});
 			}
 		}
-		return variables.paymentMethodIDOptions;
+		if(getHibachiScope().getAccount().getAdminAccountFlag()){
+			paymentMethodIDOptions = duplicate(variables.paymentMethodIDOptions);
+			arrayAppend(paymentMethodIDOptions, {
+				name = 'None',
+				value = 'none',
+				paymentmethodtype = 'none',
+				allowsaveflag = false
+			});
+		}else{
+			paymentMethodIDOptions = variables.paymentMethodIDOptions;
+		}
+		return paymentMethodIDOptions;
 	}
 
 	public array function getPaymentTermIDOptions() {
@@ -329,9 +345,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public boolean function giftCardNotAlreadyApplied(){
+
 		if(this.hasGiftCard()){
 			var cardID = this.getGiftCard().getGiftCardID();
+			
 			for(var payment in this.getOrder().getOrderPayments()){
+
 				if(!isNull(payment.getGiftCard()) && payment.getGiftCard().getGiftCardID() == cardID){
 					return false;
 				}
@@ -365,6 +384,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		return false;
 
+	}
+	
+	public void function setHibachiErrors( required any errorBean ) {
+		if ( !isnull(this.getGiftCardID() ) ){
+			getHibachiScope().setORMHasErrors( true );			
+		}
+		
+		super.setHibachiErrors(errorBean);
 	}
 
 	// =====================  END: Helper Methods ==========================
