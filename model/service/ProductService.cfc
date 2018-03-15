@@ -1111,8 +1111,6 @@ component extends="HibachiService" accessors="true" {
 		var productCollectionList = this.getProductCollectionList();
 		
 		productCollectionList.addFilter('deferredRevenueFlag',true);
-		//productCollectionList.addFilter('activeFlag',true);
-		//productCollectionList.addFilter('publishedFlag',true);
 		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver',0,'>');
 		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
 		
