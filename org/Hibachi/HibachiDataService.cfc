@@ -175,7 +175,6 @@ component accessors="true" output="false" extends="HibachiService" {
 				idColumns = listAppend(idColumns, xmlData.Table.Columns.xmlChildren[ii].xmlAttributes.name);
 			}
 		}
-
 		// Loop over each record to insert or update
 		for(var r=1; r <= arrayLen(xmlData.Table.Records.xmlChildren); r++) {
 
@@ -210,7 +209,6 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 
 			}
-
 			var idKey = xmlData.table.xmlAttributes.tableName;
 			for(var l=1; l<=listLen(idColumns); l++) {
 				idKey = listAppend(idKey, insertData[listGetAt(idColumns, l)].value, "~");
@@ -222,8 +220,12 @@ component accessors="true" output="false" extends="HibachiService" {
 			var keyFound = listFindNoCase(variables.insertedData, idKey);
 
 			var updateOnly = ignorePreviouslyInserted && keyFound;
-
-			getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+			try{
+				getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+			}catch(any e){
+				writedump(xmlData.table.xmlAttributes.tableName);
+				writedump(e);abort;
+			}
 			if(!keyFound){
 				variables.insertedData = listAppend(variables.insertedData, idKey);
 			}
