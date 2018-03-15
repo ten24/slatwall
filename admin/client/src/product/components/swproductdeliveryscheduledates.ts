@@ -15,7 +15,7 @@ class SWProductDeliveryScheduleDatesController {
     ){
         
         this.getDeliveryScheduleDates();
-        this.$scope.$watch('swProductDeliveryScheduleDates.deliverScheduleDates',(newValue,oldValue){
+        this.$scope.$watch('swProductDeliveryScheduleDates.deliverScheduleDates',(newValue,oldValue)=>{
             if(newValue && newValue != oldValue){
                 this.sortDeliveryScheduleDates();
             }
@@ -25,8 +25,10 @@ class SWProductDeliveryScheduleDatesController {
     public sortDeliveryScheduleDates=()=>{
         this.deliverScheduleDates.sort((a, b)=> {
             
-            var a1 = Date.parse(a.deliveryScheduleDateValue).getTime();
-            var b1 = Date.parse(b.deliveryScheduleDateValue).getTime();
+            var a1:any = Date.parse(a.deliveryScheduleDateValue);
+            a1 = a1.getTime();
+            var b1:any = Date.parse(b.deliveryScheduleDateValue);
+            b1 = b1.getTime()
             if (a1 > b1) return 1;
             if (a1 < b1) return -1;
             return 0;
