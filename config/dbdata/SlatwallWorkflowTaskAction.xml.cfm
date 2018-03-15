@@ -6,6 +6,7 @@
 		<column name="updateData" update="false" />
 		<column name="emailTemplateID" update="false" />
 		<column name="workflowTaskID" update="false" />
+		<column name="processMethod" update="false"/>
 	</Columns>
 	<Records>
 		<Record workflowTaskActionID="4028289a5507d1dc01557e261a100815" actionType="email" updateData='{"staticData":{},"dynamicData":{}}' emailTemplateID="4028289a5507d1dc0155521cc93c03d1" workflowTaskID="4028289a5507d1dc01557e2619fa0814" />

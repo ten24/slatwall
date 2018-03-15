@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwWorkflow">
+<Table tableName="SwSchedule">
 	<Columns>
 		<column name="scheduleID" fieldtype="id" />
 		<column name="scheduleName" datatype="bit" update="false" />
