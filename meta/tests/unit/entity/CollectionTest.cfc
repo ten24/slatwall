@@ -1137,6 +1137,378 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(pageRecords[1]['skuPriceMax'] == '30');
 	}
 
+	// Tests to check if orderBy createdDateTime is excluded in case of hasDisplayAggregate is true when orderBy applied or not applied
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_no_orderBy_added_for_DisplayAggregateSUMTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '-100',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','SUM','skuPriceSum');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_orderBy_added_for_DisplayAggregateSUMTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '-100',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','SUM','skuPriceSum');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('productDesc|asc');
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_no_orderBy_added_for_DisplayAggregateCOUNTTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus','count','skuCount');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_orderBy_added_for_DisplayAggregateCOUNTTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus','count','skuCount');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('productDesc|asc');
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_no_orderBy_added_for_DisplayAggregateAVGTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','AVG','skuPriceAvg');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_orderBy_added_for_DisplayAggregateAVGTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','AVG','skuPriceAvg');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('productDesc|asc');
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_no_orderBy_added_for_DisplayAggregateMINTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','MIN','skuPriceMin');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_orderBy_added_for_DisplayAggregateMINTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '10',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','MIN','skuPriceMin');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('productDesc|asc');
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_no_orderBy_added_for_DisplayAggregateMAXTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			}
+				]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','MAX','skuPriceMax');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function check_DateTime_when_hasAggregate_true_orderBy_added_for_DisplayAggregateMAXTest(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+			{
+				skuID = '',
+				price = '10',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '20',
+				skuCode= createUUID()
+			},
+			{
+				skuID = '',
+				price = '30',
+				skuCode= createUUID()
+			}
+				]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties('productName');
+		myCollection.addDisplayAggregate('skus.price','MAX','skuPriceMax');
+		myCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('productDesc|asc');
+		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
+	}
+
 	/**
 	* @test
 	*/

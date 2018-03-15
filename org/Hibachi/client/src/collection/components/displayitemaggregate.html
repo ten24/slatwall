@@ -27,6 +27,7 @@
 		          					| filter:{fieldtype:'!one-to-many'}
                                     | filter:{fieldtype:'!many-to-many'}
                                     | filter:{fieldtype:'!many-to-one'}
+                                    | filter:({ormtype:'big_decimal'} ||{ormtype:'double'}||{ormtype:'float'}||{ormtype:'integer'})
 		          					"
                             class="form-control input-sm"
                             data-ng-if="aggegate.selectedAggregate == 'sum' || aggegate.selectedAggregate == 'average'">
