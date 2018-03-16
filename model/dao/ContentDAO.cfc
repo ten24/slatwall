@@ -121,8 +121,13 @@ Notes:
 	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
-
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "LOWER(c.urlTitlePath)"/>
+		<cfelse>
+			<cfset comparisonValue = "c.urlTitlePath"/>
+		</cfif>
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND #comparisonValue# = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
 
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
