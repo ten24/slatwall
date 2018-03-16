@@ -61315,6 +61315,8 @@
 	        )
 	        */
 	        this.selectSubscriptionPeriod = function () {
+	            _this.subscriptionOrderDeliveryItemsCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
+	            _this.subscriptionOrderDeliveryItemsCollectionList.addFilter('');
 	            if (_this.selectedSubscriptionPeriod == 'All Deliveries') {
 	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
 	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);

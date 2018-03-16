@@ -28,6 +28,11 @@ class SWScheduledDeliveriesCardController {
     */
     
     public selectSubscriptionPeriod=()=>{
+        
+        this.subscriptionOrderDeliveryItemsCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
+        
+        this.subscriptionOrderDeliveryItemsCollectionList.addFilter('');
+        
         if(this.selectedSubscriptionPeriod == 'All Deliveries'){
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
             subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
