@@ -150,7 +150,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionStatus.effectiveDateTime',currentDateTime,'<=');
 			
 			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
-			subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionUsageID,orderItem.sku.subscriptionTerm.itemsToDeliver');
+			subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
 			subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
 			
 			var subscriptionOrderItemRecords = subscriptionOrderItemCollectionList.getRecords();
@@ -158,8 +158,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//create a delivery for each item
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
 				//insert subscriptionOrderDeliveryItem related to 
-				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['orderItem_sku_subscriptionTerm_itemsToDeliver']){
-					getOrderDao().insertSubscriptionOrderDeliveryItem(subscriptionOrderItemRecord['subscriptionOrderItemID']);
+				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
+					getOrderDao().insertSubscriptionOrderDeliveryItem(subscriptionOrderItemRecord['subscriptionOrderItemID'],1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice']);
 				}
 			}
 			

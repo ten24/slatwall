@@ -15,25 +15,19 @@ class SWScheduledDeliveriesCardController {
         
     }
     
-    /*
-    SELECT COUNT(DISTINCT tempAlias.id) FROM SlatwallSubscriptionOrderItem tempAlias 
-    WHERE tempAlias.id IN ( 
-        SELECT MIN(_subscriptionorderitem.id) 
-        FROM SlatwallSubscriptionOrderItem as _subscriptionorderitem 
-        left join _subscriptionorderitem.subscriptionOrderDeliveryItems as _subscriptionorderitem_subscriptionOrderDeliveryItems 
-        left join _subscriptionorderitem.subscriptionUsage as _subscriptionorderitem_subscriptionUsage 
-        where ( _subscriptionorderitem_subscriptionUsage.subscriptionUsageID = :P56a22bb6fd344a738e4472399eecd963 ) 
-        GROUP BY _subscriptionorderitem.subscriptionOrderItemID,_subscriptionorderitem.createDateTime 
-    )
-    */
-    
     public selectSubscriptionPeriod=()=>{
         
         this.subscriptionOrderDeliveryItemsCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
         
-        this.subscriptionOrderDeliveryItemsCollectionList.addFilter('');
+        this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
+        this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice');
+        this.subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
         
         if(this.selectedSubscriptionPeriod == 'All Deliveries'){
+            this.subscriptionOrderDeliveryItemsCollectionList.getEntity().then((data)=>{
+                this.subscriptionOrderDeliveryItems = formatSubscriptionOrderDeliveryItemData(data.records);       
+            });
+            
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
             subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
             subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
@@ -55,7 +49,7 @@ class SWScheduledDeliveriesCardController {
                this.denominator = itemsToDeliver;
                this.earned = valueEarned;
             });
-           
+            
         }else if(this.selectedSubscriptionPeriod == 'Current Term'){
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
             subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
@@ -67,7 +61,15 @@ class SWScheduledDeliveriesCardController {
                this.numerator = data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum; 
                this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
                this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
+               
+               this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID',data.pageRecords[0].subscriptionOrderItemID);
+               this.subscriptionOrderDeliveryItemsCollectionList.getEntity().then((data)=>{
+                   this.subscriptionOrderDeliveryItems = formatSubscriptionOrderDeliveryItemData(data.records);
+               });
+               
             });
+            
+            
         }        
     }
     

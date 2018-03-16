@@ -51,6 +51,7 @@ component displayname="SubscriptionOrderDeliveryItem" entityname="SlatwallSubscr
 	// Persistent Properties
 	property name="subscriptionOrderDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="integer";
+	property name="earned" ormtype="big_decimal";
 	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionOrderItem" cfc="SubscriptionOrderItem" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemID";
