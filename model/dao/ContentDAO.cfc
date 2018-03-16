@@ -136,7 +136,7 @@ Notes:
 	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
-
+		
 		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND c.urlTitlePath = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
 
@@ -307,7 +307,7 @@ Notes:
 		public void function updateAllDescendantsTitlePathByUrlTitle(required string contentIDs,required string previousTitlePath, required string newTitlePath){
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
 			ORMExecuteQuery("UPDATE SlatwallContent s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ");
-		}
+		} 
 	</cfscript>
 
 	<cffunction name="getCategoryByCMSCategoryIDAndCMSSiteID" access="public">
