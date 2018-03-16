@@ -51,7 +51,14 @@ Notes:
 
 <cfparam name="rc.subscriptionUsage" type="any" />
 
-<cfset subscriptionOrderDeliveryItemSmartList = $.slatwall.getService('orderService').getSubscriptionOrderDeliveryItemSmartList()/>
+<sw-scheduled-deliveries-card
+  data-subscription-usage-id="#rc.subscriptionUsage.getSubscriptionUsageID()#"
+></sw-scheduled-deliveries-card>
+
+
+
+
+<!---<cfset subscriptionOrderDeliveryItemSmartList = $.slatwall.getService('orderService').getSubscriptionOrderDeliveryItemSmartList()/>
 <cfset subscriptionOrderDeliveryItemSmartList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',rc.subscriptionUsage.getSubscriptionUsageID())/>
 
 <cfoutput>
@@ -66,3 +73,4 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="subscriptionOrderItem.subscriptionOrderItemType.systemCode" />
 	</hb:HibachiListingDisplay>
 </cfoutput>
+--->

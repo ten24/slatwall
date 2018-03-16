@@ -71,6 +71,7 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	
 	public void function setOrderItem(required any orderItem) {
 		variables.orderItem = arguments.orderItem;
 		//copy all the info from order items to subscription usage
@@ -78,6 +79,10 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 			variables.subscriptionUsage.copyOrderItemInfo(arguments.orderItem);
 		}
 	}
+	
+	//calculates the date ranges that the subscription orderItem started and ended
+	
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
