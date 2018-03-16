@@ -51,9 +51,11 @@ Notes:
 
 <cfparam name="rc.subscriptionUsage" type="any" />
 
-<sw-scheduled-deliveries-card
-  data-subscription-usage-id="#rc.subscriptionUsage.getSubscriptionUsageID()#"
-></sw-scheduled-deliveries-card>
+<cfoutput>
+  <sw-scheduled-deliveries-card
+    data-subscription-usage-id="#rc.subscriptionUsage.getSubscriptionUsageID()#"
+  ></sw-scheduled-deliveries-card>
+</cfoutput>
 
 
 

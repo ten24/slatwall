@@ -1,5 +1,6 @@
-<span ng-bind="swScheduledDeliveriesCard.numerator"></span> / <span ng-bind="swScheduledDeliveriesCard.denominator"></span>
-
+<span ng-bind="swScheduledDeliveriesCard.numerator"></span> <span ng-if="swScheduledDeliveriesCard.denominator">/</span> <span ng-bind="swScheduledDeliveriesCard.denominator"></span> delivered
+<br>
+<span ng-bind="swScheduledDeliveriesCard.earned"></span> earned
 <br/>
 Select Subscription Period
 <select id="u18_input" style="-webkit-appearance: menulist-button;" ng-model="swScheduledDeliveriesCard.selectedSubscriptionPeriod" ng-change="swScheduledDeliveriesCard.selectSubscriptionPeriod()">

@@ -61300,18 +61300,57 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWScheduledDeliveriesCardController = /** @class */ (function () {
 	    //@ngInject
-	    function SWScheduledDeliveriesCardController() {
+	    function SWScheduledDeliveriesCardController(collectionConfigService) {
 	        var _this = this;
+	        this.collectionConfigService = collectionConfigService;
+	        /*
+	        SELECT COUNT(DISTINCT tempAlias.id) FROM SlatwallSubscriptionOrderItem tempAlias
+	        WHERE tempAlias.id IN (
+	            SELECT MIN(_subscriptionorderitem.id)
+	            FROM SlatwallSubscriptionOrderItem as _subscriptionorderitem
+	            left join _subscriptionorderitem.subscriptionOrderDeliveryItems as _subscriptionorderitem_subscriptionOrderDeliveryItems
+	            left join _subscriptionorderitem.subscriptionUsage as _subscriptionorderitem_subscriptionUsage
+	            where ( _subscriptionorderitem_subscriptionUsage.subscriptionUsageID = :P56a22bb6fd344a738e4472399eecd963 )
+	            GROUP BY _subscriptionorderitem.subscriptionOrderItemID,_subscriptionorderitem.createDateTime
+	        )
+	        */
 	        this.selectSubscriptionPeriod = function () {
-	            var subscriptionOrderDeliveryItemsCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
-	            subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
 	            if (_this.selectedSubscriptionPeriod == 'All Deliveries') {
-	                //subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('subscr')
+	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
+	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
+	                subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
+	                subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity', 'SUM', 'subscriptionOrderDeliveryItemsQuantitySum');
+	                subscriptionOrderItemCollectionList.setOrderBy('createdDateTime|DESC');
+	                subscriptionOrderItemCollectionList.setAllRecords(true);
+	                subscriptionOrderItemCollectionList.getEntity().then(function (data) {
+	                    var itemsDelivered = 0;
+	                    var itemsToDeliver = 0;
+	                    var valueEarned = 0;
+	                    for (var i in data.records) {
+	                        var subscriptionOrderItemData = data.records[i];
+	                        itemsDelivered += subscriptionOrderItemData.subscriptionOrderDeliveryItemsQuantitySum;
+	                        itemsToDeliver += subscriptionOrderItemData.subscriptionUsage_subscriptionTerm_itemsToDeliver;
+	                        valueEarned += subscriptionOrderItemData.orderItem_calculatedExtendedPrice * subscriptionOrderItemData.subscriptionOrderDeliveryItemsQuantitySum;
+	                    }
+	                    _this.numerator = itemsDelivered;
+	                    _this.denominator = itemsToDeliver;
+	                    _this.earned = valueEarned;
+	                });
 	            }
 	            else if (_this.selectedSubscriptionPeriod == 'Current Term') {
+	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
+	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
+	                subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
+	                subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity', 'SUM', 'subscriptionOrderDeliveryItemsQuantitySum');
+	                subscriptionOrderItemCollectionList.setOrderBy('createdDateTime|DESC');
+	                subscriptionOrderItemCollectionList.setPageShow(1);
+	                subscriptionOrderItemCollectionList.getEntity().then(function (data) {
+	                    _this.numerator = data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
+	                    _this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
+	                    _this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
+	                });
 	            }
 	        };
-	        collectionConfigService;
 	    }
 	    return SWScheduledDeliveriesCardController;
 	}());
