@@ -61300,18 +61300,17 @@
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var SWScheduledDeliveriesCardController = /** @class */ (function () {
 	    //@ngInject
-	    function SWScheduledDeliveriesCardController(collectionConfigService) {
+	    function SWScheduledDeliveriesCardController(collectionConfigService, observerService) {
 	        var _this = this;
 	        this.collectionConfigService = collectionConfigService;
+	        this.observerService = observerService;
 	        this.selectSubscriptionPeriod = function () {
 	            _this.subscriptionOrderDeliveryItemsCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
 	            _this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
-	            _this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice');
+	            _this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
 	            _this.subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
 	            if (_this.selectedSubscriptionPeriod == 'All Deliveries') {
-	                _this.subscriptionOrderDeliveryItemsCollectionList.getEntity().then(function (data) {
-	                    _this.subscriptionOrderDeliveryItems = formatSubscriptionOrderDeliveryItemData(data.records);
-	                });
+	                _this.observerService.notify('getCollection');
 	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
 	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
 	                subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
@@ -61345,9 +61344,7 @@
 	                    _this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
 	                    _this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
 	                    _this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID', data.pageRecords[0].subscriptionOrderItemID);
-	                    _this.subscriptionOrderDeliveryItemsCollectionList.getEntity().then(function (data) {
-	                        _this.subscriptionOrderDeliveryItems = formatSubscriptionOrderDeliveryItemData(data.records);
-	                    });
+	                    _this.observerService.notify('getCollection');
 	                });
 	            }
 	        };

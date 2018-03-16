@@ -10,7 +10,8 @@ class SWScheduledDeliveriesCardController {
 
     //@ngInject
     constructor(
-        public collectionConfigService
+        public collectionConfigService,
+        public observerService
     ){
         
     }
@@ -20,13 +21,12 @@ class SWScheduledDeliveriesCardController {
         this.subscriptionOrderDeliveryItemsCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
         
         this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
-        this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice');
+        this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
         this.subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
         
         if(this.selectedSubscriptionPeriod == 'All Deliveries'){
-            this.subscriptionOrderDeliveryItemsCollectionList.getEntity().then((data)=>{
-                this.subscriptionOrderDeliveryItems = formatSubscriptionOrderDeliveryItemData(data.records);       
-            });
+            
+            this.observerService.notify('getCollection');
             
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
             subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
@@ -63,13 +63,8 @@ class SWScheduledDeliveriesCardController {
                this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
                
                this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID',data.pageRecords[0].subscriptionOrderItemID);
-               this.subscriptionOrderDeliveryItemsCollectionList.getEntity().then((data)=>{
-                   this.subscriptionOrderDeliveryItems = formatSubscriptionOrderDeliveryItemData(data.records);
-               });
-               
+               this.observerService.notify('getCollection');
             });
-            
-            
         }        
     }
     
