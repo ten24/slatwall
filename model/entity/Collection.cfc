@@ -2569,7 +2569,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
-						
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						
 						var recordCount = recordsCountData['recordsCount'];
@@ -2892,11 +2891,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
-			countHQLSelections &= ", AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+			if(hasAggregateFilter() || !isNull(variables.groupBys)){
+				countHQLSelections &= ", AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+			}else{
+				countHQLSelections &= ", AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+			}
 		}
 		
 		for(var totalSumAggregate in variables.totalSumAggregates){
-			countHQLSelections &= ", SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+			if(hasAggregateFilter() || !isNull(variables.groupBys)){
+				countHQLSelections &= ", SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+			}else{
+				countHQLSelections &= ", SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+			}
 		}
 		
 		
@@ -2972,8 +2979,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								|| column.ormtype eq 'float'
 								|| column.ormtype eq 'double')
 							){
-								arrayAppend(variables.totalAvgAggregates,column);
-								arrayAppend(variables.totalSumAggregates,column);
+								addTotalAvgAggregate(column);
+								addTotalSumAggregate(column);
 							}
 							
 							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
@@ -3002,6 +3009,32 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						
 		return HQL;
 	}//<--end function
+	
+	public void function addTotalAvgAggregate(required struct column){
+		var found = false;
+		for(var item in variables.totalAvgAggregates){
+			if(item.propertyIdentifier == column.propertyIdentifier){
+				found = true;
+			}
+		}
+	
+		if(!found){
+			arrayAppend(variables.totalAvgAggregates,column);
+		}
+								
+	}
+	
+	public void function addTotalSumAggregate(required struct column){
+		var found = false;
+		for(var item in variables.totalSumAggregates){
+			if(item.propertyIdentifier == column.propertyIdentifier){
+				found = true;
+			}
+		}
+		if(!found){
+			arrayAppend(variables.totalSumAggregates,column);
+		}
+	}
 
 	public string function getColumnAlias(required struct column){
 		
