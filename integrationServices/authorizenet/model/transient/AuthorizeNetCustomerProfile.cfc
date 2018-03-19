@@ -12,6 +12,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiTransient"{
 	property name="cardNumber" type="string";
 	property name="expirationDate" type="string";
 	property name="cardCode" type="string";
+	property name="description" type="string";
 
 
 	public any function init(){

@@ -256,8 +256,13 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 	public string function getProfileRequestData(required any requestBean){
 		var requestData = getTransient('AuthorizeNetCustomerProfile');
 
-		requestData.setMerchantCustomerID(requestBean.getOrderPayment().getShortReferenceID(true));
-
+		//MerchantCustomerID - Required. Conditional. Merchant assigned ID for the customer. Required only when no values for description and email are submitted
+		if(!isNull(requestBean.getOrderPayment())){
+			requestData.setMerchantCustomerID(requestBean.getOrderPayment().getShortReferenceID(true));
+		} else {
+			requestData.setDescription('Adding Payment Method');
+		}
+		
 		requestData.setCardNumber(requestBean.getCreditCardNumber());
 
   		if(!isNull(requestBean.getSecurityCode())) {
