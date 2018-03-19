@@ -47156,7 +47156,9 @@
 	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.listingPartialPath = listingPartialPath;
 	        this.$scope = $scope;
-	        this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);
+	        if (!this.value && this.pageRecord && this.column) {
+	            this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);
+	        }
 	        this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord);
 	        this.hasActionCaller = false;
 	        if (this.column.action && this.column.queryString) {
@@ -47201,6 +47203,7 @@
 	            swListingDisplay: "=?",
 	            column: "=?",
 	            pageRecord: "=?",
+	            value: "=?",
 	            cellView: "@?",
 	            expandableRules: "=?"
 	        };

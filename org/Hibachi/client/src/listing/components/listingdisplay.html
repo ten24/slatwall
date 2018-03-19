@@ -396,16 +396,28 @@
                                     class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
-                                    ng-bind="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
                             >
+							    <sw-listing-display-cell
+                            		data-column="column"
+                            		data-sw-listing-display="swListingDisplay"
+                            		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+                                    data-cell-view="{{column.cellView}}"
+                                    data-expandable-rules="swListingDisplay.expandableRules">
+                            	</sw-listing-display-cell>
 							</td>
 							<td
                                     data-ng-repeat-end
                                     class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
-                                    ng-bind="swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
                             >
+							    <sw-listing-display-cell
+                            		data-column="column"
+                            		data-sw-listing-display="swListingDisplay"
+                            		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+                                    data-cell-view="{{column.cellView}}"
+                                    data-expandable-rules="swListingDisplay.expandableRules">
+                            	</sw-listing-display-cell>
 							</td>
 
                             <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
