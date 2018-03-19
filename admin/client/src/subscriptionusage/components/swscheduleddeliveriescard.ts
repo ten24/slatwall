@@ -7,6 +7,9 @@ class SWScheduledDeliveriesCardController {
     public subscriptionUsageId:string;
     public numerator:number;
     public denominator:number;
+    public earned:number;
+    public subscriptionOrderDeliveryItemsCollectionList:any;
+    
 
     //@ngInject
     constructor(
@@ -17,16 +20,15 @@ class SWScheduledDeliveriesCardController {
     }
     
     public selectSubscriptionPeriod=()=>{
+        delete this.subscriptionOrderDeliveryItemsCollectionList;
+        var subscriptionOrderDeliveryItemsCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
         
-        this.subscriptionOrderDeliveryItemsCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
-        
-        this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
-        this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
-        this.subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
+        subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
+        subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
+        subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
         
         if(this.selectedSubscriptionPeriod == 'All Deliveries'){
             
-            this.observerService.notify('getCollection');
             
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
             subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
@@ -48,6 +50,7 @@ class SWScheduledDeliveriesCardController {
                this.numerator = itemsDelivered; 
                this.denominator = itemsToDeliver;
                this.earned = valueEarned;
+               this.subscriptionOrderDeliveryItemsCollectionList = subscriptionOrderDeliveryItemsCollectionList;
             });
             
         }else if(this.selectedSubscriptionPeriod == 'Current Term'){
@@ -62,8 +65,9 @@ class SWScheduledDeliveriesCardController {
                this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
                this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
                
-               this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID',data.pageRecords[0].subscriptionOrderItemID);
-               this.observerService.notify('getCollection');
+               subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID',data.pageRecords[0].subscriptionOrderItemID);
+               this.subscriptionOrderDeliveryItemsCollectionList = subscriptionOrderDeliveryItemsCollectionList;
+               
             });
         }        
     }

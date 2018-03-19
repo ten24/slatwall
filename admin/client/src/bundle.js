@@ -61305,12 +61305,12 @@
 	        this.collectionConfigService = collectionConfigService;
 	        this.observerService = observerService;
 	        this.selectSubscriptionPeriod = function () {
-	            _this.subscriptionOrderDeliveryItemsCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
-	            _this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
-	            _this.subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
-	            _this.subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
+	            delete _this.subscriptionOrderDeliveryItemsCollectionList;
+	            var subscriptionOrderDeliveryItemsCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
+	            subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
+	            subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
+	            subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
 	            if (_this.selectedSubscriptionPeriod == 'All Deliveries') {
-	                _this.observerService.notify('getCollection');
 	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
 	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
 	                subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
@@ -61330,6 +61330,7 @@
 	                    _this.numerator = itemsDelivered;
 	                    _this.denominator = itemsToDeliver;
 	                    _this.earned = valueEarned;
+	                    _this.subscriptionOrderDeliveryItemsCollectionList = subscriptionOrderDeliveryItemsCollectionList;
 	                });
 	            }
 	            else if (_this.selectedSubscriptionPeriod == 'Current Term') {
@@ -61343,8 +61344,8 @@
 	                    _this.numerator = data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
 	                    _this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
 	                    _this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
-	                    _this.subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID', data.pageRecords[0].subscriptionOrderItemID);
-	                    _this.observerService.notify('getCollection');
+	                    subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID', data.pageRecords[0].subscriptionOrderItemID);
+	                    _this.subscriptionOrderDeliveryItemsCollectionList = subscriptionOrderDeliveryItemsCollectionList;
 	                });
 	            }
 	        };
