@@ -23,7 +23,7 @@ class SWScheduledDeliveriesCardController {
         delete this.subscriptionOrderDeliveryItemsCollectionList;
         var subscriptionOrderDeliveryItemsCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
         
-        subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
+        subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId,'=','AND',true);
         subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
         subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
         
@@ -31,7 +31,7 @@ class SWScheduledDeliveriesCardController {
             
             
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
-            subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
+            subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId,'=','AND',true);
             subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
             subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptionOrderDeliveryItemsQuantitySum');
             subscriptionOrderItemCollectionList.setOrderBy('createdDateTime|DESC');
@@ -55,7 +55,7 @@ class SWScheduledDeliveriesCardController {
             
         }else if(this.selectedSubscriptionPeriod == 'Current Term'){
             var subscriptionOrderItemCollectionList = this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
-            subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId);
+            subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID',this.subscriptionUsageId,'=','AND',true);
             subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
             subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptionOrderDeliveryItemsQuantitySum');
             subscriptionOrderItemCollectionList.setOrderBy('createdDateTime|DESC');
@@ -65,7 +65,7 @@ class SWScheduledDeliveriesCardController {
                this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
                this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
                
-               subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID',data.pageRecords[0].subscriptionOrderItemID);
+               subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID',data.pageRecords[0].subscriptionOrderItemID,'=','AND',true);
                this.subscriptionOrderDeliveryItemsCollectionList = subscriptionOrderDeliveryItemsCollectionList;
                
             });

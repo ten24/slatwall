@@ -61307,12 +61307,12 @@
 	        this.selectSubscriptionPeriod = function () {
 	            delete _this.subscriptionOrderDeliveryItemsCollectionList;
 	            var subscriptionOrderDeliveryItemsCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderDeliveryItem');
-	            subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
+	            subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId, '=', 'AND', true);
 	            subscriptionOrderDeliveryItemsCollectionList.setDisplayProperties('createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned');
 	            subscriptionOrderDeliveryItemsCollectionList.setAllRecords(true);
 	            if (_this.selectedSubscriptionPeriod == 'All Deliveries') {
 	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
-	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
+	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId, '=', 'AND', true);
 	                subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
 	                subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity', 'SUM', 'subscriptionOrderDeliveryItemsQuantitySum');
 	                subscriptionOrderItemCollectionList.setOrderBy('createdDateTime|DESC');
@@ -61335,7 +61335,7 @@
 	            }
 	            else if (_this.selectedSubscriptionPeriod == 'Current Term') {
 	                var subscriptionOrderItemCollectionList = _this.collectionConfigService.newCollectionConfig('SubscriptionOrderItem');
-	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId);
+	                subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionUsageID', _this.subscriptionUsageId, '=', 'AND', true);
 	                subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice');
 	                subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity', 'SUM', 'subscriptionOrderDeliveryItemsQuantitySum');
 	                subscriptionOrderItemCollectionList.setOrderBy('createdDateTime|DESC');
@@ -61344,7 +61344,7 @@
 	                    _this.numerator = data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
 	                    _this.denominator = data.pageRecords[0].subscriptionUsage_subscriptionTerm_itemsToDeliver;
 	                    _this.earned = data.pageRecords[0].orderItem_calculatedExtendedPrice * data.pageRecords[0].subscriptionOrderDeliveryItemsQuantitySum;
-	                    subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID', data.pageRecords[0].subscriptionOrderItemID);
+	                    subscriptionOrderDeliveryItemsCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemID', data.pageRecords[0].subscriptionOrderItemID, '=', 'AND', true);
 	                    _this.subscriptionOrderDeliveryItemsCollectionList = subscriptionOrderDeliveryItemsCollectionList;
 	                });
 	            }
