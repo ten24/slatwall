@@ -48,7 +48,18 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
-<cfset $.slatwall.getService('OrderService').createSubscritpionOrderDeliveries()/>
+
+<!---<cfset test = ormExecuteQuery('SELECT NEW MAP(
+	COUNT(DISTINCT _product.id) as recordsCount , 
+	AVG(_product_defaultSku.price) as recordsAvg_product_defaultSku.price , 
+	AVG(_product.calculatedQATS) as recordsAvg_product.calculatedQATS , 
+	SUM(_product_defaultSku.price) as recordsSum_product_defaultSku.price , 
+	SUM(_product.calculatedQATS) as recordsSum_product.calculatedQATS  ) 
+	FROM SlatwallProduct as _product 
+	left join _product.brand as _product_brand 
+	left join _product.defaultSku as _product_defaultSku 
+	left join _product.productType as _product_productType')/>
+<cfdump var="#test#"><cfabort>--->
 <cfoutput>
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>

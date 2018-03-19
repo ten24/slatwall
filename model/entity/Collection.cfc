@@ -127,6 +127,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
+	property name="totalAvgAggregates" persistent="false" type="array";
+	property name="totalSumAggregates" persistent="false" type="array";
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -136,6 +138,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		param name="session.entityCollection" type="struct" default="#structNew()#";
 		param name="session.entityCollection.savedStates" type="array" default="#arrayNew(1)#";
 
+		variables.totalAvgAggregates = [];
+		variables.totalSumAggregates = [];
 		variables.hqlParams = {};
 		variables.hqlAliases = {};
 		variables.Cacheable = false;
@@ -2404,6 +2408,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function clearRecordsCount() {
 		structDelete(variables, "recordsCount");
 	}
+	
+	public void function clearRecordsCountData() {
+		structDelete(variables, "recordsCountData");
+	}
 
 	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
 		if(listLen(arguments.propertyIdentifier) == 1){
@@ -2420,6 +2428,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables,'records');
 		structDelete(variables,'pageRecords');
 		structDelete(variables,'recordsCount');
+		structDelete(variables,'recordsCountData');
 
 		if (getCacheable()){
 			structDelete(variables,'cacheName');
@@ -2525,6 +2534,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setRecordsCount(required numeric total){
 		variables.recordsCount = arguments.total;
 	}
+	
+	public any function getRecordsCountData(){
+		if(!structkeyExists(variables,'recordsCountData')){
+			getRecordsCount();
+		}
+	
+		return variables.recordsCountData;
+	}
 
 	public any function getRecordsCount(boolean refresh=false) {
 	
@@ -2533,7 +2550,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		applyPermissions();
-		if(!structKeyExists(variables, "recordsCount")) {
+		if(!structKeyExists(variables, "recordsCount") || !structKeyExists(variables,'recordsCountData')) {
 			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
 				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
 			} else {
@@ -2547,18 +2564,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(!structKeyExists(variables,'records')){
 							getHQL(true);
 						}
-						if(hasAggregateFilter() || !isNull(variables.groupBys)){
- 							HQL = 'SELECT COUNT(DISTINCT tempAlias.id) FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getCollectionConfigStruct().baseEntityAlias#.id) #getHQL(true, false, true)# )';
- 						}else{
- 							HQL = getSelectionCountHQL() & getHQL(true);
-						}
+						HQL = getSelectionCountHQL();
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
 						
-						var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
+						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						
+						var recordCount = recordsCountData['recordsCount'];
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
 						}
@@ -2866,7 +2880,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private any function getSelectionCountHQL(){
-		return 'SELECT COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) ';
+	
+		var countHQLSelections = "";
+		var countHQLSuffix = "";
+		if(hasAggregateFilter() || !isNull(variables.groupBys)){
+			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
+			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getCollectionConfigStruct().baseEntityAlias#.id) #getHQL(true, false, true)# )';
+ 		}else{
+ 			var countHQLSelections = 'SELECT NEW MAP(COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) as recordsCount ';
+ 			var countHQLSuffix = getHQL(true);
+		}
+		
+		for(var totalAvgAggregate in variables.totalAvgAggregates){
+			countHQLSelections &= ", AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+		}
+		
+		for(var totalSumAggregate in variables.totalSumAggregates){
+			countHQLSelections &= ", SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+		}
+		
+		
+		HQL = countHQLSelections & ') ' & countHQLSuffix;
+		
+		return HQL;
+	}
+	
+	public array function getTotalAvgAggregates(){
+		variables.totalAvgAggregates;
+	}
+	
+	public array function getTotalSumAggregates(){
+		variables.totalSumAggregates;
 	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
@@ -2921,6 +2965,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							variables.groupByRequired = true;
 							variables.orderByRequired = true;
 							var columnAlias = getColumnAlias(column);
+							
+							if(structKeyExists(column, 'ormtype') &&
+								(column.ormtype eq 'big_decimal'
+								|| column.ormtype eq 'integer'
+								|| column.ormtype eq 'float'
+								|| column.ormtype eq 'double')
+							){
+								arrayAppend(variables.totalAvgAggregates,column);
+								arrayAppend(variables.totalSumAggregates,column);
+							}
+							
 							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 						}
 					}else{

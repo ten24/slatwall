@@ -108,7 +108,7 @@
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
 
-                            <th data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+                            <th colspan="2" data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
 
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
 
@@ -147,10 +147,11 @@
                             data-draggable="swListingDisplay.sortable && swListingDisplay.edit"
                             data-draggable-record="pageRecord"
                             data-draggable-key="pageRecordKey"
+                            
                             >
 
                             <!-- Sortable -->
-                            <td class="sort" data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">
+                            <td  class="sort" data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">
                                 <i class="fa fa-bars" aria-hidden="true"></i>
                             </td><!-- Need to put the form here -->
 
@@ -185,9 +186,9 @@
                                     class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
-
+                                    colspan="2"
                                     sw-expandable-record
-
+            
                                     data-action="column.action"
                                     data-query-string="column.queryString"
                                     data-expandable="(swListingDisplay.getPageRecordMatchesExpandableRule(pageRecord) || swListingDisplay.expandable) && (column.tdclass && column.tdclass === 'primary')"
@@ -319,6 +320,96 @@
                                         data-is-angular-route="swListingDisplay.isAngularRoute"
                                 >
                                 </sw-action-caller>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <!-- Sortable -->
+                            <input data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
+                            <th data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">&nbsp;</th>
+                            <!-- Selectable -->
+                            <input data-ng-if-start="swListingDisplay.selectable" type="hidden" data-ng-attr-name="{{swListingDisplay.selectFieldName}}" data-ng-value="swListingDisplay.selectValue" />
+                            <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
+                            <!-- Multiselectable -->
+                            <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName+'selection'}}" value="{{swListingDisplay.multiselectValues.length ? swListingDisplay.multiselectValues : ['']}}" />
+                            <input ng-if="!swListingDisplay.multiselectValues.length" type="hidden"
+                    			data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}"
+                    		/>
+                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
+                            <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
+                                    <input type="checkbox"
+                                           id="exampleID"
+                                           data-ng-model="swListingDisplay.isCurrentPageRecordsSelected"
+                                           data-ng-click="swListingDisplay.selectCurrentPageRecords()"
+                                           data-ng-disabled="!swListingDisplay.edit">
+                                    <label for="exampleID"></label>
+                                </div>
+                            </th>
+                            <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
+
+                            <th data-ng-repeat-start="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+
+                                <span data-ng-bind="'Total'" style="cursor: pointer"></span>
+
+                                <span data-ng-if="column.hasHeaderView">
+                                    <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
+                                </span>
+                            </th>
+                            <th data-ng-repeat-end class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+
+                                <span data-ng-bind="'Average'" style="cursor: pointer"></span>
+
+                                <span data-ng-if="column.hasHeaderView">
+                                    <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
+                                </span>
+                            </th>
+                            <th class="s-detail-hidden-content">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
+                           data-listing-id="{{swListingDisplay.tableID}}"
+                           >
+
+                        <tr 
+                            data-ng-show="pageRecord.dataIsVisible !== false"
+                            data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
+                        >
+
+                            <!-- Sortable -->
+                            <td  class="sort" data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" class="s-order-table" style="display: table-cell;">
+                                <i class="fa fa-bars" aria-hidden="true"></i>
+                            </td><!-- Need to put the form here -->
+
+                            <!--Selectable/Multiselectable-->
+                            <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable"
+                            	ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}"
+                            >
+                            </td>
+
+                            <!--cell contents -->
+							<td
+                                    data-ng-repeat-start="(key,column) in swListingDisplay.columns"
+                                    class="{{column.tdclass}}"
+                                    data-ng-cloak
+                                    data-ng-if="column.isVisible"
+                                    ng-bind="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+                            >
+							</td>
+							<td
+                                    data-ng-repeat-end
+                                    class="{{column.tdclass}}"
+                                    data-ng-cloak
+                                    data-ng-if="column.isVisible"
+                                    ng-bind="swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+                            >
+							</td>
+
+                            <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
+                                
                             </td>
 
                         </tr>
