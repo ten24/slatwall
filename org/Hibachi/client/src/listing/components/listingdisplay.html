@@ -352,7 +352,7 @@
 
                             <th data-ng-repeat-start="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
 
-                                <span data-ng-bind="'Total'" style="cursor: pointer"></span>
+                                <span ng-show="column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0" data-ng-bind="'Total'" style="cursor: pointer"></span>
 
                                 <span data-ng-if="column.hasHeaderView">
                                     <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
@@ -360,7 +360,7 @@
                             </th>
                             <th data-ng-repeat-end class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
 
-                                <span data-ng-bind="'Average'" style="cursor: pointer"></span>
+                                <span ng-show="column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0" data-ng-bind="'Average'" style="cursor: pointer"></span>
 
                                 <span data-ng-if="column.hasHeaderView">
                                     <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
