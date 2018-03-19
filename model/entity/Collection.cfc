@@ -2892,23 +2892,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(hasAggregateFilter() || !isNull(variables.groupBys)){
-				countHQLSelections &= ", AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
-				countHQLSelections &= ", AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
+				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}
 		}
 		
 		for(var totalSumAggregate in variables.totalSumAggregates){
 			if(hasAggregateFilter() || !isNull(variables.groupBys)){
-				countHQLSelections &= ", SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
-				countHQLSelections &= ", SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#) as recordsSum#getColumnAlias(totalSumAggregate)# ";
+				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}
 		}
 		
 		
 		HQL = countHQLSelections & ') ' & countHQLSuffix;
-		
 		return HQL;
 	}
 	
