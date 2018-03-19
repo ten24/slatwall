@@ -39511,7 +39511,7 @@
 	                $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
 	        };
 	    }])
-	    .filter('swcurrency', ['$sce', '$log', '$hibachi', swcurrency_1.SWCurrency.Factory]);
+	    .filter('swcurrency', ['$sce', '$log', '$hibachi', '$filter', swcurrency_1.SWCurrency.Factory]);
 	exports.slatwalladminmodule = slatwalladminmodule;
 	// ((): void => {
 	//     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
@@ -61492,7 +61492,7 @@
 	    function SWCurrency() {
 	    }
 	    //@ngInject
-	    SWCurrency.Factory = function ($sce, $log, $hibachi) {
+	    SWCurrency.Factory = function ($sce, $log, $hibachi, $filter) {
 	        var data = null, serviceInvoked = false;
 	        function realFilter(value, decimalPlace, returnStringFlag) {
 	            if (returnStringFlag === void 0) { returnStringFlag = true; }
@@ -61506,10 +61506,10 @@
 	            }
 	            if (angular.isDefined(value)) {
 	                if (angular.isDefined(decimalPlace)) {
-	                    value = parseFloat(value.toString()).toFixed(decimalPlace);
+	                    value = $filter('number')(value.toString(), decimalPlace);
 	                }
 	                else {
-	                    value = parseFloat(value.toString()).toFixed(2);
+	                    value = $filter('number')(value.toString(), 2);
 	                }
 	            }
 	            if (returnStringFlag) {

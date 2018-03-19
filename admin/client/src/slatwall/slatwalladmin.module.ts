@@ -154,7 +154,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 }])
 //filters
 
-.filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
+.filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])
 
 ;
 export{

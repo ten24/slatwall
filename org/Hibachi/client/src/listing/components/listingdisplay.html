@@ -350,7 +350,10 @@
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
 
-                            <th data-ng-repeat-start="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+                            <th data-ng-repeat-start="column in swListingDisplay.columns" class="data {{column.tdClass}}" 
+                                data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak
+                                ng-style="{'border': column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0 ? '1' : 'none'}"
+                            >
 
                                 <span ng-show="column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0" data-ng-bind="'Total'" style="cursor: pointer"></span>
 
@@ -358,7 +361,10 @@
                                     <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
                                 </span>
                             </th>
-                            <th data-ng-repeat-end class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+                            <th data-ng-repeat-end class="data {{column.tdClass}}" 
+                                data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak
+                                ng-style="{'border': column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0 ? '1' : 'none'}"
+                            >
 
                                 <span ng-show="column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0" data-ng-bind="'Average'" style="cursor: pointer"></span>
 
@@ -372,9 +378,11 @@
                     </thead>
                     <tbody data-ng-if="swListingDisplay.collectionData.pageRecords"
                            data-listing-id="{{swListingDisplay.tableID}}"
+                           
                            >
 
                         <tr 
+                            data-ng-repeat="(pageRecordKey, pageRecord) in [swListingDisplay.collectionData.pageRecords[0]]"
                             data-ng-show="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getNGClassObjectForPageRecordRow(pageRecord)}}"
                         >
@@ -396,8 +404,10 @@
                                     class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
+                                    ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
 							    <sw-listing-display-cell
+							        ng-if="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-value="swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
@@ -410,8 +420,10 @@
                                     class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
+                                    ng-style="{'border': swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
 							    <sw-listing-display-cell
+							        ng-if="swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-value="swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
