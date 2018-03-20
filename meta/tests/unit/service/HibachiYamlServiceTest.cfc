@@ -51,8 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		//Setup the Yaml service
-		//variables.service = request.slatwallScope.getService("hibachiYamlService");
-		variables.service = variables.mockService.getHibachiYamlServiceMock();
+		variables.service = request.slatwallScope.getService("hibachiYamlService");
 	}
 
 	// addAuditToCommit()
@@ -75,16 +74,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function dumpYamlTest(){
+/*	public void function dumpYamlTest(){
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
 		var dumpYaml = variables.service.dumpYaml(yamlStruct);
 		assert(len(dumpYaml));
 	}
-
+*/
 	/**
 	* @test
 	*/
-	public void function writeYamlTest(){
+/*	public void function writeYamlTest(){
 		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
 		var applicationKey = request.slatwallScope.getDao('hibachiDao').getApplicationKey();
 		var filePath = expandPath('/#applicationKey#/meta/tests/assets.yml');
@@ -92,7 +91,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(FileExists(filePath));
 		FileDelete(filepath);
 
-	}
+	}*/
 }
 
 

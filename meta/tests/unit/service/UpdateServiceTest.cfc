@@ -87,11 +87,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function mergeEntityParsersTest_withoutCustomPropertiesInitially(){
 
-		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		var coreEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); // request.slatwallScope.getTransient('hibachiEntityParser');
 
 		coreEntityParser.setFileContent(variables.fileContentForAccountWithoutCustomPropeties);
 
-		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		var customEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
 
@@ -121,11 +121,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function mergeEntityParsersTest_withCustomPropertiesInitially_andPurge(){
 
-		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		var coreEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 
 		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
 
-		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		var customEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser, true);
 
@@ -154,11 +154,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function mergeEntityParsersTest_withCustomPropertiesInitially(){
 
-		var coreEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		var coreEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 
 		coreEntityParser.setFileContent(variables.fileContentForAccountWithCustomPropeties);
 
-		var customEntityParser = request.slatwallScope.getTransient('hibachiEntityParser');
+		var customEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
