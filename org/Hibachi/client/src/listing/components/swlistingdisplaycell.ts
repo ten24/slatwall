@@ -29,7 +29,9 @@ class SWListingDisplayCellController{
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.listingPartialPath = listingPartialPath;
         this.$scope = $scope;
+        if(!this.value && this.pageRecord && this.column){
         this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
+        }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
@@ -102,6 +104,7 @@ class SWListingDisplayCell {
         swListingDisplay:"=?",
         column:"=?",
         pageRecord:"=?",
+        value:"=?",
         cellView:"@?",
         expandableRules:"=?"
     }

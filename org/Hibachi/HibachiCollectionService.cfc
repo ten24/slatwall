@@ -281,7 +281,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		}else{
 
 			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);
-			formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
+			var recordsCountData = arguments.collectionEntity.getRecordsCountData();
+			for(var key in recordsCountData){
+				var recordsCountDataItem = recordsCountData[key];
+				formattedPageRecords[ key ] = recordsCountDataItem;
+			}
+			//return aggregates data
+			
 			formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords(formatRecords=false));
 			formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
 			formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
