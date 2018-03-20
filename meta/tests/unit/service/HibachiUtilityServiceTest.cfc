@@ -61,7 +61,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function hibachiHTMLEditFormatTest(){
 		var angularTamperableString = 'this is a string where it is {{vulnerable}}';
 		var resultString = variables.service.hibachiHTMLEditFormat(angularTamperableString);
-		WriteDump(resultString);
 		//adding ascii character to prevent execution of angular templates
 		assertEquals(resultString,'this is a string where it is {'&chr(002)&'{'&chr(002)&'vulnerable}}');
 	}

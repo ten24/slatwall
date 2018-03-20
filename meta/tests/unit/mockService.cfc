@@ -8,7 +8,8 @@ component extends="testbox.system.BaseSpec"{
 			var hibachiDao = this.getHibachiDAOMock();
 			//var hibachiDao = createMock('Slatwall.model.dao.HibachiDao');
 			var hibachiEventService = createMock('Slatwall.org.Hibachi.HibachiEventService');
-			var hibachiCacheService = createMock('Slatwall.org.Hibachi.HibachiCacheService').init();
+			var hibachiCacheService = createMock('Slatwall.org.Hibachi.HibachiCacheService');
+			hibachiCacheService.init();
 			var hibachiUtilityService=createMock('Slatwall.org.Hibachi.HibachiUtilityService');
 
 			var serviceName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('ServiceMock')+4);
@@ -26,6 +27,12 @@ component extends="testbox.system.BaseSpec"{
 			var DAOMock = createMock('Slatwall.model.dao.#daoName#');
 
 			return DAOMock;
+		}else if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('TransientMock')) == 'TransientMock') {
+
+			var transientName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('TransientMock')-3);
+			var transientMock = createMock('Slatwall.model.transient.#transientName#');
+
+			return transientMock;
 		}
 	}
 
@@ -216,7 +223,11 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	public any function getHibachiYamlServiceMock(){
+		var hibachiDAO = this.getHibachiDAOMock();
+
 		var hibachiYamlServiceMock = createMock('Slatwall.org.Hibachi.HibachiYamlService');
+
+		hibachiYamlServiceMock.sethibachiDAO(hibachiDAO);
 
 		return hibachiYamlServiceMock;
 	}
@@ -274,9 +285,11 @@ component extends="testbox.system.BaseSpec"{
 
 	public any function getHibachiDAOMock() {
 		var hibachiAuditService = createMock('Slatwall.org.Hibachi.HibachiAuditService');
+		var hibachiDAO = createMock('Slatwall.org.Hibachi.HibachiDAO');
+		hibachiDAO.setApplicationKey('Slatwall');
+		hibachiAuditService.setHibachiDAO(hibachiDAO);
 
 		var applicationKey = "Slatwall";
-		//var hibachiDAOMock = createMock('Slatwall.org.Hibachi.HibachiDAO');
 		var hibachiDAOMock = onMissingMethod('getHibachiDAOMock',{});
 
 		hibachiDAOMock.setapplicationKey(applicationKey);
@@ -310,7 +323,8 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	public any function getSkuDAOMock() {
-		var hibachiCacheService = createMock('Slatwall.org.hibachi.HibachiCacheService').init();
+		var hibachiCacheService = createMock('Slatwall.org.hibachi.HibachiCacheService');
+		hibachiCacheService.init();
 
 		var skuDAOMock = this.onMissingMethod('getSkuDAOMock',{});
 
@@ -456,6 +470,8 @@ component extends="testbox.system.BaseSpec"{
 		var settingService = this.getSettingServiceMock();
 		var typeService = this.getTypeServiceMock();
 
+		var stockDAO = this.getStockDAOMock();
+
 		var stockServiceMock = this.onMissingMethod('getStockServiceMock',{});
 
 		stockServiceMock.setcommentService(commentService);
@@ -463,6 +479,7 @@ component extends="testbox.system.BaseSpec"{
 		stockServiceMock.setskuService(skuService);
 		stockServiceMock.setsettingService(settingService);
 		stockServiceMock.settypeService(typeService);
+		stockServiceMock.setstockDAO(stockDAO);
 
 		return stockServiceMock;
 	}
@@ -705,7 +722,10 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	public any function getHibachiCacheServiceMock() {
-		return createMock('Slatwall.org.Hibachi.HibachiCacheService').init();
+		var hibachiCacheServiceMock = createMock('Slatwall.org.Hibachi.HibachiCacheService');
+		hibachiCacheServiceMock.init();
+
+		return hibachiCacheServiceMock;
 	}
 
 	public any function getInventoryServiceMock() {
@@ -725,7 +745,11 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	public any function getUpdateServiceMock() {
-		return this.onMissingMethod('getUpdateServiceMock',{}).init();
+
+		updateServiceMock = this.onMissingMethod('getUpdateServiceMock',{});
+		updateServiceMock.init();
+
+		return updateServiceMock;
 	}
 
 	public any function getHibachiRBServiceMock() {
@@ -748,6 +772,14 @@ component extends="testbox.system.BaseSpec"{
 		workflowServiceMock.sethibachiValidationService(hibachiValidationService);
 
 		return workflowServiceMock;
+	}
+
+	public any function getHibachiEntityParserTransientMock() {
+
+		var hibachiEntityParserMock = this.onMissingMethod('getHibachiEntityParserTransientMock',{});
+		hibachiEntityParserMock.init();
+
+		return  hibachiEntityParserMock;
 	}
 
 }
