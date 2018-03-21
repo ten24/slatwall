@@ -410,6 +410,11 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 			
+			var currentSite = getHibachiScope().getCurrentRequestSite();
+			if(!isNull(currentSite)){
+				arguments.account.setAccountCreatedSite(currentSite);
+			}
+			
 			// Save & Populate the account so that custom attributes get set
 			arguments.account = this.saveAccount(arguments.account, arguments.data);
 			
