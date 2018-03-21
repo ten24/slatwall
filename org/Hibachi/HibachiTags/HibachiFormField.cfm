@@ -14,6 +14,9 @@
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
+	<cfparam name="attributes.autocompleteDataEntity" type="string" default="" />
+	<cfparam name="attributes.showActiveFlag" type="boolean" default="false" />
+	<cfparam name="attributes.maxrecords" type="string" default="25" />
 	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
@@ -35,6 +38,7 @@
 		wysiwyg				|	Value needs to be a string
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
 		hidden				|	This is used mostly for processing
+		typeahead			|	This is used for working with the angular typeahead functionality
 	--->
 
 	<cfsilent>
@@ -275,6 +279,57 @@
 					<cfif len(attributes.modalCreateAction)>
 						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
+				</div>
+			</cfoutput>
+		</cfcase>
+		<cfcase value="typeahead">
+			<cfoutput>
+				<div ng-cloak class="form-group #attributes.fieldClass#" #attributes.fieldAttributes#>
+					<!--- Generic Configured brand --->
+					<sw-typeahead-input-field
+							data-entity-name="#attributes.autocompleteDataEntity#"
+					        data-property-to-save="#attributes.autocompleteValueProperty#"
+					        data-property-to-show="#attributes.autocompleteNameProperty#"
+					        data-properties-to-load="#attributes.autocompletePropertyIdentifiers#"
+					        data-show-add-button="true"
+					        data-show-view-button="true"
+					        data-placeholder-rb-key=""
+					        data-placeholder-text="Search #attributes.autocompleteDataEntity#"
+					        data-multiselect-mode="false"
+					        data-filter-flag="true"
+					        data-field-name="#attributes.fieldName#"
+					        data-initial-entity-id="#attributes.value#"
+					        data-max-records="#attributes.maxrecords#"
+					        data-order-by-list="#attributes.autocompleteNameProperty#|ASC">
+
+					    <sw-collection-config
+					            data-entity-name="#attributes.autocompleteDataEntity#"
+					            data-collection-config-property="typeaheadCollectionConfig"
+					            data-parent-directive-controller-as-name="swTypeaheadInputField"
+					            data-all-records="true">
+					    	
+					    	<!--- Columns --->
+ 							<sw-collection-columns>
+ 								<sw-collection-column data-property-identifier="#attributes.autocompleteNameProperty#" is-searchable="true"></sw-collection-column>
+ 								<sw-collection-column data-property-identifier="#attributes.autocompleteValueProperty#" is-searchable="false"></sw-collection-column>
+ 							</sw-collection-columns>
+ 							
+ 							<!--- Order By --->
+ 					    	<sw-collection-order-bys>
+ 					        	<sw-collection-order-by data-order-by="#attributes.autocompleteNameProperty#|ASC"></sw-collection-order-by>
+ 					    	</sw-collection-order-bys>
+
+					    	<!--- Filters --->
+					    	<cfif attributes.showActiveFlag EQ true>
+						    	<sw-collection-filters>
+		                            <sw-collection-filter data-property-identifier="activeFlag" data-comparison-operator="=" data-comparison-value="1"></sw-collection-filter>
+		                        </sw-collection-filters>
+					    	</cfif>
+					    </sw-collection-config>
+
+						<span sw-typeahead-search-line-item data-property-identifier="#attributes.autocompleteNameProperty#" dropdownOpen="false" is-searchable="true"></span><br>
+
+					</sw-typeahead-input-field>
 				</div>
 			</cfoutput>
 		</cfcase>
