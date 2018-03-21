@@ -55,7 +55,9 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.email#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.email#" />
+		<hb:HibachiEntityActionBar type="detail" object="#rc.email#" >
+	    	<hb:HibachiProcessCaller entity="#rc.email#" action="admin:entity.processemail" processContext="addToQueue" type="list" />
+		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.email#">
 			<hb:HibachiEntityDetailItem view="admin:entity/emailtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
