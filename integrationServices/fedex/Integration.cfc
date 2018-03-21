@@ -84,7 +84,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 				{name="GIF", value="GIF"},
 				{name="PDF",value="PDF"},
 				{name="PNG",value="PNG"},
-				{name="PNG",value="RTF"},
+				{name="RTF",value="RTF"},
 				{name="TEXT",value="TEXT"},
 				{name="ZPLII", value="ZPLII"}
 			]}

@@ -90,8 +90,7 @@ Notes:
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></hb:HibachiScript>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></script>
 		<!--- Trigger Print Window --->
 		<cfif $.slatwall.getLoggedInFlag() and listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">

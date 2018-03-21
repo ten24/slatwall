@@ -34,6 +34,8 @@ import {SWFilterGroups} from "./components/swfiltergroups";
 import {SWFilterItem} from "./components/swfilteritem";
 import {SWFilterGroupItem} from "./components/swfiltergroupitem";
 import {SWRestrictionConfig} from "./components/swrestrictionconfig";
+//filters
+import {AggregateFilter} from "./filters/aggregatefilter";
 
 var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .config([()=>{
@@ -76,7 +78,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swFilterGroupItem',SWFilterGroupItem.Factory())
 
 //filters
-
+.filter('aggregateFilter',['$filter',AggregateFilter.Factory])
 ;
 export{
 	collectionmodule

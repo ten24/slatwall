@@ -183,8 +183,7 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 	
 	public any function getStateCodeFromAddressZoneOptions(){
 		var collectionList = getService('AddressService').getAddressZoneCollectionList();
-		collectionList.addDisplayProperty('stateCode|value');  
-		collectionList.addDisplayProperty('stateName|name'); 
+		collectionList.setDisplayProperties('stateCode|value,stateName|name');
 		if(!isNull(getCountryCode())) {
 			collectionList.addFilter("addressZoneCode", getCountryCode());	
 		} else {

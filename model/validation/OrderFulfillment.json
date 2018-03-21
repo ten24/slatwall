@@ -36,9 +36,10 @@
 			{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}
 		],
 		"orderStatusCode":			[
-			{"contexts":"edit,manualFulfillmentCharge","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
+			{"contexts":"edit,manualFulfillmentCharge,changeFulfillmentMethod","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"fulfillItems","inList":"ostNew,ostProcessing"}
-		]
+		],
+		"statusCode":	[{"contexts":"changeFulfillmentMethod","eq":"ofstUnfulfilled"}]
 	},
 	"populatedPropertyValidation":{
 		"shippingAddress":[

@@ -275,7 +275,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	public string function getAdminIcon() {
-		return '<img src="#getGravatarURL(55)#" style="width:55px;" />';
+		
+		//If Gravatars are NOT disabled...
+		if(!getHibachiScope().setting('accountDisableGravatars')){
+			return '<img src="#getGravatarURL(55)#" style="width:55px;" />';
+		} else {
+			return '';
+		}
 	}
 
 	public boolean function getAdminAccountFlag() {
@@ -557,8 +563,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public any function getAccountCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
-		collectionList.addDisplayProperty('siteID|value');
-		collectionList.addDisplayProperty('siteName|name');
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
 
 		var options = [{value ="", name="None"}];
 

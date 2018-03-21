@@ -60,6 +60,7 @@ Notes:
         </sw-entity-action-bar-button-group>
     </sw-entity-action-bar>
     <sw-listing-display
+        data-using-personal-collection="true"
         data-collection="'MinMaxSetup'"
         data-edit="false"
         data-has-search="true"

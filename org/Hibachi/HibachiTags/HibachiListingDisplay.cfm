@@ -96,6 +96,13 @@
 				#scopeVariableID#=$root.hibachiScope.$injector.get('collectionConfigService').newCollectionConfig().loadJson(#rereplace(serializeJson(attributes.collectionList.getCollectionConfigStruct()),'"',"'",'all')#);
 			"></span>
 			
+			<cfif !attributes.collectionList.getNewFlag()>
+				<span ng-controller="collections"
+					data-table-id="#scopeVariableID#"
+					data-collection-id="#attributes.collectionList.getCollectionID()#"
+				>
+				</span>
+			</cfif>
 			<sw-listing-display
 				ng-if="#scopeVariableID#.collectionConfigString"
 				data-title="'#attributes.title#'"

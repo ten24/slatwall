@@ -59,13 +59,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
-	property name="permissionService" type="any";
+	
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
 	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
-	property name="validationService" type="any";
+	
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -408,6 +408,11 @@ component extends="HibachiService" accessors="true" output="false" {
 					//return access code error
 					arguments.account.addError("accessID", rbKey('validate.account.accessID'));
 				}
+			}
+			
+			var currentSite = getHibachiScope().getCurrentRequestSite();
+			if(!isNull(currentSite)){
+				arguments.account.setAccountCreatedSite(currentSite);
 			}
 			
 			// Save & Populate the account so that custom attributes get set
@@ -1594,6 +1599,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
 
+			getAccountDAO().removeOwnerAccount(account.getAccountID());
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 

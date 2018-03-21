@@ -107,7 +107,10 @@
 	           </ns:Contact>
 	        	<ns:Address>
 	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
-	                <ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+	                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
+	                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
+			</cfif>
+		   	<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
 					<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
 	                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
 					<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>

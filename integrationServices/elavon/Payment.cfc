@@ -181,8 +181,9 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 	
 	private any function getResponseBean(required struct rawResponse, required any requestData, required any requestBean){
 		var response = new Slatwall.model.transient.payment.CreditCardTransactionResponseBean();
-		var responseDataArray = listToArray(rawResponse.fileContent,variables.responseDelimiter,true);
+		var responseDataArray = listToArray(rawResponse.fileContent, variables.responseDelimiter, true);
 		var responseData = {ssl_result="",ssl_result_message="",ssl_approval_code="",ssl_txn_id="",ssl_token="",ssl_avs_response="",ssl_cvv2_response ="",errorCode="",errorMessage=""};
+		
 		for(var item in responseDataArray){
 			responseData[listFirst(item,"=")] = listRest(item,"=");
 		}
@@ -193,10 +194,13 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 			responseDataStruct = responseData,
 			requestData = arguments.requestData
 		};
+		
 		response.setData(data);
 		
-		// Add message for what happened
-		response.addMessage(responseData["ssl_result"], responseData["ssl_result_message"]);
+		// Add message for what happened if these values populated.
+		if (len(responseData["ssl_result"]) && len(responseData["ssl_result_message"])){
+			response.addMessage(responseData["ssl_result"], responseData["ssl_result_message"]);
+		}
 		
 		if( setting('debugModeFlag') ) {
 			structDelete(requestData,"ssl_card_number");
@@ -208,9 +212,21 @@ component accessors="true" output="false" displayname="Elavon" implements="Slatw
 		response.setStatusCode(responseData["ssl_result"]);
 		
 		// Check to see if it was successful
-		if(responseData["ssl_result"] != 0) {
+		if(responseData["ssl_result"] != "0") {
 			// Transaction did not go through
-			response.addError(responseData["errorCode"], responseData["errorMessage"]);
+			if (len(responseData["errorCode"]) && len(responseData["errorMessage"])){
+				response.setStatusCode(responseData["errorCode"]);
+				response.addMessage(responseData["errorCode"], responseData["errorMessage"]);
+				response.addError(responseData["errorCode"], responseData["errorMessage"]);
+			}else if (structKeyExists(responseData, "Connection Failure")){
+				response.setStatusCode("1");
+				response.addMessage("1", "Connection Failure");
+				response.addError("1", "Connection Failure");
+			}else {
+				response.setStatusCode("1");
+				response.addMessage("1", "There was an unknown error processing this transaction.");
+				response.addError("1", "There was an unknown error processing this transaction.");
+			}
 		} else {
 			if(requestBean.getTransactionType() == "authorize") {
 				response.setAmountAuthorized(requestBean.getTransactionAmount());

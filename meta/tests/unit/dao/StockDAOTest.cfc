@@ -50,7 +50,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
-		variables.dao = request.slatwallScope.getDAO("stockDAO");
+		variables.dao = variables.mockService.getStockDAOMock();
 	}
 	
 	/**

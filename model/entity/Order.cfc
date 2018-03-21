@@ -60,6 +60,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="testOrderFlag" ormtype="boolean";
 
+	property name="priceGroupCacheKey" ormtype="string";
+
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
@@ -106,7 +108,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotalAfterItemDiscounts" column="calculatedSubTotalAfterItemDis" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedTotalItems" ormtype="integer";
 	property name="calculatedTotalQuantity" ormtype="integer";
@@ -390,8 +392,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 		if(!structKeyExists(variables,'giftCardOrderItemsCount')){
 			var giftcardProductType = getService('productService').getProductTypeBySystemCode('gift-card');
-
 			var orderItemCollectionList = this.getOrderItemsCollectionList();
+			orderItemCollectionList.setDisplayProperties('order.orderID');
 			orderItemCollectionList.addDisplayAggregate('orderItemID','COUNT','orderItemCount');
 			orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#giftcardProductType.getProductTypeID()#%','Like');
 			if(arraylen(orderItemCollectionList.getRecords())){
@@ -716,31 +718,36 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPayment() {
-		var dynamicChargeOrderPayment = javaCast("null", "");
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
-				if(isNull(dynamicChargeOrderPayment) || (orderPayment.getCreatedDateTime() > dynamicChargeOrderPayment.getCreatedDateTime() && !orderPayment.getNewFlag())) {
-					dynamicChargeOrderPayment = orderPayment;
+		
+		var orderPaymentsSmartList = this.getOrderPaymentsSmartList();
+		orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode','opstActive');
+		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCharge');
+		orderPaymentsSmartList.addOrder('createdDateTime','DESC');
+		
+		var orderPayments = orderPaymentsSmartList.getRecords();
+		
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getDynamicAmountFlag()) {
+				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
+					returnOrderPayment = orderPayment;
 				}
-			}
-		}
-		if(!isNull(dynamicChargeOrderPayment)) {
-			return dynamicChargeOrderPayment;
+				return orderPayment;
+			} 
 		}
 	}
 
 	public any function getDynamicCreditOrderPayment() {
-		var returnOrderPayment = javaCast("null", "");
-		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCredit' && orderPayment.getDynamicAmountFlag()) {
-				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
-					returnOrderPayment = orderPayment;
-				}
+		var orderPaymentsSmartList = this.getOrderPaymentsSmartList();
+		orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemCode','opstActive');
+		orderPaymentsSmartList.addFilter('orderPaymentType.systemCode','optCredit');
+		
+		var orderPayments = orderPaymentsSmartList.getRecords();
+		for(var orderPayment in orderPayments) {
+			if(orderPayment.getDynamicAmountFlag()) {
+				return orderPayment;
 			}
 		}
-		if(!isNull(returnOrderPayment)) {
-			return returnOrderPayment;
-		}
+		
 	}
 
 	public any function getDynamicChargeOrderPaymentAmount() {
@@ -1221,8 +1228,8 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	
 	public any function getOrderCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
-		collectionList.addDisplayProperty('siteID|value');
-		collectionList.addDisplayProperty('siteName|name');
+		
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
 		
 		var options = [{value ="", name="None"}];
 		

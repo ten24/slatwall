@@ -1065,8 +1065,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					logHibachi("an ormFlush() failed for an Entity Update of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);
 				}
 			}
-			writeDump(getErrors());
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
+			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors - #serializeJSON(getErrors())#");
 		}
 
 		var timestamp = now();
