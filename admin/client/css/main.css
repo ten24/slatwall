@@ -6138,12 +6138,12 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-loading-icon-fullwidth {
   position: fixed;
   top: 40%;
-  left: calc(140%);
+  left: calc(50% + 90px);
   z-index: 3000;
 }
 @media (max-width: 1199px) {
   .s-loading-icon-fullwidth {
-    left: calc(15%);
+    left: calc(50% - 35px);
   }
 }
 .s-slide-panel .s-slide-panel-header .s-slide-panel-close::after,
@@ -6247,14 +6247,13 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   width: 100%;
-  position: relative;
-  z-index: 9999;
+  position: absolute;
   left: 0px;
-  top: 0px;
+  top: 27px;
   right: 0px;
 }
 .s-search-results-wrapper .dropdown-menu {
-  top: 0px;
+  top: 3px;
   border-color: #CCC;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -6395,11 +6394,6 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper .s-input-btn {
   position: relative;
 }
-
-.s-select-list-wrapper .s-input-btn input {
-  height: 31px;
-}
-
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
@@ -6558,7 +6552,6 @@ sw-sku-thumbnail .thumbnail .caption {
 /*-- List Select Component Without Add --*/
 .s-select-list-wrapper.s-search .input-group-btn button.btn-default {
   border-right: 1px solid #CCC;
-  border-left: 1px solid #CCC;
 }
 /*-- Toggle Component --*/
 .stacked .s-toggle-switch {
@@ -6623,7 +6616,7 @@ sw-sku-thumbnail .thumbnail .caption {
 }
 .s-toggle-switch input:checked + div > label .s-toggle-switch-handle {
   left: 90%;
-  left: calc(80%);
+  left: calc(82% - 2px);
 }
 .s-toggle-switch-on,
 .s-toggle-switch-off {
@@ -8354,7 +8347,7 @@ table.s-detail-content-table tbody tr.s-done {
 .paginationpages1 {
   display: none;
 }
-.currency { 
-  text-align: right; 
-  float:right; 
+.currency {
+  text-align: right;
+  float: right;
 }

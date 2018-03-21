@@ -78,6 +78,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAveragePriceSoldAfterDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" formatType="currency";
+	property name="calculatedCurrentSkuPrice" ormtype="big_decimal" formatType="currency";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -180,6 +181,22 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
 		return getDao('stockDao').getCurrentLandedMargin(this.getStockID(),arguments.currencyCode);
 	}
+
+	public numeric function getCurrentSkuPrice() {
+	    var currencyCode = "USD";
+	    
+	    //Find it on the location.
+	    if (!isNull(getLocation()) && !isNull(getLocation().getCurrencyCode())){
+	        var currencyCode = getLocation().getCurrencyCode();
+	    }
+	    if (currencyCode != getSku().getCurrencyCode()) {
+	        var currentSkuPrice = getSku().getPriceByCurrencyCode(currencyCode = currencyCode, quantity=1);    
+	    }else{
+	        var currentSkuPrice = getSku().getPrice();
+	    }
+		return currentSkuPrice;
+	}
+	
 	
 	/*
 	public numeric function getAverageCost(required string currencyCode="USD"){

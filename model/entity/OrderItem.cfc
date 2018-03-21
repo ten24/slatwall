@@ -618,6 +618,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	public void function removeAppliedPriceGroup(any appliedPriceGroup) {
 		if(!structKeyExists(arguments, "appliedPriceGroup")) {
+			if(!structKeyExists(variables, "appliedPriceGroup")){
+				return;
+			}
 			arguments.appliedPriceGroup = variables.appliedPriceGroup;
 		}
 		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);

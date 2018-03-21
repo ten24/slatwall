@@ -87,7 +87,8 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</hb:HibachiListingDisplay> --->
 
-	<sw-listing-display data-using-personal-collection="true"
+	<sw-listing-display 
+		data-using-personal-collection="true"
 		data-collection="'Product'"
 		data-edit="false"
 		data-has-search="true"

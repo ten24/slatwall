@@ -344,6 +344,12 @@ Notes:
 
         if (!isNull(arguments.urlTitlePath) && !isNull(currentSite)){
             var contentEntity = getHibachiScope().getService("ContentService").getContentBySiteIDAndUrlTitlePath(currentSite.getSiteID(),arguments.urlTitlePath);
+            
+            if(isNull(contentEntity)){
+            	
+            	return getHibachiScope().getService("ContentService").getContentBySiteIDAndUrlTitlePath(currentSite.getSiteID(),"missing-partial");
+           	}
+
             return contentEntity;
         }
     }

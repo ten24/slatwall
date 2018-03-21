@@ -71,13 +71,41 @@ Notes:
 			</cfquery>
 			<cfreturn rs.deliveredQuantity>
 	</cffunction>
+	
+	<cffunction name="getDeliveredQuantitySumByOrderID" access="public" returntype="any">
+			<cfargument name="orderID" type="string" required="true" />
+
+			<cfset var rs = "" />
+
+			<cfquery name="rs">
+					SELECT COALESCE(sum(odi.quantity),0) as deliveredQuantity
+						FROM SwOrderDeliveryItem odi
+						INNER JOIN SwOrderItem oi on oi.orderItemID = odi.orderItemID 
+						INNER JOIN swOrder o on o.orderID = oi.orderID
+						WHERE o.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+			</cfquery>
+			<cfreturn rs.deliveredQuantity>
+	</cffunction>
+	
+	<cffunction name="getOrderItemCountByProductTypeName" access="public" returntype="boolean">
+		<cfargument name="orderID" type="string" required="true" />
+		<cfargument name="productTypeName" type="string" required="true" />
+		<cfquery name="orderItemCount">
+			    SELECT count(*) as count FROM swOrderItem oi
+			    INNER JOIN swSku s ON oi.skuID = s.skuID
+			    INNER JOIN swProduct p ON s.productID = p.productID
+			    INNER JOIN swProductType pt ON p.productTypeID = pt.productTypeID
+			    WHERE pt.productTypeName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeName#" />
+			    AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		</cfquery>
+		<cfreturn orderItemCount.count />
+	</cffunction>
 		
 	<cfscript>
 		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
-			var results = ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? ORDER BY modifiedDateTime DESC", [arguments.accountID], false, {maxResults=1});
-			if(arrayLen(results) && results[1].getOrderStatusType().getSystemCode() == "ostNotPlaced" ) {
-				return results[1];
-			}
+			return ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? AND o.orderStatusType.systemCode=? ORDER BY modifiedDateTime DESC", 
+				[arguments.accountID,'ostNotPlaced'], true, {maxResults=1}
+			);
 		}
 		
 		
@@ -127,13 +155,19 @@ Notes:
 		}
 
 		public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, string orderPaymentID) {
-			var result = ormExecuteQuery("SELECT orderPaymentID FROM SlatwallOrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?", [arguments.orderID, 'opstActive']);
-
-			if(arrayLen(result) && (!structKeyExists(arguments, "orderPaymentID") || result[1] neq arguments.orderPaymentID)) {
-				return true;
+		
+			var params = [arguments.orderID, 'opstActive'];
+			var hql = "SELECT count(orderPaymentID) FROM SlatwallOrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?";
+			
+			if(structKeyExists(arguments, "orderPaymentID") ){
+				arrayAppend(params,arguments.orderpaymentID);
+				hql &= " AND op.orderPaymentID !=?";
 			}
+			
+			var result = ormExecuteQuery(hql,params,true );
 
-			return false;
+			
+			return result;
 		}
 
 		public array function getRootOrderItems(required string orderID){

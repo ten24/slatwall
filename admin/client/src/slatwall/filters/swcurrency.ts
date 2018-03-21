@@ -5,7 +5,7 @@
 class SWCurrency{
    
     //@ngInject
-    public static Factory($sce,$log,$hibachi){
+    public static Factory($sce,$log,$hibachi,$filter){
         var data = null, serviceInvoked = false;
         function realFilter(value,decimalPlace,returnStringFlag=true) {
             // REAL FILTER LOGIC, DISREGARDING PROMISES
@@ -18,9 +18,9 @@ class SWCurrency{
             }
             if(angular.isDefined(value)){
                 if(angular.isDefined(decimalPlace)){
-                    value = parseFloat(value.toString()).toFixed(decimalPlace)
+                    value = $filter('number')(value.toString(), decimalPlace);
                 } else {
-                    value = parseFloat(value.toString()).toFixed(2)
+                    value = $filter('number')(value.toString(), 2);
                 }
             }
             if(returnStringFlag){

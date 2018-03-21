@@ -46,31 +46,33 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfoutput>
-    <sw-entity-action-bar
-            data-type="listing"
-            data-page-title-rb-key="entity.MinMaxSetup"
-    >
-        <sw-entity-action-bar-button-group>
-            <sw-process-caller data-action="entity.preprocessminmaxsetup" data-process-context="uploadimport" data-title-rb-key="entity.MinMaxSetup.process.uploadimport" data-class="adminentitycreateform btn btn-primary deafult-margin" data-icon="'upload'" data-type="link"></sw-process-caller>
-            <sw-process-caller data-action="admin:entity.createminmaxsetup" data-title-rb-key="entity.MinMaxSetup.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
-        </sw-entity-action-bar-button-group>
-    </sw-entity-action-bar>
-    <sw-listing-display
-        data-using-personal-collection="true"
-        data-collection="'MinMaxSetup'"
-        data-edit="false"
-        data-has-search="true"
-        record-edit-action="admin:entity.editminmaxsetup"
-        record-detail-action="admin:entity.detailminmaxsetup"
-        data-is-angular-route="false"
-        data-angular-links="false"
-        data-has-action-bar="false"
-    >
-        <sw-listing-column data-property-identifier="minMaxSetupID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-        <sw-listing-column data-property-identifier="setupName" tdclass="primary" ></sw-listing-column>
-    </sw-listing-display>
-</cfoutput>
+<cfset local.scriptHasErrors = false />
+
+<cftry>
+	<cfquery name="local.taskConditionsConfigs">
+		SELECT workflowtaskID, taskConditionsConfig FROM swWorkflowTask where taskConditionsConfig not like '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"%'
+	</cfquery>
+	<cfif local.taskConditionsConfigs.recordCount GT 0>
+		<cfloop query="local.taskConditionsConfigs" >
+			<cfset local.newConfig = rereplace(local.taskConditionsConfigs.taskConditionsConfig, '"(baseEntityAlias|propertyIdentifier|entityAlias)":"([A-Z])', '"\1":"_\2', 'ALL') />
+			<cfquery>
+				UPDATE swWorkflowTask
+				SET taskConditionsConfig = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.newConfig#" />
+                WHERE workflowtaskID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.taskConditionsConfigs.workflowtaskID#" />
+			</cfquery>
+		</cfloop>
+	</cfif>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update workflowtask taskConditionsConfig">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
+
+<cfif local.scriptHasErrors>
+	<cflog file="Slatwall" text="General Log - Part of Script v5_1.2 had errors when running">
+	<cfthrow detail="Part of Script v5_1.2 had errors when running">
+<cfelse>
+	<cflog file="Slatwall" text="General Log - Script v5_1.2 has run with no errors">
+</cfif>

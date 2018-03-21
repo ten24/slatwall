@@ -24,9 +24,7 @@
                             data-ng-options="property as property.displayPropertyIdentifier
 		          					for property in propertiesList[selectedProperty.propertyIdentifier].data
 		          					| orderBy:property.name
-		          					| filter:{fieldtype:'!one-to-many'}
-                                    | filter:{fieldtype:'!many-to-many'}
-                                    | filter:{fieldtype:'!many-to-one'}
+		          					| aggregateFilter
 		          					"
                             class="form-control input-sm"
                             data-ng-if="aggegate.selectedAggregate == 'sum' || aggegate.selectedAggregate == 'average'">

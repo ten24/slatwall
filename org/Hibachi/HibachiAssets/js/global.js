@@ -162,12 +162,16 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
 				
-	            var selectedValue = '';
+	            var selectedValue = jQuery(this).val() || '';
 	
 	            if(bindData.valueAttribute.length) {
 					var selectedValue = jQuery(this).children(":selected").attr(bindData.valueAttribute) || '';
 				}
-				if( jQuery( '#' + bindData.id ).hasClass('hide') && ( bindData.showValues && selectedValue && bindData.showValues.length && selectedValue.length && bindData.showValues.indexOf(selectedValue) != -1 || bindData.showValues === '*' && selectedValue.length)) {
+					if( jQuery( '#' + bindData.id ).hasClass('hide') 
+	                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
+	                     || bindData.showValues === '*' && selectedValue.length) 
+	            )
+				 {
 					
 	                jQuery( '#' + bindData.id ).removeClass('hide');
 	                

@@ -1,5 +1,4 @@
 component extends="framework.one" {
-
 	// ======= START: ENVIORNMENT CONFIGURATION =======
 
 	// =============== configApplication
@@ -106,6 +105,7 @@ component extends="framework.one" {
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
+	variables.framework.hibachi.availableEnvironments = ['local','development','production'];
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -117,6 +117,18 @@ component extends="framework.one" {
 	
 	if(structKeyExists(url, variables.framework.hibachi.runDbDataKey)){
 		variables.framework.hibachi.skipDbData = false;
+	}
+
+	public string function getEnvironment() {
+		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableEnvironments); i++){
+			if( structKeyExists(variables.framework.hibachi, '#variables.framework.hibachi.availableEnvironments[i]#UrlPattern')){
+				var currentEnvironmentUrlPattern = variables.framework.hibachi['#variables.framework.hibachi.availableEnvironments[i]#UrlPattern'];
+				if(len(currentEnvironmentUrlPattern) && REFindNoCase(currentEnvironmentUrlPattern,cgi.server_name)){
+					return  variables.framework.hibachi.availableEnvironments[i];
+				}
+			}
+		}
+		return 'production';
 	}
 
 	// =============== configMappings
@@ -222,9 +234,8 @@ component extends="framework.one" {
     public void function setupSubsystem( module ) {
 
     }
-
-
-	public any function bootstrap() {
+    
+    public void function createHibachiScope(){
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
@@ -232,6 +243,11 @@ component extends="framework.one" {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
             }
         }
+	}
+
+
+	public any function bootstrap() {
+		
 		
 		setupGlobalRequest();
 
@@ -243,7 +259,7 @@ component extends="framework.one" {
 
 	public any function reloadApplication() {
 		setupApplicationWrapper();
-
+		createHibachiScope();
 		lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="20" {
 			if( !structKeyExists(application, getHibachiInstanceApplicationScopeKey()) ) {
 				application[ getHibachiInstanceApplicationScopeKey() ] = {};
@@ -258,7 +274,7 @@ component extends="framework.one" {
 	}
 
 	public void function setupGlobalRequest() {
-		
+		createHibachiScope();
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
@@ -527,7 +543,8 @@ component extends="framework.one" {
 		&& url[variables.framework.reload] == variables.framework.password;
 	}
 
-	public void function verifyApplicationSetup(reloadByServerInstance=false) {
+	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
+		createHibachiScope();
 		if(
 			(
 				hasReloadKey()
@@ -553,6 +570,7 @@ component extends="framework.one" {
 					applicationInitData["instantiationKey"] =			createUUID();
 					applicationInitData["application"] = 				this;
 					applicationInitData["applicationKey"] = 			variables.framework.applicationKey;
+					applicationInitData["applicationEnvironment"] = 	getEnvironment();
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
@@ -809,7 +827,7 @@ component extends="framework.one" {
 
 					// Announce the applicationSetup event
 					getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationSetup");
-					if(updated && structKeyExists(request, "action")){
+					if(!arguments.noredirect && updated && structKeyExists(request, "action")){
 
 						redirect(action=request.action,queryString='updated=true');
 					}
@@ -1128,6 +1146,13 @@ component extends="framework.one" {
 		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
 		var context = getPageContext();
 		var response = context.getResponse();
+		
+		//this will only run if we are updating from fw/1 2.2 to fw/1 4.x
+		if(exception.cause.message == "Element CACHE.ROUTES.REGEX is undefined in a CFML structure referenced as part of an expression."){
+			structDelete(application,variables.framework.applicationKey);
+			applicationStop();
+			location('?reload=true&update=true',false);
+		}
 		if(variables.framework.hibachi.errorDisplayFlag && structKeyExists(request,'context') && structKeyExists(request.context,'apiRequest') && request.context.apiRequest){
 			writeDump(exception); abort;
 		}

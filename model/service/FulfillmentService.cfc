@@ -114,14 +114,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//Generate the next fulfillmentBatch number
 		arguments.fulfillmentBatch.setFulfillmentBatchNumber(this.getMaxFulfillmentBatchNumber());
 		
-		//Add the locations
-		if (!isNull(processObject.getLocations()) ){
-			var locations = processObject.getLocations();
-			for (var location in locations){
-				arguments.fulfillmentBatch.addLocation(location);
-			}
-		}
-		
 		//Save the batch so we can add a many to many.
 		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
 		
@@ -137,6 +129,69 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.saveFulfillmentBatch(arguments.fulfillmentBatch);
 		
 		return arguments.fulfillmentBatch;
+	}
+
+	//This is only valid if there is only one batch location
+	public any function processFulfillmentBatch_createStockTransfers(required any fulfillmentBatch){
+		var batchLocation = arguments.fulfillmentBatch.getLocations()[1];
+		var stockTransfers = {};
+		var fulfillmentBatchItems = arguments.fulfillmentBatch.getFulfillmentBatchItems();
+		for(var fulfillmentBatchItem in fulfillmentBatchItems){
+			if(!isNull(fulfillmentBatchItem.getOrderItem())){
+				var orderItem = fulfillmentBatchItem.getOrderItem();
+				var stock = orderItem.getStock();
+				var stockLocation = stock.getLocation();
+				if(stockLocation != batchLocation){
+					stockTransfers = createStockAdjustmentDataForFulfillmentBatchItem(stockTransfers,orderItem,batchLocation);
+				}
+			}else if(!isNull(fulfillmentBatchItem.getOrderFulfillment())){
+				var orderFulfillment = fulfillmentBatchItem.getOrderFulfillment();
+				for(var orderFulfillmentItem in orderFulfillment.getOrderFulfillmentItems()){
+					var stock = orderFulfillmentItem.getStock();
+					if(!isNull(stock)){
+						var stockLocation = stock.getLocation();
+						if(stockLocation.getLocationID() != batchLocation.getLocationID()){
+							stockTransfers = createStockAdjustmentDataForFulfillmentBatchItem(stockTransfers,orderFulfillmentItem,batchLocation);
+						}
+					}
+				}
+			}
+		}
+		return arguments.fulfillmentBatch;
+	}
+	
+	public any function createStockAdjustmentDataForFulfillmentBatchItem(required struct stockTransfers, required any orderItem, required any batchLocation){
+		var stock = arguments.orderItem.getStock();
+		var stockLocation = stock.getLocation();
+		
+		if(!isNull(arguments.stockTransfers[stockLocation.getLocationID()])){
+					var stockTransfer = arguments.stockTransfers[stockLocation.getLocationID()]	
+		}else{
+			var stockAdjustmentData = {};
+			stockAdjustmentData.stockAdjustmentID = createHibachiUUID();
+			stockAdjustmentData.fromLocationID = stockLocation.getLocationID();
+			stockAdjustmentData.toLocationID = batchLocation.getLocationID();
+			stockAdjustmentData.stockAdjustmentTypeID = getService("typeService").getTypeBySystemCode("satLocationTransfer").getTypeID();
+			stockAdjustmentData.stockAdjustmentStatusTypeID = getService("typeService").getTypeBySystemCode("sastNew").getTypeID();
+		   	stockAdjustmentData.timeStamp = now();
+			stockAdjustmentData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
+			getDAO('stockDAO').insertMinMaxTransferStockAjustment(stockAdjustmentData);
+			arguments.stockTransfers[stockLocation.getLocationID()] = stockAdjustmentData;
+			var stockTransfer = stockAdjustmentData;
+		}
+		var stockAdjustmentItemData = {};
+		stockAdjustmentItemData.stockAdjustmentItemID = createHibachiUUID();
+		stockAdjustmentItemData.stockAdjustmentID = stockTransfer.stockAdjustmentID;
+		stockAdjustmentItemData.quantity = arguments.orderItem.getQuantity();
+		stockAdjustmentItemData.currencyCode = stockLocation.getCurrencyCode();
+		stockAdjustmentItemData.cost = stock.getAverageCost();
+		stockAdjustmentItemData.fromStockID = stock.getStockID();
+		stockAdjustmentItemData.toStockID = getService('stockService').getStockBySkuIDAndLocationID(stock.getSku().getSkuID(),batchLocation.getLocationID()).getStockID();
+		stockAdjustmentItemData.skuID = stock.getSku().getSkuID();
+	   	stockAdjustmentItemData.timeStamp = now();
+		stockAdjustmentItemData.administratorID = getSlatwallScope().getCurrentAccount().getAccountID();
+		getDAO('stockDAO').insertMinMaxTransferStockAjustmentItem(stockAdjustmentItemData);
+		return arguments.stockTransfers;
 	}
 	
 	public any function getMaxFulfillmentBatchNumber(){
