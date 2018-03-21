@@ -118,7 +118,6 @@ component entityname="SlatwallStockAdjustmentDeliveryItem" table="SwStockAdjustm
 	public void function preInsert(){
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
-		getStock().updateCalculatedProperties(true);
 		getHibachiScope().addModifiedEntity(getStock());
 	}
 	
