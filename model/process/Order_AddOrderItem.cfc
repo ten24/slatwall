@@ -111,6 +111,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
+	property name="shippingAccountAddresses" type="array";
 
 	public any function init(){
 		super.init();
@@ -132,7 +133,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return variables.registrantAccounts;
 		}
 		variables.registrantAccounts = [];
-		for(i=1;i<=quantity;i++) {
+		for(i=1;i<=variables.quantity;i++) {
 			var account = getService("accountService").newAccount();
 			arrayAppend(variables.registrantAccounts,account);
 		}
@@ -536,6 +537,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID());
 			s.addOrder("accountAddressName|ASC");
 			var r = s.getRecords();
+			variables.shippingAccountAddresses = r;
 			for(var i=1; i<=arrayLen(r); i++) {
 				var shippingAccountAddressIDOption = {};
 				shippingAccountAddressIDOption['name'] = r[i].getSimpleRepresentation();
@@ -739,11 +741,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		super.populate(argumentcollection=arguments);
 
 		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
-		for(attributeSet in getAssignedOrderItemAttributeSets()){
-			for(attribute in attributeSet.getAttributes()){
-				if(structKeyExists(arguments.data,attribute.getAttributeCode())){
-					attributeValuesByCodeStruct[ attribute.getAttributeCode() ] = data[ attribute.getAttributeCode() ];
+		var assignedOrderItemAttributeSetCollectionList = getSku().getAssignedOrderItemAttributeSetCollectionList();
+		
+		assignedOrderItemAttributeSetCollectionList.setDisplayProperties('attributeSetID');
+		
+		var assignedOrderItemAttributeSetRecords = assignedOrderItemAttributeSetCollectionList.getRecords();
+		
+		var attributeSetIDArray = [];
+		for(var assignedOrderItemAttributeSetRecord in assignedOrderItemAttributeSetRecords){
+			arrayAppend(attributeSetIDArray,assignedOrderItemAttributeSetRecord['attributeSetID']);
 				}
+		var cacheKey = "Order_AddOrderItem_populate#arrayToList(attributeSetIDArray)#";
+		
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+			attributeCollectionList.setDisplayProperties('attributeCode');
+			attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
+			
+			getService('HibachiCacheService').setCachedValue(cacheKey,attributeCollectionList.getRecords());
+		}
+		attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
+		
+		
+		for(var attributeCollectionListRecord in attributeCollectionListRecords){
+			if(len(trim(attributeCollectionListRecord['attributeCode']))){
+				attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
 			}
 		}
 

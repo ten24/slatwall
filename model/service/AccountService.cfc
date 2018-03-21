@@ -59,13 +59,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
-	
+	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
 	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
-	
+	property name="validationService" type="any";
 
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -214,7 +214,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
-		
+	
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
@@ -246,7 +246,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
-			
+		
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
 		// If no errors, then we can process a transaction
 		} else {
@@ -1338,7 +1338,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
 				// If the paymentTransaction has errors, then add those errors to the accountPayment itself
-				if(paymentTransaction.hasError('runTransaction')) {
+				if(paymentTransaction.hasError('runTransaction') ) {
 					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
 					getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived());
@@ -1367,8 +1367,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
 			// If the paymentTransaction has errors, then add those errors to the accountPayment itself
-			if(paymentTransaction.hasError('runTransaction')) {
+			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+			}
+			
+			if (paymentTransaction.getTransactionSuccessFlag() == false){
+				accountPayment.setActiveFlag(false);
 			}
 		}
 
@@ -1411,7 +1415,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return arguments.permission;
 	}
-
+	
 	public any function processPermissionGroup_clonePermission(required any permissionGroup, required any processObject, struct data = {}) {
 
 		var permissionType = '';
@@ -1451,16 +1455,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true";
-
+		
 		// See if the accountPaymentMethod was new
 		var wasNew = arguments.accountPaymentMethod.getNewFlag();
 
 		// Call the generic save method to populate and validate
 		arguments.accountPaymentMethod = save(arguments.accountPaymentMethod, arguments.data, arguments.context);
-
+		
+		
+		
 		// If the order payment does not have errors, then we can check the payment method for a saveTransaction
 		if(wasNew && !arguments.accountPaymentMethod.hasErrors() && arguments.data.runSaveAccountPaymentMethodTransactionFlag && !isNull(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && len(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType() neq "none") {
-
 			// Setup transaction data
 			var transactionData = {
 				amount = 0,
@@ -1471,6 +1476,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.accountPaymentMethod.clearProcessObject( 'createTransaction' );
 
 			arguments.accountPaymentMethod = this.processAccountPaymentMethod(arguments.accountPaymentMethod, transactionData, 'createTransaction');
+			if (arguments.accountPaymentMethod.hasErrors()){
+				arguments.accountPaymentMethod.errors = [];
+				arguments.accountPaymentMethod.setActiveFlag(false);
+				this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+			}
 		}
 
 		return arguments.accountPaymentMethod;
@@ -1590,7 +1600,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Delete Overrides ==========================
 
 	public boolean function deleteAccount(required any account) {
-
+		
+		getService("HibachiTagService").cfsetting(requesttimeout="120");
+		
 		// Check delete validation
 		if(arguments.account.isDeletable()) {
 
@@ -1598,8 +1610,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryEmailAddress(javaCast("null", ""));
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
-
-			getAccountDAO().removeOwnerAccount(account.getAccountID());
+			arguments.account.setOwnerAccount(javaCast("null", ""));
+			
+			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 

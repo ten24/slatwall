@@ -319,5 +319,9 @@ component accessors="true" output="false" persistent="false" {
 		getHibachiScope().setSessionValue(arguments.key,arguments.value);
 	}
 	
+	public void function clearVariablesKey(required string key){
+		structDelete(variables,arguments.key);
+	}
+
 	// ========================= END: APPLICATION VAUES ===========================================
 }

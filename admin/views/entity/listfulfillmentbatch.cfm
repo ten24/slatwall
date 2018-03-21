@@ -82,7 +82,7 @@ Notes:
 		            <sw-collection-column data-property-identifier="assignedAccount.fullName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 		        </sw-collection-columns>
 				<sw-collection-filters>
-					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-value="ofstUnfulfilled"></sw-collection-filter>
+					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ofstUnfulfilled,ofstPartiallyFulfilled"></sw-collection-filter>
 				</sw-collection-filters>
 			</sw-collection-config>
 		</sw-collection-configs>

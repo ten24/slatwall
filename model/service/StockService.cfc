@@ -57,7 +57,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// Inject DAO's
 	property name="stockDAO" type="any";
-
+	
 	// ====================== START: Save Overrides ===========================
 	public any function getStockBySkuAndLocation(required any sku, required any location){
 		var stock = getStockDAO().getStockBySkuAndLocation(argumentCollection=arguments);
@@ -388,6 +388,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
 				getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock());
 			}
+		
 			this.saveStockReceiver(stockReceiver);
 		}
 
@@ -395,6 +396,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		if( listFindNoCase("satLocationTransfer,satManualOut", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			var stockAdjustmentDelivery = this.newStockAdjustmentDelivery();
 			stockAdjustmentDelivery.setStockAdjustment(arguments.stockAdjustment);
+			stockAdjustmentDelivery.setDeliveryOpenDateTime(now());
+			stockAdjustmentDelivery.setDeliveryCloseDateTime(now());
 
 			for(var i=1; i <= arrayLen(arguments.stockAdjustment.getStockAdjustmentItems()); i++) {
 				var stockAdjustmentItem = arguments.stockAdjustment.getStockAdjustmentItems()[i];
@@ -440,6 +443,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setCost( stockAdjustmentItem.getCost() );
 					stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
+					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock());
 
 				// If this is Out, create delivery
 				} else if (!isNull(stockAdjustmentItem.getFromStock())) {
@@ -460,6 +464,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockAdjustmentDeliveryItem.setCost( stockAdjustmentItem.getCost() );
 					stockAdjustmentDeliveryItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 					stockAdjustmentDeliveryItem.setStock( stockAdjustmentItem.getFromStock() );
+					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getFromStock());
 				}
 			}
 		}
@@ -560,7 +565,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function processMinMaxStockTransfer_createStockAdjustments(required any MinMaxStockTransfer, required any processObject) {
 
 		getHibachiTagService().cfSetting(requesttimeout="3600");
-
+		
 		var minMaxStockTransferItemsCollectionList = arguments.MinMaxStockTransfer.getMinMaxStockTransferItemsCollectionList();
 		
 		minMaxStockTransferItemsCollectionList.addFilter('transferQuantity', '1', '>=');
@@ -669,6 +674,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			    }
 			    stockDAO.insertMinMaxStockTransferItem(minMaxStockTransferItemData);
 			}
+
 		}
 
 		return arguments.entity;
@@ -732,3 +738,4 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 }
+

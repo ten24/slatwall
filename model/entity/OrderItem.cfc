@@ -52,6 +52,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="bundleItemQuantity" hb_populateEnabled="public" ormtype="integer";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+
+	
 	// Calculated Properties
 	property name="calculatedExtendedPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedExtendedUnitPrice" ormtype="big_decimal" hb_formatType="currency";
@@ -60,7 +62,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="calculatedTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedItemTotal" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
-
+	
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
 	property name="orderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemType" fetch="join";
@@ -130,6 +132,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
  	public boolean function getQuantityHasChanged(){
 		return variables.quantityHasChanged;
 	}
+	
+	
 
 	// @hint Returns options that can act as placeholders for gift card codes that remain to be assigned to fulfill order item quantity
 	public array function getProvidedGiftCardCodePlaceholderOptions( maxPlaceholders = getQuantityUndelivered() ) {
@@ -195,7 +199,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     }
 
 	public numeric function getTotalWeight() {
-		return getService('HibachiUtilityService').precisionCalculate(getSku().getWeight() * getQuantity());
+		if(!structKeyExists(variables,'totalWeight')){
+			variables.totalWeight = getService('HibachiUtilityService').precisionCalculate(getSku().getWeight() * getQuantity());;
+		}
+		return variables.totalWeight;
 	}
 
 	public numeric function getMaximumOrderQuantity() {
@@ -322,12 +329,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
     // This method returns a single percentage rate for all taxes. So an item with tax 5% and 8% would return 13.
     public numeric function getCombinedTaxRate() {
-    	var taxRate = 0;
-    	for(var i=1; i <= ArrayLen(getAppliedTaxes()); i++) {
-    		taxRate = getService('HibachiUtilityService').precisionCalculate(taxRate + getAppliedTaxes()[i].getTaxRate());
+    	if(!structKeyExists(variables,'combinedTaxRate')){
+    		var taxRate = 0;
+	    	for(var i=1; i <= ArrayLen(getAppliedTaxes()); i++) {
+	    		taxRate = getService('HibachiUtilityService').precisionCalculate(taxRate + getAppliedTaxes()[i].getTaxRate());
+	    	}
+	    	variables.combinedTaxRate = taxRate;
     	}
+    	
 
-    	return taxRate;
+    	return variables.combinedTaxRate;
     }
 
     public struct function getQuantityPriceAlreadyReturned() {
@@ -353,48 +364,45 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// ============ START: Non-Persistent Property Methods =================
 
-	public numeric function getDiscountAmount(boolean forceCalculationFlag = false) {
+	public numeric function getDiscountAmount(boolean forceCalculationFlag = true) {
 		var discountAmount = 0;
+	
+		for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
+			discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
+		}
 		
-		if(getNewFlag() || arguments.forceCalculationFlag){
-			for(var i=1; i<=arrayLen(getAppliedPromotions()); i++) {
-				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + getAppliedPromotions()[i].getDiscountAmount());
-			}
-			
-			if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
-				for(var childOrderItem in this.getChildOrderItems()){
-					discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
-				}
-			}
-		}else{
-			var promotionAppliedCollectionList = getService('promotionService').getPromotionAppliedCollectionList();
-			promotionAppliedCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
-			promotionAppliedCollectionList.setDisplayProperties('orderItem.orderItemID');
-			promotionAppliedCollectionList.addDisplayAggregate('discountAmount','SUM','discountAmountSUM');
-			var promotionAppliedSum = promotionAppliedCollectionList.getRecords();
-			
-			if(arrayLen(promotionAppliedSum)){
-				
-				discountAmount = promotionAppliedSum[1]['discountAmountSUM'];
-			}else{
-				discountamount = 0;
+		if(!isNull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			for(var childOrderItem in this.getChildOrderItems()){
+				discountAmount = getService('HibachiUtilityService').precisionCalculate(discountAmount + childOrderItem.getDiscountAmount());
 			}
 		}
+		
 
 		return discountAmount;
 	}
 
 	public numeric function getExtendedPrice() {
-		var price = 0;
-
-		//get bundle price
-		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
-			price = getProductBundlePrice();
-		}else if(!isNull(getPrice())){
-			price = getPrice();
+		if(!structKeyExists(variables,'extendedPrice')){
+			var price = 0;
+		
+			//get bundle price
+			if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				price = getProductBundlePrice();
+			}else if(!isNull(getPrice())){
+				price = getPrice();
+			}
+			variables.extendedPrice = val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
 		}
-		return val(getService('HibachiUtilityService').precisionCalculate(round(price * val(getQuantity()) * 100) / 100));
-
+		return variables.extendedPrice;
+	}
+	
+	public void function setPrice(numeric price){
+		if(structKeyExists(arguments,'price')){
+			variables.price = arguments.price;
+			if(structKeyExists(variables,'extendedPrice')){
+				structDelete(variables,'extendedPrice');
+			}
+		}
 	}
 
 
@@ -510,23 +518,31 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public numeric function getTaxAmount() {
-		var taxAmount = 0;
+		if(!structKeyExists(variables,'taxAmount')){
+			var taxAmount = 0;
 
-		for(var taxApplied in getAppliedTaxes()) {
-			taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
+			for(var taxApplied in getAppliedTaxes()) {
+				taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
+			}
+			variables.taxAmount = taxAmount;
 		}
+		
 
-		return taxAmount;
+		return variables.taxAmount;
 	}
 
 	public numeric function getTaxLiabilityAmount() {
-		var taxLiabilityAmount = 0;
+		if(!structKeyExists(variables,'taxLiabilityAmount')){
+			var taxLiabilityAmount = 0;
 
-		for(var taxApplied in getAppliedTaxes()) {
-			taxLiabilityAmount = getService('HibachiUtilityService').precisionCalculate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
+			for(var taxApplied in getAppliedTaxes()) {
+				taxLiabilityAmount = getService('HibachiUtilityService').precisionCalculate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
+			}
+			variables.taxLiabilityAmount = taxLiabilityAmount;
 		}
+		
 
-		return taxLiabilityAmount;
+		return variables.taxLiabilityAmount;
 	}
 
 	public void function setQuantity(required numeric quantity){
@@ -534,6 +550,21 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
  			variables.quantityHasChanged = true; //a dirty check flag for validation.
  		}		
 		variables.quantity = arguments.quantity;
+		if(structKeyExists(variables,'extendedPrice')){
+			structDelete(variables,'extenedPrice');
+		}
+		if(structKeyExists(variables,'totalWeight')){
+			structDelete(variables,'totalWeight');
+		}
+		
+		if(structKeyExists(variables,'taxAmount')){
+			structDelete(variables,'taxAmount');
+		}
+		if(structKeyExists(variables,'taxLiabilityAmount')){
+			structDelete(variables,'taxLiabilityAmount');
+		}
+		
+		
 		if(this.isRootOrderItem()){
 			for(var childOrderItem in this.getChildOrderItems()){
 				if (!isNull(childOrderItem.getBundleItemQuantity()) && structKeyExists(variables, "quantity")){
@@ -542,6 +573,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 				}
 			}
 		}
+		
 	}
 
 	public void function setBundleItemQuantity(required numeric bundleItemQuantity){
@@ -553,9 +585,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
-		
-		if(!getNewFlag()){
-			var quantityDelivered = getDAO("OrderDAO").getDeliveredQuantitySum(orderItemID);
+
+		for( var i=1; i<=arrayLen(getOrderDeliveryItems()); i++){
+			if(!getOrderDeliveryItems()[i].getNewFlag()) {
+				quantityDelivered += getOrderDeliveryItems()[i].getQuantity();
+			}
 		}
 
 		return quantityDelivered;
@@ -563,18 +597,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
-		
-		if(!getNewFlag()){
-			
-			var stockReceiverItemsCollectionList = getService('stockService').getStockReceiverItemCollectionList();
-			stockReceiverItemsCollectionList.addFilter('orderItem.orderItemID',getOrderItemID());
-			stockReceiverItemsCollectionList.setDisplayProperties('orderItem.orderItemID');
-			stockReceiverItemsCollectionList.addDisplayAggregate('quantity','SUM','quantitySUM');
-			var stockReceiverItemsSum = stockReceiverItemsCollectionList.getRecords();
-			if(arraylen(stockReceiverItemsSum)){
-				quantityReceived = stockReceiverItemsSum[1]['quantitySUM'];
-			}
-		}
 
 		for( var i=1; i<=arrayLen(getStockReceiverItems()); i++){
 			if(!getStockReceiverItems()[i].getNewFlag()) {
@@ -626,6 +648,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
 		if(index > 0) {
 			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
+			this.setPrice(this.getSkuPrice());
 		}
 		structDelete(variables, "appliedPriceGroup");
 	}
@@ -762,17 +785,56 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	// Applied Promotions (one-to-many)
 	public void function addAppliedPromotion(required any appliedPromotion) {
+		if(structKeyExists(variables,'discountAmount')){
+			structDelete(variables,'discountAmount');
+		}
+		
+		if(structKeyExists(variables,'taxAmount')){
+			structDelete(variables,'taxAmount');
+		}
+		if(structKeyExists(variables,'taxLiabilityAmount')){
+			structDelete(variables,'taxLiabilityAmount');
+		}
+		
+		
 		arguments.appliedPromotion.setOrderItem( this );
 	}
 	public void function removeAppliedPromotion(required any appliedPromotion) {
+		if(structKeyExists(variables,'discountAmount')){
+			structDelete(variables,'discountAmount');
+		}
+		if(structKeyExists(variables,'taxAmount')){
+			structDelete(variables,'taxAmount');
+		}
+		if(structKeyExists(variables,'taxLiabilityAmount')){
+			structDelete(variables,'taxLiabilityAmount');
+		}
 		arguments.appliedPromotion.removeOrderItem( this );
 	}
 
 	// Applied Taxes (one-to-many)
 	public void function addAppliedTax(required any appliedTax) {
+		if(structKeyExists(variables,'taxAmount')){
+			structDelete(variables,'taxAmount');
+		}
+		if(structKeyExists(variables,'taxLiabilityAmount')){
+			structDelete(variables,'taxLiabilityAmount');
+		}
+		if(structKeyExists(variables,'combinedTaxRate')){
+			structDelete(variables,'combinedTaxRate');
+		}
 		arguments.appliedTax.setOrderItem( this );
 	}
 	public void function removeAppliedTax(required any appliedTax) {
+		if(structKeyExists(variables,'taxAmount')){
+			structDelete(variables,'taxAmount');
+		}
+		if(structKeyExists(variables,'taxLiabilityAmount')){
+			structDelete(variables,'taxLiabilityAmount');
+		}
+		if(structKeyExists(variables,'combinedTaxRate')){
+			structDelete(variables,'combinedTaxRate');
+		}
 		arguments.appliedTax.removeOrderItem( this );
 	}
 

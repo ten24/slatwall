@@ -414,7 +414,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 	public any function getAvailableCartPropertyList() {
 		return rereplace("orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,
-			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
+			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
 			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,
@@ -578,7 +578,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public boolean function onSlatwallCMS(){
-		return !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
+		if(!structKeyExists(variables,'isOnSlatwallCMS')){
+			variables.isOnSlatwallCMS = !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
+		}
+		return variables.isOnSlatwallCMS;
 	}
 	
 }

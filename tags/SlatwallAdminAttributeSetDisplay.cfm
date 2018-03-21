@@ -123,6 +123,11 @@ Notes:
 			<cfelse>
 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 			</cfif>
+			<cfif structKeyExists(fdAttributes, 'valueLink') AND left(fdAttributes.valueLink, 5) EQ 's3://'>
+				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromS3(fdAttributes.valueLink)#" />
+			</cfif>
+
+
 			
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject) AND thisAttributeValueObject.getClassName() EQ 'AttributeValue'>
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
