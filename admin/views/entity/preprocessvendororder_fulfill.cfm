@@ -62,7 +62,7 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" value="#rc.vendorOrder.getBillToLocation().getLocationID()#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" value="#!isNull(rc.vendorOrder.getBillToLocation()) ? rc.vendorOrder.getBillToLocation().getLocationID() : ''#">
 				<hb:HibachiPropertyDisplay fieldName="vendorOrder.shippingAndHandlingCost" object="#rc.processObject.getVendorOrder()#"  property="shippingAndHandlingCost" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay fieldName="vendorOrder.costDistributionType" object="#rc.processObject.getVendorOrder()#" property="costDistributionType" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
