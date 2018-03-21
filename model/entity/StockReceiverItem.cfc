@@ -216,7 +216,9 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
 		}
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
-		
+
+		//logHibachi('Add Stock to Modified Entity: #getStock().getStockID()# - QOH: #getStock().getQuantity("qoh",true)#',true);
+		getHibachiScope().addModifiedEntity(getStock());
 	}
 	
 	public void function preUpdate(Struct oldData){
