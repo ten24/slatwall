@@ -1406,6 +1406,155 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
 
+
+	/**
+	* @test
+	*/
+	public void function verify_cached_collectionList_present(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '300',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = productWithSkus.getskusCollectionlist();
+		myCollection.setDisplayProperties('skuName');
+		myCollection.addDisplayAggregate('price','SUM','priceSum');
+		myCollection.addFilter('skuDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('skuDesc|asc');
+
+		var myCollectionNew = productWithSkus.getskusCollectionlist();
+		myCollectionNew.setDisplayProperties('skuCode');
+		myCollectionNew.addDisplayAggregate('price','AVG','priceAvg');
+		myCollectionNew.addFilter('skuName',uniqueNumberForDescription);
+		myCollectionNew.addOrderBy('skuDesc|desc');
+
+		// assertions for mycollection
+		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollection.getHQL()));
+		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollection.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollection.getHQL()));
+
+		// assertions for mycollectionNew
+		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollectionNew.getHQL()));
+		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollectionNew.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function verify_new_collectionList_created(){
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '300',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = productWithSkus.getskusCollectionlist();
+		myCollection.setDisplayProperties('skuName');
+		myCollection.addDisplayAggregate('price','SUM','priceSum');
+		myCollection.addFilter('skuDescription',uniqueNumberForDescription);
+		myCollection.addOrderBy('skuDesc|asc');
+
+		var myCollectionNew = productWithSkus.getskusCollectionlist(isNew=true);
+		myCollectionNew.setDisplayProperties('skuCode');
+		myCollectionNew.addDisplayAggregate('price','AVG','priceAvg');
+		myCollectionNew.addFilter('skuName',uniqueNumberForDescription);
+		myCollectionNew.addOrderBy('skuDesc|desc');
+
+		// assertions for mycollection
+		assertTrue(FindNoCase("_sku.skuName as skuName",myCollection.getHQL()));
+		asserttrue(FindNoCase("SUM(COALESCE(_sku.price,0)) as priceSum",myCollection.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc asc",myCollection.getHQL()));
+
+		// assertions for mycollectionNew
+		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollectionNew.getHQL()));
+		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollectionNew.getHQL()));
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
+	}
+
+	/**
+	* @test
+	*/
+	public void function verify_duplicate_propertyIdentifier_for_orderBy_donot_exists(){
+
+		var uniqueNumberForDescription = createUUID();
+
+		var productWithSkusData = {
+			productID = '',
+			productName = 'ProductUnitTest',
+			productCode = 'ProductUnitTest'&createUUID(),
+			productDescription = uniqueNumberForDescription,
+			skus = [
+				{
+					skuID = '',
+					price = '300',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '20',
+					skuCode= createUUID()
+				},
+				{
+					skuID = '',
+					price = '30',
+					skuCode= createUUID()
+				}
+			]
+		};
+		var productWithSkus = createPersistedTestEntity('product', productWithSkusData);
+
+		var myCollection = productWithSkus.getskusCollectionlist();
+		myCollection.setDisplayProperties('skuName');
+		myCollection.addOrderBy('skuDesc|asc');
+		myCollection.addOrderBy('skuDesc|desc');
+		assertTrue(FindNoCase("_sku.skuDesc desc",myCollection.getHQL())); // contains skuDesc|desc in hql
+		assertFalse(FindNoCase("_sku.skuDesc asc",myCollection.getHQL())); // donot contains skuDesc|asc in hql
+	}
+
 	/**
 	* @test
 	*/
@@ -4318,131 +4467,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		data['p:show'] = -2;
 		collectionEntity.applyData(data);
 		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?p:show=2';
-
-		collectionEntity.applyData(queryString);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),2);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_queryString_default_pageshow(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?p:current=3';
-
-		collectionEntity.applyData(queryString);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),10);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
-	}
-
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_queryString_default_pageshow_default_currentPageDeclaration(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '';
-		collectionEntity.applyData(queryString);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),10);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assertfalse(filter.value == 'Mindfire');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_comparisonOperator(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assertfalse(filter.comparisonOperator == '>');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assertfalse(filter.propertyIdentifier == '_account.lastName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_hql(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assertfalse(collectionEntity.getHQL() Contains '_account.lastName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_for_default_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),10);
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		data['p:show'] = -2;
-		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
 	}
 
 	/**
