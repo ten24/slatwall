@@ -626,6 +626,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var index = arrayFind(arguments.appliedPriceGroup.getAppliedOrderItems(), this);
 		if(index > 0) {
 			arrayDeleteAt(arguments.appliedPriceGroup.getAppliedOrderItems(), index);
+			this.setPrice(this.getSkuPrice());
 		}
 		structDelete(variables, "appliedPriceGroup");
 	}
