@@ -60,7 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderDeliveryItems" type="array" hb_populateArray="true";
 	property name="giftCardCodes" type="array" hb_populateArray="true";
-
+	
 	property name="useShippingIntegrationForTrackingNumber" hb_formFieldType="yesno";
 	property name="trackingNumber";
 	property name="containerLabel";
@@ -68,9 +68,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="capturableAmount" hb_formatType="currency";
 
 	variables.orderDeliveryItems = [];
-
-
-
+	
+	
+	
 	public any function getShippingIntegration(){
 		if(
 			!isNull(getOrderFulfillment().getShippingMethodRate())
@@ -82,7 +82,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.shippingIntegration;
 	}
-
+	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
 		return (
 			!isNull(getorderfulfillment().getSelectedShippingMethodOption())
@@ -104,47 +104,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return false;
 	}
-
-	public string function getTrackingNumber(){
-
-		if(!structKeyExists(variables,'trackingNumber') ){
-			//get tracking number from integration if specified
-			if(getUseShippingIntegrationForTrackingNumber()){
-				processShipmentRequest();
-			}else{
-				return "";
-			}
-		}
-		return variables.trackingNumber;
-	}
-
-	public string function getContainerLabel(){
-		if(!structKeyExists(variables,'containerLabel')){
-			//get tracking number from integration if specified
-			if(getUseShippingIntegrationForTrackingNumber()){
-				processShipmentRequest();
-			}else{
-				return "";
-			}
-		}
-		return variables.containerLabel;
-	}
-
-
-	public void function processShipmentRequest(){
-		var selectedIntegration = getShippingIntegration();
-		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
-		//create OrderDelivery and get tracking Number and generate label if shipping.cfc has method
-		if(structKeyExists(shippingIntegrationCFC,'processShipmentRequest')){
-  			shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
- 		} else {
- 			this.setTrackingNumber("");
- 			this.setContainerLabel("");
-  		}
-
-	}
-
-
+	
+	
+	
 	public boolean function hasAllGiftCardCodes(){
 
 			if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(this.getGiftCardCodes())){
