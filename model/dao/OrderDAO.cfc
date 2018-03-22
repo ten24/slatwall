@@ -90,7 +90,7 @@ Notes:
 	<cffunction name="getOrderItemCountByProductTypeName" access="public" returntype="boolean">
 		<cfargument name="orderID" type="string" required="true" />
 		<cfargument name="productTypeName" type="string" required="true" />
-		<cfquery name="orderItemCount">
+		<cfquery name="local.orderItemCount">
 			    SELECT count(*) as count FROM swOrderItem oi
 			    INNER JOIN swSku s ON oi.skuID = s.skuID
 			    INNER JOIN swProduct p ON s.productID = p.productID
@@ -98,7 +98,7 @@ Notes:
 			    WHERE pt.productTypeName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeName#" />
 			    AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
-		<cfreturn orderItemCount.count />
+		<cfreturn local.orderItemCount.count />
 	</cffunction>
 		
 	<cfscript>

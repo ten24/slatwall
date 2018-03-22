@@ -85,7 +85,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Check each of the orderFulfillments to see if they are ready to process
-		for(var i = 1; i <= arrayLen(arguments.order.getOrderFulfillments()); i++) {
+		var orderFulfillmentsCount = arrayLen(arguments.order.getOrderFulfillments());
+		for(var i = 1; i <= orderFulfillmentsCount; i++) {
 			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
@@ -94,7 +95,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Check each of the orderReturns to see if they are ready to process
-		for(var i = 1; i <= arrayLen(arguments.order.getOrderReturns()); i++) {
+		var orderReturnsCount = arrayLen(arguments.order.getOrderReturns());
+		for(var i = 1; i <= orderReturnsCount; i++) {
 			if(!arguments.order.getOrderReturns()[i].isProcessable( context="placeOrder" ) || arguments.order.getOrderReturns()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "return");
 				break;
@@ -301,7 +303,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Find the correct account address, and set it in the order fulfillment
 							var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getShippingAccountAddressID() );
 							orderFulfillment.setAccountAddress( accountAddress );
-
+							var address = getAddressService().saveAddress(arguments.processObject.getShippingAddress());
+							if(!address.hasErrors()){
+								orderFulfillment.setShippingAddress(address);
+							}else{
+								orderFulfillment.addErrors(address.getErrors());
+							}
 						// Otherwise try to setup a new shipping address
 						} else {
 
@@ -386,7 +393,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
 					// If the sku, price, attributes & stock all match then just increase the quantity if and only if the match parent orderitem is null.
-					if(arguments.processObject.matchesOrderItem( orderItem ) && isNull(orderItem.getParentOrderItem())){
+					if(
+						arguments.processObject.matchesOrderItem( orderItem ) 
+						&& isNull(orderItem.getParentOrderItem())
+					){
 						foundItem = true;
 						var foundOrderItem = orderItem;
 						foundOrderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
@@ -1140,6 +1150,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Recalculate the order amounts for tax and promotions
 		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
+		
 
 		// Check to see if we are attaching an referenced orderPayment
 		var originalOrderPayment = "";
@@ -1149,6 +1160,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		
 		var returnOrderPayment = this.newOrderPayment();
+		var placeOrderData = {};
 
 		// Referencing original order payment
 		if (isObject(originalOrderPayment)) {
@@ -1161,39 +1173,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrderPayment.setAmount( getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1) );
 
 		// New return order payment, provided order payment information is not related to any previous order payments
-		} else if (structKeyExists(arguments.data, 'newOrderPayment')) {
-			// Manually populate order payment data so it is 'credit' rather than the default 'charge'
-			var newReturnOrderPaymentData = {};
-			newReturnOrderPaymentData = arguments.data.newOrderPayment;
-			newReturnOrderPaymentData.order = { orderID = returnOrder.getOrderID() };
-			newReturnOrderPaymentData.currencyCode = returnOrder.getCurrencyCode();
-			newReturnOrderPaymentData.orderPaymentType = { typeID = getTypeService().getTypeBySystemCode( 'optCredit' ).getTypeID() };
-			newReturnOrderPaymentData.amount = getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1);
-			returnOrderPayment.populate(newReturnOrderPaymentData);
+		} else {
 
-			// If this is an existing account payment method, then we can pull the data from there
-			if( arguments.processObject.getCopyFromType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
-				// Setup the returnOrderPayment from the existing payment method
-				var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.processObject.getAccountPaymentMethodID() );
-				returnOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
+			// Manually populate for 'placeOrder' data, and set payment type as 'credit' rather than the default 'charge'
+			placeOrderData.newOrderPayment = {};
+			if (structKeyExists(arguments.data, 'newOrderPayment')) {
+				placeOrderData.newOrderPayment = arguments.data.newOrderPayment;
+			}
+			placeOrderData.newOrderPayment.orderPaymentID = "";
+			placeOrderData.newOrderPayment.order = { orderID = returnOrder.getOrderID() };
+			placeOrderData.newOrderPayment.currencyCode = returnOrder.getCurrencyCode();
+			placeOrderData.newOrderPayment.orderPaymentType = { typeID = getTypeService().getTypeBySystemCode( 'optCredit' ).getTypeID() };
+			placeOrderData.newOrderPayment.amount = getService('HibachiUtilityService').precisionCalculate(returnOrder.getTotal() * -1);
 			
-			// Setup return order payment billing address using existing account address
-			}else if (!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
-				var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
+			placeOrderData.accountPaymentMethodID = arguments.processObject.getAccountPaymentMethodID();
+			placeOrderData.accountAddressID = arguments.processObject.getAccountAddressID();
+			placeOrderData.saveAccountPaymentMethodFlag = arguments.processObject.getSaveAccountPaymentMethodFlag();
+			placeOrderData.saveAccountPaymentMethodName = arguments.processObject.getSaveAccountPaymentMethodName();
 
-				if(!isNull(accountAddress)) {
-					returnOrderPayment.setBillingAccountAddress(accountAddress);
-					returnOrderPayment.setBillingAddress( accountAddress.getAddress().copyAddress( true ) );
-				}
+			// For some unknown reason, without explicitly setting this to empty '' when null
+			// The processOrder_addOrderPayment method will use 'accountPaymentMethod' and not be null instead, which is not desired
+			if (!isNull(arguments.processObject.getCopyFromType())) {
+				placeOrderData.copyFromType = arguments.processObject.getCopyFromType();
+			} else {
+				placeOrderData.copyFromType = '';
 			}
 		}
-
+		
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
-
 			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
-				returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
+				// 'placeOrder' process will handle logic for the order payment
+				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
 
 				// If the process object was set to automatically receive these items, then we will do that
 				if(!returnOrder.hasErrors() && (arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())) {
@@ -1210,9 +1222,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
 				}
 			}
+			
 		}
-
-
 
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
@@ -1460,9 +1471,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_placeOrder(required any order, required struct data) {
+		
 		// First we need to lock the session so that this order doesn't get placed twice.
 		lock scope="session" timeout="60" {
-
+			arguments.order.setPlaceOrderFlag(true);
 			// Reload the order in case it was already in cache
 			getHibachiDAO().reloadEntity(arguments.order);
 			// Make sure that the entity is notPlaced before going any further
@@ -1603,12 +1615,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 								// Save the order to the database
 								getHibachiDAO().save( arguments.order );
-	
-								// Do a flush so that the order is commited to the DB
-								getHibachiDAO().flushORMSession();
-	
-								// Log that the order was placed
-								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
+
 								// if order had error but payment was captured, clear error and log to hibachi
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
@@ -1619,26 +1626,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 									arguments.order.getHibachiErrors().setErrors(structnew());
 								}
+
+								// Do a flush so that the order is commited to the DB
+								getHibachiDAO().flushORMSession();
+
+								// Log that the order was placed
+								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
+	
 								// Look for 'auto' order fulfillments
-								for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
-									//don't auto fulfill if the deposit has been paid but not the full amount.
-									if (arguments.order.getOrderFulfillments()[i].isAutoFulfillment()) {
-										var orderDelivery = createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
-										if (!isNull(orderDelivery) && orderDelivery.hasMessage('autoFulfillmentMessage')) {
-											arguments.order.addMessage('autoFulfillmentMessage', orderDelivery.getMessages()['autoFulfillmentMessage'][1]);
-										}
-									}
-								}
+								createOrderDeliveriesForAutoFulfillmentMethod(arguments.order);
+								
 								for(var orderItem in order.getOrderItems()){
-									//run calculated props if success on product, sku and order item
-									//product must run before sku because sku depends on product info to calculate correctly
 									if(!isNull(orderItem.getStock())){
-										orderItem.getStock().updateCalculatedProperties(true);
+										//via cascade calculate stock should update sku then product 
+										getHibachiScope().addModifiedEntity(orderItem.getStock());
 										getHibachiScope().flushORMSession();
+									}else{
+										//via cascade calculate stock should update product 
+										getHibachiScope().addModifiedEntity(orderItem.getSku());
 									}
-									orderItem.getSku().updateCalculatedProperties(true);
-									orderItem.getSku().getProduct().updateCalculatedProperties(true);
-									orderItem.updateCalculatedProperties(true);
 								}
 							}
 						}
@@ -1661,6 +1667,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return false;
 	}
+	
+	public any function createOrderDeliveriesForAutoFulfillmentMethod(required any order){
+		for(var i=1; i<=arrayLen( order.getOrderFulfillments() ); i++) {
+			//don't auto fulfill if the deposit has been paid but not the full amount.
+			if (order.getOrderFulfillments()[i].isAutoFulfillment()) {
+				var orderDelivery = createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[i]);
+				if (!isNull(orderDelivery) && orderDelivery.hasMessage('autoFulfillmentMessage')) {
+					order.addMessage('autoFulfillmentMessage', orderDelivery.getMessages()['autoFulfillmentMessage'][1]);
+				}
+			}
+		}
+			//if already closed then no need to updateStatus
+		if(arguments.order.getOrderStatusType().getSystemCode() neq 'ostClosed'){
+			order = getService('orderService').processOrder(order,{},'updateStatus');
+		}
+	}
+	
+	
 	
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
@@ -1828,12 +1852,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// First we make sure that this order status is not 'closed', 'canceled', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
-
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
-			if(val(getService('HibachiUtilityService').precisionCalculate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal())) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
+			var  isOrderPaidFor = arguments.order.isOrderPaidFor();
+			
+			var isOrderFullyDelivered = arguments.order.isOrderFullyDelivered();
+			
+			if(!isOrderPaidFor){
+				logHibachi('order is not fully paid for');
+			}
+			
+			if(!isOrderFullyDelivered){
+				logHibachi('order is not fully delivered #arguments.order.getQuantityUndelivered()# vs #arguments.order.getQuantityUnreceived()#');
+			}
+			
+			if(isOrderPaidFor && isOrderFullyDelivered)	{
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostClosed") );
-			// The default case is just to set it to processing
-			} else {
+			// The default case is just to set it to processing if only one thing is done
+			} else if(
+				!arguments.order.getPlaceOrderFlag()
+			){
 				arguments.order.setOrderStatusType(  getTypeService().getTypeBySystemCode("ostProcessing") );
 			}
 
@@ -1947,7 +1984,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
 
 			//update the calculated properties
-			arguments.order.updateCalculatedProperties(true);
+			getHibachiScope().addModifiedEntity(arguments.order);
 
 		}
 		return arguments.order;
@@ -2094,7 +2131,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				
 				 // Setup the tracking number using shipping integration if trackingNumber not manually provided
-				if (isNull(arguments.processObject.getTrackingNumber()) || !len(arguments.processObject.getTrackingNumber()) && arguments.processObject.getUseShippingIntegrationForTrackingNumber()) {
+				if ((isNull(arguments.processObject.getTrackingNumber()) || !len(arguments.processObject.getTrackingNumber())) && arguments.processObject.getUseShippingIntegrationForTrackingNumber()) {
 					var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.processObject.getShippingIntegration());
 					
 					// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
@@ -2561,7 +2598,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.orderFulfillment;
 	}
-
 	
 	public any function processOrderFulfillment_changeFulfillmentMethod(required any orderFulfillment, required any processObject){
 		
@@ -2843,15 +2879,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	// Process: Order Payment
-	public any function processOrderPayment_updateAmount(required any orderPayment, required any processObject) {
-	
-		orderPayment.setAmount(processObject.getAmount());
-		this.saveOrderPayment(orderPayment);
-			
-		return orderPayment;
-		
-	}
-	
 	public any function processOrderPayment_createTransaction(required any orderPayment, required any processObject) {
 
 		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.orderPayment );
@@ -3443,7 +3470,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Recalculate the order amounts
 			this.processOrder( order, {}, 'updateOrderAmounts' );
-			order.updateCalculatedProperties();
+			getHibachiScope().addModifiedEntity(order);
 
 			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
 			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);
@@ -3514,12 +3541,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	/** Given an orderfulfillment, this will return the shipping method options. */
 	public any function getShippingMethodOptions(any orderFulfillment) {
 		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
-		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
+		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
 
 		// At this point they have either been populated just before, or there were already options
 		var optionsArray = [];
-		var sortType = orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
-		for(var shippingMethodOption in orderFulfillment.getFulfillmentShippingMethodOptions()) {
+		var sortType = arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
+		
+		for(var shippingMethodOption in arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) {
 
 			var thisOption = {};
 			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
@@ -3534,26 +3562,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var inserted = false;
 
-			for(var i=1; i<=arrayLen(optionsArray); i++) {
-				var thisExistingOption = optionsArray[i];
-
-				if( ((sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
-				  	||
-					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) && !this.hasOption(optionsArray, thisOption)) {
-					
-					arrayInsertAt(optionsArray, i, thisOption);
-					inserted = true;
-					break;
+			arrayAppend(optionsArray, thisOption);
 				}
-				
+		var sortProperty = "";
+		if(sortType == 'price'){
+			sortProperty = 'totalCharge';
+		}else if(sortType == 'sortOrder'){
+			sortProperty = 'shippingMethodSortOrder';
 			}
 
-			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
-				
-				arrayAppend(optionsArray, thisOption);
-			}
-
-		}
+		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);
 
 		if(!arrayLen(optionsArray)) {
 			arrayPrepend(optionsArray, {name=rbKey('define.select'), value=''});

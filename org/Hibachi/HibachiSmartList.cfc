@@ -186,30 +186,34 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	private struct function getPropertiesStructFromEntityMeta(required struct meta) {
-		var propertyStruct = {};
-		var hasExtendedComponent = true;
-		var currentEntityMeta = arguments.meta;
-		
-		do {
-			if(structKeyExists(currentEntityMeta, "properties")) {
-				for(var i=1; i<=arrayLen(currentEntityMeta.properties); i++) {
-					if(!structKeyExists(propertyStruct, currentEntityMeta.properties[i].name)) {
-						propertyStruct[currentEntityMeta.properties[i].name] = duplicate(currentEntityMeta.properties[i]);	
+		var cacheKey = "HibachiSmartList_getPropertiesStructFromEntityMeta_#meta.entityName#";
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var propertyStruct = {};
+			var hasExtendedComponent = true;
+			var currentEntityMeta = arguments.meta;
+			
+			do {
+				if(structKeyExists(currentEntityMeta, "properties")) {
+					for(var i=1; i<=arrayLen(currentEntityMeta.properties); i++) {
+						if(!structKeyExists(propertyStruct, currentEntityMeta.properties[i].name)) {
+							propertyStruct[currentEntityMeta.properties[i].name] = duplicate(currentEntityMeta.properties[i]);	
+						}
 					}
 				}
-			}
-			
-			hasExtendedComponent = false;
-			
-			if(structKeyExists(currentEntityMeta, "extends")) {
-				currentEntityMeta = currentEntityMeta.extends;
-				if(structKeyExists(currentEntityMeta, "persistent") && currentEntityMeta.persistent) {
-					hasExtendedComponent = true;	
+				
+				hasExtendedComponent = false;
+				
+				if(structKeyExists(currentEntityMeta, "extends")) {
+					currentEntityMeta = currentEntityMeta.extends;
+					if(structKeyExists(currentEntityMeta, "persistent") && currentEntityMeta.persistent) {
+						hasExtendedComponent = true;	
+					}
 				}
-			}
-		} while (hasExtendedComponent);
+			} while (hasExtendedComponent);
+			getService('HibachiCacheService').setCachedValue(cacheKey,propertyStruct);
+		}
 		
-		return propertyStruct;
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	public string function joinRelatedProperty(required string parentEntityName, required string relatedProperty, string joinType="", boolean fetch=false, boolean isAttribute=false) {

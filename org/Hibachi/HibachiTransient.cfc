@@ -660,8 +660,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		var propertyMeta = getPropertyMetaData( arguments.propertyName );
 
+		if(structKeyExists(propertyMeta, "hb_displayType")) {
+			return propertyMeta.hb_displayType;
+
 		// First check to see if formatType was explicitly set for this property
-		if(structKeyExists(propertyMeta, "hb_formatType")) {
+		} else if(structKeyExists(propertyMeta, "hb_formatType")) {
 			return propertyMeta.hb_formatType;
 
 		// If it wasn't set, but this is a simple value field then inspect the dataTypes and naming convention to try an figure it out

@@ -149,8 +149,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
 			//Setup Site Created if using slatwall cms
-			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
-				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getSite());
+			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
+				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
 			
 		}

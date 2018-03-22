@@ -67,6 +67,7 @@
 		}
 		
 		public any function getCollectionList(string entityName, struct data={}){
+		
 			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
 			var addDefaultColumns = true;
 			if(structKeyExists(arguments.data, 'defaultColumns')){
@@ -872,6 +873,25 @@
 			return getEntityObject( arguments.entityName ).getPropertiesStruct(); 
 		}
 		
+		public any function getToManyPropertiesByEntityName(required string entityName){
+			var cacheKey = 'toManyPropertiesBy#arguments.entityName#';
+			if(!structKeyExists(variables,cacheKey)){
+				var toManyProperties = [];
+				var properties = getComponentMetaData(getBeanFactory().getBeanInfo( arguments.entityName ).cfc).properties;
+				var propertyCount = arrayLen(properties);
+				// Loop over all properties
+				for(var i=1; i<=propertyCount; i++) {
+					// Set any one-to-many or many-to-many properties with a blank array as the default value
+					if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
+						arrayAppend(toManyProperties,properties[i].name);
+					}
+				}
+				variables[cacheKey] = toManyProperties;
+			}
+			return variables[cacheKey];
+			
+		}
+		
 		public any function getPropertyIsPersistentByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
 			var cacheKey = 'getPropertyIsPersistentByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
 			
@@ -1094,6 +1114,32 @@
 			var entityMetaData = getEntityMetaData( arguments.entityName );
 			arguments.tableName = entityMetaData.table;
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
+		}
+		
+		public boolean function getEntityHasCalculatedPropertiesByEntityName(required string entityName){
+			var cacheKey = 'getEntityHasCalculatedPropertiesByEntityName#arguments.entityName#';
+			
+			if(structKeyExists(variables,cacheKey)){
+				return variables[cacheKey];
+			}
+			
+			if(!structKeyExists(variables,cacheKey)){
+				var properties = getPropertiesByEntityName(arguments.entityName);
+				for(var property in properties) {
+			        // Look for any that start with the calculatedXXX naming convention
+			        if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+			        	variables[cacheKey] = true;
+			        	break;
+			        }
+				}
+			}
+			//if still not defined then cache as false
+			if(!structKeyExists(variables,cacheKey)){
+				variables[cacheKey] = false;
+			}
+			return variables[cacheKey];
+			
+			
 		}
 		
 		// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()

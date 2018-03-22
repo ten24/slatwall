@@ -157,10 +157,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));
 			}
 			var activePaymentMethods = paymentMethodSmartList.getRecords();
-			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-				var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
-				for(var x=1; x<=listLen( epmList ); x++) {
-					var thisPaymentMethodID = listGetAt(epmList, x);
+			
+			//loop over orderitems and compare the skuEligiblePaymentMethods
+			var orderItemsCount = arrayLen(arguments.order.getOrderItems());
+			for(var i=1; i<=orderItemsCount; i++) {
+				var epmArray = listToArray(arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods"));
+				var empArrayCount = arrayLen(epmArray);
+				for(var x=1; x<=empArrayCount; x++) {
+					var thisPaymentMethodID = epmArray[x];
 					if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
 						paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
 					}
@@ -169,7 +173,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Loop over and update the maxAmounts on these payment methods based on the skus for each
-			for(var i=1; i<=arrayLen(activePaymentMethods); i++) {
+			var activePaymentsCount = arrayLen(activePaymentMethods);
+			for(var i=1; i<=activePaymentsCount; i++) {
 				if( structKeyExists(paymentMethodMaxAmount, activePaymentMethods[i].getPaymentMethodID()) && paymentMethodMaxAmount[ activePaymentMethods[i].getPaymentMethodID() ] gt 0 ) {
 
 					// Define the maximum amount
@@ -182,8 +187,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					// If the maximumAmount is more than we need for this order, then just set it to the amount needed
-					if(maximumAmount > arguments.order.getOrderPaymentChargeAmountNeeded()) {
-						maximumAmount = arguments.order.getOrderPaymentChargeAmountNeeded();
+					var orderPaymentChargeAmountNeeded = arguments.order.getOrderPaymentChargeAmountNeeded();
+					if(maximumAmount > orderPaymentChargeAmountNeeded) {
+						maximumAmount = orderPaymentChargeAmountNeeded;
 					}
 
 					// If this is a termPayment type, then we need to check the account on the order to verify the max that it can use.
@@ -198,17 +204,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								if(arguments.order.getAccount().getTermAccountAvailableCredit() < maximumAmount) {
 									maximumAmount = arguments.order.getAccount().getTermAccountAvailableCredit();
 								}
-								var eligiblePaymentMethod = getTransient('EligiblePaymentMethodBean');
-								eligiblePaymentMethod.setPaymentMethod(activePaymentMethods[i]);
-								eligiblePaymentMethod.setPaymentTerm(paymentTerm);
-								eligiblePaymentMethod.setMaximumAmount(maximumAmount);
+								var eligiblePaymentMethod = {};
+								eligiblePaymentMethod.paymentMethod = activePaymentMethods[i];
+								eligiblePaymentMethod.maximumAmount =maximumAmount;
+								eligiblePaymentMethod.paymentTerm = paymentTerm;
+								
 								arrayAppend(eligiblePaymentMethodDetails, eligiblePaymentMethod);
 							}
 						}
 					} else {
-						var eligiblePaymentMethod = getTransient('EligiblePaymentMethodBean');
-						eligiblePaymentMethod.setPaymentMethod(activePaymentMethods[i]);
-						eligiblePaymentMethod.setMaximumAmount(maximumAmount);
+						
+						var eligiblePaymentMethod = {};
+						eligiblePaymentMethod.paymentMethod = activePaymentMethods[i];
+						eligiblePaymentMethod.maximumAmount =maximumAmount;
+						
 						arrayAppend(eligiblePaymentMethodDetails, eligiblePaymentMethod);
 					}
 				}

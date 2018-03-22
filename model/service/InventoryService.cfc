@@ -117,7 +117,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			inventory = getService('inventoryService').saveInventory( inventory );
 			
-			
 		}
 	}
 	
@@ -175,9 +174,9 @@ component extends="HibachiService" accessors="true" output="false" {
 					var inventory = this.newInventory();
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
+					//calculate stock
+					getHibachiScope().addModifiedEntity(arguments.entity.getStock());
 					inventory.setCost(arguments.entity.getVendorOrderItem().getCost());
-					inventory.setLandedCost(arguments.entity.getVendorOrderItem().getLandedCost());
-					inventory.setLandedAmount(arguments.entity.getVendorOrderItem().getLandingAmount());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
 					inventory.setCurrencyCode(arguments.entity.getVendorOrderItem().getCurrencyCode());
 

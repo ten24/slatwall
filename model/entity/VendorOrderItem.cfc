@@ -70,6 +70,11 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" cascade="all-delete-orphan" inverse="true";
 	property name="vendorOrderDeliveryItems" singularname="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" inverse="true" cascade="delete-orphan";
 	
+	//Calculated Properties
+	property name="calculatedQuantityReceived" ormtype="integer";
+	property name="calculatedQuantityUnreceived" ormtype="integer";
+
+	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 

@@ -120,7 +120,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	//get top level locations 
 	public any function getBaseLocation() {
-		return getService("locationService").getLocation(listFirst(getlocationIDPath())).getLocationName();
+		var baseID = listFirst(getlocationIDPath());
+	
+		var cacheKey = 'location_getBaseLocation#baseID#';
+	
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			getService('HibachiCacheService').setCachedValue(cacheKey,getService("locationService").getLocation().getLocationName());
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================

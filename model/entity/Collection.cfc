@@ -1158,6 +1158,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	                    if(structKeyExists(defaultProperty,"hb_formatType")){
 	                        columnStruct['type'] = defaultProperty.hb_formatType;
 	                    }
+	                    if(structKeyExists(defaultProperty,"hb_displayType")){
+	                        columnStruct['type'] = defaultProperty.hb_displayType;
+	                    }
 	                    if(!structKeyExists(columnStruct,'type')){
 	                    	columnStruct['type'] = 'none';
 	                    }

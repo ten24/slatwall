@@ -79,7 +79,7 @@ Notes:
 	    data-has-search="true"
 	    record-edit-action="admin:entity.editorderorigin"
 	    record-edit-query-string="redirectAction=admin:entity.listorderorigin"
-	    record-detail-action="admin:entity.detailorderorigon"
+	    record-detail-action="admin:entity.detailorderorigin"
 	    record-detail-modal="true"
 	    data-is-angular-route="false"
 	    data-angular-links="false"

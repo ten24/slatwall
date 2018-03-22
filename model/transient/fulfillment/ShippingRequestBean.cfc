@@ -79,11 +79,24 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 
 	property name="shippingItemRequestBeans" type="array";
 
+	// Reference Objects
+	property name="order" type="any" cfc="Order";
+
 	public any function init() {
 		// Set defaults
 		variables.shippingItemRequestBeans = [];
 
 		return super.init();
+	}
+	
+	public string function getJSON(){
+		var data = {};
+		for(var propertyStruct in getProperties()){
+			if(!structKeyExists(propertyStruct,'cfc')){
+				data[propertyStruct.name] = this.invokeMethod('get#propertyStruct.name#');
+			}
+		}
+		return serializeJson(data);
 	}
 
 	public boolean function isInternationalShipment(){
@@ -99,6 +112,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	}
 
 	public void function populateWithOrderFulfillment(required any orderFulfillment){
+		setOrder(arguments.orderFulfillment.getOrder());
 		populateShippingItemsWithOrderFulfillment(arguments.orderFulfillment);
 		populateShipToWithOrderFulfillment( arguments.orderFulfillment );
 		populateContactWithOrderFulfillment( arguments.orderFulfillment );

@@ -500,7 +500,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var bundleItem = getStockService().newStockAdjustmentItem();
 				bundleItem.setStockAdjustment( stockAdjustment );
 				bundleItem.setQuantity( arguments.processObject.getQuantity() * bundledSku.getNativeUnitQuantityFromBundledQuantity() );
-				bundleItem.setCost(bundledSku.getBundledSku().getAverageCost());
+				bundleItem.setCost(bundledSku.getBundledSku().getAverageCost(arguments.processObject.getLocation().getCurrencyCode()));
 				bundleItem.setFromStock( thisStock );
 
 				makeupItemCost += bundleItem.getCost() * bundleItem.getQuantity();
@@ -617,28 +617,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processSku_updateInventoryCalculationsForLocations(required any sku) {
 		
-		var locationCollection = getLocationService().getLocationCollectionList();
+		var locationCollection = getLocationService().getLocationSmartList();
 		// collection.addFilter('activeFlag', true); // Other inventory calculations do not seem to consider location activeFlag
-		var locationRecords = locationCollection.getRecords();
+		var locations = locationCollection.getRecords();
 		
 		// Update calculations for each location
-		for (var locationData in locationRecords) {
+		for (var location in locations) {
 
 			// Attempt to load entity or create new entity if it did not previously exist
-			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), locationData.locationID);
+			var skuLocationQuantity = getInventoryService().getSkuLocationQuantityBySkuIDAndLocationID(arguments.sku.getSkuID(), location.getLocationID());
 
 			// Sku and Location entity references should already be populated for existing entity
 			if (skuLocationQuantity.getNewFlag()) {
 				skuLocationQuantity.setSku(arguments.sku);
-				skuLocationQuantity.setLocation(getLocationService().getLocation(locationData.locationID));
+				skuLocationQuantity.setLocation(location);
 			}
 			
 			// Populate with updated calculated values and sku/location relationships
 			skuLocationQuantity.updateCalculatedProperties(true);
+			this.saveSkuLocationQuantity(skuLocationQuantity);
 		}
 
-		this.saveSku(arguments.sku);
-		
 		return arguments.sku;
 	}
 
@@ -701,7 +700,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(skuCost.getNewFlag()){
 				skuCost = this.saveSkuCost(skuCost);	
 			}
-			skuCost.updateCalculatedProperties(true);
+			getHibachiScope().addModifiedEntity(skuCost);
 		}	
 		return arguments.sku;
 	}
