@@ -4,13 +4,13 @@
     Filter Options
 </button>
 
-<!---
-<hb:HibachiFilterCountDisplay hibachiScope="#$.slatwall#" collectionList="#productCollectionList#">
+<hb:HibachiFilterCountDisplay hibachiScope="#$.slatwall#" collectionList="#productCollectionList#" template="../../../custom/tags/templates/hibachifiltercountdisplayitem.cfm">
 
-    <hb:HibachiFilterCountDisplayItem propertyIdentifier="productName" template="../../../custom/tags/templates/hibachifiltercountdisplayitem.cfm">
+    <hb:HibachiFilterCountDisplayItem propertyIdentifier="productName"  openTab="true">
+    <hb:HibachiFilterCountDisplayItem propertyIdentifier="categories" inversePropertyIdentifier="products" openTab="true">
     
 </hb:HibachiFilterCountDisplay>
---->
+
 
 <div class="collapse show" id="sidebarCollapse">
     <div id="accordion">
