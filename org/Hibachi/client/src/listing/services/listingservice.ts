@@ -325,7 +325,7 @@ class ListingService{
         });
         classObjectString = classObjectString.concat(" 's-child':" + this.getPageRecordIsChild(listingID, pageRecord));
         var newFlag = false;
-        if(pageRecord.newFlag != null && typeof pageRecord.newFlag === 'string' && pageRecord.newFlag.trim() !== ''){
+        if(pageRecord && pageRecord.newFlag != null && typeof pageRecord.newFlag === 'string' && pageRecord.newFlag.trim() !== ''){
             newFlag = pageRecord.newFlag;
         }
         classObjectString = classObjectString.concat(",'s-selected-row':" + newFlag);
