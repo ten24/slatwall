@@ -19,8 +19,8 @@
 	            	></sw-selection>
 	            	
 	            </td>
-	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible" class="{{column.type}}">
-                    <span data-ng-bind="::getCellValue(pageRecord, column)"></span>
+	            <td  ng-repeat="(key,column) in collectionConfig.columns"  ng-show="column.isVisible">
+                    <span data-ng-bind="::getCellValue(pageRecord, column)"  class="{{column.ormtype}} {{column.type}}"></span>
                 </td>
 	            <td class="s-edit-elements" ng-if="angularLinks === true">
 	            	<a sw-href="{{'/entity/'+collection.collectionObject+'/'+pageRecord[collectionObject.$$getIDName()]}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a>

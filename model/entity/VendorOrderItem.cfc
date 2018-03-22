@@ -70,6 +70,11 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" cascade="all-delete-orphan" inverse="true";
 	property name="vendorOrderDeliveryItems" singularname="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="one-to-many" fkcolumn="vendorOrderItemID" inverse="true" cascade="delete-orphan";
 	
+	//Calculated Properties
+	property name="calculatedQuantityReceived" ormtype="integer";
+	property name="calculatedQuantityUnreceived" ormtype="integer";
+
+	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
@@ -92,14 +97,19 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	
 	public numeric function getPrice(){
 		if( !structKeyExists(variables,"price") ){
-			variables.price = !isNull(getSku().getPrice()) ? getSku().getPrice() : 0; 
+			if(getCurrencyCode() == getSku().getCurrencyCode()){
+				variables.price = !isNull(getSku().getPrice()) ? getSku().getPrice() : 0; 
+			}else{
+				var skuPrice = getSku().getLivePriceByCurrencyCode(getCurrencyCode());
+				variables.price = !isNull(skuPrice) ? skuPrice : 0; 
+			}
 		}
 		
 		return variables.price;
 	}
 	
 	public numeric function getGrossProfitMargin(){
-		if(!isNull(getPrice()) && !isNull(getCost()) && getCost() > 0){
+		if(!isNull(getPrice()) && !isNull(getCost()) && getPrice() > 0){
 			return NumberFormat( ( (val(getPrice()) - val(getCost())) / val(getPrice()) ) * 100,'9.99');
 		}
 		

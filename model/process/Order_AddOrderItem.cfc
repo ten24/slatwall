@@ -55,11 +55,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="stock" hb_rbKey="entity.stock";
 	property name="sku" hb_rbKey="entity.sku";
 	property name="product" hb_rbKey="entity.product";
+	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 	property name="location" hb_rbKey="entity.location";
 	property name="orderFulfillment" hb_rbKey="entity.orderFulfillment";
 	property name="orderReturn" hb_rbKey="entity.orderReturn";
 	property name="returnLocation" hb_rbKey="entity.location";
-	property name="fulfillmentMethod" hb_rbKey="entity.fulfillmentMethod";
 
 	// New Properties
 
@@ -80,6 +80,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Inputs)
 	property name="price" hb_formatType="currency";
 	property name="currencyCode";
+	property name="estimatedShippingDate" hb_formFieldType="datetime";
 	property name="quantity";
 	property name="orderItemTypeSystemCode";
 	property name="saveShippingAccountAddressFlag" hb_formFieldType="yesno";
@@ -110,6 +111,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
+	property name="shippingAccountAddresses" type="array";
 
 	public any function init(){
 		super.init();
@@ -131,7 +133,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return variables.registrantAccounts;
 		}
 		variables.registrantAccounts = [];
-		for(i=1;i<=quantity;i++) {
+		for(i=1;i<=variables.quantity;i++) {
 			var account = getService("accountService").newAccount();
 			arrayAppend(variables.registrantAccounts,account);
 		}
@@ -234,6 +236,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.fulfillmentRefundAmount = 0;
 		}
 		return variables.fulfillmentRefundAmount;
+	}
+
+	public string function getPickupLocationID() {
+
+		// pickupLocationID has been explicitly set
+		if (structKeyExists(variables, 'pickupLocationID')) {
+			return variables.pickupLocationID;
+		
+		// No pickupLocationID explicitly set, check if we have an locationID that was explicitly set and use that value instead
+		} else if (!isNull(getLocationID())) {
+			return getLocationID();
+		}
+
+		// Neither pickupLocationID or locationID exists
 	}
 
 	public any function getQuantity() {
@@ -433,7 +449,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public array function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			variables.locationIDOptions = getService("locationService").getLocationOptions();
+			if (isNull(getOrder().getDefaultStockLocation())) {
+				variables.locationIDOptions = getService("locationService").getLocationOptions();
+			} else {
+				variables.locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+				arrayPrepend(variables.locationIDOptions,{name=rbKey('define.select'),value=""});
+			}
 		}
 		return variables.locationIDOptions;
 	}
@@ -516,6 +537,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			s.addFilter(propertyIdentifier="account.accountID",value=getOrder().getAccount().getAccountID());
 			s.addOrder("accountAddressName|ASC");
 			var r = s.getRecords();
+			variables.shippingAccountAddresses = r;
 			for(var i=1; i<=arrayLen(r); i++) {
 				var shippingAccountAddressIDOption = {};
 				shippingAccountAddressIDOption['name'] = r[i].getSimpleRepresentation();
@@ -681,6 +703,37 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return true;
 	}
 
+	// @hint Validation method to verify location is child of top level location
+	public boolean function hasValidStockLocation() {
+		var locationValidFlag = true;
+		
+		// Only apply location check to shipping and pickup fulfillment types
+		if (listFindNoCase('shipping,pickup', getFulfillmentMethodType()) && !isNull(getOrder().getDefaultStockLocation())) {
+			// Assume locationID cannot be found in list of valid child locationIDs
+			locationValidFlag = false;
+
+			// locationIDOptions using defaultStockLocation as top level
+			var locationIDOptions = getService("locationService").getLocationOptions(locationID=getOrder().getDefaultStockLocation().getLocationID(), nameProperty="locationName", includeTopLevelLocation=false);
+			
+			if (!isNull(getStock())) {
+				
+				// Verifying to make sure provided location is a child location of the defaultStockLocation.
+				for (var locationIDOption in locationIDOptions) {
+					if (locationIDOption['value'] == getStock().getLocation().getLocationID()) {
+						// Location found and valid
+						locationValidFlag = true;
+						break;
+					}
+				}
+			}
+			
+			// Else no location has been provided with the added order item.
+		}
+
+		// No validation required
+		return locationValidFlag;
+	}
+
 	// =====================  END: Validation Methods ======================
 
 	public any function populate( required struct data={} ) {
@@ -688,11 +741,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		super.populate(argumentcollection=arguments);
 
 		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
-		for(attributeSet in getAssignedOrderItemAttributeSets()){
-			for(attribute in attributeSet.getAttributes()){
-				if(structKeyExists(arguments.data,attribute.getAttributeCode())){
-					attributeValuesByCodeStruct[ attribute.getAttributeCode() ] = data[ attribute.getAttributeCode() ];
+		var assignedOrderItemAttributeSetCollectionList = getSku().getAssignedOrderItemAttributeSetCollectionList();
+		
+		assignedOrderItemAttributeSetCollectionList.setDisplayProperties('attributeSetID');
+		
+		var assignedOrderItemAttributeSetRecords = assignedOrderItemAttributeSetCollectionList.getRecords();
+		
+		var attributeSetIDArray = [];
+		for(var assignedOrderItemAttributeSetRecord in assignedOrderItemAttributeSetRecords){
+			arrayAppend(attributeSetIDArray,assignedOrderItemAttributeSetRecord['attributeSetID']);
 				}
+		var cacheKey = "Order_AddOrderItem_populate#arrayToList(attributeSetIDArray)#";
+		
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			var attributeCollectionList = getService('attributeService').getAttributeCollectionList();
+			attributeCollectionList.setDisplayProperties('attributeCode');
+			attributeCollectionList.addFilter('attributeSet.attributeSetID',arrayToList(attributeSetIDArray),'IN');
+			
+			getService('HibachiCacheService').setCachedValue(cacheKey,attributeCollectionList.getRecords());
+		}
+		attributeCollectionListRecords = getService('HibachiCacheService').getCachedValue(cacheKey);
+		
+		
+		for(var attributeCollectionListRecord in attributeCollectionListRecords){
+			if(len(trim(attributeCollectionListRecord['attributeCode']))){
+				attributeValuesByCodeStruct[ attributeCollectionListRecord['attributeCode'] ] = data[ attributeCollectionListRecord['attributeCode'] ];
 			}
 		}
 

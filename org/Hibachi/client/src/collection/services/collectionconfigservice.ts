@@ -11,7 +11,8 @@ class Column{
         public persistent?:boolean,
         public ormtype?:string,
         private attributeID?:string,
-        private attributeSetObject?:string
+        private attributeSetObject?:string,
+        private type?:string
     ){}
 }
 
@@ -26,6 +27,7 @@ interface IColumn{
     ormtype?:string;
     attributeID?:string;
     attributeSetObject?:string;
+    type?:string;
 }
 
 interface IFilter{
@@ -314,6 +316,7 @@ class CollectionConfig {
                 isSearchable = true,
                 isExportable = true,
                 persistent ,
+                type = 'none',
                 ormtype = 'string',
                 lastProperty=column.split('.').pop(),
                 isKeywordColumn=true,
@@ -353,6 +356,12 @@ class CollectionConfig {
             }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
                 ormtype = lastEntity.metaData[lastProperty].ormtype;
             }
+            if(angular.isDefined(options['type']) && options['type'] != 'none'){
+                type = options['type'];
+            }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].hb_formattype){
+                type = lastEntity.metaData[lastProperty].hb_formattype;
+            }
+            
             if(angular.isDefined(options['isKeywordColumn'])){
                 isKeywordColumn = options['isKeywordColumn']
             }
@@ -374,7 +383,8 @@ class CollectionConfig {
                 persistent,
                 ormtype,
                 options['attributeID'],
-                options['attributeSetObject']
+                options['attributeSetObject'],
+                type
             );
             if(options['aggregate']){
                 columnObject['aggregate'] = options['aggregate'],

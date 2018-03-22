@@ -51,7 +51,7 @@ component entityname="SlatwallStockAdjustmentDeliveryItem" table="SwStockAdjustm
 	// Persistent Properties
 	property name="stockAdjustmentDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="float";
-	property name="cost" ormtype="big_decimal";
+	property name="cost" ormtype="big_decimal" hb_formatType="currency";
 	property name="currencyCode" ormtype="string" length="3";
 	
 	// Related Object Properties (many-to-one)
@@ -118,6 +118,7 @@ component entityname="SlatwallStockAdjustmentDeliveryItem" table="SwStockAdjustm
 	public void function preInsert(){
 		super.preInsert();
 		getService("inventoryService").createInventory( this );
+		getHibachiScope().addModifiedEntity(getStock());
 	}
 	
 	public void function preUpdate(Struct oldData){
@@ -126,4 +127,3 @@ component entityname="SlatwallStockAdjustmentDeliveryItem" table="SwStockAdjustm
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
-

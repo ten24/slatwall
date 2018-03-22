@@ -627,6 +627,7 @@ class OrderFulfillmentService {
         collection.addDisplayProperty("sku.skuName");
         collection.addDisplayProperty("sku.imagePath", "Path", {persistent: false});
         collection.addDisplayProperty("sku.imageFileName", "File Name", {persistent: false});
+        collection.addDisplayProperty("sku.calculatedQOH");
         collection.addDisplayProperty("quantity");
         collection.addDisplayProperty("quantityDelivered");
         collection.addDisplayProperty("orderItemID");

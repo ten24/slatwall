@@ -193,17 +193,13 @@ Notes:
 		};
 		
 		
-		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
-			FROM SlatwallInventory i 
-			LEFT JOIN i.stock stock
+		var hql = 'SELECT COALESCE(AVG(stock.averageCost),0)
+			FROM SlatwallStock stock 
 			LEFT JOIN stock.sku sku
+			LEFT JOIN stock.location location
 		';
 		
-		if(len(arguments.locationID)){
-			hql &= ' LEFT JOIN stock.location location ';
-		}
-		
-		hql &= ' WHERE sku.skuID=:skuID AND i.cost IS NOT NULL AND i.currencyCode=:currencyCode ';
+		hql &= ' WHERE sku.skuID=:skuID AND stock.averageCost IS NOT NULL AND location.currencyCode=:currencyCode ';
 		
 		if(len(arguments.locationID)){
 			hql&= ' AND location.locationID = :locationID';	
@@ -224,15 +220,13 @@ Notes:
 			currencyCode=arguments.currencyCode
 		};
 		
-		var hql = 'SELECT COALESCE(SUM(i.landedCost*i.quantityIn)/SUM(i.quantityIn),0)
-			FROM SlatwallInventory i 
-			LEFT JOIN i.stock stock
-			LEFT JOIN stock.sku sku';
-			
-		if(len(arguments.locationID)){
-			hql &= ' LEFT JOIN stock.location location ';
-		}
-		hql &= ' WHERE sku.skuID = :skuID AND i.landedCost IS NOT NULL AND i.currencyCode=:currencyCode ';
+		var hql = 'SELECT COALESCE(AVG(stock.averageLandedCost),0)
+			FROM SlatwallStock stock 
+			LEFT JOIN stock.sku sku
+			LEFT JOIN stock.location location
+		';
+		
+		hql &= ' WHERE sku.skuID=:skuID AND stock.averageCost IS NOT NULL AND location.currencyCode=:currencyCode ';
 		
 		if(len(arguments.locationID)){
 			hql &= ' AND location.locationID=:locationID ';	
@@ -274,7 +268,7 @@ Notes:
 	}
 	
 	public numeric function getCurrentMarginBeforeDiscount(required string skuID, required string currencyCode){
-		var averagePriceSold = getAveragePriceSoldBeforeDiscount(argumentCollection=arguments);
+		var averagePriceSold = getAveragePriceSoldAfterDiscount(argumentCollection=arguments);
 		if(averagePriceSold == 0){
 			return 0;
 		}
@@ -323,10 +317,10 @@ Notes:
 		return averageDiscountAmount;
 	}
 	
-	public numeric function getAveragePriceSoldBeforeDiscount(required string skuID, required string currencyCode){
+	public numeric function getAveragePriceSoldAfterDiscount(required string skuID, required string currencyCode){
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
+							COALESCE( sum(orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalAfterDiscount 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -345,15 +339,15 @@ Notes:
 		if(QDOODetails['QDOO']==0){
 			return 0;
 		}
-		var averagePriceSoldBeforeDiscount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
-		return averagePriceSoldBeforeDiscount;
+		var AveragePriceSoldAfterDiscount = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalAfterDiscount']/QDOODetails['QDOO']);
+		return AveragePriceSoldAfterDiscount;
 	}
 	
 	public numeric function getAveragePriceSold(required string skuID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalEarned 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem

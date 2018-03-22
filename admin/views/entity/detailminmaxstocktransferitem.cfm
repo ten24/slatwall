@@ -53,7 +53,12 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.minMaxStockTransferItem#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.minMaxStockTransferItem#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar 
+    		type="detail" 
+    		object="#rc.minMaxStockTransferItem#" 
+    		edit="#rc.edit#"
+    		backaction="admin:entity.detailminmaxstocktransfer"
+    		backquerystring="minMaxStockTransferID=#rc.minMaxStockTransferItem.getMinMaxStockTransfer().getMinMaxStockTransferID()#">
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.minMaxStockTransferItem#">

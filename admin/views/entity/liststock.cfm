@@ -70,7 +70,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
     <hb:HibachiListingColumn propertyIdentifier="calculatedAverageCost" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedAverageLandedCost" />
+		<hb:HibachiListingColumn propertyIdentifier="averageLandedCost" />
 	</hb:HibachiListingDisplay> --->
 
 	<sw-listing-display data-using-personal-collection="true"
@@ -93,9 +93,10 @@ Notes:
 		<sw-listing-column data-property-identifier="calculatedQOH" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="calculatedQNC" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="calculatedQATS" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="calculatedAverageCost" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="calculatedAverageLandedCost" ></sw-listing-column>
-    	<sw-listing-column data-property-identifier="currencyCode" ></sw-listing-column>
+		<sw-listing-column data-property-identifier="calculatedCurrentSkuPrice" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="averageCost" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="averageLandedCost" ></sw-listing-column>
+    	<sw-listing-column data-property-identifier="location.currencyCode" ></sw-listing-column>
 	</sw-listing-display>
 
 

@@ -49,7 +49,40 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.priceGroupRate" type="any">
+<cfparam name="rc.pricegrouprate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<hb:HibachiPropertyDisplay object="#rc.pricegrouprate#" property="skus" edit="#rc.edit#" displaytype="plain" />
+<cfset collectionAllSkus = $.slatwall.getService('SkuService').getSkuCollectionList()  >
+<cfset collectionAllSkus.setDisplayProperties("skuCode,product.productName",{
+    isVisible=true
+}) >
+<cfset collectionAllSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
+<cfset collectionIncludedSkus = $.slatwall.getService('SkuService').getSkuCollectionList() >
+<cfset collectionIncludedSkus.setDisplayProperties("skuCode,product.productName",{
+    isVisible=true,
+    isSearchable=true,
+    isDeletable=false
+}) >
+<cfset collectionIncludedSkus.addFilter("priceGroupRates.priceGroupRateID","#rc.priceGroupRate.getPriceGroupRateID()#") >
+<cfset collectionIncludedSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+})/>
+
+<cfoutput>
+    <cfif rc.edit>
+    	<div class="col-md-12">
+    		<hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionAllSkus#" value="#collectionIncludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Skus" fieldName="Skus" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    <cfelse>
+        <div class="col-md-12">
+            <hb:HibachiFieldDisplay valueOptionsCollectionList="#collectionIncludedSkus#" value="#collectionIncludedSkus.getPrimaryIDList()#" fieldType="listingMultiselect" title="Included Skus" fieldName="Skus" edit="#rc.edit#" displaytype="plainTitle" />
+    	</div>
+    </cfif>
+</cfoutput>

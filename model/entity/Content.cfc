@@ -59,8 +59,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productSortProperty" ormtype="string";
 	property name="productSortDefaultDirection" ormtype="string";
 	//property name="productSortableProperties";nonpersistent?
-	property name="urlTitle" ormtype="string" length="4000";
-	property name="urlTitlePath" ormtype="string" length="8000";
+	property name="urlTitle" ormtype="string" length="255" index="PI_urltitle";
+	property name="urlTitlePath" ormtype="string" length="255" index="PI_urltitlepath";
 	property name="contentBody" ormtype="string" length="8000" hb_formFieldType="wysiwyg";
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
@@ -157,6 +157,48 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
 		}
 		return titlePath;
+	}
+
+	public any function getContentBody(){
+		if(structKeyExists(variables,'contentBody')){
+			//if not dynamic cache for 60 seconds
+			if(!getNewFlag() && !getService('HibachiUtilityService').isStringTemplate(variables.contentBody)){
+				var cacheKey = 'Content_getContentBody#getContentID()#';
+				if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+					var contentData = {
+						contentBody = variables.contentBody,
+						lastCached = now()
+					};
+					getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+					return getService('HibachiCacheService').getCachedValue(cacheKey).contentBody;
+				}else{
+					//check if cache expired
+					
+					if(getService('HibachiCacheService').getCachedValue(cacheKey).lastCached < dateAdd('s','-60',now())){
+						var contentData = {
+							contentBody = variables.contentBody,
+							lastCached = now()
+						};
+						getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+					}
+					return getService('HibachiCacheService').getCachedValue(cacheKey).contentBody;
+				}
+			}
+			return variables.contentBody;
+		}
+	}
+	
+	public void function setContentBody(string contentBody){
+		variables.contentBody = arguments.contentBody;
+		if(!getNewFlag() && !getService('HibachiUtilityService').isStringTemplate(variables.contentBody)){
+			var cacheKey = 'Content_getContentBody#getContentID()#';
+			var contentData = {
+				contentBody = variables.contentBody,
+				lastCached = now()
+			};
+			getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+		}
+		
 	}
 
 	public string function getSharedAssetsPath(){

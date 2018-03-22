@@ -138,6 +138,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountHTMLTitleString = {fieldType="text", defaultValue="${firstName} ${lastName}"},
 			accountMetaDescriptionString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
 			accountMetaKeywordsString = {fieldType="textarea", defaultValue="${firstName} ${lastName}"},
+			accountDisableGravatars = {fieldType="yesno",defaultValue=0},
 
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
@@ -203,6 +204,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			fulfillmentMethodEmailSubjectString = {fieldType="text"},
 			fulfillmentMethodAutoLocation = {fieldType="select", defaultValue="88e6d435d3ac2e5947c81ab3da60eba2"},
 			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
+			fulfillmentMethodTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
 
 			// Global
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
@@ -255,6 +257,11 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
+			globalS3Bucket = {fieldtype="text"},
+			globalS3AccessKey = {fieldtype="text"},
+			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
+			globalWhiteListedEmailDomains = {fieldtype="text"},
+			globalTestingEmailDomain = {fieldtype="text"},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -501,6 +508,12 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getLocationService().getLocationOptions();
 			case "fulfillmentMethodShippingOptionSortType" :
 				return [{name=rbKey('define.sortOrder'), value='sortOrder'},{name=rbKey('define.price'), value='price'}];
+			case "fulfillmentMethodTaxCategory":
+				var optionSL = getTaxService().getTaxCategorySmartList();
+				optionSL.addFilter('activeFlag', 1);
+				optionSL.addSelect('taxCategoryName', 'name');
+				optionSL.addSelect('taxCategoryID', 'value');
+				return optionSL.getRecords();
 			case "globalDefaultSite":
 				var optionSL = getSiteService().getSiteSmartList();
 				optionSL.addSelect('siteName', 'name');

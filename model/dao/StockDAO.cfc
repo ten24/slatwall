@@ -120,11 +120,104 @@ Notes:
 			return dataQuery.execute().getResult();
 		}
 
+		public void function insertMinMaxStockTransferItem(required struct minMaxStockTransferItemData) {
+			var minMaxStockTransferItemID = lcase(replace(createUUID(),"-","","all"));
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				INSERT INTO swMinMaxStockTransferItem
+					(
+						minMaxStockTransferItemID, minMaxStockTransferID, skuID, toTopLocationID, toLeafLocationID, fromTopLocationID, fromLeafLocationID, toMinQuantity, toMaxQuantity, toOffsetQuantity, toSumQATS, fromMinQuantity, fromMaxQuantity, fromOffsetQuantity, fromSumQATS, fromCalculatedQATS, transferQuantity, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+					)
+				VALUES 
+					(
+						'#minMaxStockTransferItemID#', 
+						'#arguments.minMaxStockTransferItemData.minMaxStockTransferID#', 
+						'#arguments.minMaxStockTransferItemData.skuID#', 
+						'#arguments.minMaxStockTransferItemData.toTopLocationID#', 
+						'#arguments.minMaxStockTransferItemData.toLeafLocationID#', 
+						'#arguments.minMaxStockTransferItemData.fromTopLocationID#', 
+						'#arguments.minMaxStockTransferItemData.fromLeafLocationID#', 
+						#arguments.minMaxStockTransferItemData.toMinQuantity#, 
+						#arguments.minMaxStockTransferItemData.toMaxQuantity#, 
+						#arguments.minMaxStockTransferItemData.toOffsetQuantity#, 
+						#arguments.minMaxStockTransferItemData.toSumQATS#, 
+						#arguments.minMaxStockTransferItemData.fromMinQuantity#, 
+						#arguments.minMaxStockTransferItemData.fromMaxQuantity#, 
+						#arguments.minMaxStockTransferItemData.fromOffsetQuantity#, 
+						#arguments.minMaxStockTransferItemData.fromSumQATS#, 
+						#arguments.minMaxStockTransferItemData.fromCalculatedQATS#, 
+						#arguments.minMaxStockTransferItemData.transferQuantity#, 
+						#arguments.minMaxStockTransferItemData.timeStamp#, 
+						#arguments.minMaxStockTransferItemData.timeStamp#, 
+						'#arguments.minMaxStockTransferItemData.administratorID#', 
+						'#arguments.minMaxStockTransferItemData.administratorID#'
+					);
+			");
+			dataQuery.execute();
+		}
+
 		public void function deleteMinMaxStockTransferItems(required string minMaxStockTransferID) {
 			var dataQuery = new Query();
 			dataQuery.setSql("
 				DELETE FROM swMinMaxStockTransferItem 
 				WHERE minMaxStockTransferID = '#arguments.minMaxStockTransferID#'
+			");
+			dataQuery.execute();
+		}
+
+		public void function insertMinMaxTransferStockAjustment(required struct stockAdjustmentData) {
+			
+			lock scope="Application" timeout="30" {
+	 			var maxReferenceNumber = getStockAdjustmentMaxReferenceNumber()['maxReferenceNumber'];
+		 		var referenceNumber = maxReferenceNumber + 1;
+	 		}
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				INSERT INTO swStockAdjustment
+					(
+						stockAdjustmentID,referenceNumber, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, #!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? 'minMaxStockTransferID,' : ''# #!isNull(arguments.stockAdjustmentData.fulfillmentBatchID) ? 'fulfillmentBatchID,' : ''# createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+					)
+				VALUES 
+					(
+						'#arguments.stockAdjustmentData.stockAdjustmentID#', 
+						'#referenceNumber#',
+						'#arguments.stockAdjustmentData.fromLocationID#', 
+						'#arguments.stockAdjustmentData.toLocationID#', 
+						'#arguments.stockAdjustmentData.stockAdjustmentTypeID#', 
+						'#arguments.stockAdjustmentData.stockAdjustmentStatusTypeID#', 
+						#!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? "'#arguments.stockAdjustmentData.minMaxStockTransferID#'," : ""#
+						#!isNull(arguments.stockAdjustmentData.fulfillmentBatchID) ? "'#arguments.stockAdjustmentData.fulfillmentBatchID#'," : ""#
+						#arguments.stockAdjustmentData.timeStamp#, 
+						#arguments.stockAdjustmentData.timeStamp#, 
+						'#arguments.stockAdjustmentData.administratorID#', 
+						'#arguments.stockAdjustmentData.administratorID#'
+					);
+			");
+			dataQuery.execute();
+		}
+
+		public void function insertMinMaxTransferStockAjustmentItem(required struct stockAdjustmentItemData) {
+			var dataQuery = new Query();
+			dataQuery.setSql("
+				INSERT INTO swStockAdjustmentItem
+					(
+						stockAdjustmentItemID, stockAdjustmentID, quantity, cost, currencyCode, fromStockID, toStockID, skuID, createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+					)
+				VALUES 
+					(
+						'#arguments.stockAdjustmentItemData.stockAdjustmentItemID#', 
+						'#arguments.stockAdjustmentItemData.stockAdjustmentID#', 
+						#arguments.stockAdjustmentItemData.quantity#, 
+						#arguments.stockAdjustmentItemData.cost#, 
+						'#arguments.stockAdjustmentItemData.currencyCode#', 
+						'#arguments.stockAdjustmentItemData.fromStockID#', 
+						'#arguments.stockAdjustmentItemData.toStockID#', 
+						'#arguments.stockAdjustmentItemData.skuID#', 
+						#arguments.stockAdjustmentItemData.timeStamp#, 
+						#arguments.stockAdjustmentItemData.timeStamp#, 
+						'#arguments.stockAdjustmentItemData.administratorID#', 
+						'#arguments.stockAdjustmentItemData.administratorID#'
+					);
 			");
 			dataQuery.execute();
 		}
@@ -161,11 +254,11 @@ Notes:
 		return getService('hibachiUtilityService').precisionCalculate((getAverageLandedProfit(argumentCollection=arguments) / averagePriceSold) * 100);
 	}
 	
-	public numeric function getAveragePriceSoldBeforeDiscount(required string stockID, required string currencyCode){
+	public numeric function getAveragePriceSoldAfterDiscount(required string stockID, required string currencyCode){
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalBeforeDiscount 
+							COALESCE( sum(orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalAfterDiscount 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -191,7 +284,7 @@ Notes:
 		if(isNull(QDOODetails) || QDOODetails['QDOO']==0){
 			return 0;
 		}
-		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalBeforeDiscount']/QDOODetails['QDOO']);
+		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalAfterDiscount']/QDOODetails['QDOO']);
 		return averagePriceSold;
 	}
 	
@@ -233,7 +326,7 @@ Notes:
 		 
 		var hql = "SELECT NEW MAP(
 							COALESCE( sum(orderDeliveryItem.quantity), 0 ) as QDOO, 
-							COALESCE( sum(orderDeliveryItem.quantity*orderDeliveryItem.orderItem.calculatedExtendedPriceAfterDiscount),0) as totalEarned 
+							COALESCE( sum(orderDeliveryItem.orderItem.calculatedExtendedPrice),0) as totalEarned 
 						) 
 						FROM
 							SlatwallOrderDeliveryItem orderDeliveryItem
@@ -262,33 +355,21 @@ Notes:
 		var averagePriceSold = getService('hibachiUtilityService').precisionCalculate(QDOODetails['totalEarned']/QDOODetails['QDOO']);
 		return averagePriceSold;
 	}
-		
+	
 	public any function getAverageCost(required string stockID, required string currencyCode, string locationID=""){
-		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};
-		
-		var hql = 'SELECT COALESCE(SUM(i.cost*i.quantityIn)/SUM(i.quantityIn),0)
-			FROM SlatwallInventory i 
-			LEFT JOIN i.stock stock
-		';
-		
-		if(len(arguments.locationID)){
-			hql &= ' LEFT JOIN stock.location location ';
+		var stock = getService('stockService').getStock(arguments.stockID);
+		if(isNull(stock)){
+			return 0;
 		}
-		
-		hql &= ' WHERE stock.stockID=:stockID AND i.cost IS NOT NULL AND i.currencyCode=:currencyCode ';
-		
-		if(len(arguments.locationID)){
-			hql&= ' AND location.locationID = :locationID';	
-			params.locationID = arguments.locationID;
-		}
-		
-		
-		return ORMExecuteQuery(
-			hql,
-			params,
-			true
-		);
+		return val(stock.getAverageCost());
 	}
+
+	public any function getStockAdjustmentMaxReferenceNumber() {
+		var query = new Query();
+		query.setSQL("SELECT max(COALESCE(referenceNumber,0)) as maxReferenceNumber FROM swStockAdjustment;");
+		var queryResult = query.execute();
+		return queryResult.getResult().getRow(1);
+ 	}
 	
 	public any function getAverageLandedCost(required string stockID, required string currencyCode, string locationID=""){
 		var params = {stockID=arguments.stockID,currencyCode=arguments.currencyCode};

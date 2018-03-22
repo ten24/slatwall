@@ -171,6 +171,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		config[ 'applicationKey' ] = '#getApplicationValue('applicationKey')#';
+		config[ 'attributeCacheKey' ] = '#getService('hibachiService').getAttributeCacheKey()#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
@@ -413,7 +414,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 
 	public any function getAvailableCartPropertyList() {
 		return rereplace("orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,orderAndItemDiscountAmountTotal, fulfillmentDiscountAmountTotal, orderRequirementsList,
-			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
+			orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.taxAmount,orderItems.taxLiabilityAmount,
 			orderItems.orderFulfillment.orderFulfillmentID,
 			orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
 			orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,
@@ -481,7 +482,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		//preventing multiple look ups on the external cache look up
+		var cacheKey = "#arguments.settingName##arguments.formatValue#";
+		for(var filterEntity in arguments.filterEntities){
+			cacheKey &= filterEntity.getPrimaryIDValue();
+		}
+		if(!structKeyExists(variables,cacheKey)){
+			variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		}
+		
+		return variables[cacheKey];
 	}
 
 	// @hint helper function to return the details of a setting
@@ -568,7 +578,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public boolean function onSlatwallCMS(){
-		return !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
+		if(!structKeyExists(variables,'isOnSlatwallCMS')){
+			variables.isOnSlatwallCMS = !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
+		}
+		return variables.isOnSlatwallCMS;
 	}
 	
 }

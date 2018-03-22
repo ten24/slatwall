@@ -415,22 +415,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					// If the directory where this file is going doesn't exists, then create it
 					if(left(uploadDirectory, 5) == 's3://'){
 
+						var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+
 						uploadDirectory = replace(uploadDirectory,'s3://','');
 						var bucket = listLast(uploadDirectory, '@');
 						var loginPart = listFirst(uploadDirectory, '@');
-						var fileName = getService("hibachiUtilityService").getClientFileName(currentProperty.name);
 
 						getService("hibachiUtilityService").uploadToS3(
 							bucketName=bucket,
-							fileName=listLast(form[currentProperty.name], '/'),
+							fileName=uploadData.serverfile,
 							contentType='application/octet-stream',
 							awsAccessKeyId=listFirst(loginPart, ':'),
 							awsSecretAccessKey=listLast(loginPart, ':'),
-							uploadDir=REReplace(form[currentProperty.name],'[^/]*$',''),
-							keyName=fileName
+							uploadDir=uploadData.serverdirectory
 						);
 
-						_setProperty(currentProperty.name, fileName);
+						_setProperty(currentProperty.name, uploadData.serverfile);
 					}else{
 						if(!directoryExists(uploadDirectory)) {
 							directoryCreate(uploadDirectory);
@@ -581,6 +581,28 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 		return "";
 	}
+	
+	public string function getSingularNameByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		if(
+			!isNull(object) 
+			&& !isSimpleValue(object)
+			&& structKeyExists(object.getPropertyMetaData( propertyName ),'fieldtype')
+			&& object.getPropertyMetaData( propertyName ).fieldtype == 'one-to-many'
+		) {
+			return object.getPropertyMetaData( propertyName ).singularName;
+		}
+		return "";
+	}
+	
+	public string function getFormatTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		return object.getPropertyFormatType(propertyName);
+	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
 
@@ -638,8 +660,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		var propertyMeta = getPropertyMetaData( arguments.propertyName );
 
+		if(structKeyExists(propertyMeta, "hb_displayType")) {
+			return propertyMeta.hb_displayType;
+
 		// First check to see if formatType was explicitly set for this property
-		if(structKeyExists(propertyMeta, "hb_formatType")) {
+		} else if(structKeyExists(propertyMeta, "hb_formatType")) {
 			return propertyMeta.hb_formatType;
 
 		// If it wasn't set, but this is a simple value field then inspect the dataTypes and naming convention to try an figure it out

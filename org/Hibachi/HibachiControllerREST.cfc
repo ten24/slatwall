@@ -63,7 +63,10 @@ component output="false" accessors="true" extends="HibachiController" {
 			&& structKeyExists(GetHttpRequestData().headers,'Content-Type')
 			&& FindNoCase('application/json',GetHttpRequestData().headers['Content-Type'])
 		){
-			structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		    var contentStruct = deserializeJson(ToString(GetHttpRequestData().content));
+		    if(isStruct(contentStruct)){
+			    structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		    }
 		}
         if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET'
             && structKEyExists(arguments.rc, 'serializedJSONData')
@@ -81,7 +84,15 @@ component output="false" accessors="true" extends="HibachiController" {
     	if(getHibachiScope().getAccount().getSuperUserFlag()){
     		
     		getService('hibachitagservice').cfsetting(requesttimeout=0);
-    		getService('hibachiService').batchUpdateCalculatedPropertiesByEntityName(entityName=rc.entityName,totalPagesComplete=rc.totalPagesComplete);
+    		getService('hibachiService').batchUpdateCalculatedPropertiesByEntityName(rc);
+    		if(rc.totalPagesComplete < rc.maxTotalPages){
+    		    arguments.rc.apiRequest = false;
+    		    getFW().setView('api:main.batchCalculate');
+    		}else{
+    		    arguments.rc.apiRequest = true;
+    		    arguments.rc.apiResponse['totalPagesComplete']=arguments.rc.totalPagesComplete;
+    		    arguments.rc.apiResponse['maxTotalPages']=arguments.rc.maxTotalPages;
+    		}
     	}
     }
 
@@ -115,15 +126,7 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function getInstantiationKey(required struct rc){
     	var data = {};
     	data['instantiationKey'] = '#getApplicationValue('instantiationKey')#';
-    	var modelCacheKey = "attributeService_getAttributeModel_CacheKey";
-    	if(getService('HibachiCacheService').hasCachedValue(modelCacheKey)){
-    		data['attributeCacheKey'] = getService('HibachiCacheService').getCachedValue(modelCacheKey);
-    	}else if (hasService('attributeService')){
-    		var attributeMetaData = getService('attributeService').getAttributeModel();
-    		data['attributeCacheKey'] = hash(serializeJson(attributeMetaData),'MD5');
-    		getService('HibachiCacheService').setCachedValue(modelCacheKey,data['attributeCacheKey']);
-    	}
-    	
+    	data['attributeCacheKey'] = '#getService('HibachiService').getAttributeCacheKey()#';
     	arguments.rc.apiResponse.content['data']=data;
     }
 

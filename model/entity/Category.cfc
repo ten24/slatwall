@@ -160,6 +160,9 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 
 	}
 	
+	public string function getSimpleRepresentationPropertyName() {
+    		return "categoryName";
+    }	
 	public string function createCategoryNamePath(){
 
 		var CategoryName = '';

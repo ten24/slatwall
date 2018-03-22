@@ -53,6 +53,8 @@ Notes:
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
+        <swa:SlatwallSetting settingName="globalWhiteListedEmailDomains" />
+        <swa:SlatwallSetting settingName="globalTestingEmailDomain" />
 		<swa:SlatwallSetting settingName="globalAPIDirtyRead" />
 		<swa:SlatwallSetting settingName="globalAPIPageShowLimit" />
 		<swa:SlatwallSetting settingName="globalClientSecret" />
@@ -73,6 +75,9 @@ Notes:
 		<swa:SlatwallSetting settingName="globalUseShippingIntegrationForTrackingNumberOption" />
 		<swa:SlatwallSetting settingName="globalSmartListGetAllRecordsLimit" />
 		<swa:SlatwallSetting settingName="globalAllowCustomBranchUpdates"/>
+		<swa:SlatwallSetting settingName="globalS3Bucket"/>
+		<swa:SlatwallSetting settingName="globalS3AccessKey"/>
+		<swa:SlatwallSetting settingName="globalS3SecretAccessKey"/>
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

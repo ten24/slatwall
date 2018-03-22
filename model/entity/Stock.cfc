@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Stock" entityname="SlatwallStock" table="SwStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component displayname="Stock" entityname="SlatwallStock" table="SwStock" persistent="true" accessors="true" output="false" hb_permission="this" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
 
 	// Persistent Properties
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -61,13 +61,13 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
 	property name="fulfillmentBatchItems" singularname="fulfillmentBatchItem" fieldType="one-to-many" type="array" fkColumn="stockID" cfc="FulfillmentBatchItem" inverse="true";
-	
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="stockID" cascade="all-delete-orphan" inverse="true";
 	//Calculated Properties
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
-	property name="calculatedAverageCost" ormtype="big_decimal"  hb_formatType="currency";
-	property name="calculatedAverageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
@@ -76,9 +76,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedAverageLandedMarkup" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAveragePriceSoldBeforeDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" formatType="currency";
-
+	property name="calculatedAveragePriceSoldAfterDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedCurrentSkuPrice" ormtype="big_decimal" hb_formatType="currency";
+	
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -89,20 +90,18 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-
-	property name="averageCost" persistent="false";
-	property name="averageLandedCost" persistent="false";
 	property name="currentMargin" persistent="false" hb_formatType="percentage";
 	property name="currentLandedMargin" persistent="false" hb_formatType="percentage";
 	property name="currentAssetValue" persistent="false" hb_formatType="currency";
 	//property name="currentRevenueTotal" persistent="false" hb_formatType="currency";
 	property name="averagePriceSold" persistent="false" hb_formatType="currency";
-	property name="averagePriceSoldBeforeDiscount" persistent="false" hb_formatType="currency";
+	property name="averagePriceSoldAfterDiscount" persistent="false" hb_formatType="currency";
 	property name="averageDiscountAmount" persistent="false" formatType="currency";
 	property name="averageMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
 	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
+	property name="currentSkuPrice" persistent="false" hb_formatType="currency";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -110,7 +109,16 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	//Derived Properties
 	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
+	//Simple
+	
+	public string function getSimpleRepresentation() {
+		if(!isNull(getSku().getSkuCode()) && len(getLocation().getLocationName())) {
+			var representation = getSku().getSkuCode() & " - " & getLocation().getLocationName();
+		} 
 
+		return representation;
+	}
+	
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
 		if( !structKeyExists(variables, arguments.quantityType) ) {
@@ -125,14 +133,30 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return variables[ arguments.quantityType ];
 	}
 
+	public void function updateAverageCost(required numeric newCost, required numeric newQuantity){
+		var currentQOH = val(getQOH());
+		var currentAverageCost = val(getAverageCost());
+		if((currentQOH + newQuantity) > 0){
+			variables.averageCost = ( ( currentAverageCost * currentQOH ) + ( newCost * newQuantity ) ) / ( currentQOH + newQuantity);
+		}
+	}
+
+	public void function updateAverageLandedCost(required numeric newLandedCost, required numeric newQuantity, required numeric newShippingCost){
+		var currentQOH = val(getQOH());
+		var currentAverageLandedCost = val(getAverageLandedCost());
+		if((currentQOH + newQuantity) > 0){
+			variables.averageLandedCost = ( ( currentAverageLandedCost * currentQOH ) + ( newLandedCost * newQuantity ) + newShippingCost ) / ( currentQOH + newQuantity);
+		}
+	}
+
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public numeric function getAverageDiscountAmount(required string currencyCode="USD"){
 		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
 	}
 	
-	public numeric function getAveragePriceSoldBeforeDiscount(required string currencyCode="USD"){
-		return getDao('stockDao').getAverageDiscountAmount(this.getStockID(),arguments.currencyCode);
+	public numeric function getAveragePriceSoldAfterDiscount(required string currencyCode="USD"){
+		return getDao('stockDao').getAveragePriceSoldAfterDiscount(this.getStockID(),arguments.currencyCode);
 	}
 	
 	public numeric function getAverageProfit(required string currencyCode="USD"){
@@ -158,17 +182,36 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public numeric function getCurrentLandedMargin(required string currencyCode="USD"){
 		return getDao('stockDao').getCurrentLandedMargin(this.getStockID(),arguments.currencyCode);
 	}
+
+	public numeric function getCurrentSkuPrice() {
+	    var currencyCode = "USD";
+	    
+	    //Find it on the location.
+	    if (!isNull(getLocation()) && !isNull(getLocation().getCurrencyCode())){
+	        var currencyCode = getLocation().getCurrencyCode();
+	    }
+	    if (currencyCode != getSku().getCurrencyCode()) {
+	        var currentSkuPrice = getSku().getPriceByCurrencyCode(currencyCode = currencyCode, quantity=1);    
+	    }else{
+	        var currentSkuPrice = getSku().getPrice();
+	    }
+		return currentSkuPrice;
+	}
 	
+	
+	/*
 	public numeric function getAverageCost(required string currencyCode="USD"){
 		return getDao('stockDao').getAverageCost(this.getStockID(),arguments.currencyCode);
 	}
 	
+	
 	public numeric function getAverageLandedCost(required string currencyCode="USD"){
 		return getDao('stockDao').getAverageLandedCost(this.getStockID(),arguments.currencyCode);
 	}
-
+	*/
+	
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
-		return getQOH() * getAverageCost(arguments.currencyCode);
+		return getQOH() * getAverageCost();
 	}
 
 //	public numeric function getCurrentRevenueTotal(){
@@ -192,7 +235,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	}
 
 	public boolean function getLocationIsLeafNode(){
-		return getLocation().getChildLocationsCount() == 0;
+		return  !isNull(getLocation().getParentLocation()) && getLocation().getChildLocationsCount() == 0;
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -223,6 +266,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// =================== START: ORM Event Hooks  =========================
 
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
+	
 }
-

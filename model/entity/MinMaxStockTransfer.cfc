@@ -50,6 +50,8 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 
 	// Persistent Properties
 	property name="minMaxStockTransferID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	
+	property name="minMaxStockTransferItemsCollection" column="minMaxStockTransferItemsCollec" ormtype="string" length="8000";
 
 	// Related Object Properties (many-to-one)
 	property name="fromLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="fromLocationID";
@@ -87,6 +89,18 @@ component displayname="MinMaxStockTransfer" entityname="SlatwallMinMaxStockTrans
 
 	public string function getSimpleRepresentation() {
 		return "From #getFromLocation().getLocationName()# To #getToLocation().getLocationName()# - Created #getFormattedValue('createdDateTime')#";
+	}
+	
+	public any function getMinMaxStockTransferItemsCollectionlist(){
+		if(!structKeyExists(variables,'minMaxStockTransferItemsCollection')){
+			var minMaxStockTransferItemsCollectionlist = getService('hibachiService').getCollectionlist('MinMaxStockTransferItem');
+			minMaxStockTransferItemsCollectionlist.addFilter('minMaxStockTransfer.minMaxStockTransferID',this.getMinMaxStockTransferID());
+			variables.minMaxStockTransferItemsCollection = serializeJSON(minMaxStockTransferItemsCollectionlist.getCollectionConfigStruct());
+		}else{
+			var minMaxStockTransferItemsCollectionlist = getService('HibachiService').getCollectionlist('MinMaxStockTransferItem');
+			minMaxStockTransferItemsCollectionlist.setCollectionConfig(variables.minMaxStockTransferItemsCollection);
+		}
+		return minMaxStockTransferItemsCollectionlist;
 	}
 
 	// ==================  END:  Overridden Methods ========================

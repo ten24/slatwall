@@ -72,6 +72,7 @@ Notes:
 				<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 					<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
 				</cfloop>
+<<<<<<< HEAD
 			</hb:HibachiEntityDetailGroup>
 		</hb:HibachiEntityDetailForm>
 	
@@ -88,5 +89,12 @@ Notes:
 		        </cfswitch>
 		    </hb:HibachiListingDisplay>
 		</cfif>
+=======
+				<cfif not rc.attributeOption.getNewFlag()>
+					<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/entitycollection" open="false" text="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#" showOnCreateFlag=false />
+				</cfif>
+			</hb:HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailForm>
+>>>>>>> fbae8f8a2ca7e71737b20c63b9d81c80073994a3
 	</div>
 </cfoutput>

@@ -92,8 +92,15 @@ class SWCollectionTable{
                     }else{
                         value =  pageRecord[column.propertyIdentifier.replace(scope.collectionConfig.baseEntityAlias+'_','').replace(/\./g,'_')];
                     }
-                    if(angular.isDefined(column.type) && column.type != 'none' && $injector.has(column.type + 'Filter')){
-                        return $filter(column.type)(value);
+                    var type = 'none';
+                    if(angular.isDefined(column.type) && column.type != 'none'){
+                        type = column.type;
+                    }
+                    if(type == 'none' && angular.isDefined(column.ormtype) && column.ormtype != 'none'){
+                        type = column.ormtype;
+                    }
+                    if(type != 'none' && $injector.has(type + 'Filter')){
+                        return $filter(type)(value);
                     }else{
                         return value;
                     }

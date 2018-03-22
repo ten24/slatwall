@@ -3,6 +3,16 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		public string function getDatabaseUUID(){
+			switch(getHibachiScope().getApplicationValue('databaseType')){
+				case 'Oracle10g':
+					return 'LOWER(SYS_GUID())';
+				case 'MySQL':
+					return "LOWER(REPLACE(CAST(UUID() as char character set utf8),'-',''))";
+				case 'MicrosoftSQLServer':
+					return "LOWER(REPLACE(newid(),'-',''))";
+			}
+		}
 		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){
@@ -69,7 +79,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder2="des"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -320,12 +330,21 @@
 
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
-				data[ arguments.propertyIdentifier ] = parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				if(structkeyExists(arguments.parentObject,'getValueByPropertyIdentifier')){
+					data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				}else{
+					data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
+				}
 				return;
 			}
-			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 
-			if(!isNull(object) && isObject(object)) {
+			if(structKeyExists(arguments.parentObject,'invokeMethod')){
+				var object = arguments.parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+			}else{
+				var object = arguments.parentObject[listFirst(arguments.propertyIdentifier, '.')];
+			}
+			//only structs using closures
+			if(!isNull(object) && (isObject(object) || isStruct(object))) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";
 
@@ -346,11 +365,18 @@
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-							data[thisProperty][i]["errors"] = object[i].getErrors();
-							}catch(any e){
-								writeDump(var=object[i],top=1);abort;
+							if(structKeyExists(data[thisProperty][i],'hasErrors')){
+								data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+								data[thisProperty][i]["errors"] = object[i].getErrors();
+							}else{
+								data[thisProperty][i]["hasErrors"] = false;
+								data[thisProperty][i]["errors"] = {};
 							}
+
+
+						}catch(any e){
+							writeDump(var=object[i],top=1);abort;
+						}
 					}
 
 					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
@@ -502,6 +528,13 @@
 			* Modified by Tony Garcia 18Oct09 to deal with metadata arrays, which don't act like normal arrays
 			*/
 		public array function arrayConcat(required array a1, required array a2) {
+			
+			
+		    if (structKeyExists(server, "lucee")){
+				//using CF10 now so don't need to support CF9
+				arrayAppend(arguments.a1,arguments.a2,true);
+				return arguments.a1;
+		    }else{
 			var newArr = [];
 		    var i=1;
 		    if ((!isArray(a1)) || (!isArray(a2))) {
@@ -517,6 +550,7 @@
 		        newArr[arrayLen(a1)+i] = a2[i];
 		    }
 		    return newArr;
+		}
 		}
 		
 		//name value pair string to struct. Separates url string by & ampersand
@@ -971,8 +1005,16 @@
 				var thisRow = [];
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
+
+					var value = arguments.queryData[colArray[j]][i];
+
+					// Determine if formatting datetime stamp needed
+					if (isDate(value)) {
+						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
+					}
+
 					// create our row
-					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));

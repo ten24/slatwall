@@ -112,12 +112,14 @@ Notes:
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 			<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+			
 		</cfif>					    
 		
 		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+		<hb:HibachiListingColumn processObjectProperty="currencyCode" title="#$.slatwall.rbKey('define.currencyCode')#"/>
+		
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() neq 'satLocationTransfer'>
 			<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#"/>
 		</cfif>
-		<hb:HibachiListingColumn processObjectProperty="currencyCode" title="#$.slatwall.rbKey('define.currencyCode')#"/>
 	</hb:HibachiListingDisplay>
 </cfif>

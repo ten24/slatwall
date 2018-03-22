@@ -57,6 +57,7 @@ Notes:
 		<swa:SlatwallSetting settingName="fulfillmentMethodEmailCC" />
 		<swa:SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" />
 		<swa:SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" />
+    <swa:SlatwallSetting settingName="fulfillmentMethodTaxCategory" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

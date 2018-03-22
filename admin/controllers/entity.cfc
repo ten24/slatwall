@@ -76,6 +76,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'settings');
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
+	this.secureMethods=listAppend(this.secureMethods, 'listaccount');
+	this.secureMethods=listAppend(this.secureMethods, 'listsku');
+	this.secureMethods=listAppend(this.secureMethods, 'listproduct');
+	this.secureMethods=listAppend(this.secureMethods, 'listproductreview');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderitem');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderpayment');
+	this.secureMethods=listAppend(this.secureMethods, 'listorderfulfillment');
+	this.secureMethods=listAppend(this.secureMethods, 'listfulfillmentmethod');
+	this.secureMethods=listAppend(this.secureMethods, 'listlocation');
+	this.secureMethods=listAppend(this.secureMethods, 'listsite');
+	this.secureMethods=listAppend(this.secureMethods, 'listtype');
+	this.secureMethods=listAppend(this.secureMethods, 'listproducttype');
+	this.secureMethods=listAppend(this.secureMethods, 'listbrand');
+	this.secureMethods=listAppend(this.secureMethods, 'listcollection');
+	this.secureMethods=listAppend(this.secureMethods, 'listcurrency');
+	this.secureMethods=listAppend(this.secureMethods, 'listattributeset');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
@@ -208,6 +224,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				rc.order = subscriptionOrderItem.getOrderItem().getOrder();	
 			}
 		}
+		if(!isNull(rc.orderID) && getService('orderService').getOrder(rc.orderID).validate('edit').hasErrors()){
+			getHibachiScope().showMessage(rbkey('validate.edit.Order.closed'),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailorder",maintainQueryString=true,rc=arguments.rc);
+		}
+		
 		genericEditMethod(entityName="Order", rc=arguments.rc);
 		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
 			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
@@ -434,6 +455,37 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isNull(rc.stockAdjustmentType) || isValid('string',rc.stockAdjustmentType)){
 			param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
 			rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
+		}
+	}
+	
+	public void function detailStockAdjustment(required struct rc){
+		super.genericDetailMethod('StockAdjustment',arguments.rc);
+	}
+	
+	public void function editStockAdjustmentItem(required struct rc){
+		var stockAdjustment = getService('StockService').getStockAdjustmentItem(arguments.rc.stockAdjustmentItemID).getStockAdjustment();
+		var statusType = stockAdjustment.getstockAdjustmentStatusType().getSystemCode();
+		if(statusType == "sastClosed"){
+			getHibachiScope().showMessage(rbkey('validate.edit.StockAdjustmentItem'),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailstockadjustmentitem",maintainQueryString=true,rc=arguments.rc);
+		} else {
+			arguments.rc.fRedirectAction = 'admin:entity.editstockadjustmentitem';
+			// Call the generic logic
+			super.genericDetailMethod('StockAdjustmentItem',arguments.rc);
+		}
+	}
+	
+	public void function editStockAdjustment(required struct rc) {
+		var stockAdjustment = getService('StockService').getStockAdjustment(arguments.rc.stockAdjustmentID);
+		var statusType = stockAdjustment.getstockAdjustmentStatusType().getSystemCode();
+		
+		if(statusType == "sastClosed"){
+			getHibachiScope().showMessage(rbkey("validate.edit.StockAdjustment"),"failure");
+			renderOrRedirectFailure(defaultAction="admin:entity.detailstockadjustment",maintainQueryString=true,rc=arguments.rc);
+		} else {
+			arguments.rc.fRedirectAction = 'admin:entity.editstockadjustment';
+			// Call the generic logic
+			super.genericEditMethod(entityName="StockAdjustment", rc=arguments.rc);
 		}
 	}
 

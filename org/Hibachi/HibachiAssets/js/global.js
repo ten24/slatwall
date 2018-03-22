@@ -163,15 +163,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
 				
 	            var selectedValue = jQuery(this).val() || '';
-				
-	            if(bindData.valueAttribute.length) {
-					var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
-				}
 	
-				if( jQuery( '#' + bindData.id ).hasClass('hide') 
+	            if(bindData.valueAttribute.length) {
+					var selectedValue = jQuery(this).children(":selected").attr(bindData.valueAttribute) || '';
+				}
+					if( jQuery( '#' + bindData.id ).hasClass('hide') 
 	                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
 	                     || bindData.showValues === '*' && selectedValue.length) 
-	            ) {
+	            )
+				 {
 					
 	                jQuery( '#' + bindData.id ).removeClass('hide');
 	                
@@ -562,8 +562,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 			
 			data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
-			
-			listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
+
+			var tableID = jQuery(this).closest('.table').attr('id'); 
+ 
+			jQuery('#' + tableID).find("input[name='OrderBy']").val(data[ 'OrderBy' ]);
+
+			listingDisplayUpdate( tableID, data);
+
 		});
 	
 		// Listing Display - Filtering
@@ -1295,7 +1300,11 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 					
 			// Loop over each column of the header to set data[ 'actionCallerAttributes' ]
 	 		data[ 'methodIdentifier' ] = {};
-	 		
+	 	
+			if(data['OrderBy'] == null){
+				data[ 'OrderBy' ] =jQuery('#' + tableID).find("input[name='OrderBy']").val(); 
+			}
+
 	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
 				if( jQuery(cv).hasClass('data') ) {
 					if( jQuery(cv).data('methodidentifier') !== undefined ) {
@@ -1438,6 +1447,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						if(jQuery('#' + tableID).data('selectfield')) {
 							updateSelectTableUI( jQuery('#' + tableID).data('selectfield') );
 						}
+		
+						// Broadcast event on table element
+						jQuery("#" + tableID).trigger("listingDisplayUpdateComplete");
 		
 						// Unload the loading icon
 						removeLoadingDiv( tableID );
@@ -1843,9 +1855,12 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	function getTabHTMLForTabGroup( element, tab ){
 		
-		if($('#'+tab.TABID).html().trim().length === 0){
+		var tabID = tab.TABID || tab.tabid;
+		var view = tab.VIEW || tab.view;
+		
+		if($('#'+tabID).html().trim().length === 0){
 			
-			$('#'+tab.TABID).load(url=window.location.href,data={viewPath:tab.VIEW.split(/\/(.+)/)[1]});
+			$('#'+tabID).load(url=window.location.href,data={viewPath:view.split(/\/(.+)/)[1]});
 		}
 		
 	}

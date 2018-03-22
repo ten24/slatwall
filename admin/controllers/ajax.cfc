@@ -70,6 +70,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	this.anyAdminMethods=listAppend(this.anyAdminMethods,'updateSortOrder');
 	
 	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods,'updateInventoryTable');
 	
 	public void function before(required struct rc) {
 		getFW().setView("admin:ajax.default");
@@ -104,7 +105,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		
 		rc.ajaxResponse[ "recordsCount" ] = smartList.getRecordsCount();
 		rc.ajaxResponse[ "pageRecords" ] = [];
-		rc.ajaxResponse[ "pageRecordsCount" ] = arrayLen(smartList.getPageRecords());
+		rc.ajaxResponse[ "pageRecordsCount" ] = arrayLen(smartListPageRecords);
 		rc.ajaxResponse[ "pageRecordsShow"] = smartList.getPageRecordsShow();
 		rc.ajaxResponse[ "pageRecordsStart" ] = smartList.getPageRecordsStart();
 		rc.ajaxResponse[ "pageRecordsEnd" ] = smartList.getPageRecordsEnd();
@@ -117,7 +118,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			var processEntity = getHibachiService().getServiceByEntityName( entityName=rc.processEntity ).invokeMethod( "get#getHibachiService().getProperlyCasedShortEntityName( rc.processEntity )#", {1=rc.processEntityID} );
 		}
 		
-		for(var i=1; i<=arrayLen(smartListPageRecords); i++) {
+		for(var i=1; i<=rc.ajaxResponse[ "pageRecordsCount" ]; i++) {
 			
 			var record = smartListPageRecords[i];
 			
@@ -352,7 +353,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		param name="arguments.rc.skuID" default="";
 		
 		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
-		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
+		var sku = getSkuService().getSku({skuID=trim(arguments.rc.skuID)});
 		var smartList = getLocationService().getLocationSmartList();
 		if(len(arguments.rc.locationID)) {
 			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
@@ -369,7 +370,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["locationID"] = location.getLocationID();
 			thisData["locationIDPath"] = location.getLocationIDPath();
 			thisData["locationName"] = location.getLocationName();
-			thisData["QOH"] = sku.getQuantity('QOH',location.getLocationID());
+			thisData["QOH"] = sku.getQuantity(quantityType='QOH',locationID=location.getLocationID());
 			thisData["QOSH"] = sku.getQuantity('QOSH',location.getLocationID());
 			thisData["QNDOO"] = sku.getQuantity('QNDOO',location.getLocationID());
 			thisData["QNDORVO"] = sku.getQuantity('QNDORVO',location.getLocationID());

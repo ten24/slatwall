@@ -213,7 +213,7 @@ Notes:
 
 									<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
 									<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
-										<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
+										<cfif option['value'] eq rc.processObject.getFulfillmentMethodID()>
 											<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
 										</cfif>
 									</cfloop>
@@ -226,20 +226,58 @@ Notes:
 										</cfif>
 									</hb:HibachiDisplayToggle>
 
+									<!--- Attribute values for location typeahead used by shipping and pickup fulfillment methods --->
+									<cfset topLevelLocationID = "" />
+									<cfset selectedLocationID = "" />
+
+									<!--- Apply additional location filtering to typeahead if non-leaf order defaultStockLocation exists --->
+									<cfif not isNull(rc.processObject.getOrder().getDefaultStockLocation())>
+										<cfset topLevelLocationID = rc.processObject.getOrder().getDefaultStockLocation().getLocationID() />
+										
+										<!--- use defaultStockLocation as default if it is the only option --->
+										<cfif not rc.order.getDefaultStockLocation().hasChildren()>
+											<cfset selectedLocationID = topLevelLocationID />
+										</cfif>
+									</cfif>
+
 									<!--- Pickup Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
-										<swa:SlatwallLocationTypeahead locationPropertyName="pickupLocationID" locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="true" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true"></swa:SlatwallLocationTypeahead>
-										
+
+										<!--- Select default location if pickupLocationID provided --->
+										<cfif not isNull(rc.processObject.getPickupLocationID())>
+											<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
+										</cfif>
+
+										<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="pickupLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
 										
 									</hb:HibachiDisplayToggle>
 
 									<!--- Shipping Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
+										
+										<!--- Display fulfillment location typeahead if non-leaf order defaultStockLocation exists --->
+										<cfif not isNull(rc.order.getDefaultStockLocation()) and not rc.order.getDefaultStockLocation().hasChildren()>
+
+											<!--- Implicitly set locationID to that of defaultStockLocation --->
+											<input type="hidden" name="locationID" value="#selectedLocationID#">
+
+										<cfelse>
+											<!--- Select default fulfillment location based on locationID --->
+											<cfif not isNull(rc.processObject.getLocationID())>
+												<cfset selectedLocationID = rc.processObject.getLocationID() />
+											</cfif>
+
+											<!--- Display typeahead if options exist --->
+											<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="locationID"  locationLabelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+											<!---
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" />  
+											--->
+										</cfif>
 
 										<!--- Setup the primary address as the default account address --->
 										<cfset defaultValue = "" />
 
-									<cfif !isNull(rc.order.getAccount())>
+										<cfif !isNull(rc.order.getAccount())>
 										<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
 											<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>

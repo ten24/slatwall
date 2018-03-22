@@ -65,7 +65,7 @@ Notes:
 		<cfset orderCurrency = orderCurrencyRecord['currencyCode']/>
 			<sw-tab-content id="#getHibachiScope().createHibachiUUID()#" name="#orderCurrency#">
 				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.account.totalOrdersCount')#" value="#rc.account.getTotalOrdersCount(orderCurrency)#" edit="false" >
-				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.account.totalOrderRevenue')#" value="#rc.account.getTotalOrderRevenue(orderCurrency)#" edit="false" >
+				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.account.totalOrderRevenue')#" value="#getHibachiScope().getService('hibachiUtilityService').formatValue_currency(rc.account.getTotalOrderRevenue(orderCurrency))#" edit="false" >
 			</sw-tab-content>
 		</cfloop>
 	</sw-tab-group>

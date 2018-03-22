@@ -61,6 +61,8 @@ class SWListingDisplayController{
     public processObjectProperties;
     public recordAddAction:string;
     public recordDetailAction:string;
+    public recordDetailActionIdProperty:string;
+    public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
     public recordEditAction:string;
     public recordDeleteAction:string;
@@ -77,6 +79,7 @@ class SWListingDisplayController{
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
+    public showToggleDisplayOptions:boolean;
     public sortable:boolean = false;
     public sortableFieldName:string;
     public sortProperty;
@@ -95,9 +98,11 @@ class SWListingDisplayController{
     public allSelected;
     public name;
     public usingPersonalCollection:boolean;
+    public personalCollectionIdentifier:string;
     //@ngInject
     constructor(
         public $scope,
+        public $rootScope,
         public $transclude,
         public $timeout,
         public $q,
@@ -142,11 +147,13 @@ class SWListingDisplayController{
             this.multipleCollectionDeffered.reject();
         }
 
-        if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]){
-
+         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){
             var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
             personalCollection.setDisplayProperties('collectionConfig');
             personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
+           // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
+            var originalMultiSlotValue = angular.copy(this.multiSlot);
+            this.multiSlot = false;
             personalCollection.getEntity().then((data)=>{
                 if(data.pageRecords.length){
 
@@ -159,11 +166,14 @@ class SWListingDisplayController{
                         this.columns = this.collectionConfig.columns;
                     });
 
+                }else{
+                    this.multiSlot = originalMultiSlotValue;
                 }
-                this.processCollection();
-            })
+                 this.processCollection();
+            });
 
-        }else{
+         }else{
+            $rootScope.hibachiScope.selectedPersonalCollection = undefined;
             this.processCollection();
         }
 
@@ -171,6 +181,7 @@ class SWListingDisplayController{
     }
 
     public processCollection = () =>{
+
         this.initializeState();
 
         if(angular.isDefined(this.collectionPromise)){
@@ -355,8 +366,8 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
         }
-        if(angular.isUndefined(this.showPrintOptions)){
-            this.showPrintOptions = false; 
+        if(angular.isUndefined(this.showToggleDisplayOptions)){
+            this.showToggleDisplayOptions = true; 
         }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false;
@@ -605,6 +616,7 @@ class SWListingDisplay implements ng.IDirective{
     };
     public bindToController={
             usingPersonalCollection:"<?",
+            personalCollectionIdentifier:'@?',
             isRadio:"<?",
             angularLinks:"<?",
             isAngularRoute:"<?",
@@ -634,6 +646,8 @@ class SWListingDisplay implements ng.IDirective{
             recordEditDisabled:"<?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
+            recordDetailActionIdProperty:"@?",
+            recordDetailActionIdKey:"@?",
             recordDetailQueryString:"@?",
             recordDetailModal:"<?",
             recordDeleteAction:"@?",
@@ -699,6 +713,7 @@ class SWListingDisplay implements ng.IDirective{
             showExport:"<?",
             showOrderBy:"<?",
             showTopPagination:"<?",
+            showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
             showSimpleListingControls:"<?",
@@ -713,7 +728,7 @@ class SWListingDisplay implements ng.IDirective{
             getChildCount:"<?",
             hasSearch:"<?",
             hasActionBar:"<?",
-            multiSlot:"<?",
+            multiSlot:"=?",
             customListingControls:"<?"
     };
     public controller:any=SWListingDisplayController;

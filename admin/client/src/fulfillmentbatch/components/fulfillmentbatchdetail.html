@@ -14,7 +14,9 @@
 			data-collection-config="swFulfillmentBatchDetailController.state.lgFulfillmentBatchItemCollection"
 			data-edit="true"
 			data-has-search="true"
-			data-record-detail-action="admin:entity.detailfulfillmentBatchItem"
+			data-record-detail-action="admin:entity.detailorderfulfillment"
+			data-record-detail-action-id-property="orderFulfillmentID"
+			data-record-detail-action-id-key="orderFulfillment_orderFulfillmentID"
 			data-is-angular-route="false"
 			data-angular-links="true"
 			data-has-action-bar="true" 
@@ -41,7 +43,9 @@
 			data-collection-config="swFulfillmentBatchDetailController.state.smFulfillmentBatchItemCollection"
 			data-edit="true"
 			data-has-search="false"
-			data-record-detail-action="admin:entity.detailfulfillmentBatchItem"
+			data-record-detail-action="admin:entity.detailorderfulfillment"
+			data-record-detail-action-id-property="orderFulfillmentID"
+			data-record-detail-action-id-key="orderFulfillment_orderFulfillmentID"
 			data-is-angular-route="false"
 			data-angular-links="true"
 			data-has-action-bar="true" 
@@ -98,14 +102,14 @@
                             
                         </div> 
                         
-                        <div class="btn-group s-btn-dropdown" role="group" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] === 0"> 
-                            <button type="button" class="btn btn-primary btn-xs">
-		                    	<span><span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Unfulfilled' && swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span> Fulfill</span> 
+                        <div class="btn-group s-btn-dropdown" role="group"> 
+                            <button type="button" class="btn btn-primary btn-xs" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
+		                    	<span>Fulfill</span> 
 		                    </button>
                             <ul class="dropdown-menu" role="menu">
 								<li><a href="#" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill()">Fulfill</a></li>
 		                    </ul>
-                            <button type="button" class="btn btn-primary s-btn-select btn-xs" data-toggle="dropdown">
+                            <button type="button" class="btn btn-primary s-btn-select btn-xs" data-toggle="dropdown" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
 								<span class="caret"></span>
 		                    </button>
                         </div>
@@ -242,13 +246,13 @@
                                 <div class="table table-bordered">
                                     <div class="row">
                                     	<div class="col-md-2">&nbsp</div>
-                                        <div class="col-md-2"><strong>Item Name</strong></div>
-                                        <div class="col-md-2"><strong>Sku Code</strong></div>
+                                        <div class="col-md-2"><strong>Item</strong></div>
+					                    <div class="col-md-2"><strong>Qty Ordered</strong></div>
                                         <div class="col-md-2"><strong>Qty Delivered</strong></div>
-                                        <div class="col-md-2"><strong>Qty Ordered</strong></div>
+                                        <div class="col-md-2"><strong>Qty on Hand</strong></div>
                                         <div class="col-md-2">&nbsp</div>
                                     </div><br>
-                                    <span ng-init="swFulfillmentBatchDetailController.orderItem = {}"></span>
+                                    <span ng-init="swFulfillmentBatchDetailController.orderItem = {};"></span>
                                 	<div class="row" ng-repeat="oi in swFulfillmentBatchDetailController.state.orderFulfillmentItemsCollection">
                                            <div ng-if="swFulfillmentBatchDetailController.prepopulate == true">
                                         		<span ng-init="(oi.quantityDelivered > 0) ? swFulfillmentBatchDetailController.orderItem[oi.orderItemID] = (oi.quantity - oi.quantityDelivered) : (swFulfillmentBatchDetailController.orderItem[oi.orderItemID] = oi.quantity)"></span>
@@ -257,16 +261,16 @@
                                            	<img src="{{oi['sku_imagePath']||'http://placehold.it/60x60'}}" width="60">
                                            </div>
                                            
-                                           <div class="col-md-2">{{oi['sku_product_productName']}} {{oi['sku_skuName']}}</div>
-                                           
-                                           <div class="col-md-2">{{oi['sku_skuCode']}}</div>
-                                           
-                                           <div class="col-md-2">{{oi.quantityDelivered}}</div>
+                                           <div class="col-md-2">{{oi['sku_skuName']}} <br>{{oi['sku_skuCode']}}</div>
                                            
                                            <div class="col-md-2">{{oi.quantity}}</div>
                                            
+                                           <div class="col-md-2">{{oi.quantityDelivered}}</div>
+                                           
+                                           <div class="col-md-2">{{oi.sku_calculatedQOH}}</div>
+                                           
                                            <div class="col-md-2">
-                                            	<input type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
+                                            	<input ng-init="swFulfillmentBatchDetailController.prepopulate = false" type="text" name="orderItemQuantity_{{oi.orderItemID}}" class="form-control" ng-model="swFulfillmentBatchDetailController.orderItem[oi.orderItemID]" ng-disabled="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'"/>
                                            </div>
                                 	</div>
                                 </div>
@@ -492,7 +496,7 @@
                 </div>
                 
                 <!--- Start Custom Attributes --->
-                <div class="s-detail-body s-arrow">
+                <div class="s-detail-body s-arrow" ng-if="swFulfillmentBatchDetailController.state.orderDeliveryAttributes && swFulfillmentBatchDetailController.state.orderDeliveryAttributes.length">
                     <div class="s-content-block-wrapper">
                         <div class="s-header">
                             <h3>Order Delivery Custom Properties <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
@@ -549,7 +553,7 @@
                                         </span>
                                     </div>--->
                                     
-                                    <div class="col-md-4" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
+                                    <div class="col-md-12" ng-hide="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['orderFulfillmentStatusType_typeName'] == 'Fulfilled'">
                                         <div class="btn-group s-btn-dropdown" role="group"> 
                                             <button type="button" class="btn btn-primary btn-lg" ng-click="swFulfillmentBatchDetailController.userCaptureAndFulfill(); swFulfillmentBatchDetailController.state.loading = true">
 						                    	<span><!---<span ng-if="swFulfillmentBatchDetailController.state.currentRecordOrderDetail['order_paymentAmountDue'] > 0">Capture &amp;</span>---> Fulfill</span> 

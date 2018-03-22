@@ -87,13 +87,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getShippingIntegration(){
 		if(
-			!structKeyExists(variables,'shippingIntegration') 
-			&& !isNull(getOrderFulfillment().getShippingMethodRate())
+			!isNull(getOrderFulfillment().getShippingMethodRate())
 			&& !isNull(getOrderFulfillment().getShippingMethodRate().getShippingIntegration())
 		){
-			variable.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
+			variables.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
+		} 
+		if(structKeyExists(variables,'shippingIntegration')){
+			return variables.shippingIntegration;
 		}
-		return variable.shippingIntegration;
+		
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
@@ -118,44 +120,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return false;
 	}
 	
-	public string function getTrackingNumber(){
-		
-		if(!structKeyExists(variables,'trackingNumber') ){
-			//get tracking number from integration if specified
-			if(getUseShippingIntegrationForTrackingNumber()){
-				processShipmentRequest();
-			}else{
-				return "";
-			}
-		}
-		return variables.trackingNumber;
-	}
-	
-	public string function getContainerLabel(){
-		if(!structKeyExists(variables,'containerLabel')){
-			//get tracking number from integration if specified
-			if(getUseShippingIntegrationForTrackingNumber()){
-				processShipmentRequest();
-			}else{
-				return "";
-			}
-		}
-		return variables.containerLabel;
-	}
-
-	
-	public void function processShipmentRequest(){
-		var selectedIntegration = getShippingIntegration();
-		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
-		//create OrderDelivery and get tracking Number and generate label if shipping.cfc has method
-		if(structKeyExists(shippingIntegrationCFC,'processShipmentRequest')){
-  			shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
- 		} else {
- 			this.setTrackingNumber("");
- 			this.setContainerLabel("");
-  		}
-		
-	}
 
 	// @hint Returns a struct to assist with quick lookup for orderDeliveryItem data by using orderItemID
 	private struct function getOrderDeliveryItemsStruct() {

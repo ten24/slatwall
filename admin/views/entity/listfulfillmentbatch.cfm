@@ -54,7 +54,7 @@ Notes:
 
 <hb:HibachiEntityActionBar type="listing" object="#rc.fulfillmentBatchSmartList#" showCreate="false">
 </hb:HibachiEntityActionBar>
-
+<span ng-init="multislot = true"></span>
 <sw-listing-display 
 	data-base-entity-name="FulfillmentBatch"
 	data-edit="true"
@@ -67,7 +67,7 @@ Notes:
 	data-using-personal-collection="true"
 	data-persisted-collection-config="true"
 	data-name="fulfillmentBatchCollectionTable"
-	data-multi-slot="true"
+	data-multi-slot="multislot"
 		>
 	
 		
@@ -82,7 +82,7 @@ Notes:
 		            <sw-collection-column data-property-identifier="assignedAccount.fullName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 		        </sw-collection-columns>
 				<sw-collection-filters>
-					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-value="ofstUnfulfilled"></sw-collection-filter>
+					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ofstUnfulfilled,ofstPartiallyFulfilled"></sw-collection-filter>
 				</sw-collection-filters>
 			</sw-collection-config>
 		</sw-collection-configs>

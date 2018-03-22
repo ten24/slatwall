@@ -67,10 +67,14 @@ Notes:
 		<cfset totalPercentFulfilled = 0 >
 	</cfif>
 	<cfif arrayLen(rc.fulfillmentBatch.getLocations())>
-		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[1].getLocationPathName()>
-		<span ng-init="$root.slatwall.defaultLocation = '#rc.fulfillmentBatch.getLocations()[1].getLocationID()#'"></span>
+		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[arrayLen(rc.fulfillmentBatch.getLocations())].getLocationPathName()>
+		<cfset defaultLocationID = rc.fulfillmentBatch.getLocations()[arrayLen(rc.fulfillmentBatch.getLocations())].getLocationID()>
+
+		<span ng-init="$root.slatwall.defaultLocation = '#rc.fulfillmentBatch.getLocations()[arrayLen(rc.fulfillmentBatch.getLocations())].getLocationID()#'"></span>
 	</cfif>
-	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#" showDelete="#(totalPercentFulfilled lt 100)#">
+		<hb:HibachiProcessCaller action="admin:entity.processFulfillmentBatch" entity="#rc.fulfillmentBatch#" processContext="createStockTransfers" type="list" />
+	</hb:HibachiEntityActionBar>
 
 	<section class="s-pick-pack-detail container" ng-init="expanded = true" ng-cloak>
 		<div class="row s-detail-modules-wrapper">	
@@ -95,12 +99,60 @@ Notes:
 						<sw-card-body>#rc.fulfillmentBatch.getAssignedAccount().getFirstName()# #rc.fulfillmentBatch.getAssignedAccount().getLastName()#</sw-card-body>
 					</cfif>
 				</sw-card-view>
-
-				<sw-card-view id="location" card-size="sm">
-					<sw-card-icon icon-name="building"></sw-card-icon>
-					<sw-card-header add-border="false">Location</sw-card-header>
-					<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
-				</sw-card-view>
+				<cfif !rc.edit>
+					<sw-card-view id="location" card-size="sm">
+						<sw-card-icon icon-name="building"></sw-card-icon>
+						<sw-card-header add-border="false">Location</sw-card-header>
+						<sw-card-body><cfif !isNull(defaultLocation)> #defaultLocation# <cfelse> None. </cfif></sw-card-body>
+					</sw-card-view>
+				<cfelse>
+					<sw-card-view id="location" card-size="sm">
+						<sw-card-icon icon-name="building"></sw-card-icon>
+						<sw-card-header add-border="false">Location</sw-card-header>
+						<sw-card-body>
+							<sw-typeahead-input-field
+									data-entity-name="Location"
+									data-field-name="locations[1].locationID"
+									data-property-name="locationID"
+							        data-property-to-save="locationID"
+							        data-property-to-show="calculatedLocationPathName"
+							        data-properties-to-load="locationID,calculatedLocationPathName,primaryAddress.address.city,primaryAddress.address.stateCode,primaryAddress.address.postalCode"
+							        data-show-add-button="true"
+							        data-show-view-button="true"
+							        data-placeholder-rb-key="entity.location"
+							        data-placeholder-text="Fulfillment Location"
+							        data-multiselect-mode="false"
+							        data-filter-flag="true"
+							        data-selected-format-string="${calculatedLocationPathName}&nbsp;"
+							        data-field-name="locationID">
+							
+							    <sw-collection-config
+							            data-entity-name="Location"
+							            data-collection-config-property="typeaheadCollectionConfig"
+							            data-parent-directive-controller-as-name="swTypeaheadInputField"
+							            data-all-records="false"
+							            data-page-show="50">
+							
+									<sw-collection-columns>
+								        <sw-collection-column data-property-identifier="primaryAddress.address.addressID"></sw-collection-column>
+								        <sw-collection-column data-property-identifier="primaryAddress.address.city" data-is-searchable="true"></sw-collection-column>
+								        <sw-collection-column data-property-identifier="primaryAddress.address.stateCode" data-is-searchable="true"></sw-collection-column>
+								        <sw-collection-column data-property-identifier="primaryAddress.address.postalCode" data-is-searchable="true"></sw-collection-column>
+								        <sw-collection-column data-property-identifier="calculatedLocationPathName" data-is-searchable="true"></sw-collection-column>
+								        <sw-collection-column data-property-identifier="locationID"></sw-collection-column>
+								    </sw-collection-columns>
+									
+							    	<sw-collection-order-bys>
+							        	<sw-collection-order-by data-order-by="calculatedLocationPathName|ASC"></sw-collection-order-by>
+							    	</sw-collection-order-bys>
+							
+							    </sw-collection-config>
+								<span sw-typeahead-search-line-item data-property-identifier="calculatedLocationPathName"></span><br>
+								    	
+							</sw-typeahead-input-field>
+						</sw-card-body>
+					</sw-card-view>
+				</cfif>
 			</sw-card-layout>
 			
 			<!--- Description --->

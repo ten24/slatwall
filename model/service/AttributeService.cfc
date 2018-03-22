@@ -98,6 +98,7 @@ component  extends="HibachiService" accessors="true" {
 						var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
 
 						var assignedAttributesSmartlist = entity.getAssignedAttributeSetSmartList();
+						if (!isNull(assignedAttributesSmartlist) and !isSimpleValue(assignedAttributesSmartlist)){						
 						assignedAttributesSmartlist.removeFilter('globalFlag');
 
 						assignedAttributesSmartlist.addFilter('activeFlag',1);
@@ -114,6 +115,7 @@ component  extends="HibachiService" accessors="true" {
 							}
 							getHibachiCacheService().setCachedValue(attributeSetMetaDataStructCacheKey,attributeSetMetaDataStruct);
 						}
+					}
 					}
 
 					if(structCount(attributeSetMetaDataStruct)){

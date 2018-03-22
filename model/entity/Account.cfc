@@ -121,7 +121,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non Persistent
-	property name="totalOrderRevenue" persistent="false";
+	property name="totalOrderRevenue" persistent="false" hb_formatType="currency";
 	property name="totalOrdersCount" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
@@ -147,6 +147,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 	property name="jwtToken" persistent="false";
 	property name="urlTitle" ormtype="string"; //allows this entity to be found via a url title.
+
+
 
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);
@@ -273,7 +275,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	public string function getAdminIcon() {
-		return '<img src="#getGravatarURL(55)#" style="width:55px;" />';
+		
+		//If Gravatars are NOT disabled...
+		if(!getHibachiScope().setting('accountDisableGravatars')){
+			return '<img src="#getGravatarURL(55)#" style="width:55px;" />';
+		} else {
+			return '';
+		}
 	}
 
 	public boolean function getAdminAccountFlag() {
@@ -371,6 +379,30 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public string function getPasswordResetID() {
 		return getService("accountService").getPasswordResetID(account=this);
+	}
+
+	public string function getPermissionGroupCacheKey(){
+		if(!getNewFlag()){
+			if(!structKeyExists(variables,'permissionGroupCacheKey')){
+				var permissionGroupCacheKey = "";
+				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
+
+				if(arraylen(records) && records[1]['permissionGroupsCount']){
+					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+					permissionGroupCollectionList.setEnforceAuthorization(false);
+					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+					permissionGroupCollectionList.setPermissionAppliedFlag(true);
+					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+					for(var permissionGroupRecord in permissiongroupRecords){
+						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+					}
+				}
+				variables.permissionGroupCacheKey = permissionGroupCacheKey;
+
+			}
+			return variables.permissionGroupCacheKey;
+		}
+		return "";
 	}
 
 	public string function getPhoneNumber() {
@@ -555,8 +587,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public any function getAccountCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
-		collectionList.addDisplayProperty('siteID|value');
-		collectionList.addDisplayProperty('siteName|name');
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
 
 		var options = [{value ="", name="None"}];
 
