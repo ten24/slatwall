@@ -162,7 +162,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public boolean function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
-		var xmlRawEscaped = replace(xmlRaw,"&","&amp;","all");
+		var xmlRawEscaped = replace(arguments.xmlRaw,"&","&amp;","all");
 		var xmlData = xmlParse(xmlRawEscaped);
 		var columns = {};
 		var idColumns = "";

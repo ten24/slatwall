@@ -165,7 +165,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var stockLocation = stock.getLocation();
 		
 		if(!isNull(arguments.stockTransfers[stockLocation.getLocationID()])){
-					var stockTransfer = arguments.stockTransfers[stockLocation.getLocationID()]	
+			var stockTransfer = arguments.stockTransfers[stockLocation.getLocationID()];
 		}else{
 			var stockAdjustmentData = {};
 			stockAdjustmentData.stockAdjustmentID = createHibachiUUID();

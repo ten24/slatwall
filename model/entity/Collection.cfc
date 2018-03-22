@@ -2413,10 +2413,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables, "recordsCountData");
 	}
 
-	public void function clearRecordsCountData() {
-		structDelete(variables, "recordsCountData");
-	}
-
 	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
 		if(listLen(arguments.propertyIdentifier) == 1){
 			return entity.getSettingValue(arguments.propertyIdentifier);
@@ -2547,13 +2543,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.recordsCountData;
 	}
 
-	public any function getRecordsCountData(){
-		if(!structkeyExists(variables,'recordsCountData')){
-			getRecordsCount();
-		}
-	
-		return variables.recordsCountData;
-	}
 
 	public any function getRecordsCount(boolean refresh=false) {
 	
@@ -3021,32 +3010,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}//<--end function
 	
-	public void function addTotalAvgAggregate(required struct column){
-		var found = false;
-		for(var item in variables.totalAvgAggregates){
-			if(item.propertyIdentifier == column.propertyIdentifier){
-				found = true;
-			}
-		}
-	
-		if(!found){
-			arrayAppend(variables.totalAvgAggregates,column);
-		}
-								
-	}
-	
-	public void function addTotalSumAggregate(required struct column){
-		var found = false;
-		for(var item in variables.totalSumAggregates){
-			if(item.propertyIdentifier == column.propertyIdentifier){
-				found = true;
-			}
-		}
-		if(!found){
-			arrayAppend(variables.totalSumAggregates,column);
-		}
-	}
-
 	public void function addTotalAvgAggregate(required struct column){
 		var found = false;
 		for(var item in variables.totalAvgAggregates){
