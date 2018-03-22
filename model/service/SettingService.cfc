@@ -256,6 +256,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalUseShippingIntegrationForTrackingNumberOption = {fieldtype="yesno", defaultValue=0},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
+			globalWhiteListedEmailDomains = {fieldtype="text"},
+			globalTestingEmailDomain = {fieldtype="text"},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},

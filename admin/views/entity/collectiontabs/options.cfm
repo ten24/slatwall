@@ -10,10 +10,4 @@
 	collectionConfigFieldName="collectionConfig"
 >
 </hb:HibachiListingDisplay>
-<!---test
-<span sw-collection
-	  ng-controller="collections"
-	  toggleoption="true"
-	  >
-	
-</span>--->
+

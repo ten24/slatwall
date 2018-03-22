@@ -3840,11 +3840,13 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var HibachiInterceptor = /** @class */ (function () {
 	    //@ngInject
-	    function HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) {
+	    function HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) {
 	        var _this = this;
 	        this.$location = $location;
 	        this.$q = $q;
 	        this.$log = $log;
+	        this.$rootScope = $rootScope;
+	        this.$window = $window;
 	        this.$injector = $injector;
 	        this.localStorageService = localStorageService;
 	        this.alertService = alertService;
@@ -3856,6 +3858,23 @@
 	        this.urlParam = null;
 	        this.authHeader = 'Authorization';
 	        this.authPrefix = 'Bearer ';
+	        this.getJWTDataFromToken = function (str) {
+	            // Going backwards: from bytestream, to percent-encoding, to original string.
+	            str = str.split('.')[1];
+	            var decodedString = decodeURIComponent(_this.$window.atob(str).split('').map(function (c) {
+	                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	            }).join(''));
+	            var jwtData = angular.fromJson(decodedString);
+	            var now = +new Date();
+	            var nowString = now.toString().substr(0, jwtData.exp.toString().length);
+	            now = +nowString;
+	            if (jwtData.issuer && jwtData.issuer == _this.$window.location.hostname && jwtData.exp > now) {
+	                if (!_this.$rootScope.slatwall.account) {
+	                    _this.$rootScope.slatwall.account = {};
+	                }
+	                _this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+	            }
+	        };
 	        this.request = function (config) {
 	            _this.$log.debug('request');
 	            //bypass interceptor rules when checking template cache
@@ -3871,6 +3890,7 @@
 	            config.headers = config.headers || {};
 	            if (_this.localStorageService.hasItem('token')) {
 	                config.headers['Auth-Token'] = 'Bearer ' + _this.localStorageService.getItem('token');
+	                _this.getJWTDataFromToken(_this.localStorageService.getItem('token'));
 	            }
 	            var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
 	            if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
@@ -3897,6 +3917,9 @@
 	            if (response.data.messages) {
 	                var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
 	                _this.alertService.addAlerts(alerts);
+	            }
+	            if (response.data.hasOwnProperty('token')) {
+	                _this.localStorageService.setItem('token', response.data.token);
 	            }
 	            return response;
 	        };
@@ -3932,6 +3955,7 @@
 	                                _this.localStorageService.setItem('token', loginResponse.data.token);
 	                                rejection.config.headers = rejection.config.headers || {};
 	                                rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+	                                _this.getJWTDataFromToken(loginResponse.data.token);
 	                                return $http(rejection.config).then(function (response) {
 	                                    return response;
 	                                });
@@ -3947,6 +3971,8 @@
 	        this.$location = $location;
 	        this.$q = $q;
 	        this.$log = $log;
+	        this.$rootScope = $rootScope;
+	        this.$window = $window;
 	        this.$injector = $injector;
 	        this.localStorageService = localStorageService;
 	        this.alertService = alertService;
@@ -3957,11 +3983,13 @@
 	        this.baseUrl = appConfig.baseURL;
 	    }
 	    HibachiInterceptor.Factory = function () {
-	        var eventHandler = function ($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) { return new HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService); };
+	        var eventHandler = function ($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService) { return new HibachiInterceptor($location, $q, $log, $rootScope, $window, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, observerService); };
 	        eventHandler.$inject = [
 	            '$location',
 	            '$q',
 	            '$log',
+	            '$rootScope',
+	            '$window',
 	            '$injector',
 	            'localStorageService',
 	            'alertService',
@@ -41085,8 +41113,6 @@
 	    //@ngInject
 	    function CollectionController($scope, $attrs, $log, $timeout, $hibachi, collectionService, metadataService, selectionService, paginationService, collectionConfigService, appConfig, observerService) {
 	        $scope.saveCollection = function (collectionData) {
-	            console.log('test');
-	            console.log('collectionData', collectionData);
 	            var data = {
 	                collectionID: $attrs.collectionId,
 	                collectionConfig: collectionData.collectionConfig
@@ -49215,8 +49241,14 @@
 	                angular.forEach(errors, function (val, key) {
 	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
 	                    _this.$timeout(function () {
+	                        /**
+	                        if an error class has been attached to this form
+	                        by its children propertydisplay or errorDisplay, use it.
+	                        Otherwise, just add a generic 'error' class
+	                        to the error message **/
+	                        var errorClass = _this.errorClass ? _this.errorClass : "error";
 	                        errors[key].forEach(function (error) {
-	                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+	                            primaryElement.append("<div class='" + errorClass + "' name='" + key + "Error'>" + error + "</div>");
 	                        });
 	                    }, 0);
 	                }, _this);
@@ -49987,6 +50019,14 @@
 	        this.$injector = $injector;
 	    }
 	    SWErrorDisplayController.prototype.$onInit = function () {
+	        /**
+	         if a css error class was passed to propertyDisplay, attach to form
+	         which will apply it to the dynamically generateddiv that contains
+	         the error message
+	        **/
+	        if (this.swfPropertyDisplay && this.swfPropertyDisplay.errorClass) {
+	            this.swForm.errorClass = this.swfPropertyDisplay.errorClass;
+	        }
 	        var bindToControllerProps = this.$injector.get('swErrorDisplayDirective')[0].bindToController;
 	        for (var i in bindToControllerProps) {
 	            if (!this[i] && i !== 'name') {
@@ -52587,7 +52627,7 @@
 	                    logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue);
 	                    if ((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask))) {
 	                        logger("scope.$watch", "Change to " + newValue);
-	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
+	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = '_' + newValue.charAt(0).toLowerCase() + newValue.slice(1);
 	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 	                    }
 	                });

@@ -105,6 +105,7 @@ component extends="framework.one" {
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
+	variables.framework.hibachi.availableEnvironments = ['local','development','production'];
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -116,6 +117,18 @@ component extends="framework.one" {
 	
 	if(structKeyExists(url, variables.framework.hibachi.runDbDataKey)){
 		variables.framework.hibachi.skipDbData = false;
+	}
+
+	public string function getEnvironment() {
+		for(var i = 1; i <= arrayLen(variables.framework.hibachi.availableEnvironments); i++){
+			if( structKeyExists(variables.framework.hibachi, '#variables.framework.hibachi.availableEnvironments[i]#UrlPattern')){
+				var currentEnvironmentUrlPattern = variables.framework.hibachi['#variables.framework.hibachi.availableEnvironments[i]#UrlPattern'];
+				if(len(currentEnvironmentUrlPattern) && REFindNoCase(currentEnvironmentUrlPattern,cgi.server_name)){
+					return  variables.framework.hibachi.availableEnvironments[i];
+				}
+			}
+		}
+		return 'production';
 	}
 
 	// =============== configMappings
@@ -557,6 +570,7 @@ component extends="framework.one" {
 					applicationInitData["instantiationKey"] =			createUUID();
 					applicationInitData["application"] = 				this;
 					applicationInitData["applicationKey"] = 			variables.framework.applicationKey;
+					applicationInitData["applicationEnvironment"] = 	getEnvironment();
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;

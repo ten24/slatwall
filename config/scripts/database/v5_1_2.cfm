@@ -46,25 +46,33 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfset local.scriptHasErrors = false />
+
+<cftry>
+	<cfquery name="local.taskConditionsConfigs">
+		SELECT workflowtaskID, taskConditionsConfig FROM swWorkflowTask where taskConditionsConfig not like '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"%'
+	</cfquery>
+	<cfif local.taskConditionsConfigs.recordCount GT 0>
+		<cfloop query="local.taskConditionsConfigs" >
+			<cfset local.newConfig = rereplace(local.taskConditionsConfigs.taskConditionsConfig, '"(baseEntityAlias|propertyIdentifier|entityAlias)":"([A-Z])', '"\1":"_\2', 'ALL') />
+			<cfquery>
+				UPDATE swWorkflowTask
+				SET taskConditionsConfig = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.newConfig#" />
+                WHERE workflowtaskID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.taskConditionsConfigs.workflowtaskID#" />
+			</cfquery>
+		</cfloop>
+	</cfif>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update workflowtask taskConditionsConfig">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
 
 
-<cfparam name="rc.email" type="any">
-<cfparam name="rc.edit" type="boolean">
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.email#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.email#" >
-	    	<hb:HibachiProcessCaller entity="#rc.email#" action="admin:entity.processemail" processContext="addToQueue" type="list" />
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.email#">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtabs/htmlbody">
-			<hb:HibachiEntityDetailItem view="admin:entity/emailtabs/textbody">
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
-
+<cfif local.scriptHasErrors>
+	<cflog file="Slatwall" text="General Log - Part of Script v5_1.2 had errors when running">
+	<cfthrow detail="Part of Script v5_1.2 had errors when running">
+<cfelse>
+	<cflog file="Slatwall" text="General Log - Script v5_1.2 has run with no errors">
+</cfif>

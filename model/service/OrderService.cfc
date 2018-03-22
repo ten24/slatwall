@@ -1486,7 +1486,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							( arguments.order.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data) && arguments.order.getPaymentAmountTotal() > 0)
 						){
 							// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-							if (arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()
+							if ((arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() && structKeyExists(arguments.data, 'newOrderPayment'))
 							|| (
 								arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()
 								&& !arguments.order.hasSavedAccountPaymentMethod()

@@ -18,20 +18,17 @@ class CollectionController{
         observerService
 	){
         $scope.saveCollection = (collectionData)=>{
-			console.log('test');
-			console.log('collectionData',collectionData);
-			
 			var data = {
 				collectionID:$attrs.collectionId,
 				collectionConfig:collectionData.collectionConfig
-			};
-			
-			var saveCollectionPromise = $hibachi.saveEntity('Collection',$attrs.collectionId,data,'save');
+		};
+
+		var saveCollectionPromise = $hibachi.saveEntity('Collection',$attrs.collectionId,data,'save');
 			saveCollectionPromise.then(function(value){
 
 			}, function(reason){
 			});
-			
+
 		};
 		observerService.attach($scope.saveCollection,'swPaginationUpdate',$attrs.tableId);
 	}
