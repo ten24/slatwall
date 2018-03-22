@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,23 @@
 
 Notes:
 
-*/
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
-	property name="taxRateItemResponseBeans" type="array";
-	
-	public any function init() {
-		// Set Defaults
-		setTaxRateItemResponseBeans([]);
-		
-		// Return the Base entity init and pass arguments
-		return super.init(argumentcollection=arguments);
-	}
-	
-	public void function addTaxRateItem(any orderItemID, any referenceObjectID="", required any taxAmount, required any taxRate, string referenceObjectType="OrderItem") {
-    // set referenceObjectID in arguments so 'populate' can handle setting it
-    if (structKeyExists(arguments, 'referenceObjectID') && len(arguments.referenceObjectID) && len(arguments.referenceObjectType)) {
-      arguments['#arguments.referenceObjectType#ID'] = arguments.referenceObjectID;
-    }
 
-		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
-		
-		taxRateItemResponseBean.populate(arguments);
-		
-		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBean);
-	}
-	
-}
+<cfparam name="rc.stockAdjustmentDelivery" type="any">
+<cfparam name="rc.edit" type="boolean">
+
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.stockAdjustmentDelivery#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stockAdjustmentDelivery#" edit="#rc.edit#" backAction="admin:entity.detailStockAdjustment" backQueryString="stockAdjustmentID=#rc.stockAdjustmentDelivery.getStockAdjustment().getStockAdjustmentID()#">
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiEntityDetailGroup object="#rc.stockAdjustmentDelivery#">
+			<hb:HibachiEntityDetailItem view="admin:entity/stockadjustmentdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stockadjustmentdeliverytabs/stockadjustmentdeliveryitems" />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

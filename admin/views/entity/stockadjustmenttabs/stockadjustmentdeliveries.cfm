@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,18 @@
 
 Notes:
 
-*/
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
+<cfparam name="rc.stockAdjustment" type="any" />
 
-	property name="taxRateItemResponseBeans" type="array";
-	
-	public any function init() {
-		// Set Defaults
-		setTaxRateItemResponseBeans([]);
-		
-		// Return the Base entity init and pass arguments
-		return super.init(argumentcollection=arguments);
-	}
-	
-	public void function addTaxRateItem(any orderItemID, any referenceObjectID="", required any taxAmount, required any taxRate, string referenceObjectType="OrderItem") {
-    // set referenceObjectID in arguments so 'populate' can handle setting it
-    if (structKeyExists(arguments, 'referenceObjectID') && len(arguments.referenceObjectID) && len(arguments.referenceObjectType)) {
-      arguments['#arguments.referenceObjectType#ID'] = arguments.referenceObjectID;
-    }
-
-		var taxRateItemResponseBean = getTransient('TaxRateItemResponseBean');
-		
-		taxRateItemResponseBean.populate(arguments);
-		
-		arrayAppend(getTaxRateItemResponseBeans(), taxRateItemResponseBean);
-	}
-	
-}
+<cfoutput>
+	<hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getStockAdjustmentDeliveriesSmartList()#"
+							   recorddetailaction="admin:entity.detailStockAdjustmentDelivery"
+							   recorddetailmodal="false" 
+							   recorddetailquerystring="redirectAction=admin:entity.detailStockAdjustment&stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
+			
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime" />
+	</hb:HibachiListingDisplay>
+</cfoutput>

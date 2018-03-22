@@ -58,6 +58,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="estimatedShippingDate" ormtype="timestamp";
 	
+	// Calculated Properties
+	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
+	property name="fulfillmentMethodOptionsCacheKey" ormtype="string";
+	
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
@@ -73,6 +78,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
+	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" inverse="true" cascade="all-delete-orphan";
 	property name="fulfillmentShippingMethodOptions" singularname="fulfillmentShippingMethodOption" cfc="ShippingMethodOption" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
@@ -98,6 +104,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="saveAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="requiredShippingInfoExistsFlag" persistent="false";
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="chargeTaxAmount" type="numeric" persistent="false" hb_formatType="currency";
+	property name="chargeTaxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
 	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
@@ -306,7 +314,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 
 	public numeric function getChargeAfterDiscount() {
-		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() - getDiscountAmount());
+		return getService('HibachiUtilityService').precisionCalculate(getFulfillmentCharge() + getChargeTaxAmount() - getDiscountAmount());
 	}
 
 	public numeric function getDiscountAmount() {
@@ -495,6 +503,26 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	return variables.taxAmount;
     }
 
+	public numeric function getChargeTaxAmount() {
+		var taxAmount = 0;
+
+		for(var taxApplied in getAppliedTaxes()) {
+			taxAmount = getService('HibachiUtilityService').precisionCalculate(taxAmount + taxApplied.getTaxAmount());
+		}
+
+		return taxAmount;
+	}
+
+	public numeric function getChargeTaxLiabilityAmount() {
+		var taxLiabilityAmount = 0;
+
+		for(var taxApplied in getAppliedTaxes()) {
+			taxLiabilityAmount = getService('HibachiUtilityService').precisionCalculate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
+		}
+
+		return taxLiabilityAmount;
+	}
+
 	public numeric function getTotalShippingWeight() {
     	var totalShippingWeight = 0;
 
@@ -579,6 +607,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrderFulfillment( this );
+	}
+
+	// Applied Taxes (one-to-many)
+	public void function addAppliedTax(required any appliedTax) {
+		arguments.appliedTax.setOrderFulfillment( this );
+	}
+	public void function removeAppliedTax(required any appliedTax) {
+		arguments.appliedTax.removeOrderFulfillment( this );
 	}
 
  	// Attribute Values (one-to-many)

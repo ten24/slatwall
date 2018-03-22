@@ -54,14 +54,27 @@ Notes:
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
-				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );
-				if(!isNull(currency)){
-					return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
+				if(!isNull(currencySymbol)){
+					return currencySymbol & LSNumberFormat(arguments.value, ',.__');
 				}
 			}
 
 			// Otherwsie use the global currencyLocal
 			return LSCurrencyFormat(arguments.value, getSettingService().getSettingValue("globalCurrencyType"), getSettingService().getSettingValue("globalCurrencyLocale"));
+		}
+		
+		public any function getCurrencySymbolByCurrencyCode(required string currencyCode){
+			var cacheKey = 'getCurrencySymbolByCurrencyCode#arguments.currencyCode#';
+			if(!structKeyExists(variables,cacheKey)){
+				var currency = getService("currencyService").getCurrency( arguments.currencyCode );
+				if(!isNull(currency)){
+					variables[cacheKey] = currency.getCurrencySymbol();
+					return variables[cacheKey];
+				}
+			}else{
+				variables[cacheKey];
+			}
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {

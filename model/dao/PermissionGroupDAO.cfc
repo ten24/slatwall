@@ -1,5 +1,14 @@
 <cfcomponent extends="HibachiDAO">
 
+	<cffunction name="getPermissionGroupCountByAccountID" returntype="array">
+		<cfargument name="accountID" type="string" required="true"/>
+		<cfreturn ORMExecuteQuery("
+			SELECT new Map( _account.accountID as accountID, COUNT(DISTINCT _account_permissionGroups) as permissionGroupsCount) FROM SlatwallAccount as _account left join _account.permissionGroups as _account_permissionGroups where ( _account.accountID = :accountID )"
+			,{accountID=arguments.accountID}
+		)/>
+		
+	</cffunction>
+
 	<cffunction name="clonePermissions" returntype="void" >
 		<cfargument name="accessTypes" required="true" type="string" >
 		<cfargument name="fromPermissionGroupID" required="true" type="string" >

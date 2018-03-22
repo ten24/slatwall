@@ -73,6 +73,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		if(!structKeyExists(getPayload(),'iat')){
 			throw(type="No Valid issue at time date"); 
 		}
+		/*need valid iat*/
+		if(!structKeyExists(getPayload(),'issuer')){
+			throw(type="No Valid issuer"); 
+		}
 		/*need valid exp*/
 		if(!structKeyExists(getPayload(),'exp')){
 			throw(type="No Valid expiration time date"); 
@@ -94,6 +98,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		if(currentTime lt getPayload().iat || currentTime gt getPayload().exp){
 			throw(type="Token is expired"); 
+		}
+		
+		var serverName = CGI['server_name'];
+		if(getPayload().issuer != serverName){
+			throw(type="Invalid token issuer");
 		}
 		return this;
 	}

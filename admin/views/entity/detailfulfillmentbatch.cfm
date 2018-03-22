@@ -68,6 +68,8 @@ Notes:
 	</cfif>
 	<cfif arrayLen(rc.fulfillmentBatch.getLocations())>
 		<cfset defaultLocation = rc.fulfillmentBatch.getLocations()[arrayLen(rc.fulfillmentBatch.getLocations())].getLocationPathName()>
+		<cfset defaultLocationID = rc.fulfillmentBatch.getLocations()[arrayLen(rc.fulfillmentBatch.getLocations())].getLocationID()>
+
 		<span ng-init="$root.slatwall.defaultLocation = '#rc.fulfillmentBatch.getLocations()[arrayLen(rc.fulfillmentBatch.getLocations())].getLocationID()#'"></span>
 	</cfif>
 	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentBatch#" edit="#rc.edit#" showDelete="#(totalPercentFulfilled lt 100)#">

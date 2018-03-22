@@ -128,6 +128,18 @@
 			var modifiedEntities = getHibachiScope().getModifiedEntities();
 			getHibachiScope().clearModifiedEntities();
 
+			var entityDataArray = [];
+			for(var entity in modifiedEntities){
+				if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+					var entityData = {
+						entityName=entity.getClassName(),
+						entityID=entity.getPrimaryIDValue()
+					};
+					arrayAppend(entityDataArray,entityData);
+				}
+				
+			}
+			if(getService('hibachiUtilityService').isInThread()){
 			// Loop over the modifiedEntities to call updateCalculatedProperties
 	    	for(var entity in modifiedEntities){
 	    		entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
@@ -135,6 +147,91 @@
 
 	    	// flush again to persist any changes done during ORM Event handler
 			ormFlush();
+				var modifiedEntities = getHibachiScope().getModifiedEntities();
+				if (!isNull(modifiedEntities)){
+					getHibachiScope().clearModifiedEntities();
+			
+					// Loop over the modifiedEntities to call updateCalculatedProperties
+			    	for(var entity in modifiedEntities){
+			    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+			    			entity.updateCalculatedProperties(runAgain=true);
+			    		}
+			    	}
+			
+				    // flush again to persist any changes done during update calculated properties.
+					ormflush();
+				}
+			}else{
+						
+				var threadName = "updateCalculatedProperties_#replace(createUUID(),'-','','ALL')#";
+				thread name="#threadName#" entityDataArray="#entityDataArray#" {
+					try{
+						if(getHibachiScope().getApplicationValue("initialized")){
+							//add to the entityQueue
+							for(var entity in attributes.entityDataArray){
+								//always make a new one so we can calculate multiple times
+								var	entityQueue = getService('HibachiEntityQueueService').newEntityQueue();
+								entityQueue.setBaseObject(entity.entityName);
+								entityQueue.setBaseID(entity.entityID);
+								entityQueue.setEntityQueueType('calculatedProperty');
+								getService('HibachiEntityQueueService').saveEntityQueue(entityQueue);
+							}
+							ormFlush();	
+						
+				    		//get everything in the queue currently
+				    		var entitiesToCalculateCollectionList = getService('HibachiEntityQueueService').getEntityQueueCollectionList();
+				    		entitiesToCalculateCollectionList.setDisplayProperties('entityQueueID,baseObject,baseID');
+				    		entitiesToCalculateCollectionList.addFilter('entityQueueType','calculatedProperty');
+				    		
+				    		var entitiesToCalculateRecords = entitiesToCalculateCollectionList.getRecords();
+				    		
+				    		var successfulEntities = [];
+				    		//process then and save feedback
+					    	for(var entityData in entitiesToCalculateRecords){
+								try{
+									var entityService = getService('hibachiService').getServiceByEntityName(trim(entityData['baseObject']));
+									var threadEntity = entityService.invokeMethod('get#entityData["baseObject"]#',{1=trim(entityData['baseID'])});
+									if(!isNull(threadEntity)){
+										threadEntity.updateCalculatedProperties();
+										ormFlush();
+									}
+									
+									arrayAppend(successfulEntities,trim(entityData['entityQueueID']));
+								}catch(any e){
+									//if failed then log the recent failure
+									ORMExecuteQuery('UPDATE SlatwallEntityQueue SET mostRecentError=:mostRecentError WHERE entityQueueID=:entityQueueID',{entityQueueID=trim(entityData['entityQueueID']),mostRecentError=e.mesage & ' - ' &e.detail});
+								}
+								
+				    		}
+				    		//clear successful calculations
+				    		if(arraylen(successfulEntities)){
+				    			ORMExecuteQuery(
+					    			"DELETE FROM SlatwallEntityQueue WHERE entityQueueType=:entityQueueType AND entityQueueID IN ( :successfulEntities ) "
+					    			,{successfulEntities=successfulEntities,entityQueueType='calculatedProperty'}
+					    		);
+				    		}
+				    		ormflush();
+				    		//repeat if there are new modified entities
+				    		var modifiedEntities = getHibachiScope().getModifiedEntities();
+							if (!isNull(modifiedEntities)){
+								getHibachiScope().clearModifiedEntities();
+						
+								// Loop over the modifiedEntities to call updateCalculatedProperties
+						    	for(var entity in modifiedEntities){
+						    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+						    			entity.updateCalculatedProperties(runAgain=true);
+						    		}
+						    	}
+						
+							    // flush again to persist any changes done during update calculated properties.
+								ormflush();
+							}
+						}
+					}catch(any e){
+						getHibachiScope().logHibachi(e.detail ,true);
+					}
+		    	}
+		    }
 	    }
 
 	    public void function clearORMSession() {

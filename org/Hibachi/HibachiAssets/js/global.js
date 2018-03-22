@@ -1448,6 +1448,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 							updateSelectTableUI( jQuery('#' + tableID).data('selectfield') );
 						}
 		
+						// Broadcast event on table element
+						jQuery("#" + tableID).trigger("listingDisplayUpdateComplete");
+		
 						// Unload the loading icon
 						removeLoadingDiv( tableID );
 		

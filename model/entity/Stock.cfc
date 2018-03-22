@@ -77,8 +77,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedAverageProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAverageLandedProfit" ormtype="big_decimal" hb_formatType="currency";
 	property name="calculatedAveragePriceSoldAfterDiscount" column="calcAvgPriceSoldBeforeDiscount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" formatType="currency";
-	property name="calculatedCurrentSkuPrice" ormtype="big_decimal" formatType="currency";
+	property name="calculatedAverageDiscountAmount" column="calcAvgDiscountAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedCurrentSkuPrice" ormtype="big_decimal" hb_formatType="currency";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -101,6 +101,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="averageLandedMarkup" persistent="false" hb_formatType="percentage";
 	property name="averageProfit" persistent="false" hb_formatType="currency";
 	property name="averageLandedProfit" persistent="false" hb_formatType="currency";
+	property name="currentSkuPrice" persistent="false" hb_formatType="currency";
 
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
@@ -210,7 +211,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	*/
 	
 	public numeric function getCurrentAssetValue(required string currencyCode="USD"){
-		return val(getQOH() * getAverageCost(arguments.currencyCode));
+		return getQOH() * getAverageCost();
 	}
 
 //	public numeric function getCurrentRevenueTotal(){

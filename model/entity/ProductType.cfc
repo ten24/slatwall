@@ -114,8 +114,14 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 
 	//get merchandise type
 	public any function getBaseProductType() {
+		var baseID = listFirst(getProductTypeIDPath());
+	
+		var cacheKey = 'productType_getBaseProductType#baseID#';
 		if(isNull(getSystemCode()) || getSystemCode() == ""){
-			return getService("ProductService").getProductType(listFirst(getProductTypeIDPath())).getSystemCode();
+			if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+				getService('HibachiCacheService').setCachedValue(cacheKey,getService("ProductService").getProductType(baseID).getSystemCode());
+			}
+			return getService('HibachiCacheService').getCachedValue(cacheKey);;
 		}
 		return getSystemCode();
 	}
