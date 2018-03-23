@@ -21,8 +21,8 @@ if( url.opt_run ){
 	}
 	// execute tests
 	if( len( url.target ) ){
-		
-		
+
+
 		// directory or CFC, check by existence
 		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
 			results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
@@ -36,7 +36,7 @@ if( url.opt_run ){
 				}
 				case "junit":  {
 					xmlReport = xmlParse( results );
-					
+
 
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
@@ -46,10 +46,10 @@ if( url.opt_run ){
 				case "antjunit": {
 					errors = 0;
 					failures = 0;
-					
+
 					reportdestination = expandPath('/Slatwall/meta/tests/testresults/xml/unit/');
 					filedest = reportdestination & "results.txt";
-					
+
 //					pc = getpagecontext().getresponse();
 //						pc.setHeader("Content-Type","text/html");
 					if(directoryExists(reportdestination) && fileExists(filedest)){
@@ -57,20 +57,20 @@ if( url.opt_run ){
 						errors = txtData.errors;
 						failures = txtData.failures;
 					}
-					
+
 					xmlReport = xmlParse( results );
 				    for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				     	errors += thisSuite.XmlAttributes.errors;
 				     	failures += thisSuite.XmlAttributes.failures;
 				    }
-				    
+
 					fileWrite( filedest, '{"failures":#failures#,"errors":#errors#}' );
-					writeOutput( trim(results) ); 
+					writeOutput( trim(results) );
 					break;
 				}
-				default: { 
-					
-					writeOutput( trim(results) ); 
+				default: {
+
+					writeOutput( trim(results) );
 				}
 			}
 		} else {
@@ -91,9 +91,27 @@ if( url.opt_run ){
 	<script><cfinclude template="/testbox/system/reports/assets/js/jquery.js"></script>
 	<script>
 	$(document).ready(function() {
-		
+		$("#testFolder").change(function(){
+		  var selectedFolder = $('#testFolder').val();
+		 	if(selectedFolder != "default"){
+		 		$("#testFile").find("option:gt(0)").remove();
+		 		$("#testMethod").find("option:gt(0)").remove();
+		 		testFilesAjax(selectedFolder);
+		 	}
+		});
+
+		$("#testFile").change(function(){
+		  var selectedFolder = $('#testFolder').val();
+		  var selectedFile = $('#testFile').val();
+
+		 	if(selectedFolder != "default" && selectedFile != "default" ){
+		 		$("#testMethod").find("option:gt(0)").remove();
+		 		testMethodsAjax(selectedFolder,selectedFile);
+		 	}
+		});
 	});
 	function runTests(){
+		setTargetValue();
 		$("#tb-results").html( "" );
 		$("#btn-run").html( 'Running...' ).css( "opacity", "0.5" );
 		$("#tb-results").load( "index.cfm", $("#runnerForm").serialize(), function( data ){
@@ -105,6 +123,107 @@ if( url.opt_run ){
 		$("#target").html( '' );
 		$("#labels").html( '' );
 	}
+
+	function testFoldersAjax() {
+	    $.ajax({
+	        type: "GET",
+	        url: "/Slatwall/meta/tests/test-runner/directoryMapping.cfc?method=getTestFolders",
+	        data: {
+	        },
+	        success: function (data) {
+	             displayTestFolders(data);
+	        },
+	        error: function (e) {
+	            alert("ERROR: ", "Something went wrong");
+	        }
+	    });
+	}
+
+	function displayTestFolders(data){
+		var parent = document.getElementById("testFolder");
+		var response = JSON.parse(data);
+		for (i in response.TestFolders) {
+		 	var option = document.createElement("option");
+		 	option.text = response.TestFolders[i];
+		 	option.value = response.TestFolders[i];
+		 	parent.add(option);
+		 }
+	}
+
+	function testFilesAjax(selectedFolder) {
+		    $.ajax({
+		        type: "GET",
+		        url: "/Slatwall/meta/tests/test-runner/directoryMapping.cfc?method=getTestFiles&testFolder="+selectedFolder,
+		        data: {
+		        },
+		        success: function (data) {
+		             displayTestFiles(data);
+		        },
+		        error: function (e) {
+		            alert("ERROR: ", "Something went wrong");
+		        }
+		    });
+
+	}
+
+	function displayTestFiles(data){
+		var parent = document.getElementById("testFile");
+		var response = JSON.parse(data);
+		for (i in response.TestFiles) {
+		 	var option = document.createElement("option");
+		 	option.text = response.TestFiles[i];
+		 	option.value = response.TestFiles[i];
+		 	parent.add(option);
+		 }
+	}
+
+	function testMethodsAjax(selectedFolder, selectedFile) {
+		    $.ajax({
+		        type: "GET",
+		        url: "/Slatwall/meta/tests/test-runner/directoryMapping.cfc?method=getTestMethods&testFolder="+selectedFolder+"&testFile="+selectedFile,
+		        data: {
+		        },
+		        success: function (data) {
+		             displayTestMethods(data);
+		        },
+		        error: function (e) {
+		            alert("ERROR: ", "Something went wrong");
+		        }
+		    });
+
+	}
+
+	function displayTestMethods(data){
+		var parent = document.getElementById("testMethod");
+		var response = JSON.parse(data);
+		for (i in response.TestMethods) {
+		 	var option = document.createElement("option");
+		 	option.text = response.TestMethods[i];
+		 	option.value = response.TestMethods[i];
+		 	parent.add(option);
+		 }
+	}
+
+	function setTargetValue(){
+		var testFolder = $("#testFolder").val();
+		var testFile = $("#testFile").val();
+		var testMethod = $("#testMethod").val();
+		var url="meta/tests/unit/";
+		if(testFolder != "default"){
+			url += testFolder;
+			if(testFile != "default"){
+				url += "/"+testFile;
+				if(testMethod != "default"){
+				url= url+testMethod;
+				}
+			}
+			$("#target").val(url);
+		}
+		else{
+			alert("Select a Test Folder first");
+		}
+	}
+
 	</script>
 	<style>
 	body{
@@ -180,7 +299,7 @@ if( url.opt_run ){
 	</style>
 </head>
 <cfoutput>
-<body>
+<body onload="testFoldersAjax()">
 
 <!--- Title --->
 <div id="tb-runner" class="box" style="min-height:220px">
@@ -198,11 +317,23 @@ if( url.opt_run ){
 			<cfif len(url.target)>
 				<cfset inputValue = url.target/>
 			</cfif>
-				
-			<input type="text" name="target" value="#trim( inputValue )#" size="50"  placeholder="Bundle(s) or Directory Mapping"/>
+
+			<input type="hidden" name="target" id="target" value=""/>
+			<div>
+			<p style="font-size:15px;">Bundle(s) or Directory Mapping :-</p>
+			<select id="testFolder">
+			  <option value="default">Select Folder</option>
+			</select>
+			<select id="testFile">
+			  <option value="default">Select File</option>
+			</select>
+			<select id="testMethod">
+			  <option value="default">Select Method</option>
+			</select>
 			<label title="Enable directory recursion for directory runner">
 				<input name="opt_recurse" id="opt_recurse" type="checkbox" value="true" <cfif url.opt_recurse>checked="true"</cfif> /> Recurse Directories
 			</label>
+			</div>
 			<br>
 			<label title="List of labels to apply to tests">
 				<input type="text" name="labels" id="labels" value="#url.labels#" size="50" placeholder="Label(s)"/>
