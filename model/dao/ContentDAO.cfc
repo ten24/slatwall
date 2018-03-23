@@ -75,6 +75,21 @@ Notes:
 			}
 		)>
 	</cffunction>
+	
+	<cffunction name="getCategoryDescendants" access="public" >
+		<cfargument name="category" type="any" required="true">
+		<cfreturn ORMExecuteQuery(
+			'Select categoryID From #getApplicationKey()#Category
+			where 
+			categoryIDPath <> :categoryIDPath
+			and categoryIDPath like :categoryIDPathLike',
+			{
+				categoryIDPath=arguments.category.getCategoryIDPath(),
+				categoryIDPathLike=arguments.category.getCategoryIDPath() & '%'
+			}
+		)>
+	</cffunction>
+	
 	<!--- when deleting content make top level children attach to this categories parent and then delete the category --->
 	<cffunction name="deleteCategoryByCmsCategoryID" access="public">
 		<cfargument name="cmsCategoryID" type="string"/>
@@ -121,8 +136,15 @@ Notes:
 	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
+		
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND c.urlTitlePath = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
+	</cffunction>
 
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
+	<cffunction name="getCategoryBySiteIDAndUrlTitlePath" access="public">
+		<cfargument name="siteID" type="string" required="true">
+		<cfargument name="urlTitlePath" type="string" required="true">
+
+		<cfreturn ormExecuteQuery(" FROM SlatwallCategory c Where c.site.siteID = ? AND c.urlTitlePath = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
 
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
@@ -254,6 +276,17 @@ Notes:
 								)/>
 	</cffunction>
 	<cfscript>
+		
+		
+		public void function updateAllDescendantsUrlTitlePathByUrlTitleByCategoryIDs(required string categoryIDs, required string previousURLTitlePath, required string newUrlTitlePath){
+			arguments.categoryIDs = listQualify(arguments.categoryIDs,"'",",");
+			ORMExecuteQuery("
+				UPDATE SlatwallCategory s
+				SET urlTitlePath=REPLACE(s.urlTitlePath,'#arguments.previousURLTitlePath#','#arguments.newUrlTitlePath#') 
+				Where s.categoryID IN (#arguments.categoryIDs#)"
+			);
+		}
+		
 		public void function updateAllDescendantsUrlTitlePathByUrlTitle(required string contentIDs,required string previousURLTitlePath, required string newUrlTitlePath){
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
 			ORMExecuteQuery("
@@ -263,10 +296,18 @@ Notes:
 			);
 		}
 
+		public void function updateAllDescendantsCategoryNamePathByUrlTitle(required string categoryIDs, required string previousCategoryNamePath, required string newCategoryNamePath){
+			arguments.categoryIDs = listQualify(arguments.categoryIDs,"'",",");
+			ORMExecuteQuery("
+				UPDATE SlatwallCategory s 
+				SET categoryNamePath=REPLACE(s.categoryNamePath,'#arguments.previousCategoryNamePath#','#arguments.newCategoryNamePath#') 
+				Where s.categoryID IN (#arguments.categoryIDs#) ");
+		}
+
 		public void function updateAllDescendantsTitlePathByUrlTitle(required string contentIDs,required string previousTitlePath, required string newTitlePath){
 			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
 			ORMExecuteQuery("UPDATE SlatwallContent s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ");
-		}
+		} 
 	</cfscript>
 
 	<cffunction name="getCategoryByCMSCategoryIDAndCMSSiteID" access="public">

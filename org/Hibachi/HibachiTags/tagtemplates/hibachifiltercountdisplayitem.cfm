@@ -14,7 +14,7 @@
 						
 						<cfif (option['count'] gt 0 AND len(trim(option['name']))) OR isFilterApplied>
 							
-							<cfset optionBuildUrl = attributes.baseBuildUrl & "#option['value']#"/>
+							<cfset optionBuildUrl = attributes.baseBuildUrl & "#urlEncodedFormat(option['value'])#"/>
 							<li>
 								
 								<a 

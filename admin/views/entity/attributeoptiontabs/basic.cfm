@@ -11,4 +11,5 @@
 
 		<hb:HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionLabel" edit="#rc.edit#">
 		<hb:HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionValue" edit="#rc.edit#">
+		<hb:HibachiPropertyDisplay object="#rc.attributeOption#" property="urlTitle" edit="#rc.edit#">
 </cfoutput>

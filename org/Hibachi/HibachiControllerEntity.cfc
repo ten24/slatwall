@@ -170,6 +170,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// Place the standard smartList in the rc
 		arguments.rc["#arguments.entityName#SmartList"] = entityService.invokeMethod( "get#arguments.entityName#SmartList", {1=arguments.rc} );
+		arguments.rc["#arguments.entityName#CollectionList"] = entityService.invokeMethod( "get#arguments.entityName#CollectionList", {1=arguments.rc} );
 	}
 
 	// CREATE
@@ -416,7 +417,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 	// PROCESS
 	public void function genericProcessMethod(required string entityName, required struct rc) {
-
+		
 		// Find the correct service and this object PrimaryID
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.entityName );
 		var entityPrimaryID = getHibachiService().getPrimaryIDPropertyNameByEntityName( entityName=arguments.entityName );
@@ -485,10 +486,10 @@ component output="false" accessors="true" extends="HibachiController" {
 
 			// Call the process method on the entity, and then populate it back into the RC
 			arguments.rc[ arguments.entityName ] = entityService.invokeMethod( "process#arguments.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.processContext} );
-
+			
 			// SUCCESS
 			if(!arguments.rc[ arguments.entityName ].hasErrors()) {
-
+				
 				// Show the Generic Action Success Message
 				getHibachiScope().showMessage( getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.#arguments.rc.entityActionDetails.itemName#.#arguments.rc.processContext#_success" ), "success");
 
@@ -509,7 +510,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 				// Otherwise do the standard render / redirect
 				} else {
-
+					
 					// Place the id in the URL for redirects in case this was a new entity before
 					var isSPrimaryIDOverridden = false;
 					if(structKeyExists(arguments.rc,'sRedirectQS')){
@@ -524,14 +525,14 @@ component output="false" accessors="true" extends="HibachiController" {
 					if(!isSPrimaryIDOverridden){
 						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
 					}
-
+					
 					// Render or Redirect a Success
 					renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 				}
 
 			// FAILURE
 			} else {
-
+				
 				// Show all of the specific messages & error messages for the entity
 				arguments.rc[ arguments.entityName ].showErrorsAndMessages();
 
@@ -572,7 +573,7 @@ component output="false" accessors="true" extends="HibachiController" {
 					if(!isFPrimaryIDOverridden){
 						url[ entity.getPrimaryIDPropertyName() ] = arguments.rc[ arguments.entityName ].getPrimaryIDValue();	
 					}
-
+					
 					// Render or Redirect a faluire
 					renderOrRedirectFailure( defaultAction=arguments.rc.entityActionDetails.detailAction, maintainQueryString=true, rc=arguments.rc);
 
@@ -659,14 +660,17 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
 		if(structKeyExists(arguments.rc, "sRedirectURL")) {
+			
 			getFW().redirectExact( redirectlocation=arguments.rc.sRedirectURL );
 
 		// Next look for a sRedirectAction in the rc, and do a redirect on that
 		} else if (structKeyExists(arguments.rc, "sRedirectAction")) {
+			
 			getFW().redirect( action=arguments.rc.sRedirectAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 
 		// Next look for a sRenderItem in the rc, set the view to that, and then call the controller for that action
 		} else if (structKeyExists(arguments.rc, "sRenderItem")) {
+			
 			if(!getHibachiScope().getORMHasErrors()) {
 				getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 			}
@@ -677,6 +681,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		// If nothing was defined then we just do a redirect to the defaultAction, if it is just a single value then render otherwise do a redirect
 		} else if (listLen(arguments.defaultAction, ".") eq 1) {
+			
 			if(!getHibachiScope().getORMHasErrors()) {
 				getHibachiScope().getDAO("hibachiDAO").flushORMSession();
 			}
@@ -686,6 +691,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			this.invokeMethod(arguments.defaultAction, {rc=arguments.rc});
 
 		} else {
+			
 			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 		}
 	}

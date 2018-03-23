@@ -3,6 +3,16 @@
 	<cfproperty name="hibachiTagService" type="any" />
 
 	<cfscript>
+		public string function getDatabaseUUID(){
+			switch(getHibachiScope().getApplicationValue('databaseType')){
+				case 'Oracle10g':
+					return 'LOWER(SYS_GUID())';
+				case 'MySQL':
+					return "LOWER(REPLACE(CAST(UUID() as char character set utf8),'-',''))";
+				case 'MicrosoftSQLServer':
+					return "LOWER(REPLACE(newid(),'-',''))";
+			}
+		}
 		
 		public function formatStructKeyList(required string str){
  		    if (!structKeyExists(server, "lucee")){
@@ -26,6 +36,17 @@
  				qryColumns = listAppend(qryColumns, column.name);
  			}
  			return local.qryColumns;
+ 		}
+
+ 		public string function getSQLType(required any ormtype){
+ 			var types = {
+ 				"big_decimal":"decimal",
+ 				"text":"varchar"
+ 			};
+ 			if(structKeyExists(types, ormtype)){
+ 				return types[ormtype];
+ 			}
+ 			return ormtype;
  		}
  		
 		public any function precisionCalculate(required numeric value, numeric scale=2){
@@ -58,7 +79,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public array function arrayOfStructsSort(aOfS,key,sortOrder2="des"){
+		public array function arrayOfStructsSort(aOfS,key,sortOrder2="asc"){
 
 
 		        //by default, we'll use a textnocase sort
@@ -281,7 +302,6 @@
   		public any function hibachiTernary(required any condition, required any expression1, required any expression2){
   			return (arguments.condition) ? arguments.expression1 : arguments.expression2;
   		}
-
 	  	/**
 	    * Returns a URI that can be used in a QR code with a multi factor authenticator app implementations
 	    * Resources: 
@@ -310,12 +330,21 @@
 
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
-				data[ arguments.propertyIdentifier ] = parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				if(structkeyExists(arguments.parentObject,'getValueByPropertyIdentifier')){
+					data[ arguments.propertyIdentifier ] = arguments.parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				}else{
+					data[ arguments.propertyIdentifier ] = arguments.parentObject[ arguments.propertyIdentifier ];
+				}
 				return;
 			}
-			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 
-			if(!isNull(object) && isObject(object)) {
+			if(structKeyExists(arguments.parentObject,'invokeMethod')){
+				var object = arguments.parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+			}else{
+				var object = arguments.parentObject[listFirst(arguments.propertyIdentifier, '.')];
+			}
+			//only structs using closures
+			if(!isNull(object) && (isObject(object) || isStruct(object))) {
 				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
 				param name="data[thisProperty]" default="#structNew()#";
 
@@ -336,11 +365,18 @@
 					if(!structKeyExists(data[thisProperty][i],"errors")) {
 						// add error messages
 						try{
-							data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
-							data[thisProperty][i]["errors"] = object[i].getErrors();
-							}catch(any e){
-								writeDump(var=object[i],top=1);abort;
+							if(structKeyExists(data[thisProperty][i],'hasErrors')){
+								data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+								data[thisProperty][i]["errors"] = object[i].getErrors();
+							}else{
+								data[thisProperty][i]["hasErrors"] = false;
+								data[thisProperty][i]["errors"] = {};
 							}
+
+
+						}catch(any e){
+							writeDump(var=object[i],top=1);abort;
+						}
 					}
 
 					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
@@ -492,6 +528,13 @@
 			* Modified by Tony Garcia 18Oct09 to deal with metadata arrays, which don't act like normal arrays
 			*/
 		public array function arrayConcat(required array a1, required array a2) {
+			
+			
+		    if (structKeyExists(server, "lucee")){
+				//using CF10 now so don't need to support CF9
+				arrayAppend(arguments.a1,arguments.a2,true);
+				return arguments.a1;
+		    }else{
 			var newArr = [];
 		    var i=1;
 		    if ((!isArray(a1)) || (!isArray(a2))) {
@@ -507,6 +550,7 @@
 		        newArr[arrayLen(a1)+i] = a2[i];
 		    }
 		    return newArr;
+		}
 		}
 		
 		//name value pair string to struct. Separates url string by & ampersand
@@ -620,11 +664,11 @@
 		}
 
 		// helper method for downloading a file
-		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown', boolean deleteFile = false) {
+		public void function downloadFile(required string fileName, required string filePath, string contentType = 'application/unknown; charset=UTF-8', boolean deleteFile = false) {
 			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=""#arguments.fileName#""");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
-
+		
 		public string function getIdentityHashCode(required any value) {
 			return createObject("java","java.lang.System").identityHashCode(arguments.value);
 		}
@@ -961,8 +1005,16 @@
 				var thisRow = [];
 				// loop over column list
 				for(var j=1; j <= arrayLen(colArray); j=j+1){
+
+					var value = arguments.queryData[colArray[j]][i];
+
+					// Determine if formatting datetime stamp needed
+					if (isDate(value)) {
+						value = '#dateFormat(value, "mm/dd/yyyy")# #timeFormat(value, "HH:mm:ss")#';
+					}
+
 					// create our row
-					thisRow[j] = replace( replace( arguments.queryData[colArray[j]][i],',','','all'),'"','""','all' );
+					thisRow[j] = replace( replace( value,',','','all'),'"','""','all' );
 				}
 				// Append new row to csv output
 				buffer.append(JavaCast('string', (ArrayToList(thisRow, arguments.delimiter))));
@@ -1440,4 +1492,36 @@
 		<cfreturn !isNull(cfhttp) AND structKeyExists(cfhttp.responseHeader, 'Status_Code') AND cfhttp.responseHeader['Status_Code'] EQ 200>
 	</cffunction>
 
+
+	<cffunction name="getSignedS3ObjectLink" access="public" output="false" returntype="string">
+		<cfargument name="bucketName" type="string" required="true">
+		<cfargument name="keyName" type="string" required="true">
+		<cfargument name="awsAccessKeyId" type="string" required="true">
+		<cfargument name="awsSecretAccessKey" type="string" required="true">
+		<cfargument name="minutesValid" type="numeric" required="true" default="1">
+
+		<cfset var s3link = "" />
+		<cfset var epochTime = dateDiff( "s", DateConvert("utc2Local", "January 1 1970 00:00"), now() ) + (arguments.minutesValid * 60) />
+		<cfset var cs = "GET\n\n\n#epochTime#\n/#arguments.bucketName#/#arguments.keyName#" />
+		<cfset var signature = createS3Signature(cs,arguments.awsSecretAccessKey)>
+		<cfset s3link = "https://#arguments.bucketName#.s3.amazonaws.com/#arguments.keyName#?AWSAccessKeyId=#URLEncodedFormat(arguments.awsAccessKeyId)#&Expires=#epochTime#&Signature=#URLEncodedFormat(signature)#" />
+		<cfreturn s3link />
+
+	</cffunction>
+
+	<cffunction name="getClientFileName" returntype="string" output="false" hint="">
+	    <cfargument name="fieldName" required="true" type="string" hint="Name of the Form field" />
+
+	    <cfset var tmpPartsArray = Form.getPartsArray() />
+
+	    <cfif IsDefined("tmpPartsArray")>
+	        <cfloop array="#tmpPartsArray#" index="local.tmpPart">
+	            <cfif local.tmpPart.isFile() AND local.tmpPart.getName() EQ arguments.fieldName>
+	                <cfreturn local.tmpPart.getFileName() />
+	            </cfif>
+	        </cfloop>
+	    </cfif>
+
+	    <cfreturn "" />
+	</cffunction>
 </cfcomponent>

@@ -49,11 +49,13 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 
 	property name="accountDAO" type="any";
+	property name="permissionGroupDAO" type="any";
 
 	property name="addressService" type="any";
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiAuditService" type="any";
+	property name="giftCardService" type="any";
+	property name="hibachiAuditService" type="any";	
 	property name="loyaltyService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
@@ -61,6 +63,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
+	property name="totpAuthenticator" type="any";
 	property name="typeService" type="any";
 	property name="validationService" type="any";
 
@@ -84,7 +87,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	public boolean function verifyTwoFactorAuthenticationRequiredByEmail(required string emailAddress) {
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=arguments.emailAddress);
+		return !isNull(accountAuthentication) && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag();
+	}
+	
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
@@ -206,7 +214,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 
 		}
-		
+	
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
@@ -238,7 +246,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If there are errors in the newAccountPayment after save, then add them to the account
 		if(newAccountPayment.hasErrors()) {
-			
+		
 			arguments.account.addError('accountPayment', rbKey('admin.entity.order.addAccountPayment_error'));
 		// If no errors, then we can process a transaction
 		} else {
@@ -302,7 +310,21 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-	
+	public any function processAccount_changePosPin(required any account, required any processObject) {
+
+		var existingPosPin = arguments.account.getPosPin();
+
+		// Set the password
+		var newPosPin = getHashedAndSaltedPassword(arguments.processObject.getPosPin(), arguments.account.getAccountID());
+		
+		if(!isNull(existingPosPin) && existingPosPin == newPosPin)
+		{
+			arguments.account.addError("samePosPin",rbKey('admin.entity.account.samePosPin'));
+		} else {
+			arguments.account.setPosPin(newPosPin);
+		}
+		return arguments.account;
+	}
 	public any function saveAccount(required any account, struct data={}, string context="save"){
 		
 		if(!isNull(arguments.account.getOrganizationFlag()) && arguments.account.getOrganizationFlag()){
@@ -386,6 +408,11 @@ component extends="HibachiService" accessors="true" output="false" {
 					//return access code error
 					arguments.account.addError("accessID", rbKey('validate.account.accessID'));
 				}
+			}
+			
+			var currentSite = getHibachiScope().getCurrentRequestSite();
+			if(!isNull(currentSite)){
+				arguments.account.setAccountCreatedSite(currentSite);
 			}
 			
 			// Save & Populate the account so that custom attributes get set
@@ -575,61 +602,119 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return arguments.account;
 	}
-
+	
+	public any function processAccount_addTwoFactorAuthentication(required any account, required any processObject, struct data={}) {
+		// Verify authenticationCode matches with TOTP secret key
+		if (!getHibachiAuthenticationService().verifyTOTPToken(arguments.processObject.getTotpSecretKey(), arguments.processObject.getAuthenticationCode())) {
+			arguments.processObject.addError('authenticationCodeIncorrect', rbKey('validate.account_authorizeAccount.authenticationCode.incorrect'));
+		} else {
+			arguments.account.setTOTPSecretKey(arguments.processObject.getTotpSecretKey());
+			arguments.account.setTotpSecretKeyCreatedDateTime(now());
+			
+			// Create account setting
+			this.saveAccount(arguments.account);
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_removeTwoFactorAuthentication(required any account, struct data={}) {
+		// Clear TOTP values
+		arguments.account.setTotpSecretKey(javacast('null', 0));
+		arguments.account.setTotpSecretKeyCreatedDateTime(javacast('null', 0));
+		
+		this.saveAccount(account);
+		
+		return arguments.account;
+	}
+	
 	public any function processAccount_login(required any account, required any processObject) {
-		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
-		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
-
-		if(!isNull(accountAuthentication)) {
-			//Make sure that the account is not locked
+		var emailAddress = arguments.processObject.getEmailAddress();;
+		var password = arguments.processObject.getPassword();
+		var authenticationCode = arguments.processObject.getAuthenticationCode();
+		
+		// Attempt to load the account authentication by emailAddress
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress(emailAddress=emailAddress);
+		
+		// Account exists
+		if (!isNull(accountAuthentication)) {
+			// Hash password
+			var hashedAndSaltedPassword = getHashedAndSaltedPassword(password=password, salt=accountAuthentication.getAccountAuthenticationID());
+			
+			// Verify basic authentication first
+			// Make sure that the account is not locked
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and
-				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {
-
-					//Check to see if a password reset is required
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == hashedAndSaltedPassword) {
+					// Check to see if a password reset is required
 					if(checkPasswordResetRequired(accountAuthentication, arguments.processObject)){
 						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));
-					}else{
-						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}
-
-					accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
-					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
-
-					return arguments.account;
+				// Invalid Password
+				} else {
+					// No password specific error message, as that would provide a malicious attacker with useful information
+					arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 				}
-
-				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+				
+				// Verify two-factor authentication as long as login process has not already failed before this point
+				if (!arguments.processObject.hasErrors() && accountAuthentication.getAccount().getTwoFactorAuthenticationFlag()) {
+					// If authenticationCode populated
+					if (!isNull(authenticationCode)&& len(authenticationCode)) {
+						if (len(accountAuthentication.getAccount().getTOTPSecretKey())) {
+							// Authentication code is incorrect
+							if (!getHibachiAuthenticationService().verifyTOTPToken(accountAuthentication.getAccount().getTOTPSecretKey(), authenticationCode)) {
+								arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.incorrect'));
+							}
+						// No "totp" secret key has been generated for account
+						} else {
+							arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.nosecretkey'));
+						}
+					// Authentication code is required for account
+					} else {
+						arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.authenticationCode.required'));
+					}
+				}
+			// Account has been locked
+			} else{
+				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
+			}
+		// Invalid email, no account authentication exists
+		} else {
+			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+		}
+		
+		// Login the account
+		if (!arguments.processObject.hasErrors()) {
+			getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+			accountAuthentication.getAccount().setFailedLoginAttemptCount(0);
+			accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+		// Login was invalid
+		} else {
+			var invalidLoginData = {emailAddress=emailAddress};
+			
+			if (!isNull(accountAuthentication)) {
 				invalidLoginData.account = accountAuthentication.getAccount();
-
-
+						
 				//Log the failed attempt to account.failedLoginAttemptCount
 				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
 				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins);
-
+			
 				//Get the max number of failed attempts before the account is locked based on account type
 				if(accountAuthentication.getAccount().getAdminAccountFlag()){
 					var maxLoginAttempts = arguments.account.setting('accountFailedAdminLoginAttemptCount');
 				}else{
 					var maxLoginAttempts = arguments.account.setting('accountFailedPublicLoginAttemptCount');
 				}
-
+				
 				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
 				if (!isNull(maxLoginAttempts) && maxLoginAttempts > 0 && failedLogins >= maxLoginAttempts){
 					this.processAccount(invalidLoginData.account, 'lock');
 				}
-
-			} else{
-				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
-		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
+			
+			getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
 		}
-
-		// Login was invalid
-		getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
-
+		
 		return arguments.account;
 	}
 
@@ -1253,7 +1338,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
 				// If the paymentTransaction has errors, then add those errors to the accountPayment itself
-				if(paymentTransaction.hasError('runTransaction')) {
+				if(paymentTransaction.hasError('runTransaction') ) {
 					arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
 					getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived());
@@ -1282,8 +1367,12 @@ component extends="HibachiService" accessors="true" output="false" {
 			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 
 			// If the paymentTransaction has errors, then add those errors to the accountPayment itself
-			if(paymentTransaction.hasError('runTransaction')) {
+			if(paymentTransaction.hasError('runTransaction') || paymentTransaction.getTransactionSuccessFlag() == false) {
 				arguments.accountPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+			}
+			
+			if (paymentTransaction.getTransactionSuccessFlag() == false){
+				accountPayment.setActiveFlag(false);
 			}
 		}
 
@@ -1317,22 +1406,66 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.accountPaymentMethod;
 	}
 
+	public any function processPermission_addPermissionRecordRestriction(required any permission, required any processObject){
+		
+		arguments.processObject.getPermissionRecordRestriction().setPermissionRecordRestrictionName(arguments.processObject.getPermissionRecordRestrictionName());
+		arguments.processObject.getPermissionRecordRestriction().setEnforceOnDirectobjectReference(arguments.processObject.getEnforceOnDirectobjectReference());
+		arguments.permission.addPermissionRecordRestriction(arguments.processObject.getPermissionRecordRestriction());
+		arguments.permission = this.savePermission(arguments.permission);
+		
+		return arguments.permission;
+	}
+	
+	public any function processPermissionGroup_clonePermission(required any permissionGroup, required any processObject, struct data = {}) {
+
+		var permissionType = '';
+		if(arguments.processObject.getActionPermissionFlag()){
+			permissionType = listAppend(permissionType, 'action');
+		}
+		if(arguments.processObject.getDataPermissionFlag()){
+			permissionType = listAppend(permissionType, 'entity');
+		}
+
+		if(listLen(permissionType)){
+			getPermissionGroupDAO().clonePermissions(
+				permissionType,
+				arguments.processObject.getFromPermissionGroupID(),
+				arguments.permissionGroup.getPermissionGroupID()
+			);
+			getService("HibachiCacheService").resetCachedKey(arguments.permissionGroup.getPermissionGroupID() & 'permissionByDetails');
+		}
+
+		return arguments.permissionGroup;
+	}
+
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
 	
+	public any function savePermissionRecordRestriction(required permissionRecordRestriction, struct data={}, string context="save"){
+		arguments.permissionRecordRestriction =  super.save(entity=arguments.permissionRecordRestriction, data=arguments.data);
+		if(!arguments.permissionRecordRestriction.hasErrors()){
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions');
+			getService("HibachiCacheService").resetCachedKeyByPrefix("Collection.getPermissionRecordRestrictions");
+		}
+		
+		return arguments.permissionRecordRestriction;
+		
+	}
+	
 	public any function saveAccountPaymentMethod(required any accountPaymentMethod, struct data={}, string context="save") {
 		param name="arguments.data.runSaveAccountPaymentMethodTransactionFlag" default="true";
-
+		
 		// See if the accountPaymentMethod was new
 		var wasNew = arguments.accountPaymentMethod.getNewFlag();
 
 		// Call the generic save method to populate and validate
 		arguments.accountPaymentMethod = save(arguments.accountPaymentMethod, arguments.data, arguments.context);
-
+		
+		
+		
 		// If the order payment does not have errors, then we can check the payment method for a saveTransaction
 		if(wasNew && !arguments.accountPaymentMethod.hasErrors() && arguments.data.runSaveAccountPaymentMethodTransactionFlag && !isNull(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && len(arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType()) && arguments.accountPaymentMethod.getPaymentMethod().getSaveAccountPaymentMethodTransactionType() neq "none") {
-
 			// Setup transaction data
 			var transactionData = {
 				amount = 0,
@@ -1343,6 +1476,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.accountPaymentMethod.clearProcessObject( 'createTransaction' );
 
 			arguments.accountPaymentMethod = this.processAccountPaymentMethod(arguments.accountPaymentMethod, transactionData, 'createTransaction');
+			if (arguments.accountPaymentMethod.hasErrors()){
+				arguments.accountPaymentMethod.errors = [];
+				arguments.accountPaymentMethod.setActiveFlag(false);
+				this.saveAccountPaymentMethod(arguments.accountPaymentMethod);
+			}
 		}
 
 		return arguments.accountPaymentMethod;
@@ -1355,6 +1493,10 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		// As long as permissions were passed in we can set those up
 		if(structKeyExists(arguments.data, "permissions")) {
+			
+			arguments.data.permissions = arrayFilter(arguments.data.permissions,function(value){
+				return !isNull(value);
+			});
 			// Loop over all of the permissions that were passed in.
 			for(var i=1; i<=arrayLen(arguments.data.permissions); i++) {
 
@@ -1380,6 +1522,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Setup hibernate session correctly if it has errors or not
 		if(!arguments.permissionGroup.hasErrors()) {
 			getAccountDAO().save( arguments.permissionGroup );
+			getService('HibachiCacheService').resetCachedKeyByPrefix('getPermissionRecordRestrictions',true);
+			getService('HibachiCacheService').resetCachedKey(arguments.permissionGroup.getPermissionsByDetailsCacheKey());
 		}
 
 		return arguments.permissionGroup;
@@ -1456,7 +1600,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Delete Overrides ==========================
 
 	public boolean function deleteAccount(required any account) {
-
+		
+		getService("HibachiTagService").cfsetting(requesttimeout="120");
+		
 		// Check delete validation
 		if(arguments.account.isDeletable()) {
 
@@ -1464,7 +1610,9 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.account.setPrimaryEmailAddress(javaCast("null", ""));
 			arguments.account.setPrimaryPhoneNumber(javaCast("null", ""));
 			arguments.account.setPrimaryAddress(javaCast("null", ""));
-
+			arguments.account.setOwnerAccount(javaCast("null", ""));
+			
+			
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 
@@ -1524,7 +1672,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
-				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
+				getAccountDAO().removePrimaryAddress(arguments.accountAddress.getAccount().getAccountID());
 			}
 			// If the primary address is this address then set the primary to null
 			if(!isNull(arguments.accountAddress.getAccount()) && !isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress())&&!isNull(arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID()) && arguments.accountAddress.getAccount().getPrimaryShippingAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
@@ -1540,6 +1688,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			getAccountDAO().removeAccountAddressFromSubscriptionUsages( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromAccountPaymentMethods(accountAddressID = arguments.accountAddress.getAccountAddressID());
 		   
 		    arguments.accountAddress.removeAccount();
             arguments.accountAddress.setAddress(javaCast("null","")); 
@@ -1702,6 +1851,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		return false;
 	}
+	
 	// =====================  END:  Private Helper Functions ==================
 
 }

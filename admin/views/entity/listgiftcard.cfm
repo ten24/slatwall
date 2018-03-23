@@ -61,7 +61,7 @@ Notes:
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
-	<sw-listing-display
+	<sw-listing-display data-using-personal-collection="true"
 			data-collection="'GiftCard'"
 			data-edit="false"
 			data-has-search="true"
@@ -70,6 +70,7 @@ Notes:
 			data-angular-links="false"
 			data-has-action-bar="false"
 						>
+		<sw-listing-column data-property-identifier="giftCardID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="activeFlag"></sw-listing-column>
 		<sw-listing-column data-property-identifier="calculatedBalanceAmount"></sw-listing-column>
 		<sw-listing-column data-property-identifier="createdDateTime"></sw-listing-column>

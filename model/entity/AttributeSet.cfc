@@ -54,7 +54,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetName" ormtype="string";
 	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
 	property name="attributeSetDescription" ormtype="string" length="2000";
-	property name="attributeSetObject" ormtype="string" hb_formFieldType="select";
+	property name="attributeSetObject" ormtype="string" hb_formFieldType="select" index="PI_ATTRIBUTE_SET_OBJECT";
 	property name="globalFlag" ormtype="boolean" default="1";
 	property name="accountSaveFlag" ormtype="boolean";
 	property name="sortOrder" ormtype="integer";
@@ -108,6 +108,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="Address", name=rbKey("entity.Address")},
 			{value="AttributeOption", name=rbKey("entity.AttributeOption")},
 			{value="Brand", name=rbKey("entity.Brand")},
+			{value="Category", name=rbKey("entity.Category")},
 			{value="Content", name=rbKey("entity.Content")},
 			{value="EventRegistration", name=rbKey("entity.EventRegistration")},
 			{value="File", name=rbKey("entity.File")},
@@ -127,6 +128,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="Promotion", name=rbKey("entity.Promotion")},
 			{value="Sku", name=rbKey("entity.Sku")},
 			{value="Site", name=rbKey("entity.Site")},
+			{value="Stock", name=rbKey("entity.Stock")},
 			{value="SubscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},
 			{value="Type", name=rbKey("entity.Type")},
 			{value="Vendor", name=rbKey("entity.Vendor")},

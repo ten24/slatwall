@@ -53,8 +53,8 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	
 	// Persistent Properties
 	property name="taxAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="taxAmount" ormtype="big_decimal";
-	property name="taxLiabilityAmount" ormtype="big_decimal";
+	property name="taxAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="taxLiabilityAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="taxRate" ormtype="big_decimal" hb_formatType="percentage";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
@@ -65,6 +65,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxStateCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
 	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
+	property name="manualTaxAmountFlag" ormtype="boolean" default="false";
 	
 	//Persitent Integration Properties
 	property name="taxImpositionID" ormtype="string";
@@ -76,6 +77,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	
 	// Related Properties (many-to-one)
 	property name="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="many-to-one" fkcolumn="taxCategoryRateID";
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID" hb_cascadeCalculate="true";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID" hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
@@ -101,6 +103,25 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Order Fulfillment (many-to-one)
+	public void function setOrderFulfillment(required any orderFulfillment) {
+		variables.orderFulfillment = arguments.orderFulfillment;
+		if(isNew() or !arguments.orderFulfillment.hasAppliedTax( this )) {
+			arrayAppend(arguments.orderFulfillment.getAppliedTaxes(), this);
+		}
+	}
+
+	public void function removeOrderFulfillment(any orderFulfillment) {
+		if(!structKeyExists(arguments, "orderFulfillment")) {
+			arguments.orderFulfillment = variables.orderFulfillment;
+		}
+		var index = arrayFind(arguments.orderFulfillment.getAppliedTaxes(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderFulfillment.getAppliedTaxes(), index);
+		}
+		structDelete(variables, "orderFulfillment");
+	}
 	
 	// Order Item (many-to-one)
 	public void function setOrderItem(required any orderItem) {

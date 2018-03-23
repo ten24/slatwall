@@ -26,13 +26,22 @@ component output="false" accessors="true" extends="HibachiTransient" {
     }
 
     public any function init() {
-        var properties = getProperties();
-
-        // Loop over all properties
-        for(var i=1; i<=arrayLen(properties); i++) {
-            // Set any one-to-many or many-to-many properties with a blank array as the default value
-            if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
-                variables[ properties[i].name ] = [];
+        if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")){
+            var properties = getService('HibachiService').getToManyPropertiesByEntityName(getClassName());
+			var propertyCount = arrayLen(properties);
+			// Set any one-to-many or many-to-many properties with a blank array as the default value
+			for(var i=1; i<=propertyCount; i++) {
+				variables[ properties[i] ] = [];
+			}
+        }else{
+            var properties = getProperties();
+            var propertyCount = arrayLen(properties);
+            // Loop over all properties
+            for(var i=1; i<=propertyCount; i++) {
+                // Set any one-to-many or many-to-many properties with a blank array as the default value
+                if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
+                    variables[ properties[i].name ] = [];
+                }
             }
         }
 

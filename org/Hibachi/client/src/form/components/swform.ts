@@ -15,6 +15,7 @@ class SWFormController {
     public object:any;
     public events: any;
     public name: string;
+    public errorClass:string;
     //onSuccessEvents
     public onSuccess:string;
     //onErrorEvents
@@ -28,6 +29,7 @@ class SWFormController {
     public inputAttributes:string;
     public eventListeners;
     public submitOnEnter;
+    public parseObjectErrors:boolean = true;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -101,6 +103,14 @@ class SWFormController {
 
     }
 
+    public $onInit=()=>{
+        if(this.object && this.parseObjectErrors){
+            this.$timeout(()=>{
+                this.parseErrors(this.object.errors)
+            });
+        }
+    }
+
     public isObject=()=>{
         return (angular.isObject(this.object));
     }
@@ -164,8 +174,16 @@ class SWFormController {
             angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
                     this.$timeout(()=> {
+                        
+                        /**
+                        if an error class has been attached to this form
+                        by its children propertydisplay or errorDisplay, use it.
+                        Otherwise, just add a generic 'error' class
+                        to the error message **/
+                        let errorClass = this.errorClass ? this.errorClass : "error";
+                        
                         errors[key].forEach((error)=>{
-                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+                            primaryElement.append("<div class='" + errorClass + "' name='" + key + "Error'>" + error + "</div>");
                         })
                     }, 0);
             }, this);
@@ -235,9 +253,9 @@ class SWFormController {
 
         angular.forEach(iterable, (val, key) => {
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                 if(this.object.forms[this.name][key].$modelValue){
+                 if(this.object.forms[this.name][key].$modelValue != undefined){
                     val = this.object.forms[this.name][key].$modelValue;
-                }else if(this.object.forms[this.name][key].$viewValue){
+                }else if(this.object.forms[this.name][key].$viewValue != undefined){
                     val = this.object.forms[this.name][key].$viewValue;
                 }else if(this.object.forms[this.name][key].$dirty){
                     val="";
@@ -290,7 +308,8 @@ class SWForm implements ng.IDirective {
             inputAttributes:"@?",
             eventListeners:"=?",
             eventAnnouncers:"@",
-            submitOnEnter:"@"
+            submitOnEnter:"@",
+            parseObjectErrors:"@?"
     };
 
     /**

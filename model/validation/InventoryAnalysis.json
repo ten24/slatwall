@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"inventoryAnalysisName":		[{"contexts":"save","required":true}],
+		"analysisStartDateTime":		[{"contexts":"save","required":true,"dataType":"date"}],
+		"daysOut":						[{"contexts":"save","required":true,"dataType":"numeric","minValue":1}]
+	}
+}

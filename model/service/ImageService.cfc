@@ -56,6 +56,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	property name="hibachiTagService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
+	property name="siteService" type="any";
 
 	// @hint Returns an image HTML element with the additional attributes
 	public string function getResizedImage() {
@@ -99,10 +100,23 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
         var resizedImagePaths = [];
-        var skus = [];
+        //var skus = [];
+        
+        var skuCollectionList = getService('skuService').getSkuCollectionList();
+        skuCollectionList.setDisplayProperties('skuID,imageFile');
+        skuCollectionList.addFilter('skuID',arguments.skuIDList,'IN');
+        var skuRecords = skuCollectionList.getRecords();
+        for(var skuRecord in skuRecords){
+        	ArrayAppend(
+        		resizedImagePaths, 
+        		getService('imageService').getResizedImagePath(
+        			width=imageWidth, height=imageHeight, imagePath="#getHibachiScope().getBaseImageURL()#/product/default/#skuRecord['imageFile']#"
+        		)
+        	);
+        }
 
         //smart list to load up sku array
-        var skuSmartList = getSkuService().getSkuSmartList();
+        /*var skuSmartList = getSkuService().getSkuSmartList();
         skuSmartList.addInFilter('skuID', arguments.skuIDList);
 
         if( skuSmartList.getRecordsCount() > 0){
@@ -111,7 +125,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
             for  (var sku in skus){
                 ArrayAppend(resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));
             }
-        }
+        }*/
         return resizedImagePaths;
     }
     
@@ -135,9 +149,9 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
-			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
+			} else if (!isNull(getSiteService().getCurrentRequestSite()) && !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))) {
                 
-                arguments.imagePath = getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath');
+                arguments.imagePath = getSiteService().getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location
 			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {

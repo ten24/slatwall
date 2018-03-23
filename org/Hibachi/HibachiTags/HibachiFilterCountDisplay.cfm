@@ -16,9 +16,66 @@
 	            var maxValue = $('##max'+id).val() || '';
 	            
 //	            remove previous params
-	            var url = window.location.toString().split('?')[0]+'?'+baseBuildUrl+minValue+'^'+maxValue;
+				var urlAndQueryParams = window.location.toString().split('?');
+				var queryParams = []; 
+				if(urlAndQueryParams.length>1){ 
+					queryParams = urlAndQueryParams[1].split("&");
+				}
+				
+				var baseBuildUrlExistsFlag = false;
+				for(var i = 0; i < queryParams.length; i++){
+					if(queryParams[i].indexOf(baseBuildUrl)>-1){
+						queryParams[i] = baseBuildUrl + minValue + "^" + maxValue;
+						baseBuildUrlExistsFlag = true;
+					}
+				}
+				var url = urlAndQueryParams[0];
+				if(queryParams && queryParams.length){
+					url += "?" + queryParams.join("&");
+				}
+				if(!baseBuildUrlExistsFlag){
+					if(urlAndQueryParams.length > 1){
+						url += "&";
+					} else {
+						url += "?";
+					}
+					url += baseBuildUrl + minValue + "^" + maxValue;
+				} 
 	            $('##apply'+id).attr('href',url);
 	        }
+	        
+	        var navigateByIDPath = function(ulElement,baseBuildUrl,IDPath,urlParam){
+	        	
+	        	var IDArray = [];
+	        	
+	        	
+	        	
+	        	ulElement.find("ul li input").each(function(index,element){
+	        		
+        			if($(element).attr('data-IDPath').indexOf(IDPath) > -1){
+	        			var lastIDArray = $(element).attr('data-IDPath').split(',');
+	        			var lastID = lastIDArray[lastIDArray.length-1];
+	        			IDArray.push(lastID);
+	        		}
+	        		
+	        	});
+        		var IDList = IDArray.join(',');
+        		var buildUrl = updateQueryStringParameter(baseBuildUrl,urlParam.split('=')[0],IDList);
+	        	
+	        	window.location=buildUrl;
+	        
+	        }
+	        
+	        var updateQueryStringParameter = function(uri, key, value) {
+			  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+			  var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+			  if (uri.match(re)) {
+			    return uri.replace(re, '$1' + key + "=" + value + '$2');
+			  }
+			  else {
+			    return uri + separator + key + "=" + value;
+			  }
+			}
 		</script>
 		<div class="widget shop-categories">
     		<div class="widget-content">

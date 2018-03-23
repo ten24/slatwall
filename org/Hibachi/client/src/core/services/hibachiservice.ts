@@ -12,6 +12,7 @@ class HibachiService{
 
 	public _deferred = {};
     public _resourceBundle = {};
+    public usePublicRoutes:boolean = false;
 	//@ngInject
 	constructor(
 		private $window:ng.IWindowService,
@@ -230,8 +231,9 @@ class HibachiService{
 				}
 			}
 			return new this._jsEntities[entityName];	
-
+ 
 		}
+	
 	};
 	getEntityDefinition= (entityName) =>{
 		return this._jsEntities[entityName];
@@ -419,6 +421,7 @@ class HibachiService{
 
 		return request.promise;
 	};
+
 	getExistingCollectionsByBaseEntity= (entityName) => {
 
 		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;

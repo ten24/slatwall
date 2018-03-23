@@ -50,8 +50,13 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	
 	// Persistent Properties
 	property name="inventoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantityIn" ormtype="integer";
-	property name="quantityOut" ormtype="integer";
+	property name="quantityIn" ormtype="float";
+	property name="quantityOut" ormtype="float";
+	property name="cost" ormtype="big_decimal" hb_formatType="currency";
+	property name="cogs" ormtype="big_decimal" hb_formatType="currency";
+	property name="landedCost" ormtype="big_decimal" hint="This is just the cost plus shipping for vendor orders" hb_formatType="currency";
+	property name="landedAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="currencyCode" ormtype="string" length="3";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -64,8 +69,13 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	property name="stock" fieldtype="many-to-one" fkcolumn="stockID" cfc="Stock";
 	property name="stockReceiverItem" cfc="StockReceiverItem" fieldtype="many-to-one" fkcolumn="stockReceiverItemID";
 	property name="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="many-to-one" fkcolumn="orderDeliveryItemID";
-	//property name="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="many-to-one" fkcolumn="vendorOrderDeliveryItemID";
+	property name="vendorOrderDeliveryItem" cfc="VendorOrderDeliveryItem" fieldtype="many-to-one" fkcolumn="vendorOrderDeliveryItemID";
 	property name="stockAdjustmentDeliveryItem" cfc="StockAdjustmentDeliveryItem" fieldtype="many-to-one" fkcolumn="stockAdjustmentDeliveryItemID";
+	property name="assetLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="assetLedgerAccountID";
+	property name="cogsLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="cogsLedgerAccountID";
+	property name="expenseLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="expenseLedgerAccountID";
+	property name="inventoryLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="inventoryLedgerAccountID";
+	property name="revenueLedgerAccount" cfc="LedgerAccount" fieldtype="many-to-one" fkcolumn="revenueLedgerAccountID";
 	
 	
 	
@@ -78,7 +88,23 @@ component displayname="Inventory" entityname="SlatwallInventory" table="SwInvent
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
-	
+
+	public void function setQuantityIn(required numeric quantity){
+		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+			variables.quantityIn = int(arguments.quantity);
+		}else{
+			variables.quantityIn = arguments.quantity;
+		}
+	}
+
+	public void function setQuantityOut(required numeric quantity){
+		if(!isNull(getStock()) && getStock().getSku().getinventoryTrackBy() == 'Quantity'){
+			variables.quantityOut = int(arguments.quantity);
+		}else{
+			variables.quantityOut = arguments.quantity;
+		}
+	}
+
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================

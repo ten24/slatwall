@@ -72,18 +72,31 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="shipFromStateCode" type="string" default="";
 	property name="shipFromPostalCode" type="string" default="";
 	property name="shipFromCountryCode" type="string" default="";
-
+	property name="shippingIntegrationMethod" type="string" default="";
 	property name="contactPersonName" type="string" default="";
 	property name="contactCompany" type="string" default="";
 	property name="contactPhoneNumber" type="string" default="";
 
 	property name="shippingItemRequestBeans" type="array";
 
+	// Reference Objects
+	property name="order" type="any" cfc="Order";
+
 	public any function init() {
 		// Set defaults
 		variables.shippingItemRequestBeans = [];
 
 		return super.init();
+	}
+	
+	public string function getJSON(){
+		var data = {};
+		for(var propertyStruct in getProperties()){
+			if(!structKeyExists(propertyStruct,'cfc')){
+				data[propertyStruct.name] = this.invokeMethod('get#propertyStruct.name#');
+			}
+		}
+		return serializeJson(data);
 	}
 
 	public boolean function isInternationalShipment(){
@@ -99,9 +112,11 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	}
 
 	public void function populateWithOrderFulfillment(required any orderFulfillment){
+		setOrder(arguments.orderFulfillment.getOrder());
 		populateShippingItemsWithOrderFulfillment(arguments.orderFulfillment);
 		populateShipToWithOrderFulfillment( arguments.orderFulfillment );
 		populateContactWithOrderFulfillment( arguments.orderFulfillment );
+		populateShippingMethodRateNameFromOrderFulfillment(arguments.orderFulfillment);
 	}
 
 	public void function populateContactWithOrderFulfillment(required any orderFulfillment){
@@ -186,6 +201,14 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public void function populateShippingItemsWithOrderFulfillment(required any orderFulfillment){
 		populateShippingItemsWithOrderFulfillmentItems(arguments.orderFulfillment.getOrderFulfillmentItems());
 	}
+	
+	public void function populateShippingMethodRateNameFromOrderFulfillment( required any orderFulfillment ){
+		var name = "STANDARD_OVERNIGHT";
+		if (!isNull(orderFulfillment) && !isNull(orderFulfillment.getShippingMethodRate()) && !isNull(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod()) && len(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod())){
+			name = orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod();
+		}
+		this.setShippingIntegrationMethod(name);
+	}
 
 	public void function populateShippingItemsWithOrderFulfillmentItems(required array orderFulfillmentItems, boolean clear=false) {
 		if(arguments.clear){
@@ -211,7 +234,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			if(isNumeric(getShippingItemRequestBeans()[i].getWeight())) {
 				var itemWeight = getShippingItemRequestBeans()[i].getWeight();
 				if(arguments.unitCode neq getShippingItemRequestBeans()[i].getWeightUnitOfMeasure()) {
-					itemWeight = getService("measurementService").convertWeight(weight=getShippingItemRequestBeans()[i].getWeight(), originalUnitCode=getShippingItemRequestBeans()[i].getWeightUnitOfMeasure(), convertToUnitCode=arguments.unitCode);
+					itemWeight = getService("measurementService").convertUnits(amount=getShippingItemRequestBeans()[i].getWeight(), originalUnitCode=getShippingItemRequestBeans()[i].getWeightUnitOfMeasure(), convertToUnitCode=arguments.unitCode);
 				}
 				totalWeight = getService('HibachiUtilityService').precisionCalculate(totalWeight + (itemWeight * getShippingItemRequestBeans()[i].getQuantity()));
 			}

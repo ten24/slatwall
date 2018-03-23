@@ -51,9 +51,18 @@ Notes:
 
 <cfparam name="rc.order" type="any" />
 
+<cfset local.collectionOrderDeliveryList = $.slatwall.getService('orderService').getOrderDeliveryCollectionList()  >
+	<cfset local.collectionOrderDeliveryList.setDisplayProperties("fulfillmentMethod.fulfillmentMethodName,createdDateTime,trackingNumber,totalQuantityDelivered,location.locationName",{
+	    isVisible=true,
+	    isSearchable=true,
+	    isDeletable=true
+	}) >
+	<cfset local.collectionOrderDeliveryList.addDisplayProperty(displayProperty="orderDeliveryID",columnConfig={isVisible=false})>
+	<cfset local.collectionOrderDeliveryList.addFilter("order.orderID",rc.order.getOrderID())>
+
 <cfoutput>
 	
-	<hb:HibachiListingDisplay smartList="#rc.order.getOrderDeliveriesSmartList()#"
+	<hb:HibachiListingDisplay collectionList="#local.collectionOrderDeliveryList#"
 							  recordDetailAction="admin:entity.detailorderdelivery">
 			
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
