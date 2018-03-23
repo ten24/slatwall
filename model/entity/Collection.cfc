@@ -2008,7 +2008,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				direction = ordering.direction;
 			}
 
-			orderByHQL &= '#ordering.propertyIdentifier# #direction# ';
+			orderByHQL &= '#getPropertyIdentifierAlias(ordering.propertyIdentifier)# #direction# ';
 
 			//check whether a comma is needed
 			if(i != orderByCount){
@@ -2341,6 +2341,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							variables.processObjectArray = [];
 							var entityAlias = "_#lcase(this.getCollectionObject())#";
 							HQL = 'SELECT DISTINCT(#entityAlias#) ' & getHQL(excludeGroupBy=true);
+							
 							HQLParams = getHQLParams();
 							var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
@@ -3129,9 +3130,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					setHasManyRelationFilter(collectionConfig.hasManyRelationFilter);
 				}
 				//get select columns if we don't have a non-persistent column and a processContext was not supplied
-				if(!this.getNonPersistentColumn() && !len(this.getProcessContext())){
+				if(!len(this.getProcessContext())){
 				
-					if(arguments.excludeSelectAndOrderBy){
+					if(this.getNonPersistentColumn() || arguments.excludeSelectAndOrderBy){
 						getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 					}else{
 						selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
