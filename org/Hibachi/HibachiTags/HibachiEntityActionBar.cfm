@@ -86,6 +86,7 @@
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>
+												lol
 												#thistag.generatedcontent#
 											</hb:HibachiDividerHider>
 										</ul>
