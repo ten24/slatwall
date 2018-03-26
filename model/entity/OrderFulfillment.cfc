@@ -102,7 +102,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
 	property name="selectedShippingMethodOption" type="any" persistent="false";
-	property name="eligibleShippingMethodRates" type="any" persistent="false";
+	property name="eligibleShippingMethodRates" type="any" persistent="false"; 
 	property name="shippingMethodRate" type="array" persistent="false";
 	property name="shippingMethodOptions" type="array" persistent="false";
 	property name="subtotal" type="numeric" persistent="false" hb_formatType="currency";
@@ -363,18 +363,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     	}
     }
 
-	public string function getShippingIntegrationName() {
+	public string function getShippingIntegrationName() { 
 		if(!isNull(getShippingIntegration())){
-			return getShippingIntegration().getIntegrationName();
+			return getShippingIntegration().getIntegrationName(); 
 		}
-		return '';
-	}
+		return ''; 
+	} 
 
-	public any function getShippingIntegration() {
+	public any function getShippingIntegration() { 
 		if(!isNull(getShippingMethodRate()) && !isNull(getShippingMethodRate().getShippingIntegration())){
-				return getShippingMethodRate().getShippingIntegration();
-		}
-	}
+				return getShippingMethodRate().getShippingIntegration(); 
+		} 
+	}	
 
     public any function getSelectedShippingMethodOption() {
     	if(!structKeyExists(variables, "selectedShippingMethodOption")) {
@@ -406,7 +406,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	    	variables.subtotal = 0;
 	    	for( var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++ ) {
 				if(getOrderFulfillmentItems()[i].isRootOrderItem()){
-				    variables.subtotal = getService('HibachiUtilityService').precisionCalculate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());
+				    variables.subtotal = getService('HibachiUtilityService').precisionCalculate(variables.subtotal + getOrderFulfillmentItems()[i].getExtendedPrice());	    	
 	    		}
 	    	}
   		}
@@ -436,7 +436,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     	for( var orderItem in getOrderFulfillmentItems()) {
     		//Only calculate the weight for top level items so that product bundles don't cause weight doubling.
-    		if (isNull(orderItem.getParentOrderItem())){
+    		if (isNull(orderItem.getParentOrderItem())){	
     			var convertedWeight = getService("measurementService").convertWeightToGlobalWeightUnit(orderItem.getSku().setting('skuShippingWeight'), orderItem.getSku().setting('skuShippingWeightUnitCode'));
     			totalShippingWeight = getService('HibachiUtilityService').precisionCalculate(totalShippingWeight + (convertedWeight * orderItem.getQuantity()));
     		}
@@ -629,10 +629,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 			// Else if there was no accountAddress before, or the accountAddress has changed
 			} else if (
-				!structKeyExists(variables, "accountAddress")
+				!structKeyExists(variables, "accountAddress") 
 				|| (
-					structKeyExists(variables, "accountAddress")
-					&& variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID())
+					structKeyExists(variables, "accountAddress") 
+					&& variables.accountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) 
 			) {
 				getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
 
@@ -735,3 +735,4 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// ==================  END:  Deprecated Methods ========================
 }
+
