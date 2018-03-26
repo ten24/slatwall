@@ -55,9 +55,6 @@
 		public any function getSlatwallApplication() {
 			if(!structKeyExists(variables, "slatwallApplication")) {
 				variables.slatwallApplication = createObject("component", "Slatwall.Application");
-				variables.slatwallApplication.onApplicationStart();
-				variables.slatwallApplication.verifyApplication(true,true);
-				variables.slatwallApplication.bootstrap();
 			}
 			return variables.slatwallApplication;
 		}
@@ -73,7 +70,7 @@
 		// For admin request end, we call the endLifecycle
 		public void function verifySlatwallRequest( required any $ ) {
 			if(!structKeyExists(request, "slatwallScope")) {
-				getSlatwallApplication().setupGlobalRequest();	
+				getSlatwallApplication().bootstrap();
 			}
 			if(!structKeyExists(arguments.$, "slatwall")) {
 				$.setCustomMuraScopeKey("slatwall", request.slatwallScope);	

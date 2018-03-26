@@ -17,7 +17,14 @@ component {
     */
 
     this.name = hash( getBaseTemplatePath() );
-    if ( !structKeyExists( request, '_fw1' ) ) {
+    setupRequestFW1Struct();
+    
+    /**
+     * Custom Method Added for Hibachi
+     * Required for Hibachi bootstrapping, otherwise never executes and request._fw1 is undefined
+     */
+    public void function setupRequestFW1Struct() {
+        if ( !structKeyExists( request, '_fw1' ) ) {
         request._fw1 = {
             cgiScriptName = CGI.SCRIPT_NAME,
             cgiPathInfo = CGI.PATH_INFO,
@@ -33,11 +40,20 @@ component {
             request._fw1.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
         }
     }
+    
     // do not rely on these, they are meant to be true magic...
     variables.magicApplicationSubsystem = '][';
     variables.magicApplicationController = '[]';
     variables.magicApplicationAction = '__';
     variables.magicBaseURL = '-[]-';
+    }
+    
+    // do not rely on these, they are meant to be true magic...
+    variables.magicApplicationSubsystem = '][';
+    variables.magicApplicationController = '[]';
+    variables.magicApplicationAction = '__';
+    variables.magicBaseURL = '-[]-';
+    
 
     // constructor if not extended via Application.cfc
 
