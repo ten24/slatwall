@@ -87,6 +87,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	//test account will create test orders
+	/**
+	* @test
+	*/
 	public void function processOrder_createTest_testAccountCreatesTestOrder(){
 		var accountData = {
 			accountID="",
@@ -589,10 +592,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						orderItemID=order.getOrderITems()[1].getOrderItemID()
 					}
 				}
-			]
+			],
+			shippingIntegration = {
+			 	integrationID='2c9089d961555e330161564a721b0057'
+			}
 		};
 		var orderDelivery = createTestEntity('OrderDelivery',{});
+		//writeDump("test case --"&shippingMethod.getShippingMethodID()&shippingMethod.getShippingMethodName());
 		orderDelivery = variables.service.process(orderDelivery,orderDeliveryData,'create');
+		//WriteDump(orderDelivery.shippingMethod);
 		variables.service.getDao('hibachiDao').flushOrmSession();
 
 		assert(arrayLen(orderDelivery.getOrderDeliveryItems()));
@@ -860,7 +868,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						orderItemID=order.getOrderITems()[1].getOrderItemID()
 					}
 				}
-			]
+			],
+			shippingIntegration = {
+			 	integrationID='2c9089d961555e330161564a721b0057'
+			}
 		};
 		var orderDelivery = createTestEntity('OrderDelivery',{});
 		orderDelivery = variables.service.process(orderDelivery,orderDeliveryData,'create');
@@ -1353,4 +1364,5 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 
 	}
+
 }
