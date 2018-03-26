@@ -106,13 +106,13 @@
                                     <label for="exampleID"></label>
                                 </div>
                             </th>
-                            <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
+                            <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'--> 
 
-                            <th colspan="2"  data-ng-click="column.persistent.toString() != 'false' && swListingDisplay.toggleOrderBy(column)" data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+                            <th colspan="2" data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
 
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
                                 
-                                <a href data-ng-if="column.persistent.toString() != 'false' && !column.hasHeaderView && !column.hasCellView" class="s-sort-arrows">
+                                <a href data-ng-if="column.persistent.toString() != 'false' && !column.hasHeaderView && !column.hasCellView" data-ng-click="swListingDisplay.toggleOrderBy(column)" class="s-sort-arrows">
 
                                     <svg data-ng-show="swListingDisplay.showOrderBy" class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                                         <g transform="translate(0.5, 0.5)">
@@ -325,7 +325,7 @@
                         </tr>
 
                     </tbody>
-                    <thead>
+                    <thead ng-show="swListingDisplay.hasNumerical() === false">
                         <tr>
                             <!-- Sortable -->
                             <input data-ng-if="swListingDisplay.sortable && swListingDisplay.edit" type="hidden" data-ng-attr-name="{{swListingDisplay.sortableFieldName}}" data-ng-value="swListingDisplay.pageRecordsWithManualSortOrder" />
@@ -350,28 +350,6 @@
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
 
-                            <th data-ng-repeat-start="column in swListingDisplay.columns" class="data {{column.tdClass}}" 
-                                data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak
-                                ng-style="{'border': column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0 ? '1' : 'none'}"
-                            >
-
-                                <span ng-show="column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0" data-ng-bind="'Total'" style="cursor: pointer"></span>
-
-                                <span data-ng-if="column.hasHeaderView">
-                                    <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
-                                </span>
-                            </th>
-                            <th data-ng-repeat-end class="data {{column.tdClass}}" 
-                                data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak
-                                ng-style="{'border': column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0 ? '1' : 'none'}"
-                            >
-
-                                <span ng-show="column.ormtype && 'big_decimal,integer,float,double'.indexOf(column.ormtype) >= 0" data-ng-bind="'Average'" style="cursor: pointer"></span>
-
-                                <span data-ng-if="column.hasHeaderView">
-                                    <sw-directive data-directive-template="column.headerView" data-variables="swListingDisplay"></sw-directive>
-                                </span>
-                            </th>
                             <th class="s-detail-hidden-content">
                             </th>
                         </tr>
@@ -401,8 +379,9 @@
                             <!--cell contents -->
 							<td
                                     data-ng-repeat-start="(key,column) in swListingDisplay.columns"
-                                    class="{{column.tdclass}}"
+                                    class="{{column.tdclass}} sw-total"
                                     data-ng-cloak
+                                    colspan=2
                                     data-ng-if="column.isVisible"
                                     ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
@@ -417,10 +396,11 @@
 							</td>
 							<td
                                     data-ng-repeat-end
-                                    class="{{column.tdclass}}"
+                                    class="{{column.tdclass}} sw-average"
                                     data-ng-cloak
+                                    colspan=2
                                     data-ng-if="column.isVisible"
-                                    ng-style="{'border': swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
+                                    ng-style="{'border': swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none', 'display': 'none'}"
                             >
 							    <sw-listing-display-cell
 							        ng-if="swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
@@ -433,7 +413,15 @@
 							</td>
 
                             <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content s-actions" data-ng-show="swListingDisplay.administrativeCount > 0">
-                                
+                                <span  ng-show="swListingDisplay.hasNumerical()">
+                                    <div class="btn-group open" style="position: static;">
+                                        <button class="btn btn-primary dropdown-toggle btn-primary calcRows" data-toggle="dropdown" aria-expanded="true">Calculate <span class="caret"></span></button>
+                                            <ul class="dropdown-menu pull-right" id="">
+                                               <li><a ng-click="swListingDisplay.showCalculation('average')">Average</a></li>
+                                               <li><a ng-click="swListingDisplay.showCalculation('total')">Total</a></li>
+                                            </ul>
+                                    </div>
+                                </span>
                             </td>
 
                         </tr>

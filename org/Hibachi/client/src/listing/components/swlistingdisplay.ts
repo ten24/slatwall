@@ -79,6 +79,7 @@ class SWListingDisplayController{
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
+    public showCalculator:boolean = false;
     public showToggleDisplayOptions:boolean;
     public sortable:boolean = false;
     public sortableFieldName:string;
@@ -380,6 +381,10 @@ class SWListingDisplayController{
         if(angular.isDefined(this.printAction)){
             this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
         }
+        //setup calculate action
+        if(angular.isDefined(this.showCalculator)){
+            this.showCalculator = true;
+        }        
         //setup email action
         if(angular.isDefined(this.emailAction)){
             this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
@@ -469,6 +474,19 @@ class SWListingDisplayController{
     public toggleOrderBy = (column) => {
         this.listingService.toggleOrderBy(this.tableID, column);
     };
+    public showCalculation=(show = "total")=>{
+        // Hide all other calculations
+        $(`.sw-${(show == "total" ? "average" : "total")}`).hide();
+        
+        // Show all of the chosen calculations
+        $(`.sw-${show}`).show();
+    }
+    public hasNumerical=()=>{
+        // Iterate over columns, find out if we have any numericals and return
+        return this.columns.reduce((totalNumericalCols, col) => {
+            return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+        });
+    }
 
     public columnOrderByIndex = (column) =>{
         return this.listingService.columnOrderByIndex(this.tableID, column);
