@@ -79,7 +79,6 @@ class SWListingDisplayController{
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
-    public showCalculator:boolean = false;
     public showToggleDisplayOptions:boolean;
     public sortable:boolean = false;
     public sortableFieldName:string;
@@ -381,10 +380,6 @@ class SWListingDisplayController{
         if(angular.isDefined(this.printAction)){
             this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
         }
-        //setup calculate action
-        if(angular.isDefined(this.showCalculator)){
-            this.showCalculator = true;
-        }        
         //setup email action
         if(angular.isDefined(this.emailAction)){
             this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';

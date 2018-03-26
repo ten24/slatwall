@@ -46355,7 +46355,6 @@
 	        this.searching = false;
 	        this.selectable = false;
 	        this.showSearchFilters = false;
-	        this.showCalculator = false;
 	        this.sortable = false;
 	        this.processCollection = function () {
 	            _this.initializeState();
@@ -46523,10 +46522,6 @@
 	            //setup print action
 	            if (angular.isDefined(_this.printAction)) {
 	                _this.printAction = _this.$hibachi.buildUrl('main.collectionPrint') + '&collectionExportID=';
-	            }
-	            //setup calculate action
-	            if (angular.isDefined(_this.showCalculator)) {
-	                _this.showCalculator = true;
 	            }
 	            //setup email action
 	            if (angular.isDefined(_this.emailAction)) {

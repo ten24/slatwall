@@ -98,7 +98,6 @@ Notes:
 		data-angular-links="false"
 		data-has-action-bar="false"
 		data-show-simple-listing-controls="true"
-		showCalculator="true"
 	>
 		<sw-listing-column data-property-identifier="productID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
 		<sw-listing-column data-property-identifier="productType.productTypeName" ></sw-listing-column>
