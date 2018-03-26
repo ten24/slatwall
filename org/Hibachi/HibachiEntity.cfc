@@ -1069,26 +1069,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	
 		
-	public void function updateCalculatedProperties(){
-		try{
-			var entityService = getService("hibachiService");
-			var entity = this;
-			entity.setModifiedDateTime(now());
-	
-			entitySave(entity);
-			entity.updateCalculatedProperties(true);
-			logHibachi('flushed',true);
-			
-			ormFlush();
-		}catch(any e){
-		
-			logHibachi('#attributes.entityID# - error #e.message#',true);
-			throw(e);
-		}
+	public void function runCalculatedProperties(){
+		getService("hibachiService").updateCalculatedProperties(getService(), this);
 	}
 	
-	public boolean function getCalculatedProperties(){
-		getService("hibachiService").getEntityHasCalculatedPropertiesByEntityName(this.getEntityName());
+	public boolean function hasCalculatedProperties(){
+		return getService("hibachiService").getEntityHasCalculatedPropertiesByEntityName(this.getEntityName());
 	}
 
 	public void function preUpdate(struct oldData){

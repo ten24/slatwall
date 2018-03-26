@@ -1439,24 +1439,14 @@
 			return [];
 		}
 		
-		public void function updateCalculatedPropertiesByEntityName(required struct rc){
-			try{
-
-				var entityService = getHibachiScope().getService('HibachiService').getServiceByEntityName( entityName=attributes.entityName );
-				var entity = entityService.invokeMethod('get#attributes.entityName#',{1=attributes.entityID});
-				entity.setModifiedDateTime(now());
-		
-				//entityService.invokeMethod('save#arguments.rc.entityName#',{1=entity});
-				entitySave(entity);
-				entity.updateCalculatedProperties(true);
-				logHibachi('flushed',true);
-				//commit batch
-				ormFlush();
-				
-			}catch(any e){
-				logHibachi('#attributes.entityID# - error #e.message#',true);
-				throw(e);
-			}
+		public void function updateCalculatedPropertiesByEntityName(entityService, entity){
+			entity.setModifiedDateTime(now());
+			entitySave(entity);
+			entity.updateCalculatedProperties(true);
+			
+			// Flush ORM
+			logHibachi('flushed',true);
+			ormFlush();
 		}
 		
 		public void function batchUpdateCalculatedPropertiesByEntityName(required struct rc){
