@@ -51,7 +51,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getService("hibachiAuthenticationService");
+		//variables.service = request.slatwallScope.getService("hibachiAuthenticationService");
+		variables.service = variables.mockService.getHibachiAuthenticationServiceMock();
 	}
 	
 	// getAuthenticationSubsystemNamesArray()	

@@ -650,7 +650,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public any function getPropertyCollectionList( required string propertyName, boolean isNew=false ) {
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
-		if(!structKeyExists(variables, cacheKey) || (structKeyExists(arguments, 'isNew') && !isNull(arguments.isNew) && arguments.isNew)) {
+		if(!structKeyExists(variables, cacheKey) || ((structKeyExists(arguments, 'isNew') && !isNull(arguments.isNew) && arguments.isNew))) {
 
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
 			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
@@ -879,8 +879,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
+					//condition to choose between new and cached collectionList
+					if( structKeyExists(arguments.missingMethodArguments, 'isNew') && arguments.missingMethodArguments["isNew"]){
+						return getPropertyCollectionList( propertyName=propertyName, isNew=true);
+					}else{
 					return getPropertyCollectionList( propertyName=propertyName );
 				}
+			}
 			}
 			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
 			if ( right(arguments.missingMethodName, 6) == "Struct") {

@@ -50,7 +50,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("orderService");
+		//variables.service = request.slatwallScope.getService("orderService");
+		variables.service = variables.mockService.getOrderServiceMock();
 
 	}
 	//can delete order without standard validation because it was created with a test account

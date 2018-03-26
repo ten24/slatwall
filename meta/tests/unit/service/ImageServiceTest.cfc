@@ -51,11 +51,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = createMock('Slatwall.model.service.ImageService');
+		//variables.service = request.slatwallScope.getBean("imageService");
+		variables.service = variables.mockService.getImageServiceMock();
 		variables.siteService = createMock('Slatwall.model.service.SiteService');
 		variables.service.setSiteService(variables.siteService);
 		variables.HibachiEventService = createMock('Slatwall.org.Hibachi.HibachiEventService');
 		variables.service.setHibachiEventService(variables.HibachiEventService);
+		
 	}
 		
 	/**
@@ -106,9 +108,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function missingImageSettingTest_customMissingImageFile(){
 		//Test custom file, should hit custom assertion
-		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg');
+		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '\custom\assets\images\missingimage.jpg');
 		imagePath = variables.service.getResizedImagePath('falsepath');
-		assertEquals(imagePath,"#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
+				assert(imagePath EQ replace("#variables.service.getApplicationValue('baseUrl')#\custom\assets\images\missingimage.jpg","\","/","all"));
 	}
 		
 	/**

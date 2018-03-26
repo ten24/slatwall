@@ -51,7 +51,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("inventoryService");
+		//variables.service = request.slatwallScope.getBean("inventoryService");
+		variables.service = variables.mockService.getInventoryServiceMock();
 	}
 	/**
 	*

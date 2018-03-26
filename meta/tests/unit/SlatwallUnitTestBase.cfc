@@ -58,7 +58,7 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
 		
-		variables.mockService = createMock('Slatwall.meta.tests.unit.mockService');
+variables.mockService = createMock('Slatwall.meta.tests.unit.mockService');
 	}
 
 	// BEFORE EACH TEST	
