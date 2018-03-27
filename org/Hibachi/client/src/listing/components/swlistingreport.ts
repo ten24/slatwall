@@ -2,7 +2,14 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingReportController {
-
+    
+    public periodColumns:any;
+    public collectionConfig:any;
+    //key value for adding rbkeys later
+    public periodIntervals=[{value:'Hour'},{value:'Day'},{value:'Week'},{value:'Month'},{value:'Year'}];
+    public selectedPeriodColumn:string;
+    public selectedPeriodInterval:any;
+    
     //@ngInject
     constructor(
         public $hibachi,
@@ -21,9 +28,18 @@ class SWListingReportController {
                 this.periodColumns.push(rootColumn);
             }
         }
+        
+        
     }
 
     public $onInit=()=>{
+    }
+    
+    public updatePeriod = ()=>{
+        //if we have all the info we need then we can make a report
+        if(this.selectedPeriodColumn && this.selectedPeriodInterval){
+            
+        }
     }
 
 
@@ -63,7 +79,32 @@ class SWListingReport  implements ng.IDirective{
         directive.$inject = [ 'scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
         return directive;
     }
-
+    
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+        scope.swListingReport.openCalendarStart = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+		    scope.swListingReport.openedCalendarStart = true;
+		};
+		
+		scope.swListingReport.openCalendarEnd = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+		    scope.swListingReport.openedCalendarEnd = true;
+		};
+		
+		scope.swListingReport.openCalendarStartCompare = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+		    scope.swListingReport.openedCalendarStartCompare = true;
+		};
+		
+		scope.swListingReport.openCalendarEndCompare = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+		    scope.swListingReport.openedCalendarEndCompare = true;
+		};
+    }
 }
 
 export{

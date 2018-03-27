@@ -61163,11 +61163,19 @@
 	var SWListingReportController = /** @class */ (function () {
 	    //@ngInject
 	    function SWListingReportController($hibachi, metadataService, listingService, observerService) {
+	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.metadataService = metadataService;
 	        this.listingService = listingService;
 	        this.observerService = observerService;
+	        //key value for adding rbkeys later
+	        this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
 	        this.$onInit = function () {
+	        };
+	        this.updatePeriod = function () {
+	            //if we have all the info we need then we can make a report
+	            if (_this.selectedPeriodColumn && _this.selectedPeriodInterval) {
+	            }
 	        };
 	        var rootColumns = {};
 	        rootColumns[this.collectionConfig.baseEntityAlias] = angular.copy(metadataService.getPropertiesListByBaseEntityAlias(this.collectionConfig.baseEntityAlias));
@@ -61194,6 +61202,28 @@
 	        };
 	        this.controller = SWListingReportController;
 	        this.controllerAs = 'swListingReport';
+	        this.link = function (scope, element, attrs) {
+	            scope.swListingReport.openCalendarStart = function ($event) {
+	                $event.preventDefault();
+	                $event.stopPropagation();
+	                scope.swListingReport.openedCalendarStart = true;
+	            };
+	            scope.swListingReport.openCalendarEnd = function ($event) {
+	                $event.preventDefault();
+	                $event.stopPropagation();
+	                scope.swListingReport.openedCalendarEnd = true;
+	            };
+	            scope.swListingReport.openCalendarStartCompare = function ($event) {
+	                $event.preventDefault();
+	                $event.stopPropagation();
+	                scope.swListingReport.openedCalendarStartCompare = true;
+	            };
+	            scope.swListingReport.openCalendarEndCompare = function ($event) {
+	                $event.preventDefault();
+	                $event.stopPropagation();
+	                scope.swListingReport.openedCalendarEndCompare = true;
+	            };
+	        };
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingreport.html";
 	    }
 	    SWListingReport.Factory = function () {
