@@ -507,7 +507,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		params[entity.getPrimaryIDPropertyName()] = entity.getPrimaryIDValue();
 		
 		if(!entity.hasErrors()){
-			getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.calc_success"), "success");
+			getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.updateCalculatedProperties_success"), "success"); 
 		}else{
 			entity.showErrorsAndMessages();
 		}
