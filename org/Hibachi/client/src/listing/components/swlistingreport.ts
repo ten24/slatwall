@@ -37,13 +37,15 @@ class SWListingReportController {
     
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
-        if(this.selectedPeriodColumn && this.selectedPeriodInterval){
+        if(
+            this.selectedPeriodColumn 
+            && this.selectedPeriodInterval
+            && this.startDate
+            && this.endDate
+        ){
             
         }
     }
-
-
-
 }
 
 class SWListingReport  implements ng.IDirective{

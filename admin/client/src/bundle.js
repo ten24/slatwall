@@ -61174,7 +61174,10 @@
 	        };
 	        this.updatePeriod = function () {
 	            //if we have all the info we need then we can make a report
-	            if (_this.selectedPeriodColumn && _this.selectedPeriodInterval) {
+	            if (_this.selectedPeriodColumn
+	                && _this.selectedPeriodInterval
+	                && _this.startDate
+	                && _this.endDate) {
 	            }
 	        };
 	        var rootColumns = {};
