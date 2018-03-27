@@ -2546,7 +2546,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 		return variables.recordsCountData;
 	}
-
+	
 	public any function getRecordsCount(boolean refresh=false) {
 	
 		if(arguments.refresh){
@@ -2882,7 +2882,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return count;
 	}
 
-	private any function getSelectionCountHQL(){
+	public any function getSelectionCountHQL(){
 	
 		var countHQLSelections = "";
 		var countHQLSuffix = "";
