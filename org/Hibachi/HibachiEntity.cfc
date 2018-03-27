@@ -1070,7 +1070,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 		
 	public void function runCalculatedProperties(){
-		getService("hibachiService").updateCalculatedProperties(getService(), this);
+		getService("hibachiService").updateCalculatedPropertiesByEntityName(this);
 	}
 	
 	public boolean function hasCalculatedProperties(){

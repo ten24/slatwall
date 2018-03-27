@@ -87,7 +87,8 @@
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>
 												<cfif attributes.object.hasCalculatedProperties()>
-													Has calc properties! 
+											
+													<hb:HibachiActionCaller action="admin:entity.updateCalculatedProperties" queryString="entityName=#attributes.object.getClassName()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" type="list">
 												</cfif>
 												#thistag.generatedcontent#
 											</hb:HibachiDividerHider>

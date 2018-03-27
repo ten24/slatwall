@@ -1439,14 +1439,8 @@
 			return [];
 		}
 		
-		public void function updateCalculatedPropertiesByEntityName(entityService, entity){
-			entity.setModifiedDateTime(now());
-			entitySave(entity);
+		public void function updateCalculatedPropertiesByEntityName(entity){
 			entity.updateCalculatedProperties(true);
-			
-			// Flush ORM
-			logHibachi('flushed',true);
-			ormFlush();
 		}
 		
 		public void function batchUpdateCalculatedPropertiesByEntityName(required struct rc){
