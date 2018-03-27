@@ -1332,7 +1332,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		getPropertyIdentifierAlias(arguments.column.propertyIdentifier);
-		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM' || aggregateFunction == 'MAX' || aggregateFunction == 'MIN'){
+		if(aggregateFunction != 'COUNT'){
 			return " #aggregateFunction#(COALESCE(#arguments.column.propertyIdentifier#,0)) as #arguments.column.aggregate.aggregateAlias#";
 		}else{
 
