@@ -1439,7 +1439,7 @@
 			return [];
 		}
 		
-		public void function updateCalculatedPropertiesByEntityName(entity){
+		public void function updateCalculatedPropertiesByEntityName(required any entity){
 			arguments.entity.updateCalculatedProperties(true);
 		}
 		
