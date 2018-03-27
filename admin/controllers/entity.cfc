@@ -508,6 +508,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!entity.hasErrors()){
 			getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.calc_success"), "success");
+		}else{
+			entity.showErrorsAndMessages();
 		}
 		
 		renderOrRedirectSuccess( 
