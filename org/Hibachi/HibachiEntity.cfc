@@ -1067,6 +1067,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 
 	}
+	
+		
+	public void function runCalculatedProperties(){
+		getService("hibachiService").updateCalculatedPropertiesByEntityName(this);
+	}
+	
+	public boolean function hasCalculatedProperties(){
+		return getService("hibachiService").getEntityHasCalculatedPropertiesByEntityName(this.getEntityName());
+	}
 
 	public void function preUpdate(struct oldData){
 		if(!this.isPersistable()) {
