@@ -1332,7 +1332,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		getPropertyIdentifierAlias(arguments.column.propertyIdentifier);
-		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM'){
+		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM' || aggregateFunction == 'MAX' || aggregateFunction == 'MIN'){
 			return " #aggregateFunction#(COALESCE(#arguments.column.propertyIdentifier#,0)) as #arguments.column.aggregate.aggregateAlias#";
 		}else{
 
@@ -2889,7 +2889,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(hasAggregateFilter() || !isNull(variables.groupBys)){
 			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getCollectionConfigStruct().baseEntityAlias#.id) #getHQL(true, false, true)# )';
- 		}else{
+			
+		}else{
  			var countHQLSelections = 'SELECT NEW MAP(COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) as recordsCount ';
  			var countHQLSuffix = getHQL(true);
 		}
@@ -3153,7 +3154,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}//<--end if build select
 			
-
 			if(!this.getNonPersistentColumn() &&
 				(
 					( structKeyExists(variables, "groupByRequired") &&
@@ -3274,7 +3274,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias);
-
+			
+			
 			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & aggregateFilters & orderByHQL;
 			
 

@@ -70,7 +70,7 @@ class SWCriteriaRelatedObject{
                 scope.aggegate ={};
                 scope.aggegate.selectedAggregate = '';
 
-                scope.aggregateOptions = [ 'Average', 'Count', 'Sum'];
+                scope.aggregateOptions = [ 'Average', 'Count', 'Sum', 'Min', 'Max'];
 
                 scope.selectAggregate = function (aggregate) {
                     scope.selectedFilterProperty.selectedCriteriaType.aggregate = aggregate;

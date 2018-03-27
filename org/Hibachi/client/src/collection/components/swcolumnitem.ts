@@ -130,11 +130,11 @@ class SWColumnItem{
 									direction:column.sorting.sortOrder
 								};
                                 if(column.aggregate && column.aggregate.aggregateFunction){
+                                	console.log(column);
                                     var aggregateFunction = column.aggregate.aggregateFunction.toUpperCase();
                                     if(aggregateFunction == 'AVERAGE'){
                                         aggregateFunction = 'AVG';
                                     }
-                                    orderBy.propertyIdentifier = aggregateFunction + '('+column.propertyIdentifier+')';
                                 }
 								scope.orderBy.push(orderBy);
 							}

@@ -48,7 +48,9 @@ class SWDisplayItemAggregate{
                 scope.aggregateOptions = [
                     {id:'average', value:'Average'},
                     {id:'count', value:'Count'},
-                    {id:'sum', value:'Sum'}
+                    {id:'sum', value:'Sum'},
+                    {id:'min', value:'Min'},
+                    {id:'max', value:'Max'}
                 ];
 
                 scope.selectAggregate = function (aggregate) {
