@@ -159,6 +159,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="taxTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
+	property name="totalItemQuantity" persistent="false"; 
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
@@ -180,7 +181,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalSaleQuantity" ormtype="integer";
 	property name="calculatedTotalReturnQuantity" ormtype="integer";
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
-	
+	property name="calculatedTotalItemQuantity" ormtype="integer"; 
 	
 	public void function init(){
 		setOrderService(getService('orderService'));
@@ -1249,6 +1250,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		return options;
 	}
+	
+	public numeric function getTotalItemQuantity(){
+		var orderItems = this.getOrderItems();
+		var totalItemQuantity = 0; 
+		for(var orderItem in orderItems){
+			if (isNull(orderItem.getParentOrderItem())){
+				totalItemQuantity += orderItem.getQuantity();
+			} 
+		}
+		return totalItemQuantity; 
+	}	
 
 
 	// ============  END:  Non-Persistent Property Methods =================
