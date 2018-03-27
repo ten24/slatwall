@@ -67,8 +67,8 @@ class SWCriteriaRelatedObject{
                     return relatedObjectOptions;
                 };
 
-                scope.aggegate ={};
-                scope.aggegate.selectedAggregate = '';
+                scope.aggregate ={};
+                scope.aggregate.selectedAggregate = '';
 
                 scope.aggregateOptions = [ 'Average', 'Count', 'Sum', 'Min', 'Max'];
 

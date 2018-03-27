@@ -42,8 +42,8 @@ class SWDisplayItemAggregate{
             templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitemaggregate.html",
             link: function(scope, element,attrs,displayOptionsController){
                 scope.showDisplayItem = false;
-                scope.aggegate ={};
-                scope.aggegate.selectedAggregate = '';
+                scope.aggregate ={};
+                scope.aggregate.selectedAggregate = '';
 
                 scope.aggregateOptions = [
                     {id:'average', value:'Average'},
@@ -58,13 +58,13 @@ class SWDisplayItemAggregate{
                         scope.selectedProperty.aggregate = aggregate;
                         scope.selectedPropertyChanged({selectedProperty:scope.selectedProperty});
                     }else{
-                        scope.aggegate.currentObject = scope.selectedProperty.cfc;
+                        scope.aggregate.currentObject = scope.selectedProperty.cfc;
                     }
                 };
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
-                    selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
-                    selectedDisplayOption.aggregateObject = scope.aggegate.currentObject;
+                    selectedDisplayOption.aggregate = scope.aggregate.selectedAggregate;
+                    selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
                     scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
                 };
 
