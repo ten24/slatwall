@@ -1440,7 +1440,7 @@
 		}
 		
 		public void function updateCalculatedPropertiesByEntityName(entity){
-			entity.updateCalculatedProperties(true);
+			arguments.entity.updateCalculatedProperties(true);
 		}
 		
 		public void function batchUpdateCalculatedPropertiesByEntityName(required struct rc){
