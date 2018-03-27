@@ -363,7 +363,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  	}
 
  	public string function getPropertyIdentifierAlias(required string propertyIdentifier){
- 		
+ 		if(findNoCase('(',arguments.propertyIdentifier)){
+ 			return propertyIdentifier;
+ 		}
  		var cacheKey = 'getPropertyIdentifierAlias'&arguments.propertyIdentifier;
  		//check if the propertyIdentifier has base alias aready and strip it
  		var alias = getCollectionConfigStruct().baseEntityAlias;

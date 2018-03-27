@@ -134,6 +134,7 @@ class SWColumnItem{
                                     if(aggregateFunction == 'AVERAGE'){
                                         aggregateFunction = 'AVG';
                                     }
+                                    orderBy.propertyIdentifier = aggregateFunction + '('+column.propertyIdentifier+')';
                                 }
 								scope.orderBy.push(orderBy);
 							}
