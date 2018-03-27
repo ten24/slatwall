@@ -108,7 +108,7 @@
                             </th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'--> 
 
-                            <th colspan="2" data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
+                            <th data-ng-repeat="column in swListingDisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" ng-cloak>
 
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
                                 
@@ -186,7 +186,6 @@
                                     class="{{column.tdclass}}"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
-                                    colspan="2"
                                     sw-expandable-record
 
                                     data-action="column.action"
@@ -381,7 +380,6 @@
                                     data-ng-repeat-start="(key,column) in swListingDisplay.columns"
                                     class="{{column.tdclass}} sw-total"
                                     data-ng-cloak
-                                    colspan=2
                                     data-ng-if="column.isVisible"
                                     ng-style="{'border': swListingDisplay.collectionData['recordsSum'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none'}"
                             >
@@ -398,7 +396,7 @@
                                     data-ng-repeat-end
                                     class="{{column.tdclass}} sw-average"
                                     data-ng-cloak
-                                    colspan=2
+
                                     data-ng-if="column.isVisible"
                                     ng-style="{'border': swListingDisplay.collectionData['recordsAvg'+swListingDisplay.getPageRecordKey(column.propertyIdentifier)] ? '1' : 'none', 'display': 'none'}"
                             >
