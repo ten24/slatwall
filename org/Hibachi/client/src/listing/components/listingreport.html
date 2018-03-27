@@ -1,0 +1,35 @@
+<div class="col-md-5">
+					
+					 
+	<div class="btn-group-vertical pull-right" style="vertical-align:top; margin-bottom:5px;">
+		<select 
+		    ng-model="swListingReport.selectedperiodInterval">
+			ng-options="periodInterval in swListingReport.periodIntervals"
+        >
+		</select>
+	</div>
+	
+	
+	<div class="pull-right" style="margin-right:10px;">
+		<div style="margin-bottom:5px;">
+			<select 
+			    ng-model="swListingReport.selectedPeriodColumn" 
+			    ng-options="periodColumn as periodColumn.displayPropertyIdentifier
+                            for periodColumn in swListingReport.periodColumns
+                             | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
+            ">
+				
+			</select>
+		</div>
+		<div style="margin-bottom:-5px;">
+			<span style="display:block;font-size:11px;font-weight:bold;padding-bottom:2px;">Start - End: <a href="#" id="hibachi-report-enable-compare" class="pull-right">+Compare</a></span>
+			<input type="text" name="reportStartDateTime" class="datepicker hibachi-report-date hasDatepicker" style="width:80px;margin-right:15px;" value="Feb 25, 2018" id="dp1522160692212" data-keeper-lock-id="k-i5o5cawlbe"> - <input type="text" name="reportEndDateTime" class="datepicker hibachi-report-date hasDatepicker" style="width:80px;margin-left:10px;" value="Mar 27, 2018" id="dp1522160692213" data-keeper-lock-id="k-lkct2yg2djl">
+			<input type="hidden" name="reportCompareFlag" value="0">
+		<keeper-lock id="k-i5o5cawlbe" style="filter: grayscale(100%); top: 69.5px; left: 275.625px; z-index: 1; visibility: hidden;"></keeper-lock><keeper-lock id="k-lkct2yg2djl" style="filter: grayscale(100%); top: 69.5px; left: 390.719px; z-index: 1; visibility: hidden;"></keeper-lock></div>
+		<div id="hibachi-report-compare-date" class="hide">
+			<span style="display:block;font-size:11px;font-weight:bold;margin-top:5px;padding-bottom:2px;">Compare Start - End:<a href="" id="hibachi-report-disable-compare" class="pull-right">-Remove</a></span>
+			<input type="text" name="reportCompareStartDateTime" class="datepicker hibachi-report-date hasDatepicker" style="width:80px;margin-right:10px;" value="Jan 25, 2018" id="dp1522160692214"> - <input type="text" name="reportCompareEndDateTime" class="datepicker hibachi-report-date hasDatepicker" style="width:80px;margin-left:10px;" value="Feb 24, 2018" id="dp1522160692215">
+		</div>
+	</div>
+	
+</div>
