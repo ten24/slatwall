@@ -3,6 +3,9 @@
 <cfparam name="url.opt_recurse" default="true">
 <cfparam name="url.labels"		default="">
 <cfparam name="url.opt_run"		default="false">
+<cfparam name="url.method" 		default="notRemote">
+<cfparam name="url.testSpecs" 	default="">
+
 <cfif structKeyExists(url,'testBundles')>
 	<cfset url.target = url.testBundles/>
 	<cfset url.opt_run = true/>
@@ -21,13 +24,15 @@ if( url.opt_run ){
 	}
 	// execute tests
 	if( len( url.target ) ){
-
-
-		// directory or CFC, check by existence
-		if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
-			results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
-		} else {
-			results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
+		if(url.method == "runRemote"){
+			results = testBox.run( bundles=url.target, reporter=url.reporter, testSpecs=url.testSpecs, labels=url.labels );
+		}else{
+			// directory or CFC, check by existence
+			if( !directoryExists( expandPath( "/#replace( url.target, '.', '/', 'all' )#" ) ) ){
+				results = testBox.run( bundles=url.target, reporter=url.reporter, labels=url.labels );
+			} else {
+				results = testBox.run( directory={ mapping=url.target, recurse=url.opt_recurse }, reporter=url.reporter, labels=url.labels );
+			}
 		}
 		if( isSimpleValue( results ) ){
 			switch( lcase(url.reporter) ){
@@ -92,22 +97,28 @@ if( url.opt_run ){
 	<script>
 	$(document).ready(function() {
 		$("#testFolder").change(function(){
-		  var selectedFolder = $('#testFolder').val();
-		 	if(selectedFolder != "default"){
-		 		$("#testFile").find("option:gt(0)").remove();
-		 		$("#testMethod").find("option:gt(0)").remove();
+			var selectedFolder = $('#testFolder').val();
+		 	$("#testFile").find("option:gt(0)").remove();
+	 		$("#testMethod").find("option:gt(0)").remove();
+	 		$("#testFile").prop('disabled', true);
+	 		$("#testMethod").prop('disabled', true);
+	 		$("#method").val("notRemote");
+			$("#testSpecs").val("");
+			if(selectedFolder != "default"){
 		 		testFilesAjax(selectedFolder);
 		 	}
 		});
 
 		$("#testFile").change(function(){
-		  var selectedFolder = $('#testFolder').val();
-		  var selectedFile = $('#testFile').val();
-
-		 	if(selectedFolder != "default" && selectedFile != "default" ){
-		 		$("#testMethod").find("option:gt(0)").remove();
+			var selectedFolder = $('#testFolder').val();
+			var selectedFile = $('#testFile').val();
+			$("#testMethod").find("option:gt(0)").remove();
+	 		$("#testMethod").prop('disabled', true);
+	 		$("#method").val("notRemote");
+			$("#testSpecs").val("");
+			if(selectedFolder != "default" && selectedFile != "default" ){
 		 		testMethodsAjax(selectedFolder,selectedFile);
-		 	}
+			 }
 		});
 	});
 	function runTests(){
@@ -122,6 +133,8 @@ if( url.opt_run ){
 		$("#tb-results").html( '' );
 		$("#target").html( '' );
 		$("#labels").html( '' );
+		$("#method").val("notRemote");
+		$("#testSpecs").val("");
 	}
 
 	function testFoldersAjax() {
@@ -174,7 +187,8 @@ if( url.opt_run ){
 		 	option.text = response.TestFiles[i];
 		 	option.value = response.TestFiles[i];
 		 	parent.add(option);
-		 }
+		}
+		$("#testFile").prop('disabled', false);
 	}
 
 	function testMethodsAjax(selectedFolder, selectedFile) {
@@ -201,7 +215,8 @@ if( url.opt_run ){
 		 	option.text = response.TestMethods[i];
 		 	option.value = response.TestMethods[i];
 		 	parent.add(option);
-		 }
+		}
+		$("#testMethod").prop('disabled', false);
 	}
 
 	function setTargetValue(){
@@ -213,14 +228,19 @@ if( url.opt_run ){
 			url += testFolder;
 			if(testFile != "default"){
 				url += "/"+testFile;
-				if(testMethod != "default"){
-				url= url+testMethod;
-				}
 			}
 			$("#target").val(url);
 		}
 		else{
 			alert("Select a Test Folder first");
+		}
+		if(testMethod != "default"){
+				$("#method").val("runRemote");
+				$("#testSpecs").val(testMethod);
+			}
+		else{
+			$("#method").val("notRemote");
+			$("#testSpecs").val("");
 		}
 	}
 
@@ -305,6 +325,8 @@ if( url.opt_run ){
 <div id="tb-runner" class="box" style="min-height:220px">
 <form name="runnerForm" id="runnerForm">
 <input type="hidden" name="opt_run" id="opt_run" value="true">
+<input type="hidden" name="method" id="method" value="notRemote">
+<input type="hidden" name="testSpecs" id="testSpecs" value="">
 
 	<div id="tb-left" class="centered">
 		<img src="http://www.ortussolutions.com/__media/testbox-185.png" alt="TestBox" id="tb-logo"/><br>v#testbox.getVersion()#
@@ -324,10 +346,10 @@ if( url.opt_run ){
 			<select id="testFolder">
 			  <option value="default">Select Folder</option>
 			</select>
-			<select id="testFile">
+			<select id="testFile" disabled="true">
 			  <option value="default">Select File</option>
 			</select>
-			<select id="testMethod">
+			<select id="testMethod" disabled="true">
 			  <option value="default">Select Method</option>
 			</select>
 			<label title="Enable directory recursion for directory runner">
