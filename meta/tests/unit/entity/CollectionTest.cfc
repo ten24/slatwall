@@ -163,9 +163,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		orderItemCollectionList.getRecords();
 	}
 	
-	/**
-	* @test
-	*/
 
 	/**
 	* @test
@@ -259,7 +256,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"Account.firstName",
+							"propertyIdentifier":"firstName",
 							"direction":"DESC"
 						}
 					],
@@ -302,7 +299,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-
+		debug(collectionEntity.getHQL());
 		var pageRecords = collectionEntity.getPageRecords();
 
 		assert(isArray(pageRecords));
