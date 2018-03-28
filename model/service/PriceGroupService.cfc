@@ -434,9 +434,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			for(var orderItem in arguments.order.getOrderItems()){
 				orderItem.removeAppliedPriceGroup();
-				if(!orderItem.getSku().getUserDefinedPriceFlag()){
-					orderItem.setPrice(orderItem.getSkuPrice());
-				}
 				
 				if(!isNull(arguments.order.getAccount())){
 					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
