@@ -4416,18 +4416,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		data['p:show'] = -2;
-		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
-	}
-
-	/**
-	* @test
-	*/
 	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
@@ -4438,6 +4426,54 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
+
+	
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assertfalse(filter.value == 'Mindfire');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assertfalse(filter.propertyIdentifier == '_account.lastName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
+
+	
+
+	/**
+	* @test
+	*/
+	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		data['p:show'] = -2;
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
+	}
+
 
 	/**
 	* @test
@@ -4467,20 +4503,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
 
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assertfalse(filter.value == 'Mindfire');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
+	
 
 	/**
 	* @test
@@ -4497,145 +4520,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
 	}
 
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assertfalse(filter.propertyIdentifier == '_account.lastName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_hql(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assertfalse(collectionEntity.getHQL() Contains '_account.lastName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_for_default_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),10);
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		data['p:show'] = -2;
-		collectionEntity.applyData(data);
-		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?p:show=2';
-
-		collectionEntity.applyData(queryString);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),2);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_queryString_default_pageshow(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?p:current=3';
-
-		collectionEntity.applyData(queryString);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),10);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),3);
-	}
-
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_queryString_default_pageshow_default_currentPageDeclaration(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '';
-		collectionEntity.applyData(queryString);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),10);
-		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assertfalse(filter.value == 'Mindfire');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_comparisonOperator(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assertfalse(filter.comparisonOperator == '>');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assertfalse(filter.propertyIdentifier == '_account.lastName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
+	
 
 	/**
 	* @test
