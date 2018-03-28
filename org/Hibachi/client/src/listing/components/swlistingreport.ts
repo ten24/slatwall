@@ -9,6 +9,8 @@ class SWListingReportController {
     public periodIntervals=[{value:'Hour'},{value:'Day'},{value:'Week'},{value:'Month'},{value:'Year'}];
     public selectedPeriodColumn:string;
     public selectedPeriodInterval:any;
+    public startDate:any;
+    public endDate:any;
     
     //@ngInject
     constructor(
