@@ -1439,6 +1439,10 @@
 			return [];
 		}
 		
+		public void function updateCalculatedPropertiesByEntityName(required any entity){
+			arguments.entity.updateCalculatedProperties(true);
+		}
+		
 		public void function batchUpdateCalculatedPropertiesByEntityName(required struct rc){
 			
 			var entitySmartList = getHibachiScope().getService('HibachiService').invokeMethod('get#arguments.rc.entityName#SmartList');
