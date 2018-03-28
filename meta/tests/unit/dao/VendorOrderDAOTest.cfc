@@ -48,45 +48,47 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 
-	
 	public void function setUp() {
 		super.setup();
-		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
-	}
-		
-	/**
-	* @test
-	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
 
-		assert(isNull(currencyacurrency));
+		variables.dao = variables.mockService.getVendorOrderDAOMock();
 	}
+
 
 	/**
 	* @test
 	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
+	public void function getVendorSkuByVendorSkuCode_returns_array() {
+		var getAlternateSkuCode = ormExecuteQuery("FROM SlatwallAlternateSkuCode");
+		assert(isArray(getAlternateSkuCode));
+		if(arraylen(getAlternateSkuCode)){
+			var getVendorSkuByVendorSkuCode = variables.dao.getVendorSkuByVendorSkuCode(getAlternateSkuCode[1].getalternateSkuCode());
+			if(!isnull(getVendorSkuByVendorSkuCode)){
+				assert(isArray(getVendorSkuByVendorSkuCode));
+			}else{
+				assert(isNull(getVendorSkuByVendorSkuCode));
+			}
 		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
+			var getVendorSkuByVendorSkuCode = variables.dao.getVendorSkuByVendorSkuCode('xxx');
+			assert(isNull(getVendorSkuByVendorSkuCode));
 		}
+	}
 
+	/**
+	* @test
+	*/
+	public void function getQuantityOfStockAlreadyOnOrder_returns_numeric() {
+		var getQuantityOfStockAlreadyOnOrder = variables.dao.getQuantityOfStockAlreadyOnOrder('xxx','yyy','zzz');
+
+		assert(isnumeric(getQuantityOfStockAlreadyOnOrder));
+	}
+
+	/**
+	* @test
+	*/
+	public void function getQuantityOfStockAlreadyReceived_returns_numeric() {
+		var getQuantityOfStockAlreadyReceived = variables.dao.getQuantityOfStockAlreadyReceived('xxx','yyy','zzz');
+
+		assert(isnumeric(getQuantityOfStockAlreadyReceived));
 	}
 }
-
-
