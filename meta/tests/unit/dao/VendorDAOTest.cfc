@@ -52,41 +52,16 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
+		variables.dao = variables.mockService.getVendorDAOMock();
 	}
 		
 	/**
 	* @test
 	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
+	public void function getProductsForVendor_return_array_by_default() {
+		var ProductsForVendor = variables.dao.getProductsForVendor('xxx');
 
-		assert(isNull(currencyacurrency));
-	}
-
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
-		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
-		}
-
+		assert(isarray(ProductsForVendor));
+		assert(arrayisempty(ProductsForVendor));
 	}
 }
-
-

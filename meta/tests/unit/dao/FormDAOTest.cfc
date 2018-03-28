@@ -52,41 +52,29 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
+		variables.dao = variables.mockService.getFormDAOMock();
 	}
 		
 	/**
 	* @test
 	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-
-		assert(isNull(currencyacurrency));
-	}
-
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
+	public void function getFormQuestionColumnHeaderData_return_array_by_default() {
+		var getForm = ormExecuteQuery("FROM SlatwallForm");
+		assert(isArray(getForm));
+		if(arrayLen(getForm)){
+			var HeaderData = variables.dao.getFormQuestionColumnHeaderData(getForm[1].getformid());
+			assert(isArray(HeaderData));
 		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
+			var HeaderData = variables.dao.getFormQuestionColumnHeaderData('');
+			assert(isArray(HeaderData));
+			assert(arrayisempty(HeaderData));
 		}
-
 	}
-}
-
-
+	/**
+	* @test
+	*/
+	public void function getFormQuestionAndFormResponsesRawData_return_array_by_default() {
+		var FormResponsesRawData = variables.dao.getFormQuestionAndFormResponsesRawData('',0,0,0);
+		assert(isArray(FormResponsesRawData));
+	}
+}	
