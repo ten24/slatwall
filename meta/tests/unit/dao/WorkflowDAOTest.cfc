@@ -48,45 +48,54 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 
-	
 	public void function setUp() {
 		super.setup();
-		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
-	}
-		
-	/**
-	* @test
-	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
 
-		assert(isNull(currencyacurrency));
+		variables.dao = variables.mockService.getWorkflowDAOMock();
+	}
+
+
+	/**
+	* @test
+	*/
+	public void function getWorkflowTriggerEvents_returns_array() {
+		var getworkflowtriggerevents = variables.dao.getWorkflowTriggerEventsArray();
+
+		assert(isArray(getworkflowtriggerevents));
 	}
 
 	/**
 	* @test
 	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
+	public void function getWorkflowTriggersForEvent_returns_array() {
+		var getworkflowtriggerevents = variables.dao.getWorkflowTriggerEventsArray();
+		assert(isArray(getworkflowtriggerevents));
+		if(isArray(getworkflowtriggerevents) && arraylen(getworkflowtriggerevents)){
+			var getworkflowtriggers = variables.dao.getWorkflowTriggersForEvent(getworkflowtriggerevents[1]);
+			assert(isArray(getworkflowtriggers));
+			assert(arraylen(getworkflowtriggers)>0);
 		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
+			var getworkflowtriggers = variables.dao.getWorkflowTriggersForEvent('');
+			assert(isArray(getworkflowtriggers));
+			assert(ArrayisEmpty(getworkflowtriggers));
 		}
+	}
 
+	/**
+	* @test
+	*/
+	public void function getRunningWorkflows_returns_array() {
+		var getRunningWorkflows = variables.dao.getRunningWorkflows();
+
+		assert(isArray(getRunningWorkflows));
+	}
+
+	/**
+	* @test
+	*/
+	public void function getDueWorkflows_returns_array() {
+		var getDueWorkflows = variables.dao.getDueWorkflows();
+
+		assert(isArray(getDueWorkflows));
 	}
 }
-
-
