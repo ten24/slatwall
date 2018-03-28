@@ -5,9 +5,10 @@ class SWListingReportController {
     
     public periodColumns:any;
     public collectionConfig:any;
+    public reportCollectionConfig:any;
     //key value for adding rbkeys later
     public periodIntervals=[{value:'Hour'},{value:'Day'},{value:'Week'},{value:'Month'},{value:'Year'}];
-    public selectedPeriodColumn:string;
+    public selectedPeriodColumn:any;
     public selectedPeriodInterval:any;
     public startDate:any;
     public endDate:any;
@@ -30,8 +31,6 @@ class SWListingReportController {
                 this.periodColumns.push(rootColumn);
             }
         }
-        
-        
     }
 
     public $onInit=()=>{
@@ -45,7 +44,21 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
+            this.reportCollectionConfig = this.collectionConfig.clone();
+            console.log(this.reportCollectionConfig);
+            this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+            this.reportCollectionConfig.setReportFlag(true);
+            this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true});
             
+            //TODO:should add as a filterGroup
+            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=');
+            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=');
+            
+            this.reportCollectionConfig.getEntity().then((data)=>{
+                console.log('test');
+                console.log(data);
+            });
+            //this.reportCollectionConfig.addDisplayProperty()
         }
     }
 }

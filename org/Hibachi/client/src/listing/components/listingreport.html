@@ -1,7 +1,7 @@
 <div class="col-md-5">
 	<div class="btn-group-vertical pull-right" style="vertical-align:top; margin-bottom:5px;">
 		<select 
-		    ng-model="swListingReport.selectedperiodInterval"
+		    ng-model="swListingReport.selectedPeriodInterval"
 			ng-options="periodInterval as periodInterval.value for periodInterval in swListingReport.periodIntervals track by periodInterval.value"
 			ng-change="swListingReport.updatePeriod()"
         >
@@ -31,7 +31,9 @@
                   		close-text="Close" 
                   		is-open="swListingReport.openedCalendarStart" 
                   		type="text"
-                  		ng-model="swListingReport.startDate"/>
+                  		ng-model="swListingReport.startDate"
+                  		ng-change="swListingReport.updatePeriod()"
+                  		/>
                     <span class="input-group-btn" >
                         <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
@@ -44,7 +46,9 @@
                   		close-text="Close" 
                   		is-open="swListingReport.openedCalendarEnd" 
                   		type="text"
-                  		ng-model="swListingReport.endDate"/>
+                  		ng-model="swListingReport.endDate"
+                  		ng-change="swListingReport.updatePeriod()"
+                  		/>
                     <span class="input-group-btn" >
                         <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>

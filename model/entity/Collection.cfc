@@ -129,6 +129,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObjectOptions" persistent="false";
 	property name="totalAvgAggregates" persistent="false" type="array";
 	property name="totalSumAggregates" persistent="false" type="array";
+	property name="reportFlag" persistent="false" type="boolean" default="0";
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -181,6 +183,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return variables.baseEntityAlias;
 		}
 		return "";
+	}
+	
+	public boolean function isReport(){
+		return getReportFlag();
 	}
 
 	public boolean function getCheckDORPermissions(){
@@ -662,6 +668,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		if(structKeyExists(arguments.columnConfig, 'tdclass')){
 			arguments.column['tdclass'] = arguments.columnConfig['tdclass'];
+		}
+		//isMetric, isPeriod used if isReport() true
+		if(structKeyExists(arguments.columnConfig,'isMetric')){
+			arguments.column['isMetric']=arguments.columnConfig['isMetric'];
+		}
+		if(structKeyExists(arguments.columnConfig,'isPeriod')){
+			arguments.column['isPeriod']=arguments.columnConfig['isPeriod'];
 		}
 
 		if(arguments.prepend){
@@ -2459,7 +2472,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setExcludeOrderBy(false);
 
 	}
-
+	
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(arguments.refresh){
 			clearRecordsCache();

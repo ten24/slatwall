@@ -33034,6 +33034,8 @@
 	                params.allRecords = options.allRecords || false;
 	                params.defaultColumns = options.defaultColumns || true;
 	                params.processContext = options.processContext || '';
+	                params.isReport = options.isReport || false;
+	                params.periodInterval = options.periodInterval || "";
 	                var urlString = _this.getUrlWithActionPrefix() + apiSubsystemName + ':' + 'main.get&entityName=' + entityName;
 	            }
 	            if (angular.isDefined(options.id)) {
@@ -40271,6 +40273,8 @@
 	        this.allRecords = allRecords;
 	        this.dirtyRead = dirtyRead;
 	        this.isDistinct = isDistinct;
+	        this.reportFlag = false;
+	        this.periodInterval = "";
 	        this.clearFilterGroups = function () {
 	            _this.filterGroups = [{ filterGroup: [] }];
 	            _this.keywordFilterGroups = [{ filterGroup: [] }];
@@ -40278,6 +40282,15 @@
 	        };
 	        this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
 	            return new CollectionConfig(_this.rbkeyService, _this.$hibachi, _this.utilityService, _this.observerService, baseEntityName, baseEntityAlias);
+	        };
+	        this.setReportFlag = function (reportFlag) {
+	            _this.reportFlag = reportFlag;
+	        };
+	        this.isReport = function () {
+	            return _this.reportFlag;
+	        };
+	        this.setPeriodInterval = function (periodInterval) {
+	            _this.periodInterval = periodInterval;
 	        };
 	        this.loadJson = function (jsonCollection) {
 	            //if json then make a javascript object else use the javascript object
@@ -40302,6 +40315,8 @@
 	                _this.dirtyRead = jsonCollection.dirtyRead;
 	            }
 	            _this.isDistinct = jsonCollection.isDistinct;
+	            _this.reportFlag = jsonCollection.reportFlag;
+	            _this.periodInterval = jsonCollection.periodInterval;
 	            _this.currentPage = jsonCollection.currentPage || 1;
 	            _this.pageShow = jsonCollection.pageShow || 10;
 	            _this.keywords = jsonCollection.keywords;
@@ -40366,7 +40381,9 @@
 	                defaultColumns: (!_this.columns || !_this.columns.length),
 	                allRecords: _this.allRecords,
 	                dirtyRead: _this.dirtyRead,
-	                isDistinct: _this.isDistinct
+	                isDistinct: _this.isDistinct,
+	                isReport: _this.isReport(),
+	                periodInterval: _this.periodInterval
 	            };
 	            if (angular.isDefined(_this.id)) {
 	                options['id'] = _this.id;
@@ -40481,6 +40498,13 @@
 	                    persistent = lastEntity.metaData[lastProperty].persistent;
 	                }
 	                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject'], type);
+	                //isMetric and isPeriod for reporting only reporting
+	                if (options['isMetric']) {
+	                    columnObject['isMetric'] = options['isMetric'];
+	                }
+	                if (options['isPeriod']) {
+	                    columnObject['isPeriod'] = options['isPeriod'];
+	                }
 	                if (options['aggregate']) {
 	                    columnObject['aggregate'] = options['aggregate'],
 	                        columnObject['aggregateAlias'] = title;
@@ -46609,6 +46633,19 @@
 	        };
 	        this.toggleOrderBy = function (column) {
 	            _this.listingService.toggleOrderBy(_this.tableID, column);
+	        };
+	        this.showCalculation = function (show) {
+	            if (show === void 0) { show = "total"; }
+	            // Hide all other calculations
+	            $(".sw-" + (show == "total" ? "average" : "total")).hide();
+	            // Show all of the chosen calculations
+	            $(".sw-" + show).show();
+	        };
+	        this.hasNumerical = function () {
+	            // Iterate over columns, find out if we have any numericals and return
+	            return _this.columns.reduce(function (totalNumericalCols, col) {
+	                return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+	            });
 	        };
 	        this.columnOrderByIndex = function (column) {
 	            return _this.listingService.columnOrderByIndex(_this.tableID, column);
@@ -61185,6 +61222,19 @@
 	                && _this.selectedPeriodInterval
 	                && _this.startDate
 	                && _this.endDate) {
+	                _this.reportCollectionConfig = _this.collectionConfig.clone();
+	                console.log(_this.reportCollectionConfig);
+	                _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
+	                _this.reportCollectionConfig.setReportFlag(true);
+	                _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true });
+	                //TODO:should add as a filterGroup
+	                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=');
+	                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=');
+	                _this.reportCollectionConfig.getEntity().then(function (data) {
+	                    console.log('test');
+	                    console.log(data);
+	                });
+	                //this.reportCollectionConfig.addDisplayProperty()
 	            }
 	        };
 	        var rootColumns = {};
