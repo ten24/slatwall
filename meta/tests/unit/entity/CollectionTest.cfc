@@ -299,7 +299,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		debug(collectionEntity.getHQL());
 		var pageRecords = collectionEntity.getPageRecords();
 
 		assert(isArray(pageRecords));
