@@ -445,7 +445,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	// Stock Adjustment
 	public void function createStockAdjustment(required struct rc) {
-		
 		arguments.rc.sRedirectAction = 'admin:entity.editstockadjustment';
 
 		// Call the generic logic
