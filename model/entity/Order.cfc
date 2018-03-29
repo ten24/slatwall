@@ -1034,6 +1034,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		return getService('HibachiUtilityService').precisionCalculate(amountDelivered - getPaymentAmountReceivedTotal());
 	}
+	
+	public numeric function getTotalItemQuantity(){
+		var orderItems = this.getOrderItems();
+		var totalItemQuantity = 0; 
+		for(var orderItem in orderItems){
+			if (isNull(orderItem.getParentOrderItem())){
+				totalItemQuantity += orderItem.getQuantity();
+			} 
+		}
+		return totalItemQuantity; 
+	}	
+	
 
 	public any function getRootOrderItemsCollectionList(){
 		var rootOrderItemsCollectionList = getService('orderService').getOrderItemCollectionList();
