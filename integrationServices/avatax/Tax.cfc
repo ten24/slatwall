@@ -117,10 +117,6 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				Lines = []
 			};
 			
-			if (variables.commitDocFlag){
-				StructInsert(requestDataStruct, 'commit', true);
-			}
-			
 			if(!isNull(arguments.requestBean.getAccount())) {
 				requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
 			}
@@ -213,10 +209,6 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				
 				var fileContent = DeserializeJSON(responseData.FileContent);
 
-				writeDump(requestDataStruct);
-				writeDUmp(fileContent);
-				abort;
-				
 				if (fileContent.resultCode == 'Error'){
 					responseBean.setData(fileContent.messages);
 				}
