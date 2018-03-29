@@ -1,8 +1,8 @@
 {
     "app":{
-        "cfengine":"adobe@10"
+        "cfengine":"adobe@2016"
     },
-    "name":"adobe@10",
+    "name":"adobe@2016",
     "openbrowser":"false",
     "web":{
         "http":{

@@ -82,6 +82,7 @@ component extends="framework.one" {
 	// Hibachi Setup
 	variables.framework.hibachi = {};
 	variables.framework.hibachi.authenticationSubsystems = "admin,public,api";
+	variables.framework.hibachi.beanFactoryOmitDirectoryAliases = true;
 	variables.framework.hibachi.debugFlag = false;
 	variables.framework.hibachi.updateDestinationContentExclustionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.htaccess,/web.config,/.settings,/.gitignore';
 	variables.framework.hibachi.gzipJavascript = true;
@@ -619,7 +620,8 @@ component extends="framework.one" {
 						constants={
 							'applicationKey'=variables.framework.applicationKey,
 							'hibachiInstanceApplicationScopeKey'=getHibachiInstanceApplicationScopeKey()
-						}
+						},
+						omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 					});
 
 					// If the default singleton beans were not found in the model, add a reference to the core one in hibachi
@@ -710,7 +712,8 @@ component extends="framework.one" {
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new framework.aop("/#variables.framework.applicationKey#/custom/model", {
 							transients=["process", "transient", "report"],
-							exclude=["entity"]
+							exclude=["entity"],
+							omitDirectoryAliases = variables.framework.hibachi.beanFactoryOmitDirectoryAliases
 						});
 						// Folder argument is left blank because at this point bean discovery has already occurred and we will not be looking at directories
 						var aggregateBF = new framework.aop("");

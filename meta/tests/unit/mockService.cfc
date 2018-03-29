@@ -6,7 +6,7 @@ component extends="testbox.system.BaseSpec"{
 	public any function onMissingMethod(required string missingMethodName, required struct missingMethodArguments) {
 		if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('ServiceMock')) == 'ServiceMock'){
 			//add basic hibachiService dependencies
-			var hibachiDao = createMock('Slatwall.model.dao.HibachiDao');
+			var hibachiDao = createMock('Slatwall.model.dao.HibachiDAO');
 			var hibachiEventService = createMock('Slatwall.org.Hibachi.HibachiEventService');
 			
 			var serviceName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-len('ServiceMock')+4);
