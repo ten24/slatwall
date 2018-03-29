@@ -3188,7 +3188,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					){
 						if(!isReport() || (isReport() && structKeyExists(column,'isVisible') && column['isVisible'])){
-							if(!column.isMetric && !column.isPeriod){
+							if(
+								(
+									!structKeyExists(column,'isMetric') || !column['isMetric']
+								) 
+								&& (
+									!structKeyExists(column,'isPeriod') ||!column['isPeriod']
+								)
+							){
 								arrayAppend(groupBys,column.propertyIdentifier);
 							}
 						}
