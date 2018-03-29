@@ -440,6 +440,16 @@ class CollectionConfig {
         this.addDisplayProperty(propertyIdentifier, title, options);
         return this;
     };
+    
+    public removeDisplayProperty = (propertyIdentifier:string):void=>{
+        for(var i in this.columns){
+            var column = this.columns[i];
+            if(column.propertyIdentifier == propertyIdentifier){
+                this.columns.splice(i,1);
+            }
+        }
+        
+    }
 
     public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias?:string,options?)=>{
         if(angular.isUndefined(aggregateAlias)){

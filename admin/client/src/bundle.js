@@ -40530,6 +40530,14 @@
 	            _this.addDisplayProperty(propertyIdentifier, title, options);
 	            return _this;
 	        };
+	        this.removeDisplayProperty = function (propertyIdentifier) {
+	            for (var i in _this.columns) {
+	                var column = _this.columns[i];
+	                if (column.propertyIdentifier == propertyIdentifier) {
+	                    _this.columns.splice(i, 1);
+	                }
+	            }
+	        };
 	        this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
 	            if (angular.isUndefined(aggregateAlias)) {
 	                aggregateAlias = propertyIdentifier.replace(/\./g, '_') + aggregateFunction;
@@ -61223,10 +61231,11 @@
 	                && _this.startDate
 	                && _this.endDate) {
 	                _this.reportCollectionConfig = _this.collectionConfig.clone();
-	                console.log(_this.reportCollectionConfig);
 	                _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
 	                _this.reportCollectionConfig.setReportFlag(true);
-	                _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true });
+	                _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
+	                _this.reportCollectionConfig.setAllRecords(true);
+	                _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
 	                //TODO:should add as a filterGroup
 	                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=');
 	                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=');

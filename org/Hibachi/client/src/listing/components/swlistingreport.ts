@@ -45,14 +45,17 @@ class SWListingReportController {
             && this.endDate
         ){
             this.reportCollectionConfig = this.collectionConfig.clone();
-            console.log(this.reportCollectionConfig);
+            
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.reportCollectionConfig.setReportFlag(true);
-            this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true});
+            this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
+            this.reportCollectionConfig.setAllRecords(true);
+            this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
             
             //TODO:should add as a filterGroup
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=');
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=');
+            
             
             this.reportCollectionConfig.getEntity().then((data)=>{
                 console.log('test');
