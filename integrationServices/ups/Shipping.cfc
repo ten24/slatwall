@@ -154,8 +154,9 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
 				responseBean.setTrackingNumber(PackageResults.trackingNumber);
 				//convert gif to pdf
-				var base64pdf = getHibachiScope().getService('hibachiUtilityService').convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
-				responseBean.setContainerLabel(base64pdf);
+				responseBean.setContainerLabel(PackageResults.ShippingLabel.GraphicImage);
+			} else {
+				responseBean.showErrorsAndMessages();
 			}
 		}
 		
