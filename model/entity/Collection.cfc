@@ -3007,7 +3007,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(
 					structKeyExists(column,'isMetric') && column.isMetric
 				){
-					columnsHQL &= ' SUM(#column.propertyIdentifier#) as #columnAlias#SUM';
+					columnsHQL &= ' #column['metricAggregateFunction']#(#column.propertyIdentifier#) as #columnAlias##column['metricAggregateFunction']#';
 					addingColumn = true;
 				}else if(
 					structKeyExists(column,'isPeriod') && column.isPeriod 

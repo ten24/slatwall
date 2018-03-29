@@ -889,6 +889,10 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(structKeyExists(column,'aggregate')){
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
+					
+					if(structKeyExists(column,'isMetric') && structKeyExists(column,'metricAggregateFunction')){
+						ArrayAppend(aggregatePropertyIdentifierArray,piAlias&column['metricAggregateFunction']);
+					}
 
 					//add all columns with custom alias
 					if(structKeyExists(column,'alias')){

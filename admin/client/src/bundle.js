@@ -42109,6 +42109,10 @@
 	                    column.isMetric = !column.isMetric;
 	                    scope.saveCollection();
 	                };
+	                scope.selectMetric = function (column, selectedMetricAggregateFunction) {
+	                    column.metricAggregateFunction = selectedMetricAggregateFunction;
+	                    scope.saveCollection();
+	                };
 	                scope.toggleVisible = function (column) {
 	                    if (angular.isUndefined(column.isVisible)) {
 	                        column.isVisible = false;
