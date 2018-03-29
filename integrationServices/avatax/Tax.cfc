@@ -101,7 +101,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Setup the request data structure
 			var requestDataStruct = {
 				Client = "a0o33000003xVEI",
-				companyCode = setting('taxExemptNumberPropertyIdentifier'),
+				companyCode = setting('companyCode'),
 				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 				DocDate = dateFormat(now(),'yyyy-mm-dd'),
 				DocType = docType,
@@ -132,11 +132,12 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Loop over each unique tax address
 			var addressIndex = 1;
 			for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
+				
 				addressIndex ++;
 				
 				// Pull out just the items for this address
 				var addressTaxRequestItems = arguments.requestBean.getTaxRateItemRequestBeansByAddressID()[ taxAddressID ];
-				
+
 				// Setup this address data
 				var addressData = {
 					AddressCode = addressIndex,
@@ -153,23 +154,39 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				
 				// Loop over each unique item for this address
 				for(var item in addressTaxRequestItems) {
-					
-					// Setup the itemData
-					var itemData = {};
-					itemData.LineNo = item.getOrderItemID();
-					itemData.DestinationCode = addressIndex;
-					itemData.OriginCode = 1;
-					itemData.ItemCode = item.getOrderItem().getSku().getSkuCode();
-					itemData.TaxCode = item.getTaxCategoryRateCode();
-					if(!isNull(item.getOrderItem().getSku().getSkuDescription()) && len(item.getOrderItem().getSku().getSkuDescription())) {
-						itemData.Description = item.getOrderItem().getSku().getSkuDescription();
-					} else if (!isNull(item.getOrderItem().getSku().getProduct().getProductDescription()) && len(item.getOrderItem().getSku().getProduct().getProductDescription())) {
-						itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
+					if (item.getReferenceObjectType() == 'OrderItem'){
+						// Setup the itemData
+						var itemData = {};
+						itemData.LineNo = item.getOrderItemID();
+						itemData.DestinationCode = addressIndex;
+						itemData.OriginCode = 1;
+						itemData.ItemCode = item.getOrderItem().getSku().getSkuCode();
+						itemData.TaxCode = item.getTaxCategoryRateCode();
+						if(!isNull(item.getOrderItem().getSku().getSkuDescription()) && len(item.getOrderItem().getSku().getSkuDescription())) {
+							itemData.Description = item.getOrderItem().getSku().getSkuDescription();
+						} else if (!isNull(item.getOrderItem().getSku().getProduct().getProductDescription()) && len(item.getOrderItem().getSku().getProduct().getProductDescription())) {
+							itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
+						}
+						itemData.Qty = item.getQuantity();
+						itemData.Amount = item.getExtendedPriceAfterDiscount();
+						
+						arrayAppend(requestDataStruct.Lines, itemData);
+
+						
+					}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
+						// Setup the itemData
+						var itemData = {};
+						itemData.LineNo = item.getOrderFulfillmentID();
+						itemData.DestinationCode = addressIndex;
+						itemData.OriginCode = 1;
+						itemData.ItemCode = 'Shipping';
+						itemData.TaxCode = 'FR';
+						itemData.Qty = 1;
+						itemData.Amount = item.getPrice();
+						
+						arrayAppend(requestDataStruct.Lines, itemData);
+
 					}
-					itemData.Qty = item.getQuantity();
-					itemData.Amount = item.getExtendedPriceAfterDiscount();
-					
-					arrayAppend(requestDataStruct.Lines, itemData);
 				}
 			}
 			
@@ -199,7 +216,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			if (IsJSON(responseData.FileContent)){
 				
 				var fileContent = DeserializeJSON(responseData.FileContent);
-				
+
 				if (fileContent.resultCode == 'Error'){
 					responseBean.setData(fileContent.messages);
 				}
