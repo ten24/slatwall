@@ -56,7 +56,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		
 		var taxExempt = false;
 		var taxForce = false;
-		var docType = 'SalesOrder';
+		var docType = 'SalesInvoice';
 		var usageType = '';
 		var ExemptionNo ='';
 		
@@ -91,22 +91,18 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			exemptionNo = arguments.requestBean.getAccount().getValueByPropertyIdentifier( setting('taxExemptNumberPropertyIdentifier') );
 		}
 		
-		//Only commit if both integration setting and request bean are set to true
-		if(variables.commitDocFlag) {
-			docType = 'SalesInvoice';
-		}
-		
 		if( !taxExempt || taxForce ) {
 			
 			// Setup the request data structure
 			var requestDataStruct = {
 				Client = "a0o33000003xVEI",
 				companyCode = setting('companyCode'),
-				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
-				DocDate = dateFormat(now(),'yyyy-mm-dd'),
-				DocType = docType,
+				DocCode = '5555555',
+				DocDate = arguments.requestBean.getOrder().getShortReferenceID( true ),
+				DocType = 'SalesInvoice',
 				CustomerUsageType= usageType ,
 				ExemptionNo= exemptionNo,
+				commit=variables.commitDocFlag,
 				Addresses = [
 					{
 						AddressCode = 1,
@@ -217,6 +213,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 				
 				var fileContent = DeserializeJSON(responseData.FileContent);
 
+				writeDump(requestDataStruct);
+				writeDUmp(fileContent);
+				abort;
+				
 				if (fileContent.resultCode == 'Error'){
 					responseBean.setData(fileContent.messages);
 				}
