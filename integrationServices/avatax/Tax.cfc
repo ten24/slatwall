@@ -97,8 +97,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			var requestDataStruct = {
 				Client = "a0o33000003xVEI",
 				companyCode = setting('companyCode'),
-				DocCode = '5555555',
-				DocDate = arguments.requestBean.getOrder().getShortReferenceID( true ),
+				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+				DocDate = dateFormat(now(),'yyyy-mm-dd'),
 				DocType = 'SalesInvoice',
 				CustomerUsageType= usageType ,
 				ExemptionNo= exemptionNo,
