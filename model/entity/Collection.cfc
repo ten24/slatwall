@@ -1930,6 +1930,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	private string function getGroupByHQL(){
+		var groupByHQL = "";
 		var groupByList = '';
 		
 		getGroupBys();
@@ -1940,10 +1941,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			groupByList = variables.groupBys;
 		}
 		
-		if(!len(trim(groupByList))){
+		if(!len(trim(groupByList)) && !isReport()){
 			return '';
 		}
-		return ' GROUP BY ' & groupByList;
+		
+		groupByHQL = ' GROUP BY ' & groupByList;
+		
+		if(isReport()){
+			var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
+			if(len(groupByList)){
+				groupByHQL &= ",";
+			}
+			groupByHQL &= " DATE_FORMAT(#variables.periodColumn.propertyIdentifier#,'#periodIntervalFormat#')";
+		}
+		
+		return groupByHQL;
 	}
 
 	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
@@ -2455,6 +2467,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
+			
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
 			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
 				variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
@@ -2515,6 +2528,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							} else {
 								//Get the pageRecords
 								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+								
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
 									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
@@ -2999,10 +3013,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					structKeyExists(column,'isPeriod') && column.isPeriod 
 					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct().periodInterval)
 				){
+					variables.periodColumn = column;
 					var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
-					getCollectionConfigStruct().groupBys &=", DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#')";
+					
 				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
@@ -3173,21 +3188,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					){
 						if(!isReport() || (isReport() && structKeyExists(column,'isVisible') && column['isVisible'])){
-							arrayAppend(groupBys,column.propertyIdentifier);
+							if(!column.isMetric && !column.isPeriod){
+								arrayAppend(groupBys,column.propertyIdentifier);
+							}
 						}
 					}
 				}
-		
-				if(!structKeyExists(getCollectionConfigStruct(),'orderBy') || !arrayLen(getCollectionConfigStruct().orderBy)){
-					if(!getHasAggregate()){
-						arrayAppend(groupBys,getDefaultOrderBy().propertyIdentifier);
-					}
-				}else{
-					//add a group by for all order bys
-					for(var orderBy in getCollectionConfigStruct().orderBy){
-						arrayAppend(groupBys,orderBy.propertyIdentifier);
-					}
-				}
+				
 				variables.groupBys = arrayToList(groupBys);
 			//standard group by check
 			}else if(
@@ -3262,7 +3269,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy){
+		if(arguments.excludeOrderBy || isReport()){
 			this.setExcludeOrderBy(true);
 		}
 

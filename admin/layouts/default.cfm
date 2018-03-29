@@ -46,22 +46,14 @@
 Notes:
 
 --->
-<!---<cfset test = ORMExecuteQuery("
-	SELECT new Map( SUM(_product.calculatedQATS) as calculatedQATSSUM, DATE_FORMAT(_product.modifiedDateTime,'%Y-%m-%d') as modifiedDateTime) 
-	FROM SlatwallProduct as _product left join _product.brand as _product_brand left join _product.defaultSku as _product_defaultSku left join _product.productType as _product_productType 
-	GROUP BY DATE_FORMAT(_product.modifiedDateTime,'%Y-%m-%d') 
-	ORDER BY _product.modifiedDateTime ASC",{},false,{maxresults=5})
+<!---
+<cfset test = ORMExecuteQuery("
+	SELECT new Map( SUM(_product.calculatedQATS) as calculatedQATSSUM, DATE_FORMAT(_product.modifiedDateTime,'%Y-%m-%d') as modifiedDateTime) FROM SlatwallProduct as _product  GROUP BY  DATE_FORMAT(_product.modifiedDateTime,'%Y-%m-%d')",{},false,{maxresults=5})
 />
 
 <cfdump var="#test#"><cfabort>
 
-<cfdump var="#$.slatwall.getProductCollectionList().getSelectionCountHQL()#"><cfabort>--->
-<--- 
-SELECT new Map( SUM(_product.calculatedQATS) as calculatedQATSSUM, DATE_FORMAT(_product.createdDateTime,'%Y-%m-%d-%H') as createdDateTime) 
-FROM SlatwallProduct as _product left join _product.brand as _product_brand left join _product.defaultSku as _product_defaultSku left join _product.productType as _product_productType 
-where ( _product.createdDateTime >= :Pdfec282c83f94b50a911c603010fe37c AND _product.createdDateTime <= :P76ee6ed488c744fc97300efedffdc38f ) 
-GROUP BY _product_productType.productTypeName,_product_brand.brandName,_product.productName,_product.productCode,_product_defaultSku.price,_product.activeFlag,_product.publishedFlag,_product.calculatedQATS,_product.createdDateTime, DATE_FORMAT(_product.createdDateTime,'%Y-%m-%d-%H') 
-ORDER BY _product.createdDateTime ASC
+<cfdump var="#$.slatwall.getProductCollectionList().getSelectionCountHQL()#"><cfabort>
 --->
 <!---<cfset test = ORMExecuteQuery("
 	SELECT NEW MAP(
