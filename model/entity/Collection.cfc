@@ -2494,6 +2494,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							variables.records = [];
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
+							
 							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
@@ -2515,7 +2516,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}else{
 						
 							HQL = getHQL(forExport=arguments.forExport);
-							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
@@ -2528,7 +2528,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							} else {
 								//Get the pageRecords
 								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-								
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
 									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
@@ -3007,7 +3006,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(
 					structKeyExists(column,'isMetric') && column.isMetric
 				){
-					columnsHQL &= ' #column['metricAggregateFunction']#(#column.propertyIdentifier#) as #columnAlias##column['metricAggregateFunction']#';
+					columnsHQL &= ' #column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#) as #columnAlias#';
 					addingColumn = true;
 				}else if(
 					structKeyExists(column,'isPeriod') && column.isPeriod 

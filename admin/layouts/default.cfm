@@ -46,31 +46,6 @@
 Notes:
 
 --->
-<!---
-<cfset test = ORMExecuteQuery("
-	SELECT new Map( SUM(_product.calculatedQATS) as calculatedQATSSUM, DATE_FORMAT(_product.modifiedDateTime,'%Y-%m-%d') as modifiedDateTime) FROM SlatwallProduct as _product  GROUP BY  DATE_FORMAT(_product.modifiedDateTime,'%Y-%m-%d')",{},false,{maxresults=5})
-/>
-
-<cfdump var="#test#"><cfabort>
-
-<cfdump var="#$.slatwall.getProductCollectionList().getSelectionCountHQL()#"><cfabort>
---->
-<!---<cfset test = ORMExecuteQuery("
-	SELECT NEW MAP(
-		COUNT(DISTINCT _product.id) as recordsCount , COALESCE(AVG(_product.sortOrder),0) as recordsAvgsortOrder , 
-		COALESCE(AVG(_product.calculatedSalePrice),0) as recordsAvgcalculatedSalePrice , COALESCE(AVG(_product.calculatedQATS),0) as recordsAvgcalculatedQATS , 
-		COALESCE(AVG(_product.calculatedProductRating),0) as recordsAvgcalculatedProductRating , COALESCE(SUM(_product.sortOrder),0) as recordsSumsortOrder , 
-		COALESCE(SUM(_product.calculatedSalePrice),0) as recordsSumcalculatedSalePrice , COALESCE(SUM(_product.calculatedQATS),0) as recordsSumcalculatedQATS , 
-		COALESCE(SUM(_product.calculatedProductRating),0) as recordsSumcalculatedProductRating,
-		DATE_FORMAT(_product.createdDateTime,'%Y-%m-%d')
-	) 
-	FROM SlatwallProduct as _product
-	GROUP BY DATE_FORMAT(_product.createdDateTime,'%Y-%m-%d')",{},false,{maxresults=5})
-/>
-
-<cfdump var="#test#"><cfabort>
-
-<cfdump var="#$.slatwall.getProductCollectionList().getSelectionCountHQL()#"><cfabort>--->
 
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
