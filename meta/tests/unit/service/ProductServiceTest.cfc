@@ -50,7 +50,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
+		//variables.service = request.slatwallScope.getService("productService");
+		variables.service = variables.mockService.getProductServiceMock();
 	}
 
 	/**

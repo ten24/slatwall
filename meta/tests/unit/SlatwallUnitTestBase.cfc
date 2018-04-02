@@ -122,7 +122,6 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 	private void function createTestFile (required string fileSourceLocalAbsolutePath, required string relativeFileDestination) {
 
 		var absoluteDest = expandPath('/Slatwall') & arguments.relativeFileDestination;
-
 		//create the destination directory if necessary
 		if (DirectoryExists(GetDirectoryFromPath(absoluteDest))) {
 			fileCopy(arguments.fileSourceLocalAbsolutePath, absoluteDest);
