@@ -171,11 +171,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// If this rate has an integration, then try to pull the data from the response bean for that integration
 								if(!isNull(taxCategoryRate.getTaxIntegration())) {
 									
-									// if account is tax exempt return after removing any tax previously applied to order
-									if(!isNull(arguments.order.getAccount()) && !isNull(arguments.order.getAccount().getTaxExemptFlag()) && arguments.order.getAccount().getTaxExemptFlag()) {
-										continue;
-									}
-	
 									// Look for all of the rates responses for this integration, on this orderItem
 									if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
 	
