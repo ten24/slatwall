@@ -93,6 +93,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 				}
 			}
 		}
+		
+		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder' ){
+			docType = 'ReturnInvoice';
+		}
 			
 		// Setup the request data structure
 		var requestDataStruct = {
