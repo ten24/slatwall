@@ -98,10 +98,14 @@ var coremodule = angular.module('hibachi.core',[
   'ngSanitize',
   //3rdParty modules
   'ui.bootstrap',
+  'chart.js',
   alertmodule.name,
   dialogmodule.name
 ])
-.config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+.config(
+    ['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','ChartProvider','hibachiPathBuilder','appConfig',(
+        $compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,ChartProvider,hibachiPathBuilder,appConfig
+)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
