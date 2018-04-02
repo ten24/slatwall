@@ -72,25 +72,34 @@ component{
 	/**
 	* This function is used for BDD test suites to store the beforeEach() function to execute for a test suite group
 	* @body The closure function
+	* @data Data bindings
 	*/
-	function beforeEach( required any body ){
-		this.$suitesReverseLookup[ this.$suiteContext ].beforeEach = arguments.body;
+	function beforeEach( required any body, struct data={} ){
+		this.$suitesReverseLookup[ this.$suiteContext ].beforeEach 		= arguments.body;
+		this.$suitesReverseLookup[ this.$suiteContext ].beforeEachData 	= arguments.data;
+		return this;
 	}
 
 	/**
 	* This function is used for BDD test suites to store the afterEach() function to execute for a test suite group
 	* @body The closure function
+	* @data Data bindings
 	*/
-	function afterEach( required any body ){
-		this.$suitesReverseLookup[ this.$suiteContext ].afterEach = arguments.body;
+	function afterEach( required any body, struct data={} ){
+		this.$suitesReverseLookup[ this.$suiteContext ].afterEach 		= arguments.body;
+		this.$suitesReverseLookup[ this.$suiteContext ].afterEachData 	= arguments.data;
+		return this;
 	}
 
 	/**
 	* This is used to surround a spec with your own closure code to provide a nice around decoration advice
 	* @body The closure function
+	* @data Data bindings
 	*/
-	function aroundEach( required any body ){
-		this.$suitesReverseLookup[ this.$suiteContext ].aroundEach = arguments.body;
+	function aroundEach( required any body, struct data={} ){
+		this.$suitesReverseLookup[ this.$suiteContext ].aroundEach 		= arguments.body;
+		this.$suitesReverseLookup[ this.$suiteContext ].aroundEachData 	= arguments.data;
+		return this;
 	}
 
 	/**
@@ -117,29 +126,32 @@ component{
 
 		var suite = {
 			// suite name
-			name 		= arguments.title,
+			name 			= arguments.title,
 			// async flag
-			asyncAll 	= arguments.asyncAll,
+			asyncAll 		= arguments.asyncAll,
 			// skip suite testing
-			skip 		= arguments.skip,
+			skip 			= arguments.skip,
 			// labels attached to the suite for execution
-			labels 		= ( isSimpleValue( arguments.labels ) ? listToArray( arguments.labels ) : arguments.labels ),
+			labels 			= ( isSimpleValue( arguments.labels ) ? listToArray( arguments.labels ) : arguments.labels ),
 			// the test specs for this suite
-			specs 		= [],
+			specs 			= [],
 			// the recursive suites
-			suites 		= [],
+			suites 			= [],
 			// the beforeEach closure
-			beforeEach 	= variables.closureStub,
+			beforeEach 		= variables.closureStub,
+			beforeEachData	= {},
 			// the afterEach closure
-			afterEach 	= variables.closureStub,
+			afterEach 		= variables.closureStub,
+			afterEachData	= {},
 			// the aroundEach closure, init to empty to distinguish
-			aroundEach	= variables.aroundStub,
+			aroundEach		= variables.aroundStub,
+			aroundEachData	= {},
 			// the parent suite
-			parent 		= "",
+			parent 			= "",
 			// the parent ref
-			parentRef	= "",
+			parentRef		= "",
 			// hiearachy slug
-			slug 		= ""
+			slug 			= ""
 		};
 
 		// skip constraint for suite as a closure
@@ -402,7 +414,119 @@ component{
 	){
 		arguments.skip = true;
 		return it( argumentCollection=arguments );
-	}
+    }
+
+    /**
+    * The way to describe BDD test suites in TestBox. The story is an alias for describe usually use when you are writing using Gherkin-esque language
+    * The body is the function that implements the suite.
+    * @story The name of this test suite
+    * @body The closure that represents the test suite
+    * @labels The list or array of labels this suite group belongs to
+    * @asyncAll If you want to parallelize the execution of the defined specs in this suite group.
+    * @skip A flag or a closure that tells TestBox to skip this suite group from testing if true. If this is a closure it must return boolean.
+    */
+    any function xstory(
+        required string story,
+        required any body,
+        any labels=[],
+        boolean asyncAll=false
+    ){
+        arguments.skip = true;
+        return xstory( argumentCollection = arguments );
+    }
+
+    /**
+    * The way to describe BDD test suites in TestBox. The feature is an alias for describe usually use when you are writing in a Given-When-Then style
+    * The body is the function that implements the suite.
+    * @feature The name of this test suite
+    * @body The closure that represents the test suite
+    * @labels The list or array of labels this suite group belongs to
+    * @asyncAll If you want to parallelize the execution of the defined specs in this suite group.
+    * @skip A flag or a closure that tells TestBox to skip this suite group from testing if true. If this is a closure it must return boolean.
+    */
+    any function xfeature(
+        required string feature,
+        required any body,
+        any labels=[],
+        boolean asyncAll=false
+    ){
+        arguments.skip = true;
+        return feature( argumentCollection = arguments );
+    }
+
+    /**
+    * The way to describe BDD test suites in TestBox. The given is an alias for describe usually use when you are writing in a Given-When-Then style
+    * The body is the function that implements the suite.
+    * @feature The name of this test suite
+    * @body The closure that represents the test suite
+    * @labels The list or array of labels this suite group belongs to
+    * @asyncAll If you want to parallelize the execution of the defined specs in this suite group.
+    * @skip A flag or a closure that tells TestBox to skip this suite group from testing if true. If this is a closure it must return boolean.
+    */
+    any function xgiven(
+        required string given,
+        required any body,
+        any labels=[],
+        boolean asyncAll=false
+    ){
+        arguments.skip = true;
+        return given( argumentCollection = arguments );
+    }
+
+    /**
+    * The way to describe BDD test suites in TestBox. The scenario is an alias for describe usually use when you are writing in a Given-When-Then style
+    * The body is the function that implements the suite.
+    * @feature The name of this test suite
+    * @body The closure that represents the test suite
+    * @labels The list or array of labels this suite group belongs to
+    * @asyncAll If you want to parallelize the execution of the defined specs in this suite group.
+    * @skip A flag or a closure that tells TestBox to skip this suite group from testing if true. If this is a closure it must return boolean.
+    */
+    any function xscenario(
+        required string scenario,
+        required any body,
+        any labels=[],
+        boolean asyncAll=false
+    ){
+        arguments.skip = true;
+        return scenario( argumentCollection = arguments );
+    }
+
+    /**
+    * The way to describe BDD test suites in TestBox. The when is an alias for scenario usually use when you are writing in a Given-When-Then style
+    * The body is the function that implements the suite.
+    * @feature The name of this test suite
+    * @body The closure that represents the test suite
+    * @labels The list or array of labels this suite group belongs to
+    * @asyncAll If you want to parallelize the execution of the defined specs in this suite group.
+    * @skip A flag or a closure that tells TestBox to skip this suite group from testing if true. If this is a closure it must return boolean.
+    */
+    any function xwhen(
+        required string when,
+        required any body,
+        any labels=[],
+        boolean asyncAll=false
+    ){
+        arguments.skip = true;
+        return when( argumentCollection = arguments );
+    }
+
+    /**
+    * This is a convenience method that makes sure the test spec is skipped from execution
+    * @title The title of this spec
+    * @body The closure that represents the test
+    * @labels The list or array of labels this spec belongs to
+    * @data A struct of data you would like to bind into the spec so it can be later passed into the executing body function
+    */
+    any function xthen(
+        required string then,
+        required any body,
+        any labels=[],
+        struct data={}
+    ){
+        arguments.skip = true;
+        return then( argumentCollection = arguments );
+    }
 
 	/**
 	* Start an expectation expression. This returns an instance of Expectation so you can work with its matchers.
@@ -553,7 +677,7 @@ component{
 			// init spec tests
 			var specStats = arguments.testResults.startSpecStats( arguments.spec.name, arguments.suiteStats );
 			// init consolidated spec labels
-			var consolidatedLabels = [];
+			var consolidatedLabels = arguments.spec.labels;
 			// Build labels from nested suites, so suites inherit from parent suite labels
 			var parentSuite = arguments.suite;
 			while( !isSimpleValue( parentSuite ) ){
@@ -629,7 +753,10 @@ component{
 		// do we have nested suites? If so, traverse the tree to build reverse execution map
 		var parentSuite = arguments.suite.parentRef;
 		while( !isSimpleValue( parentSuite ) ){
-			arrayAppend( reverseTree, parentSuite.beforeEach );
+			arrayAppend( reverseTree, {
+				beforeEach 		= parentSuite.beforeEach,
+				beforeEachData 	= parentSuite.beforeEachData
+			} );
 			parentSuite = parentSuite.parentRef;
 		}
 
@@ -639,20 +766,29 @@ component{
 		);
 
 		for( var method in annotationMethods ){
-			arrayAppend( reverseTree, this[ method.name ] );
+			arrayAppend( reverseTree, {
+				beforeEach 		= this[ method.name ],
+				beforeEachData 	= {}
+			} );
 		}
 
 		// Execute reverse tree
 		var treeLen = arrayLen( reverseTree );
 		if( treeLen gt 0 ){
 			for( var x=treeLen; x gte 1; x-- ){
-				var thisBeforeClosure = reverseTree[ x ];
-				thisBeforeClosure( currentSpec=arguments.spec.name );
+				var thisContext = reverseTree[ x ];
+				thisContext.beforeEach(
+					currentSpec = arguments.spec.name,
+					data   		= thisContext.beforeEachData
+				);
 			}
 		}
 
 		// execute beforeEach()
-		arguments.suite.beforeEach( currentSpec=arguments.spec.name );
+		arguments.suite.beforeEach(
+			currentSpec = arguments.spec.name,
+			data 		= arguments.suite.beforeEachData
+		);
 
 		return this;
 	}
@@ -667,7 +803,7 @@ component{
 			{
 				name 	= arguments.suite.name,
 				body 	= arguments.suite.aroundEach,
-				data 	= {},
+				data 	= arguments.suite.aroundEachData,
 				labels 	= arguments.suite.labels,
 				order 	= 0,
 				skip 	= arguments.suite.skip
@@ -680,7 +816,7 @@ component{
 			arrayAppend( reverseTree, {
 				name 	= parentSuite.name,
 				body 	= parentSuite.aroundEach,
-				data 	= {},
+				data 	= parentSuite.aroundEachData,
 				labels 	= parentSuite.labels,
 				order 	= 0,
 				skip 	= parentSuite.skip
@@ -697,7 +833,7 @@ component{
 		for( var method in annotationMethods ){
 			arrayAppend( reverseTree, {
 				name 	= method.name,
-				body 	= this[method.name],
+				body 	= this[ method.name ],
 				data 	= {},
 				labels 	= {},
 				order 	= 0,
@@ -748,7 +884,7 @@ component{
 			// Return the closure of execution for a single spec ONLY
 			return function(){
 				// Execute the body of the spec
-				nextClosure.body( spec = thread.spec, suite = thread.suite );
+				nextClosure.body( spec = thread.spec, suite = thread.suite, data = nextClosure.data );
 			};
 		}
 
@@ -781,23 +917,29 @@ component{
 	*/
 	BaseSpec function runAfterEachClosures( required suite, required spec ){
 		// execute nearest afterEach()
-		arguments.suite.afterEach( currentSpec=arguments.spec.name );
+		arguments.suite.afterEach(
+			currentSpec = arguments.spec.name,
+			data 		= arguments.suite.afterEachData
+		);
 
 		// do we have nested suites? If so, traverse and execute life-cycle methods up the tree backwards
 		var parentSuite = arguments.suite.parentRef;
 		while( !isSimpleValue( parentSuite ) ){
-			parentSuite.afterEach( currentSpec=arguments.spec.name );
+			parentSuite.afterEach(
+				currentSpec = arguments.spec.name,
+				data 		= parentSuite.afterEachData
+			);
 			parentSuite = parentSuite.parentRef;
 		}
 
 		var annotationMethods = this.$utility.getAnnotatedMethods(
-			annotation = "afterEach",
-			metadata = getMetadata( this )
+			annotation 	= "afterEach",
+			metadata 	= getMetadata( this )
 		);
 
 		for( var method in annotationMethods ){
 			var afterEachMethod = this[ method.name ];
-			afterEachMethod( currentSpec = arguments.spec.name );
+			afterEachMethod( currentSpec = arguments.spec.name, data = {} );
 		}
 
 		return this;
@@ -919,25 +1061,28 @@ component{
 		any var,
 		string label="",
 		boolean deepCopy=false,
-		numeric top="999",
-		string format="html"
+		numeric top="999"
 	){
 		// null check
-		if( isNull( arguments.var ) ){ arrayAppend( this.$debugBuffer, "null" ); return; }
+		if( isNull( arguments.var ) ){
+			arrayAppend( this.$debugBuffer, "null" );
+			return;
+		}
+
 		// lock and add
 		lock name="tb-debug-#this.$testID#" type="exclusive" timeout="10"{
 			// duplication control
 			var newVar = ( arguments.deepCopy ? duplicate( arguments.var ) : arguments.var );
 			// compute label?
-			if( !len( trim( arguments.label ) ) ){ arguments.label = this.$currentExecutingSpec; }
+			if( !len( trim( arguments.label ) ) ){
+				arguments.label = this.$currentExecutingSpec;
+			}
 			// add to debug output
 			arrayAppend( this.$debugBuffer, {
-				data=newVar,
-				label=arguments.label,
-				timestamp=now(),
-				thread=( isNull( cfthread ) ? structNew() : cfthread ),
-				top=arguments.top,
-				format=arguments.format
+				data		= newVar,
+				label		= arguments.label,
+				timestamp	= now(),
+				top			= arguments.top
 			} );
 		}
 		return this;
@@ -1162,7 +1307,7 @@ component{
 				arrayAppend( result, arguments.tagContext[ ix++ ] );
 			}
 		}
-		
+
 		return result;
 	}
 

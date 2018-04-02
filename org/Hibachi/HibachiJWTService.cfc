@@ -71,6 +71,7 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		var payload = {};
 		payload['iat'] = javaCast( "int", currentTime );
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
+		payload['issuer'] = CGI['server_name'];
 		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
 		payload['encoding'] = "UTF-8";
 		var token = jwt.encode(payload);

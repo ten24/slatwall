@@ -175,7 +175,7 @@ Notes:
 			dataQuery.setSql("
 				INSERT INTO swStockAdjustment
 					(
-						stockAdjustmentID,referenceNumber, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, #!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? 'minMaxStockTransferID,' : ''# createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
+						stockAdjustmentID,referenceNumber, fromLocationID, toLocationID, stockAdjustmentTypeID, stockAdjustmentStatusTypeID, #!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? 'minMaxStockTransferID,' : ''# #!isNull(arguments.stockAdjustmentData.fulfillmentBatchID) ? 'fulfillmentBatchID,' : ''# createdDatetime, modifiedDatetime, createdByAccountID, modifiedByAccountID
 					)
 				VALUES 
 					(
@@ -185,7 +185,8 @@ Notes:
 						'#arguments.stockAdjustmentData.toLocationID#', 
 						'#arguments.stockAdjustmentData.stockAdjustmentTypeID#', 
 						'#arguments.stockAdjustmentData.stockAdjustmentStatusTypeID#', 
-						'#!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? arguments.stockAdjustmentData.minMaxStockTransferID & ',' : ''#'
+						#!isNull(arguments.stockAdjustmentData.minMaxStockTransferID) ? "'#arguments.stockAdjustmentData.minMaxStockTransferID#'," : ""#
+						#!isNull(arguments.stockAdjustmentData.fulfillmentBatchID) ? "'#arguments.stockAdjustmentData.fulfillmentBatchID#'," : ""#
 						#arguments.stockAdjustmentData.timeStamp#, 
 						#arguments.stockAdjustmentData.timeStamp#, 
 						'#arguments.stockAdjustmentData.administratorID#', 
@@ -363,9 +364,9 @@ Notes:
 		return val(stock.getAverageCost());
 	}
 
-	public any function getStockAdjustmentMaxReferenceNumber() {
+	public any function getStockAdjustmentMaxReferenceNumber() { 
 		var query = new Query();
-		query.setSQL("SELECT max(COALESCE(referenceNumber,0)) as maxReferenceNumber FROM swStockAdjustment;");
+		query.setSQL("SELECT COALESCE(max(COALESCE(referenceNumber,0)), 0) as maxReferenceNumber FROM swStockAdjustment;");
 		var queryResult = query.execute();
 		return queryResult.getResult().getRow(1);
  	}

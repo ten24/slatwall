@@ -59,10 +59,12 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="stockAdjustmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="stockAdjustmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=stockAdjustmentStatusType";
 	property name="physical" cfc="Physical" fieldtype="many-to-one" fkcolumn="physicalID";
 	property name="minMaxStockTransfer" cfc="MinMaxStockTransfer" fieldtype="many-to-one" fkcolumn="minMaxStockTransferID";
+	property name="fulfillmentBatch" cfc="FulfillmentBatch" fieldtype="many-to-one" fkcolumn="fulfillmentBatchID";
 	
 	// Related Object Properties (one-to-many)
 	property name="stockAdjustmentItems" singularname="stockAdjustmentItem" cfc="StockAdjustmentItem" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" inverse="true" cascade="all-delete-orphan";
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" cascade="all" inverse="true";
+	property name="stockAdjustmentDeliveries" singularname="stockAdjustmentDelivery" cfc="StockAdjustmentDelivery" type="array" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" cascade="all" inverse="true";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -220,6 +222,14 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	public void function removeStockReceiver(required any stockReceiver) {
 		arguments.stockReceiver.removeStockAdjustment( this );
+	}
+	
+	// Stock Adjustment Delivery (one-to-many)
+	public void function addStockAdjustmentDelivery(required any stockAdjustmentDelivery) {
+		arguments.stockReceiver.setStockAdjustmentDelivery( this );
+	}
+	public void function removeStockAdjustmentDelivery(required any stockAdjustmentDelivery) {
+		arguments.stockReceiver.removeStockAdjustmentDelivery( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

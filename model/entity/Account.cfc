@@ -381,6 +381,30 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return getService("accountService").getPasswordResetID(account=this);
 	}
 
+	public string function getPermissionGroupCacheKey(){
+		if(!getNewFlag()){
+			if(!structKeyExists(variables,'permissionGroupCacheKey')){
+				var permissionGroupCacheKey = "";
+				var records = getDao('permissionGroupDao').getPermissionGroupCountByAccountID(getAccountID());
+
+				if(arraylen(records) && records[1]['permissionGroupsCount']){
+					var permissionGroupCollectionList = this.getPermissionGroupsCollectionList();
+					permissionGroupCollectionList.setEnforceAuthorization(false);
+					permissionGroupCollectionList.setDisplayProperties('permissionGroupID');
+					permissionGroupCollectionList.setPermissionAppliedFlag(true);
+					var permissionGroupRecords = permissionGroupCollectionList.getRecords(formatRecords=false);
+					for(var permissionGroupRecord in permissiongroupRecords){
+						permissionGroupCacheKey = listAppend(permissionGroupCacheKey,permissionGroupRecord['permissionGroupID'],'_');
+					}
+				}
+				variables.permissionGroupCacheKey = permissionGroupCacheKey;
+
+			}
+			return variables.permissionGroupCacheKey;
+		}
+		return "";
+	}
+
 	public string function getPhoneNumber() {
 		return getPrimaryPhoneNumber().getPhoneNumber();
 	}

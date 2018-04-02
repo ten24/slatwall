@@ -353,7 +353,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		param name="arguments.rc.skuID" default="";
 		
 		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
-		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
+		var sku = getSkuService().getSku({skuID=trim(arguments.rc.skuID)});
 		var smartList = getLocationService().getLocationSmartList();
 		if(len(arguments.rc.locationID)) {
 			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
@@ -370,7 +370,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			thisData["locationID"] = location.getLocationID();
 			thisData["locationIDPath"] = location.getLocationIDPath();
 			thisData["locationName"] = location.getLocationName();
-			thisData["QOH"] = sku.getQuantity('QOH',location.getLocationID());
+			thisData["QOH"] = sku.getQuantity(quantityType='QOH',locationID=location.getLocationID());
 			thisData["QOSH"] = sku.getQuantity('QOSH',location.getLocationID());
 			thisData["QNDOO"] = sku.getQuantity('QNDOO',location.getLocationID());
 			thisData["QNDORVO"] = sku.getQuantity('QNDORVO',location.getLocationID());

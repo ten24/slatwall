@@ -100,9 +100,10 @@ component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persist
 			
 			// Get all of the permissions & the arrayLen
 			var permissions = getPermissions(); 
+			var permissionsLength = arrayLen(permissions);  		
 			
 			// Loop over each permission
-			for(var p=1; p<=arrayLen(permissions); p++) {
+			for(var p=1; p<=permissionsLength; p++) {
 				
 				// setup a local variable for the permission
 				var thisPermission = permissions[p];

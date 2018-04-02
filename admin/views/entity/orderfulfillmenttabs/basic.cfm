@@ -63,6 +63,7 @@
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbkey('admin.entity.detailOrderFulfillment.fulfillment_totals')#" />
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="fulfillmentCharge" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="discountAmount" edit="false" displayType="table">
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="chargeTaxAmount" edit="false" displayType="table">
 				<hb:HibachiPropertyTableBreak header="" />
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="chargeAfterDiscount" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 			</hb:HibachiPropertyTable>

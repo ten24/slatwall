@@ -525,7 +525,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						structDelete(newQueryKeys, key);
 					} else if(arguments.appendValues) {
 						var delimiter = variables.valuedelimiter;
-						if(right(key,4) == 'like'){
+						if(findNoCase('like',right(key,4))){
 							delimiter = '|';
 						}
 					
@@ -535,7 +535,7 @@ component output="false" accessors="true" extends="HibachiService" {
 							if(findCount) {
 								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, delimiter);
 								if(arguments.toggleKeys) {
-									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
+									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, delimiter);
 								}
 							}
 						}
@@ -768,7 +768,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 
-		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.collectionEntity.getEnforceAuthorization()){
+		if(!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
 				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
@@ -907,11 +907,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		var authorizedProperties = [];
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(
-				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
-				|| (
+				(
 					!arguments.enforeAuthorization
 					&& !findnocase('_',collectionPropertyIdentifier)
-				)
+				)||
+				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
 			){
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 			}

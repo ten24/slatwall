@@ -63,7 +63,10 @@ component output="false" accessors="true" extends="HibachiController" {
 			&& structKeyExists(GetHttpRequestData().headers,'Content-Type')
 			&& FindNoCase('application/json',GetHttpRequestData().headers['Content-Type'])
 		){
-			structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		    var contentStruct = deserializeJson(ToString(GetHttpRequestData().content));
+		    if(isStruct(contentStruct)){
+			    structAppend(arguments.rc,deserializeJson(ToString(GetHttpRequestData().content)));
+		    }
 		}
         if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET'
             && structKEyExists(arguments.rc, 'serializedJSONData')
