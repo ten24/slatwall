@@ -97,10 +97,10 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			var requestDataStruct = {
 				Client = "a0o33000003xVEI",
 				companyCode = setting('companyCode'),
-				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+				DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ) + 1000,
 				DocDate = dateFormat(now(),'yyyy-mm-dd'),
-				DocType = 'SalesInvoice',
-				CustomerUsageType= usageType ,
+				DocType = docType,
+				CustomerUsageType= usageType,
 				ExemptionNo= exemptionNo,
 				commit=variables.commitDocFlag,
 				Addresses = [
@@ -201,6 +201,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			httpRequest.addParam(type="header", name="Content-type", value="application/json");
 			httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
 			httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+			httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
 			httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 			
 			var responseData = httpRequest.send().getPrefix();
@@ -256,5 +257,49 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		variables.commitDocFlag = false;
 		
 	}
+	
+	public any function voidTaxDocument(required any requestBean){
+		var requestDataStruct = {
+			Client = "a0o33000003xVEI",
+			companyCode = setting('companyCode'),
+			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ) + 1000,
+			CancelCode = 'DocDeleted',
+			DocType = 'SalesInvoice'
+		};
+		
+		// Setup the auth string
+		var base64Auth = toBase64("#setting('accountNo')#:#setting('accessKey')#");
+		
+		// Setup Request to push to Avatax
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+        var testingFlag = setting('testingFlag');
+        if(!isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getTestOrderFlag()) && arguments.requestBean.getOrder().getTestOrderFlag()){
+        	testingFlag = arguments.requestBean.getOrder().getTestOrderFlag();
+        }
+        
+        if(testingFlag) {
+        	httpRequest.setUrl("https://development.avalara.net/1.0/tax/cancel");	
+        } else {
+        	httpRequest.setUrl("https://avatax.avalara.net/1.0/tax/cancel");
+        }
 
+		httpRequest.addParam(type="header", name="Content-type", value="application/json");
+		httpRequest.addParam(type="header", name="Content-length", value="#len(serializeJSON(requestDataStruct))#");
+		httpRequest.addParam(type="header", name="Authorization", value="Basic #base64Auth#");
+		httpRequest.addParam(type="header", name="X-Avalara-Client", value="Slatwall;#getApplicationValue('version')#REST;v1;#cgi.servername#");
+		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
+		
+		var responseData = httpRequest.send().getPrefix();
+		if (IsJSON(responseData.FileContent)){
+			var fileContent = DeserializeJSON(responseData.FileContent);
+
+			if (fileContent.resultCode == 'Error'){
+				responseBean.setData(fileContent.messages);
+			}
+				
+		}else{
+			responseBean.setData(responseData.Responseheader.Explanation);
+		}
+	}
 }
