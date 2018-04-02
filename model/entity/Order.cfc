@@ -1043,18 +1043,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getRootOrderItems(){
-		if(!structKeyExists(variables,'rootOrderItems')){
-			var rootOrderItems = [];
-		
-			for(var orderItem in this.getOrderItems()){
-				if(isNull(orderItem.getParentOrderItem())){
-					ArrayAppend(rootOrderItems, orderItem);
-				}
+		var rootOrderItems = [];
+	
+		for(var orderItem in this.getOrderItems()){
+			if(isNull(orderItem.getParentOrderItem())){
+				ArrayAppend(rootOrderItems, orderItem);
 			}
-			variables.rootOrderItems = rootOrderItems;
 		}
-		
-		
+		variables.rootOrderItems = rootOrderItems;
+
 		return variables.rootOrderItems;
 	}
 
