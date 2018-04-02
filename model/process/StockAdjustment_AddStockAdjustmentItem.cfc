@@ -92,7 +92,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 			
 		// Figure out the currency in use for this location to set the defaults.
-		if ( !isNull( stockAdjustment )  && !isNull( rootLocation ) && !isNull( rootLocation.getSites() ) && !isNull( rootLocation.getSites()[1].setting( "skuCurrency" ) )){
+		if ( !isNull( stockAdjustment )  
+			&& !isNull( rootLocation ) 
+			&& arraylen( rootLocation.getSites() ) 
+			&& !isNull( rootLocation.getSites()[1].setting( "skuCurrency" ) )){
 			//This filters down to the one average cost for this locations currency.
 			return trim(rootLocation.getSites()[1].setting( 'skuCurrency' ));
 		}
