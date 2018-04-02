@@ -161,7 +161,12 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 						itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
 					}
 					itemData.Qty = item.getQuantity();
-					itemData.Amount = item.getExtendedPriceAfterDiscount();
+					
+					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
+						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
+					}else {
+						itemData.Amount = item.getExtendedPriceAfterDiscount();
+					}
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
 
@@ -206,9 +211,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 		
 		var responseData = httpRequest.send().getPrefix();
-		
-		writeDUmp(requestDataStruct);
-		writeDump(responseData);abort;
+
 		if (IsJSON(responseData.FileContent)){
 			
 			var fileContent = DeserializeJSON(responseData.FileContent);
