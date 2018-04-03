@@ -103,7 +103,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
 	property name="collectionEntityObject" type="any" persistent="false";
-	property name="hasDisplayAggregate" type="boolean" persistent="false";
+	property name="hasAggregate" type="boolean" persistent="false";
 	property name="hasManyRelationFilter" type="boolean" persistent="false";
 	property name="enforceAuthorization" type="boolean" persistent="false" default="true";
 	property name="authorizedProperties" singularname="authorizedProperty" type="array" persistent="false";
@@ -129,6 +129,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObjectOptions" persistent="false";
 	property name="totalAvgAggregates" persistent="false" type="array";
 	property name="totalSumAggregates" persistent="false" type="array";
+	property name="reportFlag" persistent="false" type="boolean" default="0";
+	
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -154,7 +156,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.aggregateFilters = [];
 		variables.collectionConfig = '{}';
 		variables.processObjectArray = [];
-		variables.hasDisplayAggregate = false;
+		variables.hasAggregate = false;
 		variables.hasManyRelationFilter = false;
 		variables.aliasMap = {};
 		variables.useElasticSearch = false;
@@ -181,6 +183,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			return variables.baseEntityAlias;
 		}
 		return "";
+	}
+	
+	public boolean function isReport(){
+		return getReportFlag();
 	}
 
 	public boolean function getCheckDORPermissions(){
@@ -524,6 +530,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		if(len(aggregate)){
 			filter["aggregate"] = aggregate;
+			setHasAggregate(true);
 		}
 
 
@@ -568,13 +575,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function addGroupBy(required string groupByAlias){
 		var collectionConfig = this.getCollectionConfigStruct();
-		if(!structKeyExists(collectionConfig,'groupBys')){
-			collectionConfig["groupBys"] = arguments.groupByAlias;
+		var groupBys = listToArray(arguments.groupByAlias);
+		var groupByList = "";
+		for(var groupBy in groupBys){
+			groupByList = listAppend(groupByList,getPropertyIdentifierAlias(groupBy));
 		}
-		if(ListContains(collectionConfig.groupBys,arguments.groupByAlias) == 0){
-		listAppend(collectionConfig.groupBys,arguments.groupByAlias);
+		if(!structKeyExists(collectionConfig,'groupBys') || !len(collectionConfig['groupBys'])){
+			collectionConfig["groupBys"] = groupByList;
 		}
-		variables.groupBys = collectionConfig.groupBys;
+		if(ListContains(collectionConfig.groupBys,groupByList) == 0){
+			listAppend(collectionConfig.groupBys,groupByList);
+		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
@@ -662,6 +673,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		if(structKeyExists(arguments.columnConfig, 'tdclass')){
 			arguments.column['tdclass'] = arguments.columnConfig['tdclass'];
+		}
+		//isMetric, isPeriod used if isReport() true
+		if(structKeyExists(arguments.columnConfig,'isMetric')){
+			arguments.column['isMetric']=arguments.columnConfig['isMetric'];
+		}
+		if(structKeyExists(arguments.columnConfig,'isPeriod')){
+			arguments.column['isPeriod']=arguments.columnConfig['isPeriod'];
 		}
 
 		if(arguments.prepend){
@@ -1320,7 +1338,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any column){
-		setHasDisplayAggregate(true);
+		setHasAggregate(true);
 		var aggregateFunction = '';
 
 		switch(lCase(arguments.column.aggregate.aggregateFunction)){
@@ -1911,53 +1929,33 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'AND';
 	}
 
-	private string function getGroupByHQL(string groupBys=""){
+	private string function getGroupByHQL(){
+		var groupByHQL = "";
 		var groupByList = '';
-		var groupBysArray = listToArray(arguments.groupBys);
-		var groupByCount = arrayLen(groupBysArray);
-		if(groupByCount){
-			var collectionConfig = getCollectionConfigStruct();
-			if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
-				for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
-					var column = collectionConfig.columns[i];
-					var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
-					var aliasLength = 1+len(lcase(getCollectionObject()));
-					if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
-						propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
-					}
-
-					if (structKeyExists(column, 'aggregate')
-						|| structKeyExists(column, 'attributeID')
-						|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
-						|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
-						|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
-					) continue;
-
-					groupByList = listAppend(groupByList, column.propertyIdentifier);
-				}
-			}
-
-			if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
-				if(getApplyOrderBysToGroupBys()){
-					for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
-						if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
-						groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
-					}
-				}
-			}else{
-				if(!getExcludeOrderBy()){
-					var orderBy = getDefaultOrderBy();
-					if(!getHasDisplayAggregate()){
-						groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
-					}
-				}
-			}
+		
+		getGroupBys();
+		//use collectionConfig groupbys if they exist already as an override otherwise use the calculated ones
+		if(structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])){
+			groupByList = getCollectionConfigStruct()['groupBys'];
+		}else if(structKeyExists(variables,'groupBys')){
+			groupByList = variables.groupBys;
 		}
-		variables.groupBys = groupByList;
-		if(!len(trim(variables.groupBys))){
+		
+		if(!len(trim(groupByList)) && !isReport()){
 			return '';
 		}
-		return ' GROUP BY ' & groupByList;
+		
+		groupByHQL = ' GROUP BY ' & groupByList;
+		
+		if(isReport()){
+			var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
+			if(len(groupByList)){
+				groupByHQL &= ",";
+			}
+			groupByHQL &= " DATE_FORMAT(#variables.periodColumn.propertyIdentifier#,'#periodIntervalFormat#')";
+		}
+		
+		return groupByHQL;
 	}
 
 	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
@@ -2008,7 +2006,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
-		if(orderByCount == 0 && !getHasDisplayAggregate()){
+		if(orderByCount == 0 && !getHasAggregate()){
 			arrayAppend(arguments.orderby,getDefaultOrderBy());
 			orderByCount++;
 		}
@@ -2459,7 +2457,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setExcludeOrderBy(false);
 
 	}
-
+	
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(arguments.refresh){
 			clearRecordsCache();
@@ -2469,6 +2467,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		if(arguments.formatRecords){
 			var formattedRecords = getHibachiCollectionService().getAPIResponseForCollection(this,{allRecords=true},false).records;
+			
 			//If we are caching this (someone set setCacheable(true) on the collectionList)
 			if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
 				variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
@@ -2481,7 +2480,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 		}else{
-			try{
+			//try{
 				//If we are returning only the exportable records, then check and pass through.
 				if( !structKeyExists(variables, "records")) {
 					if(getUseElasticSearch() && getHibachiScope().hasService('elasticSearchService')){
@@ -2490,10 +2489,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}else{
 						var HQL = '';
 						var HQLParams = {};
+						//For processing objects because we have a non-persistent column
 						if(this.getNonPersistentColumn()){
 							variables.records = [];
 							HQL =  'SELECT DISTINCT(_#lcase(this.getCollectionObject())#) ' &  getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
+							
 							var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 							var columns = getCollectionConfigStruct()["columns"];
 							for(var entity in entities){
@@ -2511,7 +2512,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								}//<--end for
 								arrayAppend(variables.records,record);
 							}//<--end entity
+						//standard Collections HQL
 						}else{
+						
 							HQL = getHQL(forExport=arguments.forExport);
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
@@ -2525,7 +2528,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							} else {
 								//Get the pageRecords
 								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-							
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
 									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
@@ -2541,12 +2543,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
-			}
+			/*}
 			catch(any e){
 				variables.records = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
-			}
+			}*/
 		}
 		
 
@@ -2587,6 +2589,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							getHQL(true);
 						}
 						HQL = getSelectionCountHQL();
+						
 						if( getDirtyReadFlag() ) {
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -2904,7 +2907,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 		var countHQLSelections = "";
 		var countHQLSuffix = "";
-		if(hasAggregateFilter() || !isNull(variables.groupBys)){
+		if(
+			hasAggregateFilter() 
+			|| (
+				structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
+			)
+		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
  		}else{
@@ -2913,7 +2921,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
-			if(hasAggregateFilter() || !isNull(variables.groupBys)){
+			if(
+				hasAggregateFilter() 
+				|| (
+					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
+				)
+			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
 				countHQLSelections &= ", COALESCE(AVG(#getPropertyIdentifierAlias(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
@@ -2921,7 +2934,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		for(var totalSumAggregate in variables.totalSumAggregates){
-			if(hasAggregateFilter() || !isNull(variables.groupBys)){
+			if(
+				hasAggregateFilter() 
+				|| (
+					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
+				)
+			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
 				countHQLSelections &= ", COALESCE(SUM(#getPropertyIdentifierAlias(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
@@ -2940,8 +2958,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getTotalSumAggregates(){
 		variables.totalSumAggregates;
 	}
+	
+	private string function getPeriodIntervalFormat(required string periodInterval){
+		switch(lcase(arguments.periodInterval)){
+			case 'hour':
+				return '%Y-%m-%d-%H';
+			case 'day':
+				return '%Y-%m-%d';
+			case 'week':
+				return '%Y-%m-%u';
+			case 'month':
+				return '%Y-%m';
+			case 'year':
+				return '%Y';
+		}
+	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
+		
 		
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
@@ -2961,63 +2995,89 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-		
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
-			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
-				if(structKeyExists(column,'attributeID')){
-					columnsHQL &= getColumnAttributeHQL(column);
-				}else{
-					//verify that column is valid, if not remove it
-					if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
-						getPropertyIdentifierAlias(column.propertyIdentifier);
-						//check if we have an aggregate
-						if(!isNull(column.aggregate))
-						{
-							//if we have an aggregate then put wrap the identifier
-							if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
-								columnsHQL &= getAggregateHQL(column);
-							}
-							if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
-								  structKeyExists(column.aggregate, "aggregateFunction") &&
-							   ( column.aggregate.aggregateFunction == 'min' ||
-								 column.aggregate.aggregateFunction == 'max' )
-							){
-								variables.groupByRequired = false;
-								variables.orderByRequired = false;
-							} else {
-								variables.groupByRequired = true;
-								variables.orderByRequired = true;
-							}
-						}else{
-							variables.groupByRequired = true;
-							variables.orderByRequired = true;
-							var columnAlias = getColumnAlias(column);
-							
-							if(structKeyExists(column, 'ormtype') &&
-								(column.ormtype eq 'big_decimal'
-								|| column.ormtype eq 'integer'
-								|| column.ormtype eq 'float'
-								|| column.ormtype eq 'double')
-							){
-								addTotalAvgAggregate(column);
-								addTotalSumAggregate(column);
-							}
-							
-							columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
-						}
-					}else{
-						continue;
-					}
+			if(isReport()){
+				
+				getPropertyIdentifierAlias(column.propertyIdentifier);
+				var columnAlias = getColumnAlias(column);
+				
+				var addingColumn = false;
+				if(
+					structKeyExists(column,'isMetric') && column.isMetric
+				){
+					columnsHQL &= ' #column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#) as #columnAlias#';
+					addingColumn = true;
+				}else if(
+					structKeyExists(column,'isPeriod') && column.isPeriod 
+					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct().periodInterval)
+				){
+					variables.periodColumn = column;
+					var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
+					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
+					addingColumn = true;
+					
 				}
-
 				//check whether a comma is needed
-				if(i != columnCount){
+				if(i != columnCount && addingColumn){
 					columnsHQL &= ',';
 				}//<--end if
-			}//<--end exportable
+				
+			}else{
+				if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
+					if(structKeyExists(column,'attributeID')){
+						columnsHQL &= getColumnAttributeHQL(column);
+					}else{
+						//verify that column is valid, if not remove it
+						if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
+							getPropertyIdentifierAlias(column.propertyIdentifier);
+							//check if we have an aggregate
+							if(!isNull(column.aggregate))
+							{
+								//if we have an aggregate then put wrap the identifier
+								if(structKeyExists(column,'propertyIdentifier') && len(column.propertyIdentifier)){
+									columnsHQL &= getAggregateHQL(column);
+								}
+								if( ( !structKeyExists(variables, "groupByRequired") || !variables.groupByRequired ) &&
+									  structKeyExists(column.aggregate, "aggregateFunction") &&
+								   ( column.aggregate.aggregateFunction == 'min' ||
+									 column.aggregate.aggregateFunction == 'max' )
+								){
+									variables.groupByRequired = false;
+									variables.orderByRequired = false;
+								} else {
+									variables.groupByRequired = true;
+									variables.orderByRequired = true;
+								}
+							}else{
+								variables.groupByRequired = true;
+								variables.orderByRequired = true;
+								var columnAlias = getColumnAlias(column);
+								
+								if(structKeyExists(column, 'ormtype') &&
+									(column.ormtype eq 'big_decimal'
+									|| column.ormtype eq 'integer'
+									|| column.ormtype eq 'float'
+									|| column.ormtype eq 'double')
+								){
+									addTotalAvgAggregate(column);
+									addTotalSumAggregate(column);
+								}
+								
+								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+							}
+						}else{
+							continue;
+						}
+					}
+	
+					//check whether a comma is needed
+					if(i != columnCount){
+						columnsHQL &= ',';
+					}//<--end if
+				}//<--end exportable
+			}
 		}//<--end for loop
-
 		if(right(columnsHQL,1) == ','){
 			columnsHQL &= left(columnsHQL,len(columnsHQL)-1);
 		}
@@ -3110,6 +3170,99 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 	}
+	
+	public void function getGroupBys(){
+		if(!structKeyExists(variables,'groupBys')){
+			if(isReport()){
+				
+				var groupBys =[];
+				//add a group by for all selects that are not aggregates
+				for(var column in getCollectionConfigStruct().columns){
+					var propertyIdentifier = convertAliasToPropertyIdentifier(column.propertyIdentifier);
+					
+					if(
+						!structKeyExists(column,'aggregate')
+						&& !structKeyExists(column,'persistent')
+						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
+						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
+					){
+						if(!isReport() || (isReport() && structKeyExists(column,'isVisible') && column['isVisible'])){
+							if(
+								(
+									!structKeyExists(column,'isMetric') || !column['isMetric']
+								) 
+								&& (
+									!structKeyExists(column,'isPeriod') ||!column['isPeriod']
+								)
+							){
+								arrayAppend(groupBys,column.propertyIdentifier);
+							}
+						}
+					}
+				}
+				
+				variables.groupBys = arrayToList(groupBys);
+			//standard group by check
+			}else if(
+				!this.getNonPersistentColumn() &&
+				(
+					( 
+					  structKeyExists(variables, "groupByRequired") &&
+					  variables.groupByRequired &&
+					  getHasAggregate()
+					 )
+				   || getHasManyRelationFilter()
+				)
+				&& (
+					!structKeyExists(getCollectionConfigStruct(),'groupBys')
+					|| (
+						structKeyExists(getCollectionConfigStruct(),'groupBys')
+						&& !len(getCollectionConfigStruct().groupBys)
+					)
+				)
+			){
+				var groupByList = "";
+				var collectionConfig = getCollectionConfigStruct();
+				if(structKeyExists(collectionConfig, 'columns') && arraylen(collectionConfig.columns) > 0) {
+					for (var i = 1; i <= arraylen(collectionConfig.columns); i++) {
+						var column = collectionConfig.columns[i];
+						var propertyIdentifier = rereplace(column.propertyIdentifier,'_','.','all');
+						var aliasLength = 1+len(lcase(getCollectionObject()));
+						if(lcase(left(propertyIdentifier,aliasLength))=='.'&lcase(getCollectionObject())){
+							propertyIdentifier = right(propertyIdentifier,len(propertyIdentifier)-aliasLength-1);
+						}
+	
+						if (structKeyExists(column, 'aggregate')
+							|| structKeyExists(column, 'attributeID')
+							|| ListFindNoCase(groupByList, column.propertyIdentifier) > 0
+							|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
+							|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
+						) continue;
+	
+						groupByList = listAppend(groupByList, column.propertyIdentifier);
+					}
+				}
+	
+				if(structKeyExists(collectionConfig, 'orderBy') && arraylen(collectionConfig.orderBy) > 0){
+					if(getApplyOrderBysToGroupBys()){
+						for (var j = 1; j <= arraylen(collectionConfig.orderBy); j++) {
+							if (ListFindNoCase(groupByList, collectionConfig.orderBy[j].propertyIdentifier) > 0 || isAggregateFunction(collectionConfig.orderBy[j].propertyIdentifier)) continue;
+							groupByList = listAppend(groupByList, collectionConfig.orderBy[j].propertyIdentifier);
+						}
+					}
+				}else{
+					if(!getExcludeOrderBy()){
+						var orderBy = getDefaultOrderBy();
+						if(!getHasAggregate()){
+							groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+						}
+					}
+				}
+				variables.groupBys = groupByList;
+			}
+		}
+		
+	}
 
 	public any function createHQLFromCollectionObject(required any collectionObject,
 		boolean excludeSelectAndOrderBy=false,
@@ -3122,7 +3275,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy){
+		if(arguments.excludeOrderBy || isReport()){
 			this.setExcludeOrderBy(true);
 		}
 
@@ -3171,54 +3324,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}//<--end if build select
 			
-
-			if(!this.getNonPersistentColumn() &&
-				(
-					( structKeyExists(variables, "groupByRequired") &&
-					  variables.groupByRequired &&
-					  getHasDisplayAggregate()
-					 )
-				   || getHasManyRelationFilter()
-				)
-				&& (
-					!structKeyExists(collectionConfig,'groupBys')
-					|| (
-						structKeyExists(collectionConfig,'groupBys')
-						&& len(collectionConfig.groupBys)
-					)
-				)
-			){
-			
-				var groupBys = [];
-				//add a group by for all selects that are not aggregates
-				for(var column in collectionConfig.columns){
-					var propertyIdentifier = convertAliasToPropertyIdentifier(column.propertyIdentifier);
-					
-					if(
-						!structKeyExists(column,'aggregate')
-						&& !structKeyExists(column,'persistent')
-						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
-						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
-					){
-						arrayAppend(groupBys,column.propertyIdentifier);
-					}
-				}
-
-				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
-					if(!getHasDisplayAggregate()){
-						arrayAppend(groupBys,getDefaultOrderBy().propertyIdentifier);
-					}
-				}else{
-					//add a group by for all order bys
-					for(var orderBy in collectionConfig.orderBy){
-						arrayAppend(groupBys,orderBy.propertyIdentifier);
-					}
-				}
-				collectionConfig.groupBys = arrayToList(groupBys);
-				
-			}
-			
-			
 			//where clauses are actually the collection of all parent/child where clauses
 			
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
@@ -3264,6 +3369,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				aggregateFilters =  ' HAVING #aggregateFilters#';
 				
 				if(!arguments.excludeGroupBy){
+				
 					groupByHQL = "GROUP BY _#lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject()))#.id";
 					
 				}
@@ -3288,8 +3394,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!isnull(collectionConfig.joins)){
 				getCollectionConfigStruct()["joins"] = collectionConfig.joins;
 			}
-			if(structKeyExists(collectionConfig,'groupBys')  && !arguments.excludeGroupBy){
-				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
+			if(!arguments.excludeGroupBy){
+				groupByHQL = getGroupByHQL();
 			}
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName);
 
