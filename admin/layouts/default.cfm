@@ -81,18 +81,18 @@ Notes:
         <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
 
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></hb:HibachiScript>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></script>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/qrcode.min.js"></hb:HibachiScript>
 		<!--- Trigger Print Window --->
 		<cfif $.slatwall.getLoggedInFlag() and listLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
 			<script type="text/javascript">
@@ -404,12 +404,16 @@ Notes:
 			(structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage)
 			|| (structKeyExists(rc,'edit'))
 		>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
+			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></hb:HibachiScript>
+			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></hb:HibachiScript>
+			<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></hb:HibachiScript>
 		</cfif>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+
+		<!-- code split vendor bundle before the other bundles because its common among them. -->
+ 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
+ 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
+ 		
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
 </html>
 </cfoutput>
