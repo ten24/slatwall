@@ -3326,53 +3326,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}//<--end if build select
 			
-			if(!this.getNonPersistentColumn() &&
-				(
-					( structKeyExists(variables, "groupByRequired") &&
-					  variables.groupByRequired &&
-					  getHasDisplayAggregate()
-					 )
-				   || getHasManyRelationFilter()
-				)
-				&& (
-					!structKeyExists(collectionConfig,'groupBys')
-					|| (
-						structKeyExists(collectionConfig,'groupBys')
-						&& len(collectionConfig.groupBys)
-					)
-				)
-			){
-			
-				var groupBys = [];
-				//add a group by for all selects that are not aggregates
-				for(var column in collectionConfig.columns){
-					var propertyIdentifier = convertAliasToPropertyIdentifier(column.propertyIdentifier);
-					
-					if(
-						!structKeyExists(column,'aggregate')
-						&& !structKeyExists(column,'persistent')
-						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
-						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
-					){
-						arrayAppend(groupBys,column.propertyIdentifier);
-					}
-				}
 
-				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
-					if(!getHasDisplayAggregate()){
-						arrayAppend(groupBys,getDefaultOrderBy().propertyIdentifier);
-					}
-				}else{
-					//add a group by for all order bys
-					for(var orderBy in collectionConfig.orderBy){
-						arrayAppend(groupBys,orderBy.propertyIdentifier);
-					}
-				}
-				collectionConfig.groupBys = arrayToList(groupBys);
-				
-			}
-			
-			
 			//where clauses are actually the collection of all parent/child where clauses
 			
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
