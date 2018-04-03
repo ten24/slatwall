@@ -127,7 +127,11 @@ component accessors="true" output="false" extends="HibachiService" {
 		// Because some records might depend on other records already being in the DB (fk constraints) we catch errors and re-loop over records
 		var retryCount=0;
 		var runPopulation = true;
-
+		
+		if(!structKeyExists(request,'successfulDBDataScripts')){
+			request.successfulDBDataScripts = [];
+		}
+		
 		do{
 			// Set to false so that it will only rerun if an error occurs
 			runPopulation = false;
@@ -138,9 +142,12 @@ component accessors="true" output="false" extends="HibachiService" {
 					var xmlRaw = FileRead(dirList[i]);
 
 					try{
-						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 6) {
-							retryCount += 1;
-							runPopulation = true;
+						if(!arrayfind(request.successfulDBDataScripts,dirList[i])){
+							if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 6) {
+								retryCount += 1;
+								runPopulation = true;
+								arrayAppend(request.successfulDBDataScripts,dirList[i]);
+							}
 						}
 					} catch (any e) {
 						// If we haven't retried 6 times, then increment the retry counter and re-run the population
@@ -167,6 +174,19 @@ component accessors="true" output="false" extends="HibachiService" {
 		var columns = {};
 		var idColumns = "";
 		var includesCircular = false;
+		
+		if(structKeyExists(xmlData.Table.xmlAttributes,'dependencies')){
+			var dependencies = listToArray(xmlData.Table.xmlAttributes.dependencies);
+			for(var dependency in dependencies){
+				var dependencyPath = expandPath('/Slatwall')&dependency;
+				var dependencyXMLRaw = FileRead(dependencyPath);
+				if(!arrayFind(request.successfulDBDataScripts,dependencyPath)){
+					loadDataFromXMLRaw(dependencyXMLRaw);
+					arrayAppend(request.successfulDBDataScripts,dependencyPath);
+				}
+			}
+			
+		}
 
 		// Loop over each column to parse xml
 		for(var ii=1; ii<= arrayLen(xmlData.Table.Columns.xmlChildren); ii++) {
@@ -175,6 +195,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				idColumns = listAppend(idColumns, xmlData.Table.Columns.xmlChildren[ii].xmlAttributes.name);
 			}
 		}
+		
 		// Loop over each record to insert or update
 		for(var r=1; r <= arrayLen(xmlData.Table.Records.xmlChildren); r++) {
 

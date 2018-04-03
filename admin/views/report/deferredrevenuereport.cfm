@@ -120,3 +120,12 @@
     
     </sw-typeahead-input-field>
 </div>
+
+<cfset deferredRevenueCollectionList = $.slatwall.getService('HibachiCollectionService').getSubscriptionOrderDeliveryItemCollectionList()/>
+<cfset deferredRevenueCollectionList.setDisplayProperties('subscriptionOrderDeliveryItemID',{isVisible="false"})/>
+<cfset deferredRevenueCollectionList.addDisplayProperty('subscriptionOrderItem.orderItem.order.orderCloseDateTime',javacast('null',''),{isPeriod=true})/>
+<cfset deferredRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
+<cfset deferredRevenueCollectionList.setReportFlag(1)/>
+<cfset deferredRevenueCollectionList.setPeriodInterval('Month')/>
+
+<cfdump var="#deferredRevenueCollectionList.getPageRecords()#" top=2/><cfabort>

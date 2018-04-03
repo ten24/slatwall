@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwWorkflowTask">
+<Table tableName="SwWorkflowTask" dependencies="/config/dbdata/SlatwallWorkflow.xml.cfm">
 	<Columns>
 		<column name="workflowTaskID" fieldtype="id" />
 		<column name="activeFlag" update="false" datatype="bit" />
 		<column name="taskName" update="false" />
 		<column name="taskConditionsConfig" update="false" />
-		<column name="workflowID" update="false" />
+		<column name="workflowID" update="false"/>
 	</Columns>
 	<Records>
 		<Record workflowTaskID="4028289a5507d1dc01557e2619fa0814" activeFlag="1" taskName="New Form Response" taskConditionsConfig='{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"FormResponse","baseEntityName":"FormResponse"}' workflowID="4028289a5507d1dc01557e0718b30808" />

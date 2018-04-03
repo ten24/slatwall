@@ -1957,6 +1957,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		return groupByHQL;
 	}
+	
+	public void function setPeriodInterval(required string periodInterval){
+		getCollectionConfigStruct().periodInterval = arguments.periodInterval;
+	}
 
 	private boolean function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
 		var pID = convertAliasToPropertyIdentifier(arguments.propertyIdentifier);

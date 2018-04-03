@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwWorkflowTaskAction">
+<Table tableName="SwWorkflowTaskAction" dependencies="/config/dbdata/SlatwallWorkflowTask.xml.cfm">
 	<Columns>
 		<column name="workflowTaskActionID" fieldtype="id" />
 		<column name="actionType" update="false" />
 		<column name="updateData" update="false" />
-		<column name="emailTemplateID" update="false" />
-		<column name="workflowTaskID" update="false" />
+		<column name="emailTemplateID" update="false"  />
+		<column name="workflowTaskID"  update="false" />
 		<column name="processMethod" update="false"/>
 	</Columns>
 	<Records>
