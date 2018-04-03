@@ -60,9 +60,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="testOrderFlag" ormtype="boolean";
 	//used to check whether tax calculations should be run again
-	property name="taxRateCacheKey" ormtype="string";
-	property name="promotionCacheKey" ormtype="string";
-	property name="priceGroupCacheKey" ormtype="string";
+	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
+	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
+	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
