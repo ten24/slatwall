@@ -445,7 +445,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	// Stock Adjustment
 	public void function createStockAdjustment(required struct rc) {
-		
 		arguments.rc.sRedirectAction = 'admin:entity.editstockadjustment';
 
 		// Call the generic logic
@@ -494,6 +493,29 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.runningFlag=false;
 
 		super.genericSaveMethod('Task',rc);
+	}
+	
+	public void function updateCalculatedProperties(required struct rc){
+		super.genericDetailMethod(rc.entityName, arguments.rc);
+		
+		var entity = rc[rc.entityName];
+		
+		entity.runCalculatedProperties();
+		
+		var params = {};
+		params[entity.getPrimaryIDPropertyName()] = entity.getPrimaryIDValue();
+		
+		if(!entity.hasErrors()){
+			getHibachiScope().showMessage(getHibachiScope().rbKey("admin.entity.updateCalculatedProperties_success"), "success"); 
+		}else{
+			entity.showErrorsAndMessages();
+		}
+		
+		renderOrRedirectSuccess( 
+			defaultAction="admin:entity.detail#lcase(rc.entityName)#", 
+			maintainQueryString=true,
+			rc=params
+		);
 	}
 
 

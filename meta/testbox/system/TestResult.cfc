@@ -3,7 +3,7 @@
 * www.ortussolutions.com
 * ---
 * This object manages the results of testing with TestBox
-*/ 
+*/
 component accessors="true"{
 
 	// Global Durations
@@ -37,18 +37,20 @@ component accessors="true"{
 	* @testSuites.hint The test suites that should execute ONLY
 	* @testSpecs.hint The test specs that should execut ONLY
 	*/
-	TestResult function init( 
-		numeric bundleCount=0, 
-		array labels=[], 
+	TestResult function init(
+		numeric bundleCount=0,
+		array labels=[],
 		array testBundles=[],
-		array testSuites=[], 
+		array testSuites=[],
 		array testSpecs=[]
 	){
 
 		// internal id
 		variables.resultsID 	= createUUID();
+		// TestBox version
+		variables.version 		= "@build.version@+@build.number@";
 		// Global test durations
-		variables.startTime 	= getTickCount();	
+		variables.startTime 	= getTickCount();
 		variables.endTime 		= 0;
 		variables.totalDuration = 0;
 
@@ -66,7 +68,7 @@ component accessors="true"{
 		variables.testBundles	= arguments.testBundles;
 		variables.testSuites	= arguments.testSuites;
 		variables.testSpecs		= arguments.testSpecs;
-		
+
 		// Bundle Stats
 		variables.bundleStats 	= [];
 
@@ -119,7 +121,7 @@ component accessors="true"{
 		}
 		return this;
 	}
-	
+
 	/**
 	* Increment a global stat
 	* @type.hint The type of stat to increment: fail,pass,error or skipped
@@ -143,38 +145,38 @@ component accessors="true"{
 		required string bundlePath,
 		required string name
 	){
-		
+
 		lock name="tb-results-#variables.resultsID#" type="exclusive" timeout="10"{
 			// setup stats data for incoming bundle
 			var stats = {
 				// bundle id
-				id 			= createUUID(),
+				"id" 			= createUUID(),
 				// The bundle name
-				name		= arguments.name,
+				"name"		= arguments.name,
 				// Path of the bundle
-				path 		= arguments.bundlePath,
+				"path" 		= arguments.bundlePath,
 				// Total Suites in Bundle
-				totalSuites = 0,
+				"totalSuites" = 0,
 				// Total specs found to test
-				totalSpecs 	= 0,
+				"totalSpecs" 	= 0,
 				// Total passed specs
-				totalPass	= 0,
+				"totalPass"	= 0,
 				// Total failed specs
-				totalFail	= 0,
+				"totalFail"	= 0,
 				// Total error in specs
-				totalError	= 0,
+				"totalError"	= 0,
 				// Total skipped specs/suites
-				totalSkipped = 0,
+				"totalSkipped" = 0,
 				// Durations
-				startTime 		= getTickCount(),
-				endTime			= 0,
-				totalDuration 	= 0,
+				"startTime" 		= getTickCount(),
+				"endTime"			= 0,
+				"totalDuration" 	= 0,
 				// Suite stats holder
-				suiteStats 		= [],
+				"suiteStats" 		= [],
 				// Debug output buffer
-				debugBuffer 	= [],
+				"debugBuffer" 	= [],
 				// Global Exception
-				globalException = ""
+				"globalException" = ""
 			};
 
 			// store it in the bundle stats array
@@ -182,7 +184,7 @@ component accessors="true"{
 			// store in the reverse lookup for faster access
 			variables.bundleReverseLookup[ stats.id ] = stats;
 		} //end lock
-		
+
 		return stats;
 	}
 
@@ -234,38 +236,38 @@ component accessors="true"{
 		required struct bundleStats,
 		struct parentStats={}
 	){
-		
+
 		lock name="tb-results-#variables.resultsID#" type="exclusive" timeout="10"{
 			// setup stats data for incoming suite
 			var stats = {
 				// suite id
-				id 			= createUUID(),
+				"id" 			= createUUID(),
 				// parent suite id
-				parentID 	= "",
+				"parentID" 	= "",
 				// bundle id
-				bundleID	= arguments.bundleStats.id,
+				"bundleID"	= arguments.bundleStats.id,
 				// The suite name
-				name		= arguments.name,
+				"name"		= arguments.name,
 				// test status
-				status		= "not executed",
+				"status"		= "not executed",
 				// Total specs found to test
-				totalSpecs 	= 0,
+				"totalSpecs" 	= 0,
 				// Total passed specs
-				totalPass	= 0,
+				"totalPass"	= 0,
 				// Total failed specs
-				totalFail	= 0,
+				"totalFail"	= 0,
 				// Total error in specs
-				totalError	= 0,
+				"totalError"	= 0,
 				// Total skipped specs/suites
-				totalSkipped = 0,
+				"totalSkipped" = 0,
 				// Durations
-				startTime 		= getTickCount(),
-				endTime			= 0,
-				totalDuration 	= 0,
+				"startTime" 		= getTickCount(),
+				"endTime"			= 0,
+				"totalDuration" 	= 0,
 				// Recursive Suite stats holder
-				suiteStats 		= [],
+				"suiteStats" 		= [],
 				// Spec stats holder
-				specStats 		= []
+				"specStats" 		= []
 			};
 
 			// Parent stats
@@ -283,7 +285,7 @@ component accessors="true"{
 			// store in the reverse lookup for faster access
 			variables.suiteReverseLookup[ stats.id ] = stats;
 		} // end lock
-		
+
 		return stats;
 	}
 
@@ -303,37 +305,37 @@ component accessors="true"{
 	* @suiteStats.hint The suite stats reference this belongs to.
 	*/
 	struct function startSpecStats(
-		required string name, 
+		required string name,
 		required struct suiteStats
 	){
-		
+
 		lock name="tb-results-#variables.resultsID#" type="exclusive" timeout="10"{
 			// spec stats
 			var stats = {
 				// suite id
-				id 				= createUUID(),
+				"id" 				= createUUID(),
 				// suite id
-				suiteID			= arguments.suiteStats.id,
+				"suiteID"			= arguments.suiteStats.id,
 				// name of the spec
-				name			= arguments.name,
+				"name"			= arguments.name,
 				// spec status
-				status			= "na",
+				"status"			= "na",
 				// durations
-				startTime 		= getTickCount(),
-				endTime			= 0, 
-				totalDuration 	= 0,
+				"startTime" 		= getTickCount(),
+				"endTime"			= 0,
+				"totalDuration" 	= 0,
 				// exception structure
-				error		= {},
+				"error"		= {},
 				// the failure message
-				failMessage	= "",
+				"failMessage"	= "",
 				// the failure origin
-				failOrigin = {}
+				"failOrigin" = {}
 			};
-			
+
 			// append to the parent stats
 			arrayAppend( arguments.suiteStats.specStats, stats );
 		} // end lock
-		
+
 		return stats;
 	}
 
@@ -346,36 +348,59 @@ component accessors="true"{
 		required string type,
 		required struct stats
 	){
-
 		lock name="tb-results-#variables.resultsID#" type="exclusive" timeout="10"{
 			// increment suite stat
 			variables.suiteReverseLookup[ arguments.stats.suiteID ][ "total#arguments.type#" ]++;
 			// increment bundle stat
-			variables.bundleReverseLookup[ 
+			variables.bundleReverseLookup[
 				variables.suiteReverseLookup[ arguments.stats.suiteID ].bundleID
 			][ "total#arguments.type#" ]++;
 			// increment global stat
 			variables[ "total#arguments.type#" ]++;
 		}
 	}
-	
+
 	/**
-	* Get a flat representation of this result
+	* Get a flat representation of this result.
+	*
+	* @includeDebugBuffer Include the debug buffer or not, by default we strip it out
 	*/
-	struct function getMemento(){
-		var pList = listToArray( "labels,startTime,endTime,totalDuration,totalBundles,totalSuites,totalSpecs,totalPass,totalFail,totalError,totalSkipped,bundleStats" );
-		var result = {};
-		
+	struct function getMemento( boolean includeDebugBuffer=false ){
+		var pList 	= [
+			"resultID",
+			"version",
+			"labels",
+			"startTime",
+			"endTime",
+			"totalDuration",
+			"totalBundles",
+			"totalSuites",
+			"totalSpecs",
+			"totalPass",
+			"totalFail",
+			"totalError",
+			"totalSkipped",
+			"bundleStats"
+		];
+		var result 	= {};
+
 		// Do simple properties only
-		for(var x=1; x lte arrayLen( pList ); x++ ){
-			if( structKeyExists( variables, pList[ x ] ) ){
-				result[ pList[ x ] ] = variables[ pList[ x ] ];
-			}
-			else{
-				result[ pList[ x ] ] = "";
+		for( var thisProp in pList ){
+			if( structKeyExists( variables, thisProp ) ){
+
+				// Do we need to strip out the buffer?
+				if( thisProp == "bundleStats" && !arguments.includeDebugBuffer ){
+					for( var thisKey in variables[ thisProp ] ){
+						structDelete( thisKey, "debugBuffer" );
+					}
+				}
+
+				result[ thisProp ] = variables[ thisProp ];
+			} else {
+				result[ thisProp ] = "";
 			}
 		}
-		
-		return result;		
+
+		return result;
 	}
 }
