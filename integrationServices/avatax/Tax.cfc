@@ -54,7 +54,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
-		var docType = 'SalesInvoice';
+		var docType = 'SalesOrder';
 		var usageType = '';
 		var exemptionNo ='';
 		
@@ -96,8 +96,10 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		
 		if ( arguments.requestBean.getOrder().getOrderType().getSystemCode() == 'otReturnOrder' ){
 			docType = 'ReturnInvoice';
+		} else if ( !isNull(arguments.requestBean.getOrder().getOrderNumber()) && len(arguments.requestBean.getOrder().getOrderNumber()) ){
+			docType = 'SalesInvoice';
 		}
-			
+		
 		// Setup the request data structure
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
@@ -215,7 +217,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		httpRequest.addParam(type="body", value=serializeJSON(requestDataStruct));
 		
 		var responseData = httpRequest.send().getPrefix();
-
+		
 		if (IsJSON(responseData.FileContent)){
 			
 			var fileContent = DeserializeJSON(responseData.FileContent);
