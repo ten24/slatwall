@@ -64,8 +64,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				}
 			}
 		}
-		if(structKeyExists(variables,'getActiveFlag') && isNull(getActiveFlag())){
-			variables.activeFlag = 1;
+		if(structKeyExists(this,'getActiveFlag') && isNull(getActiveFlag())){
+			setActiveFlag(1);
 		}
 
 		return super.init();
