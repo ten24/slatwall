@@ -180,7 +180,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
 	
 										var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];
-	
+										var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
+
 										for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 	
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderItem' && taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
@@ -209,6 +210,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxPostalCode( taxRateItemResponse.getTaxPostalCode() );
 												newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
 	
+												newAppliedTax.setMessage(responseBeanMessage);		
+													
 												// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 												if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 													newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
@@ -329,7 +332,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
 		
 											var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];
-		
+											var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
+											
 											for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 		
 												if(taxRateItemResponse.getReferenceObjectType() == 'OrderItem' && taxRateItemResponse.getOrderItemID() == orderItem.getOrderItemID()){
@@ -357,7 +361,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 													newAppliedTax.setTaxStateCode( taxRateItemResponse.getTaxStateCode() );
 													newAppliedTax.setTaxPostalCode( taxRateItemResponse.getTaxPostalCode() );
 													newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
-		
+													
+													newAppliedTax.setMessage(responseBeanMessage);
+													
 													// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 													if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 														newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
@@ -456,7 +462,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(structKeyExists(ratesResponseBeans, taxCategoryRate.getTaxIntegration().getIntegrationID())){
 	
 										var thisResponseBean = ratesResponseBeans[ taxCategoryRate.getTaxIntegration().getIntegrationID() ];
-	
+										var responseBeanMessage =serializeJSON(thisResponseBean.getMessages());
+										
 										for(var taxRateItemResponse in thisResponseBean.getTaxRateItemResponseBeans()) {
 	
 											if(taxRateItemResponse.getReferenceObjectType() == 'OrderFulfillment' && taxRateItemResponse.getOrderFulfillmentID() == orderFulfillment.getOrderFulfillmentID()){
@@ -484,7 +491,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 												newAppliedTax.setTaxStateCode( taxRateItemResponse.getTaxStateCode() );
 												newAppliedTax.setTaxPostalCode( taxRateItemResponse.getTaxPostalCode() );
 												newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );
-	
+												
+												newAppliedTax.setMessage(responseBeanMessage);
+												
 												// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 												if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
 													newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );

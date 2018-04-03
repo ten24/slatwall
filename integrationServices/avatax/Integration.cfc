@@ -75,7 +75,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			commitTaxDocumentFlag = {fieldType="yesno", defaultValue="0"},
 			companyCode = {fieldType="text"},
 			customerUsageTypePropertyIdentifier = {fieldType="text"},
-			taxExemptNumberPropertyIdentifier = {fieldType="text"}
+			taxExemptNumberPropertyIdentifier = {fieldType="text"},
+			debugModeFlag = {fieldType="yesno", defaultValue="0"}
 		};
 
 		return settings;

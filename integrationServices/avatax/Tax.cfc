@@ -226,6 +226,11 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 				responseBean.setData(fileContent.messages);
 			}
 			
+			if( setting('debugModeFlag') ) {
+				responseBean.addMessage("Request", serializeJSON(requestDataStruct));
+				responseBean.addMessage("Response", serializeJSON(responseData));
+			}
+			
 			if (structKeyExists(fileContent, 'TaxLines')){
 				// Loop over all orderItems in response
 				for(var taxLine in fileContent.TaxLines) {
