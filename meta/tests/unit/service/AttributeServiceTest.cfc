@@ -76,11 +76,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var attribute = createPersistedTestEntity('attribute',attributeData);
 
-		variables.service.getHibachiCacheService().resetCachedKey('attributeService_getAttributeModel');
-		variables.service.getHibachiCacheService().resetCachedKey('attributeService_getAttributeModel_#attributeSet.getAttributeSetObject()#');
-
-		variables.service.getHibachiCacheService().resetCachedKey('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#');
-
+		// set the cache values
+		variables.service.getHibachiCacheService().setCachedValue('attributeService_getAttributeModel',generateRandomString());
+		variables.service.getHibachiCacheService().setCachedValue('attributeService_getAttributeModel_#attributeSet.getAttributeSetObject()#',generateRandomString());
+		variables.service.getHibachiCacheService().setCachedValue('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#',generateRandomString());
 
 		var attributeMetaData = variables.service.getAttributeModel();
 
@@ -88,6 +87,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(variables.service.getHibachiCacheService().hasCachedValue('attributeService_getAttributeModel') == true);
 		assert(variables.service.getHibachiCacheService().hasCachedValue('attributeService_getAttributeModel_#attributeSet.getAttributeSetObject()#') == true);
 		assert(variables.service.getHibachiCacheService().hasCachedValue('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#') == true);
+
+		// reset the cache values
+		variables.service.getHibachiCacheService().resetCachedKey('attributeService_getAttributeModel');
+		variables.service.getHibachiCacheService().resetCachedKey('attributeService_getAttributeModel_#attributeSet.getAttributeSetObject()#');
+		variables.service.getHibachiCacheService().resetCachedKey('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#');
+
+
 		//saving clears the cache
 		var attributeName = 'adf'&generateRandomString();
 		attribute = variables.service.saveAttribute(attribute,{attributeName=attributeName,attributeType="text"});
