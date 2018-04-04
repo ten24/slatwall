@@ -34,7 +34,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return super.init();
 	}
-	
+
 	public string function getTableName(){
 		return getService('hibachiService').getTableNameByEntityName(getClassName());
 	}
@@ -75,9 +75,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 							}
 						}
 					}
-					
+
                     var value = this.invokeMethod("get#nonPersistentProperty#");
-                    
+
                     if(!isNull(value)) {
                         variables[ property.name ] = value;
                     }
@@ -91,11 +91,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
         }
     }
-    
+
     public string function getParentPropertyName(){
     	getService('hibachiService').getParentPropertyByEntityName(getClassName());
     }
-    
+
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 
@@ -465,7 +465,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 
 		return "";
 	}
-	
+
 
 	// @hint returns an array of name/value pairs that can function as options for a many-to-one property
 	public array function getPropertyOptions( required string propertyName ) {
@@ -599,10 +599,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	// @hint returns a collection list of the current values for a given one-to-many or many-to-many property
-	public any function getPropertyCollectionList( required string propertyName ) {
+	public any function getPropertyCollectionList( required string propertyName, boolean isNew=false ) {
 		var cacheKey = "#arguments.propertyName#CollectionList";
 
-		if(!structKeyExists(variables, cacheKey)) {
+		if(!structKeyExists(variables, cacheKey) || ((structKeyExists(arguments, 'isNew') && !isNull(arguments.isNew) && arguments.isNew))) {
 
 			var entityService = getService("hibachiService").getServiceByEntityName( listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.') );
 			var collectionList = entityService.invokeMethod("get#listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')#CollectionList");
@@ -664,7 +664,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public void function encryptProperty(required string propertyName) {
 		var generatorValue = createHibachiUUID();
 		var value = this.invokeMethod('get#arguments.propertyName#');
-		
+
 		if(!isNull(value) && len(value) && value != '********') {
 			var encryptedPropertyValue = encryptValue(value, generatorValue);
 
@@ -705,16 +705,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint handles decrypting a property based on conventions
 	public string function decryptProperty(required string propertyName) {
 		var encryptedPropertyValue = "";
-		
+
 		var isAttributeProperty = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(getClassName(),arguments.propertyName);
-		
+
 		var generatorName = "";
 		var entity = this;
 		if(isAttributeProperty){
 			generatorName = "AttributeValue";
 			entity = this.getAttributeValue(arguments.propertyName,true);
 		}else{
-			generatorName = arguments.propertyName;	
+			generatorName = arguments.propertyName;
 		}
 		var generatorValue = entity.invokeMethod("get#generatorName#EncryptedGenerator");;
 		param name="generatorValue" default="";
@@ -785,8 +785,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return hasAnyInProperty(propertyName=right(arguments.missingMethodName, len(arguments.missingMethodName) - 6), entityArray=arguments.missingMethodArguments[1]);
 
 		// getXXXAssignedIDList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
-		} 
-		
+		}
+
 		if ( left(arguments.missingMethodName, 3) == "get"){
 			var propertyName="";
 			if(right(arguments.missingMethodName, 14) == "AssignedIDList") {
@@ -801,7 +801,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				if(hasProperty(propertyName)){
 					return getPropertyOptions( propertyName=propertyName);
 				}
-			} 
+			}
 			// getXXXOptionsSmartList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned
 			if ( right(arguments.missingMethodName, 16) == "OptionsSmartList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-19);
@@ -820,7 +820,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			if ( right(arguments.missingMethodName, 14) == "CollectionList") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17);
 				if(hasProperty(propertyName)){
+					//condition to choose between new and cached collectionList
+					if( structKeyExists(arguments.missingMethodArguments, 'isNew') && arguments.missingMethodArguments["isNew"]){
+						return getPropertyCollectionList( propertyName=propertyName, isNew=true);
+					}else{
 					return getPropertyCollectionList( propertyName=propertyName );
+					}
 				}
 			}
 			// getXXXStruct()		Where XXX is a one-to-many or many-to-many property where we want a key delimited struct
@@ -829,14 +834,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				if(hasProperty(propertyName)){
 					return getPropertyStruct( propertyName=propertyName );
 				}
-			}	
+			}
 			// getXXXCount()		Where XXX is a one-to-many or many-to-many property where we want to get the count of that property
 			if ( right(arguments.missingMethodName, 5) == "Count") {
 				propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8);
 				if(hasProperty(propertyName)){
 					return getPropertyCount( propertyName=propertyName );
 				}
-			}	
+			}
 			// getXXX() 			Where XXX is either and attributeID or attributeCode
 			if (structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
 				return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));
@@ -858,12 +863,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			//getXXXFileURL()
 			if ( right(arguments.missingMethodName, 7) == "FileUrl") {
 				var propertyName = mid(arguments.missingMethodName,4,len(arguments.missingMethodName)-10);
-	
+
 				if(getPropertyFieldType(propertyName) == 'file'){
 					return getFileUrlByPropertyName(propertyName);
 				}
 			}
-		} 
+		}
 		//removeXXX() only for files
 		if ( left(arguments.missingMethodName, 6) == "remove") {
 			var propertyName =right(arguments.missingMethodName,len(arguments.missingMethodName)-6);

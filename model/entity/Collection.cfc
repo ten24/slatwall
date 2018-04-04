@@ -663,12 +663,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifierAlias = propertyIdentifier;
 		}
 
-		var orderBy = {
-			"propertyIdentifier"= propertyIdentifierAlias,
-			"direction"=direction
-		};
+		var orderByExists=false;// variable used as flag to mark if new propertyIdentifier already exists or not
 
-		arrayAppend(collectionConfig.orderBy,orderBy);
+		for(var orderBy in collectionConfig.orderBy){
+
+			if(	orderBy.propertyIdentifier == propertyIdentifierAlias ){
+				orderBy.direction = direction;
+				orderByExists = true;
+			}
+		}
+		if(!orderByExists){
+				var orderBy = {
+					"propertyIdentifier"= propertyIdentifierAlias,
+					"direction"=direction
+				};
+				arrayAppend(collectionConfig.orderBy,orderBy); //|[{direction={asc},propertyIdentifier={_product.productName}}]
+		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
@@ -1000,9 +1010,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 				if (!isNull(pageShow)){
-					this.setPageRecordsShow(pageShow);
-				}
+					if(pageShow >= 1)
+					{
+						this.setPageRecordsShow(pageShow);
+					}
 
+				}
 
 			}
 		}
