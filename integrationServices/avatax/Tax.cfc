@@ -104,7 +104,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode'),
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ) + 1000,
+			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
 			CustomerUsageType= usageType,
@@ -167,7 +167,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 						itemData.Description = item.getOrderItem().getSku().getProduct().getProductDescription();	
 					}
 					itemData.Qty = item.getQuantity();
-					
 					if (item.getOrderItem().getOrderItemType().getSystemCode() == "oitReturn"){
 						itemData.Amount = item.getExtendedPriceAfterDiscount() * -1; 
 					}else {
