@@ -46,7 +46,7 @@
     "jasmine-core": "^2.8.0",
     "json-loader": "^0.5.4",
     "less": "*",
-    "ng-annotate-webpack-plugin": "*",
+    "ng-annotate-webpack-plugin": "0.2.0",
     "run-sequence": "1.1.4",
     "rxjs": "^5.4.3",
     "strip-loader": "^0.1.2",

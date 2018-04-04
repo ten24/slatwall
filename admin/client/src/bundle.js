@@ -429,10 +429,13 @@ var Subscriber = (function (_super) {
                     break;
                 }
                 if (typeof destinationOrNext === 'object') {
-                    if (destinationOrNext instanceof Subscriber) {
-                        this.syncErrorThrowable = destinationOrNext.syncErrorThrowable;
-                        this.destination = destinationOrNext;
-                        this.destination.add(this);
+                    // HACK(benlesh): To resolve an issue where Node users may have multiple
+                    // copies of rxjs in their node_modules directory.
+                    if (isTrustedSubscriber(destinationOrNext)) {
+                        var trustedSubscriber = destinationOrNext[rxSubscriber_1.rxSubscriber]();
+                        this.syncErrorThrowable = trustedSubscriber.syncErrorThrowable;
+                        this.destination = trustedSubscriber;
+                        trustedSubscriber.add(this);
                     }
                     else {
                         this.syncErrorThrowable = true;
@@ -647,6 +650,9 @@ var SafeSubscriber = (function (_super) {
     };
     return SafeSubscriber;
 }(Subscriber));
+function isTrustedSubscriber(obj) {
+    return obj instanceof Subscriber || ('syncErrorThrowable' in obj && obj[rxSubscriber_1.rxSubscriber]);
+}
 //# sourceMappingURL=Subscriber.js.map
 
 /***/ }),
@@ -1396,6 +1402,7 @@ var coremodule = angular.module('hibachi.core', [
     }])
     .constant('hibachiPathBuilder', new hibachipathbuilder_1.HibachiPathBuilder())
     .constant('corePartialsPath', 'core/components/')
+    //services
     .service('cacheService', cacheservice_1.CacheService)
     .service('publicService', publicservice_1.PublicService)
     .service('utilityService', utilityservice_1.UtilityService)
@@ -1423,13 +1430,16 @@ var coremodule = angular.module('hibachi.core', [
     .service('cartService', cartservice_1.CartService)
     .service('hibachiValidationService', hibachivalidationservice_1.HibachiValidationService)
     .service('entityService', entityservice_1.EntityService)
+    //controllers
     .controller('globalSearch', globalsearch_1.GlobalSearchController)
+    //filters
     .filter('dateFilter', ['$filter', datefilter_1.DateFilter.Factory])
     .filter('percentage', [percentage_1.PercentageFilter.Factory])
     .filter('trim', [swtrim_1.SWTrim.Factory])
     .filter('entityRBKey', ['rbkeyService', entityrbkey_1.EntityRBKey.Factory])
     .filter('swdate', ['$filter', datefilter_1.DateFilter.Factory])
     .filter('unique', [swunique_1.SWUnique.Factory])
+    //directives
     .directive('swCollectionConfig', swcollectionconfig_1.SWCollectionConfig.Factory())
     .directive('swCollectionColumn', swcollectioncolumn_1.SWCollectionColumn.Factory())
     .directive('swCollectionFilter', swcollectionfilter_1.SWCollectionFilter.Factory())
@@ -11520,7 +11530,7 @@ var RepeatWhenSubscriber = (function (_super) {
             if (!this.retries) {
                 this.subscribeToRetries();
             }
-            else if (this.retriesSubscription.closed) {
+            if (!this.retriesSubscription || this.retriesSubscription.closed) {
                 return _super.prototype.complete.call(this);
             }
             this._unsubscribeAndRecycle();
@@ -15798,7 +15808,9 @@ var alertcontroller_1 = __webpack_require__(539);
 //services
 var alertservice_1 = __webpack_require__(541);
 var alertmodule = angular.module('hibachi.alert', [])
+    //controllers
     .controller('alertController', alertcontroller_1.AlertController)
+    //services
     .service('alertService', alertservice_1.AlertService);
 exports.alertmodule = alertmodule;
 
@@ -15851,13 +15863,17 @@ var collectionmodule = angular.module('hibachi.collection', [core_module_1.corem
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('collectionPartialsPath', 'collection/components/')
+    //controllers
     .controller('collections', collections_1.CollectionController)
     .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
     .controller('createCollection', createcollection_1.CreateCollection)
     .controller('entity_createcollection', entity_createcollection_1.CollectionCreateController)
+    //services
     .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
     .service('collectionService', collectionservice_1.CollectionService)
+    //directives
     .directive('swRestrictionConfig', swrestrictionconfig_1.SWRestrictionConfig.Factory())
     .directive('swCollection', swcollection_1.SWCollection.Factory())
     .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
@@ -15880,6 +15896,7 @@ var collectionmodule = angular.module('hibachi.collection', [core_module_1.corem
     .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
     .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
     .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory())
+    //filters
     .filter('aggregateFilter', ['$filter', aggregatefilter_1.AggregateFilter.Factory]);
 exports.collectionmodule = collectionmodule;
 
@@ -16078,8 +16095,12 @@ var dialogservice_1 = __webpack_require__(666);
 var pagedialog_1 = __webpack_require__(665);
 var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 })
+    //services
     .service('dialogService', dialogservice_1.DialogService)
+    //controllers
     .controller('pageDialog', pagedialog_1.PageDialogController)
+    //filters
+    //constants
     .constant('dialogPartials', 'dialog/components/');
 exports.dialogmodule = dialogmodule;
 
@@ -16152,8 +16173,12 @@ var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.co
         //     });
     }])
     .constant('coreEntityPartialsPath', 'entity/components/')
+    //services
+    //controllers
     .controller('otherwiseController', otherwisecontroller_1.OtherWiseController)
     .controller('routerController', routercontroller_1.RouterController)
+    //filters
+    //directives
     .directive('swDetail', swdetail_1.SWDetail.Factory())
     .directive('swDetailTabs', swdetailtabs_1.SWDetailTabs.Factory())
     .directive('swList', swlist_1.SWList.Factory());
@@ -16501,9 +16526,12 @@ var swschedulepreview_1 = __webpack_require__(725);
 //filters
 var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 })
+    //constants
     .constant('workflowPartialsPath', 'workflow/components/')
+    //services
     .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
     .service('scheduleService', scheduleservice_1.ScheduleService)
+    //directives
     .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
     .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
     .directive('swWorkflowCondition', swworkflowcondition_1.SWWorkflowCondition.Factory())
@@ -28761,6 +28789,9 @@ var swsiteselector_1 = __webpack_require__(481);
 var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('contentPartialsPath', 'content/components/')
+    //services
+    //filters
+    //directives
     .directive('swContentBasic', swcontentbasic_1.SWContentBasic.Factory())
     .directive('swContentEditor', swcontenteditor_1.SWContentEditor.Factory())
     .directive('swContentList', swcontentlist_1.SWContentList.Factory())
@@ -28893,7 +28924,10 @@ var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('formBuilderPartialsPath', 'formbuilder/components/')
+    //controllers
+    //directives
     .directive('swFormResponseListing', swformresponselisting_1.SWFormResponseListing.Factory());
 exports.formbuildermodule = formbuildermodule;
 
@@ -29102,8 +29136,12 @@ var fulfillmentbatchdetailmodule = angular.module('fulfillmentbatchdetail', [cor
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('fulfillmentBatchDetailPartialsPath', 'fulfillmentbatch/components/')
+    //services
     .service('orderFulfillmentService', orderfulfillmentservice_1.OrderFulfillmentService)
+    //controllers
+    //directives
     .directive('swFulfillmentBatchDetail', swfulfillmentbatchdetail_1.SWFulfillmentBatchDetail.Factory());
 exports.fulfillmentbatchdetailmodule = fulfillmentbatchdetailmodule;
 
@@ -29870,8 +29908,11 @@ var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('giftCardPartialsPath', 'giftcard/components/')
+    //controllers
     .controller('preprocessorderitem_addorderitemgiftrecipient', preprocessorderitem_addorderitemgiftrecipient_1.OrderItemGiftRecipientControl)
+    //directives
     .directive('swAddOrderItemGiftRecipient', swaddorderitemgiftrecipient_1.SWAddOrderItemGiftRecipient.Factory())
     .directive('swGiftCardBalance', swgiftcardbalance_1.SWGiftCardBalance.Factory())
     .directive('swGiftCardOverview', swgiftcardoverview_1.SWGiftCardOverview.Factory())
@@ -30153,7 +30194,10 @@ var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('optionGroupPartialsPath', 'optiongroup/components/')
+    //controllers
+    //directives
     .directive('swAddOptionGroup', swaddoptiongroup_1.SWAddOptionGroup.Factory())
     .directive('swOptionsForOptionGroup', swoptionsforoptiongroup_1.SWOptionsForOptionGroup.Factory());
 exports.optiongroupmodule = optiongroupmodule;
@@ -30800,8 +30844,12 @@ var orderfulfillmentmodule = angular.module('orderFulfillment', [core_module_1.c
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('orderFulfillmentPartialsPath', 'orderfulfillment/components/')
+    //services
     .service('orderFulfillmentService', orderfulfillmentservice_1.OrderFulfillmentService)
+    //controllers
+    //directives
     .directive('swOrderFulfillmentList', sworderfulfillmentlist_1.SWOrderFulfillmentList.Factory());
 exports.orderfulfillmentmodule = orderfulfillmentmodule;
 
@@ -31933,14 +31981,19 @@ var sworderitemdetailstamp_1 = __webpack_require__(506);
 var sworderitems_1 = __webpack_require__(507);
 var swresizedimage_1 = __webpack_require__(508);
 var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
+    // .config(['$provide','baseURL',($provide,baseURL)=>{
+    // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
+    // }])
     .run([function () {
     }])
+    //directives
     .directive('swChildOrderItem', swchildorderitem_1.SWChildOrderItem.Factory())
     .directive('swOrderItem', sworderitem_1.SWOrderItem.Factory())
     .directive('swoishippinglabelstamp', swoishippinglabelstamp_1.SWOiShippingLabelStamp.Factory())
     .directive('swOrderItemDetailStamp', sworderitemdetailstamp_1.SWOrderItemDetailStamp.Factory())
     .directive('swOrderItems', sworderitems_1.SWOrderItems.Factory())
     .directive('swresizedimage', swresizedimage_1.SWResizedImage.Factory())
+    //constants
     .constant('orderItemPartialsPath', 'orderitem/components/');
 exports.orderitemmodule = orderitemmodule;
 
@@ -32131,7 +32184,11 @@ var swproductlistingpages_1 = __webpack_require__(510);
 var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
 })
     .constant('productPartialsPath', 'product/components/')
+    //services
+    //controllers
     .controller('preprocessproduct_create', preprocessproduct_create_1.ProductCreateController)
+    //filters
+    //directives
     .directive('swProductListingPages', swproductlistingpages_1.SWProductListingPages.Factory());
 exports.productmodule = productmodule;
 
@@ -33040,9 +33097,13 @@ var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(513);
 //filters
 var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 })
+    //constants
     .constant('productBundlePartialsPath', 'productbundle/components/')
+    //services
     .service('productBundleService', productbundleservice_1.ProductBundleService)
+    //controllers
     .controller('create-bundle-controller', create_bundle_controller_1.CreateBundleController)
+    //directives
     .directive('swProductBundleGroupType', swproductbundlegrouptype_1.SWProductBundleGroupType.Factory())
     .directive('swProductBundleGroups', swproductbundlegroups_1.SWProductBundleGroups.Factory())
     .directive('swProductBundleGroup', swproductbundlegroup_1.SWProductBundleGroup.Factory())
@@ -34993,9 +35054,13 @@ var swskuthumbnail_1 = __webpack_require__(531);
 //filters
 var skumodule = angular.module('hibachi.sku', [core_module_1.coremodule.name]).config(function () {
 })
+    //constants
     .constant('skuPartialsPath', 'sku/components/')
+    //services
     .service('defaultSkuService', defaultskuservice_1.DefaultSkuService)
     .service('skuPriceService', skupriceservice_1.SkuPriceService)
+    //controllers
+    //directives
     .directive('swPricingManager', swpricingmanager_1.SWPricingManager.Factory())
     .directive('swImageDetailModalLauncher', swimagedetailmodallauncher_1.SWImageDetailModalLauncher.Factory())
     .directive('swAddSkuPriceModalLauncher', swaddskupricemodallauncher_1.SWAddSkuPriceModalLauncher.Factory())
@@ -35240,7 +35305,10 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
         $rootScope.slatwall = $rootScope.hibachiScope;
         $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     }])
+    //services
+    //directives
     .directive('swCurrencyFormatter', swcurrencyformatter_1.SWCurrencyFormatter.Factory())
+    //controllers
     .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile', function ($scope, $compile) {
         //Define the different payment types used here
         var paymentType = { aptCharge: "444df32dd2b0583d59a19f1b77869025", aptCredit: "444df32e9b448ea196c18c66e1454c46", aptAdjustment: "68e3fb57d8102b47acc0003906d16ddd" };
@@ -35303,6 +35371,7 @@ var slatwalladminmodule = angular.module('slatwalladmin', [
                 $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
         };
     }])
+    //filters
     .filter('swcurrency', ['$sce', '$log', '$hibachi', '$filter', swcurrency_1.SWCurrency.Factory]);
 exports.slatwalladminmodule = slatwalladminmodule;
 // ((): void => {
@@ -35734,7 +35803,9 @@ var cardmodule = angular.module('hibachi.card', [core_module_1.coremodule.name])
     .config([function () {
     }]).run([function () {
     }])
+    //constants
     .constant('cardPartialsPath', 'card/components/')
+    //components
     .directive('swCardLayout', swcardlayout_1.SWCardLayout.Factory())
     .directive('swCardView', swcardview_1.SWCardView.Factory())
     .directive('swCardHeader', swcardheader_1.SWCardHeader.Factory())
@@ -39641,6 +39712,14 @@ var SWEditFilterItem = /** @class */ (function () {
                                 }
                                 filterItem.displayValue = filterItem.value;
                                 break;
+                            //case 'one-to-many':
+                            //
+                            //case 'many-to-many':
+                            //    filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
+                            //    filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+                            //    filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+                            //
+                            //    break;
                         }
                         if (angular.isUndefined(filterItem.displayValue)) {
                             filterItem.displayValue = filterItem.value;
@@ -52931,6 +53010,7 @@ var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', co
 })
     .constant('coreFormPartialsPath', 'form/components/')
     .service('fileService', fileservice_1.FileService)
+    //directives
     .directive('swInput', swinput_1.SWInput.Factory())
     .directive('swfFormField', swfformfield_1.SWFFormField.Factory())
     .directive('swForm', swform_1.SWForm.Factory())
@@ -54969,7 +55049,9 @@ var swlistingglobalsearch_1 = __webpack_require__(698);
 var listingmodule = angular.module('hibachi.listing', [collection_module_1.collectionmodule.name])
     .run([function () {
     }])
+    //services
     .service('listingService', listingservice_1.ListingService)
+    //directives
     .directive('swListingDisplay', swlistingdisplay_1.SWListingDisplay.Factory())
     .directive('swListingControls', swlistingcontrols_1.SWListingControls.Factory())
     .directive('swListingAggregate', swlistingaggregate_1.SWListingAggregate.Factory())
@@ -54984,6 +55066,7 @@ var listingmodule = angular.module('hibachi.listing', [collection_module_1.colle
     .directive('swListingRowSave', swlistingrowsave_1.SWListingRowSave.Factory())
     .directive('swListingSearch', swlistingsearch_1.SWListingSearch.Factory())
     .directive('swListingGlobalSearch', swlistingglobalsearch_1.SWListingGlobalSearch.Factory())
+    //constants
     .constant('listingPartialPath', 'listing/components/');
 exports.listingmodule = listingmodule;
 
@@ -55962,10 +56045,15 @@ var paginationservice_1 = __webpack_require__(706);
 var swpaginationbar_1 = __webpack_require__(704);
 var core_module_1 = __webpack_require__(8);
 var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
+    // .config(['$provide','baseURL',($provide,baseURL)=>{
+    // 	$provide.constant('paginationPartials', baseURL+basePartialsPath+'pagination/components/');
+    // }])
     .run([function () {
     }])
+    //services
     .service('paginationService', paginationservice_1.PaginationService)
     .directive('swPaginationBar', swpaginationbar_1.SWPaginationBar.Factory())
+    //constants
     .constant('partialsPath', 'pagination/components/');
 exports.paginationmodule = paginationmodule;
 
@@ -56250,7 +56338,7 @@ var SWValidate = /** @class */ (function () {
                                 //Iterate over the array and call the validate function if it has that property.
                                 for (var i = 0; i < elementValidationArr.length; i++) {
                                     if (elementValidationArr[i] == true) {
-                                        if (validationPropertiesArray[i] === "regex" && elementValue !== "") {
+                                        if (validationPropertiesArray[i] === "regex" && elementValue !== "") { //If element is zero, need to check required 
                                             //Get the regex string to match and send to validation function.
                                             var re = validationObject[key][inner].regex;
                                             var result = validate_RegExp(elementValue, re); //true if pattern match, fail otherwise.
@@ -57198,6 +57286,7 @@ var core_module_1 = __webpack_require__(8);
 var validationmodule = angular.module('hibachi.validation', [core_module_1.coremodule.name])
     .run([function () {
     }])
+    //directives
     .directive('swValidate', swvalidate_1.SWValidate.Factory())
     .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
     .directive('swvalidationdatatype', swvalidationdatatype_1.SWValidationDataType.Factory())
@@ -57213,6 +57302,7 @@ var validationmodule = angular.module('hibachi.validation', [core_module_1.corem
     .directive("swvalidationrequired", swvalidationrequired_1.SWValidationRequired.Factory())
     .directive("swvalidationunique", swvalidationunique_1.SWValidationUnique.Factory())
     .directive("swvalidationuniqueornull", swvalidationuniqueornull_1.SWValidationUniqueOrNull.Factory())
+    //services
     .service("validationService", validationservice_1.ValidationService);
 exports.validationmodule = validationmodule;
 
