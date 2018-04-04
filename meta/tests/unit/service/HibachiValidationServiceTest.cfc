@@ -51,7 +51,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 
-		variables.service = request.slatwallScope.getService("hibachiValidationService");
+		//variables.service = request.slatwallScope.getService("hibachiValidationService");
+		variables.service = variables.mockService.getHibachiValidationServiceMock();
 	}
 
 	// validate_dataType()
