@@ -52,6 +52,7 @@ component displayname="SubscriptionOrderDeliveryItem" entityname="SlatwallSubscr
 	property name="subscriptionOrderDeliveryItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="quantity" ormtype="integer";
 	property name="earned" ormtype="big_decimal" hb_formatType="currency";
+	property name="taxAmount" ormtype="big_decimal" hb_formatType="currency";
 	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionOrderItem" cfc="SubscriptionOrderItem" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemID";

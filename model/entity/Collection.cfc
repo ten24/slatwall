@@ -2463,6 +2463,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
+		if(isReport()){
+			arguments.formatRecords=false;
+		}
+		
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
@@ -2520,6 +2524,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}else{
 						
 							HQL = getHQL(forExport=arguments.forExport);
+							
 							HQLParams = getHQLParams();
 							if( getDirtyReadFlag() ) {
 								var currentTransactionIsolation = variables.connection.getTransactionIsolation();
