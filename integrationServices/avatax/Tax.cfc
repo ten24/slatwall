@@ -124,6 +124,14 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 			Lines = []
 		};
 		
+		if (docType =='ReturnInvoice'){
+			requestDataStruct.TaxOverride = {
+				reason = 'Return',
+				TaxOverrideType = 'TaxDate',
+				TaxDate = dateFormat(arguments.requestBean.getOrder().getReferencedOrder().getOrderOpenDateTime(), 'yyyy-mm-dd')
+			};
+		}
+		
 		if(!isNull(arguments.requestBean.getAccount())) {
 			requestDataStruct.CustomerCode = arguments.requestBean.getAccount().getShortReferenceID( true );
 		}
@@ -217,6 +225,9 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		
 		var responseData = httpRequest.send().getPrefix();
 		
+		writeDUmp(requestDataStruct);
+		writeDump(responseData);
+		abort;
 		if (IsJSON(responseData.FileContent)){
 			
 			var fileContent = DeserializeJSON(responseData.FileContent);
