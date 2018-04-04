@@ -54,7 +54,11 @@
 		                    data-filter-flag="true"
 		                    data-max-records="250"
 		                    data-field-name="productID"
-		                    data-order-by-list="productName|ASC">
+		                    data-order-by-list="productName|ASC"
+		                    <cfif structKeyExists(rc,'productID') and len(rc.productID)>
+		            			data-initial-entity-id="#HTMLEditFormat(rc.productID)#"
+		            		</cfif>
+		                    >
 		            
 		                <sw-collection-config
 		                        data-entity-name="Product"
@@ -83,7 +87,7 @@
 		            
 		            </sw-typeahead-input-field>
 		        </div>
-		        
+		        <br/><br/>
 		        <!-- Unnamed (Droplist) -->
 		        <div id="u122" class="ax_default droplist">
 		            <select name="reportYear" id="u122_input" style="-webkit-appearance: menulist-button;" >
@@ -92,7 +96,7 @@
 		                </cfloop>
 		            </select>
 		        </div>
-		
+				<br/>
 		        <!-- Button (Rectangle) -->
 		        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
 		            <div id="u123_div" class="" tabindex="0"></div>
