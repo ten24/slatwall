@@ -92,11 +92,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var attributeName = 'adf'&generateRandomString();
 		attribute = variables.service.saveAttribute(attribute,{attributeName=attributeName,attributeType="text"});
 
-		// reset the cache values
-		variables.service.getHibachiCacheService().resetCachedKey('attributeService_getAttributeModel');
-		variables.service.getHibachiCacheService().resetCachedKey('attributeService_getAttributeModel_#attributeSet.getAttributeSetObject()#');
-		variables.service.getHibachiCacheService().resetCachedKey('attribtueService_getAttributeModel_#attributeSet.getAttributeSetObject()#_#attributeSet.getAttributeSetCode()#');
-
 		sleep(200);
 		//make sure no errors
 		assert(structCount(attribute.getErrors()) == 0);
