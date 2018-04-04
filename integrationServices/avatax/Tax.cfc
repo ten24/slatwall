@@ -47,8 +47,6 @@ Notes:
 
 */
 component accessors="true" output="false" displayname="Avatax" implements="Slatwall.integrationServices.TaxInterface" extends="Slatwall.integrationServices.BaseTax" {
-	variables.commitDocFlag = false;
-	
 	public any function getTaxRates(required any requestBean) {
 
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
@@ -57,6 +55,11 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		var docType = 'SalesOrder';
 		var usageType = '';
 		var exemptionNo ='';
+		var commitDocFlag = false;
+		
+		if (arguments.requestBean.getOrder().getOrderStatusType().getSystemCode() == 'ostClosed'){
+			commitDocFlag = true;
+		}
 		
 		//If account is tax exempt, just set the exemption number to yes so that Avatax can flag them as tax exempt
 		//This will get overriden with an actual exemptionNo if one exists
@@ -104,12 +107,12 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode'),
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
+			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ) + 1000,
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
 			CustomerUsageType= usageType,
 			ExemptionNo= exemptionNo,
-			commit=variables.commitDocFlag,
+			commit=commitDocFlag,
 			Addresses = [
 				{
 					AddressCode = 1,
@@ -270,15 +273,6 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		}
 		
 		return responseBean;
-	}
-	
-	public void function commitTaxDocument(required any requestBean){
-		variables.commitDocFlag = true;
-		
-		getTaxRates(requestBean);
-		
-		variables.commitDocFlag = false;
-		
 	}
 	
 	public any function voidTaxDocument(required any requestBean){

@@ -14,7 +14,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 				
 				// Call the API and store the responseBean by integrationID
 				try{
-					integrationTaxAPI.commitTaxDocument( taxRatesRequestBean );
+					integrationTaxAPI.getTaxRates( taxRatesRequestBean );
 				}catch (any e){
 					logHibachi('An error occured with the Avatax integration when trying to call commitTaxDocument()', true);
 					logHibachiException(e);
