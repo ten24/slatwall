@@ -1,12 +1,17 @@
 <script>
-	apply = function(){
-		$('#reverecognition').submit();
-	}
+	jQuery(document).ready(function() {
+		var apply = function(){
+			$('#reverecognition').submit(function(){
+			    return false;
+			});
+		}
+	});
 	
 </script>
 <cfoutput>
 	
 	<form id="revrecognition" action="?s=1" method="post">
+		<input type="hidden" name="slatAction" value="report.earnedRevenueReport"/>
 		<div id="u119_state0" class="panel_state" data-label="State1" style="">
 		    <div id="u119_state0_content" class="panel_state_content">
 		        <!--get avaiable order item subscripiont type-->
@@ -18,21 +23,21 @@
 		            <cfloop array="#subscriptionOrderItemTypeCollectionList.getRecords()#" index="subscriptionOrderItemTypeRecord">
 		                <div>
 		                    #subscriptionOrderItemTypeRecord['typeName']#
-		                    <input name="subscriptionType" type="checkbox" value="#subscriptionOrderItemTypeRecord['systemCode']#" />
+		                    <input name="subscriptionType" type="checkbox" value="#subscriptionOrderItemTypeRecord['systemCode']#" <cfif structKeyExists(rc,'subscriptionType') && listFind(rc.subscriptionType,subscriptionOrderItemTypeRecord['systemCode'])>checked=checked</cfif>/>
 		                </div>
 		            </cfloop>
 		        </div>
 		        <br/>
 		        <!-- get available subscription product types -->
 		        <cfset productTypeCollectionList = $.slatwall.getService('hibachiService').getProductTypeCollectionList()/>
-		        <cfset productTypeCollectionList.setDisplayProperties('systemCode,productTypeName')/>
+		        <cfset productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName')/>
 		        <cfset productTypeCollectionList.addFilter('productTypeIDPath','444df2f9c7deaa1582e021e894c0e299,%','like')/>
 		        <div id="u122" class="ax_default droplist">
 		            Product Type:
 		            <cfloop array="#productTypeCollectionList.getRecords()#" index="productTypeRecord">
 		                <div>
 		                    #productTypeRecord['productTypeName']#
-		                    <input name="productType" type="checkbox" value="#productTypeRecord['systemCode']#" />
+		                    <input name="productType" type="checkbox" value="#productTypeRecord['productTypeID']#" <cfif structKeyExists(rc,'productType') && listFind(rc.productType,productTypeRecord['productTypeID'])>checked=checked</cfif>/>
 		                </div>
 		            </cfloop>
 		        </div>
@@ -48,6 +53,7 @@
 		                    data-multiselect-mode="false"
 		                    data-filter-flag="true"
 		                    data-max-records="250"
+		                    data-field-name="productID"
 		                    data-order-by-list="productName|ASC">
 		            
 		                <sw-collection-config
@@ -80,7 +86,7 @@
 		        
 		        <!-- Unnamed (Droplist) -->
 		        <div id="u122" class="ax_default droplist">
-		            <select id="u122_input" style="-webkit-appearance: menulist-button;" >
+		            <select name="reportYear" id="u122_input" style="-webkit-appearance: menulist-button;" >
 		                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
 		                    <option value="#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#">#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#</option>
 		                </cfloop>
@@ -91,7 +97,7 @@
 		        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
 		            <div id="u123_div" class="" tabindex="0"></div>
 		            <div id="u123_text" class="text ">
-		                <p id="cache0" style=""><span id="cache1" style="">Apply</span></p>
+		                <button >Apply</button>
 		            </div>
 		        </div>
 		    </div>

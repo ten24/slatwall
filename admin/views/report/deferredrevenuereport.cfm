@@ -17,12 +17,12 @@
     <cfset possibleYearsRecordsCollectionList.setPeriodInterval('Year')/>
     <cfset possibleYearsRecords = possibleYearsRecordsCollectionList.getRecords()/>
     
-    <cfif arraylen(possibleYearsRecords) and !structKeyExists(url,'reportYear')>
+    <cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1]['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],1,1,0,0,0),'>=')/>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1]['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],12,31,23,59,59),'<=')/>
-    <cfelseif structKeyExists(url,'reportYear')>
-        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),1,1,0,0,0),'>=')/>
-        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),12,31,23,59,59),'<=')/>
+    <cfelseif structKeyExists(rc,'reportYear')>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),1,1,0,0,0),'>=')/>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),12,31,23,59,59),'<=')/>
     </cfif>
     
     <cfset earnedRevenueData = earnedRevenueCollectionList.getRecordsCountData()/>
