@@ -13,7 +13,7 @@
 <cfsetting requesttimeout="3600">
 <cfscript>
 // curate the base url for reference to root
-variables.baseUrl = replaceNoCase(replace(replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , expandPath('/'), '/' ), '\', '/', 'all'),'/meta/tests/test-runner/','');
+baseUrl = replaceNoCase(replace(replaceNoCase( getDirectoryFromPath(getCurrentTemplatePath()) , expandPath('/'), '/' ), '\', '/', 'all'),'/meta/tests/test-runner/','');
 // create testbox
 testBox = new testbox.system.TestBox();
 // create reporters
@@ -142,7 +142,7 @@ if( url.opt_run ){
 	function testFoldersAjax() {
 	    $.ajax({
 	        type: "GET",
-	        url: "<cfoutput>#variables.baseUrl#</cfoutput>/meta/tests/test-runner/directoryMapping.cfc?method=getTestFolders",
+	        url: "<cfoutput>#baseUrl#</cfoutput>/meta/tests/test-runner/directoryMapping.cfc?method=getTestFolders",
 	        data: {
 	        },
 	        success: function (data) {
@@ -168,7 +168,7 @@ if( url.opt_run ){
 	function testFilesAjax(selectedFolder) {
 		    $.ajax({
 		        type: "GET",
-		        url: "<cfoutput>#variables.baseUrl#</cfoutput>/meta/tests/test-runner/directoryMapping.cfc?method=getTestFiles&testFolder="+selectedFolder,
+		        url: "<cfoutput>#baseUrl#</cfoutput>/meta/tests/test-runner/directoryMapping.cfc?method=getTestFiles&testFolder="+selectedFolder,
 		        data: {
 		        },
 		        success: function (data) {
@@ -196,7 +196,7 @@ if( url.opt_run ){
 	function testMethodsAjax(selectedFolder, selectedFile) {
 		    $.ajax({
 		        type: "GET",
-		        url: "<cfoutput>#variables.baseUrl#</cfoutput>/meta/tests/test-runner/directoryMapping.cfc?method=getTestMethods&testFolder="+selectedFolder+"&testFile="+selectedFile,
+		        url: "<cfoutput>#baseUrl#</cfoutput>/meta/tests/test-runner/directoryMapping.cfc?method=getTestMethods&testFolder="+selectedFolder+"&testFile="+selectedFile,
 		        data: {
 		        },
 		        success: function (data) {
