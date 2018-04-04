@@ -26,9 +26,10 @@ dependencies:
     # Minify JS
      # generate typings
     - cd org/Hibachi/client && gulp gen-ts-refs 
+    - npm run buildHibachi:prod
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
+    - npm run buildSlatwall:prod
     # Minify 
     - cd admin/client/css && lessc main.less main.css
     # Update docker-compose
