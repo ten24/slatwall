@@ -51,7 +51,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 
-		variables.service = request.slatwallScope.getService("paymentService");
+		//variables.service = request.slatwallScope.getService("paymentService");
+		variables.service = variables.mockService.getPaymentServiceMock();
 	}
 
 	// getUncapturedPreAuthorizations()

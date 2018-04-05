@@ -14,6 +14,7 @@ if(typeof bootstrap !== 'undefined'){
 delete devConfig.entry.vendor; //remove the vendor info from this version.
 devConfig.output.path = PATHS.app;
 devConfig.context = PATHS.app;
+devConfig.watch = false;
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     new CompressionPlugin({
@@ -23,6 +24,7 @@ devConfig.plugins =  [
       threshold: 10240,
       minRatio: 0.8
     }),
+    
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
