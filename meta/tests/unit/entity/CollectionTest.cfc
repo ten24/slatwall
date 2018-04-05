@@ -4562,6 +4562,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+<<<<<<< HEAD
+=======
+
+>>>>>>> f1c31ebb8031cf6c010752ae306b95fcc26c935b
 	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
@@ -4617,6 +4621,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		data['p:show'] = -2;
 		collectionEntity.applyData(data);
+
 		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
 	}
 
