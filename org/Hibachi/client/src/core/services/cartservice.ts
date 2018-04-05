@@ -11,9 +11,7 @@ class CartService extends BaseEntityService{
         public utilityService
     ){
         super($injector,$hibachi,utilityService,'Order','Cart');
-
     }
-
 }
 export {
     CartService
