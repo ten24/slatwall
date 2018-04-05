@@ -31,6 +31,7 @@ dependencies:
 
     # Minify JS
      # generate typings
+    - cd org/Hibachi/client && webpack --config webpack-production.config.js
     - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
