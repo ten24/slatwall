@@ -4,6 +4,7 @@ var devConfig = require('./webpack-frontend-develop.config');
     devConfig.output.filename = 'slatwall.js';
     
 var CompressionPlugin = require("compression-webpack-plugin");
+var ngAnnotatePlugin = require("ng-annotate-webpack-plugin");
 var webpack = require('webpack');
 var path = require('path');
 var customPath = __dirname;
