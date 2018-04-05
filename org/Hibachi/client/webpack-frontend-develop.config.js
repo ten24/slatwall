@@ -28,6 +28,6 @@ devConfig.plugins =  [
       threshold: 10240,
       minRatio: 0.8
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin()
 ];   
 module.exports = devConfig;
