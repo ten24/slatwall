@@ -47,14 +47,15 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-	
+
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("skuService");
+		//variables.service = request.slatwallScope.getService("skuService");
+		variables.service = variables.mockService.getSkuServiceMock();
 	}
-	
-	
-		
+
+
+
 	/**
 	* @test
 	*/
@@ -70,12 +71,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('Product',productData);
-		
-		
+
+
 		//start of with an active product
 		assert(product.getActiveFlag());
 		assert(product.getPublishedFlag());
-		
+
 		//add some active skus
 		var skuData = {
 			skuID="",
@@ -87,16 +88,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku = createPersistedTestEntity('Sku',skuData);
-		
+
 		assert(sku.getActiveFlag());
 		assert(sku.getPublishedFlag());
-		
+
 		//set the sku as inactive via the service
 		sku = variables.service.saveSku(sku,{activeFlag=0});
-		
+
 		//assert that product is still active and published
 		assert(product.getActiveFlag());
-		
+
 		assert(product.getPublishedFlag());
 		//assert sku publish is set false with active
 		assertFalse(sku.getActiveFlag());
@@ -117,7 +118,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var originalProduct = createPersistedTestEntity('Product',productData);
-		
+
 		var skuData = {
 			skuID="",
 			skuCode="code" & createUUID(),
@@ -126,11 +127,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			product={
 				productID=originalProduct.getProductID()
 			}
-		};	
+		};
 		var sku = createPersistedTestEntity('Sku',skuData);
 
-		originalProduct.setDefaultSku(sku); 
-		
+		originalProduct.setDefaultSku(sku);
+
 		var destinationProductData = {
 			productID="",
 			productName="name" & createUUID(),
@@ -142,14 +143,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var destinationProduct = createPersistedTestEntity('Product', destinationProductData);
-	
-		var processObject = sku.getProcessObject('Move'); 
+
+		var processObject = sku.getProcessObject('Move');
 		processObject.setProductID(destinationProduct.getProductID());
 
 		var processedSku = variables.service.processSku_move(sku, processObject);
 
 		assert(processedSku.getProduct().getProductID() == destinationProduct.getProductID());
-	} 
+	}
 }
 
 

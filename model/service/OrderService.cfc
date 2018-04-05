@@ -330,7 +330,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					arguments.processObject.setStock(stock);
 				}
 			}
-			
+
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
@@ -348,7 +348,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						foundOrderItem.validate(context='save');
 						if(foundOrderItem.hasErrors()) {
 							arguments.order.addError('addOrderItem', foundOrderItem.getErrors());
-						} 
+						}
 						break;
 					}
 				}
@@ -381,14 +381,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var newOrderItem = this.newOrderItem();
 
 			if (!isNull(arguments.processObject.getStock())){
-				newOrderItem.setStock(arguments.processObject.getStock());	
+				newOrderItem.setStock(arguments.processObject.getStock());
 			}
 
+<<<<<<< HEAD
 			if (processObject.getSellOnBackOrderFlag() == true){
 				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
 			}
 			
 			
+=======
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
 			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
@@ -586,10 +589,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						// Create new event registration	 record
 						var eventRegistration = this.newEventRegistration();
-						
+
 						eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstNotPlaced"));
 						eventRegistration.generateAndSetAttendanceCode();
-						
+
 						if(depositsOnlyFlag) {
 							eventRegistration.setOrderItem(depositOrderItem);
 							eventRegistration.setSku(depositOrderItem.getSku());
@@ -625,10 +628,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							eventRegistration.setAccount(newAccount);
 
 						}
-						
-						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {								
+
+						if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
 							depositsCount++;
-							
+
 						}else {
 								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
 									salesCount++;
@@ -769,7 +772,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//Save the newOrderPayment
         this.saveOrderPayment(newOrderPayment);
-        
+
         if(!newOrderPayment.hasErrors()){
 			// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 			getHibachiScope().flushORMSession();
@@ -1297,7 +1300,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrderItem.setSkuPrice( arguments.orderItem.getSkuPrice() );
 		newOrderItem.setCurrencyCode( arguments.orderItem.getCurrencyCode() );
 		if(!isNull(arguments.orderItem.getBundleItemQuantity())){
-			newOrderItem.setBundleItemQuantity(arguments.orderItem.getBundleItemQuantity()); 
+			newOrderItem.setBundleItemQuantity(arguments.orderItem.getBundleItemQuantity());
 		}
 		newOrderItem.setQuantity(arguments.orderItem.getQuantity());
 		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
@@ -1426,10 +1429,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.order.validate('save');
 				if(!arguments.order.hasErrors()){
 					arguments.order = this.saveOrder(arguments.order, arguments.data);
-					
+
 					// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
 					if(!arguments.order.hasErrors()) {
-	
+
 						//Setup Site Origin if using slatwall cms
 						if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
 							arguments.order.setOrderPlacedSite(getHibachiScope().getSite());
@@ -1449,18 +1452,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 							}
 						}
+<<<<<<< HEAD
 	
+=======
+
+
+
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 						//set an error
 						if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 							arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 						}
-	
+
 						// Generate the order requirements list, to see if we still need action to be taken
+<<<<<<< HEAD
 						var orderRequirementsList = getOrderRequirementsList( arguments.order, arguments.data );
 						
+=======
+						var orderRequirementsList = getOrderRequirementsList( arguments.order );
+
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 						// Verify the order requirements list, to make sure that this order has everything it needs to continue
 						if(len(orderRequirementsList)) {
-	
+
 							if(listFindNoCase(orderRequirementsList, "account")) {
 								arguments.order.addError('account',rbKey('entity.order.process.placeOrder.accountRequirementError'));
 							}
@@ -1471,17 +1485,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addError('return',rbKey('entity.order.process.placeOrder.returnRequirementError'));
 							}
 							if(listFindNoCase(orderRequirementsList, "payment")) {
-								
+
 								arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
-							
+
 							}
-	
-	
+
+
 						} else {
-	
+
 							// Setup a value to log the amount received, credited or authorized.  If any of these exists then we need to place the order
 							var amountAuthorizeCreditReceive = 0;
-	
+
 							// Process All Payments and Save the ones that were successful
 							for(var orderPayment in arguments.order.getOrderPayments()) {
 								// As long as this orderPayment is active then we can run the place order transaction
@@ -1490,16 +1504,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									amountAuthorizeCreditReceive = val(getService('HibachiUtilityService').precisionCalculate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited()));
 								}
 							}
-	
-							
-							
-							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+
+
+
+							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value
 							for(var orderitem in arguments.order.getOrderItems()) {
 								var errors = orderItem.validate('save').getErrors();
 								if(StructCount(errors)){
 									for(var errorKey in errors){
 										for(var message in errors[errorKey]){
-											arguments.order.addError('orderItem',message);	
+											arguments.order.addError('orderItem',message);
 										}
 									}
 								}
@@ -1510,7 +1524,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!orderItem.hasEventRegistration()){
 										arguments.order.addError('orderItem','Error when trying to register for: #orderItem.getSku().getProduct().getProductName()#. Please verify your registration details.');
 									}
-									
+
 									if (!arguments.order.hasErrors()){
 										for ( var eventRegistration in orderItem.getEventRegistrations() ) {
 											// Set registration status - Should this be done when order is placed instead?
@@ -1529,41 +1543,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 
 							// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
+<<<<<<< HEAD
 							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)))) {
 	
+=======
+							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()))) {
+
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 								}
-	
+
 								// Clear this order out of all sessions
 								getOrderDAO().removeOrderFromAllSessions(orderID=arguments.order.getOrderID());
-	
+
 								if(!isNull(getHibachiScope().getSession().getOrder()) && arguments.order.getOrderID() == getHibachiScope().getSession().getOrder().getOrderID()) {
 									getHibachiScope().getSession().setOrder(javaCast("null", ""));
 								}
-	
+
 								// Loop over all orderPayments and if it's a term payment set the payment due date
 								for(var orderPayment in order.getOrderPayments()) {
 									if((orderPayment.getStatusCode() == 'opstActive') && orderPayment.getPaymentMethodType() == 'termPayment' && !isNull(orderPayment.getPaymentTerm())) {
 										orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate() );
 									}
 								}
-	
+
 								// Update the order status
 								order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostNew") );
-	
+
 								// Update the orderPlaced
 								order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-	
+
 								// Save the order to the database
 								getHibachiDAO().save( arguments.order );
 
+<<<<<<< HEAD
+=======
+								// Do a flush so that the order is commited to the DB
+								getHibachiDAO().flushORMSession();
+
+								// Log that the order was placed
+								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 								// if order had error but payment was captured, clear error and log to hibachi
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 									for(var errorName in arguments.order.getErrors()) {
 										for(var i=1; i<=arrayLen(arguments.order.getErrors()[errorName]); i++) {
-											logHibachi(message="Order was placed but it had an error with an errorName: #errorName# and errorMessage: #arguments.order.getErrors()[errorName][i]#", generalLog=true);	
+											logHibachi(message="Order was placed but it had an error with an errorName: #errorName# and errorMessage: #arguments.order.getErrors()[errorName][i]#", generalLog=true);
 										}
 									}
 									arguments.order.getHibachiErrors().setErrors(structnew());
@@ -1602,13 +1629,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return arguments.order;
 	}
-	
+
 	public any function validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(order){
 		if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
 			return true;
 		}
 		return false;
 	}
+<<<<<<< HEAD
 	
 	public any function createOrderDeliveriesForAutoFulfillmentMethod(required any order){
 		for(var i=1; i<=arrayLen( order.getOrderFulfillments() ); i++) {
@@ -1628,6 +1656,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	
+=======
+
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
@@ -2061,21 +2092,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "shipping"
 			) {
 
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 				if (!isNull(arguments.processObject.getShippingMethod())){
  					arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
  				}
- 				
+
  				if (!isNull(arguments.processObject.getShippingAddress())){
  					arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
  				}
- 				
-				
-				
+
+
+
 				 // Setup the tracking number using shipping integration if trackingNumber not manually provided
+<<<<<<< HEAD
 				if ((isNull(arguments.processObject.getTrackingNumber()) || !len(arguments.processObject.getTrackingNumber())) && arguments.processObject.getUseShippingIntegrationForTrackingNumber()) {
+=======
+				if (
+					arguments.processObject.getUseShippingIntegrationForTrackingNumber()
+					&& (
+						isNull(arguments.processObject.getTrackingNumber())
+						|| !len(arguments.processObject.getTrackingNumber())
+					)
+				) {
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 					var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.processObject.getShippingIntegration());
-					
+
 					// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
 					if(structKeyExists(shippingIntegrationCFC, 'processShipmentRequest')){
 						shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(arguments.processObject);
@@ -2443,7 +2488,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Set quantity if needed
 			if(isNull(arguments.childOrderItem.getQuantity())) {
 				arguments.childOrderItem.setQuantity( 1 );
-			}	
+			}
 			if(isNull(arguments.childOrderItem.getBundleItemQuantity())){
 				arguments.childOrderItem.setBundleItemQuantity(arguments.childOrderItem.getQuantity());
 			}
@@ -2963,15 +3008,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// then do another call for create transaction with transactionType = AuthAndCharge and amount = deposit amount
 			// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
 			if (arguments.orderPayment.getOrder().hasDepositItemsOnOrder()){
-				
+
 				//if this is authorize and there is a deposit amount needed.
 				/*if (arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorize'){
 					//Only authorize for the deposit amount instead of the full amount.
 					//processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
-					
+
 					//call the method below if getPlaceOrderChargeTransactionType = "Authorize"
 					arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
-					
+
 					// then do another call for create transaction with transactionType = AuthAndCharge and amount = deposit amount
 					//set the transaction type and amount.
 					if (!arguments.orderPayment.hasErrors()){
@@ -2983,7 +3028,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// if the getPlaceOrderChargeTransactionType = "AuthandCharge", set the amount to deposit amount
 				}else */
 				if(arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType() == 'authorizeAndCharge'){
-					
+
 					//auth the full amount.
 					/*	arguments.orderPayment.clearProcessObject( 'createTransaction' );
 						processData.transactionType = "authorize";
@@ -2998,9 +3043,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						processData.transactionType = "authorizeAndCharge";
 						processData.amount = arguments.orderPayment.getOrder().getTotalDepositAmount();
 						arguments.orderPayment = this.createTransactionAndCheckErrors(arguments.orderPayment, processData);
-					
+
 					//}
-					
+
 				}
 
 			}else{
@@ -3009,11 +3054,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.orderPayment;
 	}
-	
+
 	public any function createTransactionAndCheckErrors(required any orderPayment, required any processData){
   		// Call the processing method
   		arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, processData, 'createTransaction');
-  
+
   		// If there was expected authorize, receive, or credit
   		/*
   		(arguments.orderPayment.getOrder().hasDepositItemsOnOrder() == true && listFindNoCase("authorize", processData.transactionType) && arguments.orderPayment.getAmountAuthorized() lt arguments.orderPayment.getOrder().getTotalDepositAmount())
@@ -3029,18 +3074,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
   				||
   			(listFindNoCase("credit", processData.transactionType) && arguments.orderPayment.getAmountCredited() lt arguments.orderPayment.getAmount())
   		) {
-  			
+
   			// Add a generic payment processing error and make it persistable
   			arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', rbKey('entity.order.process.placeOrder.paymentProcessingError'), true);
-  
+
   			// Add the actual message
   			if(arguments.orderPayment.hasError('createTransaction')) {
   				arguments.orderPayment.getOrder().addError('runPlaceOrderTransaction', arguments.orderPayment.getError('createTransaction'), true);
   			}
-  
+
   		}
-  
-  		
+
+
   		return arguments.orderPayment;
   	}
 
@@ -3158,7 +3203,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(
 			(
 				structKeyExists(arguments.data,'accountAddress.accountAddressID')
-				&& len(arguments.data['accountAddress.accountAddressID']) 
+				&& len(arguments.data['accountAddress.accountAddressID'])
 			)
 			&& (
 				isNull(arguments.orderFulfillment.getShippingAddress())
@@ -3175,8 +3220,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
-		
-		
+
+
  		//Update the pickup location on the orderItem if the pickup location was updated on the orderFulfillment.
  		if(arguments.orderFulfillment.getFulfillmentMethodType() eq "pickup") {
  			if (!isNull(data.pickupLocation.locationID)){
@@ -3185,7 +3230,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  					for (var orderItem in orderFulfillment.getOrderFulfillmentItems()){
  						//set the stock based on location.
  						var stock = getService("StockService").getStockBySkuAndLocation(sku=orderItem.getSku(), location=location);
- 						
+
  						if (!isNull(stock)){
  							orderItem.setStock(stock);
  							getService("OrderService").saveOrderItem(orderItem);
@@ -3194,7 +3239,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  				}
  			}
  		}
- 
+
 		// If there were no errors, and the order is not placed, then we can make necessary implicit updates
 		if(!arguments.orderFulfillment.hasErrors() && arguments.orderFulfillment.getOrder().getStatusCode() == "ostNotPlaced") {
 
@@ -3479,11 +3524,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	// =====================  END: Delete Overrides ===========================
-	
+
 	/** Given an orderfulfillment, this will return the shipping method options. */
 	public any function getShippingMethodOptions(any orderFulfillment) {
+<<<<<<< HEAD
 		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
 		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
+=======
+		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated
+		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 
 		// At this point they have either been populated just before, or there were already options
 		var optionsArray = [];
@@ -3504,6 +3554,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var inserted = false;
 
+<<<<<<< HEAD
 			arrayAppend(optionsArray, thisOption);
 				}
 		var sortProperty = "";
@@ -3511,6 +3562,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			sortProperty = 'totalCharge';
 		}else if(sortType == 'sortOrder'){
 			sortProperty = 'shippingMethodSortOrder';
+=======
+			for(var i=1; i<=arrayLen(optionsArray); i++) {
+				var thisExistingOption = optionsArray[i];
+
+				if( ((sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
+				  	||
+					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) && !this.hasOption(optionsArray, thisOption)) {
+
+					arrayInsertAt(optionsArray, i, thisOption);
+					inserted = true;
+					break;
+				}
+
+			}
+
+			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
+
+				arrayAppend(optionsArray, thisOption);
+>>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 			}
 
 		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);
@@ -3520,7 +3590,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
     	return optionsArray;
     }
-	
+
 	public any function hasOption(optionsArray, option){
 		var found = false;
 		for(var i=1; i<=arrayLen(optionsArray); i++) {
@@ -3532,7 +3602,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return found;
 	}
-	
+
 	public any function getOrderAttributePropertylist(){
 		var propertyList = '';
 		if(structKeyExists(getService('AttributeService').getAttributeModel(),'Order')){
@@ -3546,7 +3616,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		
+
 		return propertyList;
 	}
 	// ================== START: Private Helper Functions =====================
