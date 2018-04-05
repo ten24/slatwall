@@ -4562,7 +4562,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-<<<<<<< HEAD
 	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
@@ -4612,19 +4611,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
-=======
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 		var data = {};
 
 		data['p:show'] = -2;
 		collectionEntity.applyData(data);
-<<<<<<< HEAD
-		assertEquals(collectionEntity.getPageRecordsShow(),-2); // looking forward to handle -ve values for pagination.
-=======
 		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 	}
 
 

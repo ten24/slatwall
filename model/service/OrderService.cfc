@@ -384,14 +384,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setStock(arguments.processObject.getStock());
 			}
 
-<<<<<<< HEAD
 			if (processObject.getSellOnBackOrderFlag() == true){
 				newOrderItem.setSellOnBackOrderFlag(true); //used at the line item level to show it was sold out of stock.
 			}
 			
 			
-=======
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
 			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
@@ -1452,26 +1449,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 							}
 						}
-<<<<<<< HEAD
-	
-=======
 
 
 
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 						//set an error
 						if (this.validateHasNoSavedAccountPaymentMethodAndSubscriptionWithAutoPay(arguments.order)){
 							arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 						}
 
 						// Generate the order requirements list, to see if we still need action to be taken
-<<<<<<< HEAD
 						var orderRequirementsList = getOrderRequirementsList( arguments.order, arguments.data );
 						
-=======
-						var orderRequirementsList = getOrderRequirementsList( arguments.order );
-
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 						// Verify the order requirements list, to make sure that this order has everything it needs to continue
 						if(len(orderRequirementsList)) {
 
@@ -1543,13 +1531,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 
 							// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
-<<<<<<< HEAD
 							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && this.isAllowedToPlaceOrderWithoutPayment(arguments.order, arguments.data)))) {
 	
-=======
-							if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && (arguments.order.getOrderPaymentAmountNeeded() == 0 || (arguments.order.getPaymentAmountTotal() == 0 && arguments.order.isAllowedToPlaceOrderWithoutPayment()))) {
-
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 								}
@@ -1577,14 +1560,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Save the order to the database
 								getHibachiDAO().save( arguments.order );
 
-<<<<<<< HEAD
-=======
-								// Do a flush so that the order is commited to the DB
-								getHibachiDAO().flushORMSession();
 
-								// Log that the order was placed
-								logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 								// if order had error but payment was captured, clear error and log to hibachi
 								if(arguments.order.hasErrors()) {
 									arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
@@ -1636,7 +1612,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return false;
 	}
-<<<<<<< HEAD
 	
 	public any function createOrderDeliveriesForAutoFulfillmentMethod(required any order){
 		for(var i=1; i<=arrayLen( order.getOrderFulfillments() ); i++) {
@@ -1656,9 +1631,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	
-=======
-
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
@@ -2092,11 +2064,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "shipping"
 			) {
 
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 				if (!isNull(arguments.processObject.getShippingMethod())){
  					arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
  				}
@@ -2108,9 +2076,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 				 // Setup the tracking number using shipping integration if trackingNumber not manually provided
-<<<<<<< HEAD
-				if ((isNull(arguments.processObject.getTrackingNumber()) || !len(arguments.processObject.getTrackingNumber())) && arguments.processObject.getUseShippingIntegrationForTrackingNumber()) {
-=======
 				if (
 					arguments.processObject.getUseShippingIntegrationForTrackingNumber()
 					&& (
@@ -2118,7 +2083,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						|| !len(arguments.processObject.getTrackingNumber())
 					)
 				) {
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 					var shippingIntegrationCFC = getIntegrationService().getShippingIntegrationCFC(arguments.processObject.getShippingIntegration());
 
 					// Populates processObject trackingNumber and generates containerLabel if shipping.cfc has 'processShipmentRequest' method
@@ -3527,13 +3491,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	/** Given an orderfulfillment, this will return the shipping method options. */
 	public any function getShippingMethodOptions(any orderFulfillment) {
-<<<<<<< HEAD
 		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated    		
 		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( arguments.orderFulfillment );
-=======
-		//update the shipping method options with the shipping service to insure qualifiers are re-evaluated
-		getService("shippingService").updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 
 		// At this point they have either been populated just before, or there were already options
 		var optionsArray = [];
@@ -3554,7 +3513,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var inserted = false;
 
-<<<<<<< HEAD
 			arrayAppend(optionsArray, thisOption);
 				}
 		var sortProperty = "";
@@ -3562,25 +3520,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			sortProperty = 'totalCharge';
 		}else if(sortType == 'sortOrder'){
 			sortProperty = 'shippingMethodSortOrder';
-=======
-			for(var i=1; i<=arrayLen(optionsArray); i++) {
-				var thisExistingOption = optionsArray[i];
-
-				if( ((sortType eq 'price' && thisOption.totalCharge < thisExistingOption.totalCharge)
-				  	||
-					(sortType eq 'sortOrder' && thisOption.shippingMethodSortOrder < thisExistingOption.shippingMethodSortOrder)) && !this.hasOption(optionsArray, thisOption)) {
-
-					arrayInsertAt(optionsArray, i, thisOption);
-					inserted = true;
-					break;
-				}
-
-			}
-
-			if(!inserted && !this.hasOption(optionsArray, thisOption)) {
-
-				arrayAppend(optionsArray, thisOption);
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 			}
 
 		optionsArray = getService('hibachiUtilityService').arrayOfStructsSort(optionsArray,sortProperty);

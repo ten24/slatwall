@@ -105,11 +105,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//Test custom file, should hit custom assertion
 		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '\custom\assets\images\missingimage.jpg');
 		imagePath = variables.service.getResizedImagePath('falsepath');
-<<<<<<< HEAD
 		assertEquals(imagePath,"#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
-=======
-		assert(imagePath EQ replace("#variables.service.getApplicationValue('baseUrl')#\custom\assets\images\missingimage.jpg","\","/","all"));
->>>>>>> 0fb6885a49b532812f6c24e36f3b1e5ab93f1c90
 	}
 
 	/**
