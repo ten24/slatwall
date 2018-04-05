@@ -8,7 +8,6 @@ machine:
 
 dependencies:
   cache_directories:
-    - node_modules/
     - /home/ubuntu/nvm/versions/node/v6.9.1/
   pre:
     # Install node modules for building JS
