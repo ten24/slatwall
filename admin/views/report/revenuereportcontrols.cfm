@@ -11,7 +11,7 @@
 <cfoutput>
 	
 	<form id="revrecognition" action="?s=1" method="post">
-		<input type="hidden" name="slatAction" value="report.earnedRevenueReport"/>
+		<input type="hidden" name="slatAction" value="#slatAction#"/>
 		<div id="u119_state0" class="panel_state" data-label="State1" style="">
 		    <div id="u119_state0_content" class="panel_state_content">
 		        <!--get avaiable order item subscripiont type-->

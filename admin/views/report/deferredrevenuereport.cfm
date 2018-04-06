@@ -1,4 +1,5 @@
 <cfoutput>
+    <cfset slatAction = 'report.deferredRevenueReport'/>
     <!--gets deferred revenue-->
     <cfset deferredRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderItemCollectionList()/>
     <cfset deferredRevenueCollectionList.setDisplayProperties('orderItem.order.orderCloseDateTime',{isPeriod=true})/>

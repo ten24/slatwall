@@ -144,12 +144,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getPrimaryIDList();
 			
-			
 			//find all order items that require delivery based on the term
 			var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
 			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',productsScheduledForDelivery,'IN');
 			//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
-			//subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.subscriptionStatus.effectiveDateTime',currentDateTime,'<=');
+			subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.effectiveDateTime',currentDateTime,'<=');
+			subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive','=');
 			
 			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
 			subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
@@ -167,6 +167,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
+			//update NextDeliveryDate
 			var productsScheduledForDeliveryRecords = productsScheduledForDeliveryCollectionList.getRecords(true);
 			
 			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
