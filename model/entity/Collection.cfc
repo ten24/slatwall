@@ -435,42 +435,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  	}
 
 
-	public void function addFilterAggregate(
-		required string filterAggregateName,
-		required string propertyIdentifier,
-		required string value,
-		string comparisonOperator="="
-
-	){
-		var collectionConfigStruct = this.getCollectionConfigStruct();
-
-		var alias = getBaseEntityAlias();
-
-		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct["filterGroups"] = [{"filterGroup"=[]}];
-		}
-
-		var propertyIdentifierAlias = getPropertyIdentifierAlias(arguments.propertyIdentifier);
-		var ormtype = getOrmTypeByPropertyIdentifier(arguments.propertyIdentifier);
-		//create filter Group
-		var filterAggregate = {
-			"filterAggregateName" = arguments.filterAggregateName,
-			"propertyIdentifier" = propertyIdentifierAlias,
-			"comparisonOperator" = arguments.comparisonOperator,
-			"value" = arguments.value,
-			"hidden"=true
-		};
-		if(len(ormtype)){
-			filter['ormtype']= ormtype;
-		}
-
-		if(!structKeyExists(collectionConfigStruct,'filterAggregates')){
-			collectionConfigStruct.filterAggregates = [];
-		}
-
-		arrayAppend(collectionConfigStruct.filterAggregates,filterAggregate);
-	}
-	
 	public any function getCollectionCacheValue(required string cacheKey){
 		if(!structKeyExists(getService('HibachiCollectionService').getCollectionCache(),getCollectionObject())){
 			getService('HibachiCollectionService').getCollectionCache()[getCollectionObject()] = {};
@@ -1883,6 +1847,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false){
 		
+		structDelete(variables,'groupBys');
+		
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
@@ -3049,6 +3015,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
 					
+				}else if(structKeyExists(column,'isVisible') && column['isVisible']){
+					columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
