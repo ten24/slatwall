@@ -681,6 +681,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(structKeyExists(arguments.columnConfig,'isPeriod')){
 			arguments.column['isPeriod']=arguments.columnConfig['isPeriod'];
 		}
+		
+		if(structKeyExists(arguments.columnConfig,'isDistinct')){
+			arguments.column['isDistinct']=arguments.columnConfig['isDistinct'];
+		}
 
 		if(arguments.prepend){
 			arrayPrepend(collectionConfig.columns,arguments.column);
@@ -1351,6 +1355,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any column){
+	
 		setHasAggregate(true);
 		var aggregateFunction = '';
 
@@ -1877,6 +1882,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
     }
 
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false, excludeOrderBy = false, excludeGroupBy=false){
+		
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
@@ -3028,7 +3034,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(
 					structKeyExists(column,'isMetric') && column.isMetric
 				){
-					columnsHQL &= ' #column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#) as #columnAlias#';
+					if(structKeyExists(column,'isDistinct') && column.isDistinct){
+						columnsHQL &= ' #column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#) as #columnAlias#';
+					}else{
+						columnsHQL &= ' #column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#) as #columnAlias#';
+					}
 					addingColumn = true;
 				}else if(
 					structKeyExists(column,'isPeriod') && column.isPeriod 
@@ -3054,6 +3064,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						if(hasPropertyByPropertyIdentifier(column.propertyIdentifier)){
 							getPropertyIdentifierAlias(column.propertyIdentifier);
 							//check if we have an aggregate
+							
 							if(!isNull(column.aggregate))
 							{
 								//if we have an aggregate then put wrap the identifier

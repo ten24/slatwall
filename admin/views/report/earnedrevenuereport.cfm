@@ -1,11 +1,19 @@
 <cfoutput>
     
+    <!---<cfset earningSubscriptionsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
+    <cfset earningSubscriptionsCollectionList.setReportFlag(1)/>
+    <cfset earningSubscriptionsCollectionList.setPeriodInterval('Month')/>
+    <cfset earningSubscriptionsCollectionList.setDisplayProperties()--->
+    
     <cfset earnedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset earnedRevenueCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
+    <cfset earnedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.setReportFlag(1)/>
     <cfset earnedRevenueCollectionList.setPeriodInterval('Month')/>
+    
+    
     
     <cfset possibleYearsRecordsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset possibleYearsRecordsCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
@@ -22,7 +30,7 @@
     </cfif>
     
     <cfset dataRecords = earnedRevenueCollectionList.getRecords()/>
-     
+     <cfdump var="#dataRecords#"><cfabort>
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
