@@ -92,7 +92,12 @@
 		        <div id="u122" class="ax_default droplist">
 		            <select name="reportYear" id="u122_input" style="-webkit-appearance: menulist-button;" >
 		                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
-		                    <option value="#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#">#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#</option>
+		                	
+		                    <option 
+		                    	value="#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#"
+		                    	<cfif structKeyExists(rc,'reportYear') && rc.reportYear eq possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']>selected</cfif>
+		                    >#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#
+		                    </option>
 		                </cfloop>
 		            </select>
 		        </div>

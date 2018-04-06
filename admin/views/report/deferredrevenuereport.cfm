@@ -84,13 +84,6 @@
             </tr>
         </thead>
         <tbody>
-            
-            <tr>
-                <td>Earned Revenue</td>
-                <cfloop array="#earned#" index="earnRecord">
-                    <td>#earnRecord#</td>
-                </cfloop>
-            </tr>
             <tr>
                 <td>Tax</td>
                 <cfloop array="#taxAmount#" index="taxAmountRecord">

@@ -13,20 +13,31 @@
     <cfset earnedRevenueCollectionList.setReportFlag(1)/>
     <cfset earnedRevenueCollectionList.setPeriodInterval('Month')/>
     
-    
-    
     <cfset possibleYearsRecordsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset possibleYearsRecordsCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
     <cfset possibleYearsRecordsCollectionList.setReportFlag(1)/>
     <cfset possibleYearsRecordsCollectionList.setPeriodInterval('Year')/>
     <cfset possibleYearsRecords = possibleYearsRecordsCollectionList.getRecords()/>
     
-    <cfif arraylen(possibleYearsRecords) and !structKeyExists(url,'reportYear')>
+    <!--apply filters-->
+    <cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1]['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],1,1,0,0,0),'>=')/>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1]['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],12,31,23,59,59),'<=')/>
-    <cfelseif structKeyExists(url,'reportYear')>
-        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),1,1,0,0,0),'>=')/>
-        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),12,31,23,59,59),'<=')/>
+    <cfelseif structKeyExists(rc,'reportYear')>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),1,1,0,0,0),'>=')/>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),12,31,23,59,59),'<=')/>
+    </cfif>
+    
+    <cfif structKeyExists(rc,'productType') and len(rc.productType)>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
+    </cfif>
+    
+    <cfif structKeyExists(rc,'productID') and len(rc.productID)>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productID', rc.productID,'IN')/>
+    </cfif>
+    
+    <cfif structKeyExists(rc,'subscriptionType') and len(rc.subscriptionType)>
+        <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemType.systemCode', rc.subscriptionType,'IN')/>
     </cfif>
     
     <cfset dataRecords = earnedRevenueCollectionList.getRecords()/>
@@ -36,10 +47,12 @@
     <cfset subscriptionsEarning = []/>
     <cfset earned = []/>
     <cfset taxAmount = []/>
+    <cfset possibleYearTotal = []/>
     <cfloop from="1" to="12" index="i">
         <cfset subscriptionsEarning[i] = 0/>
         <cfset earned[i] = 0/>
         <cfset taxAmount[i] = 0/>
+        <cfset possibleYearTotal[i] = 0/>
     </cfloop>
     <cfloop array="#dataRecords#" index="dataRecord">
         <cfset index = INT(right(dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],2))/>
@@ -133,7 +146,7 @@
         <cfset productsWithDeliveriesMap[productName].taxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>
     
-    <cfset possibleYearTotal []/>
+    
     
     <table class="table table-bordered s-detail-content-table">
         <thead>
@@ -147,18 +160,21 @@
             </tr>
         </thead>
         <tbody>
+            
             <cfloop collection="#productsWithDeliveriesMap#" item="productName">
                 <tr>
                     <td>#productName#</td>
-                    <cfloop array="#productsWithDeliveriesMap[productName].earned#" index="earnRecord">
-                        <td>#$.slatwall.getService('hibachiUtilityService').formatValue(earnRecord,'currency')#</td>
+                    <cfloop from="1" to="#arrayLen(productsWithDeliveriesMap[productName].earned)#" index="i">
+                        
+                        <td>#$.slatwall.getService('hibachiUtilityService').formatValue(productsWithDeliveriesMap[productName].earned[i],'currency')#</td>
+                        <cfset possibleYearTotal[i]+=productsWithDeliveriesMap[productName].earned[i]/>
                     </cfloop>
                 </tr>
             </cfloop>
             <tr>
                 <td>Total</td>
                 <cfloop array="#possibleYearTotal#" index="possibleYearTotalRecord">
-                    <td>#possibleYearTotalRecord#</td>
+                    <td>#$.slatwall.getService('hibachiUtilityService').formatValue(possibleYearTotalRecord,'currency')#</td>
                 </cfloop>
             </tr>
         </tbody>
