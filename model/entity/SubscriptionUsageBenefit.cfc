@@ -51,7 +51,6 @@ component entityname="SlatwallSubscriptionUsageBenefit" table="SwSubsUsageBenefi
 	// Persistent Properties
 	property name="subscriptionUsageBenefitID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="maxUseCount" ormtype="integer";
-	property name="itemsToDelivery" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";

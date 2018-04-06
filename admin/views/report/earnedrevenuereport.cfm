@@ -17,7 +17,12 @@
     <cfset possibleYearsRecordsCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
     <cfset possibleYearsRecordsCollectionList.setReportFlag(1)/>
     <cfset possibleYearsRecordsCollectionList.setPeriodInterval('Year')/>
-    <cfset possibleYearsRecords = possibleYearsRecordsCollectionList.getRecords()/>
+    <cfset possibleYearsData = possibleYearsRecordsCollectionList.getRecords()/>
+    
+    <cfset possibleYearsRecords = []/>
+    <cfloop array="#possibleYearsData#" index="possibleYearDataRecord">
+        <cfset arrayAppend(possibleYearsRecords,possibleYearDataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'])/>
+    </cfloop>
     
     <!--apply filters-->
     <cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
@@ -107,8 +112,8 @@
     
     <cfset subscriptionOrderItemList.addFilter('subscriptionOrderDeliveryItems.quantity',1,">=",'AND','SUM')/>
     <cfif arraylen(possibleYearsRecords) and !structKeyExists(url,'reportYear')>
-        <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1]['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],1,1,0,0,0),'>=')/>
-        <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1]['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],12,31,23,59,59),'<=')/>
+        <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],1,1,0,0,0),'>=')/>
+        <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],12,31,23,59,59),'<=')/>
     <cfelseif structKeyExists(url,'reportYear')>
         <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),1,1,0,0,0),'>=')/>
         <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),12,31,23,59,59),'<=')/>

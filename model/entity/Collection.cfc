@@ -3001,9 +3001,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					structKeyExists(column,'isMetric') && column.isMetric
 				){
 					if(structKeyExists(column,'isDistinct') && column.isDistinct){
-						columnsHQL &= ' #column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#) as #columnAlias#';
+						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(DISTINCT #column.propertyIdentifier#),0) as #columnAlias#';
 					}else{
-						columnsHQL &= ' #column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#) as #columnAlias#';
+						columnsHQL &= ' COALESCE(#column['aggregate']['aggregateFunction']#(#column.propertyIdentifier#),0) as #columnAlias#';
 					}
 					addingColumn = true;
 				}else if(

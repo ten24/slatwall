@@ -71,6 +71,73 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="deferredRevenue" persistent="false";
+	property name="deferredTaxAmount" persistent="false";
+	
+	//calculatedProperties
+	property name="calculatedDeferredRevenue" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedDeferredTaxAmount" ormtype="big_decimal" hb_formatType="currency";
+	
+	
+	public any function getDeferredRevenue(){
+		var deferredRevenue = 0;
+		
+		deferredRevenue = getService('HibachiUtilityService').precisionCalculate(getPriceEarnedPerItem() * getItemsNotDelivered());
+	
+		return deferredRevenue;
+	}
+	
+	public any function getDeferredTaxAmount(){
+		var deferredTaxAmount = 0;
+		
+		deferredTaxAmount = getService('HibachiUtilityService').precisionCalculate(getTaxAmountEarnedPerItem() * getItemsNotDelivered());
+	
+		return deferredTaxAmount;
+	}
+	
+	public numeric function getItemsNotDelivered(){
+		var itemsNotDelivered = 0;
+		
+		itemsNotDelivered = getItemsToDeliver() - getItemsDelivered();
+		
+		return itemsNotDelivered;
+	}
+	
+	public numeric function getTaxAmountEarnedPerItem(){
+		var taxAmountEarnedPerItem = 0;
+		if(getItemsToDeliver() > 0){
+			taxAmountEarnedPerItem = getService('HibachiUtilityService').precisionCalculate(getOrderItem().getCalculatedTaxAmount() / getItemsToDeliver());
+		}
+		return taxAmountEarnedPerItem;
+	}
+	
+	public numeric function getPriceEarnedPerItem(){
+		var priceEarnedPerItem = 0;
+		if(getItemsToDeliver() > 0){
+			priceEarnedPerItem = getService('HibachiUtilityService').precisionCalculate(getOrderItem().getCalculatedExtendedPriceAfterDiscount() / getItemsToDeliver());
+		}
+		return priceEarnedPerItem;
+	}
+	
+	public numeric function getItemsToDeliver(){
+		var itemsToDeliver = 0;
+		if(
+			!isNull(getSubscriptionUsage())
+			&& !isNull(getSubscriptionUsage().getSubscriptionTerm())
+			&& !isNull(getSubscriptionUsage().getSubscriptionTerm().getItemsToDeliver())
+		){
+			itemsToDeliver = this.getSubscriptionUsage().getSubscriptionTerm().getItemsToDeliver();
+		}
+		return itemsToDeliver;
+	}
+	
+	public numeric function getItemsDelivered(){
+		var itemsDelivered = 0;
+		for(var subscriptionOrderDeliveryItem in getSubscriptionOrderDeliveryItems()){
+			itemsDelivered += subscriptionOrderDeliveryItem.getQuantity();
+		}
+		return itemsDelivered;
+	}
 	
 	public void function setOrderItem(required any orderItem) {
 		variables.orderItem = arguments.orderItem;

@@ -94,9 +94,9 @@
 		                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
 		                	
 		                    <option 
-		                    	value="#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#"
-		                    	<cfif structKeyExists(rc,'reportYear') && rc.reportYear eq possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']>selected</cfif>
-		                    >#possibleYearsRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime']#
+		                    	value="#possibleYearsRecord#"
+		                    	<cfif structKeyExists(rc,'reportYear') && rc.reportYear eq possibleYearsRecord>selected</cfif>
+		                    >#possibleYearsRecord#
 		                    </option>
 		                </cfloop>
 		            </select>
