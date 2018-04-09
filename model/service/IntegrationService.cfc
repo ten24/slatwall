@@ -249,8 +249,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 						var integrationBF = new framework.aop("/Slatwall/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
-							exclude=["entity"],
-							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
+							exclude=["entity"]
 						});
 						
 						var integrationBFBeans = integrationBF.getBeanInfo();

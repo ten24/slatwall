@@ -64,9 +64,7 @@ export class BaseBootStrapper{
             if(hibachiConfig.instantiationKey){
                 resolve(hibachiConfig.instantiationKey);
             }else{
-
-                this.$http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey').then((resp:any) => resolve(resp.data.data.instantiationKey));
-
+                this.$http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey').then((resp:any) =>{resolve(resp.data.data.instantiationKey)} );
             }
         });
     };
@@ -196,6 +194,7 @@ export class BaseBootStrapper{
 
     }
 }
+
 
 
 

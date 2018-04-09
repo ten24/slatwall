@@ -6,10 +6,8 @@
 	    }
 	},
 	"properties":{
-		"startDateTime":			[{"contexts":"save","dataType":"date"}],
-		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}],
-		"promotionPeriodID":		[{"contexts":"delete","method":"getIsDeletableFlag"}],
-		"maximumUseCount":			[{"contexts": "save", "dataType":"numeric"}], 
-		"maximumAccountUseCount":	[{"contexts": "save", "dataType":"numeric"}]
+		"startDateTime":	[{"contexts":"save","dataType":"date"}],
+		"endDateTime":		[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}],
+		"promotionPeriodID":[{"contexts":"delete","method":"getIsDeletableFlag"}]
 	}
 }

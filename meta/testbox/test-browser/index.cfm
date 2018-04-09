@@ -2,7 +2,7 @@
 <!--- CPU Integration --->
 <cfparam name="url.cpu" default="false">
 <!--- SETUP THE ROOTS OF THE BROWSER RIGHT HERE --->
-<cfset rootMapping 	= "/testbox/tests/specs">
+<cfset rootMapping 	= "/meta/tests/unit">
 <cfif directoryExists( rootMapping )>
 	<cfset rootPath = rootMapping>
 <cfelse>

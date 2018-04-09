@@ -80,19 +80,11 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		// Build Request XML
 		var jsonPacket = getProcessShipmentRequestJsonPacket(arguments.requestBean);
         
-        var jsonResponse = getJsonResponse(jsonPacket,"Ship");
+        var jsonResponse = getJsonResponse(jsonPacket);
         
         var responseBean = getShippingProcessShipmentResponseBean(jsonResponse);
         
         return responseBean;
-	}
-	
-	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
-		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
-		var responseBean = processShipmentRequest(processShipmentRequestBean);
-		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
-		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
 	}
 
 	
@@ -104,19 +96,20 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		savecontent variable="jsonPacket" {
 			include "RatesRequestTemplate.cfm";
         }
-        var JsonResponse = getJsonResponse(jsonPacket,"Rate");
+        var JsonResponse = getJsonResponse(jsonPacket);
         
         var responseBean = getShippingRatesResponseBean(JsonResponse);
 		
 		return responseBean;
 	}
 	
-	public struct function getJsonResponse(required any jsonPacket,string service = "Rate"){
+	public struct function getJsonResponse(required any jsonPacket){
 		var urlString = "";
+		var service = "Rate";
 		if(setting('testingFlag')) {
-			urlString = variables.testUrl & arguments.service;
+			urlString = variables.testUrl & service;
 		} else {
-			urlString = variables.productionUrl & arguments.service;
+			urlString = variables.productionUrl & service;
 		}
 		return getResponse(requestPacket=arguments.jsonPacket,urlString=urlString,format="json");
 	}
@@ -154,9 +147,8 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
 				responseBean.setTrackingNumber(PackageResults.trackingNumber);
 				//convert gif to pdf
-				responseBean.setContainerLabel(PackageResults.ShippingLabel.GraphicImage);
-			} else {
-				responseBean.showErrorsAndMessages();
+				var base64pdf = getHibachiScope().getService('hibachiUtilityService').convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
+				responseBean.setContainerLabel(base64pdf);
 			}
 		}
 		
@@ -203,3 +195,4 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	}
 	
 }
+

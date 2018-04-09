@@ -16,7 +16,7 @@ component extends="testbox.system.BaseSpec"{
 /*********************************** BDD SUITES ***********************************/
 
 	function run(){
-		variables.counter = 0;
+		var counter = 0;
 		describe( "Outer describe", function(){
 			aroundEach(function(spec, suite) {
 				counter++;
