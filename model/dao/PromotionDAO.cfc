@@ -298,8 +298,13 @@ Notes:
 
 	<cffunction name="getPromotionCodeByPromotionCode" returntype="any" access="public">
 		<cfargument name="promotionCode" required="true" type="string" />
-
-		<cfreturn ormExecuteQuery("SELECT pc FROM SlatwallPromotionCode pc WHERE LOWER(pc.promotionCode) = ?", [lcase(arguments.promotionCode)], true) />
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "LOWER(pc.promotionCode)"/>
+		<cfelse>
+			<cfset comparisonValue = "pc.promotionCode"/>
+		</cfif>
+		<cfreturn ormExecuteQuery("SELECT pc FROM SlatwallPromotionCode pc WHERE #comparisonValue# = ?", [lcase(arguments.promotionCode)], true) />
 	</cffunction>
 
 	<!--- function to return the calculated sales price based off of the price of the sku --->
