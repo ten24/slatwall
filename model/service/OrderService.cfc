@@ -156,7 +156,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
 			
 			var subscriptionOrderItemRecords = subscriptionOrderItemCollectionList.getRecords();
-			
 			//create a delivery for each item
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
 				//insert subscriptionOrderDeliveryItem related to 

@@ -6,7 +6,7 @@
     <cfset earningSubscriptionsCollectionList.setDisplayProperties()--->
     
     <cfset earnedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
-    <cfset earnedRevenueCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
+    <cfset earnedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
@@ -14,14 +14,14 @@
     <cfset earnedRevenueCollectionList.setPeriodInterval('Month')/>
     
     <cfset possibleYearsRecordsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
-    <cfset possibleYearsRecordsCollectionList.setDisplayProperties('subscriptionOrderItem.orderItem.order.orderCloseDateTime',{isPeriod=true})/>
+    <cfset possibleYearsRecordsCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
     <cfset possibleYearsRecordsCollectionList.setReportFlag(1)/>
     <cfset possibleYearsRecordsCollectionList.setPeriodInterval('Year')/>
     <cfset possibleYearsData = possibleYearsRecordsCollectionList.getRecords()/>
     
     <cfset possibleYearsRecords = []/>
     <cfloop array="#possibleYearsData#" index="possibleYearDataRecord">
-        <cfset arrayAppend(possibleYearsRecords,possibleYearDataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'])/>
+        <cfset arrayAppend(possibleYearsRecords,possibleYearDataRecord['createdDateTime'])/>
     </cfloop>
     
     <!--apply filters-->
@@ -60,7 +60,7 @@
         <cfset possibleYearTotal[i] = 0/>
     </cfloop>
     <cfloop array="#dataRecords#" index="dataRecord">
-        <cfset index = INT(right(dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],2))/>
+        <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
         <cfset subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
         <cfset earned[index] = dataRecord['earnedSUM']/>
         <cfset taxAmount[index] = dataRecord['taxAmountSUM']/>
@@ -145,7 +145,7 @@
     
     <cfloop array="#dataRecords#" index="dataRecord">
         <cfset productName = dataRecord['subscriptionOrderItem_orderItem_sku_product_productName']/>
-        <cfset index = INT(right(dataRecord['subscriptionOrderItem_orderItem_order_orderCloseDateTime'],2))/>
+        <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
         <cfset productsWithDeliveriesMap[productName].subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
         <cfset productsWithDeliveriesMap[productName].earned[index] = dataRecord['earnedSUM']/>
         <cfset productsWithDeliveriesMap[productName].taxAmount[index] = dataRecord['taxAmountSUM']/>
