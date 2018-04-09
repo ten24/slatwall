@@ -641,16 +641,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, "isDistinct")){
 			isDistinct = arguments.data['isDistinct'];
 		}
-		
-		var isReport = false;
-		if(structKeyExists(arguments.data,'isReport')){
-			isReport = arguments.data['isReport'];
-		}
-		
-		var periodInterval = "";
-		if(structKeyExists(arguments.data,'periodInterval')){
-			periodInterval = arguments.data['periodInterval'];
-		}
 
 		var allRecords = false;
 		if(structKeyExists(arguments.data,'allRecords')){
@@ -698,9 +688,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			useElasticSearch=useElasticSearch,
 			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
-			processContext=processContext,
-			isReport=isReport,
-			periodInterval=periodInterval
+			processContext=processContext
 		};
 		return collectionOptions;
 	}
@@ -858,13 +846,6 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'splitKeywords')){
 				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
 			}
-			if(structKeyExists(collectionOptions,'isReport')){
-				collectionEntity.setReportFlag(collectionOptions.isReport);
-			}
-			if(structKeyExists(collectionOptions,'periodInterval')){
-				collectionEntity.getCollectionConfigStruct().periodInterval = collectionOptions.periodInterval;
-			}
-			
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 
@@ -889,7 +870,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(structKeyExists(column,'aggregate')){
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
-					
+
 					//add all columns with custom alias
 					if(structKeyExists(column,'alias')){
 						ArrayAppend(collectionPropertyIdentifiers,column.alias);

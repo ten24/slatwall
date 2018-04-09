@@ -86,10 +86,6 @@
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>
-												<cfif attributes.object.hasCalculatedProperties()>
-											
-													<hb:HibachiActionCaller action="admin:entity.updateCalculatedProperties" queryString="entityName=#attributes.object.getClassName()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" type="list">
-												</cfif>
 												#thistag.generatedcontent#
 											</hb:HibachiDividerHider>
 										</ul>

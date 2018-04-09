@@ -98,7 +98,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(len(coreEntityParser.getCustomPropertyContent()));
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
-		assertEquals(trim("public void function testFunc(){ return ''; } private void function testFunc3(){ return ''; } public void function testFunc2(){ return ''; } private void function testFunc4(){ return ''; }"), reReplace(trim(coreEntityParser.getCustomFunctionContent()),"\s+"," ","ALL") );
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}
+
+	private void function testFunc3(){
+		return '';
+	}
+
+	public void function testFunc2(){
+		return '';
+	}
+
+	private void function testFunc4(){
+		return '';
+	}"), trim(coreEntityParser.getCustomFunctionContent()));
 
 	}
 
@@ -118,7 +132,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(len(coreEntityParser.getCustomPropertyContent()));
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
-		assertEquals(trim("public void function testFunc(){ return ''; } private void function testFunc3(){ return ''; } public void function testFunc2(){ return ''; } private void function testFunc4(){ return ''; }"), reReplace(trim(coreEntityParser.getCustomFunctionContent()),"\s+"," ","ALL") );
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}
+
+	private void function testFunc3(){
+		return '';
+	}
+
+	public void function testFunc2(){
+		return '';
+	}
+
+	private void function testFunc4(){
+		return '';
+	}"), trim(coreEntityParser.getCustomFunctionContent()));
 
 	}
 	/**
@@ -138,8 +166,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(len(customEntityParser.getPropertyString()));
 		assert(coreEntityParser.getCustomPropertyContent() CONTAINS customEntityParser.getPropertyString());
 		assert(coreEntityParser.getCustomFunctionContent() CONTAINS customEntityParser.getFunctionString());
+		assertEquals(trim("public void function testFunc(){
+		return '';
+	}
 
-		assertEquals(trim("public void function testFunc(){ return ''; } private void function testFunc3(){ return ''; } public void function testFunc2(){ return ''; } private void function testFunc4(){ return ''; }"), reReplace(trim(customEntityParser.getFunctionString()),"\s+"," ","ALL") );
+	private void function testFunc3(){
+		return '';
+	}
+
+	public void function testFunc2(){
+		return '';
+	}
+
+	private void function testFunc4(){
+		return '';
+	}"), trim(customEntityParser.getFunctionString()));
 	}
 }
 

@@ -141,14 +141,8 @@ component accessors="true"{
 	* @expected The expected data
 	* @message The message to send in the failure
 	*/
-	function toBe( any expected, message="" ){
-		// Null checks
-		if( isNull( this.actual ) ){
-			arguments.actual = javaCast( "null", "" );
-		} else {
-			arguments.actual = this.actual;
-		}
-		// Inverse Checks
+	function toBe( required any expected, message="" ){
+		arguments.actual = this.actual;
 		if( this.isNot ){
 			variables.assert.isNotEqual( argumentCollection=arguments );
 		} else {

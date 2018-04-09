@@ -469,19 +469,6 @@ class SWListingDisplayController{
     public toggleOrderBy = (column) => {
         this.listingService.toggleOrderBy(this.tableID, column);
     };
-    public showCalculation=(show = "total")=>{
-        // Hide all other calculations
-        $(`.sw-${(show == "total" ? "average" : "total")}`).hide();
-        
-        // Show all of the chosen calculations
-        $(`.sw-${show}`).show();
-    }
-    public hasNumerical=()=>{
-        // Iterate over columns, find out if we have any numericals and return
-        return this.columns.reduce((totalNumericalCols, col) => {
-            return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-        });
-    }
 
     public columnOrderByIndex = (column) =>{
         return this.listingService.columnOrderByIndex(this.tableID, column);
