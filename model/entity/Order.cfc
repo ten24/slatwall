@@ -60,9 +60,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="testOrderFlag" ormtype="boolean";
 	//used to check whether tax calculations should be run again
-	property name="taxRateCacheKey" ormtype="string";
-	property name="promotionCacheKey" ormtype="string";
-	property name="priceGroupCacheKey" ormtype="string";
+	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
+	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
+	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -1043,18 +1043,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getRootOrderItems(){
-		if(!structKeyExists(variables,'rootOrderItems')){
-			var rootOrderItems = [];
-		
-			for(var orderItem in this.getOrderItems()){
-				if(isNull(orderItem.getParentOrderItem())){
-					ArrayAppend(rootOrderItems, orderItem);
-				}
+		var rootOrderItems = [];
+	
+		for(var orderItem in this.getOrderItems()){
+			if(isNull(orderItem.getParentOrderItem())){
+				ArrayAppend(rootOrderItems, orderItem);
 			}
-			variables.rootOrderItems = rootOrderItems;
 		}
-		
-		
+		variables.rootOrderItems = rootOrderItems;
+
 		return variables.rootOrderItems;
 	}
 
