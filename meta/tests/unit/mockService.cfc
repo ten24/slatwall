@@ -58,9 +58,15 @@ component extends="testbox.system.BaseSpec"{
 		var currencyService = createMock('Slatwall.model.service.CurrencyService');
 		var integrationService = createMock('Slatwall.model.service.IntegrationService');
 		var settingService = createMock('Slatwall.model.service.SettingService');
+<<<<<<< HEAD
 
 		var paymentServiceMock = onMissingMethod('getPaymentServiceMock',{});
 
+=======
+	
+		var paymentServiceMock = onMissingMethod('getPaymentServiceMock',{});
+	
+>>>>>>> 35cd95e2dc9999cfe6b3ec0b9cbe29b7e38938e3
 		paymentServiceMock.setpaymentDAO(paymentDAO);
 		paymentServiceMock.setcurrencyService(currencyService);
 		paymentServiceMock.setintegrationService(integrationService);
@@ -122,7 +128,11 @@ component extends="testbox.system.BaseSpec"{
 		var emailService = createMock('Slatwall.model.service.EmailService');
 		var fulfillmentService = this.getFulfillmentServiceMock();
 		var integrationService = createMock('Slatwall.model.service.IntegrationService');
+<<<<<<< HEAD
 		//var ledgerAccountService = this.getLedgerAccountServiceMock();
+=======
+		var ledgerAccountService = this.getLedgerAccountServiceMock();
+>>>>>>> 35cd95e2dc9999cfe6b3ec0b9cbe29b7e38938e3
 		var locationService = createMock('Slatwall.model.service.LocationService');
 		var measurementService = createMock('Slatwall.model.service.MeasurementService');
 		var paymentService = this.getPaymentServiceMock();

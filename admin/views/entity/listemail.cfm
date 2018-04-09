@@ -53,8 +53,7 @@ Notes:
 <cfparam name="rc.emailSmartList" type="any" />
 
 <cfoutput>
-
-<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" createModal="true" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" showCreate="false" />
 
 <!--- <hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
 						   recordDetailAction="admin:entity.detailemail"

@@ -55,7 +55,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = variables.mockService.getInventoryServiceMock();
 	}
 	/**
-	*
+	* 
 	*/
 	public void function createInventoryByStockReceiverItemTest(){
 		var vendorOrderItemData = {
