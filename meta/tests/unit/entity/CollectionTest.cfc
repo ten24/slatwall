@@ -163,6 +163,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		orderItemCollectionList.getRecords();
 	}
 	
+	/**
+	* @test
+	*/
 
 	/**
 	* @test
@@ -256,7 +259,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"firstName",
+							"propertyIdentifier":"Account.firstName",
 							"direction":"DESC"
 						}
 					],
@@ -299,6 +302,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+
 		var pageRecords = collectionEntity.getPageRecords();
 
 		assert(isArray(pageRecords));
@@ -468,8 +472,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productActiveData = {
 			productID = '',
 			productName = 'ProductUnitTest',
-			productDescription = uniqueNumberForDescription,
-			activeFlag=true
+			productDescription = uniqueNumberForDescription
 		};
 		//By default Active flag is true.
 		var product = createPersistedTestEntity('product', productActiveData);
@@ -481,13 +484,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			activeFlag = 'false'
 		};
 		var product = createPersistedTestEntity('product', productNotActiveData);
-		
+
 		var myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription');
 		myProductCollection.addFilter('productName','ProductUnitTest');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
 		var pageRecords = myProductCollection.getPageRecords();
-		
+
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 records but returned #arrayLen(pageRecords)#");
 
 		var myProductActiveCollection = variables.entityService.getProductCollectionList();
@@ -496,6 +499,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductActiveCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myProductActiveCollection.addFilter('activeFlag','YES');
 		var pageRecords = myProductActiveCollection.getPageRecords();
+
 		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 
 	}
@@ -722,7 +726,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = '',
 			productName = 'ProductUnitTest',
 			productDescription = uniqueNumberForDescription,
-			activeFlag=false,
+			activeFlag='false',
 			skus = [
 				{
 					skuID = '',
@@ -739,7 +743,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//Active product with 4 active skuls
 		var productWithActiveSkusData = {
 			productID = '',
-			activeFlag=true,
 			productName = 'ProductUnitTest',
 			productDescription = uniqueNumberForDescription,
 			skus = [
@@ -768,7 +771,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 
 		var productWithActiveSkus = createPersistedTestEntity('product', productWithActiveSkusData);
-		
+
 		//Get Active Skulls from Active Products
 
 		var mySkuCollection = variables.entityService.getSkuCollectionList();
@@ -777,6 +780,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		mySkuCollection.addFilter('product.activeFlag','YES');
 		mySkuCollection.addFilter('product.productDescription',uniqueNumberForDescription);
 		var pageRecords = mySkuCollection.getPageRecords();
+
 		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 4 records but returned #arrayLen(pageRecords)#");
 
 	}
@@ -2305,7 +2309,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
             collectionid = '',
             collectionCode = 'AccountOrders',
             baseEntityName = 'SlatwallAccount',
-            collectionObject = 'Account',
             collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
@@ -4562,6 +4565,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	/**
 	* @test
 	*/
+	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+		var data = {};
+
+		data['p:show'] = -2;
+		collectionEntity.applyData(data);
+		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
+	}
+
+	/**
+	* @test
+	*/
 	public void function applyDataTest_pageShowTest_queryString_default_currentPageDeclaration(){
 		var collectionEntity = variables.entityService.getAccountCollectionList();
 
@@ -4572,55 +4587,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getPageRecordsShow(),2);
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
-
-	
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assert(filter.propertyIdentifier == '_account.firstName');
-		assert(filter.comparisonOperator == '=');
-		assertfalse(filter.value == 'Mindfire');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-
-		var queryString = '?f:firstName:eq=Ryan';
-		collectionEntity.applyData(queryString);
-		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
-		assertfalse(filter.propertyIdentifier == '_account.lastName');
-		assert(filter.comparisonOperator == '=');
-		assert(filter.value == 'Ryan');
-		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
-	}
-
-	
-
-	/**
-	* @test
-	*/
-	public void function applyDataTest_pageShowTest_for_negative_pageshow_value(){
-		var collectionEntity = variables.entityService.getAccountCollectionList();
-		var data = {};
-
-		data['p:show'] = -2;
-		collectionEntity.applyData(data);
-
-		assertEquals(collectionEntity.getPageRecordsShow(),10); // Returns defult values for negative values in Pagination.
-	}
-
 
 	/**
 	* @test
@@ -4650,7 +4616,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(collectionEntity.getCurrentPageDeclaration(),1);
 	}
 
-	
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_firstname(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assert(filter.propertyIdentifier == '_account.firstName');
+		assert(filter.comparisonOperator == '=');
+		assertfalse(filter.value == 'Mindfire');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
 
 	/**
 	* @test
@@ -4667,7 +4646,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
 	}
 
-	
+	/**
+	* @test
+	*/
+	public void function applyDataTest_filterTest_queryString_incorrent_propertyIdentifire(){
+		var collectionEntity = variables.entityService.getAccountCollectionList();
+
+		var queryString = '?f:firstName:eq=Ryan';
+		collectionEntity.applyData(queryString);
+		var filter = collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup[1];
+		assertfalse(filter.propertyIdentifier == '_account.lastName');
+		assert(filter.comparisonOperator == '=');
+		assert(filter.value == 'Ryan');
+		assert(collectionEntity.getHQL() Contains '_account.firstName = ');
+	}
 
 	/**
 	* @test

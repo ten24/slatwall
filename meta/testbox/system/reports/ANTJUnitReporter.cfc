@@ -43,10 +43,7 @@ component{
 		// iterate over bundles
 		var bundlestats = r.getBundleStats();
 		for( var thisBundle in bundleStats ){
-			// excluding "empty" test suites
-			if (structKeyExists(url, 'testBundles') AND len( url.testBundles ) and !listFindNoCase( url.testBundles, thisBundle.path )){
-				continue;
-			}
+
 			// build test suite header
 			buffer.append('<testsuite
 			tests="#thisBundle.totalSpecs#"

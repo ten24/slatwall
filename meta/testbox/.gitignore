@@ -1,16 +1,9 @@
-# Config Files
-.DS_Store
-/settings.xml
+.settings
 .project
-.settings/
-.vscode
+settings.xml
 cpu.json
-
-# Test Results
 tests/results
 tests/results-mb
-
-# Build Process
 WEB-INF
 build/build.number
 artifacts

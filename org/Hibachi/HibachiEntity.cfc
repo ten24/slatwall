@@ -64,8 +64,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				}
 			}
 		}
-		if(structKeyExists(this,'getActiveFlag') && isNull(getActiveFlag())){
-			setActiveFlag(1);
+		if(structKeyExists(variables,'getActiveFlag') && isNull(getActiveFlag())){
+			variables.activeFlag = 1;
 		}
 
 		return super.init();
@@ -1071,15 +1071,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			getHibachiScope().addModifiedEntity( this );
 		}
 
-	}
-	
-		
-	public void function runCalculatedProperties(){
-		getService("hibachiService").updateCalculatedPropertiesByEntityName(this);
-	}
-	
-	public boolean function hasCalculatedProperties(){
-		return getService("hibachiService").getEntityHasCalculatedPropertiesByEntityName(this.getEntityName());
 	}
 
 	public void function preUpdate(struct oldData){

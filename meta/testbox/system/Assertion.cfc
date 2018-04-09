@@ -56,9 +56,9 @@ component{
 	* @actual.hint The actual data to test
 	* @message.hint The message to send in the failure
 	*/
-	function isEqual( any expected, any actual, message="" ){
+	function isEqual( required any expected, required any actual, message="" ){
 		// validate equality
-		if( equalize( argumentCollection=arguments ) ){ return this; }
+		if( equalize( arguments.expected, arguments.actual ) ){ return this; }
 		arguments.message = ( len( arguments.message ) ?
 			arguments.message & ". Expected [#getStringName( arguments.expected )#] Actual [#getStringName( arguments.actual )#]" :
 			"Expected [#getStringName( arguments.expected )#] but received [#getStringName( arguments.actual )#]" );
@@ -72,12 +72,12 @@ component{
 	* @actual.hint The actual data to test
 	* @message.hint The message to send in the failure
 	*/
-	function isNotEqual( any expected, any actual, message="" ){
+	function isNotEqual( required any expected, required any actual, message="" ){
 		arguments.message = ( len( arguments.message ) ?
 			arguments.message & ". Expected [#getStringName( arguments.expected )#] Actual [#getStringName( arguments.actual )#]" :
 			"Expected [#getStringName( arguments.expected )#] to not be [#getStringName( arguments.actual )#]" );
 		// validate equality
-		if( !equalize( argumentCollection=arguments ) ){ return this; }
+		if( !equalize( arguments.expected, arguments.actual ) ){ return this; }
 		// if we reach here, they are equal!
 		fail( arguments.message );
 	}
@@ -122,11 +122,8 @@ component{
 	* @actual.hint The actual data to test
 	* @message.hint The message to send in the failure
 	*/
-	function isEqualWithCase( string expected, string actual, message="" ){
+	function isEqualWithCase( required string expected, required string actual, message="" ){
 		arguments.message = ( len( arguments.message ) ? arguments.message : "Expected [#getStringName( arguments.expected )#] but received [#getStringName( arguments.actual )#]" );
-		// null check
-		if ( isNull( arguments.expected ) && isNull( arguments.actual ) ){ return this; }
-		if ( isNull( arguments.expected ) || isNull( arguments.actual ) ){ fail( arguments.message ); }
 		// equalize with case
 		if( compare( arguments.expected, arguments.actual ) eq 0 ){ return this; }
 		// if we reach here, nothing is equal man!
@@ -375,14 +372,18 @@ component{
 			// If no type, message expectations, just throw flag
 			if( !len( arguments.type ) && arguments.regex eq ".*" ){ return this; }
 
-			// determine if the expected 'type' matches the actual exception 'type'
-			var typeMatches = len( arguments.type ) == 0 OR e.type eq arguments.type;
+			// Type expectation + message regex, do match no case to account for empty messages
+			if( len( arguments.type ) &&
+				e.type eq arguments.type &&
+				( arrayLen( reMatchNoCase( arguments.regex, e.message ) ) OR arrayLen( reMatchNoCase( arguments.regex, e.detail ) ) )
+			){
+				return this;
+			}
 
-			// determine if the expected 'regex' matches the actual exception 'message' or 'detail'
-			var regexMatches = arguments.regex eq ".*" OR ( arrayLen( reMatchNoCase( arguments.regex, e.message ) ) OR arrayLen( reMatchNoCase( arguments.regex, e.detail ) ) );
-
-			// this assertion passes if the expected type and regex match the actual exception data
-			if( typeMatches && regexMatches ){
+			// Message+Detail regex then only
+			if( arguments.regex neq ".*" &&
+				( arrayLen( reMatchNoCase( arguments.regex, e.message ) ) OR arrayLen( reMatchNoCase( arguments.regex, e.detail ) ) )
+			){
 				return this;
 			}
 
@@ -637,8 +638,7 @@ component{
 	/**
 	* Get a string name representation of an incoming object.
 	*/
-	function getStringName( obj ){
-		if( isNull( arguments.obj ) ) { return 'null'; }
+	function getStringName( required obj ){
 		if( isSimpleValue( arguments.obj ) ){ return arguments.obj; }
 		if( isObject( arguments.obj ) ){
 			try{
@@ -665,16 +665,7 @@ component{
 
 /*********************************** PRIVATE Methods ***********************************/
 
-	private boolean function equalize( any expected, any actual ){
-
-		// Null values
-		if( isNull( arguments.expected ) && isNull( arguments.actual ) ){
-			return true;
-		}
-
-		if( isNull( arguments.expected ) || isNull( arguments.actual ) ){
-			return false;
-		}
+	private function equalize( required expected, required actual ){
 
 		// Numerics
 		if( isNumeric( arguments.actual ) && isNumeric( arguments.expected ) && toString( arguments.actual ) eq toString( arguments.expected ) ){

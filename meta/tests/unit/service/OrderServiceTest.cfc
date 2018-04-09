@@ -684,13 +684,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var orderDelivery = createTestEntity('OrderDelivery',{});
 		orderDelivery = variables.service.process(orderDelivery,orderDeliveryData,'create');
-<<<<<<< HEAD
 		request.slatwallScope.getDao('hibachiDao').flushOrmSession();
 		
-=======
-		variables.service.getDao('hibachiDao').flushOrmSession();
-
->>>>>>> 35cd95e2dc9999cfe6b3ec0b9cbe29b7e38938e3
 		assert(arrayLen(orderDelivery.getOrderDeliveryItems()));
 		
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);

@@ -34,7 +34,7 @@ Description		:
 				instance.generationPath = instance.generationPath & "/";
 			}
 
-			instance.mockGenerator 	= createObject("component","testbox.system.mockutils.MockGenerator").init( this, false );
+			instance.mockGenerator 	= createObject("component","testbox.system.mockutils.MockGenerator").init( this, true );
 
 			return this;
 		</cfscript>
@@ -114,9 +114,6 @@ Description		:
 		<cfargument name="callLogging" 	type="boolean" 	required="false" default="true" hint="Add method call logging for all mocked methods"/>
 		<!--- ************************************************************* --->
 		<cfscript>
-			if ( structKeyExists( arguments.object, "mockbox" ) ) {
-				return arguments.object;
-			}
 			return createMock(object=arguments.object);
 		</cfscript>
 	</cffunction>
@@ -374,7 +371,7 @@ Description		:
 				fncMD["access"] = "public";
 			}
 			if( not structKeyExists(fncMD,"output") ){
-				fncMD["output"] = true;
+				fncMD["output"] = false;
 			}
 			// Preserve Return Type?
 			if( NOT arguments.preserveReturnType ){

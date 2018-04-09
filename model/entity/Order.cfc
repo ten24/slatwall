@@ -60,9 +60,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="testOrderFlag" ormtype="boolean";
 	//used to check whether tax calculations should be run again
-	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
-	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
-	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
+	property name="taxRateCacheKey" ormtype="string";
+	property name="promotionCacheKey" ormtype="string";
+	property name="priceGroupCacheKey" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -159,7 +159,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="taxTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
-	property name="totalItemQuantity" persistent="false"; 
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
@@ -181,7 +180,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="calculatedTotalSaleQuantity" ormtype="integer";
 	property name="calculatedTotalReturnQuantity" ormtype="integer";
 	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
-	property name="calculatedTotalItemQuantity" ormtype="integer"; 
+	
 	
 	public void function init(){
 		setOrderService(getService('orderService'));
@@ -1043,15 +1042,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getRootOrderItems(){
-		var rootOrderItems = [];
-	
-		for(var orderItem in this.getOrderItems()){
-			if(isNull(orderItem.getParentOrderItem())){
-				ArrayAppend(rootOrderItems, orderItem);
+		if(!structKeyExists(variables,'rootOrderItems')){
+			var rootOrderItems = [];
+		
+			for(var orderItem in this.getOrderItems()){
+				if(isNull(orderItem.getParentOrderItem())){
+					ArrayAppend(rootOrderItems, orderItem);
+				}
 			}
+			variables.rootOrderItems = rootOrderItems;
 		}
-		variables.rootOrderItems = rootOrderItems;
-
+		
+		
 		return variables.rootOrderItems;
 	}
 
@@ -1247,17 +1249,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		return options;
 	}
-	
-	public numeric function getTotalItemQuantity(){
-		var orderItems = this.getOrderItems();
-		var totalItemQuantity = 0; 
-		for(var orderItem in orderItems){
-			if (isNull(orderItem.getParentOrderItem())){
-				totalItemQuantity += orderItem.getQuantity();
-			} 
-		}
-		return totalItemQuantity; 
-	}	
 
 
 	// ============  END:  Non-Persistent Property Methods =================
