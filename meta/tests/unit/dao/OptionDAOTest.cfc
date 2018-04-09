@@ -51,42 +51,35 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
-		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
+		variables.dao = variables.mockService.getOptionDAOMock();
 	}
-		
 	/**
 	* @test
 	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
+	public void function getNumberOFUsedProductOptions_return_numeric_by_default() {
+		var ProductOptions = variables.dao.getNumberOFUsedProductOptions('xxx');
+		assert(isNumeric(ProductOptions));
+	}
+	/**
+	* @test
+	*/
+	public void function getNumberOfOptionsForOptionGroup_return_numeric_by_default() {
+		var OptionGroup = variables.dao.getNumberOfOptionsForOptionGroup('yyy');
+		assert(isNumeric(OptionGroup));
+	}
+	/**
+	* @test
+	*/
+	public void function getAllUsedProductOptionGroupIDs_return_array_by_default() {
+		var ProductOptionGroupIDs = variables.dao.getAllUsedProductOptionGroupIDs('zzz');
+		assert(isarray(ProductOptionGroupIDs));
+	}
+	/**
+	* @test
+	*/
+	public void function getUnusedProductOptionGroups_return_array_by_default() {
+		var ProductOptionGroups = variables.dao.getUnusedProductOptionGroups('xxx','yyy');
+		assert(isarray(ProductOptionGroups));
 	}
 	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-
-		assert(isNull(currencyacurrency));
-	}
-
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
-		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
-		}
-
-	}
 }
-
-

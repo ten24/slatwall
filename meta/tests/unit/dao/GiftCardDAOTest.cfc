@@ -51,42 +51,30 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
-		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
+		variables.dao = variables.mockService.getGiftCardDAOMock();
 	}
 		
 	/**
 	* @test
 	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-
-		assert(isNull(currencyacurrency));
-	}
-
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
+	public void function getIDByCode_return_boolean_or_id_by_default() {
+		var getGiftCodeRec = ormExecuteQuery("FROM SlatwallGiftCard");
+		assert(isArray(getGiftCodeRec));
+		if(arraylen(getGiftCodeRec)){
+			var IDByCode = variables.dao.getIDByCode(getGiftCodeRec[1].getgiftcardcode());
+			assert(IDByCode == getGiftCodeRec[1].getgiftCardID());
 		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
+			var IDByCode = variables.dao.getIDByCode('');
+			assert(isBoolean(IDByCode));
+			assert(IDByCode==false);
 		}
+	}
 
+	/**
+	* @test
+	*/
+	public void function verifyUniqueGiftCardCode_return_Boolean_by_default() {
+		var GiftCardCode = variables.dao.verifyUniqueGiftCardCode('xxx');
+		assert(isBoolean(GiftCardCode));
 	}
 }
-
-

@@ -47,46 +47,25 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
-
 	
 	public void function setUp() {
 		super.setup();
-		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
-	}
-		
-	/**
-	* @test
-	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
+		variables.dao = variables.mockService.getRoundingRuleDAOMock();
 	}
 	
 	/**
 	* @test
 	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-
-		assert(isNull(currencyacurrency));
-	}
-
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
-		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
+	public void function getRoundingRuleQuery_return_query_by_default() {
+		var getRoundingRuleRec = ormExecuteQuery("FROM SlatwallRoundingRule");
+		if(arrayLen(getRoundingRuleRec)){
+			var RoundingRuleQuery =variables.dao.getRoundingRuleQuery(getRoundingRuleRec[1].getroundingRuleID());
+			assert(isQuery(RoundingRuleQuery));
+			assert(RoundingRuleQuery.recordCount==1);
+		}else{		
+			var RoundingRuleQuery =variables.dao.getRoundingRuleQuery('xxx');
+			assert(isQuery(RoundingRuleQuery));
+			assert(RoundingRuleQuery.recordCount==0);
 		}
-
 	}
 }
-
-

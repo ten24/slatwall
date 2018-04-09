@@ -51,42 +51,33 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
-		
-		variables.dao = variables.mockService.getCurrencyDAOMock();
-	}
-		
-	/**
-	* @test
-	*/
-	public void function getCurrentCurrencyRateByCurrencyCodes_return_null_by_default() {
-		var currencyRate = variables.dao.getCurrentCurrencyRateByCurrencyCodes('XXX', 'YYY');
-		
-		assert(isNull(currencyRate));
-	}
-	
-	/**
-	* @test
-	*/
-	public void function getCurrencyByCurrencyCode_return_null_by_default() {
-		var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-
-		assert(isNull(currencyacurrency));
+		variables.dao = variables.mockService.getSiteDAOMock();
 	}
 
 	/**
 	* @test
 	*/
-	public void function getCurrencyByCurrencyCode_return_single_object() {
-		var getCurrencyRecords = ormExecuteQuery("FROM SlatwallCurrency");
-		if(isArray(getCurrencyRecords) && arraylen(getCurrencyRecords)){
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode(getCurrencyRecords[1].getcurrencycode());
-			assert(isObject(currencyacurrency));
+	public void function getSiteByDomainName_return_null_by_default() {
+		var getDomainNames = ORMExecuteQuery('FROM SlatwallSite');
+		assert(isArray(getDomainNames));
+		if(arraylen(getDomainNames)){
+			var siteDomainName = variables.dao.getSiteByDomainName(getDomainNames[1].getDomainNames());
+			if(!isnull(siteDomainName)){
+				assert(isArray(siteDomainName));
+			}else{
+				assert(isNull(siteDomainName));
+			}
 		}else{
-			var currencyacurrency = variables.dao.getCurrencyByCurrencyCode('xxx');
-			assert(isNull(currencyacurrency));
+	 		var siteDomainName = variables.dao.getSiteByDomainName('');
+		 	assert(isNull(siteDomainName));
 		}
+	}
 
+	/**
+	* @test
+	*/
+	public void function getSiteCodes_return_not_null_by_default() {
+		var siteCodes = variables.dao.getSiteCodes();
+		assert(!isNull(siteCodes));
 	}
 }
-
-
