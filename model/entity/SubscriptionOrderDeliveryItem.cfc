@@ -54,6 +54,11 @@ component displayname="SubscriptionOrderDeliveryItem" entityname="SlatwallSubscr
 	property name="earned" ormtype="big_decimal" hb_formatType="currency";
 	property name="taxAmount" ormtype="big_decimal" hb_formatType="currency";
 	
+	/*
+	property name="deliveryDate" ormtype="timestamp";
+	*/
+	
+	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionOrderItem" cfc="SubscriptionOrderItem" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemID";
 	

@@ -3,10 +3,13 @@
     <!--gets deferred revenue-->
     <cfset deferredRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderItemCollectionList()/>
     <cfset deferredRevenueCollectionList.setDisplayProperties('orderItem.order.orderCloseDateTime',{isPeriod=true})/>
-    <cfset deferredRevenueCollectionList.addDisplayAggregate('calculatedDeferredTaxAmount','SUM','deferredRevenueSUM',false,{isMetric=true})/>
-    <cfset deferredRevenueCollectionList.addDisplayAggregate('calculatedDeferredRevenue','SUM','deferredTaxAmountSUM',false,{isMetric=true})/>
+    <!---<cfset deferredRevenueCollectionList.addDisplayAggregate('calculatedDeferredTaxAmount','SUM','deferredRevenueSUM',false,{isMetric=true})/>
+    <cfset deferredRevenueCollectionList.addDisplayAggregate('calculatedDeferredRevenue','SUM','deferredTaxAmountSUM',false,{isMetric=true})/>--->
     <cfset deferredRevenueCollectionList.setReportFlag(1)/>
     <cfset deferredRevenueCollectionList.setPeriodInterval('Month')/>
+    <cfset deferredRevenueCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+    
+    <cfdump var="#deferredRevenueCollectionList.getRecords()#"><cfabort>
     
     <cfset possibleYearsRecords = []/>
     <cfset currentYear = Year(now())/>
@@ -22,12 +25,12 @@
         <cfset deferredRevenueCollectionList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),12,31,23,59,59),'<=')/>
     </cfif>
     
+    <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <cfset dataRecords = deferredRevenueCollectionList.getRecords()/>
      
-    <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfset deferredRevenue = []/>
     <cfset deferredTaxAmount = []/>
     <cfloop from="1" to="12" index="i">

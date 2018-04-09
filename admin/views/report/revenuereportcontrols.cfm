@@ -89,7 +89,18 @@
 		        </div>
 		        <br/><br/>
 		        <!-- Unnamed (Droplist) -->
+		        
 		        <div id="u122" class="ax_default droplist">
+		        	<!---<select name="reportMonth" id="u122_input" style="-webkit-appearance: menulist-button;" >
+		                <cfloop array="#possibleMonths#" index="possibleMonthRecord">
+		                	
+		                    <option 
+		                    	value="#possibleMonthRecord#"
+		                    	<cfif structKeyExists(rc,'reportMonth') && rc.reportMonth eq possibleMonthRecord>selected</cfif>
+		                    >#possibleMonthRecord#
+		                    </option>
+		                </cfloop>
+		            </select>--->
 		            <select name="reportYear" id="u122_input" style="-webkit-appearance: menulist-button;" >
 		                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
 		                	

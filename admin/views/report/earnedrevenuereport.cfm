@@ -46,9 +46,9 @@
     </cfif>
     
     <cfset dataRecords = earnedRevenueCollectionList.getRecords()/>
+    <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
-    <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfset subscriptionsEarning = []/>
     <cfset earned = []/>
     <cfset taxAmount = []/>
@@ -69,7 +69,7 @@
     <table class="table table-bordered s-detail-content-table">
         <thead>
             <tr>
-                <th></th>
+                <th>Created Date Time</th>
                 <cfloop array="#possibleMonths#" index="possibleMonth">
                     <th>
                         #possibleMonth#
@@ -156,7 +156,7 @@
     <table class="table table-bordered s-detail-content-table">
         <thead>
             <tr>
-                <th></th>
+                <th>Created Date Time</th>
                 <cfloop array="#possibleMonths#" index="possibleMonth">
                     <th>
                         #possibleMonth#
