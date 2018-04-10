@@ -157,17 +157,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return subscriptionOrderItemCollectionList.getRecords();
 	}
 	
-	public any function createSubscriptionOrderDeliveries(){
+	public any function createSubscriptionOrderDeliveries(any currentDateTime=now()){
 	
 		transaction{
-			var currentDateTime = now();
+			//list of productIDs based on the nextDeliveryScheduleDate
 			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
 			
-			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(currentDateTime,productsScheduledForDelivery);
+			//subscription order item data for creating 
+			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
 			
-			//create a delivery for each item
+			//create a delivery for each subscription Order Item 
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
-				//insert subscriptionOrderDeliveryItem related to 
+				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
 				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
 					getOrderDao().insertSubscriptionOrderDeliveryItem(
 						subscriptionOrderItemRecord['subscriptionOrderItemID'],1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
@@ -176,7 +177,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			//update NextDeliveryDate
-			var productsScheduledForDeliveryRecords = productsScheduledForDeliveryCollectionList.getRecords(true);
+			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
+			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+			var productsScheduledForDeliveryRecords = productsScheduledForDeliveryCollectionList.getRecords(formatRecords=false);
 			
 			for(var productsScheduledForDeliveryRecord in productsScheduledForDeliveryRecords){
 				var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
@@ -184,19 +187,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				deliveryScheduleDateCollectionList.addFilter('product.productID',productsScheduledForDeliveryRecord['productID']);
 				
 				//if start in current period flag is set then get the closest previous date in the past otherwise closest in the future
-				if(productsScheduledForDeliveryRecord['startInCurrentPeriodFlag']){
-					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',currentDateTime,'<');
+				if(structKeyExists(productsScheduledForDeliveryRecord,'startInCurrentPeriodFlag') && productsScheduledForDeliveryRecord['startInCurrentPeriodFlag']){
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',arguments.currentDateTime,'<');
 					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue|DESC');
 				}else{
-					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',currentDateTime,'>');
+					deliveryScheduleDateCollectionList.addFilter('deliveryScheduleDateValue',arguments.currentDateTime,'>');
 					deliveryScheduleDateCollectionList.addOrderBy('deliveryScheduleDateValue');
 				}
+				//make sure the date has not been completed
+				//deliveryScheduleDateCollectionList.addFilter('completedFlag',1,'!=');
 				
 				deliveryScheduleDateCollectionList.setPageRecordsShow(1);
-				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords();
+				var deliveryScheduleDateRecords = deliveryScheduleDateCollectionList.getPageRecords(formatRecords=false);
 				
 				if(arrayLen(deliveryScheduleDateRecords)){
-					getProductDAO().updateNextDeliveryScheduleDate(productID,deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']);
+					getProductDAO().updateNextDeliveryScheduleDate(trim(productsScheduledForDeliveryRecord['productID']),trim(deliveryScheduleDateRecords[1]['deliveryScheduleDateValue']));
 				}
 			}
 		}

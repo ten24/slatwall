@@ -57,9 +57,7 @@ Notes:
 			
 			var sql = "UPDATE swproduct set nextDeliveryScheduleDate=:nextDeliveryScheduleDate where productID = :productID";
 			
-			q.setSQL(sql);
-			
-			q.execute();
+			q.execute(sql=sql);
 		}
 		
 		public numeric function getCurrentMargin(required string productID){

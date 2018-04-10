@@ -1111,8 +1111,9 @@ component extends="HibachiService" accessors="true" {
 		getService('OrderService').createSubscriptionOrderDeliveries();
 	}
 	
+	
 	public any function getProductsScheduledForDeliveryCollectionList(required string dateTime){
-		var productCollectionList = this.getProductCollectionList();
+		var productCollectionList = getService('HibachiService').getProductCollectionList();
 		
 		productCollectionList.addFilter('deferredRevenueFlag',true);
 		productCollectionList.addFilter('skus.subscriptionTerm.itemsToDeliver',0,'>');
