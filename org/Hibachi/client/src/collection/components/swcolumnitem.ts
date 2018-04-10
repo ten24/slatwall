@@ -79,7 +79,15 @@ class SWColumnItem{
 						priority:0
 					};
 				}
-
+				
+				scope.toggleMetric = function(column){
+					if(angular.isUndefined(column.isMetric)){
+						column.isMetric = false;
+					}
+					column.isMetric = !column.isMetric;
+					scope.saveCollection();
+				};
+				
 				scope.toggleVisible = function(column){
 					if(angular.isUndefined(column.isVisible)){
 						column.isVisible = false;

@@ -45,11 +45,32 @@
                                     <option value="">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span>{{propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
                                 </select>
                             </div>
-
                             <div class="clearfix"></div>
+                            <button 
+                                style="width: 100%; margin: 10px auto;"
+                                type="button" 
+                                class="btn btn-sm btn-primary"
+                                data-ng-if="(selectedProperty.$$group === 'simple' && selectedProperty.ormtype !== 'string') || (selectedProperty.$$group == 'drilldown' && !selectedProperty.aggregate) || selectedProperty.$$group == 'compareCollections'"
+                                ng-click="displayAggregates()"
+                            >
+                                Show Aggregates
+                            </button>
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-6" ng-if="showAggregates">
+                        
+                        <!-- Simple -->
+                        <span
+                                data-ng-if="selectedProperty.$$group === 'simple' && selectedProperty.ormtype !== 'string'"
+                                sw-display-item-aggregate-simple
+                                data-selected-property="selectedProperty"
+                                data-properties-list="propertiesList"
+                                data-bread-crumbs="breadCrumbs"
+                                data-selected-property-changed="selectedPropertyChanged(selectedProperty, true)"
+                                >
+                        </span>
+                        
+                        <!-- Drill down -->
                         <span
                             data-ng-if="selectedProperty.$$group == 'drilldown' && !selectedProperty.aggregate"
                             sw-display-item
@@ -60,7 +81,7 @@
                             >
                         </span>
 
-
+                        <!-- Compare Collections -->
                         <span
                                 data-ng-if="selectedProperty.$$group == 'compareCollections'"
                                 sw-display-item-aggregate

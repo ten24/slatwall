@@ -1,6 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWDisplayOptions{
+    public showAggregates: boolean = false;
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             $log,
@@ -122,6 +123,12 @@ class SWDisplayOptions{
 
                     return title;
                 };
+
+                scope.displayAggregates = function(){
+                    
+                    scope.showAggregates = (scope.showAggregates == true ? false : true)
+                    console.log("Changed agg:",scope.showAggregates);
+                }
 
                 scope.addColumn = function(closeDialog){
                     var selectedProperty:any = scope.selectedProperty;
