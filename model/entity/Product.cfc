@@ -153,8 +153,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
 	
 	public any function getNextDeliveryScheduleDate(){
-		if(!structKeyExists(variables,'nextDeliveryScheduleDate') && arraylen(getDeliveryScheduleDates())){
-			variables.nextDeliveryScheduleDate=getDeliveryScheduleDates()[1];
+		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
+			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
+			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
+			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue','ASC');
+			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
+			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
+			
+			if(arrayLen(deliveryScheduleDateValueRecords)){
+				variables.nextDeliveryScheduleDate=deliveryScheduleDateValueRecords[1]['deliveryScheduleDateValue'];
+			}
+			
 		}
 		if(structKeyExists(variables,'nextDeliveryScheduleDate')){
 			return variables.nextDeliveryScheduleDate;
