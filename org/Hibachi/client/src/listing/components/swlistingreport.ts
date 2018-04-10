@@ -91,7 +91,6 @@ class SWListingReportController {
 			        );
 			    }
 			});
-			console.log(this.chart.data);
 			this.chart.update();
         });
     }
@@ -104,7 +103,6 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
-            console.log('change');
             this.reportCollectionConfig = this.collectionConfig.clone();
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.reportCollectionConfig.setReportFlag(true);
