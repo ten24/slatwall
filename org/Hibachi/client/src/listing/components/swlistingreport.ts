@@ -116,40 +116,6 @@ class SWListingReportController {
             
             this.reportCollectionConfig.getEntity().then((reportingData)=>{
 		        this.reportingData = reportingData;
-    // 			var data = {
-    //     			labels:["January", "February", "March", "April", "May", "June", "July", "August"],
-    //     			datasets: [{
-    //     				backgroundColor: "rgba(255, 99, 132, 0.5)",
-    //     				borderColor: "rgb(255, 99, 132)",
-    //     				hidden:false,
-    //     				data: [1,2,3,4,5,6,7,8],
-    //     				label: 'D0'
-    //     			}]
-    //     		};
-        
-        // 		var options = {
-        // 			maintainAspectRatio: false,
-        // 			spanGaps: false,
-        // 			elements: {
-        // 				line: {
-        // 					tension: 0.000001
-        // 				}
-        // 			},
-        // 			scales: {
-        // 				yAxes: [{
-        // 					stacked: true
-        // 				}]
-        // 			},
-        // 			plugins: {
-        // 				filler: {
-        // 					propagate: false
-        // 				},
-        // 				'samples-filler-analyser': {
-        // 					target: 'chart-analyser'
-        // 				}
-        // 			}
-        // 		};
-    		
     			var ctx = $("#myChart");
     			var dates = [];
     			var datasets = [];
@@ -209,7 +175,6 @@ class SWListingReportController {
                     this.updateComparePeriod();
                 }
             });
-            //this.reportCollectionConfig.addDisplayProperty()
         }
     }
 }
