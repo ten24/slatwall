@@ -12,8 +12,12 @@ class SWListingReportController {
     public selectedPeriodInterval:any;
     public startDate:any;
     public endDate:any;
+    public startDateCompare:any;
+    public endDateCompare:any;
+    public compareReportCollectionConfig:any;
+    public compareReportingData:any;
     public reportingData:any;
-    
+    public chart:Chart;
     //@ngInject
     constructor(
         public $hibachi,
@@ -40,7 +44,55 @@ class SWListingReportController {
     
     private random_rgba = ()=>{
         let o = Math.round, r = Math.random, s = 255;
-        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + 1 + ')';
+    }
+    
+    public updateComparePeriod = ()=>{
+        this.compareReportCollectionConfig = this.collectionConfig.clone();
+        this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+        this.compareReportCollectionConfig.setReportFlag(true);
+        this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
+        this.compareReportCollectionConfig.setAllRecords(true);
+        this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
+        
+        //TODO:should add as a filterGroup
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',false,true,false,'dates');
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',false,true,false,'dates');
+        
+        this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
+           this.compareReportingData = reportingData;
+           this.compareReportingData.records.forEach(element=>{
+               if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
+                  this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
+               }
+           });
+			this.reportCollectionConfig.columns.forEach(column=>{
+			    if(column.isMetric){
+			        let color = this.random_rgba();
+			        let title = `${column.title} (${this.startDateCompare.toDateString()} - ${this.endDateCompare.toDateString()})`;
+			        let metrics = [];
+			        this.compareReportingData.records.forEach(element=>{
+			             metrics.push(
+    			                {
+    			                    y:element[column.aggregate.aggregateAlias],
+    			                    x:element[this.selectedPeriodColumn.name]
+    			                }
+    			      )
+			        });
+			        this.chart.data.datasets.push(
+			            {
+                        label:title,
+                        data:metrics,
+                        backgroundColor:color,
+                        borderColor:color,
+                        borderWidth: 2,
+                        fill:false
+                        }
+			        );
+			    }
+			});
+			this.chart.update();
+        });
     }
     
     public updatePeriod = ()=>{
@@ -59,46 +111,11 @@ class SWListingReportController {
             this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
             
             //TODO:should add as a filterGroup
-            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=');
-            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=');
-            
+            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',false,true,false,'dates');
+            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',false,true,false,'dates');
             
             this.reportCollectionConfig.getEntity().then((reportingData)=>{
 		        this.reportingData = reportingData;
-    // 			var data = {
-    //     			labels:["January", "February", "March", "April", "May", "June", "July", "August"],
-    //     			datasets: [{
-    //     				backgroundColor: "rgba(255, 99, 132, 0.5)",
-    //     				borderColor: "rgb(255, 99, 132)",
-    //     				hidden:false,
-    //     				data: [1,2,3,4,5,6,7,8],
-    //     				label: 'D0'
-    //     			}]
-    //     		};
-        
-        // 		var options = {
-        // 			maintainAspectRatio: false,
-        // 			spanGaps: false,
-        // 			elements: {
-        // 				line: {
-        // 					tension: 0.000001
-        // 				}
-        // 			},
-        // 			scales: {
-        // 				yAxes: [{
-        // 					stacked: true
-        // 				}]
-        // 			},
-        // 			plugins: {
-        // 				filler: {
-        // 					propagate: false
-        // 				},
-        // 				'samples-filler-analyser': {
-        // 					target: 'chart-analyser'
-        // 				}
-        // 			}
-        // 		};
-    		
     			var ctx = $("#myChart");
     			var dates = [];
     			var datasets = [];
@@ -106,32 +123,45 @@ class SWListingReportController {
     			this.reportCollectionConfig.columns.forEach(column=>{
     			    if(column.isMetric){
     			        let color = this.random_rgba();
+    			        let title = `${column.title} (${this.startDate.toDateString()} - ${this.endDate.toDateString()})`;
     			        let metrics = [];
-    			        this.reportingData.records.forEach(element=>{metrics.push(element[column.aggregate.aggregateAlias])});
+    			        this.reportingData.records.forEach(element=>{
+    			            metrics.push(
+    			                {
+    			                    y:element[column.aggregate.aggregateAlias],
+    			                    x:element[this.selectedPeriodColumn.name]
+    			                }
+    			            )
+    			        });
     			        datasets.push(
     			            {
-                            label:column.title,
+                            label:title,
                             data:metrics,
                             backgroundColor:color,
                             borderColor:color,
-                            borderWidth: 2
+                            borderWidth: 2,
+                            fill:false
                             }
     			        );
     			    }
     			});
-                var myLineChart = new Chart(ctx, {
+                this.chart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: dates,
                         datasets:datasets
                     },
                     options: {
+                        events:[],
                         scales: {
                             yAxes: [{
                                 ticks: {
                                     beginAtZero:true
                                 }
                             }]
+                        },
+                        hover: {
+                            animationDuration: 0
                         },
                         elements:{
                             line:{
@@ -140,9 +170,11 @@ class SWListingReportController {
                         }
                     }
                 });
-                myLineChart.draw();
+                this.chart.draw();
+                if(this.endDateCompare && this.startDateCompare){
+                    this.updateComparePeriod();
+                }
             });
-            //this.reportCollectionConfig.addDisplayProperty()
         }
     }
 }
