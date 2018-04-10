@@ -2329,9 +2329,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return manyToOneProperties;
 	}
-
+	function isReportAndHasNonPersistent(){
+		if(isReport() && this.getNonPersistentColumn()){
+			throw(rbkey('admin.reports.nonPersistentReport'));
+		}
+	}
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
+		isReportAndHasNonPersistent();
+		
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
@@ -2472,6 +2478,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
+		isReportAndHasNonPersistent();
+		
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
