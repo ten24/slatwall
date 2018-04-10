@@ -7,40 +7,49 @@
 component accessors=true output=false persistent=false {
 
 	remote any function getTestFolders() returnFormat="json"{
-		var path ="/Slatwall/meta/tests/unit/";
-		var metaData= DirectoryList(expandPath(path), false, "name"); // get the directory list in root path
-		var arrayFolders =[];
-		for (var item in metaData){
-			if(findNoCase(".cfc",item,0) == 0 && findNoCase(".cfm",item,0) == 0){ //condition to remove .cfc and .cfm files in unit folder
-				arrayAppend(arrayFolders, item);
-				}
+	path ="/Slatwall/meta/tests/unit/";
+	metaData= DirectoryList(expandPath(path), false, "name"); // get the directory list in root path
+	arrayFolders =[];
+	for (item in metaData){
+		if(findNoCase(".cfc",item,0) == 0 && findNoCase(".cfm",item,0) == 0){ //condition to remove .cfc and .cfm files in unit folder
+			arrayAppend(arrayFolders, item);
 			}
+		}
 
-		var objResponse='{"TestFolders":'&SerializeJSON(arrayFolders)&'}';
-		return objResponse;
+	objResponse='{"TestFolders":'&SerializeJSON(arrayFolders)&'}';
+	return objResponse;
 	}
 
 	remote any function getTestFiles( testFolder ) returnFormat="JSON"{
-		var path ="/Slatwall/meta/tests/unit/"&testFolder;
-		var metaData= DirectoryList(expandPath(path), false, "name");
-		var arrayFiles =[];
-		for (var item in metaData){
-			if(findNoCase(".cfc",item,0) > 0 ){ // condition to add only the files that have .cfc extension in the testFiles array
-					arrayAppend(arrayFiles, item.left(len(item)-4));
-				}
+	path ="/Slatwall/meta/tests/unit/"&testFolder;
+	metaData= DirectoryList(expandPath(path), false, "name");
+	arrayFiles =[];
+	for (item in metaData){
+		if(findNoCase(".cfc",item,0) > 0 ){ // condition to add only the files that have .cfc extension in the testFiles array
+				arrayAppend(arrayFiles, item.left(len(item)-4));
 			}
-		var objResponse='{"TestFiles":'&SerializeJSON(arrayFiles)&'}';
-		return objResponse;
+		}
+	objResponse='{"TestFiles":'&SerializeJSON(arrayFiles)&'}';
+	return objResponse;
 	}
 
 	remote any function getTestMethods(testFolder, testFile) returnFormat="JSON"{
-		var path="Slatwall.meta.tests.unit."&testFolder&"."&testFile;
-		var metaData= GetMetaData(createObject("component",path));
-		var arrayMethods = [];
-		for (var item in metaData.functions){
+		path="Slatwall.meta.tests.unit."&testFolder&"."&testFile;
+		metaData= GetMetaData(createObject("component",path));
+		arrayMethods = [];
+		for (item in metaData.functions){
+			if(structKeyExists(item,"test") && item.test == "yes"){
 			arrayAppend(arrayMethods, item.name);
+			}
 		}
-		var objResponse = '{"TestMethods":'&SerializeJSON(arrayMethods)&',"TestFunctionsCount":'&arraylen(arrayMethods)&'}';
+		if(structKeyExists(metaData,"extends")&&structKeyExists(metaData.extends,"functions")){
+		for (item in metaData.extends.functions){
+			if(structKeyExists(item,"test") && item.test == "yes"){
+			arrayAppend(arrayMethods, item.name);
+			}
+		}
+			}
+		objResponse = '{"TestMethods":'&SerializeJSON(arrayMethods)&',"TestFunctionsCount":'&arraylen(arrayMethods)&'}';
 	    return objResponse;
 	}
 }
