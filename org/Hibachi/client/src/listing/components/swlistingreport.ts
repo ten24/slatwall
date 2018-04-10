@@ -51,13 +51,7 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
-            console.log(
-            this.selectedPeriodColumn 
-            && this.selectedPeriodInterval
-            && this.startDate
-            && this.endDate);
             this.reportCollectionConfig = this.collectionConfig.clone();
-            
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.reportCollectionConfig.setReportFlag(true);
             this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
@@ -108,8 +102,6 @@ class SWListingReportController {
     			var ctx = $("#myChart");
     			var dates = [];
     			var datasets = [];
-    			console.log(this.reportCollectionConfig);
-    			console.log(this.reportingData);
     			this.reportingData.records.forEach(element=>{dates.push(element[this.selectedPeriodColumn.name])});
     			this.reportCollectionConfig.columns.forEach(column=>{
     			    if(column.isMetric){
