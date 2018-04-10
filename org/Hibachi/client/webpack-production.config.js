@@ -15,7 +15,7 @@ var appConfig = {
          vendor: ["date", "angular", 'angular-lazy-bootstrap', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
          'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch'],
     },
-    watch:true,
+    watch:false,
     output: {
         path: PATHS.app,
         filename: 'bundle.js',
