@@ -87,6 +87,7 @@ class OrderBy{
 class CollectionConfig {
     public collection: any;
     private eventID:string;
+    public filterGroupAliasMap:any = {};
     public reportFlag:boolean=false;
     public periodInterval:string="";
 
@@ -486,7 +487,16 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
+    public addFilter= (
+        propertyIdentifier: string,
+        value: any,
+        comparisonOperator: string = '=',
+        logicalOperator?: string,
+        hidden:boolean=false,
+        isKeywordFilter=true,
+        isOnlyKeywordFilter=false,
+        filterGroupAlias? : string)
+        :CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
             logicalOperator = undefined;
         }
@@ -494,15 +504,18 @@ class CollectionConfig {
         if(propertyIdentifier.split('.').length > 1){
             this.processJoin(propertyIdentifier);
         }
-
+        console.log(filterGroupAlias);
 		//create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
-
+        var filterGroupIndex = 0;
+        if(filterGroupAlias){
+            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias);
+        }
         if(!isOnlyKeywordFilter){
-            this.filterGroups[0].filterGroup.push(filter);
+            this.filterGroups[filterGroupIndex].filterGroup.push(filter);
         }
         if(isKeywordFilter){
-            this.keywordFilterGroups[0].filterGroup.push(filter);
+            this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
         }
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
@@ -587,6 +600,57 @@ class CollectionConfig {
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
+        return this;
+    };
+    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {
+        var group = {
+            filterGroup:[]
+        };
+
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+            group["logicalOperator"] = filterGroupLogicalOperator;
+        }
+        for(var i =  0; i < filterGroup.length; i++){
+            var filter = this.createFilter(
+                filterGroup[i].propertyIdentifier,
+                filterGroup[i].comparisonValue,
+                filterGroup[i].comparisonOperator,
+                filterGroup[i].logicalOperator,
+                filterGroup[i].hidden
+            );
+            group.filterGroup.push(filter);
+        }
+        return group;
+    }
+
+    public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
+        if(!this.filterGroups){
+            this.filterGroups = [{filterGroup:[]}];
+        }
+        if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
+            this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
+        }
+        return this.filterGroupAliasMap[filterGroupAlias];
+    };
+
+    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator:string):number =>{
+        var newFilterGroup = {"filterGroup": []};
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+            newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
+        }else if (this.filterGroups[0].filterGroup.length){
+            newFilterGroup["logicalOperator"] = "AND";
+        }
+        this.filterGroups[0].filterGroup.push(newFilterGroup);
+        return this.filterGroups[0].filterGroup.length -1;
+    };
+
+    public upsertFilterGroup = (filterGroupName:string, filterGroup:any):CollectionConfig=>{
+        var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupName);
+        var logicalOperator = "";
+        if(this.filterGroups[0].filterGroup[filterGroupIndex].logicalOperator){
+            logicalOperator = this.filterGroups[0].filterGroup[filterGroupIndex].logicalOperator;
+        }
+        this.filterGroups[0].filterGroup[filterGroupIndex] = this.formatFilterGroup(filterGroup, logicalOperator);
         return this;
     };
 
