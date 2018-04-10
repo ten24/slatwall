@@ -1,0 +1,91 @@
+		
+<div class="col-md-5">
+    <canvas id="myChart" width="1200" height="300" ng-show="swListingReport.reportingData"></canvas>
+	<div class="btn-group-vertical pull-right" style="vertical-align:top; margin-bottom:5px;">
+		<select 
+		    ng-model="swListingReport.selectedPeriodInterval"
+			ng-options="periodInterval as periodInterval.value for periodInterval in swListingReport.periodIntervals track by periodInterval.value"
+			ng-change="swListingReport.updatePeriod()"
+        >
+		</select>
+	</div>
+	
+	
+	<div class="pull-right" style="margin-right:10px;">
+		<div style="margin-bottom:5px;">
+			<select 
+			    ng-model="swListingReport.selectedPeriodColumn" 
+			    ng-options="periodColumn as periodColumn.displayPropertyIdentifier
+                            for periodColumn in swListingReport.periodColumns
+                             | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
+                "
+                ng-change="swListingReport.updatePeriod()"
+            >
+				
+			</select>
+		</div>
+		<div style="margin-bottom:-5px;">
+			<span style="display:block;font-size:11px;font-weight:bold;padding-bottom:2px;">Start - End: <a href="#" id="hibachi-report-enable-compare" class="pull-right">+Compare</a></span>
+			<div class="col-sm-12 s-no-paddings">
+                <p class="input-group s-datepicker">
+                    <input class="form-control" 
+                  		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                  		close-text="Close" 
+                  		is-open="swListingReport.openedCalendarStart" 
+                  		type="text"
+                  		ng-model="swListingReport.startDate"
+                  		ng-change="swListingReport.updatePeriod()"
+                  		/>
+                    <span class="input-group-btn" >
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+            <div class="col-sm-12 s-no-paddings">
+                <p class="input-group s-datepicker">
+                    <input class="form-control" 
+                  		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                  		close-text="Close" 
+                  		is-open="swListingReport.openedCalendarEnd" 
+                  		type="text"
+                  		ng-model="swListingReport.endDate"
+                  		ng-change="swListingReport.updatePeriod()"
+                  		/>
+                    <span class="input-group-btn" >
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+            
+			<input type="hidden" name="reportCompareFlag" value="0">
+		<div id="hibachi-report-compare-date" class="hide">
+			<div class="col-sm-12 s-no-paddings">
+                <p class="input-group s-datepicker">
+                    <input class="form-control" 
+                  		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                  		close-text="Close" 
+                  		is-open="swListingReport.openedCalendarStartCompare" 
+                  		type="text"
+                  		ng-model="swListingReport.startDateCompare"/>
+                    <span class="input-group-btn" >
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarStartCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+            <div class="col-sm-12 s-no-paddings">
+                <p class="input-group s-datepicker">
+                    <input class="form-control" 
+                  		datepicker-popup="MMM dd, yyyy hh:mm a" 
+                  		close-text="Close" 
+                  		is-open="swListingReport.openedCalendarEndCompare" 
+                  		type="text"
+                  		ng-model="swListingReport.endDateCompare"/>
+                    <span class="input-group-btn" >
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+		</div>
+	</div>
+	
+</div>
