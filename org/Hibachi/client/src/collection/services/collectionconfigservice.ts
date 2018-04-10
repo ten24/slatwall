@@ -504,7 +504,6 @@ class CollectionConfig {
         if(propertyIdentifier.split('.').length > 1){
             this.processJoin(propertyIdentifier);
         }
-        console.log(filterGroupAlias);
 		//create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
         var filterGroupIndex = 0;
