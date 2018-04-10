@@ -151,6 +151,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	
+	public any function getNextDeliveryScheduleDate(){
+		if(!structKeyExists(variables,'nextDeliveryScheduleDate') && arraylen(getDeliveryScheduleDates())){
+			variables.nextDeliveryScheduleDate=getDeliveryScheduleDates()[1];
+		}
+		if(structKeyExists(variables,'nextDeliveryScheduleDate')){
+			return variables.nextDeliveryScheduleDate;
+		}
+	}
 
 	public boolean function getDeferredRevenueFlag(){
 		if(!structKeyExists(variables,'deferredRevenueFlag')){
