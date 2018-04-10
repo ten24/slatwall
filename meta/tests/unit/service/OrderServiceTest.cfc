@@ -755,7 +755,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	
 	/**
 	* @test
 	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
@@ -928,7 +927,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//make sure that the schedule moved forward and a new deliver was made
 		assertEquals(product.getNextDeliveryScheduleDate(),FinalDeliveryScheduleDate.getDeliveryScheduleDateValue());
 		assertEquals(2,subscriptionOrderItem.getSubscriptionOrderDeliveryItemsCount());
-		
 		
 	}
 	
