@@ -122,7 +122,7 @@ class SWListingReportController {
                             data:metrics,
                             backgroundColor:color,
                             borderColor:color,
-                            borderWidth: 1
+                            borderWidth: 2
                             }
     			        );
     			    }
@@ -140,6 +140,11 @@ class SWListingReportController {
                                     beginAtZero:true
                                 }
                             }]
+                        },
+                        elements:{
+                            line:{
+                                tension:0
+                            }
                         }
                     }
                 });
