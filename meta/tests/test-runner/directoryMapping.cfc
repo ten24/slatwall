@@ -45,7 +45,7 @@ component accessors=true output=false persistent=false {
 		}
 		// including test methods from extended file
 		if(structKeyExists(metaData,"extends")&&structKeyExists(metaData.extends,"functions")){
-		for (item in metaData.extends.functions){
+		for (var item in metaData.extends.functions){
 			if(structKeyExists(item,"test") && item.test == "yes"){
 			arrayAppend(arrayMethods, item.name);
 			}
