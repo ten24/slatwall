@@ -134,28 +134,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderRequirementsList;
 	}
 	
+	public string function getProductsScheduledForDelivery(required any currentDateTime){
+		
+		//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
+		var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
+		productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+		
+		return productsScheduledForDeliveryCollectionList.getPrimaryIDList();
+	}
+	
+	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
+		//find all order items that require delivery based on the term
+		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
+		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
+		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.effectiveDateTime',arguments.currentDateTime,'<=');
+		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive','=');
+		
+		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
+		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
+		return subscriptionOrderItemCollectionList.getRecords();
+	}
+	
 	public any function createSubscriptionOrderDeliveries(){
 	
 		transaction{
 			var currentDateTime = now();
-			//get all products that are scheduled for a delivery if the nextDeliveryScheduleDate is ready
-			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(currentDateTime);
-			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');
+			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
 			
-			var productsScheduledForDelivery = productsScheduledForDeliveryCollectionList.getPrimaryIDList();
+			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(currentDateTime,productsScheduledForDelivery);
 			
-			//find all order items that require delivery based on the term
-			var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
-			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',productsScheduledForDelivery,'IN');
-			//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
-			subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.effectiveDateTime',currentDateTime,'<=');
-			subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive','=');
-			
-			subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
-			subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
-			subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
-			
-			var subscriptionOrderItemRecords = subscriptionOrderItemCollectionList.getRecords();
 			//create a delivery for each item
 			for(var subscriptionOrderItemRecord in subscriptionOrderItemRecords){
 				//insert subscriptionOrderDeliveryItem related to 

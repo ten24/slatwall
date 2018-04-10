@@ -697,14 +697,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
 	*/
 	public void function createSubscriptionOrderDeliveriestest(){
+		var orderService = variables.mockService.getOrderServiceMock();
+	
 		var productData = {
 			productID="",
+			productName="test",
 			deferredRevenueFlag=true
 		};
 		var product = createPersistedTestEntity('product',productData);
-	
+		
 		//make sure the product has a deferredRevenueFlag as true
-		asset(product.getDeferredRevenueFlag());
+		assert(product.getDeferredRevenueFlag());
+		
+		debug(orderService.getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(now(),orderservice.getProductsScheduledForDelivery(now())));
+		
+		orderService.createSubscriptionOrderDeliveries();
+		
 	}
 	
 	/**
