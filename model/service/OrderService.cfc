@@ -134,7 +134,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderRequirementsList;
 	}
 	
-	public any function createSubscritpionOrderDeliveries(){
+	public any function createSubscriptionOrderDeliveries(){
 	
 		transaction{
 			var currentDateTime = now();

@@ -1107,8 +1107,8 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	public void function createSubscritpionOrderDeliveries(){
-		getService('OrderService').createSubscritpionOrderDeliveries();
+	public void function createSubscriptionOrderDeliveries(){
+		getService('OrderService').createSubscriptionOrderDeliveries();
 	}
 	
 	public any function getProductsScheduledForDeliveryCollectionList(required string dateTime){
