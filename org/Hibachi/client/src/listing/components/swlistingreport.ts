@@ -12,6 +12,7 @@ class SWListingReportController {
     public selectedPeriodInterval:any;
     public startDate:any;
     public endDate:any;
+    public reportingData:any;
     
     //@ngInject
     constructor(
@@ -37,6 +38,11 @@ class SWListingReportController {
     public $onInit=()=>{
     }
     
+    private random_rgba = ()=>{
+        let o = Math.round, r = Math.random, s = 255;
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    }
+    
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
         if(
@@ -45,6 +51,11 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
+            console.log(
+            this.selectedPeriodColumn 
+            && this.selectedPeriodInterval
+            && this.startDate
+            && this.endDate);
             this.reportCollectionConfig = this.collectionConfig.clone();
             
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
@@ -58,69 +69,69 @@ class SWListingReportController {
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=');
             
             
-            this.reportCollectionConfig.getEntity().then((data)=>{
-		        this.reportingData = data;
-		
-    			var data = {
-        			labels:["January", "February", "March", "April", "May", "June", "July", "August"],
-        			datasets: [{
-        				backgroundColor: "rgba(255, 99, 132, 0.5)",
-        				borderColor: "rgb(255, 99, 132)",
-        				hidden:false,
-        				data: [1,2,3,4,5,6,7,8],
-        				label: 'D0'
-        			}]
-        		};
+            this.reportCollectionConfig.getEntity().then((reportingData)=>{
+		        this.reportingData = reportingData;
+    // 			var data = {
+    //     			labels:["January", "February", "March", "April", "May", "June", "July", "August"],
+    //     			datasets: [{
+    //     				backgroundColor: "rgba(255, 99, 132, 0.5)",
+    //     				borderColor: "rgb(255, 99, 132)",
+    //     				hidden:false,
+    //     				data: [1,2,3,4,5,6,7,8],
+    //     				label: 'D0'
+    //     			}]
+    //     		};
         
-        		var options = {
-        			maintainAspectRatio: false,
-        			spanGaps: false,
-        			elements: {
-        				line: {
-        					tension: 0.000001
-        				}
-        			},
-        			scales: {
-        				yAxes: [{
-        					stacked: true
-        				}]
-        			},
-        			plugins: {
-        				filler: {
-        					propagate: false
-        				},
-        				'samples-filler-analyser': {
-        					target: 'chart-analyser'
-        				}
-        			}
-        		};
+        // 		var options = {
+        // 			maintainAspectRatio: false,
+        // 			spanGaps: false,
+        // 			elements: {
+        // 				line: {
+        // 					tension: 0.000001
+        // 				}
+        // 			},
+        // 			scales: {
+        // 				yAxes: [{
+        // 					stacked: true
+        // 				}]
+        // 			},
+        // 			plugins: {
+        // 				filler: {
+        // 					propagate: false
+        // 				},
+        // 				'samples-filler-analyser': {
+        // 					target: 'chart-analyser'
+        // 				}
+        // 			}
+        // 		};
     		
     			var ctx = $("#myChart");
+    			var dates = [];
+    			var datasets = [];
+    			console.log(this.reportCollectionConfig);
+    			console.log(this.reportingData);
+    			this.reportingData.records.forEach(element=>{dates.push(element[this.selectedPeriodColumn.name])});
+    			this.reportCollectionConfig.columns.forEach(column=>{
+    			    if(column.isMetric){
+    			        let color = this.random_rgba();
+    			        let metrics = [];
+    			        this.reportingData.records.forEach(element=>{metrics.push(element[column.aggregate.aggregateAlias])});
+    			        datasets.push(
+    			            {
+                            label:column.title,
+                            data:metrics,
+                            backgroundColor:color,
+                            borderColor:color,
+                            borderWidth: 1
+                            }
+    			        );
+    			    }
+    			});
                 var myLineChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                        datasets: [{
-                            label: '# of Votes',
-                            data: [12, 19, 3, 5, 2, 3],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
+                        labels: dates,
+                        datasets:datasets
                     },
                     options: {
                         scales: {
@@ -133,8 +144,6 @@ class SWListingReportController {
                     }
                 });
                 myLineChart.draw();
-    		    console.log(myLineChart);
-                
             });
             //this.reportCollectionConfig.addDisplayProperty()
         }
