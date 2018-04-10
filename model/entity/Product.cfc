@@ -154,9 +154,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public any function getNextDeliveryScheduleDate(){
 		if(!structKeyExists(variables,'nextDeliveryScheduleDate')){
-			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDateCollectionList();
+			var deliveryScheduleDateCollectionList = this.getDeliveryScheduleDatesCollectionList();
 			deliveryScheduleDateCollectionList.setDisplayProperties('deliveryScheduleDateValue');
-			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue','ASC');
+			deliveryScheduleDateCollectionList.setOrderBy('deliveryScheduleDateValue|ASC');
 			deliveryScheduleDateCollectionList.setPageRecordsShow(1);
 			var deliveryScheduleDateValueRecords = deliveryScheduleDateCollectionList.getPageRecords();
 			

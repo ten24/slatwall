@@ -146,15 +146,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(required any currentDateTime, required string productsScheduledForDelivery){
 		//find all order items that require delivery based on the term
 		var subscriptionOrderItemCollectionList = this.getSubscriptionOrderItemCollectionList();
+		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
+		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
 		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.product.productID',arguments.productsScheduledForDelivery,'IN');
 		//TODO: subscriptionUsage doesn't have an activeFlag but we need to figure out if it is active
 		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.effectiveDateTime',arguments.currentDateTime,'<=');
 		subscriptionOrderItemCollectionList.addFilter('subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive','=');
 		
 		subscriptionOrderItemCollectionList.addFilter('orderItem.sku.subscriptionTerm.itemsToDeliver','NULL','IS NOT');
-		subscriptionOrderItemCollectionList.setDisplayProperties('subscriptionOrderItemID,subscriptionUsage.subscriptionTerm.itemsToDeliver,orderItem.calculatedExtendedPrice,orderItem.calculatedTaxAmount');
-		subscriptionOrderItemCollectionList.addDisplayAggregate('subscriptionOrderDeliveryItems.quantity','SUM','subscriptonOrderDeliveryItemsQuantitySum');
+		
 		return subscriptionOrderItemCollectionList.getRecords();
+		
 	}
 	
 	public any function createSubscriptionOrderDeliveries(any currentDateTime=now()){
@@ -171,11 +173,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				//insert a single subscriptionOrderDeliveryItem if we haven't completed delivering all the items in the subscription
 				if(subscriptionOrderItemRecord['subscriptonOrderDeliveryItemsQuantitySum'] < subscriptionOrderItemRecord['subscriptionUsage_subscriptionTerm_itemsToDeliver']){
 					getOrderDao().insertSubscriptionOrderDeliveryItem(
-						subscriptionOrderItemRecord['subscriptionOrderItemID'],1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
+						trim(subscriptionOrderItemRecord['subscriptionOrderItemID']),1,subscriptionOrderItemRecord['orderItem_calculatedExtendedPrice'],subscriptionOrderItemRecord['orderItem_calculatedTaxAmount']
 					);
 				}
 			}
-			
 			//update NextDeliveryDate
 			var productsScheduledForDeliveryCollectionList = getService('productService').getProductsScheduledForDeliveryCollectionList(arguments.currentDateTime);
 			productsScheduledForDeliveryCollectionList.setDisplayProperties('productID,startInCurrentPeriodFlag');

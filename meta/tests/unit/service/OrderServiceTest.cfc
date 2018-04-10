@@ -762,6 +762,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function createSubscriptionOrderDeliveriestest(){
 	
+		//MOCK DATA BEGIN
+	
 		//create a product that is for deferredRevenue
 		var productData = {
 			productID="",
@@ -791,6 +793,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			]
 		};
 		var subscriptionTerm = createPersistedTestEntity('subscriptionTerm',subscriptionTermData);
+		
+		assert(arraylen(subscriptionTerm.getSkus()));
+		
+		assertEquals(subscriptionTerm.getItemsToDeliver(),12);
 		
 		//set up a delivery schedule
 		
@@ -824,20 +830,84 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var finalDeliveryScheduleDate = createPersistedTestEntity('DeliveryScheduleDate',FinalDeliveryScheduleDateData);
 		
-		//we can assume that the nextBillDate is null since we just created it
-		assert(isNull(product.getNextDeliveryScheduleDate()));
+		var subscriptionStatusData = {
+			subscriptionStatusID="",
+			effectiveDateTime="11/11/2018",
+			subscriptionStatusType={
+				//sstActive
+				typeID="444df31fa8adde8d71c5ca279e42a00d"
+			}
+		};
+		var subscriptionStatus = createPersistedTestEntity('subscriptionStatus',subscriptionStatusData);
 		
+		assert(subscriptionStatus.getEffectiveDateTime()<='12/12/2018');
+		
+		var subscriptionUsageData = {
+			subscriptionUsageID="",
+			subscriptionTerm={
+				subscriptionTermID=subscriptionTerm.getSubscriptionTermID()
+			},
+			calculatedCurrentStatus={
+				subscriptionStatusID=subscriptionStatus.getSubscriptionStatusID()
+			}
+		};
+		var subscriptionUsage = createPersistedTestEntity('subscriptionUsage',subscriptionUsageData);
+		
+		assert(!isNull(subscriptionUsage.getCalculatedCurrentStatus()));
+		assertEquals(subscriptionUsage.getCalculatedCurrentStatus().getSubscriptionStatusType().getSystemCode(),'sstActive');
+		assert(!isNull(subscriptionUsage.getSubscriptionTerm()));
+		
+		var orderItemData = {
+			orderItemID="",
+			sku={
+				skuID=sku.getSkuID()
+			},
+			calculatedExtendedPrice=777.12,
+			calculatedTaxAmount=12.12,
+			currencyCode='USD'
+		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
+		
+		assert(!isNull(orderItem.getSku()));
+		
+		var subscriptionOrderItemData = {
+			subscritpionOrderItemID="",
+			subscriptionUsage={
+				subscriptionUsageID=subscriptionUsage.getSubscriptionUsageID()
+			}
+		};
+		var subscriptionOrderItem = createTestEntity('subscriptionOrderItem',subscriptionOrderItemData);
+		
+		subscriptionOrderItem.setOrderItem(orderItem);
+		ormflush();
+		
+		assert(!isNull(subscriptionOrderItem.getOrderItem()));
+		
+		assertEquals(subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductID(),product.getProductID());
+		
+		assert(!isNull(subscriptionOrderItem.getSubscriptionUsage()));
+		
+		//MOCK DATA END
+		
+		
+		//MOCK SERVICE BEGIN
 		var orderService = variables.mockService.getOrderServiceMock();
 		var productDao = variables.mockService.getProductDAOMock();
 		orderService.setProductDAO(productDao);
+		var orderDAO = variables.mockService.getOrderDAOMock();
+		orderService.setOrderDAO(orderDAO);
+		
+		//MOCK SERVICE END
+		
 		orderService.createSubscriptionOrderDeliveries('12/13/2018');
 		
 		//reload since sql updated product value
 		entityReload(product);
+		entityReload(subscriptionOrderItem);
 		
 		//make sure that the schedule updated
 		assertEquals(product.getNextDeliveryScheduleDate(),NextDeliveryScheduleDate.getDeliveryScheduleDateValue());
-		
+		assertEquals(1,arraylen(subscriptionOrderItem.getSubscriptionOrderDeliveryItems()));
 		
 		//if schedule is run again and make sure we don't deliver unnecessarily
 		orderService.createSubscriptionOrderDeliveries('12/13/2018');
@@ -845,8 +915,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//reload since sql updated product value
 		entityReload(product);
 		
-		//make sure that the schedule stayed the same
+		//make sure that the schedule stayed the same and no extra deliveries are made
 		assertEquals(product.getNextDeliveryScheduleDate(),NextDeliveryScheduleDate.getDeliveryScheduleDateValue());
+		assertEquals(1,arraylen(subscriptionOrderItem.getSubscriptionOrderDeliveryItems()));
 		
 		//future date arrives make sure we get to we progress to next date
 		orderService.createSubscriptionOrderDeliveries('1/13/2019');
@@ -854,8 +925,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//reload since sql updated product value
 		entityReload(product);
 		
-		//make sure that the schedule stayed the same
+		//make sure that the schedule moved forward and a new deliver was made
 		assertEquals(product.getNextDeliveryScheduleDate(),FinalDeliveryScheduleDate.getDeliveryScheduleDateValue());
+		assertEquals(2,subscriptionOrderItem.getSubscriptionOrderDeliveryItemsCount());
+		
+		
 	}
 	
 	/**
