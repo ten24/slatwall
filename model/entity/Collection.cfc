@@ -2329,7 +2329,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		return manyToOneProperties;
 	}
-	function isReportAndHasNonPersistent(){
+	public void function isReportAndHasNonPersistent(){
 		if(isReport() && this.getNonPersistentColumn()){
 			throw(rbkey('admin.reports.nonPersistentReport'));
 		}
