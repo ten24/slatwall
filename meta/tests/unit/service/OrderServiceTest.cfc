@@ -690,7 +690,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
 	}
-
+	
+	
+	/**
+	* @test
+	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
+	*/
+	public void function createSubscriptionOrderDeliveriestest(){
+		var productData = {
+			productID="",
+			deferredRevenueFlag=true
+		};
+		var product = createPersistedTestEntity('product',productData);
+	
+		//make sure the product has a deferredRevenueFlag as true
+		asset(product.getDeferredRevenueFlag());
+	}
+	
 	/**
 	* @test
 	*/
@@ -698,7 +714,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//adding a test shippingMethod
 		var shippingMethodData ={
 			shippingMethodID="",
-			fulfillementMethod={
+			fulfillmentMethod={
 				//shipping
 				fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953'
 			},
