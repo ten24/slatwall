@@ -6,7 +6,6 @@ component extends="testbox.system.BaseSpec"{
 		if(left(arguments.missingMethodName,3)=='get' && right(arguments.missingMethodName,len('ServiceMock')) == 'ServiceMock'){
 			//add basic hibachiService dependencies
 			var hibachiDao = this.getHibachiDAOMock();
-			//var hibachiDao = createMock('Slatwall.model.dao.HibachiDao');
 			var hibachiEventService = createMock('Slatwall.org.Hibachi.HibachiEventService');
 			var hibachiCacheService = createMock('Slatwall.org.Hibachi.HibachiCacheService');
 			hibachiCacheService.init();
@@ -58,9 +57,9 @@ component extends="testbox.system.BaseSpec"{
 		var currencyService = createMock('Slatwall.model.service.CurrencyService');
 		var integrationService = createMock('Slatwall.model.service.IntegrationService');
 		var settingService = createMock('Slatwall.model.service.SettingService');
-	
+
 		var paymentServiceMock = onMissingMethod('getPaymentServiceMock',{});
-	
+
 		paymentServiceMock.setpaymentDAO(paymentDAO);
 		paymentServiceMock.setcurrencyService(currencyService);
 		paymentServiceMock.setintegrationService(integrationService);
@@ -113,6 +112,10 @@ component extends="testbox.system.BaseSpec"{
 
 	}
 
+	public any function getLedgerAccountServiceMock() {
+		return this.onMissingMethod('getLedgerAccountServiceMock',{});
+	}
+
 	public any function getSettingServiceMock(){
 		var settingDAO = createMock('Slatwall.model.dao.SettingDAO');
 
@@ -143,7 +146,7 @@ component extends="testbox.system.BaseSpec"{
 		settingService.setemailService(emailService);
 		settingService.setfulfillmentService(fulfillmentService);
 		settingService.setintegrationService(integrationService);
-		//settingService.setledgerAccountService(ledgerAccountService);
+		settingService.setledgerAccountService(ledgerAccountService);
 		settingService.setlocationService(locationService);
 		settingService.setmeasurementService(measurementService);
 		settingService.setpaymentService(paymentService);
