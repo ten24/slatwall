@@ -13,7 +13,7 @@ class SWCurrency{
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                 data="$";
             }
-            if(value.toString().trim() == ''){
+            if(!value || value.toString().trim() == ''){
                 value = 0;
             }
             if(angular.isDefined(value)){
