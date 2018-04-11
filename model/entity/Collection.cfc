@@ -381,7 +381,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
  	}
 
  	public string function getPropertyIdentifierAlias(required string propertyIdentifier){
- 		
+ 		if(findNoCase('(',arguments.propertyIdentifier)){
+ 			return propertyIdentifier;
+ 		}
  		var cacheKey = 'getPropertyIdentifierAlias'&arguments.propertyIdentifier;
  		//check if the propertyIdentifier has base alias aready and strip it
  		var alias = getBaseEntityAlias();
@@ -1375,7 +1377,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		getPropertyIdentifierAlias(arguments.column.propertyIdentifier);
-		if(aggregateFunction == 'AVG' || aggregateFunction == 'SUM'){
+		if(aggregateFunction != 'COUNT'){
 			return " #aggregateFunction#(COALESCE(#arguments.column.propertyIdentifier#,0)) as #arguments.column.aggregate.aggregateAlias#";
 		}else{
 
@@ -3337,6 +3339,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}//<--end if build select
 			
+
 			//where clauses are actually the collection of all parent/child where clauses
 			
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
