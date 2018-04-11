@@ -57,7 +57,7 @@
                 </p>
             </div>
             
-			<input type="hidden" name="reportCompareFlag" value="0">
+		<input type="hidden" name="reportCompareFlag" value="0">
 		<div id="hibachi-report-compare-date" class="hide">
 			<div class="col-sm-12 s-no-paddings">
                 <p class="input-group s-datepicker">
@@ -66,6 +66,7 @@
                   		close-text="Close" 
                   		is-open="swListingReport.openedCalendarStartCompare" 
                   		type="text"
+                  		ng-change="swListingReport.updatePeriod()"
                   		ng-model="swListingReport.startDateCompare"/>
                     <span class="input-group-btn" >
                         <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarStartCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -79,6 +80,7 @@
                   		close-text="Close" 
                   		is-open="swListingReport.openedCalendarEndCompare" 
                   		type="text"
+                 		ng-change="swListingReport.updatePeriod()"
                   		ng-model="swListingReport.endDateCompare"/>
                     <span class="input-group-btn" >
                         <button type="button" class="btn btn-primary btn-sm" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
