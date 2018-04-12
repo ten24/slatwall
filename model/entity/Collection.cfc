@@ -3253,8 +3253,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							|| !hasPropertyByPropertyIdentifier(propertyIdentifier)
 							|| !getPropertyIdentifierIsPersistent(propertyIdentifier)
 						) continue;
-	
-						groupByList = listAppend(groupByList, column.propertyIdentifier);
+						
+						if(getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getCollectionObject()) == convertALiasToPropertyIdentifier(column.propertyIdentifier)){
+							groupByList = listprepend(groupByList, column.propertyIdentifier);
+						}else{
+							groupByList = listAppend(groupByList, column.propertyIdentifier);
+						}
 					}
 				}
 	
