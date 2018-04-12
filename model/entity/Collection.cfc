@@ -1731,9 +1731,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-		for(var filterGroup in arguments.FilterGroups){
+		
+		for(var i=1;i <= arraylen(arguments.FilterGroups);i++){
+			var filterGroup = arguments.FilterGroups[i];
 			var logicalOperator = '';
-
+			//default if greater than 1 
+			if(i > 1){
+				logicalOperator = 'AND';
+			}
+			//override if explicitly defined
 			if(structKeyExists(filterGroup,'logicalOperator')){
 				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
 			}
@@ -1967,7 +1973,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(len(groupByList)){
 				groupByHQL &= ",";
 			}
-			groupByHQL &= " DATE_FORMAT(#variables.periodColumn.propertyIdentifier#,'#periodIntervalFormat#')";
+			groupByHQL &= " DATE_FORMAT(#getPeriodColumn().propertyIdentifier#,'#periodIntervalFormat#')";
 		}
 		
 		return groupByHQL;
@@ -2988,6 +2994,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				return '%Y';
 		}
 	}
+	
+	public any function getPeriodColumn(){
+		if(!structKeyExists(variables,'periodColumn')){
+			for(var column in getCollectionConfigStruct().columns){
+				if(structKeyExists(column,"isPeriod")){
+					variables.periodColumn = column;
+					break;
+				}				
+			}
+		}
+		return variables.periodColumn;
+	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 		
@@ -3409,11 +3427,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 			}
 
-			//build FROM last because we have aquired joins implicitly
-			var joins = [];
-			if(!isnull(collectionConfig.joins)){
-				getCollectionConfigStruct()["joins"] = collectionConfig.joins;
-			}
+		
 			if(!arguments.excludeGroupBy){
 				groupByHQL = getGroupByHQL();
 			}
