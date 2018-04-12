@@ -95,6 +95,11 @@ class SWListingReportController {
         });
     }
     
+    //decides if report comes from persisted collection or transient
+    public getReportCollectionConfig = ()=>{
+        return this.collectionConfig.clone();
+    }
+    
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
         if(
@@ -103,7 +108,8 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
-            this.reportCollectionConfig = this.collectionConfig.clone();
+            
+            this.reportCollectionConfig = this.getReportCollectionConfig();
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.reportCollectionConfig.setReportFlag(true);
             this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
@@ -113,7 +119,6 @@ class SWListingReportController {
             //TODO:should add as a filterGroup
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',false,true,false,'dates');
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',false,true,false,'dates');
-            
             this.reportCollectionConfig.getEntity().then((reportingData)=>{
 		        this.reportingData = reportingData;
     			var ctx = $("#myChart");
