@@ -119,7 +119,6 @@ class SWListingReportController {
             //TODO:should add as a filterGroup
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',false,true,false,'dates');
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',false,true,false,'dates');
-            console.log(this.reportCollectionConfig);
             this.reportCollectionConfig.getEntity().then((reportingData)=>{
 		        this.reportingData = reportingData;
     			var ctx = $("#myChart");
