@@ -76,6 +76,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
+    public showReport:boolean=false;
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
@@ -179,6 +180,11 @@ class SWListingDisplayController{
 
 
     }
+    
+    public toggleReportingCollection = () =>{
+        this.showReport = !this.showReport;
+        
+    }
 
     public processCollection = () =>{
 
@@ -194,6 +200,7 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
+        this.observerService.attach(this.toggleReportingCollection,'toggleReportingCollection',this.tableID);
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});

@@ -1,4 +1,3 @@
-
   <div class="row" ng-if="column">
     <div class="col-xs-5 col-md-8 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
       <span ng-bind="columnIndex + 1"></span>
@@ -20,8 +19,14 @@
     </div>
     </div>
     <div class="col-xs-7 col-md-4 s-pannel-body">
-
       <div class="btn-group">
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Metric" 
+          ng-if="column.aggregate"
+        	ng-class="{active:column.isMetric}"
+        	ng-click="toggleMetric(column)"
+        >
+        	<i class="fa fa-book"></i>
+        </a>
        <span class="s-sort-num">
          <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" 
          	title="Edit" 

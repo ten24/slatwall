@@ -87,7 +87,9 @@ class OrderBy{
 class CollectionConfig {
     public collection: any;
     private eventID:string;
-
+    public filterGroupAliasMap:any = {};
+    public reportFlag:boolean=false;
+    public periodInterval:string="";
 
     get collectionConfigString():string {
         return angular.toJson(this.getCollectionConfig(false));
@@ -114,7 +116,8 @@ class CollectionConfig {
         private keywords:string = '',
         private allRecords:boolean = false,
         private dirtyRead:boolean = false,
-        private isDistinct:boolean = false
+        private isDistinct:boolean = false,
+        
 
     ){
         this.$hibachi = $hibachi;
@@ -136,7 +139,19 @@ class CollectionConfig {
     public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
         return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, this.observerService, baseEntityName, baseEntityAlias);
     };
-
+    
+    public setReportFlag = (reportFlag:boolean):void=>{
+        this.reportFlag = reportFlag;
+    }
+    
+    public isReport = ():boolean=>{
+        return this.reportFlag;
+    }
+    
+    public setPeriodInterval = (periodInterval:string):void=>{
+        this.periodInterval = periodInterval;
+    }
+    
     public loadJson= (jsonCollection):any =>{
         //if json then make a javascript object else use the javascript object
         //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
@@ -161,6 +176,8 @@ class CollectionConfig {
             this.dirtyRead = jsonCollection.dirtyRead;
         }
         this.isDistinct = jsonCollection.isDistinct;
+        this.reportFlag = jsonCollection.reportFlag;
+        this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
         this.keywords = jsonCollection.keywords;
@@ -232,7 +249,9 @@ class CollectionConfig {
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
-            isDistinct: this.isDistinct
+            isDistinct: this.isDistinct,
+            isReport:this.isReport(),
+            periodInterval:this.periodInterval
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -351,6 +370,7 @@ class CollectionConfig {
             if(angular.isUndefined(options['isExportable']) && !isVisible){
                 isExportable = false;
             }
+            
             if(angular.isDefined(options['ormtype'])){
                 ormtype = options['ormtype'];
             }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
@@ -386,6 +406,15 @@ class CollectionConfig {
                 options['attributeSetObject'],
                 type
             );
+            
+            //isMetric and isPeriod for reporting only reporting
+            if(options['isMetric']){
+                columnObject['isMetric'] = options['isMetric'];
+            }
+            if(options['isPeriod']){
+                columnObject['isPeriod'] = options['isPeriod'];
+            }
+            
             if(options['aggregate']){
                 columnObject['aggregate'] = options['aggregate'],
                     columnObject['aggregateAlias'] = title
@@ -412,6 +441,8 @@ class CollectionConfig {
         this.addDisplayProperty(propertyIdentifier, title, options);
         return this;
     };
+    
+   
 
     public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias?:string,options?)=>{
         if(angular.isUndefined(aggregateAlias)){
@@ -456,7 +487,16 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false, isKeywordFilter=true, isOnlyKeywordFilter=false):CollectionConfig =>{
+    public addFilter= (
+        propertyIdentifier: string,
+        value: any,
+        comparisonOperator: string = '=',
+        logicalOperator?: string,
+        hidden:boolean=false,
+        isKeywordFilter=true,
+        isOnlyKeywordFilter=false,
+        filterGroupAlias? : string)
+        :CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
             logicalOperator = undefined;
         }
@@ -464,15 +504,17 @@ class CollectionConfig {
         if(propertyIdentifier.split('.').length > 1){
             this.processJoin(propertyIdentifier);
         }
-
 		//create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
-
+        var filterGroupIndex = 0;
+        if(filterGroupAlias){
+            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias);
+        }
         if(!isOnlyKeywordFilter){
-            this.filterGroups[0].filterGroup.push(filter);
+            this.filterGroups[filterGroupIndex].filterGroup.push(filter);
         }
         if(isKeywordFilter){
-            this.keywordFilterGroups[0].filterGroup.push(filter);
+            this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
         }
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
@@ -557,6 +599,57 @@ class CollectionConfig {
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
+        return this;
+    };
+    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {
+        var group = {
+            filterGroup:[]
+        };
+
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+            group["logicalOperator"] = filterGroupLogicalOperator;
+        }
+        for(var i =  0; i < filterGroup.length; i++){
+            var filter = this.createFilter(
+                filterGroup[i].propertyIdentifier,
+                filterGroup[i].comparisonValue,
+                filterGroup[i].comparisonOperator,
+                filterGroup[i].logicalOperator,
+                filterGroup[i].hidden
+            );
+            group.filterGroup.push(filter);
+        }
+        return group;
+    }
+
+    public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
+        if(!this.filterGroups){
+            this.filterGroups = [{filterGroup:[]}];
+        }
+        if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
+            this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
+        }
+        return this.filterGroupAliasMap[filterGroupAlias];
+    };
+
+    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator:string):number =>{
+        var newFilterGroup = {"filterGroup": []};
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+            newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
+        }else if (this.filterGroups[0].filterGroup.length){
+            newFilterGroup["logicalOperator"] = "AND";
+        }
+        this.filterGroups[0].filterGroup.push(newFilterGroup);
+        return this.filterGroups[0].filterGroup.length -1;
+    };
+
+    public upsertFilterGroup = (filterGroupName:string, filterGroup:any):CollectionConfig=>{
+        var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupName);
+        var logicalOperator = "";
+        if(this.filterGroups[0].filterGroup[filterGroupIndex].logicalOperator){
+            logicalOperator = this.filterGroups[0].filterGroup[filterGroupIndex].logicalOperator;
+        }
+        this.filterGroups[0].filterGroup[filterGroupIndex] = this.formatFilterGroup(filterGroup, logicalOperator);
         return this;
     };
 
