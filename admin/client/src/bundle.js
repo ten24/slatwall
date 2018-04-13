@@ -86173,8 +86173,7 @@ var SWListingReportController = /** @class */ (function () {
                 var serializedJSONData = {
                     'collectionConfig': _this.reportCollectionConfig.collectionConfigString,
                     'collectionName': collectionName,
-                    'collectionDescription': _this.personalCollectionIdentifier,
-                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName,
+                    'collectionObject': _this.reportCollectionConfig.collectionConfig.baseEntityName,
                     'accountOwner': {
                         'accountID': _this.$rootScope.slatwall.account.accountID
                     },

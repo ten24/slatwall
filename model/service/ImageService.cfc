@@ -257,7 +257,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			if(!fileExists(expandPath(resizedImagePath))) {
 
 				// wrap image functions in a try-catch in case the image uploaded is "problematic" for CF to work with
-				//try{
+				try{
 
 					// Read the Image
 					var img = imageRead(expandPath(arguments.imagePath));
@@ -353,10 +353,10 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 					// Write the image to the disk
 					imageWrite(img,expandPath(resizedImagePath));
-				/*} catch(any e) {
+				} catch(any e) {
 					// log the error
 					logHibachiException(e);
-				}*/
+				}
 			}
 		}
 		return resizedImagePath;

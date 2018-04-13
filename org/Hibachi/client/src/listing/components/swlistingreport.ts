@@ -62,8 +62,7 @@ class SWListingReportController {
             var serializedJSONData={
                 'collectionConfig':this.reportCollectionConfig.collectionConfigString,
                 'collectionName':collectionName,
-                'collectionDescription':this.personalCollectionIdentifier,
-                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName,
+                'collectionObject':this.reportCollectionConfig.collectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
                 },
