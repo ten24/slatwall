@@ -20,10 +20,12 @@ class SWListingReportController {
     public chart:Chart;
     //@ngInject
     constructor(
+        public $rootScope,
         public $hibachi,
         public metadataService,
         public listingService,
         public observerService,
+        public collectionConfigService
     ) {
         
         var rootColumns = {};
@@ -37,9 +39,67 @@ class SWListingReportController {
                 this.periodColumns.push(rootColumn);
             }
         }
+        
+        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
+        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName');
+        persistedReportsCollectionList.addFilter('reportFlag',1);
+        persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID',$rootScope.slatwall.account.accountID);
+        persistedReportsCollectionList.setAllRecords(true);
+        persistedReportsCollectionList.getEntity().then((data)=>{
+            this.persistedReportCollections = data.records;
+        });
+        console.log(this.persistedReportCollections);
+        //persistedReportsCollectionList.getRecords();
+        
     }
 
     public $onInit=()=>{
+    }
+    
+    public saveReportCollection = (collectionName?)=>{
+        if(collectionName){
+            var serializedJSONData={
+                'collectionConfig':this.reportCollectionConfig.collectionConfigString,
+                'collectionName':collectionName,
+                'collectionDescription':this.personalCollectionIdentifier,
+                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName,
+                'accountOwner':{
+                    'accountID':this.$rootScope.slatwall.account.accountID
+                },
+                'reportFlag':1
+            }
+            /*
+            this.$hibachi.saveEntity(
+                'Collection',
+                "",
+                {
+                    'serializedJSONData':angular.toJson(serializedJSONData),
+                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
+                },
+                'save'
+            ).then((data)=>{
+
+                if(!this.localStorageService.hasItem('selectedPersonalCollection')){
+                    this.localStorageService.setItem('selectedPersonalCollection','{}');
+                }
+                var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
+
+                selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
+                    collectionID:data.data.collectionID,
+                    collectionObject:data.data.collectionObject,
+                    collectionName:data.data.collectionName,
+                    collectionDescription:data.data.collectionDescription
+                }
+                this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
+                this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
+                this.collectionNameSaveIsOpen = false;
+                this.hasPersonalCollections=false;
+            });
+            return;*/
+        }
+
+        this.collectionNameSaveIsOpen = true;
     }
     
     private random_rgba = ()=>{

@@ -1017,14 +1017,14 @@ component extends="HibachiService" accessors="true" {
 
 	public any function processProduct_uploadDefaultImage(required any product, required any processObject) {
 		// Wrap in try/catch to add validation error based on fileAcceptMIMEType
-		try {
+		//try {
 
 			// Get the upload directory for the current property
 			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
 			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
-			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
-
+			var fullFilePath = "#uploadDirectory#/#listFirst(arguments.processObject.getImageFile(),'.')#";
+			
 			// If the directory where this file is going doesn't exists, then create it
 			if(!directoryExists(uploadDirectory)) {
 				directoryCreate(uploadDirectory);
@@ -1032,16 +1032,23 @@ component extends="HibachiService" accessors="true" {
 
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
+			var newFilePath = listFirst(arguments.processObject.getImageFile(),'.')&'.'&uploadData.serverfileext;
+			var newFullFilePath = "#uploadDirectory#/#newFilePath#";
+			arguments.processObject.setImageFile(newFilePath);
+			for(var sku in product.getSkus()){
+				sku.setImageFile(newFilePath);
+			}
+			
 			var fileSize = uploadData.fileSize;
  			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
- 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", newFullFilePath);
  			}
 
-		} catch(any e) {
+		/*} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
-		}
+		}*/
 
 		return arguments.product;
 	}

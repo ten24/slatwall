@@ -47,6 +47,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="dirtyReadFlag" ormtype="boolean";
 	property name="useElasticSearch" ormtype="boolean" default="0";
+	property name="reportFlag" ormtype="boolean" default="0";
 
 	// Calculated Properties
 
@@ -129,7 +130,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionObjectOptions" persistent="false";
 	property name="totalAvgAggregates" persistent="false" type="array";
 	property name="totalSumAggregates" persistent="false" type="array";
-	property name="reportFlag" persistent="false" type="boolean" default="0";
+	
 	
 
 	// ============ START: Non-Persistent Property Methods =================

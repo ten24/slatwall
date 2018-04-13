@@ -86156,15 +86156,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chart_js_1 = __webpack_require__(313);
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
-    function SWListingReportController($hibachi, metadataService, listingService, observerService) {
+    function SWListingReportController($rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
         var _this = this;
+        this.$rootScope = $rootScope;
         this.$hibachi = $hibachi;
         this.metadataService = metadataService;
         this.listingService = listingService;
         this.observerService = observerService;
+        this.collectionConfigService = collectionConfigService;
         //key value for adding rbkeys later
         this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
         this.$onInit = function () {
+        };
+        this.saveReportCollection = function (collectionName) {
+            if (collectionName) {
+                var serializedJSONData = {
+                    'collectionConfig': _this.reportCollectionConfig.collectionConfigString,
+                    'collectionName': collectionName,
+                    'collectionDescription': _this.personalCollectionIdentifier,
+                    'collectionObject': _this.swListingDisplay.collectionConfig.baseEntityName,
+                    'accountOwner': {
+                        'accountID': _this.$rootScope.slatwall.account.accountID
+                    },
+                    'reportFlag': 1
+                };
+                /*
+                this.$hibachi.saveEntity(
+                    'Collection',
+                    "",
+                    {
+                        'serializedJSONData':angular.toJson(serializedJSONData),
+                        'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
+                    },
+                    'save'
+                ).then((data)=>{
+    
+                    if(!this.localStorageService.hasItem('selectedPersonalCollection')){
+                        this.localStorageService.setItem('selectedPersonalCollection','{}');
+                    }
+                    var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
+    
+                    selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
+                        collectionID:data.data.collectionID,
+                        collectionObject:data.data.collectionObject,
+                        collectionName:data.data.collectionName,
+                        collectionDescription:data.data.collectionDescription
+                    }
+                    this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
+                    this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
+                    this.collectionNameSaveIsOpen = false;
+                    this.hasPersonalCollections=false;
+                });
+                return;*/
+            }
+            _this.collectionNameSaveIsOpen = true;
         };
         this.random_rgba = function () {
             var o = Math.round, r = Math.random, s = 255;
@@ -86298,6 +86343,17 @@ var SWListingReportController = /** @class */ (function () {
                 this.periodColumns.push(rootColumn);
             }
         }
+        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
+        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName');
+        persistedReportsCollectionList.addFilter('reportFlag', 1);
+        persistedReportsCollectionList.addFilter('collectionObject', this.collectionConfig.baseEntityName);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID', $rootScope.slatwall.account.accountID);
+        persistedReportsCollectionList.setAllRecords(true);
+        persistedReportsCollectionList.getEntity().then(function (data) {
+            _this.persistedReportCollections = data.records;
+        });
+        console.log(this.persistedReportCollections);
+        //persistedReportsCollectionList.getRecords();
     }
     return SWListingReportController;
 }());
@@ -86533,6 +86589,7 @@ var SWListingSearchController = /** @class */ (function () {
                 personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
                 personalCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
                 personalCollectionList.addFilter('collectionObject', _this.swListingDisplay.baseEntityName);
+                personalCollectionList.addFilter('reportFlag', 0);
                 if (angular.isDefined(_this.personalCollectionIdentifier)) {
                     personalCollectionList.addFilter('collectionDescription', _this.personalCollectionIdentifier);
                 }
