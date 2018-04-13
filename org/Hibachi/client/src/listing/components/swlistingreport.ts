@@ -18,6 +18,10 @@ class SWListingReportController {
     public compareReportingData:any;
     public reportingData:any;
     public chart:Chart;
+    public persistedReportCollections:any;
+    public selectedReport:any;
+    public collectionNameSaveIsOpen:boolean;
+    
     //@ngInject
     constructor(
         public $rootScope,
@@ -40,21 +44,22 @@ class SWListingReportController {
             }
         }
         
+        this.getPersistedReports();
+    }
+
+    public $onInit=()=>{
+    }
+    
+    public getPersistedReports = ()=>{
         var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName');
+        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
         persistedReportsCollectionList.addFilter('reportFlag',1);
         persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID',$rootScope.slatwall.account.accountID);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{
             this.persistedReportCollections = data.records;
         });
-        console.log(this.persistedReportCollections);
-        //persistedReportsCollectionList.getRecords();
-        
-    }
-
-    public $onInit=()=>{
     }
     
     public saveReportCollection = (collectionName?)=>{
@@ -62,40 +67,33 @@ class SWListingReportController {
             var serializedJSONData={
                 'collectionConfig':this.reportCollectionConfig.collectionConfigString,
                 'collectionName':collectionName,
-                'collectionObject':this.reportCollectionConfig.collectionConfig.baseEntityName,
+                'collectionObject':this.reportCollectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
                 },
                 'reportFlag':1
             }
-            /*
+            
             this.$hibachi.saveEntity(
                 'Collection',
                 "",
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
-                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
+                    'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
                 },
                 'save'
             ).then((data)=>{
-
-                if(!this.localStorageService.hasItem('selectedPersonalCollection')){
-                    this.localStorageService.setItem('selectedPersonalCollection','{}');
-                }
-                var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
-
-                selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
+                this.getPersistedReports();
+                this.selectedReport = {
                     collectionID:data.data.collectionID,
                     collectionObject:data.data.collectionObject,
                     collectionName:data.data.collectionName,
-                    collectionDescription:data.data.collectionDescription
-                }
-                this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
-                this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
+                    collectionConfig:data.data.collectionConfig
+                };
+                
                 this.collectionNameSaveIsOpen = false;
-                this.hasPersonalCollections=false;
             });
-            return;*/
+            return;
         }
 
         this.collectionNameSaveIsOpen = true;
@@ -115,8 +113,8 @@ class SWListingReportController {
         this.compareReportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
         
         //TODO:should add as a filterGroup
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',false,true,false,'dates');
-        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',false,true,false,'dates');
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDateCompare,'>=','AND',true,true,false,'dates');
+        this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
         
         this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
            this.compareReportingData = reportingData;
@@ -159,6 +157,35 @@ class SWListingReportController {
         return this.collectionConfig.clone();
     }
     
+    
+    
+    public selectReport = (selectedReport)=>{
+        //populate inputs based on the collection
+        var collectionData = angular.fromJson(selectedReport.collectionConfig);
+        this.selectedPeriodInterval = {value:collectionData.periodInterval};
+        
+        for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
+            var filterGroup = collectionData.filterGroups[0].filterGroup[i];
+            console.log(i,filterGroup);
+            
+            if(filterGroup.hidden){
+                if(filterGroup.comparisonOperator == '>='){
+                    this.startDate = filterGroup.value;
+                }else if(filterGroup.comparisonOperator == '<='){
+                    this.endDate = filterGroup.value;
+                }
+                collectionData.filterGroups[0].filterGroup.splice(i,1);
+                if(collectionData.filterGroups[0].filterGroup.length == 0){
+                    delete collectionData.filterGroups[0].filterGroup;
+                }
+            }
+        }
+        
+        this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+        this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
+        this.updatePeriod();
+    }
+    
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
         if(
@@ -176,18 +203,20 @@ class SWListingReportController {
             this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
             
             //TODO:should add as a filterGroup
-            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',false,true,false,'dates');
-            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',false,true,false,'dates');
+            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
             this.reportCollectionConfig.getEntity().then((reportingData)=>{
 		        this.reportingData = reportingData;
     			var ctx = $("#myChart");
     			var dates = [];
     			var datasets = [];
-    			this.reportingData.records.forEach(element=>{dates.push(element[this.selectedPeriodColumn.name])});
+    			console.log(this.selectedPeriodColumn);
+    			this.reportingData.records.forEach(element=>{dates.push(element[this.selectedPeriodColumn.name||this.selectedPeriodColumn.propertyIdentifier])});
+    			
     			this.reportCollectionConfig.columns.forEach(column=>{
     			    if(column.isMetric){
     			        let color = this.random_rgba();
-    			        let title = `${column.title} (${this.startDate.toDateString()} - ${this.endDate.toDateString()})`;
+    			        let title = `${column.title} (${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate})`;
     			        let metrics = [];
     			        this.reportingData.records.forEach(element=>{
     			            metrics.push(

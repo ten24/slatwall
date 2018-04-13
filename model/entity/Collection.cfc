@@ -1737,9 +1737,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var filterGroup = arguments.FilterGroups[i];
 			var logicalOperator = '';
 			//default if greater than 1 
-			if(i > 1){
-				logicalOperator = 'AND';
-			}
 			//override if explicitly defined
 			if(structKeyExists(filterGroup,'logicalOperator')){
 				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);

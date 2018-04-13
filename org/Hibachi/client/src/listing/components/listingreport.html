@@ -5,7 +5,7 @@
 		<select 
 		    ng-model="swListingReport.selectedReport"
 			ng-options="report as report.collectionName for report in swListingReport.persistedReportCollections track by report.collectionID"
-			ng-change="swListingReport.updatePeriod()"
+			ng-change="swListingReport.selectReport(swListingReport.selectedReport)"
         >
 		</select>
 		

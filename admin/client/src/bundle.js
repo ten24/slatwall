@@ -71926,7 +71926,8 @@ var CollectionConfig = /** @class */ (function () {
                 allRecords: _this.allRecords,
                 dirtyRead: _this.dirtyRead,
                 isDistinct: _this.isDistinct,
-                orderBy: _this.orderBy
+                orderBy: _this.orderBy,
+                periodInterval: _this.periodInterval
             };
         };
         this.getEntityName = function () {
@@ -72237,7 +72238,6 @@ var CollectionConfig = /** @class */ (function () {
             return _this;
         };
         this.formatFilterGroup = function (filterGroup, filterGroupLogicalOperator) {
-            if (filterGroupLogicalOperator === void 0) { filterGroupLogicalOperator = 'AND'; }
             var group = {
                 filterGroup: []
             };
@@ -72251,7 +72251,6 @@ var CollectionConfig = /** @class */ (function () {
             return group;
         };
         this.getFilterGroupIndexByFilterGroupAlias = function (filterGroupAlias, filterGroupLogicalOperator) {
-            if (filterGroupLogicalOperator === void 0) { filterGroupLogicalOperator = 'AND'; }
             if (!_this.filterGroups) {
                 _this.filterGroups = [{ filterGroup: [] }];
             }
@@ -72261,7 +72260,6 @@ var CollectionConfig = /** @class */ (function () {
             return _this.filterGroupAliasMap[filterGroupAlias];
         };
         this.addFilterGroupWithAlias = function (filterGroupAlias, filterGroupLogicalOperator) {
-            if (filterGroupLogicalOperator === void 0) { filterGroupLogicalOperator = 'AND'; }
             var newFilterGroup = { "filterGroup": [] };
             if (angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0) {
                 newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
@@ -72487,7 +72485,8 @@ var CollectionConfig = /** @class */ (function () {
                 _this.validateFilter(filter.filterGroup, filter.filterGroup);
             }
             else {
-                if ((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)) {
+                if (((!filter.comparisonOperator || !filter.comparisonOperator.length)
+                    && (!filter.propertyIdentifier || !filter.propertyIdentifier.length))) {
                     var index = currentGroup.indexOf(filter);
                     if (index > -1) {
                         _this.notify('filterItemAction', {
@@ -72525,6 +72524,14 @@ var CollectionConfig = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    CollectionConfig.prototype.getPeriodColumnFromColumns = function (columns) {
+        for (var i in columns) {
+            var column = columns[i];
+            if (column.isPeriod) {
+                return column;
+            }
+        }
+    };
     CollectionConfig.prototype.notify = function (name, data) {
         if (angular.isDefined(this.eventID)) {
             this.observerService.notifyById(name, this.eventID, data);
@@ -86168,45 +86175,42 @@ var SWListingReportController = /** @class */ (function () {
         this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
         this.$onInit = function () {
         };
+        this.getPersistedReports = function () {
+            var persistedReportsCollectionList = _this.collectionConfig.newCollectionConfig('Collection');
+            persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
+            persistedReportsCollectionList.addFilter('reportFlag', 1);
+            persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
+            persistedReportsCollectionList.setAllRecords(true);
+            persistedReportsCollectionList.getEntity().then(function (data) {
+                _this.persistedReportCollections = data.records;
+            });
+        };
         this.saveReportCollection = function (collectionName) {
             if (collectionName) {
                 var serializedJSONData = {
                     'collectionConfig': _this.reportCollectionConfig.collectionConfigString,
                     'collectionName': collectionName,
-                    'collectionObject': _this.reportCollectionConfig.collectionConfig.baseEntityName,
+                    'collectionObject': _this.reportCollectionConfig.baseEntityName,
                     'accountOwner': {
                         'accountID': _this.$rootScope.slatwall.account.accountID
                     },
                     'reportFlag': 1
                 };
-                /*
-                this.$hibachi.saveEntity(
-                    'Collection',
-                    "",
-                    {
-                        'serializedJSONData':angular.toJson(serializedJSONData),
-                        'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
-                    },
-                    'save'
-                ).then((data)=>{
-    
-                    if(!this.localStorageService.hasItem('selectedPersonalCollection')){
-                        this.localStorageService.setItem('selectedPersonalCollection','{}');
-                    }
-                    var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
-    
-                    selectedPersonalCollection[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] = {
-                        collectionID:data.data.collectionID,
-                        collectionObject:data.data.collectionObject,
-                        collectionName:data.data.collectionName,
-                        collectionDescription:data.data.collectionDescription
-                    }
-                    this.localStorageService.setItem('selectedPersonalCollection',angular.toJson(selectedPersonalCollection));
-                    this.$rootScope.slatwall.selectedPersonalCollection = selectedPersonalCollection;
-                    this.collectionNameSaveIsOpen = false;
-                    this.hasPersonalCollections=false;
+                _this.$hibachi.saveEntity('Collection', "", {
+                    'serializedJSONData': angular.toJson(serializedJSONData),
+                    'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
+                }, 'save').then(function (data) {
+                    _this.getPersistedReports();
+                    _this.selectedReport = {
+                        collectionID: data.data.collectionID,
+                        collectionObject: data.data.collectionObject,
+                        collectionName: data.data.collectionName,
+                        collectionConfig: data.data.collectionConfig
+                    };
+                    _this.collectionNameSaveIsOpen = false;
                 });
-                return;*/
+                return;
             }
             _this.collectionNameSaveIsOpen = true;
         };
@@ -86222,8 +86226,8 @@ var SWListingReportController = /** @class */ (function () {
             _this.compareReportCollectionConfig.setAllRecords(true);
             _this.compareReportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
             //TODO:should add as a filterGroup
-            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDateCompare, '>=', 'AND', false, true, false, 'dates');
-            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDateCompare, '<=', 'AND', false, true, false, 'dates');
+            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDateCompare, '>=', 'AND', true, true, false, 'dates');
+            _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDateCompare, '<=', 'AND', true, true, false, 'dates');
             _this.compareReportCollectionConfig.getEntity().then(function (reportingData) {
                 _this.compareReportingData = reportingData;
                 _this.compareReportingData.records.forEach(function (element) {
@@ -86259,6 +86263,30 @@ var SWListingReportController = /** @class */ (function () {
         this.getReportCollectionConfig = function () {
             return _this.collectionConfig.clone();
         };
+        this.selectReport = function (selectedReport) {
+            //populate inputs based on the collection
+            var collectionData = angular.fromJson(selectedReport.collectionConfig);
+            _this.selectedPeriodInterval = { value: collectionData.periodInterval };
+            for (var i = collectionData.filterGroups[0].filterGroup.length - 1; i >= 0; i--) {
+                var filterGroup = collectionData.filterGroups[0].filterGroup[i];
+                console.log(i, filterGroup);
+                if (filterGroup.hidden) {
+                    if (filterGroup.comparisonOperator == '>=') {
+                        _this.startDate = filterGroup.value;
+                    }
+                    else if (filterGroup.comparisonOperator == '<=') {
+                        _this.endDate = filterGroup.value;
+                    }
+                    collectionData.filterGroups[0].filterGroup.splice(i, 1);
+                    if (collectionData.filterGroups[0].filterGroup.length == 0) {
+                        delete collectionData.filterGroups[0].filterGroup;
+                    }
+                }
+            }
+            _this.selectedPeriodColumn = _this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+            _this.reportCollectionConfig = _this.collectionConfig.loadJson(angular.toJson(collectionData));
+            _this.updatePeriod();
+        };
         this.updatePeriod = function () {
             //if we have all the info we need then we can make a report
             if (_this.selectedPeriodColumn
@@ -86272,18 +86300,19 @@ var SWListingReportController = /** @class */ (function () {
                 _this.reportCollectionConfig.setAllRecords(true);
                 _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
                 //TODO:should add as a filterGroup
-                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', false, true, false, 'dates');
-                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', false, true, false, 'dates');
+                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
+                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
                 _this.reportCollectionConfig.getEntity().then(function (reportingData) {
                     _this.reportingData = reportingData;
                     var ctx = $("#myChart");
                     var dates = [];
                     var datasets = [];
-                    _this.reportingData.records.forEach(function (element) { dates.push(element[_this.selectedPeriodColumn.name]); });
+                    console.log(_this.selectedPeriodColumn);
+                    _this.reportingData.records.forEach(function (element) { dates.push(element[_this.selectedPeriodColumn.name || _this.selectedPeriodColumn.propertyIdentifier]); });
                     _this.reportCollectionConfig.columns.forEach(function (column) {
                         if (column.isMetric) {
                             var color = _this.random_rgba();
-                            var title = column.title + " (" + _this.startDate.toDateString() + " - " + _this.endDate.toDateString() + ")";
+                            var title = column.title + " (" + (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate) + ")";
                             var metrics_2 = [];
                             _this.reportingData.records.forEach(function (element) {
                                 metrics_2.push({
@@ -86342,17 +86371,7 @@ var SWListingReportController = /** @class */ (function () {
                 this.periodColumns.push(rootColumn);
             }
         }
-        var persistedReportsCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-        persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName');
-        persistedReportsCollectionList.addFilter('reportFlag', 1);
-        persistedReportsCollectionList.addFilter('collectionObject', this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID', $rootScope.slatwall.account.accountID);
-        persistedReportsCollectionList.setAllRecords(true);
-        persistedReportsCollectionList.getEntity().then(function (data) {
-            _this.persistedReportCollections = data.records;
-        });
-        console.log(this.persistedReportCollections);
-        //persistedReportsCollectionList.getRecords();
+        this.getPersistedReports();
     }
     return SWListingReportController;
 }());

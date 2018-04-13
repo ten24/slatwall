@@ -217,7 +217,8 @@ class CollectionConfig {
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
-            orderBy:this.orderBy
+            orderBy:this.orderBy,
+            periodInterval:this.periodInterval
         };
     };
 
@@ -614,7 +615,7 @@ class CollectionConfig {
         });
         return this;
     };
-    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator:string='AND') => {
+    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator:string) => {
         var group = {
             filterGroup:[]
         };
@@ -635,7 +636,7 @@ class CollectionConfig {
         return group;
     }
 
-    public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator:string='AND'):any =>{
+    public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
         if(!this.filterGroups){
             this.filterGroups = [{filterGroup:[]}];
         }
@@ -645,7 +646,7 @@ class CollectionConfig {
         return this.filterGroupAliasMap[filterGroupAlias];
     };
 
-    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator:string='AND'):number =>{
+    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator?:string):number =>{
         var newFilterGroup = {"filterGroup": []};
         if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
             newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
@@ -822,6 +823,15 @@ class CollectionConfig {
         });
         return false;
     };
+    
+    public getPeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                return column;
+            }            
+        }
+    }
 
     public setCurrentPage= (pageNumber):CollectionConfig =>{
         this.currentPage = pageNumber;
@@ -902,7 +912,12 @@ class CollectionConfig {
         }else if(angular.isArray(filter.filterGroup)){
             this.validateFilter(filter.filterGroup,filter.filterGroup);
         }else{
-            if((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)){
+            if(
+                (
+                    (!filter.comparisonOperator || !filter.comparisonOperator.length) 
+                    && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)
+                ) 
+            ){
                 var index = currentGroup.indexOf(filter);
                 if(index > -1) {
                     this.notify('filterItemAction', {
