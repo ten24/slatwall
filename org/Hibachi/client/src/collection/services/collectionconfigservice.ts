@@ -516,11 +516,7 @@ class CollectionConfig {
         }
         
         if(!isOnlyKeywordFilter){
-            if(filterGroupIndex == 0){
-                this.filterGroups[filterGroupIndex].filterGroup.push(filter);
-            }else{
-                this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
-            }
+            this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
         }
         if(isKeywordFilter){
             if(filterGroupIndex == 0){
@@ -638,6 +634,7 @@ class CollectionConfig {
     public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
         if(!this.filterGroups){
             this.filterGroups = [{filterGroup:[]}];
+            filterGroupLogicalOperator = undefined;
         }
         if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
             this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
