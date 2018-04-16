@@ -184,7 +184,7 @@ class SWListingReportController {
                 }
             }
         }
-        
+         
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
         this.updatePeriod();
