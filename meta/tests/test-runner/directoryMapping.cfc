@@ -37,9 +37,24 @@ component accessors=true output=false persistent=false {
 		var path="Slatwall.meta.tests.unit."&testFolder&"."&testFile;
 		var metaData= GetMetaData(createObject("component",path));
 		var arrayMethods = [];
+		// include only the test methods from the test file
 		for (var item in metaData.functions){
+			if(structKeyExists(item,"test") && item.test == "yes"){
 			arrayAppend(arrayMethods, item.name);
+			}
 		}
+		// including test methods from nested extended file
+		while(structKeyExists(metaData,"extends")){
+			if(structKeyExists(metaData.extends,"functions")){
+				for (var item in metaData.extends.functions){
+					if(structKeyExists(item,"test") && item.test == "yes"){
+						arrayAppend(arrayMethods, item.name);
+						}
+					}
+			}
+			metaData = metaData.extends;
+		}
+
 		var objResponse = '{"TestMethods":'&SerializeJSON(arrayMethods)&',"TestFunctionsCount":'&arraylen(arrayMethods)&'}';
 	    return objResponse;
 	}
