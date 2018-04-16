@@ -55,7 +55,11 @@ class SWListingReportController {
         persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
         persistedReportsCollectionList.addFilter('reportFlag',1);
         persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
+        console.log(persistedReportsCollectionList.filterGroups);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
+        console.log(persistedReportsCollectionList.filterGroups);
+        persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
+        console.log(persistedReportsCollectionList.filterGroups);
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{
             this.persistedReportCollections = data.records;

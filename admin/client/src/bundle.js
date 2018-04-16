@@ -72145,11 +72145,12 @@ var CollectionConfig = /** @class */ (function () {
             });
             return _this;
         };
-        this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator, hidden, isKeywordFilter, isOnlyKeywordFilter, filterGroupAlias) {
+        this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator, hidden, isKeywordFilter, isOnlyKeywordFilter, filterGroupAlias, filterGroupLogicalOperator) {
             if (comparisonOperator === void 0) { comparisonOperator = '='; }
             if (hidden === void 0) { hidden = false; }
             if (isKeywordFilter === void 0) { isKeywordFilter = true; }
             if (isOnlyKeywordFilter === void 0) { isOnlyKeywordFilter = false; }
+            if (filterGroupLogicalOperator === void 0) { filterGroupLogicalOperator = 'AND'; }
             if (!_this.filterGroups[0].filterGroup.length) {
                 logicalOperator = undefined;
             }
@@ -72160,25 +72161,23 @@ var CollectionConfig = /** @class */ (function () {
             var filter = _this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
             var filterGroupIndex = 0;
             if (filterGroupAlias) {
-                filterGroupIndex = _this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias);
-            }
-            if (!_this.filterGroups[filterGroupIndex]) {
-                _this.filterGroups[filterGroupIndex] = {};
-            }
-            if (!_this.filterGroups[filterGroupIndex].filterGroup) {
-                _this.filterGroups[filterGroupIndex].filterGroup = [];
+                filterGroupIndex = _this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias, filterGroupLogicalOperator);
             }
             if (!isOnlyKeywordFilter) {
-                _this.filterGroups[filterGroupIndex].filterGroup.push(filter);
+                if (filterGroupIndex == 0) {
+                    _this.filterGroups[filterGroupIndex].filterGroup.push(filter);
+                }
+                else {
+                    _this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
+                }
             }
             if (isKeywordFilter) {
-                if (!_this.keywordFilterGroups[filterGroupIndex]) {
-                    _this.keywordFilterGroups[filterGroupIndex] = {};
+                if (filterGroupIndex == 0) {
+                    _this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
                 }
-                if (!_this.keywordFilterGroups[filterGroupIndex].filterGroup) {
-                    _this.keywordFilterGroups[filterGroupIndex].filterGroup = [];
+                else {
+                    //this.keywordFilterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
                 }
-                _this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
             }
             _this.notify('collectionConfigUpdated', {
                 collectionConfig: _this
@@ -72227,7 +72226,7 @@ var CollectionConfig = /** @class */ (function () {
                 filterGroup: [],
                 logicalOperator: 'AND'
             };
-            for (var i = 0; i < filterGroup.length; i++) {
+            for (var i = 0; i <= filterGroup.length - 1; i++) {
                 var filter = _this.createFilter(filterGroup[i].propertyIdentifier, filterGroup[i].comparisonValue, filterGroup[i].comparisonOperator, filterGroup[i].logicalOperator, filterGroup[i].hidden);
                 group.filterGroup.push(filter);
             }
@@ -86180,7 +86179,11 @@ var SWListingReportController = /** @class */ (function () {
             persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
             persistedReportsCollectionList.addFilter('reportFlag', 1);
             persistedReportsCollectionList.addFilter('collectionObject', _this.collectionConfig.baseEntityName);
-            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID);
+            console.log(persistedReportsCollectionList.filterGroups);
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', _this.$rootScope.slatwall.account.accountID, '=', 'OR', true, true, false, 'accountOwner');
+            console.log(persistedReportsCollectionList.filterGroups);
+            persistedReportsCollectionList.addFilter('accountOwner.accountID', 'NULL', 'IS', 'OR', true, true, false, 'accountOwner');
+            console.log(persistedReportsCollectionList.filterGroups);
             persistedReportsCollectionList.setAllRecords(true);
             persistedReportsCollectionList.getEntity().then(function (data) {
                 _this.persistedReportCollections = data.records;

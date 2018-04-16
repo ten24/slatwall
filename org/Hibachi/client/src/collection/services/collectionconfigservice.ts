@@ -496,7 +496,9 @@ class CollectionConfig {
         hidden:boolean=false,
         isKeywordFilter=true,
         isOnlyKeywordFilter=false,
-        filterGroupAlias? : string)
+        filterGroupAlias? : string,
+        filterGroupLogicalOperator:string='AND'
+        )
         :CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
             logicalOperator = undefined;
@@ -506,29 +508,26 @@ class CollectionConfig {
             this.processJoin(propertyIdentifier);
         }
 		//create filter
+		
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
         var filterGroupIndex = 0;
         if(filterGroupAlias){
-            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias);
+            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias,filterGroupLogicalOperator);
         }
-        if(!this.filterGroups[filterGroupIndex]){
-            this.filterGroups[filterGroupIndex]={};
-        }
-        if(!this.filterGroups[filterGroupIndex].filterGroup){
-            this.filterGroups[filterGroupIndex].filterGroup=[];
-        }
+        
         if(!isOnlyKeywordFilter){
-            this.filterGroups[filterGroupIndex].filterGroup.push(filter);
+            if(filterGroupIndex == 0){
+                this.filterGroups[filterGroupIndex].filterGroup.push(filter);
+            }else{
+                this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
+            }
         }
         if(isKeywordFilter){
-            if(!this.keywordFilterGroups[filterGroupIndex]){
-                this.keywordFilterGroups[filterGroupIndex]={};
+            if(filterGroupIndex == 0){
+                this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
+            }else{
+                //this.keywordFilterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
             }
-            if(!this.keywordFilterGroups[filterGroupIndex].filterGroup){
-                this.keywordFilterGroups[filterGroupIndex].filterGroup=[];
-            }
-            
-            this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
         }
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
@@ -598,7 +597,7 @@ class CollectionConfig {
             filterGroup:[],
             logicalOperator: 'AND'
         };
-        for(var i =  0; i < filterGroup.length; i++){
+        for(var i =  0; i <= filterGroup.length-1; i++){
             var filter = this.createFilter(
                 filterGroup[i].propertyIdentifier,
                 filterGroup[i].comparisonValue,
@@ -654,7 +653,7 @@ class CollectionConfig {
             newFilterGroup["logicalOperator"] = "AND";
         }
         this.filterGroups[0].filterGroup.push(newFilterGroup);
-        return this.filterGroups[0].filterGroup.length -1;
+        return this.filterGroups[0].filterGroup.length-1;
     };
 
     public upsertFilterGroup = (filterGroupName:string, filterGroup:any):CollectionConfig=>{
