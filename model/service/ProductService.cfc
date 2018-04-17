@@ -969,13 +969,21 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
-
+				var skuCurrencies = processObject.getSkuCurrencies();
+				
+				if( !isNull(skuCurrencies)){
+					
+				}
+			
 				//Update currencies
 				for(var processSkuCurrency in processObject.getSkuCurrencies()){
+					
+				
 					skuCurrencyFound=false;
 					skuCurrenciesToRemove=[];
 
 					for(var skuCurrency in skus[i].getSkuCurrencies()){
+	
 						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
 							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
 								skuCurrency.setPrice(processSkuCurrency.price);
