@@ -84,6 +84,7 @@ Notes:
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-3.3.1.min.js"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-migrate-1.4.1.min.js"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></hb:HibachiScript>
+		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></hb:HibachiScript>
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></hb:HibachiScript>
 
@@ -104,7 +105,7 @@ Notes:
 
 	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
 		<span>
-			
+
 		<cfif $.slatwall.getLoggedInAsAdminFlag() || structKeyExists(url,'ng')>
 			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
 				<div class="container-fluid" style="text-align:left;">
@@ -119,7 +120,7 @@ Notes:
 					<div class="pull-right s-right-nav-content" id="j-mobile-nav">
 						<ul class="nav navbar-nav">
 							<li class="divider-vertical"></li>
-							
+
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
 								<hb:HibachiDividerHider>
 									<hb:HibachiActionCaller action="admin:entity.listproduct" type="list">
@@ -148,7 +149,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listorderitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderpayment" type="list">
 									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">	
+									<hb:HibachiActionCaller action="admin:entity.listfulfillmentbatch" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderfulfillment" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listorderdelivery" type="list">
 									<li class="divider"></li>
@@ -226,7 +227,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
-									
+
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
@@ -257,7 +258,7 @@ Notes:
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
-						
+
 						</ul>
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
@@ -294,7 +295,7 @@ Notes:
 									</cfif>
 								</li>
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
-									<cfif $.slatwall.getLoggedInAsAdminFlag()> 
+									<cfif $.slatwall.getLoggedInAsAdminFlag()>
 										<hb:HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
 										<hb:HibachiActionCaller action="admin:main.logout" type="list">
 										<li class="divider"></li>
@@ -303,29 +304,29 @@ Notes:
 									<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
 									<hb:HibachiActionCaller action="admin:main.about" type="list">
 									<li class="divider"></li>
-									<hb:HibachiActionCaller action="admin:main.changelanguage" 
-										queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
-										text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" 
+									<hb:HibachiActionCaller action="admin:main.changelanguage"
+										queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#"
+										text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#"
 										type="list"
 										ignoreHTMLEditFormat="true"
 									>
-									<hb:HibachiActionCaller action="admin:main.changelanguage" 
-										queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
-										text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" 
+									<hb:HibachiActionCaller action="admin:main.changelanguage"
+										queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#"
+										text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#"
 										type="list"
 										ignoreHTMLEditFormat="true"
 									>
-									<hb:HibachiActionCaller action="admin:main.changelanguage" 
-										queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
-										text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" 
+									<hb:HibachiActionCaller action="admin:main.changelanguage"
+										queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#"
+										text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#"
 										type="list"
 										ignoreHTMLEditFormat="true"
 									>
-									<hb:HibachiActionCaller action="admin:main.changelanguage" 
-										queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" 
-										text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" 
+									<hb:HibachiActionCaller action="admin:main.changelanguage"
+										queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#"
+										text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#"
 										type="list"
-										ignoreHTMLEditFormat="true"	
+										ignoreHTMLEditFormat="true"
 									>
 								</hb:HibachiActionCallerDropdown>
 							</ul>
@@ -412,7 +413,7 @@ Notes:
 		<!-- code split vendor bundle before the other bundles because its common among them. -->
  		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></hb:HibachiScript>
  		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js" charset="utf-8"></hb:HibachiScript>
- 		
+
 		<hb:HibachiScript type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></hb:HibachiScript>
 	</body>
 </html>

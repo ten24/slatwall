@@ -54,8 +54,8 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		}
 	
 		// Datetime Picker
-		if(typeof jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datepicker === "function"){
-			jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datepicker({
+		if(typeof jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker === "function"){
+			jQuery( scopeSelector ).find(jQuery('.datetimepicker')).datetimepicker({
 				dateFormat: convertedDateFormat,
 				timeFormat: convertedTimeFormat,
 				ampm: ampm,
