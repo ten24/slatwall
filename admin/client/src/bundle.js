@@ -86287,8 +86287,17 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
             _this.selectedPeriodColumn = _this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+            _this.clearPeriodColumn(collectionData);
             _this.reportCollectionConfig = _this.collectionConfig.loadJson(angular.toJson(collectionData));
             _this.updatePeriod();
+        };
+        this.clearPeriodColumn = function (collectionData) {
+            for (var i in collectionData.columns) {
+                var column = collectionData.columns[i];
+                if (column.isPeriod) {
+                    collectionData.columns.splice(i, 1);
+                }
+            }
         };
         this.updatePeriod = function () {
             //if we have all the info we need then we can make a report

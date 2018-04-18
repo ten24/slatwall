@@ -184,11 +184,21 @@ class SWListingReportController {
                 }
             }
         }
-         
+        
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+        this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
         this.updatePeriod();
     }
+    
+    public clearPeriodColumn = (collectionData)=>{
+        for(var i in collectionData.columns){
+            var column = collectionData.columns[i];
+            if(column.isPeriod){
+                collectionData.columns.splice(i,1);
+            }
+        }
+    };
     
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
