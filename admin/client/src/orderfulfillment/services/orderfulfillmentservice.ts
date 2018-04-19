@@ -2,7 +2,8 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-import {Subject, Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import * as FluxStore from   '../../../../../org/Hibachi/client/src/core/prototypes/swstore';
 import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actions/fulfillmentbatchactions';
 

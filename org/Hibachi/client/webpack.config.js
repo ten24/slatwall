@@ -22,7 +22,7 @@ var appConfig = {
         library: 'hibachi'
     },
     // Turn on sourcemaps
-    //devtool: 'source-map',
+    devtool: 'source-map',
     resolve: {
         extensions: ['.webpack.js', '.web.js', '.ts', '.js'],
          alias: {
@@ -50,7 +50,8 @@ var appConfig = {
 	    ]
 	},
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"})
+        new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"}),
+        new webpack.SourceMapDevToolPlugin({filename:'vendor.bundle.js.map'})
     ]
 
 };
