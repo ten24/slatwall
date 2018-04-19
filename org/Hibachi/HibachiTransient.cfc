@@ -15,6 +15,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 		return variables.hibachiErrors;
 	}
+	
+	public any function setHibachiErrors(any errors){
+		if(structKeyExists(arguments,'errors')){
+			variables.hibachiErrors = arguments.errors;
+		}
+	}
+
+	public void function clearHibachiErrors(){
+		structDelete(variables,'hibachiErrors');
+	}
 
 	// @hint Returns the messageBean object, if one hasn't been setup yet it returns a new one
 	public any function getHibachiMessages() {
@@ -284,11 +294,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				// (ONE-TO-MANY) Do this logic if this property is a one-to-many or many-to-many relationship, and the data passed in is of type array
 				} else if ( structKeyExists(currentProperty, "fieldType") && (currentProperty.fieldType == "one-to-many" or currentProperty.fieldType == "many-to-many") && isArray( arguments.data[ currentProperty.name ] ) ) {
 
+					// Find the primaryID column Name for the related object
+					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
+
 					// Set the data of this One-To-Many relationship into it's own local array
 					var oneToManyArrayData = arguments.data[ currentProperty.name ];
 
-					// Find the primaryID column Name for the related object
-					var primaryIDPropertyName = getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( "#getApplicationValue('applicationKey')##listLast(currentProperty.cfc,'.')#" );
+					//Filter invalid indices
+					oneToManyArrayData = arrayFilter(oneToManyArrayData,function(value){
+						return !isNull(value);
+					});
 
 					// Loop over the array of objects in the data... Then load, populate, and validate each one
 					for(var a=1; a<=arrayLen(oneToManyArrayData); a++) {
@@ -398,15 +413,36 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					var uploadDirectory = this.invokeMethod("get#currentProperty.name#UploadDirectory");
 
 					// If the directory where this file is going doesn't exists, then create it
-					if(!directoryExists(uploadDirectory)) {
-						directoryCreate(uploadDirectory);
+					if(left(uploadDirectory, 5) == 's3://'){
+
+						var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+
+						uploadDirectory = replace(uploadDirectory,'s3://','');
+						var bucket = listLast(uploadDirectory, '@');
+						var loginPart = listFirst(uploadDirectory, '@');
+
+						getService("hibachiUtilityService").uploadToS3(
+							bucketName=bucket,
+							fileName=uploadData.serverfile,
+							contentType='application/octet-stream',
+							awsAccessKeyId=listFirst(loginPart, ':'),
+							awsSecretAccessKey=listLast(loginPart, ':'),
+							uploadDir=uploadData.serverdirectory
+						);
+
+						_setProperty(currentProperty.name, uploadData.serverfile);
+					}else{
+						if(!directoryExists(uploadDirectory)) {
+							directoryCreate(uploadDirectory);
+						}
+
+						// Do the upload
+						var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
+
+						// Update the property with the serverFile name
+						_setProperty(currentProperty.name, uploadData.serverFile);
 					}
 
-					// Do the upload
-					var uploadData = fileUpload( uploadDirectory, currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
-					
-					// Update the property with the serverFile name
-					_setProperty(currentProperty.name, uploadData.serverFile);
 				} catch(any e) {
 					this.addError(currentProperty.name, rbKey('validate.fileUpload'));
 				}
@@ -450,7 +486,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// @hint pubic method to validate this object
 	public any function validate( string context="" ) {
-
 		getService("hibachiValidationService").validate(object=this, context=arguments.context);
 
 		// If there were sub properties that have been populated, then we should validate each of those
@@ -458,14 +493,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			// Loop ove each property that was populated
 			for(var propertyName in variables.populatedSubProperties) {
-
+				
 				// setup the correct validation context for this property
 				var propertyContext = getService("hibachiValidationService").getPopulatedPropertyValidationContext( object=this, propertyName=propertyName, originalContext=arguments.context );
+				
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( listLast(getPropertyMetaData(propertyName).cfc,'.') );
-
+				
 				// Make sure that the context is a valid context
 				if( len(propertyContext) && (!isBoolean(propertyContext) || propertyContext) ) {
-
 					// If this was a one-to-many than validate each
 					if(isArray(variables.populatedSubProperties[ propertyName ])) {
 
@@ -483,7 +518,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 					// If this was a many-to-one, then just validate it
 					} else if (!isNull(variables[ propertyName ])) {
-
 						// Validate the property
 						variables[ propertyName ].validate( propertyContext );
 
@@ -505,6 +539,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// =======================  END:  POPULATION & VALIDATION =======================================
 	// ======================= START: PROPERTY INTROSPECTION ========================================
+
+	public any function hasPropertyByPropertyIdentifier(required string propertyIdentifier){
+		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
+
+		if(isNull(object) || isSimpleValue(object)) {
+			return false;
+		}
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		return object.hasProperty(propertyName);
+	}
 
 	// @hint Public method to retrieve a value based on a propertyIdentifier string format
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
@@ -536,6 +580,28 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			return object.getPropertyMetaData( propertyName ).ormtype;
 		}
 		return "";
+	}
+	
+	public string function getSingularNameByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		if(
+			!isNull(object) 
+			&& !isSimpleValue(object)
+			&& structKeyExists(object.getPropertyMetaData( propertyName ),'fieldtype')
+			&& object.getPropertyMetaData( propertyName ).fieldtype == 'one-to-many'
+		) {
+			return object.getPropertyMetaData( propertyName ).singularName;
+		}
+		return "";
+	}
+	
+	public string function getFormatTypeByPropertyIdentifier( required string propertyIdentifier ) {
+		var entityName = getService('HibachiService').getLastEntityNameInPropertyIdentifier(entityName=this.getClassName(), propertyIdentifier=arguments.propertyIdentifier );
+		var object = getService('HibachiService').getEntityObject(entityName);
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
+		return object.getPropertyFormatType(propertyName);
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
@@ -594,8 +660,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		var propertyMeta = getPropertyMetaData( arguments.propertyName );
 
+		if(structKeyExists(propertyMeta, "hb_displayType")) {
+			return propertyMeta.hb_displayType;
+
 		// First check to see if formatType was explicitly set for this property
-		if(structKeyExists(propertyMeta, "hb_formatType")) {
+		} else if(structKeyExists(propertyMeta, "hb_formatType")) {
 			return propertyMeta.hb_formatType;
 
 		// If it wasn't set, but this is a simple value field then inspect the dataTypes and naming convention to try an figure it out

@@ -3,6 +3,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	property name="cache" type="struct";
 	property name="internalCacheFlag" type="boolean";
 	property name="railoFlag" type="boolean";
+	 
 	
 	public any function init() {
 		setCache( {} );
@@ -19,6 +20,22 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 		return super.init();
 	}
+	
+	public any function getServerInstanceByServerInstanceIPAddress(required any serverInstanceIPAddress){
+		var serverInstance = super.onMissingGetMethod(missingMethodName='getServerInstanceByServerInstanceIPAddress',missingMethodArguments=arguments);
+		
+		if(isNull(serverInstance) || serverInstance.getNewFlag()){
+			serverInstance = this.newServerInstance();
+			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			serverInstance.setServerInstanceExpired(false);
+			serverInstance.setSettingsExpired(false);
+			
+			this.saveServerInstance(serverInstance); 
+			getHibachiScope().flushOrmSession();
+		}
+		return serverInstance;
+	}
+	
 	
 	public any function getDatabaseCacheByDatabaseCacheKey(required databaseCacheKey){
 		return getDao('HibachiCacheDAO').getDatabaseCacheByDatabaseCacheKey(arguments.databaseCacheKey);
@@ -50,30 +67,22 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 	public void function updateServerInstanceCache(required string serverInstanceIPAddress){
 		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-		if(isNull(serverInstance)){
-			serverInstance = this.newServerInstance();
-			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-			serverInstance.setServerInstanceExpired(false);
-			this.saveServerInstance(serverInstance); 
-		}
-		
 		getDao('hibachiCacheDao').updateServerInstanceCache(serverInstance);
 	}
 	
 	public void function updateServerInstanceSettingsCache(required string serverInstanceIPAddress){
 		var serverInstance = this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-		if(isNull(serverInstance)){
-			serverInstance = this.newServerInstance();
-			serverInstance.setServerInstanceIPAddress(arguments.serverInstanceIPAddress);
-			serverInstance.setSettingsExpired(false);
-			this.saveServerInstance(serverInstance); 
-		}
-		
 		getDao('hibachiCacheDao').updateServerInstanceSettingsCache(serverInstance);
 	}
 	
 	public boolean function isServerInstanceCacheExpired(required string serverInstanceIPAddress){
-		return getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
+		var isExpired = getDao('hibachiCacheDao').isServerInstanceCacheExpired(arguments.serverInstanceIPAddress);
+		if(isNull(isExpired)){
+			this.getServerInstanceByServerInstanceIPAddress(arguments.serverInstanceIPAddress);
+			return false;
+		}else{
+			return isExpired;
+		}
 	} 
 	
 	public boolean function isServerInstanceSettingsCacheExpired(required string serverInstanceIPAddress){

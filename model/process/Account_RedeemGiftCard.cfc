@@ -60,13 +60,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getGiftCard() {
-		if(!structKeyExists(variables, "giftCard")){
+		if(!structKeyExists(variables, "giftCard") && !isNull(this.getGiftCardCode())){
 			var giftCardID = getDAO("GiftCardDAO").getIDbyCode(this.getGiftCardCode());
 			if (!isNull(giftCardID) && len(giftCardID) && !isNull(getService("GiftCardService").getGiftCard(giftCardID))){
 				variables.giftCard = getService("GiftCardService").getGiftCard(giftCardID);
 				return variables.giftCard;
 			}
-		}else {
+		}else if(structKeyExists(variables,"giftCard")){
 			return variables.giftCard;
 		}
 	}

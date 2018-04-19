@@ -46,13 +46,13 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 
 	
 	public void function setUp() {
 		super.setup();
-		variables.dao = request.slatwallScope.getDAO("promotionDAO");
-		variables.currencyService=request.slatwallScope.getBean("currencyService");
+		variables.dao = variables.mockService.getPromotionDAOMock();
+		variables.currencyService=variables.mockService.getCurrencyServiceMock();
 	}
 	
 	private void function setupTestCurrencies(){
@@ -115,6 +115,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var sku = product.getSkus()[1];
 		
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodID = '',
@@ -187,6 +188,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//Test promotion with currency defined on the reward only
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodID = '',
@@ -302,6 +304,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//Test promotion with currency defined on the reward only
 		var promotionData = {
+			activeFlag = true,
 			promotionPeriods = [
 				{
 					promotionPeriodID = '',
@@ -448,7 +451,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//requires promotion period
 		
 		var promotionData = {
-
+			activeFlag = true
 		};
 		var promotion = createPersistedTestEntity('promotion',promotionData);
 		

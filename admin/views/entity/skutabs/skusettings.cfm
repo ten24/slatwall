@@ -52,18 +52,14 @@ Notes:
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable>
+	<swa:SlatwallSettingTable showMultiSite="true" includeSettingNamesOnlyForSites="skuCurrency,skuEligibleCurrencies,skuEligibleFulfillmentMethods,skuEligiblePaymentMethods">
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
-		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
-			<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.sku#" />
-		<cfelse>
-			<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.sku#" />
-		</cfif>
 		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.sku#" />
@@ -78,6 +74,14 @@ Notes:
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
+		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.sku#" />
+			<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" settingObject="#rc.sku#" />
+			<swa:SlatwallSetting settingName="skuGiftCardCodeLength" settingObject="#rc.sku#" />
+			<swa:SlatwallSetting settingName="skuGiftCardRecipientRequired" settingObject="#rc.sku#" />
+		<cfelse>
+			<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.sku#" />
+		</cfif>
 		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuShippingCostExempt" settingObject="#rc.sku#" />
 		
@@ -85,6 +89,18 @@ Notes:
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
 		<cfelseif  rc.sku.getProduct().getProductType().getBaseProductType() eq "event">
 			<swa:SlatwallSetting settingName="skuEventEnforceConflicts" settingObject="#rc.sku#" />
+		</cfif>
+		<cfif rc.sku.getProduct().getProductType().getBaseProductType() neq "gift-card">
+			<swa:SlatwallSetting settingName="skuExpenseLedgerAccount" settingObject="#rc.sku#"/>
+			<swa:SlatwallSetting settingName="skuRevenueLedgerAccount" settingObject="#rc.sku#"/>
+			<swa:SlatwallSetting settingName="skuCogsLedgerAccount" settingObject="#rc.sku#"/>
+			<swa:SlatwallSetting settingName="skuAssetLedgerAccount" settingObject="#rc.sku#"/>
+		</cfif>
+		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
+			<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount" settingObject="#rc.sku#"/>
+		</cfif>
+		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "subscription">
+			<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount" settingObject="#rc.sku#"/>
 		</cfif>
 	</swa:SlatwallSettingTable>
 </cfoutput>

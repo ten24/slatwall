@@ -74,5 +74,6 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
+		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

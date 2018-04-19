@@ -32,6 +32,8 @@ class SWListingDisplayController{
     public expandableRules = [];
     public exampleEntity:any = "";
     public exportAction;
+    public emailAction;
+    public printAction;
     public filters = [];
     public filterGroups = [];
     public isAngularRoute:boolean;
@@ -59,6 +61,8 @@ class SWListingDisplayController{
     public processObjectProperties;
     public recordAddAction:string;
     public recordDetailAction:string;
+    public recordDetailActionIdProperty:string;
+    public recordDetailActionIdKey:string;
     public recordDetailActionProperty:string;
     public recordEditAction:string;
     public recordDeleteAction:string;
@@ -69,10 +73,13 @@ class SWListingDisplayController{
     public selectFieldName;
     public selectable:boolean = false;
     public showOrderBy:boolean;
+    public showExport:boolean;
+    public showPrintOptions:boolean; 
     public showSearch:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
+    public showToggleDisplayOptions:boolean;
     public sortable:boolean = false;
     public sortableFieldName:string;
     public sortProperty;
@@ -90,9 +97,12 @@ class SWListingDisplayController{
     public isCurrentPageRecordsSelected;
     public allSelected;
     public name;
+    public usingPersonalCollection:boolean;
+    public personalCollectionIdentifier:string;
     //@ngInject
     constructor(
         public $scope,
+        public $rootScope,
         public $transclude,
         public $timeout,
         public $q,
@@ -103,34 +113,80 @@ class SWListingDisplayController{
         public paginationService,
         public selectionService,
         public observerService,
-        public rbkeyService
+        public rbkeyService,
+        public localStorageService
     ){
-
+        //Invariant - We must have some way to instantiate. Everything can't be optional. --commented out due to breaking sku listing on product detail page
+        // if (!(this.collectionConfig) && !this.collectionConfigs.length && !this.collection){
+        //     return;
+        // }
+        if(angular.isUndefined(this.usingPersonalCollection)){
+            this.usingPersonalCollection=false;
+        }
+        
+        if(angular.isUndefined(this.showExport)){
+            this.showExport = true;
+        }
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
         this.singleCollectionDeferred = $q.defer();
         this.singleCollectionPromise = this.singleCollectionDeferred.promise;
-
         if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+
             //not sure why we have two properties for this
             this.baseEntityName = this.collection;
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-             this.$timeout(()=>{
+            this.$timeout(()=>{
                 this.collection = this.collectionConfig;
                 this.columns = this.collectionConfig.columns;
             });
+
             this.multipleCollectionDeffered.reject();
         }
-		this.initializeState();
-		
-		this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-		        
+
+         if(this.usingPersonalCollection && this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){
+            var personalCollection = this.collectionConfigService.newCollectionConfig('Collection');
+            personalCollection.setDisplayProperties('collectionConfig');
+            personalCollection.addFilter('collectionID',this.localStorageService.getItem('selectedPersonalCollection')[this.baseEntityName.toLowerCase()].collectionID);
+           // personalCollection.addFilter('collectionDescription',this.personalCollectionIdentifier);
+            var originalMultiSlotValue = angular.copy(this.multiSlot);
+            this.multiSlot = false;
+            personalCollection.getEntity().then((data)=>{
+                if(data.pageRecords.length){
+
+                    this.collectionConfig = this.collectionConfigService.newCollectionConfig().loadJson(data.pageRecords[0].collectionConfig);
+                    console.log('collectionConfig',this.collectionConfig);
+                    this.collectionObject = this.baseEntityName;
+
+                    this.$timeout(()=>{
+                        this.collection = this.collectionConfig;
+                        this.columns = this.collectionConfig.columns;
+                    });
+
+                }else{
+                    this.multiSlot = originalMultiSlotValue;
+                }
+                 this.processCollection();
+            });
+
+         }else{
+            $rootScope.hibachiScope.selectedPersonalCollection = undefined;
+            this.processCollection();
+        }
+
+
+    }
+
+    public processCollection = () =>{
+
+        this.initializeState();
+
         if(angular.isDefined(this.collectionPromise)){
-             this.hasCollectionPromise = true;
-             this.multipleCollectionDeffered.reject();
+                this.hasCollectionPromise = true;
+                this.multipleCollectionDeffered.reject();
         }
 
         if(this.collectionConfig != null){
@@ -141,13 +197,14 @@ class SWListingDisplayController{
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
-        console.log('multislot',this.multiSlot);
-        
-		if(this.multiSlot){
+
+        this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
+
+        if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
             });
-    
+
             this.multipleCollectionPromise.then(
                 ()=>{
                     //now do the intial setup
@@ -163,25 +220,31 @@ class SWListingDisplayController{
                     if(angular.isUndefined(this.getCollection)){
                         this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
                     }
-    
+
                     this.paginator.getCollection = this.getCollection;
-    
-                    var getCollectionEventID = this.tableID;
-            		this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
+
+                    this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
+
                 }
             );
         }else if(this.multiSlot == false){
+            if(this.columns && this.columns.length){
+                this.collectionConfig.columns = this.columns;
+            }
+            this.setupCollectionPromise();
 
-        	this.setupCollectionPromise();
-            
         }
-        
+
+        if(!this.collectionObject && (this.collectionConfig && this.collectionConfig.baseEntityName)){
+            this.collectionObject = this.collectionConfig.baseEntityName;
+        }
+
         if (this.collectionObject){
-             this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
+                this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         }
-        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction');
+        this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
-    
+
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -201,30 +264,29 @@ class SWListingDisplayController{
             }
             this.getCollection = this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
-                this.observerService.notify('swPaginationUpdate',data);
+                this.observerService.notifyById('swPaginationUpdate',this.tableID, this.collectionData);
             });
-            
+
         }
-        
+
     }
-    
+
     private setupCollectionPromise=()=>{
+
     	if(angular.isUndefined(this.getCollection)){
             this.getCollection = this.listingService.setupDefaultGetCollection(this.tableID);
-            
-            
         }
 
         this.paginator.getCollection = this.getCollection;
-        
+
         var getCollectionEventID = this.tableID;
+
         //this.observerService.attach(this.getCollectionObserver,'getCollection',getCollectionEventID);
 
         this.listingService.getCollection(this.tableID);
     }
 
     private getCollectionObserver=(param)=> {
-        console.warn("getCollectionObserver", param)
         this.collectionConfig.loadJson(param.collectionConfig);
         this.collectionData = undefined;
         this.$timeout(
@@ -235,11 +297,12 @@ class SWListingDisplayController{
     };
 
     private initializeState = () =>{
-        if(angular.isDefined(this.name)){
+        if(this.name!=null){
             this.tableID = this.name;
         } else {
             this.tableID = 'LD'+this.utilityService.createID();
         }
+        
         if (angular.isUndefined(this.collectionConfig)){
             //make it available to swCollectionConfig
             this.collectionConfig = null;
@@ -300,14 +363,28 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
         }
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false; 
+        }
+        if(angular.isUndefined(this.showToggleDisplayOptions)){
+            this.showToggleDisplayOptions = true; 
+        }
         if(angular.isUndefined(this.expandable)){
             this.expandable = false;
         }
         //setup export action
-        if(angular.isDefined(this.exportAction)){
+        if(angular.isUndefined(this.exportAction)){
             this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
-        this.paginator = this.paginationService.createPagination();
+        //setup print action
+        if(angular.isDefined(this.printAction)){
+            this.printAction = this.$hibachi.buildUrl('main.collectionPrint')+'&collectionExportID=';
+        }
+        //setup email action
+        if(angular.isDefined(this.emailAction)){
+            this.emailAction = this.$hibachi.buildUrl('main.collectionEmail')+'&collectionExportID=';
+        }
+        this.paginator = this.paginationService.createPagination(this.tableID);
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
             this.getChildCount = false;
@@ -315,6 +392,10 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+        if(this.collectionConfig){
+            this.collectionConfig.setEventID(this.tableID);
+        }
+       
         if(angular.isDefined(this.sortableFieldName)){
             this.sortableFieldName = "sorting" + this.tableID;
         }
@@ -388,6 +469,19 @@ class SWListingDisplayController{
     public toggleOrderBy = (column) => {
         this.listingService.toggleOrderBy(this.tableID, column);
     };
+    public showCalculation=(show = "total")=>{
+        // Hide all other calculations
+        $(`.sw-${(show == "total" ? "average" : "total")}`).hide();
+        
+        // Show all of the chosen calculations
+        $(`.sw-${show}`).show();
+    }
+    public hasNumerical=()=>{
+        // Iterate over columns, find out if we have any numericals and return
+        return this.columns.reduce((totalNumericalCols, col) => {
+            return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+        });
+    }
 
     public columnOrderByIndex = (column) =>{
         return this.listingService.columnOrderByIndex(this.tableID, column);
@@ -414,6 +508,12 @@ class SWListingDisplayController{
                 this.isCurrentPageRecordsSelected = false;
                 break;
         }
+
+        //dispatch the update to the store.
+        this.listingService.listingDisplayStore.dispatch({
+            type: "CURRENT_PAGE_RECORDS_SELECTED",
+            payload: {listingID: this.tableID, selectionCount: this.multiselectCount, values: this.multiselectValues }
+        });
     };
 
 
@@ -436,6 +536,14 @@ class SWListingDisplayController{
 
     public getExportAction = ():string =>{
         return this.exportAction + this.collectionID;
+    };
+
+    public getPrintAction = ():string =>{
+        return this.printAction + this.collectionID;
+    };
+
+    public getEmailAction = ():string =>{
+        return this.emailAction + this.collectionID;
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
@@ -462,6 +570,25 @@ class SWListingDisplayController{
         $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
             .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+            .submit()
+            .remove();
+    };
+
+    public printCurrentList =(printTemplateID)=>{
+
+        var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+
+        $('body').append('<form action="?s=1" method="post" id="formPrint"></form>');
+        
+        $('#formPrint')
+            .append("<input type='hidden' name='" + this.$hibachi.getConfigValue('action') +"' value='entity.processPrint' />")
+            .append("<input type='hidden' name='redirectAction' value='admin:entity.list" + this.baseEntityName.toLowerCase() + "' />")
+            .append("<input type='hidden' name='processContext' value='addToQueue' />")
+            .append("<input type='hidden' name='printID' value='' />")
+            .append("<input type='hidden' name='printTemplateID' value='" + printTemplateID +"' />")
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />");
+        
+        $('#formPrint')
             .submit()
             .remove();
     };
@@ -501,7 +628,8 @@ class SWListingDisplay implements ng.IDirective{
         customListingControls:"?swCustomListingControls"
     };
     public bindToController={
-
+            usingPersonalCollection:"<?",
+            personalCollectionIdentifier:'@?',
             isRadio:"<?",
             angularLinks:"<?",
             isAngularRoute:"<?",
@@ -531,6 +659,8 @@ class SWListingDisplay implements ng.IDirective{
             recordEditDisabled:"<?",
             recordDetailAction:"@?",
             recordDetailActionProperty:"@?",
+            recordDetailActionIdProperty:"@?",
+            recordDetailActionIdKey:"@?",
             recordDetailQueryString:"@?",
             recordDetailModal:"<?",
             recordDeleteAction:"@?",
@@ -593,10 +723,14 @@ class SWListingDisplay implements ng.IDirective{
 
             /* Settings */
             showheader:"<?",
+            showExport:"<?",
             showOrderBy:"<?",
             showTopPagination:"<?",
+            showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showSimpleListingControls:"<?",
+            showPrintOptions:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",
@@ -607,7 +741,7 @@ class SWListingDisplay implements ng.IDirective{
             getChildCount:"<?",
             hasSearch:"<?",
             hasActionBar:"<?",
-            multiSlot:"<?",
+            multiSlot:"=?",
             customListingControls:"<?"
     };
     public controller:any=SWListingDisplayController;

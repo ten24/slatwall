@@ -60,7 +60,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			directoryCreate(configDirectoryPath);
 		}
 		var filePath = configDirectoryPath & 'config.json';
-		fileWrite(filePath,json);
+		fileWrite(filePath,json,'utf-8');
     }
 
 	private any function getModel(){
@@ -133,7 +133,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	        }
 	        var json = serializeJson(data);
 			var filePath = customrbpath & '/#locale#.json';
-	        fileWrite(filePath,json);
+	        fileWrite(filePath,json,'utf-8');
     	}
         
     }

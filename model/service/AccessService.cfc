@@ -62,8 +62,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			purchasedAccessFlag = false,
 			subscribedAccessFlag = false,
 			subscribedByContentFlag = false,
-			subscribedByCategoryFlag = false
+			subscribedByCategoryFlag = false,
+			trackAccessFlag = false
 		};
+		
 		var dataIfNotCached = {
 			settingName="contentRestrictAccessFlag",
 			settingValue=1
@@ -80,6 +82,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Check the content's setting to determine if access is restriced
 		if( !content.setting('contentRestrictAccessFlag') ) {
 			accessDetails.accessFlag = true;
+			accessDetails.trackAccessFlag = true; //if secure, then track access by default.
 			accessDetails.nonRestrictedFlag = true;
 			return accessDetails;
 		}
@@ -101,9 +104,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(!requireSubscriptionSettingDetails.settingValue) {
 				
 				accessDetails.accessFlag = true;
-				
-				logAccess(content=arguments.content, accountContentAccess=accountContentAccessSmartList.getRecords()[1]);
-				
+				if (accessDetails.trackAccessFlag){
+					logAccess(content=arguments.content, accountContentAccess=accountContentAccessSmartList.getRecords()[1]);
+				}
 				return accessDetails;
 				
 			}
@@ -122,13 +125,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				accessDetails.accessFlag = true;
 				accessDetails.subscribedAccessFlag = true;
 				accessDetails.subscribedByContentFlag = true;
-				
-				logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaContentSmartList.getRecords()[1]);
-				
+				if (accessDetails.trackAccessFlag){
+					logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaContentSmartList.getRecords()[1]);
+				}
 				return accessDetails;
 			}
 			
-			// If there was not acess via content, then we can check via category or parent category... but only if this content has been categorized
+			// If there was not access via content, then we can check via category or parent category... but only if this content has been categorized
 			if(len(arguments.content.getCategoryIDList())) {
 				
 				var activeAccountBenefitsViaCategorySmartList = duplicate(arguments.account.getActiveSubscriptionUsageBenefitsSmartList());
@@ -139,9 +142,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					accessDetails.accessFlag = true;
 					accessDetails.subscribedAccessFlag = true;
 					accessDetails.subscribedByCategoryFlag = true;
-					
-					logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaCategorySmartList.getRecords()[1]);
-					
+					if (accessDetails.trackAccessFlag){
+						logAccess(content=arguments.content, subscriptionUsageBenefit=activeAccountBenefitsViaCategorySmartList.getRecords()[1]);
+					}
 					return accessDetails;
 				}
 			}
@@ -165,6 +168,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if( structKeyExists(arguments,"accountContentAccess") ) {
 			contentAccess.setAccountContentAccess(arguments.accountContentAccess);
 		}
+		
+		// Pass into the hibernate context
+		this.saveContentAccess(contentAccess);
+		
+		// persist the content access log, needed in case file download aborts the request 
+		getHibachiDAO().flushORMSession();
+	}
+	
+	public void function logFileAccess(required any file) {
+		// Create a new content access log
+		var contentAccess = this.newContentAccess();
+		contentAccess.setFile(arguments.file);
+		contentAccess.setAccount(getSlatwallScope().getCurrentAccount());
 		
 		// Pass into the hibernate context
 		this.saveContentAccess(contentAccess);

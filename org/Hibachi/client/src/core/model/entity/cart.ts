@@ -4,13 +4,13 @@
 import {BaseEntity} from "./baseentity";
 
 class Cart extends BaseEntity{
-    public requiresFulfillment:boolean=false;
     public orderRequirementsList:string="";
     public orderPayments:any=[];
     public orderItems:Array<any>=[];
     public fulfillmentTotal;
     public orderFulfillments:Array<any>=[];
     public account:any;
+    public assignedAccount:any;
     public calculatedTotal:number;
     public orderID;
     //deprecated
@@ -32,10 +32,6 @@ class Cart extends BaseEntity{
             return true;
         }
         return false;
-    };
-
-    public orderRequiresFulfillment = ():boolean=> {
-        return this.requiresFulfillment;
     };
 
     public getOrderItemQuantitySum = ()=>{

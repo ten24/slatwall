@@ -58,7 +58,7 @@ component displayname="Measurement Unit" entityname="SlatwallMeasurementUnit" ta
 	property name="unitCode" ormtype="string" fieldtype="id" unique="true" generated="never";
 	property name="measurementType" ormtype="string" hb_formFieldType="select";
 	property name="unitName" ormtype="string";
-	property name="conversionRatio" ormtype="float";
+	property name="conversionRatio" ormtype="double";
 
 	// Related Object Properties (many-to-one)
 	
@@ -84,7 +84,7 @@ component displayname="Measurement Unit" entityname="SlatwallMeasurementUnit" ta
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getMeasurementTypeOptions() {
-		return [{name=rbKey('define.length'), value='length'},{name=rbKey('define.weight'), value='weight'}];
+		return [{name=rbKey('define.length'), value='length'},{name=rbKey('define.volume'), value='volume'},{name=rbKey('define.weight'), value='weight'}];
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

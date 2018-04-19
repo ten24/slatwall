@@ -77,8 +77,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	*/
 	public void function getAccountData_without_any_propertyList_returns_all_available_properties() {
 		var ad = request.slatwallScope.getAccountData();
-		
-		assertEquals(structCount(ad), 13);
+		var aapArray = listToArray(request.slatwallScope.getAvailableAccountPropertyList());
+		for(var propertyIdentifier in aapArray){
+			var topLevelProperty = listFirst(propertyIdentifier,'.');
+			assertFalse(!structKeyExists(ad,topLevelProperty),topLevelProperty & ' does not exist!');
+		}
 	}
 		
 	/**
@@ -180,11 +183,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function getCartData_without_any_propertyList_returns_all_available_properties() {
+	/*public void function getCartData_without_any_propertyList_returns_all_available_properties() {
 		var cd = request.slatwallScope.getCartData();
-		
-		assertEquals(16, structCount(cd));
-	}
+		var acpArray = listToArray(request.slatwallScope.getAvailableCartPropertyList());
+		for(var propertyIdentifier in acpArray){
+			var topLevelProperty = listFirst(propertyIdentifier,'.');
+			assertFalse(!structKeyExists(cd,topLevelProperty),topLevelProperty & ' does not exist!');
+		}
+	}*/
 	
 		
 	/**
@@ -245,6 +251,54 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(4, structCount(cd));
 		
 		assertFalse( structKeyExists(cd, "hushbuppy") );
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductSmartListTest() {
+		var productSmartList = request.slatwallScope.getProductSmartList();
+		productSmartList.getHQL();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductSmartListTest_withContent() {
+		var contentData = {
+			contentID="",
+			productListingPageFlag=1
+		};
+		var contentEntity = createPersistedTestEntity('Content',contentData);
+		request.slatwallScope.setContent(contentEntity);
+		
+		var productSmartList = request.slatwallScope.getProductSmartList();
+		request.slatwallScope.getProductSmartList().getHQL();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductCollectionListTest() {
+		var productCollectionList = request.slatwallScope.getProductCollectionList();
+		productCollectionList.getHQL();
+	}
+	
+	/**
+	* @test
+	*/
+	public void function getProductCollectionListTest_withContent() {
+		var contentData = {
+			contentID="",
+			productListingPageFlag=1
+		};
+		var contentEntity = createPersistedTestEntity('Content',contentData);
+		
+		request.slatwallScope.setContent(contentEntity);
+		
+		var productCollectionList = request.slatwallScope.getProductCollectionList();
+		productCollectionList.getHQL();
+		assert(productCollectionList.getHQL() CONTAINS '_product_listingPages_content');
 	}
 	
 }

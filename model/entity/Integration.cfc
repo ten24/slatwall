@@ -52,7 +52,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="installedFlag" ormtype="boolean";
-	property name="integrationPackage" ormtype="string" unique="true";
+	property name="integrationPackage" ormtype="string" unique="true" index="PI_INTEGRATIONPACKAGE";
 	property name="integrationName" ormtype="string";
 	property name="integrationTypeList" ormtype="string"; 
 	
@@ -146,7 +146,7 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getIntegrationPackage()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+			return getService("settingService").getSettingValue(settingName="integration#lcase(getIntegrationPackage())##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
 		}
 		return super.setting(argumentcollection=arguments);
 	}

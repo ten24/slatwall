@@ -12,7 +12,7 @@ class SWPropertyDisplayController {
     public isHidden:boolean;
     public fieldType;
     public object;
-    public property;
+    public property; //dominant over propertyIdentifier
     public propertyDisplayID:string;
     public title;
     public hint;
@@ -48,27 +48,27 @@ class SWPropertyDisplayController {
     public showSave:boolean;
 
     //swfproperty display properties
-    public type;
 	public class;
+    public hideErrors;
 	public fieldAttributes;
 	public valueObject;
 	public label;
 	public name;
+    public errorName;
 	public options;
 	public valueObjectProperty;
     public valueOptions;
 	public processObject;
-	public optionValues:Array<string> = [];
+	public optionValues:any;
 	public propertyDisplay;
     public edit:boolean;
-
 	public value;
 	public submit;
 	public labelText;
 	public labelClass;
 	public errorText;
 	public errorClass;
-	public propertyIdentifier;
+	public propertyIdentifier; //dominant
 	public loader;
 
     public swForm;
@@ -87,7 +87,6 @@ class SWPropertyDisplayController {
 	}
 
     public $onInit=()=>{
-
         var bindToControllerProps = this.$injector.get('swPropertyDisplayDirective')[0].bindToController;
         for(var i in bindToControllerProps){
 
@@ -95,11 +94,13 @@ class SWPropertyDisplayController {
 				this[i] = this.swForm[i];
 			}
 		}
-
-
         this.errors = {};
         this.edited = false;
-        this.initialValue = this.object.data[this.property];
+        this.edit = this.edit || this.editing;
+        this.editing = this.editing || this.edit;
+
+        this.errorName = this.errorName || this.name;
+        this.initialValue = this.object[this.property];
         this.propertyDisplayID = this.utilityService.createID(32);
         if(angular.isUndefined(this.showSave)){
             this.showSave = true;
@@ -160,19 +161,9 @@ class SWPropertyDisplayController {
                 return model;
             }
         };
-
-		this.property = this.property || this.propertyIdentifier;
-        this.propertyIdentifier = this.propertyIdentifier || this.property;
-
-        this.type = this.type || this.fieldType;
-        this.fieldType = this.fieldType || this.type;
-
-        this.edit = this.edit || this.editing;
-        this.editing = this.editing || this.edit;
-
         //swfproperty logic
-        if(angular.isUndefined(this.type) && this.object && this.object.metaData){
-            this.type = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
+        if(angular.isUndefined(this.fieldType) && this.object && this.object.metaData){
+            this.fieldType = this.metadataService.getPropertyFieldType(this.object,this.propertyIdentifier);
         }
 
 		if(angular.isUndefined(this.title) && this.object && this.object.metaData){
@@ -184,13 +175,14 @@ class SWPropertyDisplayController {
         this.labelText = this.labelText || this.title;
         this.title = this.title || this.labelText;
 
-		this.type                	= this.type || "text" ;
+		this.fieldType                	= this.fieldType || "text" ;
 		this.class			   	= this.class|| "form-control";
 		this.fieldAttributes     	= this.fieldAttributes || "";
 		this.label			    = this.label || "true";
 		this.labelText			= this.labelText || "";
 		this.labelClass			= this.labelClass || "";
 		this.name			    	= this.name || "unnamed";
+        this.value              = this.value || this.initialValue;
 
 
 		this.object				= this.object || this.swForm.object; //this is the process object
@@ -215,7 +207,7 @@ class SWPropertyDisplayController {
 
         /** handle turning the options into an array of objects */
 		/** handle setting the default value for the yes / no element  */
-		if (this.type=="yesno" && (this.value && angular.isString(this.value))){
+		if (this.fieldType=="yesno" && (this.value && angular.isString(this.value))){
 			this.selected == this.value;
 		}
 
@@ -311,8 +303,8 @@ class SWPropertyDisplay implements ng.IDirective{
 
         //swfproperty scope
 
-        type: "@?",
         name: "@?",
+        errorName: "@?",
         class: "@?",
         edit: "@?",
         valueObject: "=?",
@@ -326,6 +318,9 @@ class SWPropertyDisplay implements ng.IDirective{
         errorText: "@?",
         errorClass: "@?",
         formTemplate: "@?",
+        eventAnnouncers:"@",
+        hideErrors:'=?',
+        value:"@?",
 
         //swpropertyscope
 
@@ -360,7 +355,7 @@ class SWPropertyDisplay implements ng.IDirective{
         placeholderRbKey:"@",
         inputAttributes:"@?",
         optionValues:"=?",
-        eventHandlers:"@?",
+        eventListeners:"=?",
         context:"@?"
     };
     public controller=SWPropertyDisplayController;

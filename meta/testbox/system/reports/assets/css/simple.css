@@ -13,9 +13,9 @@ li{ margin-left: -10px; list-style: none;}
 a{ text-decoration: none;}
 a:hover{ text-decoration: underline;}
 /** status **/
-.passed { color: green; }
-.failed { color: orange; }
-.error { color: red; }
+.passed { color: #009c08; }
+.failed { color: #d7af00; }
+.error { color: #c30000; }
 .skipped{ color: blue;}
 div.skipped{ display: none;}
 /** utility **/
@@ -27,6 +27,7 @@ div.skipped{ display: none;}
 .padding0{ padding: 0px; }
 .float-right{ float: right;}
 .float-left{ float: left;}
+.preserve-whitespace { white-space: pre;}
 /** boxes **/
 .box{ border:1px solid gray; margin: 10px 0px; padding: 10px; background-color: #f5f5f5}
 .buttonBar{ float:right; margin: 10px 5px 0px 10px }

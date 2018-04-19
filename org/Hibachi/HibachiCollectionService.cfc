@@ -1,6 +1,10 @@
 component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiService" type="any";
-
+	property name="aliasMap" type="struct";
+	property name="collectionCache" type="struct";
+	
+	
+	
 	// ===================== START: Logical Methods ===========================
 	public string function getCollectionObjectByCasing(required collection, required string casing){
 		switch(arguments.casing){
@@ -21,6 +25,14 @@ component output="false" accessors="true" extends="HibachiService" {
 			hibachiPropertyIdentifier = listRest(hibachiPropertyIdentifier,'.');
 		}
 		return hibachiPropertyIdentifier;
+	}
+	
+	public struct function getCollectionCache(){
+		if(!structKeyExists(variables,'collectionCache')){
+			variables.collectionCache = {};
+		}
+		
+		return variables.collectionCache;
 	}
 
 	//returns meta data about the objects properties
@@ -240,7 +252,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return formattedObjectRecords;
 	}
 
-	public any function getBadCollectionInfo(required any collectionEntity){
+	public any function getBadCollectionInfo(required any collectionEntity, string failedCollectionMessage){
 		formattedPageRecords[ "pageRecords" ] = [];
 
 		formattedPageRecords[ "recordsCount" ] = 0;
@@ -251,6 +263,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 		formattedPageRecords['failed'] = true;
+		var context = getPageContext();
+		var status = 500;
+		var statusMessage = "collection failed";
+		if(getApplicationValue('errorDisplayFlag')){
+			statusMessage &= ":#failedCollectionMessage#";
+		}
+		context.getResponse().setStatus(status, statusMessage);
 	}
 
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
@@ -258,11 +277,17 @@ component output="false" accessors="true" extends="HibachiService" {
 		var formattedPageRecords = {};
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords(formatRecords=false);
 		if(ArrayLen(paginatedCollectionOfEntities) == 1 && structKeyExists(paginatedCollectionOfEntities[1],'failedCollection')){
-			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity);
+			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity,paginatedCollectionOfEntities[1]['failedCollection']);
 		}else{
 
 			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);
-			formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
+			var recordsCountData = arguments.collectionEntity.getRecordsCountData();
+			for(var key in recordsCountData){
+				var recordsCountDataItem = recordsCountData[key];
+				formattedPageRecords[ key ] = recordsCountDataItem;
+			}
+			//return aggregates data
+			
 			formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords(formatRecords=false));
 			formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
 			formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
@@ -323,7 +348,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(propertyIdentifierItem in propertyIdentifiersArray){
 			if(
-				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, propertyIdentifierItem)
+				!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity, propertyIdentifierItem)
 			){
 				columnStruct = {
 					propertyIdentifier = "#propertyIdentifierItem#"
@@ -356,7 +381,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	//filter
 	private void function addFiltersToCollectionConfigStructByParameters(required any collectionEntity, required string filterParameters){
 		/*if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct.filterGroups = [];
+			collectionConfigStruct['filterGroups'] = [];
 		}
 		var capitalCaseEntityName = capitalCase(arguments.entityName);
 		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
@@ -365,7 +390,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var filterGroupStruct.filterGroup = [];
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
 
-		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);*/
+		arrayAppend(collectionConfigStruct['filterGroups'],filterGroupStruct);*/
 	}
 
 	private any function getColumnsAndJoinsStructPropertyIdentifiersList(propertyIdentifiersList){
@@ -383,7 +408,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		};
 
 		if(!isnull(arguments.data.filterConfig)){
-			collectionConfigStruct.filterGroups = deserializeJson(arguments.data.filterConfig);
+			collectionConfigStruct['filterGroups'] = deserializeJson(arguments.data.filterConfig);
 		}
 
 		if(!isNull(arguments.data.joinsConfig)){
@@ -458,6 +483,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	*/
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
+		
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
@@ -468,6 +494,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var modifiedURL = "?";
 		variables.dataKeyDelimiter = ":";
 		variables.valuedelimiter = ",";
+		
 		// Turn the old query string into a struct
 		var oldQueryKeys = {};
 
@@ -475,7 +502,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			var oldQueryString = right(arguments.currentURL, len(arguments.currentURL) - findNoCase("?", arguments.currentURL));
 			for(var i=1; i<=listLen(oldQueryString, "&"); i++) {
 				var keyValuePair = listGetAt(oldQueryString, i, "&");
-				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=");
+				//added final list last argument, include empty values, set to true to avoid problem of duplicating query key when it's empty
+				oldQueryKeys[listFirst(keyValuePair,"=")] = listLast(keyValuePair,"=",true);
 			}
 		}
 
@@ -496,18 +524,23 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
 						structDelete(newQueryKeys, key);
 					} else if(arguments.appendValues) {
-						for(var i=1; i<=listLen(newQueryKeys[key], variables.valueDelimiter); i++) {
-							var thisVal = listGetAt(newQueryKeys[key], i, variables.valueDelimiter);
-							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, variables.valueDelimiter);
+						var delimiter = variables.valuedelimiter;
+						if(findNoCase('like',right(key,4))){
+							delimiter = '|';
+						}
+					
+						for(var i=1; i<=listLen(newQueryKeys[key], delimiter); i++) {
+							var thisVal = listGetAt(newQueryKeys[key], i, delimiter);
+							var findCount = listFindNoCase(oldQueryKeys[key], thisVal, delimiter);
 							if(findCount) {
-								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, variables.valueDelimiter);
+								newQueryKeys[key] = listDeleteAt(newQueryKeys[key], i, delimiter);
 								if(arguments.toggleKeys) {
-									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount);
+									oldQueryKeys[key] = listDeleteAt(oldQueryKeys[key], findCount, delimiter);
 								}
 							}
 						}
 						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
-								modifiedURL &= "#key#=#oldQueryKeys[key]##variables.valueDelimiter##newQueryKeys[key]#&";
+								modifiedURL &= "#key#=#oldQueryKeys[key]##delimiter##newQueryKeys[key]#&";
 						} else if(len(oldQueryKeys[key])) {
 							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 						}
@@ -545,7 +578,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		} else if (right(modifiedURL, 1) eq "?") {
 			modifiedURL = "?c=1";
 		}
-
+		
 		return modifiedURL;
 	}
 
@@ -608,6 +641,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, "isDistinct")){
 			isDistinct = arguments.data['isDistinct'];
 		}
+		
+		var isReport = false;
+		if(structKeyExists(arguments.data,'isReport')){
+			isReport = arguments.data['isReport'];
+		}
+		
+		var periodInterval = "";
+		if(structKeyExists(arguments.data,'periodInterval')){
+			periodInterval = arguments.data['periodInterval'];
+		}
 
 		var allRecords = false;
 		if(structKeyExists(arguments.data,'allRecords')){
@@ -622,6 +665,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		var useElasticSearch = false;
 		if(structKeyExists(arguments.data, 'useElasticSearch')){
 			useElasticSearch = arguments.data['useElasticSearch'];
+		}
+
+		var splitKeywords = true;
+		if(structKeyExists(arguments.data, 'splitKeywords')){
+			splitKeywords = arguments.data['splitKeywords'];
 		}
 
 		var defaultColumns = false;
@@ -648,8 +696,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			allRecords=allRecords,
 			dirtyRead=dirtyRead,
 			useElasticSearch=useElasticSearch,
+			splitKeywords=splitKeywords,
 			defaultColumns=defaultColumns,
-			processContext=processContext
+			processContext=processContext,
+			isReport=isReport,
+			periodInterval=periodInterval
 		};
 		return collectionOptions;
 	}
@@ -658,9 +709,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,collectionOptions);
-		
 		collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
-
 		if (!isNull(whiteList)){
 			var authorizedPropertyList = whiteList.split(",");
 			for(var authorizedProperty in authorizedPropertyList){
@@ -671,18 +720,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data, "restRequestFlag") && arguments.data.restRequestFlag){
 			collectionEntity.applyData(); 
  		} 
-	
-		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
-
-		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct.filterGroups = [];
-		}
-		if(!structKeyExists(collectionConfigStruct,'joins')){
-			collectionConfigStruct.joins = [];
-		}
-		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
-			collectionConfigStruct.isDistinct = false;
-		}
+		
 		return getAPIResponseForCollection(collectionEntity,collectionOptions,collectionEntity.getEnforceAuthorization());
 
 	}
@@ -696,7 +734,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
-			collectionConfigStruct.filterGroups = [];
+			collectionConfigStruct['filterGroups'] = [];
 		}
 		if(!structKeyExists(collectionConfigStruct,'joins')){
 			collectionConfigStruct.joins = [];
@@ -723,6 +761,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
 
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,collectionOptions);
+		
 		var response = {};
 
 		if(arrayLen(collectionEntity.getProcessObjectArray())){
@@ -741,7 +780,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var collectionOptions = this.getCollectionOptionsFromData(arguments.data);
 		arguments.collectionEntity.setEnforceAuthorization(arguments.enforceAuthorization);
 
-		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.collectionEntity.getEnforceAuthorization()){
+		if(!arguments.collectionEntity.getEnforceAuthorization() || getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structkeyExists(collectionOptions,'currentPage') && len(collectionOptions.currentPage)){
 				collectionEntity.setCurrentPageDeclaration(collectionOptions.currentPage);
 			}
@@ -759,7 +798,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 			}
 			if(structKeyExists(collectionOptions,'filterGroupsConfig') && len(collectionOptions.filterGroupsConfig)){
-				collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(collectionOptions.filterGroupsConfig);
+				collectionEntity.getCollectionConfigStruct()['filterGroups'] = deserializeJson(collectionOptions.filterGroupsConfig);
 			}
 
 			if(structKeyExists(collectionOptions,'columnsConfig') && len(collectionOptions.columnsConfig)){
@@ -816,13 +855,23 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(collectionOptions,'useElasticSearch')){
 				collectionEntity.setUseElasticSearch(collectionOptions.useElasticSearch);
 			} 
+			if(structKeyExists(collectionOptions,'splitKeywords')){
+				collectionEntity.setSplitKeywords(collectionOptions.splitKeywords);
+			}
+			if(structKeyExists(collectionOptions,'isReport')){
+				collectionEntity.setReportFlag(collectionOptions.isReport);
+			}
+			if(structKeyExists(collectionOptions,'periodInterval')){
+				collectionEntity.getCollectionConfigStruct().periodInterval = collectionOptions.periodInterval;
+			}
+			
 
 			var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 
 			for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
-
+			response['collectionConfig'] = serializeJson(arguments.collectionEntity.getCollectionConfigStruct());
 			var aggregatePropertyIdentifierArray = [];
 			var attributePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
@@ -840,7 +889,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(structKeyExists(column,'aggregate')){
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
-
+					
 					//add all columns with custom alias
 					if(structKeyExists(column,'alias')){
 						ArrayAppend(collectionPropertyIdentifiers,column.alias);
@@ -866,8 +915,10 @@ component output="false" accessors="true" extends="HibachiService" {
 				//paginated collection struct
 				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,arguments.collectionEntity.getAuthorizedProperties());
 			}
+			
 			structAppend(response,collectionStruct);
 		}
+		
 		return response;
 	}
 
@@ -875,11 +926,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		var authorizedProperties = [];
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(
-				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
-				|| (
+				(
 					!arguments.enforeAuthorization
 					&& !findnocase('_',collectionPropertyIdentifier)
-				)
+				)||
+				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier)
 			){
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 			}
@@ -943,23 +994,23 @@ component output="false" accessors="true" extends="HibachiService" {
 				comparisonOperator = 'IN',
 				value = arguments.data.ids
 			};
-			collectionEntity.getCollectionConfigStruct().filterGroups = [
+			collectionEntity.getCollectionConfigStruct()['filterGroups'] = [
 				{
 					'filterGroup'=[
 
 					]
 				}
 			];
-			arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+			arrayAppend(collectionEntity.getCollectionConfigStruct()['filterGroups'][1].filterGroup,filterGroup);
 		
 		}else if(!isnull(collectionEntity.getParentCollection())){
 			var filterGroupArray = [];
-			if(!isnull(collectionEntity.getCollectionConfigStruct().filterGroups) && arraylen(collectionEntity.getCollectionConfigStruct().filterGroups)){
-				filterGroupArray = collectionEntity.getCollectionConfigStruct().filterGroups;
+			if(!isnull(collectionEntity.getCollectionConfigStruct()['filterGroups']) && arraylen(collectionEntity.getCollectionConfigStruct()['filterGroups'])){
+				filterGroupArray = collectionEntity.getCollectionConfigStruct()['filterGroups'];
 			}
 			var parentCollectionStruct = collectionEntity.getParentCollection().getCollectionConfigStruct();
-			if (!isnull(parentCollectionStruct.filterGroups) && arraylen(parentCollectionStruct.filterGroups)) {
-				collectionEntity.getCollectionConfigStruct().filterGroups = collectionEntity.mergeCollectionFilter(parentCollectionStruct.filterGroups, filterGroupArray);
+			if (!isnull(parentCollectionStruct['filterGroups']) && arraylen(parentCollectionStruct['filterGroups'])) {
+				collectionEntity.getCollectionConfigStruct()['filterGroups'] = collectionEntity.mergeCollectionFilter(parentCollectionStruct['filterGroups'], filterGroupArray);
 				if(structKeyExists(parentCollectionStruct, 'joins')){
 					collectionEntity.mergeJoins(parentCollectionStruct.joins);
 				}
@@ -994,6 +1045,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
 
+		if(ArrayLen(arguments.data.collectionConfig.columns) == 0){
+			var defaultCollectionProperties = this.new(arguments.data.collectionConfig.baseEntityName).getDefaultCollectionProperties();
+			for(var property in defaultCollectionProperties){	
+				collectionEntity.addDisplayProperty(property['name'], '', {isExportable=true});
+			}
+		} 
+
 		var collectionConfigData = getCollectionConfigExportDataByCollection(collectionEntity);
 		getHibachiService().export( argumentCollection=collectionConfigData );
 	}
@@ -1012,30 +1070,39 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 
-		var rightIDQuery = new Query();
-		rightIDQuery.setDBType('Query');
-		rightIDQuery.setAttributes(collection2Data = collection2Data);
-		var rightIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection2Data";
-		var rightIDs = rightIDQuery.execute(sql=rightIDSql).getResult();
-		rightIDs = quotedValueList(rightIDs.primaryID);
+		if(collection2Data.recordCount > 0){
+			var rightIDQuery = new Query();
+			rightIDQuery.setDBType('Query');
+			rightIDQuery.setAttributes(collection2Data = collection2Data);
+			var rightIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection2Data";
+			var rightIDs = rightIDQuery.execute(sql=rightIDSql).getResult();
+			rightIDs = quotedValueList(rightIDs.primaryID);
+		}else{
+			rightIDs = '';
+		}
 
-		//Only needed in order to set typename for all collection1Data columns
-		var leftIDQuery = new Query();
-		leftIDQuery.setDBType('Query');
-		leftIDQuery.setAttributes(collection1Data = collection1Data);
-		var leftIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection1Data";
-		leftIDQuery.execute(sql=leftIDSql);
+		if(collection1Data.recordCount > 0){
+			//Only needed in order to set typename for all collection1Data columns
+			var leftIDQuery = new Query();
+			leftIDQuery.setDBType('Query');
+			leftIDQuery.setAttributes(collection1Data = collection1Data);
+			var leftIDSQL = "SELECT #primaryIDPropertyName# as primaryID FROM collection1Data";
+			leftIDQuery.execute(sql=leftIDSql);
+		}
 
-
+		if(!collection1Data.recordCount && !collection2Data.recordCount){
+			return collection1Data;
+		}
 		var mainSql = "	SELECT #getMergedColumnList(collection1Headers,collection2Headers)#
 						FROM collection1Data, collection2Data
 						WHERE collection1Data.#primaryIDPropertyName# = collection2Data.#primaryIDPropertyName#";
-		var leftSql = "	SELECT *
-						FROM collection1Data
-						WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
+		var leftSql = "	SELECT * FROM collection1Data";
+		if(len(rightIDs)){
+			leftSql &= " WHERE collection1Data.#primaryIDPropertyName# NOT IN (#rightIDs#)";
+		}
 
 		for(var column in getCollection2UniqueColumns(collection1Headers, collection2Headers)){
-			QueryAddColumn(collection1Data, column, guessDataType(collection2Data,column),[]);
+			QueryAddColumn(collection1Data, column, 'VarChar',[]);
 		};
 
 		var joinQuery = new Query();
@@ -1044,11 +1111,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		var joinSql = mainSql & " union all " & leftSql;
 		var joinResult = joinQuery.execute(sql=joinSql).getResult();
 		return joinResult;
-
-	}
-
-	public string function guessDataType(required any collectionData, required string columnName){
-		return isNumeric(collectionData[columnName][1]) ? 'integer' : 'varchar';
 	}
 
 	private string function getMergedColumnList(required string collection1Headers, required string collection2Headers){

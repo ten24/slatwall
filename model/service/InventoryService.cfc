@@ -51,36 +51,81 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="inventoryDAO" type="any";
 	property name="skuService" type="any";
 	
+	public void function createInventoryByStockReceiverItem(required any stockReceiverItem){
+		if(arguments.stockReceiverItem.getStock().getSku().setting("skuTrackInventoryFlag")) {
+			// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
+			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'order' 
+				&& ( !isNull(arguments.stockReceiverItem.getStock().getSku().getBundleFlag()) && arguments.stockReceiverItem.getStock().getSku().getBundleFlag() )
+				&& arguments.stockReceiverItem.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
+
+				var processData = {
+					locationID=arguments.stockReceiverItem.getStock().getLocation().getLocationID(),
+					quantity=arguments.stockReceiverItem.getQuantity()
+				};
+				
+				if(arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').getPopulatedFlag()){
+					arguments.entity.getStock().getSku().getProcessObject('breakupBundledSkus').setPopulatedFlag(false);
+				}
+
+				getSkuService().processSku(arguments.stockReceiverItem.getStock().getSku(), processData, 'breakupBundledSkus');
+				
+			}
+			var inventory = this.newInventory();
+			inventory.setQuantityIn(arguments.stockReceiverItem.getQuantity());
+			inventory.setStock(arguments.stockReceiverItem.getStock());
+			inventory.setStockReceiverItem(arguments.stockReceiverItem);
+			inventory.setCurrencyCode(arguments.stockReceiverItem.getCurrencyCode());
+
+			//vendorOrderItem logic
+			if(arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'vendorOrder' || arguments.stockReceiverItem.getStockReceiver().getReceiverType() == 'stockAdjustment'){
+				inventory.setCost(arguments.stockReceiverItem.getCost());
+				inventory.setLandedCost(arguments.stockReceiverItem.getLandedCost());
+				inventory.setLandedAmount(arguments.stockReceiverItem.getLandingAmount());
+				// calculate average cost
+				var stock = arguments.stockReceiverItem.getStock();
+				if(val(arguments.stockReceiverItem.getCost()) != 0){
+					stock.updateAverageCost(arguments.stockReceiverItem.getCost(), arguments.stockReceiverItem.getQuantity());
+					//arguments.stockReceiverItem.getVendorOrderItem().getVendorOrder().getShippingAndHandlingCost()
+					stock.updateAverageLandedCost(arguments.stockReceiverItem.getCost(), arguments.stockReceiverItem.getQuantity(), 0);
+				}
+				
+				if(arguments.stockReceiverItem.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+					//set the assets ledger account 
+					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.stockReceiverItem.getStock().getSku().setting('skuAssetLedgerAccount'));
+					inventory.setAssetLedgerAccount(assetLedgerAccount);
+				}
+			}
+			
+			//Physical logic
+			if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment()) && !isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical())){
+				//set the expense ledger account by physical ledger account 
+				if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getExpenseLedgerAccount())){
+					var expenseLedgerAccount = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getExpenseLedgerAccount();
+				}else{
+					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultExpenseLedgerAccount');
+					var expenseLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
+				}
+				if(!isNull(arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getAssetLedgerAccount())){
+					var assetLedgerAccount = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().getAssetLedgerAccount();
+				}else{
+					var ledgerAccountID = arguments.stockReceiverItem.getStockReceiver().getStockAdjustment().getPhysical().setting('physicalDefaultAssetLedgerAccount');
+					var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(ledgerAccountID);
+				}
+				inventory.setAssetLedgerAccount(assetLedgerAccount);
+				inventory.setExpenseLedgerAccount(expenseLedgerAccount);
+			}
+			
+			inventory = getService('inventoryService').saveInventory( inventory );
+			
+		}
+	}
+	
 	// entity will be one of StockReceiverItem, StockPhysicalItem, StrockAdjustmentDeliveryItem, VendorOrderDeliveryItem, OrderDeliveryItem
 	public void function createInventory(required any entity) {
 		
 		switch(arguments.entity.getEntityName()) {
 			case "SlatwallStockReceiverItem": {
-
-				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
-					
-					// Dynamically do a breakupBundledSkus call, if this is an order return, a bundle sku, the setting is enabled to do this dynamically
-					if(arguments.entity.getStockReceiver().getReceiverType() eq 'orderItem' 
-						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
-						&& arguments.entity.getStock().getSku().setting("skuBundleAutoBreakupInventoryOnReturnFlag")) {
-
-						var processData = {
-							locationID=arguments.entity.getStock().getLocation().getLocationID(),
-							quantity=arguments.entity.getQuantity()
-						};
-						
-						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'breakupBundledSkus');
-						
-					}
-
-					var inventory = this.newInventory();
-					inventory.setQuantityIn(arguments.entity.getQuantity());
-					inventory.setStock(arguments.entity.getStock());
-					inventory.setStockReceiverItem(arguments.entity);
-					getHibachiDAO().save( inventory );
-					
-				}
-				
+				createInventoryByStockReceiverItem(arguments.entity);
 				break;
 			}
 			case "SlatwallOrderDeliveryItem": {
@@ -88,23 +133,38 @@ component extends="HibachiService" accessors="true" output="false" {
 
 					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
 					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
-						&& ( !isNull(arguments.entity.getStock().getSku().getBundleFlag()) && arguments.entity.getStock().getSku().getBundleFlag() )
+						&& arguments.entity.getStock().getSku().getBundleFlag()
 						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
 						&& arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity() < 0) {
-							
+
 						var processData = {
 							locationID=arguments.entity.getStock().getLocation().getLocationID(),
-							quantity=arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity()
+							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH")
 						};
-						
+
+						if(arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').getPopulatedFlag()){
+							arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').setPopulatedFlag(false);
+						}
+
 						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makeupBundledSkus');
 					}
 					
 					var inventory = this.newInventory();
 					inventory.setQuantityOut( arguments.entity.getQuantity() );
 					inventory.setStock( arguments.entity.getStock() );
+					inventory.setCogs(arguments.entity.getStock().getAverageCost());
 					inventory.setOrderDeliveryItem( arguments.entity );
-					getHibachiDAO().save( inventory );	
+					inventory.setCurrencyCode(arguments.entity.getOrderItem().getCurrencyCode());
+					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+						//set the revenue ledger account 
+						var revenueLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuRevenueLedgerAccount'));
+						inventory.setRevenueLedgerAccount(revenueLedgerAccount);
+						var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
+						inventory.setCogsLedgerAccount(cogsLedgerAccount);
+					}
+					
+					
+					getService('inventoryService').saveInventory( inventory );	
 					
 				}
 				break;
@@ -114,18 +174,55 @@ component extends="HibachiService" accessors="true" output="false" {
 					var inventory = this.newInventory();
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
+					//calculate stock
+					getHibachiScope().addModifiedEntity(arguments.entity.getStock());
+					inventory.setCost(arguments.entity.getVendorOrderItem().getCost());
 					inventory.setVendorOrderDeliveryItem(arguments.entity);
-					getHibachiDAO().save( inventory );
+					inventory.setCurrencyCode(arguments.entity.getVendorOrderItem().getCurrencyCode());
+
+					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+						//set the inventory ledger account 
+						var assetLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuAssetLedgerAccount'));
+						inventory.setAssetLedgerAccount(assetLedgerAccount);
+					}
+					getService('inventoryService').saveInventory( inventory );
 				}
 				break;
 			}
 			case "SlatwallStockAdjustmentDeliveryItem": {
 				if(arguments.entity.getStock().getSku().setting("skuTrackInventoryFlag")) {
+
+					// Dynamically do a makeupBundledSkus call, if this is a bundle sku, the setting is enabled to do this dynamically, and we have QOH < whats needed
+					if(!isNull(arguments.entity.getStock().getSku().getBundleFlag())
+						&& arguments.entity.getStock().getSku().getBundleFlag()
+						&& arguments.entity.getStock().getSku().setting("skuBundleAutoMakeupInventoryOnSaleFlag") 
+						&& arguments.entity.getStock().getQuantity("QOH") - arguments.entity.getQuantity() < 0) {
+
+						var processData = {
+							locationID=arguments.entity.getStock().getLocation().getLocationID(),
+							quantity=arguments.entity.getQuantity() - arguments.entity.getStock().getQuantity("QOH")
+						};
+
+						if(arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').getPopulatedFlag()){
+							arguments.entity.getStock().getSku().getProcessObject('makeupBundledSkus').setPopulatedFlag(false);
+						}
+
+						getSkuService().processSku(arguments.entity.getStock().getSku(), processData, 'makeupBundledSkus');
+					}
+					
 					var inventory = this.newInventory();
 					inventory.setQuantityOut(arguments.entity.getQuantity());
 					inventory.setStock(arguments.entity.getStock());
+					inventory.setCogs(arguments.entity.getStock().getAverageCost());
 					inventory.setStockAdjustmentDeliveryItem(arguments.entity);
-					getHibachiDAO().save( inventory );
+					inventory.setCurrencyCode(arguments.entity.getCurrencyCode());
+
+					if(arguments.entity.getStock().getSku().getProduct().getProductType().getSystemCode() != 'gift-card'){
+						//set the inventory ledger account 
+						var cogsLedgerAccount = getService('LedgerAccountService').getLedgerAccount(arguments.entity.getStock().getSku().setting('skuCogsLedgerAccount'));
+						inventory.setCogsLedgerAccount(cogsLedgerAccount);
+					}
+					getService('inventoryService').saveInventory( inventory );
 				}
 				break;
 			}
@@ -136,8 +233,23 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
+	public any function saveInventory(required any inventory, required struct data={}){
+	
+		arguments.inventory = super.save(entity=arguments.inventory, data=arguments.data);
+		
+		if(!inventory.hasErrors()){
+			getService('skuService').processSku(arguments.inventory.getStock().getSku(),{},'createSkuCost');
+		}
+		
+		return arguments.inventory;	
+	}
+	
+	public struct function getQDOO(string productID, string productRemoteID){
+		return createInventoryDataStruct( getInventoryDAO().getQDOO(argumentCollection=arguments), "QDOO" );
+	}
+	
 	// Quantity On Hand
-	public struct function getQOH(string productID, string productRemoteID) {
+	public struct function getQOH(string productID, string productRemoteID, string currencyCode) {
 		return createInventoryDataStruct( getInventoryDAO().getQOH(argumentCollection=arguments), "QOH" );
 	}
 	
@@ -154,8 +266,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// Quantity Not Delivered On Return Vendor Order
 	public struct function getQNDORVO(string productID, string productRemoteID) {
-		return {skus={},stocks={},locations={},QNDORVO=0};
-		//return createInventoryDataStruct( getInventoryDAO().getQNDORVO(argumentCollection=arguments), "QNDORVO" );
+		return createInventoryDataStruct( getInventoryDAO().getQNDORVO(argumentCollection=arguments), "QNDORVO" );
 	}
 	
 	// Quantity Not Delivered On Stock Adjustment
@@ -187,6 +298,37 @@ component extends="HibachiService" accessors="true" output="false" {
 	public struct function getQS(string productID, string productRemoteID) {
 		return createInventoryDataStruct( getInventoryDAO().getQS(argumentCollection=arguments), "QS" );
 	}
+
+	//Minimum Quantity Available to Sell of Build of Materials - returns quantity of sku that can be made based on the smallest QATS of bundled skus
+	public numeric function getMQATSBOM(required any entity){
+		if(arguments.entity.getEntityName() == "SlatwallProduct"){
+			var sumMQATS = 0;
+			for(var sku in arguments.entity.getSkus()){
+				sumMQATS += this.getMQATSBOM(sku);
+			}
+			return sumMQATS;
+		}else if(arguments.entity.getEntityName() == "SlatwallStock"){
+			var sku = arguments.entity.getSku();
+			var locationID = arguments.entity.getLocationID();
+		}else{
+			var sku = arguments.entity;
+			var locationID = '';
+		}
+		if(!sku.getBundleFlag()){
+			return 0;
+		}
+		var MQATS = '';
+		for(var bundledSku in sku.getBundledSkus()){
+			var skuQATS = bundledSku.getBundleQATS(locationID=locationID);
+			if(!len(MQATS) || skuQATS < MQATS){
+				MQATS = skuQATS;
+			}
+		}
+		if(MQATS < 0){
+			MQATS = 0;
+		}
+		return MQATS;
+	}
 	
 	// These methods are derived quantity methods from respective DAO methods
 	public numeric function getQC(required any entity) {
@@ -211,6 +353,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROVOFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROVOFlag');
 			var qatsIncludesQNROSAFlag = arguments.entity.getSku().setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.getSku().setting('skuHoldBackQuantity');
+			var qatsIncludesMQATSBOMFlag = arguments.entity.getSku().setting('skuQATSIncludesMQATSBOMFlag');
 		} else {
 			var trackInventoryFlag = arguments.entity.setting('skuTrackInventoryFlag');
 			var allowBackorderFlag = arguments.entity.setting('skuAllowBackorderFlag');
@@ -219,6 +362,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var qatsIncludesQNROVOFlag = arguments.entity.setting('skuQATSIncludesQNROVOFlag');
 			var qatsIncludesQNROSAFlag = arguments.entity.setting('skuQATSIncludesQNROSAFlag');
 			var holdBackQuantity = arguments.entity.setting('skuHoldBackQuantity');
+			var qatsIncludesMQATSBOMFlag = arguments.entity.setting('skuQATSIncludesMQATSBOMFlag');
 		}
 
 		// If trackInventory is not turned on, or backorder is true then we can set the qats to the max orderQuantity
@@ -228,7 +372,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Otherwise we will do a normal bit of calculation logic
 		var ats = arguments.entity.getQuantity('QNC');
-		
+
 		if(qatsIncludesQNROROFlag) {
 			ats += arguments.entity.getQuantity('QNRORO');
 		}
@@ -237,6 +381,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		if(qatsIncludesQNROSAFlag) {
 			ats += arguments.entity.getQuantity('QNROSA');
+		}
+		if(qatsIncludesMQATSBOMFlag){
+			ats += arguments.entity.getQuantity('MQATSBOM');
 		}
 		
 		if(isNumeric(holdBackQuantity)) {
@@ -336,6 +483,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
+	public any function getSkuLocationQuantityBySkuIDAndLocationID(required string skuID, required string locationID) {
+		return getInventoryDAO().getSkuLocationQuantityBySkuIDAndLocationID(argumentCollection=arguments);
+	}
 
 	// ===================== START: Logical Methods ===========================
 	
@@ -347,6 +497,50 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Process Methods ===========================
 	
+
+	public any function saveInventoryAnalysis(required any inventoryAnalysis, struct data={}, string context="save"){
+		
+		arguments.inventoryAnalysis = super.save(entity=arguments.inventoryAnalysis,data=arguments.data);
+
+		arguments.inventoryAnalysis.setAnalysisHistoryStartDateTime(dateAdd('yyyy',-1,arguments.inventoryAnalysis.getAnalysisStartDateTime()));
+		arguments.inventoryAnalysis.setAnalysisHistoryEndDateTime(arguments.inventoryAnalysis.getAnalysisStartDateTime());
+		arguments.inventoryAnalysis.setAnalysisHistoryDaysOutDateTime(dateAdd('d',arguments.inventoryAnalysis.getDaysOut(),arguments.inventoryAnalysis.getAnalysisStartDateTime()));
+
+		return arguments.inventoryAnalysis;
+	}
+
+	public any function processInventoryAnalysis_exportXLS(required any InventoryAnalysis, required any processObject) {
+
+		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.xls';
+		var fullFilename = getHibachiTempDirectory() & filename;
+
+		// Create spreadsheet object
+		var spreadsheet = spreadsheetNew(filename);
+		var spreadsheetrowcount = 0;
+		// Add the column headers
+		spreadsheetAddRow(spreadsheet, arguments.InventoryAnalysis.getReportData().headerRowXSL);
+		spreadsheetrowcount += 1;
+		spreadsheetFormatRow(spreadsheet, {bold=true}, 1);
+		// Add rows
+		spreadsheetAddRows(spreadsheet, arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query);
+		spreadsheetrowcount += arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query.recordcount;
+
+		spreadsheetWrite( spreadsheet, fullFilename, true );
+		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
+
+		return arguments.InventoryAnalysis;
+	}
+	public any function processInventoryAnalysis_exportCSV(required any InventoryAnalysis, required any processObject) {
+
+		var filename = getService("HibachiUtilityService").createSEOString(arguments.InventoryAnalysis.getInventoryAnalysisName() &'-'& arguments.InventoryAnalysis.getFormattedValue('analysisStartDateTime')) &'.csv';
+		var fullFilename = getHibachiTempDirectory() & filename;
+
+		fileWrite(fullFilename, getService("hibachiUtilityService").queryToCSV(arguments.InventoryAnalysis.getReportData(arguments.inventoryAnalysis.getSkuCollection().getRecords()).query, arguments.InventoryAnalysis.getReportData().columnList, true ));
+		getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true );
+
+		return arguments.InventoryAnalysis;
+	}
+
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================

@@ -5,6 +5,6 @@
 	<input class="hide" name="options" ng-model="swAddOptionGroup.selectedOptionList" />
 </div> 
 
-<div ng-if="swAddOptionGroup.usedOptions" ng-repeat="optionGroupId in swAddOptionGroup.optionGroupIds track by $index">
-	<div sw-options-for-option-group option-group-id="{{optionGroupId}}"></div>
+<div ng-repeat="optionGroupId in swAddOptionGroup.optionGroupIds track by $index">
+	<div sw-options-for-option-group ng-if="swAddOptionGroup.savedOptions" saved-options="swAddOptionGroup.savedOptions" option-group-id="{{optionGroupId}}"></div>
 </div>

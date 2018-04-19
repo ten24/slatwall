@@ -10,17 +10,17 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return variables.yaml;
 	}
-	
+
 	public any function loadYamlFile(required string filepath){
 		var file = createObject( 'java', 'java.io.File' ).init( arguments.filepath );
-		
+
 		return getYaml().load(file);
 	}
-	
+
 	public any function dumpYaml(required any object){
 		return getYaml().dump(arguments.object,true);
 	}
-	
+
 	public any function writeYamlToFile(required any filePath, required any yamlStruct){
 		var yamlString = dumpYaml(arguments.yamlStruct);
 		//purge types from string

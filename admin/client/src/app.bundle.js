@@ -1103,9 +1103,9 @@ webpackJsonp([0],[
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.countrycode')) {
 	                newOrderPaymentErrors['countrycode'] = 'Required *';
 	            }
-	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')) {
+	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.stateCode')) {
 	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')) {
-	                    newOrderPaymentErrors['statecode'] = 'Required *';
+	                    newOrderPaymentErrors['stateCode'] = 'Required *';
 	                }
 	            }
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.city')) {
@@ -1114,7 +1114,7 @@ webpackJsonp([0],[
 	                }
 	            }
 	            if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.locality')) {
-	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.statecode')) {
+	                if (_this.isUndefinedOrEmpty(newOrderPayment, 'newOrderPayment.billingAddress.stateCode')) {
 	                    newOrderPaymentErrors['locality'] = 'Required *';
 	                }
 	            }
@@ -1160,7 +1160,7 @@ webpackJsonp([0],[
 	            // processObject.newBillingAddress.expirationMonth = formdata.month;
 	            // processObject.newBillingAddress.expirationYear = formdata.year;
 	            // processObject.newBillingAddress.billingAddress.country = formdata.country || processObject.data.newOrderPayment.billingAddress.country;
-	            // processObject.newBillingAddress.billingAddress.statecode = formdata.state || processObject.data.newOrderPayment.billingAddress.statecode;
+	            // processObject.newBillingAddress.billingAddress.stateCode = formdata.state || processObject.data.newOrderPayment.billingAddress.stateCode;
 	            // processObject.newBillingAddress.saveShippingAsBilling=(this.saveShippingAsBilling == true);
 	            data = {
 	                'newOrderPayment.billingAddress.addressID': '',
@@ -1172,7 +1172,7 @@ webpackJsonp([0],[
 	                'newOrderPayment.expirationYear': expirationYear,
 	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+	                'newOrderPayment.billingAddress.stateCode': state || billingAddress.stateCode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
 	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
@@ -1283,7 +1283,7 @@ webpackJsonp([0],[
 	                'newOrderPayment.expirationYear': expirationYear,
 	                'newOrderPayment.billingAddress.countrycode': country || billingAddress.countrycode,
 	                'newOrderPayment.billingAddress.city': '' + billingAddress.city,
-	                'newOrderPayment.billingAddress.statecode': state || billingAddress.statecode,
+	                'newOrderPayment.billingAddress.stateCode': state || billingAddress.stateCode,
 	                'newOrderPayment.billingAddress.locality': billingAddress.locality || '',
 	                'newOrderPayment.billingAddress.postalcode': billingAddress.postalcode,
 	                'newOrderPayment.securityCode': billingAddress.cvv,
@@ -46070,8 +46070,8 @@ webpackJsonp([0],[
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayitemaggregate.html",
 	            link: function (scope, element, attrs, displayOptionsController) {
 	                scope.showDisplayItem = false;
-	                scope.aggegate = {};
-	                scope.aggegate.selectedAggregate = '';
+	                scope.aggregate = {};
+	                scope.aggregate.selectedAggregate = '';
 	                scope.aggregateOptions = [
 	                    { id: 'average', value: 'Average' },
 	                    { id: 'count', value: 'Count' },
@@ -46083,12 +46083,12 @@ webpackJsonp([0],[
 	                        scope.selectedPropertyChanged({ selectedProperty: scope.selectedProperty });
 	                    }
 	                    else {
-	                        scope.aggegate.currentObject = scope.selectedProperty.cfc;
+	                        scope.aggregate.currentObject = scope.selectedProperty.cfc;
 	                    }
 	                };
 	                scope.selectedDisplayOptionChanged = function (selectedDisplayOption) {
-	                    selectedDisplayOption.aggregate = scope.aggegate.selectedAggregate;
-	                    selectedDisplayOption.aggregateObject = scope.aggegate.currentObject;
+	                    selectedDisplayOption.aggregate = scope.aggregate.selectedAggregate;
+	                    selectedDisplayOption.aggregateObject = scope.aggregate.currentObject;
 	                    scope.selectedPropertyChanged({ selectedProperty: selectedDisplayOption });
 	                };
 	                scope.$watch('selectedProperty', function (selectedProperty) {
@@ -48544,8 +48544,8 @@ webpackJsonp([0],[
 	                    };
 	                    return relatedObjectOptions;
 	                };
-	                scope.aggegate = {};
-	                scope.aggegate.selectedAggregate = '';
+	                scope.aggregate = {};
+	                scope.aggregate.selectedAggregate = '';
 	                scope.aggregateOptions = ['Average', 'Count', 'Sum'];
 	                scope.selectAggregate = function (aggregate) {
 	                    scope.selectedFilterProperty.selectedCriteriaType.aggregate = aggregate;

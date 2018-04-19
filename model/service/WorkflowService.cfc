@@ -562,16 +562,33 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		*/
 		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
-		if(arraylen(arguments.taskConditions.filterGroups)){
-			var booleanExpressionString = getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups);
-			if(len(booleanExpressionString)){
-				return evaluate(booleanExpressionString);
+		
+		if(arguments.entity.getNewFlag()){
+			if(arraylen(arguments.taskConditions.filterGroups)){
+				var booleanExpressionString = getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups);
+				if(len(booleanExpressionString)){
+					return evaluate(booleanExpressionString);
+				}else{
+					return true;
+				}
 			}else{
 				return true;
 			}
 		}else{
-			return true;
+			var entityCollectionlist = getCollectionlist(arguments.entity.getClassName());
+			arguments.taskConditions = serializeJson(arguments.taskConditions);
+			arguments.taskConditions = rereplace(arguments.taskConditions,'"eq"','"="','all');
+			arguments.taskConditions = rereplace(arguments.taskConditions,'"neq"','"!="','all');
+			arguments.taskConditions = deserializeJSON(arguments.taskConditions);
+			
+			entityCollectionlist.setCollectionConfigStruct(arguments.taskConditions);
+			entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
+			entityCollectionlist.setDisplayProperties(arguments.entity.getPrimaryIDPropertyName());
+			//only can return 1 item or no items
+			return arraylen(entityCollectionlist.getRecords());
 		}
+		
+		
 	}
 	
 	private boolean function setupDynamicUpdateData(required any entity, required struct dynamicData) {

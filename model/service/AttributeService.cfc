@@ -52,35 +52,35 @@ component  extends="HibachiService" accessors="true" {
 	property name="attributeDAO";
 
 	// ===================== START: Logical Methods ===========================
-	
-	
-	
+
+
+
 	private struct function getAttributeSetMetaData(required attributeSet){
 		var attributeSetMetaDataCacheKey = "attribtueService_getAttributeModel_#arguments.attributeSet.getAttributeSetObject()#_#arguments.attributeSet.getAttributeSetCode()#";
 		var attributeSetMetaData = {};
 		if(getService('HibachiCacheService').hasCachedValue(attributeSetMetaDataCacheKey)){
-			attributeSetMetaData = getService('HibachiCacheService').getCachedValue(attributeSetMetaDataCacheKey);	
+			attributeSetMetaData = getService('HibachiCacheService').getCachedValue(attributeSetMetaDataCacheKey);
 		}else{
 			attributeSetMetaData['attributeSetName'] = attributeSet.getAttributeSetName();
 			attributeSetMetaData['attributeSetCode'] = attributeSet.getAttributeSetCode();
 			attributeSetMetaData['attributeSetDescription'] = attributeSet.getAttributeSetDescription();
-			
+
 			attributeSetMetaData['attributes'] = {};
-			
+
 			var attributesCollectionList = attributeSet.getAttributesCollectionList();
 			var displayPropertiesList = 'attributeCode,attributeDescription,attributeHint,attributeInputType,attributeName,defaultValue,relatedObject,requiredFlag,sortOrder,validationMessage,validationRegex';
 			attributesCollectionList.setDisplayProperties(displayPropertiesList);
 			var attributes = attributeSet.getAttributesCollectionList().getRecords(true);
 			for(var attribute in attributes){
-				
+
 				attributeSetMetaData['attributes'][attribute['attributeCode']] = attribute;
 			}
 			getService('HibachiCacheService').setCachedValue(attributeSetMetaDataCacheKey,attributeSetMetaData);
 		}
-		
+
 		return attributeSetMetaData;
 	}
-	
+
 	public any function getAttributeModel(){
 		var model = {};
 		var modelCacheKey = "attributeService_getAttributeModel";
@@ -96,10 +96,11 @@ component  extends="HibachiService" accessors="true" {
 			            attributeSetMetaDataStruct = getHibachiCacheService().getCachedValue(attributeSetMetaDataStructCacheKey);
 					}else{
 						var entity = getHibachiScope().getService('hibachiService').getEntityObject(entityName);
-						
+
 						var assignedAttributesSmartlist = entity.getAssignedAttributeSetSmartList();
+						if (!isNull(assignedAttributesSmartlist) and !isSimpleValue(assignedAttributesSmartlist)){						
 						assignedAttributesSmartlist.removeFilter('globalFlag');
-						
+
 						assignedAttributesSmartlist.addFilter('activeFlag',1);
 						var assignedAttributes = [];
 						try{
@@ -115,16 +116,17 @@ component  extends="HibachiService" accessors="true" {
 							getHibachiCacheService().setCachedValue(attributeSetMetaDataStructCacheKey,attributeSetMetaDataStruct);
 						}
 					}
-					
+					}
+
 					if(structCount(attributeSetMetaDataStruct)){
-						model[entityName] = attributeSetMetaDataStruct;	
+						model[entityName] = attributeSetMetaDataStruct;
 					}
 		        }
 		        getHibachiCacheService().setCachedValue(modelCacheKey,model);
 			}
 		}
-		
-		
+
+
         return model;
 	}
 
@@ -166,11 +168,11 @@ component  extends="HibachiService" accessors="true" {
 		attributeValueCopy.setAttributeValueType(arguments.attributeValue.getAttributeValueType());
 		attributeValueCopy.setAttribute(arguments.attributeValue.getAttribute());
 		attributeValueCopy.setAttributeValueOption(arguments.attributeValue.getAttributeValueOption());
-		
+
 		if(arguments.saveNewAttributeValue) {
 			attributeValueCopy = this.saveAccount(attributeValueCopy);
 		}
-		
+
 		return attributeValueCopy;
 	}
 
@@ -186,23 +188,36 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: Process Methods ===========================
 
+	public any function processAttribute_MigrateToCustomProperty(required any attribute, required any processObject, struct data={}) {
+
+		getService("HibachiTagService").cfSetting(requesttimeout="600");
+
+		//test if custom property exists in entity. If it does, migrate data
+
+		var entityName = arguments.attribute.getAttributeSet().getAttributeSetObject();
+		var customPropertyName = arguments.attribute.getAttributeCode();
+
+		getService('UpdateService').migrateAttributeToCustomProperty(entityName,customPropertyName,processObject.getOverrideData());
+
+		return arguments.attribute;
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
-	
+
 	public any function saveAttributeSet(required any attributeSet, struct data={}){
 		arguments.attributeSet = super.save(arguments.attributeSet, arguments.data);
 		if(!arguments.attributeSet.hasErrors()) {
-		
+
 			//attributeModelCache
-			
+
 			clearAttributeMetatDataCache(arguments.attributeSet);
 		}
 		return attributeSet;
 	}
 
 	public any function saveAttribute(required any attribute, struct data={}) {
-		
+
 		if(arguments.attribute.getAttributeInputType() == 'file'
 			&& structKeyExists(arguments.data, "attributeCode")
 			&& arguments.attribute.getAttributeCode() != arguments.data.attributeCode
@@ -224,14 +239,14 @@ component  extends="HibachiService" accessors="true" {
 			getHibachiDAO().flushORMSession();
 
 			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
-			
+
 			//attributeModelCache
 			clearAttributeMetatDataCache(arguments.attribute.getAttributeSet());
 		}
 
 		return arguments.attribute;
 	}
-	
+
 	public void function clearAttributeMetatDataCache(required any attributeSet){
 		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel");
 		getHibachiCacheService().resetCachedKey("attributeService_getAttributeModel_CacheKey");
@@ -242,7 +257,7 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
-	
+
 	public boolean function deleteAttributeSet(required any attributeSet) {
 
 		var deleteOK = super.delete(arguments.attributeSet);
@@ -293,7 +308,7 @@ component  extends="HibachiService" accessors="true" {
 
 		return false;
 	}
-	
+
 
 	// ======================  END: Delete Overrides ==========================
 
@@ -306,4 +321,3 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Get Overrides =============================
 
 }
-

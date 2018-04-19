@@ -40,7 +40,7 @@ class HibachiServiceDecorator{
                             var attribute = attributeSet.attributes[attributeCode];
                             attribute.attributeSet = attributeSet;
                             attribute.isAttribute = true;
-                            entity[attributeCode] = attribute;
+                            $.extend(entity[attributeCode],attribute);
                         }
                     }
                 }
@@ -82,8 +82,10 @@ class HibachiServiceDecorator{
 
                     if(angular.element(document.body).injector().has(serviceName)){
                         var entityService = angular.element(document.body).injector().get(serviceName);
-
-                        return entityService['new'+entity.className]();
+                        
+                        if(entityService['new'+entity.className]){
+                            return entityService['new'+entity.className]();
+                        }
                     }
 
                     return $delegate.newEntity(entity.className);

@@ -8,7 +8,7 @@ class SWEditFilterItem{
             $timeout,
 			$hibachi,
 			collectionPartialsPath,
-			collectionService, 
+			collectionService,
 			metadataService,
 			hibachiPathBuilder,
             rbkeyService,
@@ -56,13 +56,16 @@ class SWEditFilterItem{
         utilityService
 	){
 		return {
-			require:'^swFilterGroups',
+            require:{
+                swFilterGroups:'^swFilterGroups',
+                swListingControls:'?^swListingControls'
+            },
 			restrict: 'E',
 			scope:{
 				collectionConfig:"=",
 				filterItem:"=",
 				filterPropertiesList:"=",
-				saveCollection:"&",
+				saveCollection:"&?",
 				removeFilterItem:"&",
 				filterItemIndex:"=",
 				comparisonType:"=",
@@ -70,6 +73,16 @@ class SWEditFilterItem{
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
+
+
+                if(!scope.saveCollection && filterGroupsController.swListingControls){
+
+                    scope.saveCollection = ()=>{
+                        filterGroupsController.swListingControls.collectionConfig=scope.collectionConfig;
+                        filterGroupsController.swListingControls.saveCollection();
+                    }
+                }
+
                 function daysBetween(first, second) {
 
                     // Copy date parts of the timestamps, discarding the time parts.
@@ -164,7 +177,7 @@ class SWEditFilterItem{
                 }
 
 
-                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+                scope.filterGroupItem = filterGroupsController.swFilterGroups.getFilterGroupItem();
 
 
                 scope.togglePrepareForFilterGroup = function(){
@@ -202,7 +215,10 @@ class SWEditFilterItem{
                 };
 
                 scope.addFilterItem = function(){
-                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
+                    collectionService.newFilterItem(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterGroupsController.swFilterGroups.setItemInUse);
+                    this.observerService.notify('collectionConfigUpdated', {
+                        collectionConfig: collectionService
+                    });
                 };
 
                 scope.cancelFilterItem = function(){
@@ -431,17 +447,20 @@ class SWEditFilterItem{
 
                         //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
                         if(filterItem.$$prepareForFilterGroup === true){
-                            collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.getFilterGroupItem(),filterItem);
+                            collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.swFilterGroups.getFilterGroupItem(),filterItem);
                         }
-                        //persist Config and 
+                        //persist Config and
                         scope.saveCollection();
 
                         $log.debug(selectedFilterProperty);
                         $log.debug(filterItem);
-                        observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex});
-                        $timeout(function(){
+                        var timeoutpromise = $timeout(function(){
                             callback();
                         });
+                        timeoutpromise.then(()=>{
+                            observerService.notify('filterItemAction', {action: 'add',filterItemIndex:scope.filterItemIndex,collectionConfig:this.collectionConfig});
+                        });
+
 
                         $log.debug('saveFilter end');
                     }

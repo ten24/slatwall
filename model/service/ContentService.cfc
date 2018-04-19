@@ -59,20 +59,45 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 
+	public any function getAppTemplates(required any content){
+		var templateDirectory = arguments.content.getSite().getApp().getAppPath()& '/templates/';
+		var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
+		var templates =[];
+		for(var directory in directoryList){
+			var template ={};
+			template['name'] = directory.name;
+			template['value'] = directory.name;
+			arrayAppend(templates,template);
+		}
+		return templates;
+	}
+	
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
+		
+		//if the directory doesn't exist but the data does, then create the data
+		if(!directoryExists(templateDirectory)){
+			getService('siteService').deploySite(arguments.content.getSite(),false);
+		}
 		if(directoryExists(templateDirectory)) {
 			var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
 			var templates = [];
+			
 			for(var directory in directoryList){
 				var template ={};
 				template['name'] = directory.name;
 				template['value'] = directory.name;
 				arrayAppend(templates,template);
 			}
-			return templates;
-		}else{
-			throw('site directory does not exist for ' & arguments.content.getSite().getSiteName());
+			
+			var appTemplates = getAppTemplates(arguments.content);
+			for(var appTemplate in appTemplates){
+				if(!ArrayFind(templates, function(arrayElement) {return arrayElement.name == appTemplate.name;})){
+					arrayAppend(templates,appTemplate);
+				}	
+			}
+			
+			return getService('HibachiUtilityService').structArraySort(arrayOfStructs=templates, key='value', sortType='text');
 		}
 	}
 
@@ -142,6 +167,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		arguments.content = super.save(arguments.content, arguments.data);
 		return arguments.content;
+	}
+
+	public any function saveCategory(required any category, struct data={}){
+		if(!arguments.category.hasErrors()){
+			if(structKeyExists(arguments.data,'urlTitle') && len(arguments.data.urlTitle)){
+				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.urlTitle);
+			}else{
+				arguments.data.urlTitle = getService("HibachiUtilityService").createSEOString(arguments.data.categoryName);
+			}
+		}
+		
+		arguments.category = super.save(arguments.category,arguments.data);
+		return arguments.category;
+		
 	}
 
 	public any function getDefaultContentBySIte(required any site){

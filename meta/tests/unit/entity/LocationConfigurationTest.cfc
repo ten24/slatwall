@@ -127,13 +127,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	   		locationConfigurationID="",
 	   		location={
 	   			locationID=mockLocation.getLocationID()
-	   		         }
+	        }
 	   	};
 	   	
 		mockLocation.getLocationName();
 	   	var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
-	
-		var valueAfterAppendIsDone= "parentLocation » locationName"; //valuse after append operation done
+		
+		assert(!isNull(mockLocationConfiguration.getLocation().getParentLocation()));
+		
+		var valueAfterAppendIsDone= "parentLocation #chr(187)# locationName"; //valuse after append operation done
 	   	 
 	   	var result= mockLocationConfiguration.getLocationTree();
 	   
@@ -173,7 +175,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
    	 	var mockLocationConfiguration= createPersistedTestEntity('LocationConfiguration', locationConfigurationData);
      
     	var result= mockLocationConfiguration.getLocationPathName();
-    	var finalValueReturned= "mumbai » locationName";
+    	var finalValueReturned= "mumbai #chr(187)# locationName";
     	assertEquals(finalValueReturned, result);
   
    }

@@ -75,6 +75,13 @@ class MetaDataService {
 		this._propertiesList[key] = value;
 	}
 	formatPropertiesList = (propertiesList,propertyIdentifier) =>{
+		if (!propertiesList){
+			propertiesList = {};
+		}
+		if (!propertiesList.data){
+			propertiesList.data = [];
+		}
+
 		var simpleGroup = {
 				$$group:'simple',
 				//displayPropertyIdentifier:'-----------------'

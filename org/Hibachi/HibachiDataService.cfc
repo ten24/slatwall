@@ -143,7 +143,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							runPopulation = true;
 						}
 					} catch (any e) {
-						// If we haven't retried 6 times, then incriment the retry counter and re-run the population
+						// If we haven't retried 6 times, then increment the retry counter and re-run the population
 						if(retryCount <= 6) {
 							retryCount += 1;
 							runPopulation = true;
@@ -155,6 +155,8 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 			}
 		} while (runPopulation);
+		var insertDataFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/' & 'insertedData.txt.cfm';
+		FileWrite(insertDataFilePath, variables.insertedData);
 
 		return true;
 	}
@@ -214,11 +216,17 @@ component accessors="true" output="false" extends="HibachiService" {
 				idKey = listAppend(idKey, insertData[listGetAt(idColumns, l)].value, "~");
 			}
 
-			var insertedData = getHibachiDataDAO().getInsertedDataFile();
-			var updateOnly = ignorePreviouslyInserted && listFindNoCase(insertedData, idKey);
+			if(!structKeyExists(variables, 'insertedData')){
+				variables.insertedData = getHibachiDataDAO().getInsertedDataFile();
+			}
+			var keyFound = listFindNoCase(variables.insertedData, idKey);
+
+			var updateOnly = ignorePreviouslyInserted && keyFound;
 
 			getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
-			getHibachiDataDAO().updateInsertedDataFile( idKey );
+			if(!keyFound){
+				variables.insertedData = listAppend(variables.insertedData, idKey);
+			}
 		}
 
 		return includesCircular;
@@ -253,7 +261,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 
 			if( structKeyExists(propertyMeta, "ormType") ) {
-				columnInfo["dataType"] = propertyMeta.ormType;
+				columnInfo["dataType"] = getService('hibachiUtilityService').getSQLType(propertyMeta.ormType);
 			} else if ( structKeyExists(propertyMeta, "type") ) {
 				columnInfo["dataType"] = propertyMeta.type;
 			}
@@ -419,7 +427,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	}
 
 	public void function loadDataFromQuery(required any query, required any configJSON) {
-		var qryColumns = arguments.query.getMeta().getColumnLabels();
+		var qryColumns = getService("HibachiUtilityService").getQueryLabels(query);
 		var configStruct = parseImportConfig(arguments.configJSON);
 		var tables = configStruct["tables"];
 
@@ -455,8 +463,35 @@ component accessors="true" output="false" extends="HibachiService" {
 					selectList = listAppend(selectList, "#tables[ tableName ][ "primaryKeyColumn" ]#_new");
 				}
 			// get distinct values for this table
-				var qry = new Query( sql="SELECT DISTINCT #selectList# FROM query", query=arguments.query, dbtype="query" );
-				var thisTableData = qry.execute().getResult();
+				var errorFree = false;
+				var remainingTries = 20;
+				tables[tableName]['missingColumns'] = [];
+				while(errorFree == false && listLen(selectList) > 0 && remainingTries > 0){
+					try{
+						var qry = new Query( sql="SELECT DISTINCT #selectList# FROM query", query=arguments.query, dbtype="query" );
+						var thisTableData = qry.execute().getResult();
+						errorFree = true;
+					}catch(any e){
+						if(find("Column not found:",e.detail)){
+							//handle missing columns in lucee
+							var missingColumn = reReplace(e.detail,'^Column\snot\sfound:\s([^\s]+).*$','\1');
+						}else{
+							//handle missing columns in CF
+							var missingColumn = reReplace(e.detail, '^.+\[(.*)\].+$', '\1');
+						}
+						var listIndex = listFind(selectList,missingColumn);
+
+						//Throw error if not caused by missing column
+						if(listIndex == 0){
+							writeOutput("Missing Column was: "&missingColumn);
+							writeDump(e);abort;
+						}
+
+						arrayAppend(tables[tableName]["missingColumns"], missingColumn);
+						selectList = listDeleteAt(selectList,listIndex);
+						remainingTries -= 1;
+					};
+				}
 				var generatedIDStruct = {};
 
 				generatedIDStruct[ tableName ] = {};
@@ -480,7 +515,7 @@ component accessors="true" output="false" extends="HibachiService" {
 							}
 
 							// if source column is part of the table column list then import
-							if(sourceColumnName != "" && listFindNoCase(thisTableColumnList, sourceColumnName)) {
+							if(sourceColumnName != "" && listFindNoCase(thisTableColumnList, sourceColumnName) && !arrayFind(tables[tableName]["missingColumns"],sourceColumnName)) {
 
 								if(!structKeyExists(tableData, tableName)) {
 									tableData[ tableName ] = {};
@@ -564,10 +599,10 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var idKeyStruct = structGet("generatedIDStruct.#tableName#.#idKeyList#");
+							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 						idKeyStruct["value"] = primaryKeyValue == ""?"null":primaryKeyValue;
 						} else if(tables[ tableName ][ "tableType" ] != "linktable") {
-							var idKeyStruct = structGet("generatedIDStruct.#tableName#");
+							var idKeyStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
 							idKeyStruct["value"] = primaryKeyValue;
 						}
 
@@ -634,12 +669,12 @@ component accessors="true" output="false" extends="HibachiService" {
 									idKeyList = listAppend(idKeyList, "null", ".");
 								}
 							}
-							var IDValueStruct = structGet("generatedIDStruct.#tableName#.#idKeyList#");
+							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#.#idKeyList#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
 						} else {
-							var IDValueStruct = structGet("generatedIDStruct.#tableName#");
+							var IDValueStruct = structGet(getService("HibachiUtilityService").formatStructKeyList("generatedIDStruct.#tableName#"));
 							if(structKeyExists(IDValueStruct, "value")) {
 								IDValue = IDValueStruct["value"];
 							}
@@ -670,7 +705,6 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		}catch(any e){writeDump(e);abort;}
 
-		writedump(label="time", var="#getTickcount()-start#");
 	}
 
 	public any function getAllAttributeStruct(){

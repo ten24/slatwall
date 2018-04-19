@@ -67,14 +67,14 @@
                                 <span sw-property-display
                                       data-ng-if="workflowTriggers.selectedTrigger.data.triggerType"
                                       data-object="workflowTriggers.selectedTrigger"
-                                      data-property="startDateTime"
+                                      data-property-identifier="startDateTime"
                                       data-editing="true"
                                       data-editable="true">
                                                                 </span>
                                 <span sw-property-display
                                       data-object="workflowTriggers.selectedTrigger"
                                       data-ng-if="workflowTriggers.selectedTrigger.data.triggerType"
-                                      data-property="endDateTime"
+                                      data-property-identifier="endDateTime"
                                       data-editing="true"
                                       data-editable="true">
                                                                 </span>
@@ -83,14 +83,14 @@
 							<sw-property-display
 									style="display:none"
 									data-object="workflowTriggers.selectedTrigger"
-									data-property="triggerEvent"
+									data-property-identifier="triggerEvent"
 									data-editing="true"
 									data-is-dirty="true"
 							></sw-property-display>
                             <sw-property-display
                                     style="display:none"
                                     data-object="workflowTriggers.selectedTrigger"
-                                    data-property="triggerEventTitle"
+                                    data-property-identifier="triggerEventTitle"
                                     data-editing="true"
                                     data-is-dirty="true"
                                     style="display:none"
@@ -98,7 +98,7 @@
                             <sw-property-display
 									style="display:none"
 									data-object="workflowTriggers.selectedTrigger"
-									data-property="objectPropertyIdentifier"
+									data-property-identifier="objectPropertyIdentifier"
 									data-editing="true"
 									data-is-dirty="true"
 							></sw-property-display>
@@ -150,13 +150,13 @@
                                         <div class="form-group">
 											<sw-property-display
                                                     data-object="workflowTriggers.selectedTrigger"
-                                                    data-property="timeout"
+                                                    data-property-identifier="timeout"
                                                     data-editable="true"
                                                     data-editing="true"
                                                     ></sw-property-display>
                                             <sw-property-display
                                                     data-object="workflowTriggers.selectedTrigger"
-                                                    data-property="saveTriggerHistoryFlag"
+                                                    data-property-identifier="saveTriggerHistoryFlag"
                                                     data-editable="true"
                                                     data-editing="true"
                                                     ></sw-property-display>
@@ -242,7 +242,7 @@
 											<!--<div class="s-search-filter">-->
 												<!--<sw-property-display-->
 													<!--data-object="workflowTriggers.selectedTrigger"-->
-													<!--data-property="scheduleCollection"-->
+													<!--data-property-identifier="scheduleCollection"-->
 													<!--data-field-type="search-select"-->
 													<!--data-editing="true"-->
 													<!--data-is-dirty="true"-->
@@ -255,14 +255,14 @@
 										<div class="clearfix"></div>
                                         <sw-property-display
                                                 data-object="workflowTriggers.selectedTrigger"
-                                                data-property="collectionFetchSize"
+                                                data-property-identifier="collectionFetchSize"
                                                 data-editing="true"
                                                 data-is-dirty="true"
                                         ></sw-property-display>
 										<div class="clearfix"></div>
                                         <sw-property-display
                                                 data-object="workflowTriggers.selectedTrigger"
-                                                data-property="timeout"
+                                                data-property-identifier="timeout"
                                                 data-editing="true"
                                                 data-is-dirty="true"
                                         ></sw-property-display>
@@ -275,7 +275,7 @@
 											<div class="s-search-filter">
 												<!--<sw-property-display-->
 													<!--data-object="workflowTriggers.selectedTrigger"-->
-													<!--data-property="schedule"-->
+													<!--data-property-identifier="schedule"-->
 													<!--data-field-type="search-select"-->
 													<!--data-editing="true"-->
 													<!--data-is-dirty="true"-->
@@ -302,14 +302,14 @@
 
                                                         <span sw-property-display
                                                               data-object="scheduleEntity"
-                                                              data-property="scheduleName"
+                                                              data-property-identifier="scheduleName"
                                                               data-editing="true"
                                                               data-editable="true">
                                                         </span>
 
                                                         <span sw-property-display
                                                               data-object="scheduleEntity"
-                                                              data-property="recuringType"
+                                                              data-property-identifier="recuringType"
                                                               data-options-arguments="{property:'recuringType'}"
                                                               data-editing="true"
                                                               data-editable="true">
@@ -320,7 +320,7 @@
                                                         <div class="form-group form-group-sm col-sm-6">
                                                                 <span sw-property-display
                                                                       data-object="scheduleEntity"
-                                                                      data-property="frequencyStartTime"
+                                                                      data-property-identifier="frequencyStartTime"
                                                                       data-editing="true"
                                                                       data-editable="true">
                                                                 </span>
@@ -328,7 +328,7 @@
                                                         <div class="form-group form-group-sm col-sm-6">
                                                                 <span sw-property-display
                                                                       data-object="scheduleEntity"
-                                                                      data-property="frequencyEndTime"
+                                                                      data-property-identifier="frequencyEndTime"
                                                                       data-editing="true"
                                                                       data-editable="true">
                                                                 </span>
@@ -338,7 +338,7 @@
                                                             <div class="form-group form-group-sm col-sm-6">
                                                                 <span sw-property-display
                                                                       data-object="scheduleEntity"
-                                                                      data-property="frequencyInterval"
+                                                                      data-property-identifier="frequencyInterval"
                                                                       data-editing="true"
                                                                       data-editable="true">
                                                                 </span>
@@ -348,7 +348,7 @@
                                                         <span sw-property-display
                                                               style="display:none"
                                                               data-object="scheduleEntity"
-                                                              data-property="daysOfWeekToRun"
+                                                              data-property-identifier="daysOfWeekToRun"
                                                               data-editing="true"
                                                               data-is-dirty="true"
                                                               data-field-type="text"></span>
@@ -356,7 +356,7 @@
                                                               style="display:none"
                                                               data-field-type="text"
                                                               data-object="scheduleEntity"
-                                                              data-property="daysOfMonthToRun"
+                                                              data-property-identifier="daysOfMonthToRun"
                                                               data-editing="true"
                                                               data-is-dirty="true"></span>
                                                         <div class="form-group s-workflow-checkbox" data-ng-if="scheduleEntity.data.recuringType == 'weekly'">
@@ -424,7 +424,7 @@
                                         <div class="form-group">
                                             <sw-property-display
                                                     data-object="workflowTriggers.selectedTrigger"
-                                                    data-property="saveTriggerHistoryFlag"
+                                                    data-property-identifier="saveTriggerHistoryFlag"
                                                     data-editable="true"
                                                     data-editing="true"
                                                     ></sw-property-display>

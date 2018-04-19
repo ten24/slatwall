@@ -51,7 +51,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="../../tags" />
+<cfimport prefix="sw" taglib="../tags" />
 
 <!---[DEVELOPER NOTES]
 
@@ -131,9 +131,46 @@ Notes:
 							<!--- Product Description --->
 							<dt>Product Description</dt>
 							<dd>#$.slatwall.product().getProductDescription()# &nbsp;</dd>
+							
+							<dt> Downloads </dt>
+							<dd> 
+								
+								<cfset isAnyDownload = false/>
+								<cfif arraylen( $.slatwall.getProduct().getFiles() )>
+									<cfset hasDownload = true/>
+								</cfif>
+								
+								<cfif hasDownload>
+									<div class="list-unstyled">
+										<cfloop array="#$.slatwall.getProduct().getFiles()#" index="fileRelation">
+											<!--- Check the file group to see if this is secured. --->
+											<cfif not isNull(fileRelation.getFile().getFileGroup())>
+												<cfset fileGroup = fileRelation.getFile().getFileGroup()>
+											</cfif>
+											<!--- If this file is restricted and the user is logged in, then let them view OR if the file is not restricted. --->
+											<cfif (not isNull( fileGroup ) and $.slatwall.getService("fileService").allowAccountToAccessFile(fileGroup, $.slatwall.getLoggedInFlag())) >
+												<!--- Only show download link if the user is logged in. --->
+												<p class="download-link">
+													<span class="primary" style="white-space:normal;">#fileRelation.getFile().getFileName()# <small>#fileRelation.getFile().getFileType()#</small></span><br>
+													<a target="_blank" href="/?slatAction=public:product.downloadfile&fileID=#fileRelation.getFile().getFileID()#&sredirect=/"><i class="fa fa-download" aria-hidden="true"></i> Download File</a>
+												</p>
+											<!--- Otherwise - it's restricted so ask the user to login --->
+											<cfelse>
+												<a href="/meta/sample/account.cfm"><strong>Sign In or Register</strong> to Download File</a>
+											</cfif>
+										</cfloop>
+									</div>
+								<cfelse>
+									<!--- This message will show if there are no downloads --->
+									<div class="alert alert-info fade in alert-dismissable">
+										No downloads
+									</div>
+								</cfif>
+							</dd>
 						</dl>
 						<!--- END: PRODUCT DETAILS EXAMPLE --->
 					</div>
+					
 					<div class="span3">
 						<!--- Start: PRICE DISPLAY EXAMPLE --->
 						<h5>Price Display Example</h5>

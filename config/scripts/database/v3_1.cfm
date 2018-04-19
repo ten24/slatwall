@@ -67,9 +67,9 @@ Notes:
 				UPDATE
 					SwPaymentMethod
 				SET
-					placeOrderChargeTransactionType = '#local.oldmurasettings.settingValue#'
+					placeOrderChargeTxType = '#local.oldmurasettings.settingValue#'
 				WHERE
-					placeOrderChargeTransactionType is null
+					placeOrderChargeTxType is null
 				  AND
 				  	paymentMethodID = '#local.oldmurasettings.paymentMethodID#'
 			</cfquery>
@@ -78,9 +78,9 @@ Notes:
 				UPDATE
 					SwPaymentMethod
 				SET
-					placeOrderChargeTransactionType = '#local.oldmurasettings.settingValue#'
+					placeOrderChargeTxType = '#local.oldmurasettings.settingValue#'
 				WHERE
-					placeOrderChargeTransactionType is null
+					placeOrderChargeTxType is null
 				  AND
 				  	paymentMethodType = 'creditCard'
 			</cfquery>
@@ -165,9 +165,9 @@ Notes:
 				UPDATE
 					SwPaymentMethod
 				SET
-					saveAccountPaymentMethodEncryptFlag = '#local.oldmurasettings.settingValue#'
+					saveAccPaymentMethodEncFlag = '#local.oldmurasettings.settingValue#'
 				WHERE
-					saveAccountPaymentMethodEncryptFlag is null
+					saveAccPaymentMethodEncFlag is null
 				  AND
 				  	paymentMethodID = '#local.oldmurasettings.paymentMethodID#'
 			</cfquery>
@@ -176,9 +176,9 @@ Notes:
 				UPDATE
 					SwPaymentMethod
 				SET
-					saveAccountPaymentMethodEncryptFlag = '#local.oldmurasettings.settingValue#'
+					saveAccPaymentMethodEncFlag = '#local.oldmurasettings.settingValue#'
 				WHERE
-					saveAccountPaymentMethodEncryptFlag is null
+					saveAccPaymentMethodEncFlag is null
 				  AND
 				  	paymentMethodType = 'creditCard'
 			</cfquery>

@@ -54,6 +54,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" />
 		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" />
+		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
 		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
 		<swa:SlatwallSetting settingName="skuCurrency" />
@@ -68,19 +69,27 @@ Notes:
 		<swa:SlatwallSetting settingName="skuGiftCardAutoGenerateCode" />
 		<swa:SlatwallSetting settingName="skuGiftCardCodeLength" />
         <swa:SlatwallSetting settingName="skuGiftCardEnforceExpirationTerm" />
+		<swa:SlatwallSetting settingName="skuGiftCardRecipientRequired" />
 		<swa:SlatwallSetting settingName="skuHoldBackQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" />
 		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" />
 		<swa:SlatwallSetting settingName="skuMinimumPercentageAmountRecievedRequiredToPlaceOrder" />
-		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
 		<swa:SlatwallSetting settingName="skuShippingWeight" />
 		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />
 		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
 		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesMQATSBOMFlag" />
 		<swa:SlatwallSetting settingName="skuTaxCategory" />
 		<swa:SlatwallSetting settingName="skuShippingCostExempt" />
+		<swa:SlatwallSetting settingName="skuExpenseLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuRevenueLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuCogsLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuAssetLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuLiabilityLedgerAccount"/>
+		<swa:SlatwallSetting settingName="skuDeferredRevenueLedgerAccount"/>
+
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

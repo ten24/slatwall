@@ -55,15 +55,29 @@ Notes:
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<!--- jQuery is only required if you would like to use the Slatwall client side object --->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
 		<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
 		<cfoutput>#$.slatwall.renderJSObject( subsystem="public" )#</cfoutput>
-
-		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
-		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+		<style>
+			[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+			  display: none !important;
+			}
+		</style>
+		<!--- Bootstrap and Fontawesome CDNs -- Replace with local file copies for production --->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<!---<script src='https://www.google.com/recaptcha/api.js'></script>--->
+		<cfoutput>
+			<script>
+		        var hibachiConfig = {
+		            action:'slatAction'
+					,basePartialsPath: '/org/Hibachi/client/src/'
+					,customPartialsPath:'/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/partials/'
+		        };
+		    </script>
+	    </cfoutput>
 	</head>
 	<body>
 		<!--- This is only used by the sample app that is contained in /meta/sample --->

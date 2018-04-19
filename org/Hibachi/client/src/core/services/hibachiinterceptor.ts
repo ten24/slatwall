@@ -40,36 +40,45 @@ class HibachiInterceptor implements IInterceptor{
 			$location:ng.ILocationService,
 			$q:ng.IQService,
 			$log:ng.ILogService,
+			$rootScope,
+			$window,
 			$injector:ng.auto.IInjectorService,
 			localStorageService,
 			alertService,
 			appConfig:string,
 			dialogService,
 			utilityService,
-            hibachiPathBuilder
+            hibachiPathBuilder,
+            observerService
 		)=> new HibachiInterceptor(
 			$location,
 			$q,
 			$log,
+			$rootScope,
+			$window,
 			$injector,
 			localStorageService,
 			alertService,
 			appConfig,
 			dialogService,
 			utilityService,
-            hibachiPathBuilder
+            hibachiPathBuilder,
+            observerService
 		);
 		eventHandler.$inject = [
 			'$location',
 			'$q',
 			'$log',
+			'$rootScope',
+			'$window',
 			'$injector',
 			'localStorageService',
 			'alertService',
 			'appConfig',
 			'dialogService',
 			'utilityService',
-            'hibachiPathBuilder'
+            'hibachiPathBuilder',
+            'observerService'
 		];
 		return eventHandler;
 	}
@@ -83,18 +92,23 @@ class HibachiInterceptor implements IInterceptor{
         public $location:ng.ILocationService,
 		public $q:ng.IQService,
 		public $log:ng.ILogService,
+		public $rootScope,
+		public $window,
 		public $injector:ng.auto.IInjectorService,
 		public localStorageService,
 		public alertService,
 		public appConfig:any,
 		public dialogService,
         public utilityService,
-        public hibachiPathBuilder
+        public hibachiPathBuilder,
+        public observerService
 	) {
 
         this.$location = $location;
 		this.$q = $q;
 		this.$log = $log;
+		this.$rootScope = $rootScope;
+		this.$window = $window;
 		this.$injector = $injector;
 		this.localStorageService = localStorageService;
 		this.alertService = alertService;
@@ -104,7 +118,26 @@ class HibachiInterceptor implements IInterceptor{
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.baseUrl = appConfig.baseURL;
     }
-
+    
+    public getJWTDataFromToken = (str):void =>{
+	    // Going backwards: from bytestream, to percent-encoding, to original string.
+	    str = str.split('.')[1];
+	    var decodedString = decodeURIComponent(this.$window.atob(str).split('').map((c)=> {
+	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	    }).join(''));
+	    
+	    var jwtData = angular.fromJson(decodedString);
+		var now = +new Date();
+		var nowString = now.toString().substr(0,jwtData.exp.toString().length);
+		now = +nowString;
+		if(jwtData.issuer && jwtData.issuer == this.$window.location.hostname && jwtData.exp > now){
+		    if(!this.$rootScope.slatwall.account){
+		    	this.$rootScope.slatwall.account = {};
+		    }
+		    this.$rootScope.slatwall.account.accountID = jwtData.accountid;
+    	}
+	}
+    
 	public request = (config): ng.IPromise<any> => {
         this.$log.debug('request');
         //bypass interceptor rules when checking template cache
@@ -121,8 +154,8 @@ class HibachiInterceptor implements IInterceptor{
         config.cache = true;
         config.headers = config.headers || {};
         if (this.localStorageService.hasItem('token')) {
-
             config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
+            this.getJWTDataFromToken(this.localStorageService.getItem('token'));
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
@@ -152,10 +185,14 @@ class HibachiInterceptor implements IInterceptor{
             this.alertService.addAlerts(alerts);
 
         }
+
+        if(response.data.hasOwnProperty('token')){
+        	this.localStorageService.setItem('token',response.data.token);
+        }
 		return response;
     }
     public responseError = (rejection): ng.IPromise<any> => {
-
+    	
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
@@ -167,6 +204,9 @@ class HibachiInterceptor implements IInterceptor{
 				};
 				this.alertService.addAlert(message);
 			}
+		}
+		if(rejection.status === 403 || rejection.status == 401){
+			this.observerService.notify('Unauthorized');
 		}
 		if (rejection.status === 499) {
 			// handle the case where the user is not authenticated
@@ -182,6 +222,8 @@ class HibachiInterceptor implements IInterceptor{
                             this.localStorageService.setItem('token',loginResponse.data.token);
                             rejection.config.headers = rejection.config.headers || {};
                             rejection.config.headers['Auth-Token'] = 'Bearer ' + loginResponse.data.token;
+                            this.getJWTDataFromToken(loginResponse.data.token);
+                            
                             return $http(rejection.config).then(function(response) {
                                return response;
                             });

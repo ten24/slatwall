@@ -59,8 +59,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productSortProperty" ormtype="string";
 	property name="productSortDefaultDirection" ormtype="string";
 	//property name="productSortableProperties";nonpersistent?
-	property name="urlTitle" ormtype="string" length="4000";
-	property name="urlTitlePath" ormtype="string" length="8000";
+	property name="urlTitle" ormtype="string" length="255" index="PI_urltitle";
+	property name="urlTitlePath" ormtype="string" length="255" index="PI_urltitlepath";
 	property name="contentBody" ormtype="string" length="8000" hb_formFieldType="wysiwyg";
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
@@ -103,6 +103,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="assetsPath" persistent="false";
 	property name="sharedAssetsPath" persistent="false";
 	property name="allDescendants" persistent="false";
+	property name="contentCacheKey" persistent="false";
 
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -118,6 +119,33 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 		return variables.assetsPath;
 	}
+	
+	public string function getContentCacheKey(){
+		if(!structKeyExists(variables,'contentCacheKey')){
+			var contentCacheKey = "";
+			contentCacheKey &= getDao('hibachiDao').getApplicationKey();
+			contentCacheKey &= getHibachiScope().site().getSiteCode();
+			contentCacheKey &= getUrlTitlePath();
+			if (!isNull(getHibachiScope().getBrand())) {
+				contentCacheKey &= getHibachiScope().getBrand().getBrandID();
+			}
+			if(!isNull(getHibachiScope().getProduct())) {
+				contentCacheKey &= getHibachiScope().getProduct().getProductID();
+			}
+			if (!isNull(getHibachiScope().getProductType())) {
+				contentCacheKey &= getHibachiScope().getProductType().getProductTypeID();
+			}
+			if (!isNull(getHibachiScope().getRouteEntity('Address'))) {
+				contentCacheKey &= getHibachiScope().getRouteEntity('Address').getPrimaryIDValue();
+			}
+			if (!isNull(getHibachiScope().getRouteEntity('Account'))) {
+				contentCacheKey &= getHibachiScope().getRouteEntity('Account').getPrimaryIDValue();
+			}
+			contentCacheKey &= replace(CGI.QUERY_STRING,'clearTemplateCache=true',''); 
+			variables.contentCacheKey = hash(contentCacheKey,'MD5');
+		}
+		return variables.contentCacheKey;
+	}
 
 
 	public string function getTitlePath(string delimiter){
@@ -129,6 +157,48 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
 		}
 		return titlePath;
+	}
+
+	public any function getContentBody(){
+		if(structKeyExists(variables,'contentBody')){
+			//if not dynamic cache for 60 seconds
+			if(!getNewFlag() && !getService('HibachiUtilityService').isStringTemplate(variables.contentBody)){
+				var cacheKey = 'Content_getContentBody#getContentID()#';
+				if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+					var contentData = {
+						contentBody = variables.contentBody,
+						lastCached = now()
+					};
+					getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+					return getService('HibachiCacheService').getCachedValue(cacheKey).contentBody;
+				}else{
+					//check if cache expired
+					
+					if(getService('HibachiCacheService').getCachedValue(cacheKey).lastCached < dateAdd('s','-60',now())){
+						var contentData = {
+							contentBody = variables.contentBody,
+							lastCached = now()
+						};
+						getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+					}
+					return getService('HibachiCacheService').getCachedValue(cacheKey).contentBody;
+				}
+			}
+			return variables.contentBody;
+		}
+	}
+	
+	public void function setContentBody(string contentBody){
+		variables.contentBody = arguments.contentBody;
+		if(!getNewFlag() && !getService('HibachiUtilityService').isStringTemplate(variables.contentBody)){
+			var cacheKey = 'Content_getContentBody#getContentID()#';
+			var contentData = {
+				contentBody = variables.contentBody,
+				lastCached = now()
+			};
+			getService('HibachiCacheService').setCachedValue(cacheKey,contentData);
+		}
+		
 	}
 
 	public string function getSharedAssetsPath(){
@@ -304,38 +374,38 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 
 	public string function createURLTitlePath(){
 
-		var urlTitle = '';
+		var urlTitleText = '';
 		if(!isNull(getURLtitle())){
-			urlTitle = getURLtitle();
+			urlTitleText = getURLtitle();
 		}
 
-		var urlTitlePath = '';
+		var urlTitlePathText = '';
 		if(!isNull(getParentContent())){
-			urlTitlePath = getParentContent().getURLTitlePath();
-			if(isNull(urlTitlePath)){
-				urlTitlePath = '';
+			urlTitlePathText = getParentContent().getURLTitlePath();
+			if(isNull(urlTitlePathText)){
+				urlTitlePathText = '';
 			}
 		}
 
 		var urlTitlePathString = '';
-		if(len(urlTitlePath)){
-			urlTitlePathString = urlTitlePath & '/' & urlTitle;
+		if(len(urlTitlePathText)){
+			urlTitlePathString = urlTitlePathText & '/' & urlTitleText;
 		}else{
-			urlTitlePathString = urlTitle;
+			urlTitlePathString = urlTitleText;
 		}
 
 		var addon = 1;
 		if(!isNull(getSite())){
 			var contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
 			while(!isNull(contentEntity) && this.getContentID() != contentEntity.getContentID()) {
-				urlTitle = '#urlTitle#-#addon#';
+				urlTitleText = '#urlTitleText#-#addon#';
 				urlTitlePathString = "#urlTitlePathString#-#addon#";
 				addon++;
 				contentEntity = getDao('contentDao').getContentBySiteIDAndUrlTitlePath(getSite().getSiteID(),urlTitlePathString);
 			}
 		}
 		
-		variables.urlTitle = urlTitle;
+		variables.urlTitle = urlTitleText;
 		setUrlTitlePath(urlTitlePathString);
 		return urlTitlePathString;
 	}

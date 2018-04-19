@@ -63,6 +63,15 @@ class SWOrderItems{
 				var options:any = {};
 				scope.keywords = "";
 				scope.loadingCollection = false;
+				
+				scope.$watch('recordsCount', function (newValue, oldValue, scope) {
+				    
+				    //Do anything with $scope.letters
+				    if (oldValue != undefined && newValue != undefined && newValue.length > oldValue.length){
+				    	//refresh so order totals refresh.
+				    	window.location.reload();
+				    }
+				});
 				var searchPromise;
 				scope.searchCollection = function(){
 					if(searchPromise) {
@@ -118,7 +127,9 @@ class SWOrderItems{
                          ,orderReturn.returnLocation.primaryAddress.address.postalCode
 						 ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
                          ,sku.subscriptionBenefits
-                         ,sku.product.productType.systemCode,sku.options,sku.locations
+						 ,sku.product.productType.systemCode
+						 ,sku.options
+						 ,sku.locations
  						 ,sku.subscriptionTerm.subscriptionTermName
  						 ,sku.imageFile
                          ,stock.location.locationName`
@@ -146,12 +157,13 @@ class SWOrderItems{
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
 						var collectionConfig:any = {};
+						scope.recordsCount = value.pageRecords;
 						scope.orderItems = $hibachi.populateCollection(value.pageRecords,orderItemCollection);
                          for (var orderItem in scope.orderItems){
                              $log.debug("OrderItem Product Type");
                              $log.debug(scope.orderItems);
                              //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
-
+							
                          }
                         scope.paginator.setPageRecordsInfo(scope.collection);
 
@@ -203,6 +215,7 @@ class SWOrderItems{
 				};*/
 
                 scope.paginator = paginationService.createPagination();
+                scope.paginator.notifyById = false;
                 scope.paginator.collection = scope.collection;
                 scope.paginator.getCollection = scope.getCollection;
                 

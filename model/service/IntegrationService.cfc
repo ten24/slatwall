@@ -153,7 +153,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function updateIntegrationsFromDirectory() {
-		var dirList = directoryList( expandPath("/Slatwall/integrationServices") );
+		var dirList = directoryList( expandPath("/Slatwall") & '/integrationServices' );
 		var integrationList = this.listIntegration();
 		var installedIntegrationList = "";
 		
@@ -167,14 +167,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Turn off the installed and ready flags on any previously setup integration entities
-		for(var integrationEntity in integrationList) {
-			if(!listFindNoCase(installedIntegrationList, integrationEntity.getIntegrationPackage())) {
-				integrationEntity.setInstalledFlag(0);
-				integrationEntity.setActiveFlag(0);
-				
-				getHibachiDAO().flushORMSession();
-			}
-		}
+		ORMExecuteQuery("UPDATE #getDao('hibachiDao').getApplicationKey()#Integration Set activeFlag=0, installedFlag=0 WHERE integrationPackage not in (#listQualify(installedIntegrationList,"'")#)");
+		getHibachiDAO().flushORMSession();
 		
 		return getBeanFactory();
 	}
@@ -189,7 +183,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var integrationPath = expandPath('/Slatwall') & "/integrationServices/#integrationData['integrationPackage']#";
 			if(directoryExists(integrationPath)){
 				var integrationDbDataPath = integrationPath & '/config/dbdata';
-				if(directoryExists(integrationDbDataPath)){
+				if(directoryExists(integrationDbDataPath) && !getApplicationValue('skipDbData')){
 					getService("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = integrationDbDataPath);
 				}
 			}
@@ -253,9 +247,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 						
-						var integrationBF = new Slatwall.org.Hibachi.DI1.ioc("/Slatwall/integrationServices/#integrationPackage#/model", {
+						var integrationBF = new framework.aop("/Slatwall/integrationServices/#integrationPackage#/model", {
 							transients=["process", "transient", "report"],
-							exclude=["entity"]
+							exclude=["entity"],
+							omitDirectoryAliases = getApplicationValue("hibachiConfig").beanFactoryOmitDirectoryAliases
 						});
 						
 						var integrationBFBeans = integrationBF.getBeanInfo();
@@ -386,7 +381,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				structDelete(variables, "activeFW1Subsystems");
 			}
 			
-			getHibachiAuthenticationService().clearActionPermissionDetails();
+			getHibachiCacheService().resetCachedKey('actionPermissionDetails');
 			
 			if(arguments.entity.getEnabledFlag()){
 				getHibachiScope().setApplicationValue("initialized",false);
@@ -397,7 +392,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.entity;
 	}
 	
-	public any function processIntegration_pullData(required any integration, required any processObject) {
+	public any function processIntegration_pullData(required any integration, any processObject) {
 		
 		if(arguments.integration.getActiveFlag()){
 			integration.getIntegrationCFC('data').pullData();	
@@ -406,7 +401,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.integration;
 	}
 	
-	public any function processIntegration_pushData(required any integration, required any processObject) {
+	public any function processIntegration_pushData(required any integration, any processObject) {
 		
 		if(arguments.integration.getActiveFlag()){
 			integration.getIntegrationCFC('data').pushData();	

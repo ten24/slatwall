@@ -50,6 +50,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	property name="locationDAO" type="any";
 	property name="stockDAO" type="any";
+	property name="skuService" type="any";
+	property name="inventoryService" type="any";
 	
 	public boolean function isLocationBeingUsed(required any location) {
 		return getLocationDAO().isLocationBeingUsed(arguments.location);
@@ -65,21 +67,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Returns array of leaf locations, i.e. locations that can have stock
 	// @locationID string If specified will be used as top level location
-	public array function getLocationOptions( string locationID ) {
+	public array function getLocationOptions(string locationID, string nameProperty = 'calculatedLocationPathName', boolean includeTopLevelLocation=false) {
 		var locationOptions = [];
 		var smartList = this.getLocationSmartList();
+		smartlist.addSelect(arguments.nameProperty, 'name');
+		smartlist.addSelect('locationID', 'value');
+
+		// Use arguments locationID as top level location to find leaf locations
 		if(structKeyExists(arguments,"locationID")) {
-			smartList.addFilter("locationID",arguments.locationID);
+			smartList.addWhereCondition("locationIDPath LIKE :parentLocationID AND aslatwalllocation.childLocations IS EMPTY", {parentLocationID = '%#arguments.locationID#%'});
 		}
-		smartList.addWhereCondition( "NOT EXISTS( SELECT loc FROM SlatwallLocation loc WHERE loc.parentLocation.locationID = aslatwalllocation.locationID)");
-		smartList.addOrder("locationIDPath");
-		var locations = smartList.getRecords();
-		
-		for(var i=1;i<=arrayLen(locations);i++) {
-			var locationOption = {};
-			locationOption['name'] = locations[i].getSimpleRepresentation();
-			locationOption['value'] = locations[i].getLocationID();
-			arrayAppend(locationOptions, locationOption);
+		smartList.addOrder("locationIDPath|DESC");
+		var locationOptions = smartList.getRecords();
+
+		if( arguments.includeTopLevelLocation ) { 
+			var topLevelLocation = this.getLocation(arguments.locationID);
+			arrayPrepend(locationOptions, {name=topLevelLocation.getLocationName(), value=topLevelLocation.getLocationID()});
 		}
 		
 		return locationOptions;
@@ -91,7 +94,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var locationParentOptions = [];
 		
 		var smartList = this.getLocationSmartList();
-		smartList.addOrder("locationName,locationIDPath");
+		smartList.addOrder("locationName,locationIDPath|DESC");
 		var locations = smartList.getRecords();
 		
 		if( includeNone ) { 
@@ -132,12 +135,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
-	
+
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
 	
-	public any function saveLocation(required any location, required struct data) {
+	public any function saveLocation(required any location, struct data={}) {
 		
 		arguments.location = super.save(arguments.location, arguments.data);
 		

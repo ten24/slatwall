@@ -13,6 +13,10 @@
 	<cfparam name="attributes.range" type="any" default="" />
 	<cfparam name="attributes.editable" type="boolean" default="false" />
 	<cfparam name="attributes.buttonGroup" type="any" default="" />
+	<cfparam name="attributes.fieldAttributes" type="string" default="" />
+	<cfparam name="attributes.showEmptySelectBox" type="boolean" default="true" /> 		<!--- If set to false, will hide select box if no options are available --->
+	
+	<cfparam name="attributes.methodIdentifier" type="string" default="" />
 	
 	<cfassociate basetag="cf_HibachiListingDisplay" datacollection="columns">
 </cfif>

@@ -77,6 +77,14 @@ component extends="HibachiService" accessors="true" {
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
 	}
 
+	public string function getProductURLByUrlTitle(string urlTitle){
+		var urlTitleString = "";
+		if(structKeyExists(arguments,'urlTitle')){
+			urlTitleString = arguments.urlTitle;
+		}
+		return "/#getHibachiScope().setting('globalURLKeyProduct')#/#urlTitleString#/";
+	}
+	
 	public any function getFormattedOptionGroups(required any product){
 		var AvailableOptions={};
 
@@ -732,7 +740,6 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_create(required any product, required any processObject) {
-
 		// GENERATE - CONTENT ACCESS SKUS
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 
@@ -885,7 +892,11 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-
+		
+		if(!isNull(arguments.processObject.getBrand())){
+			arguments.product.setBrand(arguments.processObject.getBrand());
+		}
+		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
 
@@ -1009,6 +1020,8 @@ component extends="HibachiService" accessors="true" {
 		try {
 
 			// Get the upload directory for the current property
+			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
@@ -1019,7 +1032,12 @@ component extends="HibachiService" accessors="true" {
 
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
-			fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+			var fileSize = uploadData.fileSize;
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 			}
 
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
@@ -1034,7 +1052,6 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
@@ -1147,8 +1164,7 @@ component extends="HibachiService" accessors="true" {
 		return delete( arguments.product );
 	}
 
-	public boolean function deleteProductListingPage(required any productListingPage){ 
-		
+	public boolean function deleteProductListingPage(required any productListingPage){  
 		arguments.productListingPage.removeContent(); 
 		arguments.productListingPage.removeProduct(); 
 		return delete( arguments.productListingPage ); 
@@ -1201,4 +1217,3 @@ component extends="HibachiService" accessors="true" {
 	// ======================  END: Private Helper ============================
 
 }
-
