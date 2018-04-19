@@ -6,7 +6,7 @@
                         data-ng-disabled="swTypeaheadSearch.disabled"
                         ng-click="swTypeaheadSearch.toggleDropdown()"
                         aria-expanded="true">
-                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
+                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <i class="fa" data-ng-class="(swTypeaheadSearch.dropdownOpen) ? 'fa-caret-up' : 'fa-caret-down'" ></i>
                 </button>
                 <ul ng-if="swTypeaheadSearch.dropdownOpen" class="dropdown-menu" role="menu">
                     <li>
