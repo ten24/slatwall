@@ -19,14 +19,21 @@ import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 
 //directives
 import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
+import { HeroDetailComponent } from './components/herodetail.component';
+
+
 //filters
 
 import {SWCurrency} from "./filters/swcurrency";
 
+/* . . . */
+
+import { downgradeComponent } from '@angular/upgrade/static';
 //declare variables out of scope
 declare var $:any;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
+    '$$UpgradeModule',
   //custom modules
   hibachimodule.name,
   entitymodule.name,
@@ -81,6 +88,10 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
  //services
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
+.directive(
+    'heroDetail',
+    downgradeComponent({ component: HeroDetailComponent }) as angular.IDirectiveFactory
+ )
 //controllers
 .controller('preprocessaccount_addaccountpayment', ['$scope', '$compile',($scope:any, $compile)=> {
     //Define the different payment types used here
@@ -150,6 +161,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             $scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
     }
 }])
+
 //filters
 
 .filter('swcurrency',['$sce','$log','$hibachi','$filter',SWCurrency.Factory])

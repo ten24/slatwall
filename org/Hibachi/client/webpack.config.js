@@ -12,7 +12,7 @@ var appConfig = {
     context:PATHS.app,
     entry: {
         app:['./bootstrap.ts'],
-         vendor: ["date", "angular", 'angular-lazy-bootstrap', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
+         vendor: ["shim.min.js","zone.js","date", "angular", 'reflect-metadata', 'angular-lazy-bootstrap', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
          'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch'],
     },
     watch:true,
@@ -26,6 +26,8 @@ var appConfig = {
     resolve: {
         extensions: ['.webpack.js', '.web.js', '.ts', '.js'],
          alias: {
+            'shim.min.js':"../../../../node_modules/core-js/client/shim.min.js",
+            'zone.js':'../../../../node_modules/zone.js/dist/zone.js',
             'date': '../lib/date/date.min.js',
             'angular': '../lib/angular/angular.min.js',
             'angular-lazy-bootstrap':'../lib/angular-lazy-bootstrap/bootstrap.js',

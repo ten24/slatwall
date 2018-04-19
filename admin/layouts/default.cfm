@@ -103,6 +103,7 @@ Notes:
 	</head>
 
 	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
+		<hero-detail></hero-detail>
 		<span>
 			
 		<cfif $.slatwall.getLoggedInAsAdminFlag() || structKeyExists(url,'ng')>

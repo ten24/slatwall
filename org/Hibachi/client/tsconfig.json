@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
-    "target":"es5",
+    "target": "es5",
     "module": "commonjs",
-    "sourceMap": true
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [ "es2015", "dom" ],
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true
   },
   "files": [
     "typings/hibachiTypescript.d.ts",

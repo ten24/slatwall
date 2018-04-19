@@ -89,6 +89,7 @@ import {dialogmodule} from "../dialog/dialog.module";
 
 
 import {BaseObject} from "./model/baseobject";
+
 declare var $:any;
 
 var coremodule = angular.module('hibachi.core',[
