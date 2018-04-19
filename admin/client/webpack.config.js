@@ -14,6 +14,7 @@ if(typeof bootstrap !== 'undefined'){
 delete devConfig.entry.vendor; //remove the vendor info from this version.
 devConfig.output.path = PATHS.app;
 devConfig.context = PATHS.app;
+devConfig.watch = true;
 //don't need the vendor bundle generated here because we include the vendor bundle already.
 devConfig.plugins =  [
     // Workaround for https://github.com/angular/angular/issues/11580
