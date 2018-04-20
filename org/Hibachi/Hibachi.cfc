@@ -502,8 +502,10 @@ component extends="framework.one" {
 			}
 		}
 
-		// Setup structured Data if a request context exists meaning that a full action was called
-		getHibachiScope().getService("hibachiUtilityService").buildFormCollections(request.context);
+		// Setup structured Data if a request context exists meaning that a full action was called (excluding requests from AWS)
+		if (!structKeyExists(httpRequestData.headers, "X-Amz-Sns-Message-Id")) {
+			getHibachiScope().getService("hibachiUtilityService").buildFormCollections(request.context);
+		}
 
 		// Setup a $ in the request context, and the hibachiScope shortcut
 		request.context.fw = getHibachiScope().getApplicationValue("application");
