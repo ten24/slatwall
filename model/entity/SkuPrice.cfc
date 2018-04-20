@@ -61,7 +61,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true";
 	//temporarily omitted
 	//property name="priceRule" cfc="PriceRule" fieldtype="many-to-one" fkcolumn="priceRuleID";
 	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
