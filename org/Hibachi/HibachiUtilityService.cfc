@@ -1032,9 +1032,215 @@
 			fileClose(dataFile);
 		};
 
+		// @hint Retreives object from AWS S3 and returns the contents as a byte array
 		public any function retrieveFromS3(string objectID, string bucketName, string objectKeyPrefix, string awsAccessKeyId, string awsSecretAccessKey, string acl, string storageClass, boolean deleteS3ObjectAfter) {
 			// TODO: Need to implement
 		}
+
+		/**
+		 * @hint Parses raw email content into a useful struct including file attachements.
+		 * @emailContent A string or byteArray representation of the email content to be parsed
+		 * @return struct containing the parsed data
+		 */
+		public struct function parseEmail(required any emailContent) {
+
+			// Message Extraction RegEx
+			// Example: Replying back to notification after 3 attachments we sent to task. I've added some files also. Joe Smith On Fri, Apr 13, 2018 at 3:16 PM, Miguel Targa (ten24) < application@teamwork.com> wrote: > ===== WRITE YOUR REPLY ABOVE THIS LINE =====
+			// $1 contains message, $2 might not exist?, $3 is the delimiter    (.+)(\WOn\W\w{3}\,\W.+)(===== WRITE YOUR REPLY ABOVE THIS LINE =====)
+			// or finally try, $1 contains message                              (.+)(===== WRITE YOUR REPLY ABOVE THIS LINE =====)
+		
+			// Relevant Java Classes
+			// java.lang.Byte[]
+			// java.io.ByteArrayInputStream
+			// java.util.Properies
+			// javax.mail.Session
+			// javax.mail.Header
+			// javax.mail.internet.MimeMessage (extends Abstract Message | implements MimePart -> Part)
+			// javax.mail.internet.MimeMultipart (extends Abstract Multipart)
+			// javax.mail.internet.MimeBodyPart (extends Abstract BodyPart | implements MimePart -> Part)
+			// com.sun.mail.util.BASE64DecoderStream (extends FilterInputStream extends InputStream)
+			// com.sun.mail.util.QPDecoderStream (extends FilterInputStream extends InputStream)
+
+			var emailContentByteArray = isBinary(arguments.emailContent) ? arguments.emailContent : arguments.emailContent.getBytes('UTF-8');
+			var emailContentInputStream = createObject("java", "java.io.ByteArrayInputStream").init(emailContentByteArray);
+		
+			// Creates parsed message object
+			var email = createObject("java", "javax.mail.internet.MimeMessage").init(createObject("java", "javax.mail.Session").getDefaultInstance(createObject("java", "java.util.Properties")), emailContentInputStream);
+		
+			// Extract all headers
+			var headers = {};
+			var headersEnumeration = email.getAllHeaders();
+			while(headersEnumeration.hasMoreElements()) {
+				var header = headersEnumeration.nextElement();
+				headers[header.getName()] = header.getValue();
+			}
+		
+			// Extract email body and attachment contents
+			var timeStart = getTickCount();
+			var emailData = extractEmailContents(email);
+			var timeEnd = getTickCount();
+		
+			// Add additional helpful email data
+			emailData.headers = headers;
+			emailData.subject = email.getSubject();
+			emailData.sentDate = email.getSentDate();
+			emailData.messageID = email.getMessageID();
+			emailData.processingTime = "#(timeEnd - timeStart) / 1000# s";
+		
+			// From
+			emailData.from = { emailAddress = email.getFrom()[1].getAddress(), name = email.getFrom()[1].getPersonal(), full = email.getFrom()[1].toString() };
+		
+			// Reply-To
+			emailData.replyTo = { emailAddress = email.getReplyTo()[1].getAddress(), name = email.getReplyTo()[1].getPersonal(), full = email.getReplyTo()[1].toString() };
+		
+			// To, Bcc, Cc, Newsgroups
+			var recipientTypes = ['TO', 'BCC', 'CC', 'NEWSGROUPS'];
+			for (var typeName in recipientTypes) {
+				
+				emailData[typeName] = [];
+				try {
+					// Attempt to loop over email addresses of specificed recipient type, throws hard error if none available 
+					for (var address in email.getRecipients(createObject('java', 'javax.mail.internet.MimeMessage$RecipientType')[typeName])) {
+						arrayAppend(emailData[typeName], {
+							emailAddress = address.getAddress(),
+							name = address.getPersonal(),
+							full = address.toString()
+						});
+					}
+				} catch (any e) {}
+			}
+			
+			return emailData;
+		}
+		
+		// @hint Recursively extracts useful text, headers, or attachment data from any email mime message or part object
+		public struct function extractEmailContents(required any mimeMessageOrBodyPart, array messages = [], array attachments = [], array parsingMap = []) {
+		
+			// Adding metadata to parsing map for reference
+			var parseMetaData = {parsedObject = arguments.mimeMessageOrBodyPart.getClass().getName(), contentObject = arguments.mimeMessageOrBodyPart.getContent().getClass().getName(), contentType = arguments.mimeMessageOrBodyPart.getContentType()};
+			arrayAppend(arguments.parsingMap, parseMetaData);
+		
+			// MimeMultipart Content (recursion needed to further extract)
+			if (isInstanceOf(arguments.mimeMessageOrBodyPart.getContent(), "javax.mail.internet.MimeMultipart")) {
+		
+				if (arguments.mimeMessageOrBodyPart.getContent().getCount() > 0) {
+					parseMetaData.children = [];
+		
+					// Loop and recursively extract the mimeMultipart's child mimeBodyPart objects
+					for (var i = 1; i <= arguments.mimeMessageOrBodyPart.getContent().getCount(); i++) {
+						var bodyPart = arguments.mimeMessageOrBodyPart.getContent().getBodyPart(i-1); // zero-indexed
+						extractEmailContents(bodyPart, arguments.messages, arguments.attachments, parseMetaData.children);
+					}
+				}
+			
+			// Extracting a message body or attachment parts
+			} else {
+		
+				var isAttachmentFlag = listFindNoCase("attachment,inline", arguments.mimeMessageOrBodyPart.getDisposition());
+		
+				// Struct for relevant extracted data we want to store and reference
+				var messageOrAttachmentData = {
+					headers = {},
+					contentType = "",
+				};
+		
+				// Parse headers of mimePart
+				var headersEnumeration = arguments.mimeMessageOrBodyPart.getAllHeaders();
+				while(headersEnumeration.hasMoreElements()) {
+					var header = headersEnumeration.nextElement();
+					messageOrAttachmentData.headers[header.getName()] = header.getValue();
+				}
+		
+				// String Content (as Message Body)
+				if (!isAttachmentFlag && isInstanceOf(arguments.mimeMessageOrBodyPart.getContent(), "java.lang.String")) {
+		
+					// Plain Text
+					if (findNoCase("text/plain", arguments.mimeMessageOrBodyPart.getContentType())) {
+						messageOrAttachmentData.contentType = "text/plain";
+						messageOrAttachmentData.body = arguments.mimeMessageOrBodyPart.getContent().toString();
+					
+					// HTML
+					} else if (findNoCase("text/html", arguments.mimeMessageOrBodyPart.getContentType())) {
+						// TODO: The special handling for sanitizing tags should go here
+						messageOrAttachmentData.contentType = "text/html";
+						messageOrAttachmentData.body = arguments.mimeMessageOrBodyPart.getContent().toString();
+					
+					// No Handling Implemented
+					} else {
+						throw("Cannot extract body of email message, handling has not been implement for contentType: '#arguments.mimeMessageOrBodyPart.getContentType()#'");
+					}
+		
+					// Creates reference to this struct as a message
+					arrayAppend(arguments.messages, messageOrAttachmentData);
+		
+				// Content (as Attachment)
+				} else { 
+		
+					// Reference: Content-Encoding https://www.w3.org/Protocols/rfc1341/5_Content-Transfer-Encoding.html
+					// Content-Transfer-Encoding: 7bit|base64|quoted-printable|8bit|binary (7bit ascii is assumed default)
+					// Content-Type: text/plain|text/html|text/csv|image/png|image/jpg|application/pdf|application/octet-stream
+					// Content-Disposition: attachment|inline
+					// filename=Sample.csv
+		
+					// Add additional helpful "attachment" data
+					messageOrAttachmentData.contentType = listFirst(messageOrAttachmentData.headers['Content-Type'], ";");
+					messageOrAttachmentData.disposition = arguments.mimeMessageOrBodyPart.getDisposition();
+					messageOrAttachmentData.filename = arguments.mimeMessageOrBodyPart.getFileName();
+					messageOrAttachmentData.fileExtension = listLast(messageOrAttachmentData.filename, ".");
+					
+					// Plain Text Content
+					if (isInstanceOf(arguments.mimeMessageOrBodyPart.getContent(), "java.lang.String")) {
+		
+						// Store file representation as byte array and file size
+						messageOrAttachmentData.fileBytes = arguments.mimeMessageOrBodyPart.getContent().getBytes();
+		
+					// Binary (Base64 or Quoted-Printable) Content
+					} else if (isInstanceOf(arguments.mimeMessageOrBodyPart.getContent(), "com.sun.mail.util.BASE64DecoderStream") || isInstanceOf(arguments.mimeMessageOrBodyPart.getContent(), "com.sun.mail.util.QPDecoderStream")) {
+						
+						// Java API Reference: http://edelstein.pebbles.cs.cmu.edu/jadeite/index.php?api=javamail&state=package&package=com.sun.mail.util
+						// The decoded input stream containing attachment file data to extract (Java class "com.sun.mail.util.BASE64DecoderStream", "com.sun.mail.util.QPDecoderStream")
+						var base64OrQuotedPrintableDecoderInputStream = arguments.mimeMessageOrBodyPart.getContent();
+		
+						// Create output stream to store the attachment file contents (as bytes)
+						var byteArrayOutputStream = createObject("java", "java.io.ByteArrayOutputStream");
+						
+						// Write to output stream containing the binary/byteArray representation of the attachment file contents
+						while (true) {
+							// Byte value
+							var byteIntValue = base64OrQuotedPrintableDecoderInputStream.read();
+		
+							// End of file
+							if (byteIntValue == -1) {
+								break;
+							}
+		
+							// Write byte
+							byteArrayOutputStream.write(byteIntValue);
+						}
+		
+						// Store file representation as byte array and file size
+						messageOrAttachmentData.fileBytes = byteArrayOutputStream.toByteArray();
+					
+					// Other content not explicitly handled, needs further implementation
+					} else {
+						throw("Cannot extract body of email message, handling has not been implement for the MIME content type '#arguments.mimeMessageOrBodyPart.getContentType()#' represented by Java type '#arguments.mimeMessageOrBodyPart.getContent().getClass().getName()#'.");
+					}
+		
+					// Set file size value
+					messageOrAttachmentData.fileSize = len(messageOrAttachmentData.fileBytes);
+		
+					// Creates reference to this struct as an attachment
+					arrayAppend(arguments.attachments, messageOrAttachmentData);
+		
+					// TODO: DELETE THIS, DEBUGGING ONLY
+					// fileWrite needs byteArray, it cannot handle an outputStream, CF documentation is ambiguous explaining the finer detail of the "data" parameter
+					fileWrite('#expandPath(".")#\assets\images\generated\#randRange(1,1000)#_#messageOrAttachmentData.filename#', messageOrAttachmentData.fileBytes);
+				}
+			}
+		
+			return { messages = arguments.messages, attachments = arguments.attachments, parsingMap = arguments.parsingMap };
+		}
+
 
 	</cfscript>
 
