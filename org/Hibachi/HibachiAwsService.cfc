@@ -54,7 +54,7 @@ component extends="HibachiService" accessors="true" {
         // Response status to send back to AWS SNS
         arguments.result.responseStatus = {statusCode = 200, statusText = "OK"}; 
         
-        // Data received from AWS SNS
+        // Reference to data received from AWS SNS
         arguments.result.snsPayload = arguments.snsPayload;
         
         // Data to populate for application consumption
@@ -62,8 +62,47 @@ component extends="HibachiService" accessors="true" {
 
         if (verifyAwsSignature()) {
 
-            // Announce event with the data
-            getHibachiEventService().announceEvent(eventName="onAwsSnsReceive", eventData=arguments.result);
+            // Confirm SNS subscription automatically
+            if (arguments.snsPayload.type == 'SubscriptionConfirmation') {
+
+                // Make HTTP request to AWS SNS server to confirm subscription
+                var httpConfirmationRequest = new http();
+                httpConfirmationRequest.setUrl(arguments.snsPayload.subscribeURL);
+                httpConfirmationRequest.setMethod('GET');
+                httpConfirmationRequest.setCharset('utf-8');
+                var httpConfirmationResponse = httpConfirmationRequest.send().getPrefix();
+
+                // Error attempting to confirm subscription
+                if (httpConfirmationResponse.status_code != 200) {
+                    var errorMessage = xmlSearch(xmlParse(httpConfirmationResponse.fileContent), "//*[local-name() = 'Message']")[1].xmlText;
+                    logHibachi("AWS SNS Auto subscribe confirmation failed. AWS SNS responded with status code: #httpConfirmationResponse.status_code#, message: '#errorMessage#'");
+                
+                // Successfully confirmed subscription
+                } else {
+                    logHibachi("AWS SNS Auto subscribe confirmation success.");
+                }
+    
+            // Handle general notifications (expecting message to be serialized JSON text)
+            } else if (arguments.snsPayload.type == 'Notification') {
+                if (isJSON(arguments.snsPayload.message)) {
+                    arguments.snsPayload.message = deserializeJSON(arguments.snsPayload.message);
+    
+                    // Automatically retrieve S3 object if not named "AMAZON_SES_SETUP_NOTIFICATION" and not spam or a virus verdict.
+                    if (structKeyExists(arguments.snsPayload.message, 'receipt') && structKeyExists(arguments.snsPayload.message.receipt, 'action') && structKeyExists(arguments.snsPayload.message.receipt.action, 'type') && arguments.snsPayload.message.receipt.action.type == 'S3') {
+                        arguments.result.data.s3FileContent = getHibachiUtilityService().retrieveFromS3();
+                    }
+                }
+
+                // Announce event with the data
+                getHibachiEventService().announceEvent(eventName="onAwsSnsReceive", eventData=arguments.result);
+            
+            // Error further implementation required to handle notification type
+            } else {
+                logHibachi("Need to further implement handling for SNS notifications of type '#snsPayload.type#'.");
+                arguments.result.responseStatus.statusCode = 501;
+                arguments.result.responseStatus.statusText = "Not implemented to handle '#snsPayload.type#'";
+            }
+
         }
 
         return arguments.result;

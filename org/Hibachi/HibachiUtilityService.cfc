@@ -1032,6 +1032,10 @@
 			fileClose(dataFile);
 		};
 
+		public any function retrieveFromS3(string objectID, string bucketName, string objectKeyPrefix, string awsAccessKeyId, string awsSecretAccessKey, string acl, string storageClass, boolean deleteS3ObjectAfter) {
+			// TODO: Need to implement
+		}
+
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public">

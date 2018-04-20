@@ -46,5 +46,8 @@
 Notes:
 
 */
-component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiAwsService" {	
+component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiAwsService" {
+    public boolean function verifyAwsSignature() {
+        return true;
+    }
 }

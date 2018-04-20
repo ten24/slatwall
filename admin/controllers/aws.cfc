@@ -80,11 +80,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
     public void function after( required struct rc ) {
         // Render all items as text/plain
-        getFW().renderer().statusCode(arguments.rc.responseStatus.statusCode).statusText(arguments.rc.responseStatus.statusText).type('text').data('');
+        getFW().renderer().statusCode(arguments.rc.responseStatus.statusCode).statusText(arguments.rc.responseStatus.statusText).type('json').data({});
     }
 
     public void function snsReceive(required struct rc) {
-        
+
         if (arguments.rc.requestPreProcessedFlag) {
             // Pass onto service as SNS payload
             var result = getHibachiAwsService().snsReceive(snsPayload = arguments.rc.requestBody);
