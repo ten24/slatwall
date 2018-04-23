@@ -105,10 +105,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			&& !isNull(getOrderFulfillment().getShippingMethodRate().getShippingIntegration())
 		){
 			variables.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
-		} else {
-			variables.shippingIntegration = "";
+		} 
+		if(structKeyExists(variables,'shippingIntegration')){
+			return variables.shippingIntegration;
 		}
-		return variables.shippingIntegration;
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
