@@ -6,7 +6,15 @@
 <div class="container">
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
-
+    
+    <!--- Add to cart success/fail messages --->
+    <div class="alert alert-success">Item added to cart</div>
+    
+    <div class="alert alert-danger">Item could not be added to cart</div>
+    
+    <!--- No Product search results found message --->
+    <div class="alert alert-warning">No products found</div>
+    
     <!--- If this item was just added show the success message --->
 	<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
 		<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -56,6 +64,9 @@
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|DESC',false )#">Name - Z to A</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - A to Z</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
 				</div>
 			</div>
         </div>
@@ -108,7 +119,17 @@
 
             <!--- Pagination --->
             <sw:SlatwallCollectionPagination collection="#productCollectionList#" slatwallScope="#$.slatwall#"></sw:SlatwallCollectionPagination>
-
+            
+            <!--- Example Pagination Markup --->
+        	<nav class="mt-5">
+				<ul class="pagination">
+					<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>
+			    	<li class="page-item active"><a class="page-link" href="##">1</a></li>
+			    	<li class="page-item"><a class="page-link" href="##">2</a></li>
+			    	<li class="page-item"><a class="page-link" href="##">3</a></li>
+			    	<li class="page-item"><a class="page-link" href="##">Next</a></li>
+				</ul>
+			</nav>
     	</div>
     </div>
 </div>

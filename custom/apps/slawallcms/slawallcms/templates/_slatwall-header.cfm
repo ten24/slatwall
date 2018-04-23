@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Tony's Tacos</title>
+    <title>#$.slatwall.getCurrentRequestSite().getSiteName()#</title>
     
     <!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
     #$.slatwall.renderJSObject( subsystem="public" )#
@@ -38,31 +38,9 @@
 
   <body>
 
-    <!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container">
-			<a class="navbar-brand" href="##">Tony's Tacos</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="##navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active">
-						<a class="nav-link" href="##">Home
-						<span class="sr-only">(current)</span>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="##">Product Listing</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="##">Product Detail</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="##">Shopping Cart</a>
-					</li>
-				</ul>
-			</div>
+			<a class="navbar-brand" href="##">#$.slatwall.getCurrentRequestSite().getSiteName()#</a>
 		</div>
 	</nav>
 </cfoutput>

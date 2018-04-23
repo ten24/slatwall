@@ -1,265 +1,139 @@
-<!---
-	
-    Slatwall - An Open Source eCommerce Platform
-    Copyright (C) ten24, LLC
-	
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Linking this program statically or dynamically with other modules is
-    making a combined work based on this program.  Thus, the terms and
-    conditions of the GNU General Public License cover the whole
-    combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
-
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
-	  except in the following directories:
-		/integrationServices/
-
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
-	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
-    of the program, but you are not obligated to do so.
-	
-Notes:
-																								
-	This template is designed to display a list of products.  In order to do that Slatwall uses	
-	a utility called a "SmartList".  The SmartList allows for you to easily add do common		
-	listing tasks: Search, Filter, Range Filter, Paging, ect.									
-																								
-	Anywhere on your site you can use the following to get the current productList:				
-																								
-	$.slatwall.getProductSmartList()															
-																								
-	The product list will always have these filters set by default:								
-																								
-	activeFlag = 1																				
-	publishedFlag = 1																			
-	(calculatedQATS > 0 or calculatedAllowBackorderFlag = 1)									
-																								
-	Whenever you are on a content page that has been flaged as a 'Slatwall Listing Page'		
-	the $.slatwall.productList() will also include the filter to only show products that have	
-	been explicitly assigned to that page in the admin.  In addition this view will be			
-	automatically included on content flaged as such.											
-																								
-	The "SmartList" has the following API methods that you can use to get details about the		
-	records being returned.  This productList has access to all of those methods:				
-																								
-	$.slatwall.productList().getRecordsCount()													
-	$.slatwall.productList().getPageRecordsStart()												
-	$.slatwall.productList().getPageRecordsEnd()												
-	$.slatwall.productList().getPageRecordsShow()												
-	$.slatwall.productList().getCurrentPage()													
-	$.slatwall.productList().getTotalPages()													
-																								
-																								
-																								
-	Inside of the main loop of a productList() you can use any of the following properties		
-	that will be be avaliable as part of the primary query.  If you ask for any additional		
-	properties, you will run the Risk of N+1 SQL Statements where each record will make			
-	1 or more additional database calls	and directly impact performance.  This is why we make	
-	use of the 'calculated' fields so that processing necessary is done ahead of time. All of	
-	the following values are safe to use in this listing without concern of lazy loading		
-																								
-	local.product.getProductID()																
-	local.product.getActiveFlag()																
-	local.product.getURLTitle()																	
-	local.product.getProductName()																
-	local.product.getProductCode()																
-	local.product.getProductDescription()														
-	local.product.getPublishedFlag()															
-	local.product.getSortOrder()																
-	local.product.getCalculatedSalePrice()														
-	local.product.getCalculatedQATS()															
-	local.product.getCalculatedAllowBackorderFlag()												
-	local.product.getCalculatedTitle()															
-	local.product.getCreatedDateTime()															
-	local.product.getModifiedDateTime()															
-	local.product.getRemoteID()																	
-																								
-	local.product.getDefaultSku().getSkuID()													
-	local.product.getDefaultSku().getActiveFlag()												
-	local.product.getDefaultSku().getSkuCode()													
-	local.product.getDefaultSku().getListPrice()												
-	local.product.getDefaultSku().getPrice()													
-	local.product.getDefaultSku().getRenewalPrice()												
-	local.product.getDefaultSku().getImageFile()												
-	local.product.getDefaultSku().getUserDefinedPriceFlag()										
-	local.product.getDefaultSku().getCreatedDateTime()											
-	local.product.getDefaultSku().getModifiedDateTime()											
-	local.product.getDefaultSku().getRemoteID()													
-																								
-	local.product.getBrand().getBrandID()														
-	local.product.getBrand().getActiveFlag()													
-	local.product.getBrand().getPublishedFlag()													
-	local.product.getBrand().getURLTitle()														
-	local.product.getBrand().getBrandName()														
-	local.product.getBrand().getBrandWebsite()													
-	local.product.getBrnad().getCreatedDateTime()												
-	local.product.getBrnad().getModifiedDateTime()												
-	local.product.getBrnad().getRemoteID()														
-																								
-	local.product.getProductType().getProductTypeID()											
-	local.product.getProductType().getProductTypeIDPath()										
-	local.product.getProductType().getActiveFlag()												
-	local.product.getProductType().getPublishedFlag()											
-	local.product.getProductType().getURLTitle()												
-	local.product.getProductType().getProductTypeName()											
-	local.product.getProductType().getProductTypeDescription()									
-	local.product.getProductType().getSystemCode()												
-	local.product.getProductType().getCreatedDateTime()											
-	local.product.getProductType().getModifiedDateTime()										
-	local.product.getProductType().getRemoteID()												
-																								
-	You can find detailed information on SmartList and all of the additional API methods at:	
-	http://docs.getslatwall.com/#developers-reference-smart-list								
-																								
---->
-
-<!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work --->
+<cfimport prefix="sw" taglib="/Slatwall/tags" />
+<cfimport prefix="sw" taglib="../tags" />
+<cfoutput>
 <cfinclude template="_slatwall-header.cfm" />
 
-<!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="../tags" />
-
-<!---[DEVELOPER NOTES]															
-																				
-	If you would like to customize any of the public tags used by this			
-	template, the recommended method is to uncomment the below import,			
-	copy the tag you'd like to customize into the directory defined by			
-	this import, and then reference with swc:tagname instead of sw:tagname.		
-	Technically you can define the prefix as whatever you would like and use	
-	whatever directory you would like but we recommend using this for			
-	the sake of convention.														
-																				
-	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
-																				
---->
-
-<cfoutput>
-	
-
-<!--- Product Listing Example 1 --->
 <div class="container">
-	
-	<!--- Header Row --->
-	<div class="row">
-		<div class="span12">
-			<h2>Product Listing Example 1</h2>
+
+    <h1 class="my-4">#$.slatwall.content('title')#</h4>
+    
+    <!--- Add to cart success/fail messages --->
+    <div class="alert alert-success">Item added to cart</div>
+    
+    <div class="alert alert-danger">Item could not be added to cart</div>
+    
+    <!--- No Product search results found message --->
+    <div class="alert alert-warning">No products found</div>
+    
+    <!--- If this item was just added show the success message --->
+	<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			Item added to cart. <a href="/checkout/" class="alert-link">Continue to Checkout</a>. You might want to change the action="" of the add to cart form so that it points directly to shopping cart page that way the user ends up there.
+			Or you can add a 'sRedirectURL' hidden field value to specify where you would like the user to be redirected after a succesful addToCart.
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		</div>
-	</div>
-	
-	<!--- Main Content --->
-	<div class="row">
-		
-		<!--- Filters & Sorting on Left Side --->
-		<div class="span3">
-			
-			<!--- Filter Brand --->
-			<cfset brandFilterOptions = $.slatwall.getProductSmartList().getFilterOptions('brand.brandID', 'brand.brandName') />
-			<h5>Filter By Brand</h5>
-			<ul class="nav">
-				<cfloop array="#brandFilterOptions#" index="brandOption">
-					<li><a href="#$.slatwall.getProductSmartList().buildURL( 'f:brand.brandID=#brandOption["value"]#' )#">#brandOption["name"]#</a></li>
-				</cfloop>
-			</ul>
-			
-			<!--- Price Range Filter --->
-			<h5>Price Range Filter</h5>
-			<ul class="nav">
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=^20' )#">less than $20.00</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=20^50' )#">$20.00 - $50.00</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=50^100' )#">$50.00 - $100.00</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=100^250' )#">$100.00 - $250.00</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'r:calculatedSalePrice=250^' )#">over $250.00</a></li>
-			</ul>
-			
-			<!--- Sorting --->
-			<h5>Sorting</h5>
-			<ul class="nav">
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=calculatedSalePrice|ASC' )#">Price Low To High</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=calculatedSalePrice|DESC' )#">Price High To Low</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=calculatedTitle|ASC' )#">Product Title A-Z</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=calculatedTitle|DESC' )#">Product Title Z-A</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=productName|ASC' )#">Product Name A-Z</a></li>
-				<li><a href="#$.slatwall.getProductSmartList().buildURL( 'orderBy=productName|DESC' )#">Product Name Z-A</a></li>
-			</ul>
+	<!--- If this item was just tried to be added, but failed then show the failure message --->
+	<cfelseif $.slatwall.hasFailureAction( "public:cart.addOrderItem" )>
+		<div class="alert alert-error alert-dismissible fade show" role="alert">
+			<!--- Display whatever errors might have been associated with the specific options --->
+			<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" />
+
+			<!--- Display any errors with saving the order after the item was atempted to be added --->
+			<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
 		</div>
-		
-		<!--- Primary Grid on Right side --->
-		<div class="span9">
-			
-			<!--- Make sure there are products in the list --->
-			<cfif $.slatwall.productList().getRecordsCount()>
-				<ul class="thumbnails">
-					
-					<!--- Primary Loop that displays all of the products in the grid format --->
-					<cfloop array="#$.slatwall.getProductSmartList().getPageRecords()#" index="product">
-						
-						<!--- Individual Product --->
-						<li class="span3">
-							
-							<div class="thumbnail">
-								
-								<!--- Product Image --->
-								<img src="#product.getResizedImagePath(size='m')#" alt="#product.getCalculatedTitle()#" />
-								
-								<!--- The Calculated Title allows you to setup a title string as a dynamic setting.  When you call getTitle() it generates the title based on that title string setting. To be more perfomant this value is cached as getCalculatedTitle() ---> 
-								<h5>#product.getCalculatedTitle()#</h5>
-	      						
-								<!--- Check to see if the products price is > the sale price.  If so, then display the original price with a line through it --->
-								<cfif product.getPrice() gt product.getCalculatedSalePrice()>
-									<p><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></p>
-								<cfelse>
-									<p>#product.getFormattedValue('calculatedSalePrice')#</p>	
+	</cfif>
+	
+	<!--- Base Product Collection List --->
+	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+    <cfset productCollectionList.addFilter("activeFlag",1)>
+    <cfset productCollectionList.addFilter("publishedFlag",1)>
+    <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />
+    <cfset productCollectionList.setDisplayProperties("urlTitle,productType.productTypeName,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
+    <!--- This allows filters applied to collection list --->
+    <cfset productCollectionList.applyData()>
+    <cfset productCollection = productCollectionList.getPageRecords()>
+
+    <div class="row mb-4">
+        <div class="col-sm-3">
+            <h6><strong>215</strong> Available Products</h6>
+        </div>
+        <div class="col-sm-6">
+            <a href="##" class="badge badge-secondary">Category &times;</a>
+            <a href="##" class="badge badge-secondary">Price &times;</a>
+            <a href="##" class="badge badge-secondary">Type &times;</a>
+            <a href="##" class="badge badge-danger">Clear All &times;</a>
+        </div>
+        
+        <div class="col-sm-2 offset-md-1">
+        	<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Sort By...
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|ASC',false )#">Name - A to Z</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|DESC',false )#">Name - Z to A</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - A to Z</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
+				</div>
+			</div>
+        </div>
+        
+    </div>
+
+    <div class="row">
+    	<div class="col-lg-3">
+            <cfinclude template="inc/productListingSidebar.cfm">
+    	</div>
+    	
+    	<!--- Content Body --->
+    	<div class="col-lg-9">
+
+	        <!--- Product Listing Body --->
+	        <cfif arrayLen(productCollection)>
+	        	<div class="row">
+		        	<cfloop array = "#productCollection#" index="local.product">
+		        		<div class="col-lg-4 col-md-6 mb-4">
+		    				<div class="card h-100">
+		    					<!--- Get resized image profile --->
+		    					<cfset local.mediumimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.product['defaultSku_skuID']#","medium") />                                    <a href="/product/#local.product['urlTitle']#">
+								<cfif arrayLen(local.mediumimages)>
+								    <a href="/sp/#local.product['urlTitle']#">
+								        <img src="#local.mediumimages[1]#" class="img-fluid" alt="#local.product['productName']#" />
+								    </a>
 								</cfif>
-								
-								<!--- This is the link to the product detail page.  By using the getListingProductURL() instead of getProductURL() it will append to the end of the URL string so that the breadcrumbs on the detail page can know what listing page you came from.  This is also good for SEO purposes as long as you remember to add a canonical url meta information to the detail page --->
-								<a href="product.cfm?productID=#product.getProductID()#">Details / Buy</a>
-								
-							</div>
-							
-						</li>
-						
-					</cfloop> 
-					<!--- END: Primary loop --->
-						
+		    					<div class="card-body">
+		                            <small><a href="##" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
+		                            <h4><a href="/sp/#local.product['urlTitle']#">#local.product['productName']#Item One</a></h4>
+		                            <s class="float-right">#local.product['defaultSku_listPrice']#</s>
+		    						<h5>#local.product['defaultSku_price']#</h5>
+		    						#local.product['productDescription']#
+		    					</div>
+		    					<div class="card-footer">
+		    						<form action="?s=1" method="post">
+		    							<button type="submit" class="btn btn-primary float-left">Buy Now</button>
+		    							<input type="hidden" name="skuID" value="#local.product['defaultSku_skuID']#" />
+		    							<input type="hidden" name="slatAction" value="public:cart.addOrderItem">
+		    						</form>
+		                            <a href="/sp/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
+		    					</div>
+		    				</div>
+    					</div>
+		        	</cfloop>
+	        	</div>
+	        <cfelse>
+	        	<div class="alert alert-secondary" role="alert"> No products found. Please try again.</div>
+	        </cfif>
+
+            <!--- Pagination --->
+            <sw:SlatwallCollectionPagination collection="#productCollectionList#" slatwallScope="#$.slatwall#"></sw:SlatwallCollectionPagination>
+            
+            <!--- Example Pagination Markup --->
+        	<nav class="mt-5">
+				<ul class="pagination">
+					<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>
+			    	<li class="page-item active"><a class="page-link" href="##">1</a></li>
+			    	<li class="page-item"><a class="page-link" href="##">2</a></li>
+			    	<li class="page-item"><a class="page-link" href="##">3</a></li>
+			    	<li class="page-item"><a class="page-link" href="##">Next</a></li>
 				</ul>
-
-				<sw:SmartListPager smartList="#$.slatwall.getProductSmartList()#">
-
-			<!--- If there are no products for this current listing page, then tell the customer --->
-			<cfelse>
-				<p>There are currently no products to display.</p>
-			</cfif>
-		</div>
-		
-	</div>
-	
+			</nav>
+    	</div>
+    </div>
 </div>
-
-
-</cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
+</cfoutput>
+
+
