@@ -71,7 +71,7 @@ class SWDisplayItemAggregate{
 
                 scope.$watch('selectedProperty', function(selectedProperty) {
                     if(angular.isDefined(selectedProperty)){
-                        if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
+                        if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier]) && selectedProperty.$$group == 'compareCollections'){
                             var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
                             filterPropertiesPromise.then(function(value){
                                 metadataService.setPropertiesList(value,selectedProperty.propertyIdentifier);

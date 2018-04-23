@@ -5,7 +5,7 @@
         <h4>Options</h4>
 
         <!--- Filter Criteria Start --->
-        <form data-sw-loading="propertiesList[selectedProperty.propertyIdentifier].data">
+        <form>
             <div class="s-filter-group-item">
 
                 <div class="s-options-group">
@@ -18,21 +18,26 @@
                         </select>
                     </div>
                     <div class="clearfix"></div>
-
-                    <select data-ng-model="selectedProperty.selectedDisplayOption"
-                            data-ng-change="selectedDisplayOptionChanged(selectedProperty.selectedDisplayOption)"
-                            data-ng-options="property as property.displayPropertyIdentifier
-		          					for property in propertiesList[selectedProperty.propertyIdentifier].data
-		          					| orderBy:property.name
-		          					| aggregateFilter
-		          					"
-                            class="form-control input-sm"
-                            data-ng-if="aggregate.selectedAggregate == 'sum' || 
-                                        aggregate.selectedAggregate == 'average' ||
-                                        aggregate.selectedAggregate == 'min' ||
-                                        aggregate.selectedAggregate == 'max' ">
-                        <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
-                    </select>
+                    <div >
+                        <select data-ng-model="selectedProperty.selectedDisplayOption"
+                                data-ng-change="selectedDisplayOptionChanged(selectedProperty.selectedDisplayOption)"
+                                data-ng-options="property as property.displayPropertyIdentifier
+    		          					for property in propertiesList[selectedProperty.propertyIdentifier].data
+    		          					| orderBy:property.name
+    		          					| aggregateFilter
+    		          					"
+                                class="form-control input-sm"
+                                data-ng-if="propertiesList[selectedProperty.propertyIdentifier].data && 
+                                            selectedProperty.$$group == 'compareCollections' && 
+                                            (
+                                                aggregate.selectedAggregate == 'sum' || 
+                                                aggregate.selectedAggregate == 'average' ||
+                                                aggregate.selectedAggregate == 'min' ||
+                                                aggregate.selectedAggregate == 'max'
+                                            )">
+                            <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
+                        </select>                        
+                    </div>
                 </div>
 
             </div>
