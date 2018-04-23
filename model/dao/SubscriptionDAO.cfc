@@ -175,5 +175,85 @@ Notes:
 
 		<cfreturn ormExecuteQuery(hql, {productID=arguments.productID}) />
 	</cffunction>
+	
+	<cffunction name="getDeferredActiveSubscriptionData">
+		<cfset currentDateTime = now()/>
+		
+		<cfquery name="local.deferredActiveSubscriptionQuery">
+			select count(su.subscriptionUsageID),DATE_FORMAT(<cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
+			FROM SwSubsUsage su 
+			inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+			where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+			AND su.expirationDate > <cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>
+			group by DATE_FORMAT(<cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>,'%M')
+		</cfquery>
+		<cfreturn local.deferredActiveSubscriptionQuery/>
+	</cffunction>
+	
+	<cffunction name="getDeferredExpiringSubscriptionData">
+		<cfquery name="local.deferredExpiringSubscriptionQuery">
+			select count(su.subscriptionUsageID),DATE_FORMAT(su.expirationDate,'%Y-%M') as thisMonth
+			FROM SwSubsUsage su 
+			inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+			where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+			group by DATE_FORMAT(su.expirationDate,'%M')
+		</cfquery>
+		<cfreturn local.deferredExpiringSubscriptionQuery/>
+	</cffunction>
+	
+	<cffunction name="getDeferredRevenueData" access="public" returntype="any">
+		<cfset currentDateTime = now()/>
+		
+		<cfquery name="local.subscriptionOrderItemQuery">
+			select 
+			    soi.subscriptionOrderItemID, 
+			    st.itemsToDeliver-Sum(sodi.quantity) as totalItemToDeliver, 
+			    (oi.calculatedExtendedPrice/st.itemsToDeliver) as pricePerDelivery, 
+			    (oi.calculatedTaxAmount/st.itemsToDeliver) as taxPerDelivery
+			FROM swSubscriptionOrderItem soi
+			inner join SwSubscriptionOrderDeliveryItem sodi on sodi.subscriptionOrderItemID = soi.subscriptionOrderItemID
+			inner join SwSubsUsage su on su.subscriptionUsageID = soi.subscriptionUsageID
+			inner join SwSubscriptionTerm st on su.subscriptionTermID = st.subscriptionTermID
+			inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
+			inner join swOrderItem oi on soi.orderItemID = oi.orderItemID
+			inner join swSku s on s.skuID = oi.skuID
+			inner join swProduct p on p.productID = s.productID
+			where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
+			and p.deferredRevenueFlag = 1
+			and (select SUM(sodi2.quantity) FROM swSubscriptionOrderDeliveryItem sodi2 where sodi2.subscriptionOrderItemID = soi.subscriptionOrderItemID) < st.itemsToDeliver
+			group by soi.subscriptionOrderItemID
+		</cfquery>
+		<cfset var currentRecordsCount = 0/>
+		<cfsavecontent variable = 'local.deferredRevenueSQL'>
+			<cfoutput>
+				<cfloop query="local.subscriptionOrderItemQuery">
+					<cfset currentRecordsCount++/>	
+						(
+							SELECT DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M') as dateGroup, '#testQuery.pricePerDelivery#' as pricePerDelivery,'#testQuery.taxPerDelivery#' as taxPerDelivery
+							FROM swDeliveryScheduleDate dsd
+							inner join swProduct p on p.productID = dsd.productID
+							inner join swSku s on s.productID = p.productID
+							inner join swOrderItem oi on oi.skuID = s.skuID
+							inner join swSubscriptionOrderItem soi on soi.subscriptionOrderItemID = '#testQuery.subscriptionOrderItemID#'
+							where dsd.deliveryScheduleDateValue > <cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>
+							GROUP BY DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M')
+							limit #testQUery.totalItemToDeliver#
+						)
+						<cfif testQuery.recordCount neq currentRecordsCount>
+							UNION ALL 
+						</cfif>
+				</cfloop>
+				
+			</cfoutput>
+			
+		</cfsavecontent>
+		<cfquery name="local.deferredRevenueQuery">
+			select dateGroup,SUM(pricePerDelivery),SUM(taxPerDelivery) from (
+			#PreserveSingleQuotes(local.deferredRevenueSQL)#
+			) t1
+			GROUP BY dateGroup
+		</cfquery>
+		<cfreturn local.deferredRevenueQuery/>
+	</cffunction>
 
 </cfcomponent>
