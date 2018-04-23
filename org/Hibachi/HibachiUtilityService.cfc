@@ -1032,6 +1032,15 @@
 			fileClose(dataFile);
 		};
 
+		//Lucee 4 can't handle decoding base64 strings unless the length is divisible by 4. You can pad them with equals without changing the result
+		public string function luceeSafeBase64Decode(required any base64String){
+			var paddingNeeded = len(base64String)%4;
+			for(var i = 1; i<=paddingNeeded;i++){
+				base64String &= '=';
+			}
+			return toString(binaryDecode(base64String,'base64'));
+		}
+
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public">
