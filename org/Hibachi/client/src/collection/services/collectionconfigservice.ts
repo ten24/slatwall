@@ -827,6 +827,7 @@ class CollectionConfig {
         for(var i in columns){
             var column = columns[i];
             if(column.isPeriod){
+                console.log('test',column);
                 return column;
             }            
         }

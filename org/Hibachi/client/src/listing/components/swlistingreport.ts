@@ -55,11 +55,8 @@ class SWListingReportController {
         persistedReportsCollectionList.setDisplayProperties('collectionID,collectionName,collectionConfig');
         persistedReportsCollectionList.addFilter('reportFlag',1);
         persistedReportsCollectionList.addFilter('collectionObject',this.collectionConfig.baseEntityName);
-        console.log(persistedReportsCollectionList.filterGroups);
         persistedReportsCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID,'=','OR',true,true,false,'accountOwner');
-        console.log(persistedReportsCollectionList.filterGroups);
         persistedReportsCollectionList.addFilter('accountOwner.accountID','NULL','IS','OR',true,true,false,'accountOwner');
-        console.log(persistedReportsCollectionList.filterGroups);
         persistedReportsCollectionList.setAllRecords(true);
         persistedReportsCollectionList.getEntity().then((data)=>{
             this.persistedReportCollections = data.records;
@@ -167,10 +164,8 @@ class SWListingReportController {
         //populate inputs based on the collection
         var collectionData = angular.fromJson(selectedReport.collectionConfig);
         this.selectedPeriodInterval = {value:collectionData.periodInterval};
-        
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
-            console.log(i,filterGroup);
             
             if(filterGroup.hidden){
                 if(filterGroup.comparisonOperator == '>='){
@@ -181,6 +176,7 @@ class SWListingReportController {
                 collectionData.filterGroups[0].filterGroup.splice(i,1);
                 if(collectionData.filterGroups[0].filterGroup.length == 0){
                     delete collectionData.filterGroups[0].filterGroup;
+                    delete collectionData.filterGroups[0].logicalOperator;
                 }
             }
         }
@@ -188,6 +184,14 @@ class SWListingReportController {
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
+        //hacking around validate filter not dealing with cleaning up empty filtergroups
+        if(
+            !this.reportCollectionConfig.filterGroups[0].filterGroup[0].filterGroup.length
+        ){
+            delete this.reportCollectionConfig.filterGroups[0].filterGroup[0].filterGroup;
+            delete this.reportCollectionConfig.filterGroups[0].filterGroup[0].logicalOperator;
+        }
+        
         this.updatePeriod();
     }
     
@@ -224,8 +228,10 @@ class SWListingReportController {
     			var ctx = $("#myChart");
     			var dates = [];
     			var datasets = [];
-    			console.log(this.selectedPeriodColumn);
-    			this.reportingData.records.forEach(element=>{dates.push(element[this.selectedPeriodColumn.name||this.selectedPeriodColumn.propertyIdentifier])});
+    			console.log('d',this.selectedPeriodColumn);
+    			this.reportingData.records.forEach(element=>{
+    			    dates.push(element[this.selectedPeriodColumn.propertyIdentifier.split('.')[1]])
+    			});
     			
     			this.reportCollectionConfig.columns.forEach(column=>{
     			    if(column.isMetric){
@@ -252,6 +258,8 @@ class SWListingReportController {
     			        );
     			    }
     			});
+    			console.log('ss',dates);
+    			console.log(datasets);
                 this.chart = new Chart(ctx, {
                     type: 'line',
                     data: {

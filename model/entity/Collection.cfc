@@ -1787,9 +1787,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterHQL = '';
 
 		var filterGroupsHQL = getFilterGroupsHQL(arguments.filterGroups);
-		writedump('test');
-		//writedump(left(filterGroupsHQL,4));
-		abort;
 
 		if(len(filterGroupsHQL)){
 			filterHQL &= ' where ';
