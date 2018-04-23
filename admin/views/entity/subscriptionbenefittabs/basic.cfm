@@ -10,7 +10,6 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="subscriptionBenefitName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="accessType" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="maxUseCount" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="itemsToDeliver" edit="#rc.edit#" />
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
