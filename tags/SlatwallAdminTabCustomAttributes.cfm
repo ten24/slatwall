@@ -63,13 +63,15 @@
 	<cfset attributes.count = 0 />
 	
 	<cfsavecontent variable="attributes.tabcontent">
-		<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
-			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList>
-					<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
-				</hb:HibachiPropertyList>
-			</hb:HibachiPropertyRow>
-		</div>
+		<cfoutput>
+			<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
+				<hb:HibachiPropertyRow>
+					<hb:HibachiPropertyList>
+						<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
+					</hb:HibachiPropertyList>
+				</hb:HibachiPropertyRow>
+			</div>
+		</cfoutput>
 	</cfsavecontent>
 	
 	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">

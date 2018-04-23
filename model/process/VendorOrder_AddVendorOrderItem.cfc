@@ -53,18 +53,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Injected From Smart List
 	property name="sku";
+	property name="vendorSku";
 
 	// Data Properties
 	property name="skuID";
+	property name="vendorSkuCode";
 	property name="price";
+	property name="currencyCode";
 	property name="cost";
 	property name="quantity";
+	property name="shippingWeight";
 	property name="vendorOrderItemTypeSystemCode";
 	property name="deliverToLocationID" hb_formFieldType="select";
+	property name="deliverFromLocationID" hb_formFieldType="select";
 	
 	public any function init() {
 		return super.init();
-	}
+	} 
 	
 	public any function getSku() {
 		if(!structKeyExists(variables, "sku")) {
@@ -73,19 +78,62 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.sku;
 	}
 	
+	public any function getVendorSkuCode(){
+		if(!structKeyExists(variables,'vendorSkuCode')){
+			variables.vendorSkuCode = "";
+			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getAlternateSkuCode())){
+				variables.vendorSkuCode = getVendorSku().getAlternateSkuCode().getAlternateSkuCode();	
+			}
+		}
+		return variables.vendorSkuCode;
+	}
+	
+	public any function getVendorSku(){
+		if(!structKeyExists(variables,'vendorSku')){
+			if(!isNull(getSku())){
+				variables.vendorSku = getService('vendorOrderService').getVendorSkuBySku(getSku());
+			}
+		}
+		if(!structKeyExists(variables,'vendorSku')){
+			return javacast('null','');
+		}
+		return variables.vendorSku;
+	}
+	
 	public any function getPrice() {
 		if(!structKeyExists(variables, "price")) {
 			variables.price = 0;
-			if(!structKeyExists(variables, "sku")) {
-				variables.price = getSku().getPriceByCurrencyCode( getOrder().getCurrencyCode() );
+			if(!isNull(getSku())) {
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode() );
+				if(!isNull(priceByCurrencyCode)) {
+					variables.price = priceByCurrencyCode;
+				} else {
+					variables.price = "N/A";
+				}
 			}
 		}
 		return variables.price;
 	}
 	
+	public string function getCurrencyCode() {
+		if(!structKeyExists(variables, "currencyCode")) {
+			if(!isNull(getVendorOrder()) && !isNull(getVendorOrder().getCurrencyCode())) {
+				variables.currencyCode = getVendorOrder().getCurrencyCode();
+			} else if (!isNull(getSku()) && len(getSku().setting('skuCurrency')) eq 3) {
+				variables.currencyCode = getSku().setting('skuCurrency');
+			} else {
+				variables.currencyCode = 'USD';
+			}
+		}
+		return variables.currencyCode;
+	}
+	
 	public any function getCost() {
 		if(!structKeyExists(variables, "cost")) {
 			variables.cost = 0;
+			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getLastVendorOrderItem())){
+				variables.cost = getVendorSku().getLastVendorOrderItem().getCost();
+			}
 		}
 		return variables.cost;
 	}
@@ -94,16 +142,39 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getQuantity() {
 		if(!structKeyExists(variables, "quantity")) {
 			variables.quantity = 1;
+			if(!isNull(getVendorSku()) && !isNull(getVendorSku().getLastVendorOrderItem())){
+				variables.quantity = getVendorSku().getLastVendorOrderItem().getQuantity();
+			}
 		}
 		return variables.quantity;
 	}
 	
+	public any function getShippingWeight(){
+		if(!isNull(getSku())){
+			getSku().getWeight();
+		}
+	}
+	
 	public any function getVendorOrderItemTypeSystemCode() {
 		if(!structKeyExists(variables, "vendorOrderItemTypeSystemCode")) {
-			variables.vendorOrderItemTypeSystemCode = "voitPurchase";
+			var systemCode = getVendorOrder().getVendorOrderType().getSystemCode();
+			if(systemCode == 'votPurchaseOrder'){
+				variables.vendorOrderItemTypeSystemCode = "voitPurchase";	
+			}else if(systemCode == 'votReturnOrder'){
+				variables.vendorOrderItemTypeSystemCode = 'voitReturn';
+			}
+			
 		}
 		return variables.vendorOrderItemTypeSystemCode;
 	}
+	
+	public any function getDeliverFromLocationIDOptions(){
+		if(!structKeyExists(variables, "deliveryFromLocatonIDOptions")) {
+			variables.deliveryFromLocatonIDOptions = getDeliveryLocationIDOptions();
+		}
+		return variables.deliveryFromLocatonIDOptions;
+	}
+	
 	public any function getDeliveryLocationIDOptions(){
 		if(!structKeyExists(variables,'deliveryLocationIDOptions')){
 			sl = getService("locationService").getLocationSmartList();

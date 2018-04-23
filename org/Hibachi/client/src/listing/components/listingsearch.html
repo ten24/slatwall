@@ -1,7 +1,7 @@
-
 <div class="input-group">
-    <div class="input-group-btn search-panel">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+
+    <div class="input-group-btn search-panel" ng-show="swListingSearch.swListingControls.showToggleSearch">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span data-ng-bind="swListingSearch.selectedSearchColumn.title"></span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
@@ -12,8 +12,7 @@
             </li>
         </ul>
     </div>
-
-    <span class="s-search">
+    <span class="s-search" ng-show="swListingSearch.swListingControls.showToggleSearch">
         <input type="text" class="form-control s-search input-sm" name="" placeholder="Search results..."
                 data-ng-model="swListingSearch.searchText"
                 data-ng-model-options='{ debounce: 500 }'
@@ -25,14 +24,88 @@
                 <i class="glyphicon glyphicon-plus"></i>
         </button>
     </span>
-    <span class="input-group-btn s-action" ng-show="swListingSearch.showToggleFilters">
-        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.toggleFilters()">
+    
+    <div ng-show="!swListingSearch.swListingControls.showToggleSearch">
+        <hr >
+    </div>
+
+    <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
+        ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+        >
+            <i class="fa fa-floppy-o"></i>
+        </button>
+        <ul class="dropdown-menu pull-right" ng-show="swListingSearch.collectionNameSaveIsOpen">
+            <li style="padding:8px;">
+                <div class="s-form-input s-input-group s-edit" style="width:100px;">
+                    <input
+                        type="text"
+                        ng-model="swListingSearch.collectionName"
+                        class="form-control" placeholder=""
+                        style="display: inline-block !important;
+                        height: 22px !important;
+                        vertical-align: bottom !important;
+                        font-size: 12px;
+                        padding: 0px 5px;"
+                    >
+                    <a class="btn btn-xs btn-success s-action-btn"
+                        ng-click="swListingSearch.savePersonalCollection(swListingSearch.collectionName)"
+                    >
+                        save
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </span>
+    <span ng-click="swListingSearch.getPersonalCollections()"  class="input-group-btn s-action"
+        ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
+        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
+            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+
+        >
+            <i  class="fa fa-bookmark"></i>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li>
+                    <a href="#" ng-click="swListingSearch.clearPersonalCollection()">Default</a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-menu-loader" ng-show="!swListingSearch.personalCollections"><i class="fa fa-refresh fa-spin fa-fw"></i></li>
+            <li ng-repeat="personalCollection in swListingSearch.personalCollections">
+                <a href="#" ng-bind="personalCollection.collectionName" ng-click="swListingSearch.selectPersonalCollection(personalCollection)"></a>
+            </li>
+        </ul>
+    </span>
+    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleFilters">
+        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleFilters()">
             <i class="fa fa-filter"></i>
         </button>
     </span>
-    <span class="input-group-btn s-action" ng-show="swListingSearch.showToggleDisplayOptions">
-        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.toggleDisplayOptions()">
+    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showToggleDisplayOptions">
+        <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingSearch.swListingControls.toggleDisplayOptions()">
             <i class="fa fa-th"></i>
         </button>
+    </span>
+    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showExport">
+        <button type="button"
+                class="btn btn-sm btn-default"
+                data-ng-click="swListingSearch.swListingControls.exportCollection()">
+            <i class="fa fa-download"></i>
+        </button>
+    </span>
+    <span class="input-group-btn s-action" ng-show="swListingSearch.swListingControls.showPrintOptions">
+        <button type="button"
+                class="btn btn-sm btn-default dropdown-toggle"
+                data-toggle="dropdown">
+            <i class="fa fa-print"></i>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li ng-repeat="printTemplate in swListingSearch.printTemplateOptions">
+                <a ng-click="swListingSearch.swListingControls.printCollection(printTemplate.printTemplateID)">
+                    <span ng-bind="printTemplate.printTemplateName"></span>
+                </a>
+            </li>
+        </ul>
     </span>
 </div>

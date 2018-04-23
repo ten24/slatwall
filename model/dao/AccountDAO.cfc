@@ -51,11 +51,26 @@ Notes:
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		<cfargument name="accountID" type="string" />
-
-		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "lower(pea.emailAddress)"/>
+		<cfelse>
+			<cfset comparisonValue = "pea.emailAddress"/>
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+		<cfif structKeyExists(arguments, "accountID")>
+			<cfset var primaryInUseData = ormExecuteQuery(
+				"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress AND a.accountID <> :accountID"
+				, {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID}
+				,true
+			)/>
+			<cfreturn not primaryInUseData />
+		</cfif>
+		<cfset var primaryInUseData = ormExecuteQuery(
+			"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress"
+			, {emailAddress=lcase(arguments.emailAddress)},
+			true
+		)/>
+		<cfreturn not primaryInUseData />
 	</cffunction>
 
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
@@ -69,7 +84,7 @@ Notes:
 		<cfreturn getAccountIDByPrimaryEmailAddress.accountID />
 
 	</cffunction>
-
+	
 	<cffunction name="removeAccountAuthenticationFromSessions">
 		<cfargument name="accountAuthenticationID" type="string" required="true" >
 
@@ -83,6 +98,36 @@ Notes:
 				accountID = null
 			WHERE
 				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" />
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="removePrimaryAddress">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				primaryAddressID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+	
+		<cffunction name="removeOwnerAccount">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				ownerAccountID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
 	</cffunction>
 
@@ -109,6 +154,20 @@ Notes:
 		<cfquery name="rs">
 			UPDATE
 				SwOrderPayment
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
+		<cffunction name="removeAccountAddressFromAccountPaymentMethods">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccountPaymentMethod
 			SET
 				billingAccountAddressID = null
 			WHERE
@@ -187,16 +246,29 @@ Notes:
 
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
-
-		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "lower(pea.emailAddress)"/>
+		<cfelse>
+			<cfset comparisonValue = "pea.emailAddress"/>
+		</cfif>
+		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND #comparisonValue#=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
 	</cffunction>
 
 	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
+		
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "lower(pea.emailAddress)"/>
+		<cfelse>
+			<cfset comparisonValue = "pea.emailAddress"/>
+		</cfif>
+		
 		<cfset var hql = "SELECT aa FROM #getApplicationKey()#AccountAuthentication aa 
 			INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea 
 			WHERE aa.password is not null 
-			AND lower(pea.emailAddress)=:emailAddress 
+			AND #comparisonValue#=:emailAddress 
 			AND aa.activeFlag = true "
 		/>
 		<cfif getService('HibachiService').getHasPropertyByEntityNameAndPropertyIdentifier('AccountAuthentication','integration.integrationID')>
@@ -348,4 +420,3 @@ Notes:
 	</cffunction>
 
 </cfcomponent>
-

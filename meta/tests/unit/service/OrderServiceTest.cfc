@@ -47,10 +47,11 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-	
+
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("orderService");
+		//variables.service = request.slatwallScope.getService("orderService");
+		variables.service = variables.mockService.getOrderServiceMock();
 
 	}
 	//can delete order without standard validation because it was created with a test account
@@ -68,7 +69,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(order.getStatusCode(),'ostClosed');
 		var deleteOK = variables.service.deleteOrder(order);
 		assertFalse(deleteOK);
-		
+
 		var testOrderData = {
 			orderID="",
 			testOrderFlag=1,
@@ -78,13 +79,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var testOrder = createPersistedTestEntity('order',testOrderData);
-		
+
 		assert(testOrder.isDeletable());
 		deleteOK = variables.service.deleteOrder(testOrder);
 		assert(deleteOK);
-		
+
 	}
-	
+
 	//test account will create test orders
 	public void function processOrder_createTest_testAccountCreatesTestOrder(){
 		var accountData = {
@@ -92,28 +93,27 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			testAccountFlag=1
 		};
 		var account = createPersistedTestEntity('account',accountData);
-		
+
 		var orderData = {
 			orderID=""
 		};
 		var order = createTestEntity('order',orderData);
-		
+
 		var processData={
 			accountID=account.getAccountID(),
 			newAccountFlag=0
 		};
-		
+
 		order = variables.service.process(order,processData,'create');
 		assert(order.getTestOrderFlag());
 	}
 
-	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code	
+	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
 	/**
 	* @test
 	*/
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
-		//set up data
-
+		
 		//set up productBundle
 		var productData = {
 			productName="productBundleName",
@@ -177,6 +177,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var order = createPersistedTestEntity('Order',orderData);
 		//var orderFulfillmentData = variables.service.getOrderFulfillment();
 
+		
+
 		//add orderfulfillment
 		var processObjectData = {
 			quantity=1,
@@ -190,6 +192,47 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			price=1,
 			skuid=product2.getSkus()[1].getSkuID()
 		};
+		
+		var settingData2={
+			settingID="",
+			settingName="skuOrderMaximumQuantity",
+			settingValue=1000,
+			sku={
+				skuID=product.getSkus()[1].getSkuID()
+			}
+		};
+		var settingEntity2 = createPersistedTestEntity('Setting',settingData2);
+		
+		var settingData3={
+			settingID="",
+			settingName="skuTrackInventoryFlag",
+			settingValue=0,
+			
+			sku={
+				skuID=product.getSkus()[1].getSkuID()
+			}
+		};
+		var settingEntity3 = createPersistedTestEntity('Setting',settingData3);
+		
+		var settingData4={
+			settingID="",
+			settingName="skuOrderMaximumQuantity",
+			settingValue=1000,
+			sku={
+				skuID=product2.getSkus()[1].getSkuID()
+			}
+		};
+		var settingEntity4 = createPersistedTestEntity('Setting',settingData4);
+		
+		var settingData4={
+			settingID="",
+			settingName="skuTrackInventoryFlag",
+			settingValue=0,
+			sku={
+				skuID=product2.getSkus()[1].getSkuID()
+			}
+		};
+		var settingEntity4 = createPersistedTestEntity('Setting',settingData4);
 
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
 		var processObjectTwo = order.getProcessObject('AddOrderItem',processObjectDataTwo);
@@ -219,7 +262,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -246,6 +289,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('product',productData);
+		
+		var settingData4={
+			settingID="",
+			settingName="skuOrderMaximumQuantity",
+			settingValue=1000,
+			sku={
+				skuID=product.getSkus()[1].getSkuID()
+			}
+		};
+		var settingEntity4 = createPersistedTestEntity('Setting',settingData4);
+		
+		var settingData4={
+			settingID="",
+			settingName="skuTrackInventoryFlag",
+			settingValue=0,
+			sku={
+				skuID=product.getSkus()[1].getSkuID()
+			}
+		};
+		var settingEntity4 = createPersistedTestEntity('Setting',settingData4);
 
 		var termData = {
 			termID=""
@@ -303,7 +366,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
 		assertEquals(0, numOfUnassignedGiftCards);
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -375,7 +438,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -436,14 +499,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var accountPaymentMethod = createPersistedTestEntity('AccountPaymentMethod',accountPaymentMethodData);
 
-		//set up eligible sku payment methods
-		var settingData={
-			settingID="",
-			settingName="skuEligiblePaymentMethods",
-			settingValue=termPaymentMethod.getPaymentMethodID()
-		};
-		var settingEntity = createPersistedTestEntity('Setting',settingData);
-
 		//set up an orderable product
 		var productData = {
 			productID="",
@@ -451,7 +506,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			productType={
 				//merchandise
 				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
-			}
+			},
+			activeFlag=1
 		};
 		var product = createPersistedTestEntity('Product',productData);
 
@@ -460,10 +516,45 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			skuCode="testSku"&createUUID(),
 			product={
 				productID=product.getProductID()
-			}
+			},
+			activeFlag=1
 		};
 		var sku = createPersistedTestEntity('sku',skuData);
+		
+		//SET UP SKU SETTINGS
+		//set up eligible sku payment methods
+		var settingData={
+			settingID="",
+			settingName="skuEligiblePaymentMethods",
+			settingValue=termPaymentMethod.getPaymentMethodID(),
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var settingEntity = createPersistedTestEntity('Setting',settingData);
+		
+		var settingData2={
+			settingID="",
+			settingName="skuOrderMaximumQuantity",
+			settingValue=1000,
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var settingEntity2 = createPersistedTestEntity('Setting',settingData2);
+		
+		var settingData3={
+			settingID="",
+			settingName="skuTrackInventoryFlag",
+			settingValue=0,
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var settingEntity3 = createPersistedTestEntity('Setting',settingData3);
 
+
+		//CREATE ORDER
 		var orderData = {
 			orderID="",
 			accountID=account.getAccountID(),
@@ -478,7 +569,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var order = createTestEntity('order',{});
 		order = variables.service.process(order,orderData,'create');
 
-		variables.service.getDao('hibachiDao').flushOrmSession();
+		request.slatwallScope.getDao('hibachiDao').flushOrmSession();
 
 		var shippingAddressData={
 			addressID="",
@@ -504,6 +595,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var accountAddress = createPersistedTestEntity('AccountAddress',accountAddressData);
 
+		//ADD ORDERITEM
 		var addOrderItemData={
 			skuID=sku.getSkuID(),
 			orderItemTypeSystemCode="oitSale",
@@ -521,8 +613,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			preProcessDisplayedFlag=1
 		};
 		order = variables.service.process(order,addOrderItemData,'addOrderItem');
-		variables.service.getDao('hibachiDao').flushOrmSession();
-
+		
+		request.slatwallScope.getDao('hibachiDao').flushOrmSession();
 		assert(arraylen(order.getOrderFulfillments()));
 
 		var placeOrderData={
@@ -560,7 +652,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 
 		order = variables.service.process(order,placeOrderData,'placeOrder');
-		variables.service.getDao('hibachiDao').flushOrmSession();
+		request.slatwallScope.getDao('hibachiDao').flushOrmSession();
 
 		var orderDeliveryData={
 			orderDeliveryID="",
@@ -593,10 +685,26 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderDelivery = createTestEntity('OrderDelivery',{});
 		orderDelivery = variables.service.process(orderDelivery,orderDeliveryData,'create');
 		variables.service.getDao('hibachiDao').flushOrmSession();
-		
+
 		assert(arrayLen(orderDelivery.getOrderDeliveryItems()));
-		
+
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
+	}
+	
+	
+	/**
+	* @test
+	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
+	*/
+	public void function createSubscriptionOrderDeliveriestest(){
+		var productData = {
+			productID="",
+			deferredRevenueFlag=true
+		};
+		var product = createPersistedTestEntity('product',productData);
+	
+		//make sure the product has a deferredRevenueFlag as true
+		asset(product.getDeferredRevenueFlag());
 	}
 	
 	/**
@@ -606,7 +714,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//adding a test shippingMethod
 		var shippingMethodData ={
 			shippingMethodID="",
-			fulfillementMethod={
+			fulfillmentMethod={
 				//shipping
 				fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953'
 			},
@@ -686,7 +794,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku = createPersistedTestEntity('sku',skuData);
-		
+
 //		set up tracking on sku
 		settingData={
 			settingID="",
@@ -697,12 +805,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		settingEntity = createPersistedTestEntity('Setting',settingData);
-		
+
 		var locationData = {
 			locationID=""
 		};
 		var locationEntity = createPersistedTestEntity('Location',locationData);
-		
+
 		var stockData = {
 			stockID="",
 			location={
@@ -724,7 +832,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
 		inventory.setStock(stock);
 		stock.addInventory(inventory);
-		
+
 		variables.service.getDao('hibachiDao').flushOrmSession();
 		//verify we are cool at all levels
 		assert(arraylen(stock.getInventory()));
@@ -864,23 +972,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderDelivery = createTestEntity('OrderDelivery',{});
 		orderDelivery = variables.service.process(orderDelivery,orderDeliveryData,'create');
 		variables.service.getDao('hibachiDao').flushOrmSession();
-		
+
 		assert(arrayLen(orderDelivery.getOrderDeliveryItems()));
-		
+
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
-		
+
 	}
-	
+
 	private numeric function getQATSFake(){
 		return 0;
 	}
-	
+
 	private numeric function getQATSFakeWithQuantity(){
 		return 100;
 	}
-	
-	
-	
+
+
+
 	/**
 	* @test
 	*/
@@ -970,7 +1078,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku = createPersistedTestEntity('sku',skuData);
-		
+
 		settingData = {
 			settingID="",
 			settingName="skuTrackInventoryFlag",
@@ -980,7 +1088,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var settingEntity = createPersistedTestEntity('setting',settingData);
-		
+
 		settingData={
 			settingID="",
 			settingName="skuOrderMaximumQuantity",
@@ -990,12 +1098,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var settingEntity = createPersistedTestEntity('Setting',settingData);
-		
+
 		assert(sku.setting('skuTrackInventoryFlag'));
-		
+
 		injectMethod(sku, this, 'getQATSFakeWithQuantity', 'getQATS');
 		injectMethod(sku, this, 'getQATSFakeWithQuantity', 'getCalculatedQATS');
-		
+
 
 		var orderData = {
 			orderID="",
@@ -1053,7 +1161,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			saveShippingAccountAddressFlag=1,
 			preProcessDisplayedFlag=1
 		};
-		
+
 		order = variables.service.process(order,addOrderItemData,'addOrderItem');
 		variables.service.getDao('hibachiDao').flushOrmSession();
 
@@ -1061,11 +1169,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!order.hasErrors());
 		/* important part of the test! after we have added the item to the cart, its important that we simulate running out on QATS to test that we are not allowed to place order */
 		/**/
-		
+
 		//empty the stock
 		injectMethod(sku, this, 'getQATSFake', 'getQATS');
 		sku.setCalculatedQATS(0);
-		
+
 		var placeOrderData={
 			orderID=order.getOrderID(),
 			preProcessDisplayedFlag=1,
@@ -1102,7 +1210,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		order = variables.service.process(order,placeOrderData,'placeOrder');
 	}
-	
+
 	/**
 	* @test
 	* @description make sure that when we do an exchange that we can add return order items even if we track inventory
@@ -1158,7 +1266,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku = createPersistedTestEntity('sku',skuData);
-		
+
 		//set up track inventory on  sku
 		var settingData={
 			settingID="",
@@ -1229,9 +1337,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		order = variables.service.process(order,addOrderItemData,'addOrderItem');
 		assert(!order.hasErrors());
-		
+
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -1266,7 +1374,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'fulfillment');
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -1296,7 +1404,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'return');
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -1333,7 +1441,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderRequirementsList = variables.service.getOrderRequirementsList(order);
 		assertEquals(orderRequirementsList,'payment');
 	}
-	
+
 	/**
 	* @test
 	*/

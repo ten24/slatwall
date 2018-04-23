@@ -59,5 +59,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.location.locationName" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="currencyCode" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

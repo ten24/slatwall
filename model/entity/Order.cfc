@@ -52,15 +52,17 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="orderNumber" ormtype="string"  index="PI_ORDERNUMBER";
 	property name="currencyCode" ormtype="string" length="3";
-	property name="orderOpenDateTime" ormtype="timestamp";
+	property name="orderOpenDateTime" ormtype="timestamp" hb_displayType="datetime";
 	property name="orderOpenIPAddress" ormtype="string";
 	property name="orderCloseDateTime" ormtype="timestamp";
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="testOrderFlag" ormtype="boolean";
-	// Calculated Properties
-	property name="calculatedTotal" ormtype="big_decimal";
+	//used to check whether tax calculations should be run again
+	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
+	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
+	property name="priceGroupCacheKey" ormtype="string" hb_auditable="false";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -115,6 +117,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="dynamicChargeOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="dynamicCreditOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="eligiblePaymentMethodDetails" persistent="false";
+	property name="eligibleSavedAccountPaymentMethods" persistent="false";
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
@@ -156,15 +159,30 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="taxTotal" persistent="false" hb_formatType="currency";
 	property name="total" persistent="false" hb_formatType="currency";
 	property name="totalItems" persistent="false";
+	property name="totalItemQuantity" persistent="false"; 
 	property name="totalQuantity" persistent="false";
 	property name="totalSaleQuantity" persistent="false";
 	property name="totalReturnQuantity" persistent="false";
 	property name="totalDepositAmount" persistent="false" hb_formatType="currency";
+	property name="placeOrderFlag" persistent="false" default="false";
 	
     //======= Mocking Injection for Unit Test ======	
 	property name="orderService" persistent="false" type="any";
 	property name='orderDAO' persistent="false" type="any";
-
+	
+	property name="calculatedTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedFulfillmentTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedDiscountTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedSubTotalAfterItemDiscounts" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTaxTotal" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalItems" ormtype="integer";
+	property name="calculatedTotalQuantity" ormtype="integer";
+	property name="calculatedTotalSaleQuantity" ormtype="integer";
+	property name="calculatedTotalReturnQuantity" ormtype="integer";
+	property name="calculatedTotalDepositAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="calculatedTotalItemQuantity" ormtype="integer"; 
+	
 	public void function init(){
 		setOrderService(getService('orderService'));
 		setOrderDao(getDAO('OrderDAO'));
@@ -207,6 +225,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 
 		return true;
+	}
+	
+	public boolean function isNotClosed(){
+		return getOrderStatusType().getSystemCode() != "ostClosed";
 	}
 	
 	public boolean function hasCreditCardPaymentMethod(){
@@ -371,22 +393,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
     }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
+		if(!structKeyExists(variables,'giftCardOrderItemsCount')){
+			var giftcardProductType = getService('productService').getProductTypeBySystemCode('gift-card');
 
-		var giftCardOrderItems = getOrderDAO().getGiftCardOrderItems(this.getOrderID());
-
-		if(arguments.orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
-			return true;
-		} else if (arguments.orderItemID NEQ ""){
-
-			for(var item in giftCardOrderItems){
-				if(item.getOrderItemID() EQ arguments.orderItemID){
-					return true;
-				}
+			var orderItemCollectionList = this.getOrderItemsCollectionList(isNew=true);
+			orderItemCollectionList.setDisplayProperties('order.orderID');
+			orderItemCollectionList.addDisplayAggregate('orderItemID','COUNT','orderItemCount');
+			orderItemCollectionList.addFilter('sku.product.productType.productTypeIDPath','#giftcardProductType.getProductTypeID()#%','Like');
+			if(arraylen(orderItemCollectionList.getRecords())){
+				variables.giftCardOrderItemsCount = orderItemCollectionList.getRecords()[1]['orderItemCount'] > 0;	
+			}else{
+				variables.giftCardOrderItemsCount = 0;
 			}
 
 		}
-
-		return false;
+		return variables.giftCardOrderItemsCount;
 	}
 	
 	/**
@@ -509,6 +530,40 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			variables.eligiblePaymentMethodDetails = getService("paymentService").getEligiblePaymentMethodDetailsForOrder( order=this );
 		}
 		return variables.eligiblePaymentMethodDetails;
+	}
+
+	public array function getEligibleSavedAccountPaymentMethods() {
+		if(!structKeyExists(variables, "eligibleSavedAccountPaymentMethods")) {
+			variables.eligibleSavedAccountPaymentMethods = [];
+			
+			if (!isNull(getAccount()) && isArray(getEligiblePaymentMethodDetails())) {
+
+				var eligiblePaymentMethodIDList = "";
+
+				// Create list of eligible paymentMethodID for order to use for accountPaymentMethod filtering
+				for (var eligiblePaymentMethodBean in getEligiblePaymentMethodDetails()) {
+					eligiblePaymentMethodIDList = listAppend(eligiblePaymentMethodIDList, eligiblePaymentMethodBean.paymentMethod.getPaymentMethodID());
+				}
+
+				/* TODO: Can't use collections without refactoring HibachiUtilityService.buildPropertyIdentifierDataStruct 
+				var accountPaymentMethodCollection = getAccount().getAccountPaymentMethodsCollectionList();
+				accountPaymentMethodCollection.addFilter('paymentMethod.paymentMethodID','#eligiblePaymentMethodIDList#','IN');
+				accountPaymentMethodCollection.addFilter('activeFlag', 1);
+				variables.eligibleSavedAccountPaymentMethods = accountPaymentMethodCollection.getRecords();
+				*/
+				if(len(eligiblePaymentMethodIDList)){
+					var accountPaymentMethodSmartList = getAccount().getAccountPaymentMethodsSmartList();
+					accountPaymentMethodSmartList.addInFilter('paymentMethod.paymentMethodID','#eligiblePaymentMethodIDList#');
+					accountPaymentMethodSmartList.addFilter('activeFlag', 1);
+					variables.eligibleSavedAccountPaymentMethods = accountPaymentMethodSmartList.getRecords();
+				}else{ 
+					variables.eligibleSavedAccountPaymentMethods = [];
+					
+				}
+			}
+		}
+		
+		return variables.eligibleSavedAccountPaymentMethods;
 	}
 
 	public numeric function getItemDiscountAmountTotal() {
@@ -738,6 +793,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return getService('HibachiUtilityService').precisionCalculate(getService('HibachiUtilityService').precisionCalculate(getTotal() - getPaymentAmountReceivedTotal()) + getPaymentAmountCreditedTotal());
 	}
+	
+	//the payments have all been received
+	public boolean function isOrderPaidFor(){
+		return val(getService('HibachiUtilityService').precisionCalculate(getPaymentAmountReceivedTotal() - getPaymentAmountCreditedTotal())) == getTotal();
+	}
+	
+	public boolean function isOrderFullyDelivered(){
+		return getQuantityUndelivered() == 0 && getQuantityUnreceived() == 0;
+	}
 
 	public numeric function getPaymentAmountAuthorizedTotal() {
 		var totalPaymentsAuthorized = 0;
@@ -750,13 +814,25 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		return totalPaymentsAuthorized;
 	}
+	
+	public numeric function getPaymentAmountCapturedTotal() {
+		var totalPaymentsCaptured = 0;
+
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getStatusCode() eq "opstActive") {
+				totalPaymentsCaptured = getService('HibachiUtilityService').precisionCalculate(totalPaymentsCaptured + orderPayment.getAmountCaptured());
+			}
+		}
+
+		return totalPaymentsCaptured;
+	}
 
 	public numeric function getPaymentAmountReceivedTotal() {
 		var totalPaymentsReceived = 0;
 
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getStatusCode() eq "opstActive") {
-totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(totalPaymentsReceived + orderPayment.getAmountReceived());
+				totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(totalPaymentsReceived + orderPayment.getAmountReceived());
 			}
 		}
 
@@ -884,31 +960,43 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	public array function getAllAppliedPromotions() {
 		if(!structKeyExists(variables, "allAppliedPromotions")) {
 			variables.allAppliedPromotions = []; 
-			var allAppliedPromotionCollection = getService("promotionService").newCollection().setup("PromotionApplied");
-			allAppliedPromotionCollection.addFilter('order.orderID', getOrderID(), "=");
-			allAppliedPromotionCollection.addFilter('orderItem.order.orderID', getOrderID(), "=", "OR");
-			allAppliedPromotionCollection.addFilter('orderFulfillment.order.orderID', getOrderID(), "=", "OR");
-			allAppliedPromotionCollection.setDisplayProperties("appliedType,promotionAppliedID,promotion.promotionID,promotion.promotionName");
-			var allAppliedPromotions = allAppliedPromotionCollection.getRecords();
 			// get all the promotion codes applied and attached it to applied Promotion Struct
-			var appliedPromotionCodes = getPromotionCodes();
+			var appliedPromotionCodesCollectionList = this.getPromotionCodesCollectionList();
+			appliedPromotionCodesCollectionList.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName,promotion.promotionID');
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.order.orderID', getOrderID(), "=",'OR');
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderItem.order.orderID', getOrderID(), "=", "OR");
+			appliedPromotionCodesCollectionList.addFilter('promotion.appliedPromotions.orderFulfillment.order.orderID', getOrderID(), "=", "OR");
+			
+			var appliedPromotionCodes = appliedPromotionCodesCollectionList.getRecords();
+			
+			var promotionCodeCollectionlist = getService('promotionService').getPromotionCodeCollectionList();
+			promotionCodeCollectionlist.addFilter('orders.orderID',getOrderID());
+			promotionCodeCollectionlist.setDisplayProperties('promotion.promotionID,promotionCodeID,promotionCode,promotion.promotionName,promotion.promotionID');
+			
+			var qualifiedPromotions = '';
+			
 			for(var appliedPromotionCode in appliedPromotionCodes) {
 				promotionToAdd = {}; 
-				promotionToAdd["qualified"] = false; 
-				for(var appliedPromotion in allAppliedPromotions) {
-					if(appliedPromotionCode.getPromotion().getPromotionID() == appliedPromotion.promotion_promotionID) {
-					    promotionToAdd = appliedPromotion; 
-					    promotionToAdd["qualified"] = true; 
-					    break; 
-					}   
-				}
-				promotionToAdd["promotionCodeID"] = appliedPromotionCode.getPromotionCodeID();
-				promotionToAdd["promotionCode"] = appliedPromotionCode.getPromotionCode();
-		        if(!structKeyExists(promotionToAdd, "promotion_promotionName")){
-                    promotionToAdd["promotion_promotionName"] = appliedPromotionCode.getPromotion().getPromotionName();  
-		            promotionToAdd["promotion_promotionID"] = appliedPromotionCode.getPromotion().getPromotionID();
-		        }
-		        arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
+				promotionToAdd["qualified"] = true; 
+				promotionToAdd["promotionCodeID"] = appliedPromotionCode['promotionCodeID'];
+				promotionToAdd["promotionCode"] = appliedPromotionCode['promotionCode'];
+				promotionToAdd["promotion_promotionName"] = appliedPromotionCode['promotion_promotionName'];  
+				promotionToAdd["promotion_promotionID"] = appliedPromotionCode['promotion_promotionID'];
+				qualifiedPromotions = listAppend(qualifiedPromotions,promotionToAdd["promotion_promotionID"]);
+				arrayAppend(variables.allAppliedPromotions, promotionToAdd); 
+			}   
+
+			promotionCodeCollectionlist.addFilter('promotion.promotionID',qualifiedPromotions,'NOT IN');
+			var unQualifiedPromotionCodes = promotionCodeCollectionlist.getRecords();
+			
+			for(var unQualifiedPromotionCode in unQualifiedPromotionCodes){
+				promotionToAdd = {}; 
+				promotionToAdd["qualified"] = false;
+				promotionToAdd["promotionCodeID"] = unQualifiedPromotionCode['promotionCodeID'];
+				promotionToAdd["promotionCode"] = unQualifiedPromotionCode['promotionCode'];
+				promotionToAdd["promotion_promotionName"] = unQualifiedPromotionCode['promotion_promotionName'];  
+			    	promotionToAdd["promotion_promotionID"] = unQualifiedPromotionCode['promotion_promotionID'];
+				arrayAppend(variables.allAppliedPromotions, promotionToAdd); 	    
 			}
 		}
 		return variables.allAppliedPromotions;
@@ -947,23 +1035,37 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 		return getService('HibachiUtilityService').precisionCalculate(amountDelivered - getPaymentAmountReceivedTotal());
 	}
 
+	public any function getRootOrderItemsCollectionList(){
+		var rootOrderItemsCollectionList = getService('orderService').getOrderItemCollectionList();
+		rootOrderItemsCollectionList.addFilter('order.orderID',this.getOrderID());
+		rootOrderItemsCollectionList.addFilter('parentOrderItem','NULL','IS');
+		return rootOrderItemsCollectionList;
+	}
+
 	public any function getRootOrderItems(){
 		var rootOrderItems = [];
+	
 		for(var orderItem in this.getOrderItems()){
 			if(isNull(orderItem.getParentOrderItem())){
 				ArrayAppend(rootOrderItems, orderItem);
 			}
 		}
-		return rootOrderItems;
+		variables.rootOrderItems = rootOrderItems;
+
+		return variables.rootOrderItems;
 	}
 
 	public numeric function getTotalQuantity() {
-		var totalQuantity = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			totalQuantity += getOrderItems()[i].getQuantity();
+		if(!structKeyExists(variables,'totalQuantity')){
+			var totalQuantity = 0;
+			for(var i=1; i<=arrayLen(getOrderItems()); i++) {
+				totalQuantity += getOrderItems()[i].getQuantity();
+			}
+			variables.totalQuantity = totalQuantity;
 		}
+		
 
-		return totalQuantity;
+		return variables.totalQuantity;
 	}
 
 	public numeric function getTotalSaleQuantity() {
@@ -996,17 +1098,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  	}
 
 	public boolean function isAllowedToPlaceOrderWithoutPayment(){
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			//If the setting is null, or the setting is an empty string, or it has a value and the value is greater then 0...
-			if( 
-				isNull(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) 
-				|| len(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) == 0 
-				|| val(getOrderItems()[i].getSku().setting("skuMinimumPercentageAmountRecievedRequiredToPlaceOrder")) > 0
-			){
-				return false;
-			}
-		}
-		return true;
+		return getService("orderService").isAllowedToPlaceOrderWithoutPayment(this);
 	}
 
  	public boolean function hasDepositItemsOnOrder(){
@@ -1033,6 +1125,7 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
  	
 	
 	public numeric function getTotalReturnQuantity() {
+		
 		var returnQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitReturn") {
@@ -1043,11 +1136,9 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	}
 
 	public numeric function getQuantityDelivered() {
-		var quantityDelivered = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			quantityDelivered += getOrderItems()[i].getQuantityDelivered();
-		}
-		return quantityDelivered;
+		
+		return getDao('orderDao').getDeliveredQuantitySumByOrderID(getOrderID());
+		
 	}
 
 	public numeric function getQuantityUndelivered() {
@@ -1056,10 +1147,13 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 
 	public numeric function getQuantityReceived() {
 		var quantityReceived = 0;
+		
+		var quantityReceived = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			quantityReceived += getOrderItems()[i].getQuantityReceived();
 		}
 		return quantityReceived;
+		
 	}
 
 	public numeric function getQuantityUnreceived() {
@@ -1124,6 +1218,13 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
 		}
+
+		for(var orderFulfillment in this.getOrderFulfillments()) {
+			taxTotal = getService('HibachiUtilityService').precisionCalculate(taxTotal + orderFulfillment.getChargeTaxAmount());
+		}
+
+		variables.taxTotal = taxTotal;
+
 		return taxTotal;
 	}
 
@@ -1134,6 +1235,30 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	public numeric function getTotalItems() {
 		return arrayLen(getOrderItems());
 	}
+	
+	public any function getOrderCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		
+		collectionList.setDisplayProperties('siteID|value,siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
+	}
+	
+	public numeric function getTotalItemQuantity(){
+		var orderItems = this.getOrderItems();
+		var totalItemQuantity = 0; 
+		for(var orderItem in orderItems){
+			if (isNull(orderItem.getParentOrderItem())){
+				totalItemQuantity += orderItem.getQuantity();
+			} 
+		}
+		return totalItemQuantity; 
+	}	
+
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -1187,9 +1312,11 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	// Order Items (one-to-many)
 	public void function addOrderItem(required any orderItem) {
 		arguments.orderItem.setOrder( this );
+		structDelete(variables,'rootOrderItems');
 	}
 	public void function removeOrderItem(required any orderItem) {
 		arguments.orderItem.removeOrder( this );
+		structDelete(variables,'rootOrderItems');
 	}
 
 	// Order Deliveries (one-to-many)
@@ -1460,4 +1587,6 @@ totalPaymentsReceived = getService('HibachiUtilityService').precisionCalculate(t
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
+
+	
 }

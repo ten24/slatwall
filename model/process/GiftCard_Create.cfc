@@ -64,8 +64,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 
 	//Overridden Getters
 	public string function getGiftCardCode(){
-		if(getService("settingService").getSettingValue("skuGiftCardAutoGenerateCode")==1){
-			return getService("hibachiUtilityService").generateRandomID(getService("settingService").getSettingValue("skuGiftCardCodeLength"));
+		if(!isNull(getOriginalOrderItem()) && !isNull(getOriginalOrderItem().getSku()) && getOriginalOrderItem().getSku().getGiftCardAutoGenerateCodeFlag()){
+			return getService("hibachiUtilityService").generateRandomID(getOriginalOrderItem().getSku().setting('skuGiftCardCodeLength'));
 		} else {
 			return variables.giftCardCode;
 		}

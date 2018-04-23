@@ -43,9 +43,10 @@
 			<cfloop array="#entities#" index="entityName">
 				<cfif not structKeyExists(attributes.entityPermissionDetails[entityName], "inheritPermissionEntityName")>
 					<tr>
-						<cfif attributes.edit and not len(attributes.editEntityName)>
 							<cfset request.context.permissionFormIndex++ />
 							<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='entity', entityClassName=entityName) />
+							
+						<cfif attributes.edit and not len(attributes.editEntityName)>
 							
 							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
 							<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="entity" />
@@ -75,6 +76,13 @@
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>
 								<cfif not attributes.edit><hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil"></cfif>
+								<cfif not attributes.edit && not isNull(thisPermission.getAllowReadFlag()) and thisPermission.getAllowReadFlag()>
+									<hb:HibachiActionCaller 
+										action="admin:entity.editPermission" 
+										queryString="permissionID=#thisPermission.getPermissionID()#" 
+										class="btn btn-xs" iconOnly="true" icon="plus"
+									/>
+								</cfif>
 							</td>
 						</cfif>
 					</tr>

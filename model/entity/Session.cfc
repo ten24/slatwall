@@ -133,7 +133,11 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 		} else if (!structKeyExists(variables, "requestOrder")) {
 			variables.requestOrder = getService("orderService").newOrder();
 			
-			
+			// Set default stock location based on current request site, uses first location by default
+ 			if (!isNull(getHibachiScope().getCurrentRequestSiteLocation())) {
+ 				requestOrder.setDefaultStockLocation(getHibachiScope().getCurrentRequestSiteLocation());
+			}
+			 
 			//check if we are running on a CMS site by domain
 			var site = getHibachiScope().getCurrentRequestSite();
 			if(
@@ -145,8 +149,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
 			//Setup Site Created if using slatwall cms
-			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
-				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getSite());
+			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS() && !isNull(getHibachiScope().getCurrentRequestSite())){
+				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getCurrentRequestSite());
 			}
 			
 		}

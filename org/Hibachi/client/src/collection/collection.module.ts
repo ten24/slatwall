@@ -33,6 +33,9 @@ import {SWEditFilterItem} from "./components/sweditfilteritem";
 import {SWFilterGroups} from "./components/swfiltergroups";
 import {SWFilterItem} from "./components/swfilteritem";
 import {SWFilterGroupItem} from "./components/swfiltergroupitem";
+import {SWRestrictionConfig} from "./components/swrestrictionconfig";
+//filters
+import {AggregateFilter} from "./filters/aggregatefilter";
 
 var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .config([()=>{
@@ -51,6 +54,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .factory('collectionConfigService', ['rbkeyService','$hibachi','utilityService','observerService', (rbkeyService,$hibachi: any,utilityService, observerService) => new CollectionConfig(rbkeyService,$hibachi,utilityService,observerService)])
 .service('collectionService', CollectionService)
 //directives
+.directive('swRestrictionConfig',SWRestrictionConfig.Factory())
 .directive('swCollection',SWCollection.Factory())
 .directive('swAddFilterButtons',SWAddFilterButtons.Factory())
 .directive('swDisplayOptions',SWDisplayOptions.Factory())
@@ -74,7 +78,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swFilterGroupItem',SWFilterGroupItem.Factory())
 
 //filters
-
+.filter('aggregateFilter',['$filter',AggregateFilter.Factory])
 ;
 export{
 	collectionmodule

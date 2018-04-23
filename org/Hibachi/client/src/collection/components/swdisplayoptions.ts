@@ -46,7 +46,7 @@ class SWDisplayOptions{
             transclude:true,
             scope:{
                 orderBy:"<",
-                columns:'<',
+                columns:'=',
                 joins:"<",
                 groupBys:"<",
                 propertiesList:"<",
@@ -97,7 +97,6 @@ class SWDisplayOptions{
                     var currentEntity;
                     var currentEntityInstance;
                     var prefix = 'entity.';
-
                     if(selectedProperty.$$group == "attribute"){
                         return selectedProperty.displayPropertyIdentifier;
                     }
@@ -125,7 +124,7 @@ class SWDisplayOptions{
                 };
 
                 scope.addColumn = function(closeDialog){
-                    var selectedProperty = scope.selectedProperty;
+                    var selectedProperty:any = scope.selectedProperty;
                     if(angular.isDefined(scope.selectedAggregate)){
                         selectedProperty = scope.selectedAggregate;
                     }
@@ -151,7 +150,7 @@ class SWDisplayOptions{
                             if(angular.isDefined(selectedProperty.ormtype)){
                                 column['ormtype'] = selectedProperty.ormtype;
                             }
-                            if(selectedProperty.hb_formattype){
+                            if((!column['type'] || column['type'] == 'none' ) && selectedProperty.hb_formattype){
                                 column['type'] = selectedProperty.hb_formattype;
                             }else{
                                 column['type'] = 'none';

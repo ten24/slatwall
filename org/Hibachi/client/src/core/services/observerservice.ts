@@ -132,6 +132,7 @@ class ObserverService extends BaseService{
      * @description notifies observers of a specific event by id
      */
     notifyById = (event:string, eventId:string ,parameters:any):any => {
+        console.warn(event,eventId, parameters);
         event = event.toLowerCase();
         eventId = eventId.toLowerCase();
         return this.$timeout(()=>{

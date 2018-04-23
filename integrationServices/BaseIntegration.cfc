@@ -63,6 +63,24 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	public struct function getSettings() {
 		return {};
 	}
+
+	// @hint Determines whether integration should allow site specific setting overrides
+	public boolean function getAllowSiteSpecificSettingsFlag() {
+		return false;
+	}
+
+	// @hint comma-delimitd list of settings to display that allow site specific overrides (without 'integration{packageName}' prefix)
+	public string function getAllowedSiteSettingNames() {
+		return "";
+	}
+
+	public string function getAllowedSiteSettingNamesPrefixed() {
+		variables.settingNamesPrefixed = "";
+		for (var settingName in listToArray(getAllowedSiteSettingNames())) {
+			variables.settingNamesPrefixed = listAppend(variables.settingNamesPrefixed, "integration#getPackageName()##settingName#");
+		}
+		return variables.settingNamesPrefixed;
+	}
 	
 	public array function getEventHandlers() {
 		return [];
@@ -82,10 +100,22 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+		//preventing multiple look ups on the external cache look up
+		var cacheKey = "#arguments.settingName##arguments.formatValue#";
+		for(var filterEntity in arguments.filterEntities){
+			cacheKey &= filterEntity.getPrimaryIDValue();
 		}
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		if(!structKeyExists(variables,cacheKey)){
+			if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
+				variables[cacheKey] = getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+			}else{
+				variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+			}
+		}
+		
+		return variables[cacheKey];
+	
+		
 	}
 	
 	// @hint helper function to return the integration entity that this belongs to

@@ -371,6 +371,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+
+	public any function processSubscriptionUsageBenefitAccount_addUsageBenefitAccount(required any subscriptionUsageBenefitAccount, required any processObject) {
+
+		var subscriptionUsageBenefit = this.getSubscriptionUsageBenefit(arguments.processObject.getSubscriptionUsageBenefitID());
+		var account = this.getAccount(arguments.processObject.getAccountID());
+
+		if(!isNull(subscriptionUsageBenefit) && !isNull(account)){
+
+			var subsBenefitAccount = createSubscriptionUsageBenefitAccountBySubscriptionUsageBenefit(subscriptionUsageBenefit, account);
+			if(!isNull(subsBenefitAccount)){
+				arguments.subscriptionUsageBenefitAccount = subsBenefitAccount;
+			}
+		}
+
+		return arguments.subscriptionUsageBenefitAccount;
+	}
+
 	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
 
 		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());

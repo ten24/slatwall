@@ -106,6 +106,13 @@
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">-<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span></td>
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
+	<td class="s-qty">{{orderItem.data.extendedPrice - orderItem.data.discountAmount}}</td>
+	
+	
+	<!-- Handle Tax Information -->
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
+	
 	<!-- Handle both cases of this 'total' being a Return Item -->
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
 		<ul>
@@ -119,10 +126,6 @@
 		</ul>
 	</td>
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></span>)</td>
-	
-	<!-- Handle Tax Information -->
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle Fulfillment Items -->
 	<td rowspan="1000" class="s-fullfilment">

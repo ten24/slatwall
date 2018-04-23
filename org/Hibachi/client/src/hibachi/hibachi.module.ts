@@ -2,6 +2,7 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
 import {alertmodule} from "../alert/alert.module";
+import {cardmodule} from "../card/card.module";
 import {collectionmodule} from "../collection/collection.module";
 import {listingmodule} from "../listing/listing.module";
 import {dialogmodule} from "../dialog/dialog.module";
@@ -16,6 +17,7 @@ import {SWSaveAndFinish} from "./components/swsaveandfinish";
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
+    cardmodule.name,
     collectionmodule.name,
     entitymodule.name,
     dialogmodule.name,
@@ -27,7 +29,7 @@ var hibachimodule = angular.module('hibachi',[
 ]).config([()=>{
 
 }])
-.run(['$rootScope','publicService','$hibachi', ($rootScope, publicService, $hibachi)=> {
+.run(['$rootScope','publicService','$hibachi','localStorageService', ($rootScope, publicService, $hibachi, localStorageService)=> {
 
     $rootScope.hibachiScope = publicService;
     $rootScope.hasAccount = publicService.hasAccount;
@@ -46,6 +48,11 @@ var hibachimodule = angular.module('hibachi',[
     if($hibachi.newState){
         $rootScope.hibachiScope.getAddressOptions();
     }
+
+    if(localStorageService.hasItem('selectedPersonalCollection')){
+        $rootScope.hibachiScope.selectedPersonalCollection = angular.fromJson(localStorageService.getItem('selectedPersonalCollection'));
+    }
+
 }])
 .constant('hibachiPartialsPath','hibachi/components/')
 .directive('swSaveAndFinish',SWSaveAndFinish.Factory())

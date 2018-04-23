@@ -10,6 +10,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.account#" property="accountCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="superUserFlag" edit="#rc.edit and $.slatwall.getAccount().getSuperUserFlag()#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="taxExemptFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.account#" property="testAccountFlag" edit="#rc.edit#">
@@ -22,11 +23,6 @@
 		<hb:HibachiPropertyList divclass="col-md-6">
 			<hb:HibachiPropertyTable>
 
-				<!--- Term Payment Details --->
-				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.termPaymentDetails')#" />
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false" displayType="table">
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false" displayType="table">
-
 				<!--- Authentication Details --->
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.authenticationDetails')#" hint="#$.slatwall.rbKey("admin.entity.detailaccount.authenticationDetails_hint")#" />
 				<hb:HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false" displayType="table">
@@ -36,6 +32,19 @@
 					</cfsavecontent>
 					<hb:HibachiFieldDisplay ignoreHTMLEditFormat="true" title="#accountAuthentication.getSimpleRepresentation()#" value="#thisValue#" edit="false" displayType="table">
 				</cfloop>
+				<cfsavecontent variable="faValue">
+					<!--- Check display button to disable two factor authentication --->
+					<cfif rc.account.getTwoFactorAuthenticationFlag()>
+						<hb:HibachiProcessCaller action="admin:entity.processAccount" entity="#rc.account#" processContext="removeTwoFactorAuthentication" class="btn btn-primary" modal="false" />
+					<!--- Display button to enable two factor authentication --->
+					<cfelse>
+						<p>#$.slatwall.rbKey('admin.entity.accounttabs.twofactorauthentication.disabled')#</p>
+						<p>#$.slatwall.rbKey('admin.entity.accounttabs.twofactorauthentication.security_info')#</p>
+						<hb:HibachiProcessCaller action="admin:entity.preProcessAccount" entity="#rc.account#" processContext="addTwoFactorAuthentication" class="btn btn-primary" modal="true" />
+					</cfif>
+					<!---<hb:HibachiProcessCaller action="admin:entity.processAccount" entity="#rc.account#" processContext="removeTwoFactorAuthentication" class="btn btn-primary" modal="false" />--->
+				</cfsavecontent>
+				<hb:HibachiFieldDisplay ignoreHTMLEditFormat="true" title="#$.slatwall.rbKey('admin.entity.accounttabs.twofactorauthentication')#" value="#faValue#" edit="false" displayType="table">
 			</hb:HibachiPropertyTable>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

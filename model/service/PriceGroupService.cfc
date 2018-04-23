@@ -417,21 +417,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
-		if( !isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups()) ) {
+		var totalQuantity = arguments.order.getTotalItemQuantity();
+		if(!isNull(arguments.order.getAccount())){
+			var priceGroups = arguments.order.getAccount().getPriceGroups();
+			var priceGroupList = '';
+			for(var priceGroup in priceGroups){
+				priceGroupList &= priceGroup.getPriceGroupID();
+			}
+		}else{
+			var priceGroupList = '';
+		}
+		var priceGroupCacheKey = hash(totalQuantity & priceGroupList,'md5');
+		
+		if( isNull(arguments.order.getPriceGroupCacheKey()) || arguments.order.getPriceGroupCacheKey() != priceGroupCacheKey ) {
+			
+			arguments.order.setPriceGroupCacheKey(priceGroupCacheKey);
 			for(var orderItem in arguments.order.getOrderItems()){
-				if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
-					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
-					if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
-						orderItem.setPrice( priceGroupDetails.price );
-						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+				orderItem.removeAppliedPriceGroup();
+				
+				if(!isNull(arguments.order.getAccount())){
+					if(arrayLen(getService("currencyService").getCurrencyOptions()) > 1){
+						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
+						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+							orderItem.setPrice( priceGroupDetails.price );
+							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+						}
+					}else{
+						var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
+						if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
+							orderItem.setPrice( priceGroupDetails.price );
+							orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
+						}
 					}
-
-				}else{
-					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccount(orderItem.getSku(), arguments.order.getAccount());
-					if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
-						orderItem.setPrice( priceGroupDetails.price );
-						orderItem.setAppliedPriceGroup( priceGroupDetails.priceGroup );
-					}
+					
 				}
 			}
 		}
