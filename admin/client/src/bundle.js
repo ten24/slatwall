@@ -58163,7 +58163,6 @@ var CollectionConfig = /** @class */ (function () {
         for (var i in columns) {
             var column = columns[i];
             if (column.isPeriod) {
-                console.log('test', column);
                 return column;
             }
         }
@@ -64458,7 +64457,6 @@ var SWListingReportController = /** @class */ (function () {
                     var ctx = $("#myChart");
                     var dates = [];
                     var datasets = [];
-                    console.log('d', _this.selectedPeriodColumn);
                     _this.reportingData.records.forEach(function (element) {
                         dates.push(element[_this.selectedPeriodColumn.propertyIdentifier.split('.')[1]]);
                     });
@@ -64483,8 +64481,6 @@ var SWListingReportController = /** @class */ (function () {
                             });
                         }
                     });
-                    console.log('ss', dates);
-                    console.log(datasets);
                     _this.chart = new chart_js_1.Chart(ctx, {
                         type: 'line',
                         data: {

@@ -228,7 +228,6 @@ class SWListingReportController {
     			var ctx = $("#myChart");
     			var dates = [];
     			var datasets = [];
-    			console.log('d',this.selectedPeriodColumn);
     			this.reportingData.records.forEach(element=>{
     			    dates.push(element[this.selectedPeriodColumn.propertyIdentifier.split('.')[1]])
     			});
@@ -258,8 +257,6 @@ class SWListingReportController {
     			        );
     			    }
     			});
-    			console.log('ss',dates);
-    			console.log(datasets);
                 this.chart = new Chart(ctx, {
                     type: 'line',
                     data: {
