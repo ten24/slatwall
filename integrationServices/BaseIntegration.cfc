@@ -108,8 +108,9 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		if(!structKeyExists(variables,cacheKey)){
 			if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
 				variables[cacheKey] = getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
+			}else{
+				variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 			}
-			variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 		}
 		
 		return variables[cacheKey];

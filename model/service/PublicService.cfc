@@ -1238,7 +1238,16 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.accountAddressID" default="";
         param name="data.accountPaymentMethodID" default="";
         param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="444df303dedc6dab69dd7ebcc9b8036a";
-       
+        param name="data.orderID" default="";
+        
+        //Make sure orderID passed in belongs to logged in account
+        var accountID = getHibachiScope().getAccount().getAccountID();
+        if(len(data.orderID)){
+            if(isNull(accountID) || !len(accountID) || accountID != getOrderService().getOrder(data.orderID).getAccount().getAccountID()){
+                data.orderID = '';
+            }
+        }
+
         if(structKeyExists(data.newOrderPayment, 'billingAddress') && structKeyExists(data.newOrderPayment.billingAddress, 'accountAddressID')){
             data.accountAddressID = data.newOrderPayment.billingAddress.accountAddressID;
         }
@@ -1277,8 +1286,13 @@ component extends="HibachiService"  accessors="true" output="false"
         this.addErrors(arguments.data, newBillingAddress.getErrors());
         return;
       }
-
-      var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
+      
+      if(len(data.orderID)){
+            var order = getOrderService().getOrder(orderID);
+        }else{
+            var order = getHibachiScope().getCart();
+        }
+      var addOrderPayment = getService('OrderService').processOrder( order, arguments.data, 'addOrderPayment');
 
       if(!giftCard){
         for(var payment in addOrderPayment.getOrderPayments()){

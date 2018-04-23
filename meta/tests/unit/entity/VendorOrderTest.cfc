@@ -61,82 +61,124 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			shippingAndHandlingCost=100
 		};
 		var vendorOrder = createPersistedTestEntity('VendorOrder',vendorOrderData);
-		
+
+		var skuData = {
+			skuId = "",
+			currencyCode = "USD"
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+
 		var vendorOrderItemData = {
 			vendorOrderItemID="",
 			quantity=6,
+			currencyCode = "USD",
 			vendorOrder={
 				vendorOrderID=vendorOrder.getVendorOrderID()
+			},
+			sku = {
+				skuId = sku.getSkuId()
 			}
 		};
 		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData);
-		
+
 		var vendorOrderItemData2 = {
 			vendorOrderItemID="",
 			quantity=10,
+			currencyCode = "USD",
 			vendorOrder={
 				vendorOrderID=vendorOrder.getVendorOrderID()
+			},
+			sku = {
+				skuId = sku.getSkuId()
 			}
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
-		
+
 		assert(6.25,vendorOrder.getTotalQuantity());
 	}
-	
+
 	public void function getTotalWeightTest(){
 		var vendorOrderData = {
 			vendorOrderID="",
 			shippingAndHandlingCost=100
 		};
 		var vendorOrder = createPersistedTestEntity('VendorOrder',vendorOrderData);
-		
+
+		var skuData = {
+			skuId = "",
+			currencyCode = "USD"
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+
 		var vendorOrderItemData = {
 			vendorOrderItemID="",
 			quantity=6,
 			shippingWeight=2,
+			currencyCode = "USD",
 			vendorOrder={
 				vendorOrderID=vendorOrder.getVendorOrderID()
+			},
+			sku = {
+				skuId = sku.getSkuId()
 			}
 		};
 		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData);
-		
+
 		var vendorOrderItemData2 = {
 			vendorOrderItemID="",
 			quantity=10,
 			shippingWeight=3,
+			currencyCode = "USD",
 			vendorOrder={
 				vendorOrderID=vendorOrder.getVendorOrderID()
+			},
+			sku = {
+				skuId = sku.getSkuId()
 			}
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
 		assertEquals(42,vendorOrder.getTotalWeight(),'(6*2) + (10*3) = 42');
 	}
-	
+
 	public void function getTotalCostTest(){
 		var vendorOrderData = {
 			vendorOrderID="",
 			shippingAndHandlingCost=100
 		};
 		var vendorOrder = createPersistedTestEntity('VendorOrder',vendorOrderData);
-		
+
+		var skuData = {
+			skuId = "",
+			currencyCode = "USD"
+		};
+		var sku = createPersistedTestEntity('Sku',skuData);
+
 		var vendorOrderItemData = {
 			vendorOrderItemID="",
 			quantity=6,
 			shippingWeight=2,
 			cost=7,
+			currencyCode = "USD",
 			vendorOrder={
 				vendorOrderID=vendorOrder.getVendorOrderID()
+			},
+			sku = {
+				skuId = sku.getSkuId()
 			}
 		};
 		var vendorOrderItem = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData);
-		
+
 		var vendorOrderItemData2 = {
 			vendorOrderItemID="",
 			quantity=10,
 			shippingWeight=3,
 			cost=9,
+			currencyCode = "USD",
 			vendorOrder={
 				vendorOrderID=vendorOrder.getVendorOrderID()
+			},
+			sku = {
+				skuId = sku.getSkuId()
 			}
 		};
 		var vendorOrderItem2 = createPersistedTestEntity('VendorOrderItem',vendorOrderItemData2);
