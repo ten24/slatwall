@@ -82,6 +82,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedOptionsHash" ormtype="string";
+	property name="calculatedSkuPricesCount" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";

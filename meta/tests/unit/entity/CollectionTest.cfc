@@ -617,15 +617,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		//By default Active flag is true.
 		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
-
+		
+		
+		
 		var myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription,activeFlag');
 		myProductCollection.addFilter('productName','ProductUnitTest');
 		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
 		myProductCollection.addFilter('skus.activeFlag','YES');
 		var pageRecords = myProductCollection.getPageRecords();
-
-		assertTrue(arrayLen(pageRecords) == 4, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
+		
+		assertTrue(arrayLen(pageRecords) == 1, "Wrong amount of products returned! Expecting 1 record but returned #arrayLen(pageRecords)#");
 	}
 
 	/**
