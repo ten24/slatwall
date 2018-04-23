@@ -180,6 +180,8 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcyclecountgroup" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcyclecountbatch" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listminmaxstocktransfer" type="list">
