@@ -46,28 +46,24 @@
 Notes:
 
 */
-component entityname="SlatwallPhysicalCountItem" table="SwPhysicalCountItem" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="physicalService" hb_permission="this" {
+component entityname="SlatwallCycleCountBatch" table="SwCycleCountBatch" output="false" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="physicalService" hb_permission="this" hb_processContexts="physicalcount" {
 	
 	// Persistent Properties
-	property name="physicalCountItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="quantity" ormtype="integer";
-	property name="skuCode" ormtype="string" index="PI_SKUCODE";
-	property name="countPostDateTime" ormtype="timestamp";
-	 
-	// Calculated Properties
+	property name="cycleCountBatchID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="cycleCountBatchDate" ormtype="timestamp";
 
 	// Related Object Properties (many-to-one)
-	property name="physicalCount" cfc="PhysicalCount" fieldtype="many-to-one" fkcolumn="physicalCountID";
-	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+	property name="cycleCountBatchStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="cycleCountBatchTypeID" hb_optionsSmartListData="f:parentType.systemCode=cycleCountBatchStatusType";
 	
 	// Related Object Properties (one-to-many)
-	
-	// Related Object Properties (many-to-many - owner)
-
-	// Related Object Properties (many-to-many - inverse)
+	property name="cycleCountBatchItems" singularname="cycleCountBatchItem" cfc="CycleCountBatchItem" type="array" fieldtype="one-to-many" fkcolumn="CycleCountBatchID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (one-to-one)
-	property name="cycleCountBatchItem" cfc="CycleCountBatchItem"fieldtype="one-to-one" mappedby="physicalCountItem";
+	property name="physical" cfc="Physical"fieldtype="one-to-one" fkcolumn="physicalID";
+
+	// Related Object Properties (many-to-many - owner)
+	
+	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -78,38 +74,33 @@ component entityname="SlatwallPhysicalCountItem" table="SwPhysicalCountItem" per
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	// Non-Persistent Properties 
-	property name="physicalStatusTypeSystemCode" persistent="false";
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" persistent="false";
-	
+	// Non-Persistent Properties
 
 	
 	// ============ START: Non-Persistent Property Methods =================
-	
-	public string function getPhysicalStatusTypeSystemCode() {
-		return getPhysicalCount().getPhysicalStatusTypeSystemCode();
-	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Phyiscal Count (many-to-one)
-	public void function setPhysicalCount(required any physicalCount) {
-		variables.physicalCount = arguments.physicalCount;
-		if(isNew() or !arguments.physicalCount.hasPhysicalCountItem( this )) {
-			arrayAppend(arguments.physicalCount.getPhysicalCountItems(), this);
+	// Skus (many-to-many - owner)
+	public void function addSku(required any sku) {
+		if(arguments.sku.isNew() or !hassku(arguments.sku)) {
+			arrayAppend(variables.skus, arguments.sku);
+		}
+		if(isNew() or !arguments.sku.hasCycleCountBatch( this )) {
+			arrayAppend(arguments.sku.getCycleCountBatchs(), this);
 		}
 	}
-	public void function removePhysicalCount(any physicalCount) {
-		if(!structKeyExists(arguments, "physicalCount")) {
-			arguments.physicalCount = variables.physicalCount;
+	public void function removeSku(required any sku) {
+		var thisIndex = arrayFind(variables.skus, arguments.sku);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.skus, thisIndex);
 		}
-		var index = arrayFind(arguments.physicalCount.getPhysicalCountItems(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.physicalCount.getPhysicalCountItems(), index);
+		var thatIndex = arrayFind(arguments.sku.getCycleCountBatchs(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.sku.getCycleCountBatchs(), thatIndex);
 		}
-		structDelete(variables, "physicalCount");
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -121,34 +112,22 @@ component entityname="SlatwallPhysicalCountItem" table="SwPhysicalCountItem" per
 	// =============== START: Custom Formatting Methods ====================
 	
 	// ===============  END: Custom Formatting Methods =====================
-	
+
 	// ============== START: Overridden Implicet Getters ===================
-	
-	public any function getSku() {
-		if(structKeyExists(variables, "sku")) {
-			return variables.sku;
-		}
-		if(!isNull(getStock())) {
-			return getStock().getSku();
-		}
-	}
-	
-	public string function getSkuCode() {
-		if(!isNull(getSku())) {
-			return getSku().getSkuCode();
-		}
-		if(structKeyExists(variables, "skuCode")) {
-			return variables.skuCode;
-		}
-	}
 	
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
-	public string function getSimpleRepresentationPropertyName() {
-		return "skuCode";
+
+	public string function getSimpleRepresentation() {
+		var simpleRep = 'Batch';
+		
+		if( len(getCycleCountBatchDate()) ){
+			simpleRep = simpleRep & " - " & getService("HibachiUtilityService").formatValue_date(getCycleCountBatchDate());
+		}
+		return simpleRep;
 	}
-	
+
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================

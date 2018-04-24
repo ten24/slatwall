@@ -268,6 +268,53 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.physical;
 	}
 
+	// CycleCountBatch
+	public any function processCycleCountBatch_physicalCount(required any cycleCountBatch, required any processObject) {
+
+		// create Physical
+		var newPhysical = this.newPhysical();
+		var locationPhysicalCounts = {};
+		newPhysical.setPhysicalName(arguments.processObject.getPhysicalName());
+		newPhysical.setCycleCountBatch(arguments.cycleCountBatch);
+		for(var cycleCountBatchItem in arguments.cycleCountBatch.getCycleCountBatchItems()) {
+			if(cycleCountBatchItem.getQuantity() != '') {
+				if(!newPhysical.hasLocation(cycleCountBatchItem.getStock().getLocation())) {
+					newPhysical.addLocation(cycleCountBatchItem.getStock().getLocation());
+					// create Physical Count
+					var newPhysicalCount = this.newPhysicalCount();
+					newPhysicalCount.setPhysical(newPhysical);
+					newPhysicalCount.setLocation(cycleCountBatchItem.getStock().getLocation());
+					newPhysicalCount.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+					newPhysicalCount = this.savePhysical(newPhysicalCount);
+					locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()] = newPhysicalCount;
+				}
+				if(!newPhysical.hasSku(cycleCountBatchItem.getStock().getSku())) {
+					newPhysical.addSku(cycleCountBatchItem.getStock().getSku());
+				}
+				// create Physical Count Item
+				var newPhysicalCountItem = this.newPhysicalCountItem();
+				newPhysicalCountItem.setPhysicalCount(locationPhysicalCounts[cycleCountBatchItem.getStock().getLocation().getLocationID()]);
+				newPhysicalCountItem.setQuantity(cycleCountBatchItem.getQuantity());
+				newPhysicalCountItem.setStock(cycleCountBatchItem.getStock());
+				newPhysicalCountItem.setSkuCode(cycleCountBatchItem.getStock().getSku().getSkuCode());
+				newPhysicalCountItem.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
+				newPhysicalCountItem.setCycleCountBatchItem(cycleCountBatchItem);
+				newPhysicalCountItem = this.savePhysicalCountItem(newPhysicalCountItem);
+				cycleCountBatchItem.getStock().getSku().updateCalculatedProperties(true);
+			}
+		}
+		newPhysical = this.savePhysical(newPhysical);
+		if(newPhysical.hasErrors()) {
+			arguments.cycleCountBatch.addErrors(newPhysical.getErrors());
+		} else {
+			arguments.cycleCountBatch.setPhysical(newPhysical);
+
+			// Process Physical
+			this.processPhysical(newPhysical, {}, 'commit'); 
+		}
+
+		return arguments.cycleCountBatch;
+	}
 
 	// =====================  END: Process Methods ============================
 	
@@ -290,6 +337,29 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Return the entity
 		return arguments.entity;
+	}
+
+	public any function saveCycleCountBatch(required any cycleCountBatch, required struct data) {
+		if(!arrayLen(arguments.cycleCountBatch.getCycleCountBatchItems())) {
+			var cycleCountGroupSmartList = getService('physicalService').getCycleCountGroupSmartList();
+			cycleCountGroupSmartList.addFilter('activeFlag',1);
+			for(var cycleCountGroup in cycleCountGroupSmartList.getRecords()) {
+				var skuList = cycleCountGroup.getCycleCountGroupsSkusCollection().getPageRecords();
+				for(var skuDetails in cyclecountgroup.getCycleCountGroupsSkusCollection().getPageRecords(formatRecords=false)) {
+					var sku = getHibachiScope().getEntity('Sku', skuDetails['skuID']);
+					for(var stock in sku.getStocks()) {
+						if(stock.hasInventory()) {
+							var newCycleCountBatchItem = getHibachiScope().newEntity('cycleCountBatchItem');
+							newCycleCountBatchItem.setCycleCountBatch(arguments.cycleCountBatch);
+							newCycleCountBatchItem.setStock(stock);
+							getHibachiScope().saveEntity(newCycleCountBatchItem);
+						}
+					}
+				}
+			}
+		}
+		
+		return super.save(arguments.cycleCountBatch, arguments.data);
 	}
 	
 	// ======================  END: Save Overrides ============================
