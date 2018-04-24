@@ -1,15 +1,12 @@
+<cfparam name="rc.subscriptionType" default=""/>
+<cfparam name="rc.productType" default=""/>
+<cfparam name="rc.productID" default=""/>
+<cfparam name="rc.reportYear" default=""/>
 <cfoutput>
     <cfset slatAction = 'report.deferredRevenueReport'/>
     <!--gets deferred revenue-->
-    <cfset deferredRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderItemCollectionList()/>
-    <cfset deferredRevenueCollectionList.setDisplayProperties('orderItem.order.orderCloseDateTime',{isPeriod=true})/>
-    <!---<cfset deferredRevenueCollectionList.addDisplayAggregate('calculatedDeferredTaxAmount','SUM','deferredRevenueSUM',false,{isMetric=true})/>
-    <cfset deferredRevenueCollectionList.addDisplayAggregate('calculatedDeferredRevenue','SUM','deferredTaxAmountSUM',false,{isMetric=true})/>--->
-    <cfset deferredRevenueCollectionList.setReportFlag(1)/>
-    <cfset deferredRevenueCollectionList.setPeriodInterval('Month')/>
-    <cfset deferredRevenueCollectionList.addFilter('subscriptionOrderItem.subscriptionUsage.calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+    <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.reportYear)/>    
     
-    <cfdump var="#deferredRevenueCollectionList.getRecords()#"><cfabort>
     
     <cfset possibleYearsRecords = []/>
     <cfset currentYear = Year(now())/>
@@ -17,19 +14,19 @@
         <cfset arrayAppend(possibleYearsRecords,i)/>
     </cfloop>
     
-    <cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
+    <!---<cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
         <cfset deferredRevenueCollectionList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],1,1,0,0,0),'>=')/>
         <cfset deferredRevenueCollectionList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],12,31,23,59,59),'<=')/>
     <cfelseif structKeyExists(rc,'reportYear')>
         <cfset deferredRevenueCollectionList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),1,1,0,0,0),'>=')/>
         <cfset deferredRevenueCollectionList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),12,31,23,59,59),'<=')/>
-    </cfif>
+    </cfif>--->
     
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
-    <cfset dataRecords = deferredRevenueCollectionList.getRecords()/>
+    <cfset dataRecords = []/>
      
     <cfset deferredRevenue = []/>
     <cfset deferredTaxAmount = []/>

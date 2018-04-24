@@ -57,6 +57,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="paymentService" type="any";
 	property name="skuService" type="any";
 	property name="typeService" type="any";
+	
+	public any function getDeferredRevenueData(
+		string subscriptionTypeSystemCode, 
+		string productTypeID,
+		string productID,
+		string reportYear
+	){
+		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
+		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
+		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
+		
+	}
 
 	public boolean function createSubscriptionUsageBenefitAccountByAccess(required any access, required any account) {
 		var subscriptionUsageBenefitAccountCreated = false;
