@@ -267,23 +267,21 @@ Notes:
 		<cfquery name="local.subscriptionOrderItemQuery">
 			select 
 			    soi.subscriptionOrderItemID, 
-			    st.itemsToDeliver-Sum(sodi.quantity) as totalItemToDeliver, 
+			    st.itemsToDeliver-COALESCE(Sum(sodi.quantity),0) as totalItemToDeliver, 
 			    (oi.calculatedExtendedPrice/st.itemsToDeliver) as pricePerDelivery, 
 			    (oi.calculatedTaxAmount/st.itemsToDeliver) as taxPerDelivery
 			FROM swSubscriptionOrderItem soi
 			inner join SwSubscriptionOrderDeliveryItem sodi on sodi.subscriptionOrderItemID = soi.subscriptionOrderItemID
 			inner join SwSubsUsage su on su.subscriptionUsageID = soi.subscriptionUsageID
-			inner join SwType t on soi.subscriptionOrderItemTypeID = t.typeID
 			inner join SwSubscriptionTerm st on su.subscriptionTermID = st.subscriptionTermID
 			inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
 			inner join swOrderItem oi on soi.orderItemID = oi.orderItemID
-			inner join SwOrder o on oi.orderID = o.orderID
 			inner join swSku s on s.skuID = oi.skuID
 			inner join swProduct p on p.productID = s.productID
-			inner join SwProductType pt on pt.productTypeID = p.productTypeID
+			inner join swproducttype pt on pt.productTypeID = p.productTypeID
 			where ss.subscriptionStatusTypeID = (Select typeID from swType where systemCode = 'sstActive')
 			and p.deferredRevenueFlag = 1
-			and (select SUM(sodi2.quantity) FROM swSubscriptionOrderDeliveryItem sodi2 where sodi2.subscriptionOrderItemID = soi.subscriptionOrderItemID) < st.itemsToDeliver
+			and (select COALESCE(SUM(sodi2.quantity),0) FROM swSubscriptionOrderDeliveryItem sodi2 where sodi2.subscriptionOrderItemID = soi.subscriptionOrderItemID) < st.itemsToDeliver
 			<cfif !isNull(arguments.subscriptionTypeSystemCode) AND len(arguments.subscriptionTypeSystemCode)>
 				AND t.systemCode IN (<cfqueryparam value="#arguments.subscriptionTypeSystemCode#" cfsqltype="cf_sql_string" list="YES"/>)
 			</cfif>
@@ -294,10 +292,10 @@ Notes:
 				AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 			</cfif>
 			
-			<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
+			<!---<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
 				AND o.orderCloseDateTime >= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),1,1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
 				AND o.orderCloseDateTime <= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),12,31,23,59,59)#" cfsqltype="cf_sql_timestamp"/>
-			</cfif>
+			</cfif>--->
 			group by soi.subscriptionOrderItemID
 		</cfquery>
 		<cfset var currentRecordsCount = 0/>
