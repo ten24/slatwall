@@ -1032,9 +1032,88 @@
 			fileClose(dataFile);
 		};
 
+		// @hint Deletes object from AWS S3
+		public boolean function deleteFromS3(required string objectKey, required string bucketName, required string objectKeyPrefix, required string awsAccessKeyId, required string awsSecretAccessKey) {
+			throw("Functionality to delete S3 object has not been implemented.");
+			return false;
+		}
+
 		// @hint Retreives object from AWS S3 and returns the contents as a byte array
-		public any function retrieveFromS3(string objectID, string bucketName, string objectKeyPrefix, string awsAccessKeyId, string awsSecretAccessKey, string acl, string storageClass, boolean deleteS3ObjectAfter) {
-			// TODO: Need to implement
+		public struct function retrieveFromS3(required string objectKey, required string bucketName, required string objectKeyPrefix, required string awsAccessKeyId, required string awsSecretAccessKey, boolean deleteS3ObjectAfter = false) {
+
+			var s3FileData = {
+				mimeType = '',
+				fileBytes = javaCast('byte[]', []),
+				fileSize = 0,
+				objectKey = arguments.objectKey
+			}
+
+			var dateTimeString = getHTTPTimeString(now());
+			var canonicalizedAmzHeaders = 'x-amz-date:#dateTimeString#';
+			var canonicalizedResource = '/#arguments.bucketName#/#arguments.objectKeyPrefix##arguments.objectKey#';
+
+			// Create canonicalized string and sign
+			var stringToSign = "GET\n\n\n\n#canonicalizedAmzHeaders#\n#canonicalizedResource#";
+			var signature = createS3Signature(stringToSign, arguments.awsSecretAccessKey);
+
+			// Make HTTP request to AWS to retrieve file contents
+			var s3Request = new http();
+			s3Request.setMethod('GET');
+			s3Request.setUrl('https://s3.amazonaws.com/#arguments.bucketName#/#arguments.objectKeyPrefix##arguments.objectKey#');
+			s3Request.addParam(type='header', name='Authorization', value='AWS #arguments.awsAccessKeyId#:#signature#');
+			s3Request.addParam(type='header', name='x-amz-date', value='#dateTimeString#');
+			var s3Response = s3Request.send().getPrefix();
+
+			// Successful S3 object retrieval
+			if (s3Response.status_code == 200) {
+				s3FileData.mimeType = s3response.mimeType;
+				s3FileData.fileBytes = s3response.fileContent.getBytes();
+				s3FileData.fileSize = len(s3FileData.fileBytes);
+
+				// Delete S3 Object
+				if (arguments.deleteS3ObjectAfter) {
+					deleteFromS3(argumentCollection=arguments);
+				}
+
+			// Error response handling
+			} else {
+				var s3ResponseXml = xmlParse(s3Response.filecontent);
+
+				// Error information
+				var errorData = {
+					message = xmlSearch(s3ResponseXml, "//*[local-name() = 'Message']")[1].xmlText,
+					code = xmlSearch(s3ResponseXml, "//*[local-name() = 'Code']")[1].xmlText,
+					stringToSignAWSExpected = "",
+					stringToSignActual = stringToSign,
+					statusCode = s3Response.status_code,
+					statusText = s3Response.status_text
+				}
+
+				// Signature debugging information
+				var stringToSignBytesResult = xmlSearch(s3ResponseXml, "//*[local-name() = 'StringToSignBytes']");
+				if (arrayLen(stringToSignBytesResult)) {
+
+					// Raw comma-separated formatted hex string representing text
+					var stringToSignAsHexString = listToArray(xmlSearch(s3ResponseXml, "//*[local-name() = 'StringToSignBytes']")[1].xmlText, ' ');
+
+					// Decodes hex string values as readable UTF-8 string
+					var Integer = createObject("java", "java.lang.Integer");
+					for (var hexValue in stringToSignAsHexString) {
+						var charCode = Integer.parseInt(hexValue, 16);
+
+						// Escape newlines as '\n'
+						errorData.stringToSignAWSExpected &= charCode != 10 ? chr(charCode) : '\n';
+					}
+				}
+
+				logHibachi("AWS S3 File Retrieval Error - Code: '#errorData.code#', HTTP Status: #errorData.statusCode# #errorData.statusText#, Message: '#errorData.message#'");
+				if (len(errorData.stringToSignAWSExpected)) {
+					logHibachi("AWS S3 File Retrieval Error - AWS Signature Debugging Details -         Sent: '#errorData.stringToSignActual#'");
+					logHibachi("AWS S3 File Retrieval Error - AWS Signature Debugging Details - AWS Expected: '#errorData.stringToSignAWSExpected#'");
+				}
+			}
+
+			return s3FileData;
 		}
 
 		/**

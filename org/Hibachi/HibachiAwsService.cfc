@@ -89,7 +89,15 @@ component extends="HibachiService" accessors="true" {
     
                     // Automatically retrieve S3 object if not named "AMAZON_SES_SETUP_NOTIFICATION" and not spam or a virus verdict.
                     if (structKeyExists(arguments.snsPayload.message, 'receipt') && structKeyExists(arguments.snsPayload.message.receipt, 'action') && structKeyExists(arguments.snsPayload.message.receipt.action, 'type') && arguments.snsPayload.message.receipt.action.type == 'S3') {
-                        arguments.result.data.s3FileContent = getHibachiUtilityService().retrieveFromS3();
+                        var retrieveFromS3Args = {};
+                        retrieveFromS3Args.objectKey = arguments.snsPayload.message.receipt.action.objectKey;
+                        retrieveFromS3Args.bucketName = arguments.snsPayload.message.receipt.action.bucketName;
+                        retrieveFromS3Args.objectKeyPrefix = arguments.snsPayload.message.receipt.action.objectKeyPrefix;
+                        retrieveFromS3Args.awsAccessKeyId = 'AKIAIZJJONX5S3FCSKAA';
+                        retrieveFromS3Args.awsSecretAccessKey = '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';
+                        retrieveFromS3Args.deleteS3ObjectAfter = false;
+
+                        arguments.result.data.s3FileContent = getHibachiUtilityService().retrieveFromS3(argumentCollection = retrieveFromS3Args);
                     }
                 }
 
