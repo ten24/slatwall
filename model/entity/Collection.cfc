@@ -656,6 +656,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var direction = 'ASC';
 		if(listLen(arguments.orderByString,"|") > 1){
 			direction = listLast(arguments.orderByString,'|');
+			if (lcase(direction) != "asc" && lcase(direction) != "desc"){
+				direction = "ASC"; //Default to ASC if the user is passing in something abnormal.
+			}
 		}
 
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(propertyIdentifier);
@@ -668,7 +671,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			"direction"=direction
 		};
 
-		arrayAppend(collectionConfig.orderBy,orderBy);
+		//Checks that the property identifier being passed in exists.
+		if (hasPropertyByPropertyIdentifier(orderBy.propertyIdentifier)){
+			arrayAppend(collectionConfig.orderBy,orderBy); //|[{direction={asc},propertyIdentifier={_product.productName}}]
+		}else{
+			throw("That was an invalid property identifier!");
+		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
