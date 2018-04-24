@@ -46,26 +46,23 @@
 Notes:
 
 */
-component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true accessors=true output=false extends="HibachiEntity" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="physicalService" {
 
 	// Persistent Properties
-	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="minQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.minQuantity.null";
-	property name="maxQuantity" ormtype="integer" hb_nullrbkey="entity.SkuPrice.maxQuantity.null";
-	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select" index="PI_CURRENCY_CODE";
-	property name="price" ormtype="big_decimal" hb_formatType="currency";
-	property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
-	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency";
-	property name="expiresDateTime" ormtype="timestamp";
-
-	// Calculated Properties
+	property name="cycleCountBatchItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="quantity" ormtype="integer";
+	property name="cycleCountPostDateTime" ormtype="timestamp";
 
 	// Related Object Properties (many-to-one)
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true";
-	//temporarily omitted
-	//property name="priceRule" cfc="PriceRule" fieldtype="many-to-one" fkcolumn="priceRuleID";
-	property name="priceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="priceGroupID";
-	property name="promotionReward" cfc="PromotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
+	property name="cycleCountBatch" cfc="CycleCountBatch" fieldtype="many-to-one" fkcolumn="cycleCountBatchID";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+
+	// Related Object Properties (one-to-many)
+
+	// Related Object Properties (one-to-one)
+	property name="physicalCountItem" cfc="PhysicalCountItem"fieldtype="one-to-one" fkcolumn="physicalCountItemID";
+
+	//Calculated Properties
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -77,27 +74,22 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="hasValidQuantityConfiguration" persistent="false"; 
- 	
- 	public boolean function hasValidQuantityConfiguration(){
- 		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
-			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
-				return false; 
-			} else if(this.getMinQuantity() >= this.getMaxQuantity()){
-				return false;
-			} 
-		}
- 		return true; 
- 	} 
- 	
- 	public string function getSimpleRepresentation() {
-		if(
-			!isNull(getSku()) 
-			&& !isNull(getSku().getSkuCode())
-		){
-			return getSku().getSkuCode() & " - " & getCurrencyCode(); 
-		} else {
-			return '';
-		}
-	}
+
+	//Derived Properties
+
+	// ============ START: Non-Persistent Property Methods =================
+
+	// ============  END:  Non-Persistent Property Methods =================
+
+	// ============= START: Bidirectional Helper Methods ===================
+
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// ================== START: Overridden Methods ========================
+
+	// ==================  END:  Overridden Methods ========================
+
+	// =================== START: ORM Event Hooks  =========================
+
+	// ===================  END:  ORM Event Hooks  =========================
 }
