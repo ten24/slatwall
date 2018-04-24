@@ -25,11 +25,11 @@ export class AppModule {
      console.log('test2');
      appData.resolve(()=>{
           console.log('test3');
-          //try{
+          try{
          this.upgrade.bootstrap(document.body,['slatwalladmin'],{strictdi:true});
-          /*}catch(e){
+          }catch(e){
               console.log('test4');
-          }*/
+          }
          
      });
   }
