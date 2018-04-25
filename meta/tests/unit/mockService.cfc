@@ -44,8 +44,9 @@ component extends="testbox.system.BaseSpec"{
 	 * 		  Used with 30 test cases, it would add 3 seconds to overall runtime. Pretty negligible.
 	 *
 	 * @name service or dao name
+	 * @graphDepthLimit limit the depth of the object graph. 1 inject object's direct properties and no subproperties, -1 inject complete object graph and handles circular references
 	 */
-	public any function createMockInjected(required string name) {
+	public any function createMockInjected(required string name, graphDepthLimit = 1, currentDepth = 1) {
 
 		if (!structKeyExists(variables, 'registeredMockObjects')) {
 			variables.registeredMockObjects = {};
@@ -78,14 +79,15 @@ component extends="testbox.system.BaseSpec"{
 			variables.registeredMockObjects[arguments.name] = mockObject;
 
 			var properties = getServiceOrDAOProperties(mockObject);
-
-			for (var daoPropertyName in properties.dao) {
-				var mockDAO = createMockInjected(daoPropertyName);
-				mockObject.invokeMethod('set#daoPropertyName#', {1=mockDAO});
-			}
-			for (var servicePropertyName in properties.service) {
-				var mockService = createMockInjected(servicePropertyName);
-				mockObject.invokeMethod('set#servicePropertyName#', {1=mockService});
+			if (arguments.currentDepth <= arguments.graphDepthLimit || arguments.graphDepthLimit == -1 || !len(arguments.graphDepthLimit)) {
+				for (var daoPropertyName in properties.dao) {
+					var mockDAO = createMockInjected(name = daoPropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth+1);
+					mockObject.invokeMethod('set#daoPropertyName#', {1=mockDAO});
+				}
+				for (var servicePropertyName in properties.service) {
+					var mockService = createMockInjected(name = servicePropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth+1);
+					mockObject.invokeMethod('set#servicePropertyName#', {1=mockService});
+				}
 			}
 		}
 
