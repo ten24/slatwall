@@ -72,15 +72,12 @@ component extends="testbox.system.BaseSpec"{
 			// Do not move, this stops the endless recusion (circular reference)
 			arguments.registeredMockObjects[arguments.name] = mockObject;
 
+			// Mock direct subproperties
 			var properties = getServiceOrDAOProperties(mockObject);
 			if (arguments.currentDepth <= arguments.graphDepthLimit || arguments.graphDepthLimit == -1 || !len(arguments.graphDepthLimit)) {
-				for (var daoPropertyName in properties.dao) {
-					var mockDAO = createMockInjected(name = daoPropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth + 1, registeredMockObjects = arguments.registeredMockObjects);
-					mockObject.invokeMethod('set#daoPropertyName#', {1=mockDAO});
-				}
-				for (var servicePropertyName in properties.service) {
-					var mockService = createMockInjected(name = servicePropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth + 1, registeredMockObjects = arguments.registeredMockObjects);
-					mockObject.invokeMethod('set#servicePropertyName#', {1=mockService});
+				for (var propertyName in properties) {
+					var mockProperty = createMockInjected(name = propertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth + 1, registeredMockObjects = arguments.registeredMockObjects);
+					mockObject.invokeMethod('set#propertyName#', {1=mockProperty});
 				}
 			}
 		}
@@ -88,21 +85,20 @@ component extends="testbox.system.BaseSpec"{
 		return arguments.registeredMockObjects[arguments.name];
 	}
 
-	private struct function getServiceOrDAOProperties(required any object) {
+	private array function getServiceOrDAOProperties(required any object) {
 		var metaData = getMetaData(object);
 
 		var hasExtends = structKeyExists(metaData, "extends");
-		var serviceProperties = [];
-		var daoProperties = [];
+		var properties = [];
 		do {
 			var hasExtends = structKeyExists(metaData, "extends");
 			if(structKeyExists(metaData, "properties")) {
 				for (var property in metaData.properties) {
-					if (!arrayFindNoCase(serviceProperties, property.name) && !arrayFindNoCase(daoProperties, property.name)) {
-						if (right(property.name, len('Service')) == 'Service') {
-							arrayAppend(serviceProperties, property.name);
-						} else if (right(property.name, len('DAO')) == 'DAO') {
-							arrayAppend(daoProperties, property.name);
+					// Prevent duplicate entries
+					if (!arrayFindNoCase(properties, property.name)) {
+						// Only interested in service or dao properties
+						if (right(property.name, len('Service')) == 'Service' || right(property.name, len('DAO')) == 'DAO') {
+							arrayAppend(properties, property.name);
 						}
 					}
 				}
@@ -112,7 +108,7 @@ component extends="testbox.system.BaseSpec"{
 			}
 		} while( hasExtends );
 
-		return {service = serviceProperties, dao = daoProperties};
+		return properties;
 	}
 
 	public any function getHibachiValidationServiceMock(){
