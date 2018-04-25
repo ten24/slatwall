@@ -781,6 +781,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var productData = {
 			productID = '',
+			productName='test'&createUUID(),
 			skus = [{
 				skuID = mockSku.getSkuID()
 			}]
@@ -798,12 +799,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockOrderItemNoType = createMockOrderItem(quantity=10, skuID=mockSku.getSkuID());
 		var mockOrderNoType = createMockOrderWithOrderItems([mockOrderItemNoType.getOrderItemID()]);
 		
-		var resultNoType = mockOrderNoType.hasItemsQuantityWithinMaxOrderQuantity();
-		assertTrue(resultNoType, 'The types except oitSale should return true');
-		
 		//Testing the type oitReturn
 		var mockOrder = createMockOrder();
-		
+		debug(mockOrder.hasItemsQuantityWithinMaxOrderQuantity());
 		var resultNoOrderItem = mockOrder.hasItemsQuantityWithinMaxOrderQuantity();
 		assertTrue(resultNoOrderItem, 'If no OrderItem involved with the order, shoulds return true');
 	}
@@ -968,6 +966,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	//Mocking data is same with the orderDAO.cfc getGiftCardOrderItemsTest() function
 	 	var productData = {
 			productID = '',
+			productName='test'&createUUID(),
 			productType = {
 				productTypeID = '50cdfabbc57f7d103538d9e0e37f61e4'//giftcard
 			}
@@ -1364,7 +1363,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var mockOrder = createTestEntity('Order', orderData);
 		
-		var mockOrderService = new Slatwall.model.service.orderService();
+		var mockOrderService = new Slatwall.model.service.OrderService();
 		mockOrderService.getPreviouslyReturnedFulfillmentTotal = getPreviouslyReturnedFulfillmentTotal;//returns 30
 		mockOrder.setOrderService(mockOrderService);
 		
