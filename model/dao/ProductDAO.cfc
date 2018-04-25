@@ -530,5 +530,17 @@ Notes:
 		<cfreturn ormExecuteQuery("FROM #getApplicationKey()#Sku s WHERE s.productSchedule.productScheduleID = :productScheduleID ORDER BY s.eventStartDateTime ASC", {productScheduleID=arguments.productScheduleID},false, {maxresults=1})[1] />
 	</cffunction>
 		
+	<cffunction name="getProductHasRelatedProduct" access="public">
+		<cfargument name="productID" type="string" required="true" />
+		<cfargument name="relatedProductID" type="string" required="true">
+		<cfreturn !isNull(ORMExecuteQuery('
+			select pr from SlatwallProductRelationship pr
+			where product.productID = :productID
+			  and relatedProduct.productID = :relatedProductID
+			',
+			{productID=arguments.productID,relatedProductID=arguments.relatedProductID},
+			true
+			))>
+	</cffunction>
 </cfcomponent>
 
