@@ -35,6 +35,90 @@ component extends="testbox.system.BaseSpec"{
 		}
 	}
 
+	/**
+	 * Creates a mock service or dao, and automatically handles injecting mocks any service or dao properties (recursive).
+	 * 
+	 * Performance: < 100 ms operation. Ensures a fresh and reliable object graph for the life of a test case.
+	 * 
+	 * Usage: MockService is instantiated for each test suite. Object graph (or factory) will live for duration of each test case. 
+	 * 		  Used with 30 test cases, it would add 3 seconds to overall runtime. Pretty negligible.
+	 *
+	 * @name service or dao name
+	 */
+	public any function createMockInjected(required string name) {
+
+		if (!structKeyExists(variables, 'registeredMockObjects')) {
+			variables.registeredMockObjects = {};
+		}
+
+		// NOTE: Could add custom model to directory lookup if needed
+
+		if (!structKeyExists(variables.registeredMockObjects, arguments.name)) {
+			var mockObject = "";
+			// Look in model.service
+			try {
+				mockObject = createMock('Slatwall.model.service.#arguments.name#');
+			} catch (any e) {
+				// Look in model.dao
+				try {
+					mockObject = createMock('Slatwall.model.dao.#arguments.name#');
+				} catch (any e) {
+					// Look in org.Hibachi
+					try {
+						mockObject = createMock('Slatwall.org.Hibachi.#arguments.name#');
+					} catch (any e) {
+						// property name must have typo or reference non-existent service or dao
+					}
+				}
+			}
+
+			// TODO: Handle special case where if need to call mockObject.init() here
+
+			// Do not move, this stops the endless recusion (circular reference)
+			variables.registeredMockObjects[arguments.name] = mockObject;
+
+			var properties = getServiceOrDAOProperties(mockObject);
+
+			for (var daoPropertyName in properties.dao) {
+				var mockDAO = createMockInjected(daoPropertyName);
+				mockObject.invokeMethod('set#daoPropertyName#', {1=mockDAO});
+			}
+			for (var servicePropertyName in properties.service) {
+				var mockService = createMockInjected(servicePropertyName);
+				mockObject.invokeMethod('set#servicePropertyName#', {1=mockService});
+			}
+		}
+
+		return variables.registeredMockObjects[arguments.name];
+	}
+
+	private struct function getServiceOrDAOProperties(required any object) {
+		var metaData = getMetaData(object);
+
+		var hasExtends = structKeyExists(metaData, "extends");
+		var serviceProperties = [];
+		var daoProperties = [];
+		do {
+			var hasExtends = structKeyExists(metaData, "extends");
+			if(structKeyExists(metaData, "properties")) {
+				for (var property in metaData.properties) {
+					if (!arrayFindNoCase(serviceProperties, property.name) && !arrayFindNoCase(daoProperties, property.name)) {
+						if (right(property.name, len('Service')) == 'Service') {
+							arrayAppend(serviceProperties, property.name);
+						} else if (right(property.name, len('DAO')) == 'DAO') {
+							arrayAppend(daoProperties, property.name);
+						}
+					}
+				}
+			}
+			if(hasExtends) {
+				metaData = metaData.extends;
+			}
+		} while( hasExtends );
+
+		return {service = serviceProperties, dao = daoProperties};
+	}
+
 	public any function getHibachiValidationServiceMock(){
 		var hibachiUtilityService = this.getHibachiUtilityServiceMock();
 		var hibachiDAO = this.getHibachiDAOMock();
