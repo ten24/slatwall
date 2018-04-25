@@ -12,11 +12,9 @@
 					</cfoutput>
 					<!--- apply url data to main collection at the end --->
 					<cfif currentIndex eq filterCountGroupsCount>
-						
 						<cfset filterCountGroup.collectionList.applyData(url)/>
 					</cfif>
 				</cfloop>
-				
 		</form>
 	</div>
 </div>

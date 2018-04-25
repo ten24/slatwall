@@ -4,8 +4,8 @@
 		<cfset attributes.hibachiScope = request.context.fw.getHibachiScope()/>
 	</cfif>
 	<cfparam name="attributes.collectionList" type="any" default="" />
-	<cfparam name="attributes.template" type="any" default="tagtemplates/hibachifiltercountdisplay.cfm" />
-	<cfparam name="attributes.filterCountDisplayItemTemplate" type="any" default="" />
+	<cfparam name="attributes.filterCountDisplayTemplate" type="any" default="./tagtemplates/hibachifiltercountdisplay.cfm" />
+	<cfparam name="attributes.template" type="any" default="" />
 	<cfparam name="thistag.filterCountGroups" type="array" default="#arrayNew(1)#" />
 	
 <cfelse>
@@ -78,8 +78,6 @@
 			  }
 			}
 		</script>
-		<cfsavecontent variable="local.htmlContent" >
-			<cfinclude template="#attributes.template#" >
-		</cfsavecontent>
+		<cfinclude template="#attributes.filterCountDisplayTemplate#" >
 	</cfoutput>
 </cfif>
