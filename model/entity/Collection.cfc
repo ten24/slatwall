@@ -666,16 +666,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifierAlias = propertyIdentifier;
 		}
 
-		var orderBy = {
-			"propertyIdentifier"= propertyIdentifierAlias,
-			"direction"=direction
-		};
+		var orderByExists=false;// variable used as flag to mark if new propertyIdentifier already exists or not
+		//identify duplicates
+		for(var orderBy in collectionConfig.orderBy){
+			if(	orderBy.propertyIdentifier == propertyIdentifierAlias ){
+				orderBy.direction = direction;
+				orderByExists = true;
+			}
+		}
+		if(!orderByExists){
+			var orderBy = {
+				"propertyIdentifier"= propertyIdentifierAlias,
+				"direction"=direction
+			};
+			//Checks that the property identifier being passed in exists.
+			if (hasPropertyByPropertyIdentifier(orderBy.propertyIdentifier)){
+				arrayAppend(collectionConfig.orderBy,orderBy); //|[{direction={asc},propertyIdentifier={_product.productName}}]
+			}else{
+				throw("That was an invalid property identifier!");
+	
+			}
 
-		//Checks that the property identifier being passed in exists.
-		if (hasPropertyByPropertyIdentifier(orderBy.propertyIdentifier)){
-			arrayAppend(collectionConfig.orderBy,orderBy); //|[{direction={asc},propertyIdentifier={_product.productName}}]
-		}else{
-			throw("That was an invalid property identifier!");
 		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
@@ -1008,9 +1019,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 				if (!isNull(pageShow)){
-					this.setPageRecordsShow(pageShow);
-				}
+					if(pageShow >= 1)
+					{
+						this.setPageRecordsShow(pageShow);
+					}
 
+				}
 
 			}
 		}
@@ -1794,7 +1808,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}else{
 				if(!getExcludeOrderBy()){
 					var orderBy = getDefaultOrderBy();
-					groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+					if(!getHasDisplayAggregate()){
+						groupByList = listAppend(groupByList,orderBy.propertyIdentifier);
+					}
 				}
 			}
 		}
@@ -1850,7 +1866,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		var orderByCount = arraylen(arguments.orderBy);
 		//if order by count is 0, then use the default order by
-		if(orderByCount == 0){
+		if(orderByCount == 0 && !getHasDisplayAggregate()){
 			arrayAppend(arguments.orderby,getDefaultOrderBy());
 			orderByCount++;
 		}
@@ -1869,7 +1885,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				orderByHQL &= ',';
 			}
 		}
-		return orderByHQL;
+
+		// Condition to remove the ORDER BY from query if no orderBy added
+		if( orderByHQL == ' ORDER BY '){
+			return "";
+		}else{
+			return orderByHQL;
+		}
 	}
 
 	public any function getNonPersistentColumn(){
@@ -2843,7 +2865,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
-					arrayAppend(groupBys,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
+					if(!getHasDisplayAggregate()){
+						arrayAppend(groupBys,getDefaultOrderBy().propertyIdentifier);
+					}
 				}else{
 					//add a group by for all order bys
 					for(var orderBy in collectionConfig.orderBy){

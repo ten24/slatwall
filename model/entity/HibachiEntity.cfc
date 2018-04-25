@@ -137,7 +137,16 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		//preventing multiple look ups on the external cache look up
+		var cacheKey = "#arguments.settingName##arguments.formatValue#";
+		for(var filterEntity in arguments.filterEntities){
+			cacheKey &= filterEntity.getPrimaryIDValue();
+		}
+		if(!structKeyExists(variables,cacheKey)){
+			variables[cacheKey] = getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
+		}
+		
+		return variables[cacheKey];
 	}
 	
 	
