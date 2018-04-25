@@ -54,7 +54,7 @@ component extends="testbox.system.BaseSpec"{
 
 	public any function getPaymentServiceMock(){
 
-		var paymentDAO = createMock('Slatwall.model.dao.paymentDAO');
+		var paymentDAO = createMock('Slatwall.model.dao.PaymentDAO');
 		var currencyService = createMock('Slatwall.model.service.CurrencyService');
 		var integrationService = createMock('Slatwall.model.service.IntegrationService');
 		var settingService = createMock('Slatwall.model.service.SettingService');
@@ -161,7 +161,7 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	public any function getAttributeServiceMock(){
-		var attributeDAO = createMock('Slatwall.model.dao.attributeDAO');
+		var attributeDAO = createMock('Slatwall.model.dao.AttributeDAO');
 
 		var attributeServiceMock = onMissingMethod('getAttributeServiceMock',{});
 
@@ -236,7 +236,7 @@ component extends="testbox.system.BaseSpec"{
 
 		var hibachiTagService = createMock('Slatwall.org.Hibachi.HibachiTagService');
 		var settingService = this.getSettingServiceMock();
-		var skuService = createMock('Slatwall.model.service.skuService');
+		var skuService = createMock('Slatwall.model.service.SkuService');
 
 		var imageService = onMissingMethod('getImageServiceMock',{});
 
