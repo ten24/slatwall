@@ -31,10 +31,10 @@ dependencies:
     - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
     # Minify 
     - cd admin/client/css && lessc main.less main.css
-    # Update docker-compose
-    - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
-    - chmod +x docker-compose
-    - sudo mv docker-compose /usr/local/bin
+    # Downgrade docker-compose
+    #- curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
+    #- chmod +x docker-compose
+    #- sudo mv docker-compose /usr/local/bin
 
     # Install Sauce Labs Connector
     #- wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
