@@ -276,6 +276,7 @@ Notes:
 			inner join SwSubscriptionTerm st on su.subscriptionTermID = st.subscriptionTermID
 			inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
 			inner join swOrderItem oi on soi.orderItemID = oi.orderItemID
+			inner join swOrder o on o.orderID = oi.orderID
 			inner join swSku s on s.skuID = oi.skuID
 			inner join swProduct p on p.productID = s.productID
 			inner join swproducttype pt on pt.productTypeID = p.productTypeID
@@ -292,10 +293,10 @@ Notes:
 				AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 			</cfif>
 			
-			<!---<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
+			<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
 				AND o.orderCloseDateTime >= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),1,1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
 				AND o.orderCloseDateTime <= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),12,31,23,59,59)#" cfsqltype="cf_sql_timestamp"/>
-			</cfif>--->
+			</cfif>
 			group by soi.subscriptionOrderItemID
 		</cfquery>
 		<cfset var currentRecordsCount = 0/>
@@ -313,6 +314,7 @@ Notes:
 								inner join swSubscriptionOrderItem soi on soi.subscriptionOrderItemID = '#local.subscriptionOrderItemQuery.subscriptionOrderItemID#'
 								where dsd.deliveryScheduleDateValue > <cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>
 								GROUP BY DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M')
+								ORDER BY dsd.deliveryScheduleDateValue ASC
 								limit #local.subscriptionOrderItemQuery.totalItemToDeliver#
 							)
 							<cfif local.subscriptionOrderItemQuery.recordCount neq currentRecordsCount>
