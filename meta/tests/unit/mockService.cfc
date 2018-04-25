@@ -38,23 +38,17 @@ component extends="testbox.system.BaseSpec"{
 	/**
 	 * Creates a mock service or dao, and automatically handles injecting mocks any service or dao properties (recursive).
 	 * 
-	 * Performance: < 100 ms operation. Ensures a fresh and reliable object graph for the life of a test case.
+	 * Performance: < 100 ms operation. Ensures a fresh and reliable object graph.
 	 * 
-	 * Usage: MockService is instantiated for each test suite. Object graph (or factory) will live for duration of each test case. 
-	 * 		  Used with 30 test cases, it would add 3 seconds to overall runtime. Pretty negligible.
 	 *
 	 * @name service or dao name
 	 * @graphDepthLimit limit the depth of the object graph. 1 inject object's direct properties and no subproperties, -1 inject complete object graph and handles circular references
 	 */
-	public any function createMockInjected(required string name, graphDepthLimit = 1, currentDepth = 1) {
-
-		if (!structKeyExists(variables, 'registeredMockObjects')) {
-			variables.registeredMockObjects = {};
-		}
+	public any function createMockInjected(required string name, graphDepthLimit = 1, currentDepth = 1, struct registeredMockObjects = {}) {
 
 		// NOTE: Could add custom model to directory lookup if needed
 
-		if (!structKeyExists(variables.registeredMockObjects, arguments.name)) {
+		if (!structKeyExists(arguments.registeredMockObjects, arguments.name)) {
 			var mockObject = "";
 			// Look in model.service
 			try {
@@ -76,22 +70,22 @@ component extends="testbox.system.BaseSpec"{
 			// TODO: Handle special case where if need to call mockObject.init() here
 
 			// Do not move, this stops the endless recusion (circular reference)
-			variables.registeredMockObjects[arguments.name] = mockObject;
+			arguments.registeredMockObjects[arguments.name] = mockObject;
 
 			var properties = getServiceOrDAOProperties(mockObject);
 			if (arguments.currentDepth <= arguments.graphDepthLimit || arguments.graphDepthLimit == -1 || !len(arguments.graphDepthLimit)) {
 				for (var daoPropertyName in properties.dao) {
-					var mockDAO = createMockInjected(name = daoPropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth+1);
+					var mockDAO = createMockInjected(name = daoPropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth + 1, registeredMockObjects = arguments.registeredMockObjects);
 					mockObject.invokeMethod('set#daoPropertyName#', {1=mockDAO});
 				}
 				for (var servicePropertyName in properties.service) {
-					var mockService = createMockInjected(name = servicePropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth+1);
+					var mockService = createMockInjected(name = servicePropertyName, graphDepthLimit = arguments.graphDepthLimit, currentDepth = arguments.currentDepth + 1, registeredMockObjects = arguments.registeredMockObjects);
 					mockObject.invokeMethod('set#servicePropertyName#', {1=mockService});
 				}
 			}
 		}
 
-		return variables.registeredMockObjects[arguments.name];
+		return arguments.registeredMockObjects[arguments.name];
 	}
 
 	private struct function getServiceOrDAOProperties(required any object) {
