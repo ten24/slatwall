@@ -8,9 +8,8 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AlertService {
-    
+    public alerts:Alert[];
     constructor(
-        public alerts:Alert[]
     ) {
         this.alerts = [];
     }

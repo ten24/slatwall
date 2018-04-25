@@ -34568,35 +34568,24 @@ exports.SWOrderByControls = SWOrderByControls;
 
 /***/ }),
 /* 157 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵe", function() { return angular1Providers; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵc", function() { return compileFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return injectorFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵd", function() { return parseFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵb", function() { return rootScopeFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAngularJSGlobal", function() { return getAngularJSGlobal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAngularLib", function() { return getAngularLib; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setAngularJSGlobal", function() { return setAngularJSGlobal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setAngularLib", function() { return setAngularLib; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "downgradeComponent", function() { return downgradeComponent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "downgradeInjectable", function() { return downgradeInjectable; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "downgradeModule", function() { return downgradeModule; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UpgradeComponent", function() { return UpgradeComponent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UpgradeModule", function() { return UpgradeModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(163);
 /**
  * @license Angular v5.2.10
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
+(function (global, factory) {
+	 true ? factory(exports, __webpack_require__(11), __webpack_require__(163)) :
+	typeof define === 'function' && define.amd ? define('@angular/upgrade/static', ['exports', '@angular/core', '@angular/platform-browser'], factory) :
+	(factory((global.ng = global.ng || {}, global.ng.upgrade = global.ng.upgrade || {}, global.ng.upgrade.static = {}),global.ng.core,global._angular_platformBrowser));
+}(this, (function (exports,_angular_core,_angular_platformBrowser) { 'use strict';
 
-
-
+/**
+ * @license Angular v5.2.10
+ * (c) 2010-2018 Google, Inc. https://angular.io/
+ * License: MIT
+ */
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -34822,19 +34811,19 @@ var DowngradeComponentAdapter = /** @class */ (function () {
     };
     DowngradeComponentAdapter.prototype.createComponent = function (projectableNodes) {
         var providers = [{ provide: $SCOPE, useValue: this.componentScope }];
-        var childInjector = __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"].create({ providers: providers, parent: this.parentInjector, name: 'DowngradeComponentAdapter' });
+        var childInjector = _angular_core.Injector.create({ providers: providers, parent: this.parentInjector, name: 'DowngradeComponentAdapter' });
         this.componentRef =
             this.componentFactory.create(childInjector, projectableNodes, this.element[0]);
-        this.viewChangeDetector = this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"]);
+        this.viewChangeDetector = this.componentRef.injector.get(_angular_core.ChangeDetectorRef);
         this.changeDetector = this.componentRef.changeDetectorRef;
         this.component = this.componentRef.instance;
         // testability hook is commonly added during component bootstrap in
         // packages/core/src/application_ref.bootstrap()
         // in downgraded application, component creation will take place here as well as adding the
         // testability hook.
-        var testability = this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Testability"], null);
+        var testability = this.componentRef.injector.get(_angular_core.Testability, null);
         if (testability) {
-            this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["TestabilityRegistry"])
+            this.componentRef.injector.get(_angular_core.TestabilityRegistry)
                 .registerApplication(this.componentRef.location.nativeElement, testability);
         }
         hookupNgModel(this.ngModel, this.component);
@@ -34923,7 +34912,7 @@ var DowngradeComponentAdapter = /** @class */ (function () {
             var unwatch_2 = this.componentScope.$watch(function () {
                 unwatch_2();
                 unwatch_2 = null;
-                var appRef = _this.parentInjector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ApplicationRef"]);
+                var appRef = _this.parentInjector.get(_angular_core.ApplicationRef);
                 appRef.attachView(_this.componentRef.hostView);
             });
         }
@@ -34977,7 +34966,7 @@ var DowngradeComponentAdapter = /** @class */ (function () {
         this.componentScope.$on('$destroy', function () {
             if (!destroyed) {
                 destroyed = true;
-                _this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["TestabilityRegistry"])
+                _this.componentRef.injector.get(_angular_core.TestabilityRegistry)
                     .unregisterApplication(_this.componentRef.location.nativeElement);
                 destroyComponentRef();
             }
@@ -34986,7 +34975,7 @@ var DowngradeComponentAdapter = /** @class */ (function () {
     DowngradeComponentAdapter.prototype.getInjector = function () { return this.componentRef.injector; };
     DowngradeComponentAdapter.prototype.updateInput = function (prop, prevValue, currValue) {
         if (this.implementsOnChanges) {
-            this.inputChanges[prop] = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["SimpleChange"](prevValue, currValue, prevValue === currValue);
+            this.inputChanges[prop] = new _angular_core.SimpleChange(prevValue, currValue, prevValue === currValue);
         }
         this.inputChangeCount++;
         this.component[prop] = currValue;
@@ -35112,7 +35101,7 @@ function downgradeComponent(info) {
                     parentInjector = lazyModuleRef.injector || lazyModuleRef.promise;
                 }
                 var doDowngrade = function (injector) {
-                    var componentFactoryResolver = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ComponentFactoryResolver"]);
+                    var componentFactoryResolver = injector.get(_angular_core.ComponentFactoryResolver);
                     var componentFactory = (componentFactoryResolver.resolveComponentFactory(info.component));
                     if (!componentFactory) {
                         throw new Error('Expecting ComponentFactory for: ' + getComponentName(info.component));
@@ -35133,10 +35122,10 @@ function downgradeComponent(info) {
                 };
                 var downgradeFn = !needsNgZone ? doDowngrade : function (injector) {
                     if (!ngZone) {
-                        ngZone = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"]);
+                        ngZone = injector.get(_angular_core.NgZone);
                         wrapCallback = function (cb) {
                             return function () {
-                                return __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"].isInAngularZone() ? cb() : ngZone.run(cb);
+                                return _angular_core.NgZone.isInAngularZone() ? cb() : ngZone.run(cb);
                             };
                         };
                     }
@@ -35259,7 +35248,7 @@ function downgradeInjectable(token) {
 /**
  * @stable
  */
-var VERSION = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["Version"]('5.2.10');
+var VERSION = new _angular_core.Version('5.2.10');
 
 /**
  * @license
@@ -35329,7 +35318,7 @@ var NgAdapterInjector = /** @class */ (function () {
     // injector.
     // AngularJS only supports a single tree and should always check the module injector.
     function (token, notFoundValue) {
-        if (notFoundValue === __WEBPACK_IMPORTED_MODULE_0__angular_core__["ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR"]) {
+        if (notFoundValue === _angular_core.ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR) {
             return notFoundValue;
         }
         return this.modInjector.get(token, notFoundValue);
@@ -35350,7 +35339,7 @@ function downgradeModule(moduleFactoryOrBootstrapFn) {
     var bootstrapFn = isFunction(moduleFactoryOrBootstrapFn) ?
         moduleFactoryOrBootstrapFn :
         function (extraProviders) {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* platformBrowser */])(extraProviders).bootstrapModuleFactory(moduleFactoryOrBootstrapFn);
+            return _angular_platformBrowser.platformBrowser(extraProviders).bootstrapModuleFactory(moduleFactoryOrBootstrapFn);
         };
     var injector;
     // Create an ng1 module to bootstrap.
@@ -35780,7 +35769,7 @@ var UpgradeComponent = /** @class */ (function () {
         twoWayBoundProperties.forEach(function (propName, idx) {
             var newValue = _this.bindingDestination[propName];
             var oldValue = twoWayBoundLastValues[idx];
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ɵlooseIdentical"])(newValue, oldValue)) {
+            if (!_angular_core.ɵlooseIdentical(newValue, oldValue)) {
                 var outputName = propertyToOutputMap[propName];
                 var eventEmitter = _this[outputName];
                 eventEmitter.emit(newValue);
@@ -35840,7 +35829,7 @@ var UpgradeComponent = /** @class */ (function () {
         this.bindings.twoWayBoundProperties.concat(this.bindings.expressionBoundProperties)
             .forEach(function (propName) {
             var outputName = _this.bindings.propertyToOutputMap[propName];
-            _this[outputName] = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+            _this[outputName] = new _angular_core.EventEmitter();
         });
     };
     UpgradeComponent.prototype.bindOutputs = function () {
@@ -36034,7 +36023,7 @@ var UpgradeModule = /** @class */ (function () {
                             // Cannot use arrow function below because we need the context
                             var newWhenStable = function (callback) {
                                 originalWhenStable.call(testabilityDelegate, function () {
-                                    var ng2Testability = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Testability"]);
+                                    var ng2Testability = injector.get(_angular_core.Testability);
                                     if (ng2Testability.isStable()) {
                                         callback();
                                     }
@@ -36120,32 +36109,36 @@ var UpgradeModule = /** @class */ (function () {
         }
     };
     UpgradeModule.decorators = [
-        { type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"], args: [{ providers: [angular1Providers] },] },
+        { type: _angular_core.NgModule, args: [{ providers: [angular1Providers] },] },
     ];
     /** @nocollapse */
     UpgradeModule.ctorParameters = function () { return [
-        { type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"], },
-        { type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"], },
+        { type: _angular_core.Injector, },
+        { type: _angular_core.NgZone, },
     ]; };
     return UpgradeModule;
 }());
 
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+exports.ɵe = angular1Providers;
+exports.ɵc = compileFactory;
+exports.ɵa = injectorFactory;
+exports.ɵd = parseFactory;
+exports.ɵb = rootScopeFactory;
+exports.getAngularJSGlobal = getAngularJSGlobal;
+exports.getAngularLib = getAngularLib;
+exports.setAngularJSGlobal = setAngularJSGlobal;
+exports.setAngularLib = setAngularLib;
+exports.downgradeComponent = downgradeComponent;
+exports.downgradeInjectable = downgradeInjectable;
+exports.VERSION = VERSION;
+exports.downgradeModule = downgradeModule;
+exports.UpgradeComponent = UpgradeComponent;
+exports.UpgradeModule = UpgradeModule;
 
-// This file only re-exports content of the `src` folder. Keep it that way.
+Object.defineProperty(exports, '__esModule', { value: true });
 
-/**
- * Generated bundle index. Do not edit.
- */
-
-
-//# sourceMappingURL=static.js.map
+})));
+//# sourceMappingURL=upgrade-static.umd.js.map
 
 
 /***/ }),
@@ -36552,54 +36545,55 @@ var RefCountSubscriber = (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export BrowserModule */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return platformBrowser; });
-/* unused harmony export Meta */
-/* unused harmony export Title */
-/* unused harmony export disableDebugTools */
-/* unused harmony export enableDebugTools */
-/* unused harmony export BrowserTransferStateModule */
-/* unused harmony export TransferState */
-/* unused harmony export makeStateKey */
-/* unused harmony export By */
-/* unused harmony export DOCUMENT */
-/* unused harmony export EVENT_MANAGER_PLUGINS */
-/* unused harmony export EventManager */
-/* unused harmony export HAMMER_GESTURE_CONFIG */
-/* unused harmony export HammerGestureConfig */
-/* unused harmony export DomSanitizer */
-/* unused harmony export VERSION */
-/* unused harmony export ɵBROWSER_SANITIZATION_PROVIDERS */
-/* unused harmony export ɵINTERNAL_BROWSER_PLATFORM_PROVIDERS */
-/* unused harmony export ɵinitDomAdapter */
-/* unused harmony export ɵBrowserDomAdapter */
-/* unused harmony export ɵBrowserPlatformLocation */
-/* unused harmony export ɵTRANSITION_ID */
-/* unused harmony export ɵBrowserGetTestability */
-/* unused harmony export ɵescapeHtml */
-/* unused harmony export ɵELEMENT_PROBE_PROVIDERS */
-/* unused harmony export ɵDomAdapter */
-/* unused harmony export ɵgetDOM */
-/* unused harmony export ɵsetRootDomAdapter */
-/* unused harmony export ɵDomRendererFactory2 */
-/* unused harmony export ɵNAMESPACE_URIS */
-/* unused harmony export ɵflattenStyles */
-/* unused harmony export ɵshimContentAttribute */
-/* unused harmony export ɵshimHostAttribute */
-/* unused harmony export ɵDomEventsPlugin */
-/* unused harmony export ɵHammerGesturesPlugin */
-/* unused harmony export ɵKeyEventsPlugin */
-/* unused harmony export ɵDomSharedStylesHost */
-/* unused harmony export ɵSharedStylesHost */
-/* unused harmony export ɵb */
-/* unused harmony export ɵa */
-/* unused harmony export ɵi */
-/* unused harmony export ɵg */
-/* unused harmony export ɵf */
-/* unused harmony export ɵc */
-/* unused harmony export ɵh */
-/* unused harmony export ɵd */
-/* unused harmony export ɵe */
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserModule", function() { return BrowserModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "platformBrowser", function() { return platformBrowser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Meta", function() { return Meta; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Title", function() { return Title; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "disableDebugTools", function() { return disableDebugTools; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enableDebugTools", function() { return enableDebugTools; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserTransferStateModule", function() { return BrowserTransferStateModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TransferState", function() { return TransferState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeStateKey", function() { return makeStateKey; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "By", function() { return By; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DOCUMENT", function() { return DOCUMENT$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EVENT_MANAGER_PLUGINS", function() { return EVENT_MANAGER_PLUGINS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventManager", function() { return EventManager; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HAMMER_GESTURE_CONFIG", function() { return HAMMER_GESTURE_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HammerGestureConfig", function() { return HammerGestureConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DomSanitizer", function() { return DomSanitizer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵBROWSER_SANITIZATION_PROVIDERS", function() { return BROWSER_SANITIZATION_PROVIDERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵINTERNAL_BROWSER_PLATFORM_PROVIDERS", function() { return INTERNAL_BROWSER_PLATFORM_PROVIDERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵinitDomAdapter", function() { return initDomAdapter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵBrowserDomAdapter", function() { return BrowserDomAdapter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵBrowserPlatformLocation", function() { return BrowserPlatformLocation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵTRANSITION_ID", function() { return TRANSITION_ID; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵBrowserGetTestability", function() { return BrowserGetTestability; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵescapeHtml", function() { return escapeHtml; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵELEMENT_PROBE_PROVIDERS", function() { return ELEMENT_PROBE_PROVIDERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵDomAdapter", function() { return DomAdapter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵgetDOM", function() { return getDOM; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵsetRootDomAdapter", function() { return setRootDomAdapter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵDomRendererFactory2", function() { return DomRendererFactory2; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵNAMESPACE_URIS", function() { return NAMESPACE_URIS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵflattenStyles", function() { return flattenStyles; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵshimContentAttribute", function() { return shimContentAttribute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵshimHostAttribute", function() { return shimHostAttribute; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵDomEventsPlugin", function() { return DomEventsPlugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵHammerGesturesPlugin", function() { return HammerGesturesPlugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵKeyEventsPlugin", function() { return KeyEventsPlugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵDomSharedStylesHost", function() { return DomSharedStylesHost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵSharedStylesHost", function() { return SharedStylesHost; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵb", function() { return _document; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return errorHandler; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵi", function() { return GenericBrowserDomAdapter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵg", function() { return SERVER_TRANSITION_PROVIDERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵf", function() { return appInitializerFactory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵc", function() { return initTransferState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵh", function() { return _createNgProbe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵd", function() { return EventManagerPlugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵe", function() { return DomSanitizerImpl; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common__ = __webpack_require__(164);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_tslib__ = __webpack_require__(20);
@@ -48714,7 +48708,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//import Alert = require('../model/alert');
 var alert_1 = __webpack_require__(167);
 var core_1 = __webpack_require__(11);
 var AlertService = /** @class */ (function () {

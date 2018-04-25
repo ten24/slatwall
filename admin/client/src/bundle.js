@@ -23202,7 +23202,7 @@ var BrowserDomAdapter = /** @class */ (function (_super) {
      * @param {?} name
      * @return {?}
      */
-    function (name) { return Object(__WEBPACK_IMPORTED_MODULE_0__angular_common__["e" /* ɵparseCookieValue */])(document.cookie, name); };
+    function (name) { return Object(__WEBPACK_IMPORTED_MODULE_0__angular_common__["ɵparseCookieValue"])(document.cookie, name); };
     /**
      * @param {?} name
      * @param {?} value
@@ -23267,7 +23267,7 @@ function relativePath(url) {
  *
  * @deprecated import from `\@angular/common` instead.
  */
-var DOCUMENT$1 = __WEBPACK_IMPORTED_MODULE_0__angular_common__["b" /* DOCUMENT */];
+var DOCUMENT$1 = __WEBPACK_IMPORTED_MODULE_0__angular_common__["DOCUMENT"];
 
 /**
  * @fileoverview added by tsickle
@@ -23445,7 +23445,7 @@ var BrowserPlatformLocation = /** @class */ (function (_super) {
         { type: undefined, decorators: [{ type: __WEBPACK_IMPORTED_MODULE_1__angular_core__["Inject"], args: [DOCUMENT$1,] },] },
     ]; };
     return BrowserPlatformLocation;
-}(__WEBPACK_IMPORTED_MODULE_0__angular_common__["c" /* PlatformLocation */]));
+}(__WEBPACK_IMPORTED_MODULE_0__angular_common__["PlatformLocation"]));
 
 /**
  * @fileoverview added by tsickle
@@ -26333,9 +26333,9 @@ var SafeResourceUrlImpl = /** @class */ (function (_super) {
  * found in the LICENSE file at https://angular.io/license
  */
 var INTERNAL_BROWSER_PLATFORM_PROVIDERS = [
-    { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["PLATFORM_ID"], useValue: __WEBPACK_IMPORTED_MODULE_0__angular_common__["d" /* ɵPLATFORM_BROWSER_ID */] },
+    { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["PLATFORM_ID"], useValue: __WEBPACK_IMPORTED_MODULE_0__angular_common__["ɵPLATFORM_BROWSER_ID"] },
     { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["PLATFORM_INITIALIZER"], useValue: initDomAdapter, multi: true },
-    { provide: __WEBPACK_IMPORTED_MODULE_0__angular_common__["c" /* PlatformLocation */], useClass: BrowserPlatformLocation, deps: [DOCUMENT$1] },
+    { provide: __WEBPACK_IMPORTED_MODULE_0__angular_common__["PlatformLocation"], useClass: BrowserPlatformLocation, deps: [DOCUMENT$1] },
     { provide: DOCUMENT$1, useFactory: _document, deps: [] },
 ];
 /**
@@ -26436,7 +26436,7 @@ var BrowserModule = /** @class */ (function () {
                         Meta,
                         Title,
                     ],
-                    exports: [__WEBPACK_IMPORTED_MODULE_0__angular_common__["a" /* CommonModule */], __WEBPACK_IMPORTED_MODULE_1__angular_core__["ApplicationModule"]]
+                    exports: [__WEBPACK_IMPORTED_MODULE_0__angular_common__["CommonModule"], __WEBPACK_IMPORTED_MODULE_1__angular_core__["ApplicationModule"]]
                 },] },
     ];
     /** @nocollapse */
@@ -27043,35 +27043,24 @@ var VERSION = new __WEBPACK_IMPORTED_MODULE_1__angular_core__["Version"]('5.2.10
 
 /***/ }),
 /* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵe", function() { return angular1Providers; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵc", function() { return compileFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return injectorFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵd", function() { return parseFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵb", function() { return rootScopeFactory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAngularJSGlobal", function() { return getAngularJSGlobal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAngularLib", function() { return getAngularLib; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setAngularJSGlobal", function() { return setAngularJSGlobal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setAngularLib", function() { return setAngularLib; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "downgradeComponent", function() { return downgradeComponent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "downgradeInjectable", function() { return downgradeInjectable; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "downgradeModule", function() { return downgradeModule; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UpgradeComponent", function() { return UpgradeComponent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UpgradeModule", function() { return UpgradeModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(17);
 /**
  * @license Angular v5.2.10
  * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
+(function (global, factory) {
+	 true ? factory(exports, __webpack_require__(4), __webpack_require__(17)) :
+	typeof define === 'function' && define.amd ? define('@angular/upgrade/static', ['exports', '@angular/core', '@angular/platform-browser'], factory) :
+	(factory((global.ng = global.ng || {}, global.ng.upgrade = global.ng.upgrade || {}, global.ng.upgrade.static = {}),global.ng.core,global._angular_platformBrowser));
+}(this, (function (exports,_angular_core,_angular_platformBrowser) { 'use strict';
 
-
-
+/**
+ * @license Angular v5.2.10
+ * (c) 2010-2018 Google, Inc. https://angular.io/
+ * License: MIT
+ */
 /**
  * @license
  * Copyright Google Inc. All Rights Reserved.
@@ -27297,19 +27286,19 @@ var DowngradeComponentAdapter = /** @class */ (function () {
     };
     DowngradeComponentAdapter.prototype.createComponent = function (projectableNodes) {
         var providers = [{ provide: $SCOPE, useValue: this.componentScope }];
-        var childInjector = __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"].create({ providers: providers, parent: this.parentInjector, name: 'DowngradeComponentAdapter' });
+        var childInjector = _angular_core.Injector.create({ providers: providers, parent: this.parentInjector, name: 'DowngradeComponentAdapter' });
         this.componentRef =
             this.componentFactory.create(childInjector, projectableNodes, this.element[0]);
-        this.viewChangeDetector = this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ChangeDetectorRef"]);
+        this.viewChangeDetector = this.componentRef.injector.get(_angular_core.ChangeDetectorRef);
         this.changeDetector = this.componentRef.changeDetectorRef;
         this.component = this.componentRef.instance;
         // testability hook is commonly added during component bootstrap in
         // packages/core/src/application_ref.bootstrap()
         // in downgraded application, component creation will take place here as well as adding the
         // testability hook.
-        var testability = this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Testability"], null);
+        var testability = this.componentRef.injector.get(_angular_core.Testability, null);
         if (testability) {
-            this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["TestabilityRegistry"])
+            this.componentRef.injector.get(_angular_core.TestabilityRegistry)
                 .registerApplication(this.componentRef.location.nativeElement, testability);
         }
         hookupNgModel(this.ngModel, this.component);
@@ -27398,7 +27387,7 @@ var DowngradeComponentAdapter = /** @class */ (function () {
             var unwatch_2 = this.componentScope.$watch(function () {
                 unwatch_2();
                 unwatch_2 = null;
-                var appRef = _this.parentInjector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ApplicationRef"]);
+                var appRef = _this.parentInjector.get(_angular_core.ApplicationRef);
                 appRef.attachView(_this.componentRef.hostView);
             });
         }
@@ -27452,7 +27441,7 @@ var DowngradeComponentAdapter = /** @class */ (function () {
         this.componentScope.$on('$destroy', function () {
             if (!destroyed) {
                 destroyed = true;
-                _this.componentRef.injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["TestabilityRegistry"])
+                _this.componentRef.injector.get(_angular_core.TestabilityRegistry)
                     .unregisterApplication(_this.componentRef.location.nativeElement);
                 destroyComponentRef();
             }
@@ -27461,7 +27450,7 @@ var DowngradeComponentAdapter = /** @class */ (function () {
     DowngradeComponentAdapter.prototype.getInjector = function () { return this.componentRef.injector; };
     DowngradeComponentAdapter.prototype.updateInput = function (prop, prevValue, currValue) {
         if (this.implementsOnChanges) {
-            this.inputChanges[prop] = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["SimpleChange"](prevValue, currValue, prevValue === currValue);
+            this.inputChanges[prop] = new _angular_core.SimpleChange(prevValue, currValue, prevValue === currValue);
         }
         this.inputChangeCount++;
         this.component[prop] = currValue;
@@ -27587,7 +27576,7 @@ function downgradeComponent(info) {
                     parentInjector = lazyModuleRef.injector || lazyModuleRef.promise;
                 }
                 var doDowngrade = function (injector) {
-                    var componentFactoryResolver = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ComponentFactoryResolver"]);
+                    var componentFactoryResolver = injector.get(_angular_core.ComponentFactoryResolver);
                     var componentFactory = (componentFactoryResolver.resolveComponentFactory(info.component));
                     if (!componentFactory) {
                         throw new Error('Expecting ComponentFactory for: ' + getComponentName(info.component));
@@ -27608,10 +27597,10 @@ function downgradeComponent(info) {
                 };
                 var downgradeFn = !needsNgZone ? doDowngrade : function (injector) {
                     if (!ngZone) {
-                        ngZone = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"]);
+                        ngZone = injector.get(_angular_core.NgZone);
                         wrapCallback = function (cb) {
                             return function () {
-                                return __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"].isInAngularZone() ? cb() : ngZone.run(cb);
+                                return _angular_core.NgZone.isInAngularZone() ? cb() : ngZone.run(cb);
                             };
                         };
                     }
@@ -27734,7 +27723,7 @@ function downgradeInjectable(token) {
 /**
  * @stable
  */
-var VERSION = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["Version"]('5.2.10');
+var VERSION = new _angular_core.Version('5.2.10');
 
 /**
  * @license
@@ -27804,7 +27793,7 @@ var NgAdapterInjector = /** @class */ (function () {
     // injector.
     // AngularJS only supports a single tree and should always check the module injector.
     function (token, notFoundValue) {
-        if (notFoundValue === __WEBPACK_IMPORTED_MODULE_0__angular_core__["ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR"]) {
+        if (notFoundValue === _angular_core.ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR) {
             return notFoundValue;
         }
         return this.modInjector.get(token, notFoundValue);
@@ -27825,7 +27814,7 @@ function downgradeModule(moduleFactoryOrBootstrapFn) {
     var bootstrapFn = isFunction(moduleFactoryOrBootstrapFn) ?
         moduleFactoryOrBootstrapFn :
         function (extraProviders) {
-            return Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["platformBrowser"])(extraProviders).bootstrapModuleFactory(moduleFactoryOrBootstrapFn);
+            return _angular_platformBrowser.platformBrowser(extraProviders).bootstrapModuleFactory(moduleFactoryOrBootstrapFn);
         };
     var injector;
     // Create an ng1 module to bootstrap.
@@ -28255,7 +28244,7 @@ var UpgradeComponent = /** @class */ (function () {
         twoWayBoundProperties.forEach(function (propName, idx) {
             var newValue = _this.bindingDestination[propName];
             var oldValue = twoWayBoundLastValues[idx];
-            if (!Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ɵlooseIdentical"])(newValue, oldValue)) {
+            if (!_angular_core.ɵlooseIdentical(newValue, oldValue)) {
                 var outputName = propertyToOutputMap[propName];
                 var eventEmitter = _this[outputName];
                 eventEmitter.emit(newValue);
@@ -28315,7 +28304,7 @@ var UpgradeComponent = /** @class */ (function () {
         this.bindings.twoWayBoundProperties.concat(this.bindings.expressionBoundProperties)
             .forEach(function (propName) {
             var outputName = _this.bindings.propertyToOutputMap[propName];
-            _this[outputName] = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+            _this[outputName] = new _angular_core.EventEmitter();
         });
     };
     UpgradeComponent.prototype.bindOutputs = function () {
@@ -28509,7 +28498,7 @@ var UpgradeModule = /** @class */ (function () {
                             // Cannot use arrow function below because we need the context
                             var newWhenStable = function (callback) {
                                 originalWhenStable.call(testabilityDelegate, function () {
-                                    var ng2Testability = injector.get(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Testability"]);
+                                    var ng2Testability = injector.get(_angular_core.Testability);
                                     if (ng2Testability.isStable()) {
                                         callback();
                                     }
@@ -28595,32 +28584,36 @@ var UpgradeModule = /** @class */ (function () {
         }
     };
     UpgradeModule.decorators = [
-        { type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"], args: [{ providers: [angular1Providers] },] },
+        { type: _angular_core.NgModule, args: [{ providers: [angular1Providers] },] },
     ];
     /** @nocollapse */
     UpgradeModule.ctorParameters = function () { return [
-        { type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["Injector"], },
-        { type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["NgZone"], },
+        { type: _angular_core.Injector, },
+        { type: _angular_core.NgZone, },
     ]; };
     return UpgradeModule;
 }());
 
-/**
- * @license
- * Copyright Google Inc. All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
+exports.ɵe = angular1Providers;
+exports.ɵc = compileFactory;
+exports.ɵa = injectorFactory;
+exports.ɵd = parseFactory;
+exports.ɵb = rootScopeFactory;
+exports.getAngularJSGlobal = getAngularJSGlobal;
+exports.getAngularLib = getAngularLib;
+exports.setAngularJSGlobal = setAngularJSGlobal;
+exports.setAngularLib = setAngularLib;
+exports.downgradeComponent = downgradeComponent;
+exports.downgradeInjectable = downgradeInjectable;
+exports.VERSION = VERSION;
+exports.downgradeModule = downgradeModule;
+exports.UpgradeComponent = UpgradeComponent;
+exports.UpgradeModule = UpgradeModule;
 
-// This file only re-exports content of the `src` folder. Keep it that way.
+Object.defineProperty(exports, '__esModule', { value: true });
 
-/**
- * Generated bundle index. Do not edit.
- */
-
-
-//# sourceMappingURL=static.js.map
+})));
+//# sourceMappingURL=upgrade-static.umd.js.map
 
 
 /***/ }),
@@ -29295,90 +29288,91 @@ webpackEmptyAsyncContext.id = 33;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export ɵregisterLocaleData */
-/* unused harmony export NgLocaleLocalization */
-/* unused harmony export NgLocalization */
-/* unused harmony export registerLocaleData */
-/* unused harmony export Plural */
-/* unused harmony export NumberFormatStyle */
-/* unused harmony export FormStyle */
-/* unused harmony export TranslationWidth */
-/* unused harmony export FormatWidth */
-/* unused harmony export NumberSymbol */
-/* unused harmony export WeekDay */
-/* unused harmony export getCurrencySymbol */
-/* unused harmony export getLocaleDayPeriods */
-/* unused harmony export getLocaleDayNames */
-/* unused harmony export getLocaleMonthNames */
-/* unused harmony export getLocaleId */
-/* unused harmony export getLocaleEraNames */
-/* unused harmony export getLocaleWeekEndRange */
-/* unused harmony export getLocaleFirstDayOfWeek */
-/* unused harmony export getLocaleDateFormat */
-/* unused harmony export getLocaleDateTimeFormat */
-/* unused harmony export getLocaleExtraDayPeriodRules */
-/* unused harmony export getLocaleExtraDayPeriods */
-/* unused harmony export getLocalePluralCase */
-/* unused harmony export getLocaleTimeFormat */
-/* unused harmony export getLocaleNumberSymbol */
-/* unused harmony export getLocaleNumberFormat */
-/* unused harmony export getLocaleCurrencyName */
-/* unused harmony export getLocaleCurrencySymbol */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return parseCookieValue; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CommonModule; });
-/* unused harmony export DeprecatedI18NPipesModule */
-/* unused harmony export NgClass */
-/* unused harmony export NgForOf */
-/* unused harmony export NgForOfContext */
-/* unused harmony export NgIf */
-/* unused harmony export NgIfContext */
-/* unused harmony export NgPlural */
-/* unused harmony export NgPluralCase */
-/* unused harmony export NgStyle */
-/* unused harmony export NgSwitch */
-/* unused harmony export NgSwitchCase */
-/* unused harmony export NgSwitchDefault */
-/* unused harmony export NgTemplateOutlet */
-/* unused harmony export NgComponentOutlet */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DOCUMENT; });
-/* unused harmony export AsyncPipe */
-/* unused harmony export DatePipe */
-/* unused harmony export I18nPluralPipe */
-/* unused harmony export I18nSelectPipe */
-/* unused harmony export JsonPipe */
-/* unused harmony export LowerCasePipe */
-/* unused harmony export CurrencyPipe */
-/* unused harmony export DecimalPipe */
-/* unused harmony export PercentPipe */
-/* unused harmony export SlicePipe */
-/* unused harmony export UpperCasePipe */
-/* unused harmony export TitleCasePipe */
-/* unused harmony export DeprecatedDatePipe */
-/* unused harmony export DeprecatedCurrencyPipe */
-/* unused harmony export DeprecatedDecimalPipe */
-/* unused harmony export DeprecatedPercentPipe */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return PLATFORM_BROWSER_ID; });
-/* unused harmony export ɵPLATFORM_SERVER_ID */
-/* unused harmony export ɵPLATFORM_WORKER_APP_ID */
-/* unused harmony export ɵPLATFORM_WORKER_UI_ID */
-/* unused harmony export isPlatformBrowser */
-/* unused harmony export isPlatformServer */
-/* unused harmony export isPlatformWorkerApp */
-/* unused harmony export isPlatformWorkerUi */
-/* unused harmony export VERSION */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return PlatformLocation; });
-/* unused harmony export LOCATION_INITIALIZED */
-/* unused harmony export LocationStrategy */
-/* unused harmony export APP_BASE_HREF */
-/* unused harmony export HashLocationStrategy */
-/* unused harmony export PathLocationStrategy */
-/* unused harmony export Location */
-/* unused harmony export ɵe */
-/* unused harmony export ɵd */
-/* unused harmony export ɵa */
-/* unused harmony export ɵb */
-/* unused harmony export ɵg */
-/* unused harmony export ɵf */
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵregisterLocaleData", function() { return registerLocaleData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgLocaleLocalization", function() { return NgLocaleLocalization; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgLocalization", function() { return NgLocalization; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registerLocaleData", function() { return registerLocaleData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Plural", function() { return Plural; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NumberFormatStyle", function() { return NumberFormatStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FormStyle", function() { return FormStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TranslationWidth", function() { return TranslationWidth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FormatWidth", function() { return FormatWidth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NumberSymbol", function() { return NumberSymbol; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WeekDay", function() { return WeekDay; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCurrencySymbol", function() { return getCurrencySymbol; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleDayPeriods", function() { return getLocaleDayPeriods; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleDayNames", function() { return getLocaleDayNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleMonthNames", function() { return getLocaleMonthNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleId", function() { return getLocaleId; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleEraNames", function() { return getLocaleEraNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleWeekEndRange", function() { return getLocaleWeekEndRange; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleFirstDayOfWeek", function() { return getLocaleFirstDayOfWeek; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleDateFormat", function() { return getLocaleDateFormat; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleDateTimeFormat", function() { return getLocaleDateTimeFormat; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleExtraDayPeriodRules", function() { return getLocaleExtraDayPeriodRules; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleExtraDayPeriods", function() { return getLocaleExtraDayPeriods; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocalePluralCase", function() { return getLocalePluralCase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleTimeFormat", function() { return getLocaleTimeFormat; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleNumberSymbol", function() { return getLocaleNumberSymbol; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleNumberFormat", function() { return getLocaleNumberFormat; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleCurrencyName", function() { return getLocaleCurrencyName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLocaleCurrencySymbol", function() { return getLocaleCurrencySymbol; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵparseCookieValue", function() { return parseCookieValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CommonModule", function() { return CommonModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeprecatedI18NPipesModule", function() { return DeprecatedI18NPipesModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgClass", function() { return NgClass; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgForOf", function() { return NgForOf; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgForOfContext", function() { return NgForOfContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgIf", function() { return NgIf; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgIfContext", function() { return NgIfContext; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgPlural", function() { return NgPlural; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgPluralCase", function() { return NgPluralCase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgStyle", function() { return NgStyle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgSwitch", function() { return NgSwitch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgSwitchCase", function() { return NgSwitchCase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgSwitchDefault", function() { return NgSwitchDefault; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgTemplateOutlet", function() { return NgTemplateOutlet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NgComponentOutlet", function() { return NgComponentOutlet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DOCUMENT", function() { return DOCUMENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AsyncPipe", function() { return AsyncPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DatePipe", function() { return DatePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I18nPluralPipe", function() { return I18nPluralPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I18nSelectPipe", function() { return I18nSelectPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "JsonPipe", function() { return JsonPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LowerCasePipe", function() { return LowerCasePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CurrencyPipe", function() { return CurrencyPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DecimalPipe", function() { return DecimalPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PercentPipe", function() { return PercentPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SlicePipe", function() { return SlicePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UpperCasePipe", function() { return UpperCasePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TitleCasePipe", function() { return TitleCasePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeprecatedDatePipe", function() { return DeprecatedDatePipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeprecatedCurrencyPipe", function() { return DeprecatedCurrencyPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeprecatedDecimalPipe", function() { return DeprecatedDecimalPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeprecatedPercentPipe", function() { return DeprecatedPercentPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵPLATFORM_BROWSER_ID", function() { return PLATFORM_BROWSER_ID; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵPLATFORM_SERVER_ID", function() { return PLATFORM_SERVER_ID; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵPLATFORM_WORKER_APP_ID", function() { return PLATFORM_WORKER_APP_ID; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵPLATFORM_WORKER_UI_ID", function() { return PLATFORM_WORKER_UI_ID; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPlatformBrowser", function() { return isPlatformBrowser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPlatformServer", function() { return isPlatformServer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPlatformWorkerApp", function() { return isPlatformWorkerApp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPlatformWorkerUi", function() { return isPlatformWorkerUi; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VERSION", function() { return VERSION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlatformLocation", function() { return PlatformLocation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOCATION_INITIALIZED", function() { return LOCATION_INITIALIZED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LocationStrategy", function() { return LocationStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "APP_BASE_HREF", function() { return APP_BASE_HREF; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HashLocationStrategy", function() { return HashLocationStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PathLocationStrategy", function() { return PathLocationStrategy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Location", function() { return Location; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵe", function() { return COMMON_DIRECTIVES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵd", function() { return findLocaleData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵa", function() { return DEPRECATED_PLURAL_FN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵb", function() { return getPluralCase; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵg", function() { return COMMON_DEPRECATED_I18N_PIPES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ɵf", function() { return COMMON_PIPES; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_tslib__ = __webpack_require__(6);
 /**
@@ -36194,17 +36188,49 @@ module.exports = charenc;
 
 "use strict";
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+var core_1 = __webpack_require__(4);
+var common_1 = __webpack_require__(34);
 var static_1 = __webpack_require__(18);
 //controllers
 var alertcontroller_1 = __webpack_require__(173);
 //services
 var alertservice_1 = __webpack_require__(174);
+var AlertModule = /** @class */ (function () {
+    function AlertModule() {
+    }
+    AlertModule = __decorate([
+        core_1.NgModule({
+            declarations: [],
+            providers: [
+                // Register an Angular provider whose value is the "upgraded" AngularJS service
+                alertservice_1.AlertService
+            ],
+            // All components that are to be "downgraded" must be declared as `entryComponents`
+            // We must import `UpgradeModule` to get access to the AngularJS core services
+            imports: [common_1.CommonModule, static_1.UpgradeModule]
+        }),
+        __metadata("design:paramtypes", [])
+    ], AlertModule);
+    return AlertModule;
+}());
+exports.AlertModule = AlertModule;
 var alertmodule = angular.module('hibachi.alert', [])
     //controllers
     .controller('alertController', alertcontroller_1.AlertController)
     //services
-    .factory('alertService', static_1.downgradeInjectable(alertservice_1.AlertService));
+    .service('alertService', static_1.downgradeInjectable(alertservice_1.AlertService));
 exports.alertmodule = alertmodule;
 
 
@@ -38152,7 +38178,7 @@ var INTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS = [
         useValue: { providers: [{ provide: __WEBPACK_IMPORTED_MODULE_0__angular_compiler__["s" /* ResourceLoader */], useClass: ResourceLoaderImpl, deps: [] }] },
         multi: true
     },
-    { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["PLATFORM_ID"], useValue: __WEBPACK_IMPORTED_MODULE_2__angular_common__["d" /* ɵPLATFORM_BROWSER_ID */] },
+    { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["PLATFORM_ID"], useValue: __WEBPACK_IMPORTED_MODULE_2__angular_common__["ɵPLATFORM_BROWSER_ID"] },
 ];
 
 /**
@@ -74749,31 +74775,27 @@ var platform_browser_1 = __webpack_require__(17);
 var static_1 = __webpack_require__(18);
 var bootstrap_1 = __webpack_require__(68);
 var herodetail_component_1 = __webpack_require__(46);
+var slatwalladmin_module_1 = __webpack_require__(178);
+var alert_module_1 = __webpack_require__(38);
 var AppModule = /** @class */ (function () {
-    //@ngInject
     function AppModule(upgrade) {
         this.upgrade = upgrade;
     }
     AppModule.prototype.ngDoBootstrap = function () {
         var _this = this;
-        console.log('test');
-        var appData = new bootstrap_1.bootstrapper();
-        console.log('test2');
-        appData.resolve(function () {
-            console.log('test3');
-            try {
-                _this.upgrade.bootstrap(document.body, ['slatwalladmin'], { strictdi: true });
-            }
-            catch (e) {
-                console.log('test4');
-            }
+        var bootstrapperInstance = new bootstrap_1.bootstrapper();
+        bootstrapperInstance.fetchData().then(function () {
+            //console.log('test');
+            _this.upgrade.bootstrap(document.body, [slatwalladmin_module_1.slatwalladminmodule.name]);
+            console.log(_this.upgrade);
         });
     };
     AppModule = __decorate([
         core_1.NgModule({
             imports: [
                 platform_browser_1.BrowserModule,
-                static_1.UpgradeModule
+                static_1.UpgradeModule,
+                alert_module_1.AlertModule
             ],
             declarations: [
                 herodetail_component_1.HeroDetailComponent
@@ -74849,6 +74871,45 @@ var BaseBootStrapper = /** @class */ (function () {
     function BaseBootStrapper(myApplication) {
         var _this = this;
         this._resourceBundle = {};
+        this.fetchData = function () {
+            var baseURL = hibachiConfig.baseURL;
+            if (!baseURL) {
+                baseURL = '';
+            }
+            if (baseURL.length && baseURL.slice(-1) !== '/') {
+                baseURL += '/';
+            }
+            return _this.getInstantiationKey(baseURL).then(function (instantiationKey) {
+                _this.instantiationKey = instantiationKey;
+                var invalidCache = [];
+                try {
+                    var hashedData = localStorage.getItem('attributeChecksum');
+                    if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
+                        core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
+                    }
+                    else {
+                        invalidCache.push('attributeCacheKey');
+                    }
+                }
+                catch (e) {
+                    invalidCache.push('attributeCacheKey');
+                }
+                try {
+                    _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                    if (hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
+                        core_module_1.coremodule.constant('appConfig', _this.appConfig);
+                        return _this.getResourceBundles();
+                    }
+                    else {
+                        invalidCache.push('instantiationKey');
+                    }
+                }
+                catch (e) {
+                    invalidCache.push('instantiationKey');
+                }
+                return _this.getData(invalidCache);
+            });
+        };
         this.getInstantiationKey = function (baseURL) {
             return _this.$q(function (resolve, reject) {
                 if (hibachiConfig.instantiationKey) {
@@ -74970,47 +75031,11 @@ var BaseBootStrapper = /** @class */ (function () {
             });
         };
         this.myApplication = myApplication;
-        return angular.lazy(this.myApplication).resolve(['$http', '$q', function ($http, $q) {
-                _this.$http = $http;
-                _this.$q = $q;
-                var baseURL = hibachiConfig.baseURL;
-                if (!baseURL) {
-                    baseURL = '';
-                }
-                if (baseURL.length && baseURL.slice(-1) !== '/') {
-                    baseURL += '/';
-                }
-                return _this.getInstantiationKey(baseURL).then(function (instantiationKey) {
-                    _this.instantiationKey = instantiationKey;
-                    var invalidCache = [];
-                    try {
-                        var hashedData = localStorage.getItem('attributeChecksum');
-                        if (hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()) {
-                            core_module_1.coremodule.constant('attributeMetaData', JSON.parse(localStorage.getItem('attributeMetaData')));
-                        }
-                        else {
-                            invalidCache.push('attributeCacheKey');
-                        }
-                    }
-                    catch (e) {
-                        invalidCache.push('attributeCacheKey');
-                    }
-                    try {
-                        _this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                        if (hibachiConfig.instantiationKey === _this.appConfig.instantiationKey) {
-                            core_module_1.coremodule.constant('appConfig', _this.appConfig);
-                            return _this.getResourceBundles();
-                        }
-                        else {
-                            invalidCache.push('instantiationKey');
-                        }
-                    }
-                    catch (e) {
-                        invalidCache.push('instantiationKey');
-                    }
-                    return _this.getData(invalidCache);
-                });
-            }]);
+        var initInjector = angular.injector(["ng"]);
+        var $http = initInjector.get("$http");
+        var $q = initInjector.get("$q");
+        this.$http = $http;
+        this.$q = $q;
     }
     return BaseBootStrapper;
 }());
@@ -86011,8 +86036,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var alert_1 = __webpack_require__(175);
 var core_1 = __webpack_require__(4);
 var AlertService = /** @class */ (function () {
-    function AlertService(alerts) {
-        this.alerts = alerts;
+    function AlertService() {
         this.alerts = [];
     }
     AlertService.prototype.newAlert = function () {
@@ -86077,7 +86101,7 @@ var AlertService = /** @class */ (function () {
     };
     AlertService = __decorate([
         core_1.Injectable(),
-        __metadata("design:paramtypes", [Array])
+        __metadata("design:paramtypes", [])
     ], AlertService);
     return AlertService;
 }());

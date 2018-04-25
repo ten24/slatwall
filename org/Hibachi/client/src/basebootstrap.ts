@@ -16,48 +16,51 @@ export class BaseBootStrapper{
 
     constructor(myApplication){
         this.myApplication = myApplication;
-        
-        return angular.lazy(this.myApplication).resolve(['$http','$q', ($http,$q)=> {
-            this.$http = $http;
-            this.$q = $q;
-            var baseURL = hibachiConfig.baseURL;
-            if(!baseURL) {
-                baseURL = ''
-            }
-            if(baseURL.length && baseURL.slice(-1) !== '/'){
-                baseURL += '/';
-            }
+        var initInjector = angular.injector(["ng"]);
+        var $http = initInjector.get("$http");
+        var $q = initInjector.get("$q");
+        this.$http = $http;
+        this.$q = $q;
+    }
+    
+    fetchData = ()=>{
+        var baseURL = hibachiConfig.baseURL;
+        if(!baseURL) {
+            baseURL = ''
+        }
+        if(baseURL.length && baseURL.slice(-1) !== '/'){
+            baseURL += '/';
+        }
 
-           return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
-                this.instantiationKey = instantiationKey;
-                var invalidCache = [];
-                try{
-                    var hashedData = localStorage.getItem('attributeChecksum');
-                    if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
-                        coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
-                    }else{
-                        invalidCache.push('attributeCacheKey');
-                    }
-                }catch(e){
+       return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
+            this.instantiationKey = instantiationKey;
+            var invalidCache = [];
+            try{
+                var hashedData = localStorage.getItem('attributeChecksum');
+                if(hashedData !== null && hibachiConfig.attributeCacheKey === hashedData.toUpperCase()){
+                    coremodule.constant('attributeMetaData',JSON.parse(localStorage.getItem('attributeMetaData')));
+                }else{
                     invalidCache.push('attributeCacheKey');
                 }
+            }catch(e){
+                invalidCache.push('attributeCacheKey');
+            }
 
-                try{
-                    this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
-                    if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
-                        coremodule.constant('appConfig', this.appConfig);
-                        return this.getResourceBundles();
-                    }else{
-                        invalidCache.push('instantiationKey');
-                    }
-                }catch(e){
+            try{
+                this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+                if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
+                    coremodule.constant('appConfig', this.appConfig);
+                    return this.getResourceBundles();
+                }else{
                     invalidCache.push('instantiationKey');
                 }
+            }catch(e){
+                invalidCache.push('instantiationKey');
+            }
 
-                return this.getData(invalidCache);
-            });
-      }])
-
+            return this.getData(invalidCache);
+        });
+        
     }
 
     getInstantiationKey=(baseURL:string):ng.IPromise<any>=>{

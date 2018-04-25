@@ -31,7 +31,6 @@ var appConfig = {
             'zone.js':'../../../../node_modules/zone.js/dist/zone.js',
             'date': '../lib/date/date.min.js',
             'angular': '../lib/angular/angular.min.js',
-            'angular-lazy-bootstrap':'../lib/angular-lazy-bootstrap/bootstrap.js',
             'ui.bootstrap':'../lib/angular-ui-bootstrap/ui.bootstrap.min.js',
             'angular-resource':'../lib/angular/angular-resource.min.js',
             'angular-cookies':'../lib/angular/angular-cookies.min.js',
@@ -41,7 +40,8 @@ var appConfig = {
             'metismenu':'../lib/metismenu/metismenu.js',
             'angularjs-datetime-picker':'../lib/angularjs-datetime-picker/angularjs-datetime-picker.js',
             'jquery-typewatch':'../../HibachiAssets/js/jquery-typewatch-2.0.js',
-            'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js'
+            'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js',
+            "@angular/upgrade/static": "@angular/upgrade/bundles/upgrade-static.umd.js"
         },
     },
     module: {
@@ -53,7 +53,12 @@ var appConfig = {
 	},
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({name:"vendor", filename:"vendor.bundle.js"}),
-        new webpack.SourceMapDevToolPlugin({filename:'vendor.bundle.js.map'})
+        new webpack.SourceMapDevToolPlugin({filename:'vendor.bundle.js.map'}),
+        new webpack.ContextReplacementPlugin(
+          // The (\\|\/) piece accounts for path separators in *nix and Windows
+          /angular(\\|\/)core(\\|\/)(@angular|esm5)/,
+          path.resolve(__dirname, '../src')
+        )
     ]
 
 };

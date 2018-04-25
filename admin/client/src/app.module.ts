@@ -3,10 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { UpgradeModule } from '@angular/upgrade/static';
 import { bootstrapper } from './bootstrap';
 import { HeroDetailComponent } from './slatwall/components/herodetail.component';
+import { slatwalladminmodule } from './slatwall/slatwalladmin.module';
+import {AlertModule} from "../../../org/Hibachi/client/src/alert/alert.module";
 @NgModule({
   imports: [
     BrowserModule,
-    UpgradeModule
+    UpgradeModule,
+    AlertModule
   ],
   declarations:[
       HeroDetailComponent
@@ -14,23 +17,15 @@ import { HeroDetailComponent } from './slatwall/components/herodetail.component'
   entryComponents: [
     HeroDetailComponent
   ]
-  
 })
 export class AppModule {
-    //@ngInject
   constructor(private upgrade: UpgradeModule) { }
   ngDoBootstrap() {
-      console.log('test');
-     var appData:any = new bootstrapper();
-     console.log('test2');
-     appData.resolve(()=>{
-          console.log('test3');
-          try{
-         this.upgrade.bootstrap(document.body,['slatwalladmin'],{strictdi:true});
-          }catch(e){
-              console.log('test4');
-          }
-         
+     var bootstrapperInstance:any = new bootstrapper();
+     bootstrapperInstance.fetchData().then(()=>{
+         //console.log('test');
+        this.upgrade.bootstrap(document.body,[slatwalladminmodule.name]);
+        console.log(this.upgrade);
      });
   }
 }
