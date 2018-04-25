@@ -15,20 +15,23 @@
 	
 	<cfoutput>
 		<script>
+			
+			var stripSpecialCharacters = function(string){
+				return string.replace(/[^a-zA-Z ]/g, "");
+			};
+			
 			var updateApplyHref = function(id,baseBuildUrl){
+				console.log('heeere');
 	        	var minValue = $('##min'+id).val() || '';
 	            var maxValue = $('##max'+id).val() || '';
 	            
 //	            remove previous params
+
 				var urlAndQueryParams = window.location.toString().split('?');
-				var queryParams = []; 
-				if(urlAndQueryParams.length>1){ 
-					queryParams = urlAndQueryParams[1].split("&");
-				}
-				
+				var queryParams = urlAndQueryParams[1].split("&");
 				var baseBuildUrlExistsFlag = false;
 				for(var i = 0; i < queryParams.length; i++){
-					if(queryParams[i].indexOf(baseBuildUrl)>-1){
+					if(stripSpecialCharacters(queryParams[i]).indexOf(stripSpecialCharacters(baseBuildUrl)) !== -1){
 						queryParams[i] = baseBuildUrl + minValue + "^" + maxValue;
 						baseBuildUrlExistsFlag = true;
 					}
