@@ -2256,15 +2256,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
 	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
 		var logicalOperator = "";
+		
+		var hasEmptyBeginningFilterGroup = false;
+		
 		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
 			getCollectionConfigStruct()['filterGroups'] = [];
 		}else if(arraylen(getCollectionConfigStruct()['filterGroups'])){
 			//if filter group is empty ignore it otherwise make a logicaloperator
-			// if(structKeyExists(getCollectionConfigStruct()['filterGroups'][1],'filterGroup') && !arrayLen(getCollectionConfigStruct()['filterGroups'][1].filterGroup)){
-				
-			// }else{
+			if(structKeyExists(getCollectionConfigStruct()['filterGroups'][1],'filterGroup') && !arrayLen(getCollectionConfigStruct()['filterGroups'][1].filterGroup)){
+				hasEmptyBeginningFilterGroup = true;			
+			}else{
 				logicalOperator = 'AND';
-			// }
+			}
 		}
 		
 
@@ -2289,11 +2292,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					filterGroup['logicalOperator'] = logicalOperator;
 				}
 				if(!len(filterGroupAlias) || !hasFilterGroupByFilterGroupAlias(filterGroupAlias)){
-					arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
+					if(hasEmptyBeginningFilterGroup){
+						getCollectionConfigStruct()['filterGroups'][1] = filterGroup;
+						hasEmptyBeginningFilterGroup = false;
+					}else{
+						
+						arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
+					}
 				}
 			}
 		}
-		
 	}
 	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
 
