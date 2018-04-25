@@ -159,7 +159,7 @@
 						<cfset optionDataStruct['value'] = optionPair['value']/>
 						
 						<cfset optionPairCollectionList = attributes.collectionList.duplicateCollection()/>
-						<cfset optionPairCollectionList.setDisplayProperties('color')/>
+						<cfset optionPairCollectionList.setDisplayProperties(attributes.propertyIdentifier)/>
 						<cfset optionPairCollectionList.addFilter(attributes.propertyIdentifier,optionPair['value'])/>
 						<cfset optionPairCollectionList.setDirtyReadFlag(true)/>
 						
