@@ -5,9 +5,12 @@
 	</cfif>
 	<cfparam name="attributes.collectionList" type="any" default="" />
 	<cfparam name="attributes.filterCountDisplayTemplate" type="any" default="./tagtemplates/hibachifiltercountdisplay.cfm" />
+	<cfparam name="attributes.filterCountDisplayItemTemplate" type="any" default="" />
 	<cfparam name="attributes.template" type="any" default="" />
 	<cfparam name="thistag.filterCountGroups" type="array" default="#arrayNew(1)#" />
-	
+	<cfif len(attributes.template) && !len(attributes.filterCountDisplayItemTemplate) >
+		<cfset attributes.filterCountDisplayItemTemplate = attributes.template />
+	</cfif>
 <cfelse>
 	
 	<cfoutput>
