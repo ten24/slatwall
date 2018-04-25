@@ -93,8 +93,8 @@ component extends="HibachiService" accessors="true" {
                         retrieveFromS3Args.objectKey = arguments.snsPayload.message.receipt.action.objectKey;
                         retrieveFromS3Args.bucketName = arguments.snsPayload.message.receipt.action.bucketName;
                         retrieveFromS3Args.objectKeyPrefix = arguments.snsPayload.message.receipt.action.objectKeyPrefix;
-                        retrieveFromS3Args.awsAccessKeyId = 'AKIAIZJJONX5S3FCSKAA';
-                        retrieveFromS3Args.awsSecretAccessKey = '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';
+                        retrieveFromS3Args.awsAccessKeyId = '';
+                        retrieveFromS3Args.awsSecretAccessKey = '';
                         retrieveFromS3Args.deleteS3ObjectAfter = false;
 
                         arguments.snsPayload.s3FileData = getHibachiUtilityService().retrieveFromS3(argumentCollection = retrieveFromS3Args);
