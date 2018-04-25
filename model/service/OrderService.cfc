@@ -1655,6 +1655,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 								// Look for 'auto' order fulfillments
 								createOrderDeliveriesForAutoFulfillmentMethod(arguments.order);
+
+								// Flush again to really lock in that order status change
+								getHibachiDAO().flushORMSession();
 								
 								for(var orderItem in order.getOrderItems()){
 									if(!isNull(orderItem.getStock())){
