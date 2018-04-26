@@ -212,7 +212,7 @@ component extends="testbox.system.BaseSpec"{
 	public any function getHibachiUtilityServiceMock(){
 		//var settingService = createMock('Slatwall.model.service.settingService');
 		var settingService = this.getSettingServiceMock();
-		var hibachiTagService = createMock('Slatwall.org.hibachi.HibachiTagService');
+		var hibachiTagService = createMock('Slatwall.org.Hibachi.HibachiTagService');
 
 		var hibachiUtilityService = onMissingMethod('getHibachiUtilityServiceMock',{});
 
@@ -323,7 +323,7 @@ component extends="testbox.system.BaseSpec"{
 	}
 
 	public any function getSkuDAOMock() {
-		var hibachiCacheService = createMock('Slatwall.org.hibachi.HibachiCacheService');
+		var hibachiCacheService = createMock('Slatwall.org.Hibachi.HibachiCacheService');
 		hibachiCacheService.init();
 
 		var skuDAOMock = this.onMissingMethod('getSkuDAOMock',{});
