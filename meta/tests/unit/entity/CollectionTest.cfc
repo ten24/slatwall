@@ -591,7 +591,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		productCollectionList.addOrderBy('productName|asc');
 		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==1);
-		productCollectionList.addOrderBy('productDesc|DESC');
+		productCollectionList.addOrderBy('productDescription|DESC');
 		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==2);
 		productCollectionList.removeOrderBy('productName|asc');
 		assertEquals('YES', arrayLen(productCollectionList.getCollectionConfigStruct().orderBy)==1);
@@ -1108,7 +1108,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('productName');
 		myCollection.addDisplayAggregate('skus.price','SUM','skuPriceSum');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('productDesc|asc');
+		myCollection.addOrderBy('productDescription|asc');
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
 
@@ -1171,7 +1171,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('productName');
 		myCollection.addDisplayAggregate('skus','count','skuCount');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('productDesc|asc');
+		myCollection.addOrderBy('productDescription|asc');
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
 
@@ -1248,7 +1248,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('productName');
 		myCollection.addDisplayAggregate('skus.price','AVG','skuPriceAvg');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('productDesc|asc');
+		myCollection.addOrderBy('productDescription|asc');
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
 
@@ -1325,7 +1325,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('productName');
 		myCollection.addDisplayAggregate('skus.price','MIN','skuPriceMin');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('productDesc|asc');
+		//will throw and not add
+		try{
+			myCollection.addOrderBy('productDesc|asc');
+		}catch(any e){}
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
 
@@ -1402,7 +1405,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('productName');
 		myCollection.addDisplayAggregate('skus.price','MAX','skuPriceMax');
 		myCollection.addFilter('productDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('productDesc|asc');
+		myCollection.addOrderBy('productDescription|asc');
 		assertFalse(FindNoCase("createdDateTime",myCollection.getHQL()));
 	}
 
@@ -1442,23 +1445,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('skuName');
 		myCollection.addDisplayAggregate('price','SUM','priceSum');
 		myCollection.addFilter('skuDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('skuDesc|asc');
+		myCollection.addOrderBy('skuCode|DESC');
 
 		var myCollectionNew = productWithSkus.getskusCollectionlist();
 		myCollectionNew.setDisplayProperties('skuCode');
 		myCollectionNew.addDisplayAggregate('price','AVG','priceAvg');
 		myCollectionNew.addFilter('skuName',uniqueNumberForDescription);
-		myCollectionNew.addOrderBy('skuDesc|desc');
-
+		myCollectionNew.addOrderBy('skuCode|DESC');
 		// assertions for mycollection
 		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollection.getHQL()));
 		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollection.getHQL()));
-		assertTrue(FindNoCase("_sku.skuDesc desc",myCollection.getHQL()));
+		assertTrue(FindNoCase("_sku.skuCode desc",myCollection.getHQL()));
 
 		// assertions for mycollectionNew
 		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollectionNew.getHQL()));
 		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollectionNew.getHQL()));
-		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
+		assertTrue(FindNoCase("_sku.skuCode desc",myCollectionNew.getHQL()));
 	}
 
 	/**
@@ -1496,23 +1498,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('skuName');
 		myCollection.addDisplayAggregate('price','SUM','priceSum');
 		myCollection.addFilter('skuDescription',uniqueNumberForDescription);
-		myCollection.addOrderBy('skuDesc|asc');
 
 		var myCollectionNew = productWithSkus.getskusCollectionlist(isNew=true);
 		myCollectionNew.setDisplayProperties('skuCode');
 		myCollectionNew.addDisplayAggregate('price','AVG','priceAvg');
 		myCollectionNew.addFilter('skuName',uniqueNumberForDescription);
-		myCollectionNew.addOrderBy('skuDesc|desc');
 
 		// assertions for mycollection
 		assertTrue(FindNoCase("_sku.skuName as skuName",myCollection.getHQL()));
 		asserttrue(FindNoCase("SUM(COALESCE(_sku.price,0)) as priceSum",myCollection.getHQL()));
-		assertTrue(FindNoCase("_sku.skuDesc asc",myCollection.getHQL()));
 
 		// assertions for mycollectionNew
 		assertTrue(FindNoCase("_sku.skuCode as skuCode",myCollectionNew.getHQL()));
 		asserttrue(FindNoCase("AVG(COALESCE(_sku.price,0)) as priceAvg",myCollectionNew.getHQL()));
-		assertTrue(FindNoCase("_sku.skuDesc desc",myCollectionNew.getHQL()));
 	}
 
 	/**
@@ -1549,10 +1547,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var myCollection = productWithSkus.getskusCollectionlist();
 		myCollection.setDisplayProperties('skuName');
-		myCollection.addOrderBy('skuDesc|asc');
-		myCollection.addOrderBy('skuDesc|desc');
-		assertTrue(FindNoCase("_sku.skuDesc desc",myCollection.getHQL())); // contains skuDesc|desc in hql
-		assertFalse(FindNoCase("_sku.skuDesc asc",myCollection.getHQL())); // donot contains skuDesc|asc in hql
+		myCollection.addOrderBy('skuCode|asc');
+		myCollection.addOrderBy('skuCode|desc');
+		assertTrue(FindNoCase("_sku.skuCode desc",myCollection.getHQL())); // contains skuDesc|desc in hql
+		assertFalse(FindNoCase("_sku.skuCode asc",myCollection.getHQL())); // donot contains skuDesc|asc in hql
 	}
 
 	/**
