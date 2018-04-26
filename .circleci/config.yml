@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     machine: true
@@ -40,10 +41,19 @@ jobs:
   deploy:
     - steps:
       - run: meta/ci/version_merge.sh
+      
 workflows:
   version: 2
-  build_and_deploy:
+  build-and-deploy:
     jobs:
       - build
-      - deploy
-      
+      - deploy:
+          requires:
+            - build
+            filters:
+              branches:
+                only: 
+                  - master
+                  - hotfix
+                  - develop 
+                  - /develop-.*/
