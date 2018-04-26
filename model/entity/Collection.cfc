@@ -3208,6 +3208,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public boolean function hasGroupBys(){
+		getGroupBys();
 		if (
 			structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
 			||
@@ -3312,7 +3313,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				variables.groupBys = groupByList;
 			}
-		} else {
+		} 
+		if(structKeyExists(variables,'groupBys')){
 			return variables.groupBys;
 		}
 	}
