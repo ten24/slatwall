@@ -2607,6 +2607,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
+	
 
 		applyPermissions();
 		if(!structKeyExists(variables, "recordsCount") || !structKeyExists(variables,'recordsCountData')) {
@@ -2629,6 +2630,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
+						
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						
 						var recordCount = 0;
@@ -2947,9 +2949,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var countHQLSuffix = "";
 		if(
 			hasAggregateFilter() 
-			|| (
-				structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-			)
+			|| hasGroupBys()
 		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
@@ -2961,9 +2961,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
-				|| (
-					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-				)
+				||
+				hasGroupBys()
 			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
@@ -2974,9 +2973,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalSumAggregate in variables.totalSumAggregates){
 			if(
 				hasAggregateFilter() 
-				|| (
-					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-				)
+				||
+				hasGroupBys()
 			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
@@ -3209,7 +3207,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 	
-	public void function getGroupBys(){
+	public boolean function hasGroupBys(){
+		getGroupBys();
+		if (
+			structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
+			||
+			(structKeyExists(variables,'groupBys') && len(variables['groupBys']))
+		){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public any function getGroupBys(){
 		if(!structKeyExists(variables,'groupBys')){
 			if(isReport()){
 				
@@ -3302,8 +3313,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				variables.groupBys = groupByList;
 			}
+		} 
+		if(structKeyExists(variables,'groupBys')){
+			return variables.groupBys;
 		}
-		
 	}
 
 	public any function createHQLFromCollectionObject(required any collectionObject,
