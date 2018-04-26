@@ -35,17 +35,23 @@
 	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+	<cfif structKeyExists(url,'keywords')>
+		<cfset productCollectionList.setKeywords(url.keywords) />
+	</cfif>
     <cfset productCollectionList.addFilter("activeFlag",1)>
+
     <cfset productCollectionList.addFilter("publishedFlag",1)>
     <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />
-    <cfset productCollectionList.setDisplayProperties("urlTitle,productType.productTypeName,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
+    <cfset productCollectionList.setDisplayProperties("productDescription,urlTitle,productType.productTypeName,productType.urlTitle,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
+    <cfset productCollectionList.addDisplayProperty(displayProperty="productName",columnConfig={isVisible=true, isSearchable=true, isDeletable=true}) />
     <!--- This allows filters applied to collection list --->
     <cfset productCollectionList.applyData()>
     <cfset productCollection = productCollectionList.getPageRecords()>
 
     <div class="row mb-4">
         <div class="col-sm-3">
-            <h6><strong>215</strong> Available Products</h6>
+        	<!--- ternary operator displays char 's' if there's more than one product --->
+            <h6><strong>#arrayLen(productCollection)#</strong> Available Product#arrayLen(productCollection) GT 1 ? 's' : '' #</h6>
         </div>
         <div class="col-sm-6">
             <a href="##" class="badge badge-secondary">Category &times;</a>
@@ -88,16 +94,20 @@
 		        		<div class="col-lg-4 col-md-6 mb-4">
 		    				<div class="card h-100">
 		    					<!--- Get resized image profile --->
-		    					<cfset local.mediumimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.product['defaultSku_skuID']#","medium") />                                    <a href="/product/#local.product['urlTitle']#">
+		    					<cfset local.mediumimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.product['defaultSku_skuID']#","medium") />
+		    					<a href="/product/#local.product['urlTitle']#">
 								<cfif arrayLen(local.mediumimages)>
 								    <a href="/sp/#local.product['urlTitle']#">
 								        <img src="#local.mediumimages[1]#" class="img-fluid" alt="#local.product['productName']#" />
 								    </a>
 								</cfif>
 		    					<div class="card-body">
-		                            <small><a href="##" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
-		                            <h4><a href="/sp/#local.product['urlTitle']#">#local.product['productName']#Item One</a></h4>
-		                            <s class="float-right">#local.product['defaultSku_listPrice']#</s>
+		                            <small><a href="/sp/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
+		                            <h4><a href="/sp/#local.product['urlTitle']#">#local.product['productName']#</a></h4>
+		                            <!--- Only displays crossed out list price if it's greater than actual price --->
+		                            <cfif local.product['defaultSku_listPrice'] GT local.product['defaultSku_price']>
+		                            	<s class="float-right">#local.product['defaultSku_listPrice']#</s>
+		                            </cfif>
 		    						<h5>#local.product['defaultSku_price']#</h5>
 		    						#local.product['productDescription']#
 		    					</div>
@@ -121,15 +131,15 @@
             <sw:SlatwallCollectionPagination collection="#productCollectionList#" slatwallScope="#$.slatwall#"></sw:SlatwallCollectionPagination>
             
             <!--- Example Pagination Markup --->
-        	<nav class="mt-5">
-				<ul class="pagination">
-					<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>
-			    	<li class="page-item active"><a class="page-link" href="##">1</a></li>
-			    	<li class="page-item"><a class="page-link" href="##">2</a></li>
-			    	<li class="page-item"><a class="page-link" href="##">3</a></li>
-			    	<li class="page-item"><a class="page-link" href="##">Next</a></li>
-				</ul>
-			</nav>
+   <!---     	<nav class="mt-5">--->
+			<!---	<ul class="pagination">--->
+			<!---		<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>--->
+			<!---    	<li class="page-item active"><a class="page-link" href="##">1</a></li>--->
+			<!---    	<li class="page-item"><a class="page-link" href="##">2</a></li>--->
+			<!---    	<li class="page-item"><a class="page-link" href="##">3</a></li>--->
+			<!---    	<li class="page-item"><a class="page-link" href="##">Next</a></li>--->
+			<!---	</ul>--->
+			<!--</nav>--->
     	</div>
     </div>
 </div>
