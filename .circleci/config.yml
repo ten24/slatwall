@@ -39,7 +39,7 @@ jobs:
       - store_artifacts:
           path: /tmp/circleci-test-results
   deploy:
-    - steps:
+    steps:
       - run: meta/ci/version_merge.sh
       
 workflows:
@@ -47,4 +47,13 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      
+      - deploy:
+          requires:
+            - build
+              filters:
+                branches:
+                  only: 
+                    - master
+                    - hotfix
+                    - develop 
+                    - /develop-.*/
