@@ -82,16 +82,14 @@ class SWCriteriaRelatedObject{
                 $log.debug(scope.filterPropertiesList);
 
                 scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
-                    if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
-                        var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
-                        filterPropertiesPromise.then(function(value){
-                            scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
-                            metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+                    filterPropertiesPromise.then(function(value){
+                        scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
 
-                        }, function(reason){
+                    }, function(reason){
 
-                        });
-                    }
+                    });
 
                     scope.selectedCriteriaChanged = function(selectedCriteria, selectedAggregate?){
                         var breadCrumb = {
