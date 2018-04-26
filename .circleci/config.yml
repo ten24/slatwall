@@ -37,7 +37,7 @@ jobs:
           path: /tmp/circleci-artifacts
       - store_artifacts:
           path: /tmp/circleci-test-results
-  deploy:
+  deploy: 
     - run: meta/ci/version_merge.sh
 workflows:
   version: 2
