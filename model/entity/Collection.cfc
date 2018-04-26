@@ -2607,6 +2607,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
+	
 
 		applyPermissions();
 		if(!structKeyExists(variables, "recordsCount") || !structKeyExists(variables,'recordsCountData')) {
@@ -2629,6 +2630,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
+						
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						
 						var recordCount = 0;
@@ -2950,6 +2952,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			|| (
 				structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
 			)
+			|| (
+				structKeyExists(variables,'groupBys') && len(variables['groupBys'])
+			)
 		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
@@ -2963,7 +2968,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				hasAggregateFilter() 
 				|| (
 					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-				)
+				)|| (
+				structKeyExists(variables,'groupBys') && len(variables['groupBys'])
+			)
 			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
@@ -2976,7 +2983,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				hasAggregateFilter() 
 				|| (
 					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-				)
+				)|| (
+				structKeyExists(variables,'groupBys') && len(variables['groupBys'])
+			)
 			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
