@@ -22,9 +22,9 @@ jobs:
       - run: sudo mkdir -p meta/tests/testresults/xml/integration
       - run: sudo chmod -R 777 meta/tests/testresults
       - run:
-        command: if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --tunnel-identifier $CIRCLE_BUILD_NUM; fi
-        background: true
-    # This is based on your 1.0 configuration file or project settings
+          command: if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --tunnel-identifier $CIRCLE_BUILD_NUM; fi
+          background: true
+      # This is based on your 1.0 configuration file or project settings
       - run:
-        command: cd meta/docker/slatwall-ci && docker-compose exec slatwallweb ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";
-        no_output_timeout: 1800s
+          command: cd meta/docker/slatwall-ci && docker-compose exec slatwallweb ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";
+          no_output_timeout: 1800s
