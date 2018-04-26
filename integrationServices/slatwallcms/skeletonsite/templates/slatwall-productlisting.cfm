@@ -46,7 +46,6 @@
     <!----- Add additional fields here to enhance search scope ---->
     <cfset productCollectionList.addDisplayProperty(displayProperty="productName",columnConfig={isVisible=true, isSearchable=true, isDeletable=true}) />
     <!--- This allows filters applied to collection list --->
-    <cfset productCollectionList.setPageRecordsShow(1) />
     <cfset productCollectionList.applyData()>
     <cfset productCollection = productCollectionList.getPageRecords()>
     
