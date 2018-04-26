@@ -151,7 +151,7 @@ Notes:
 					</cfif>
 					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="billingAccountAddress" valueoptions="#rc.accountPaymentMethod.getBillingAccountAddressOptions(url.accountID)#" edit="#rc.edit#"/>
 					
-					<!--- Credit Card Details --->TTTT
+					<!--- Credit Card Details --->
 					<hb:HibachiDisplayToggle selector="select[name='billingAccountAddress.accountAddressID']" showValues="new" >
 						<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
 						<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
