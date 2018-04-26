@@ -65,11 +65,10 @@
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|ASC',false )#">Name - A to Z</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|DESC',false )#">Name - Z to A</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - A to Z</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - A to Z</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|DESC',false )#">Brand - Z to A</a>
 				</div>
 			</div>
         </div>
