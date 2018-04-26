@@ -33,12 +33,12 @@
 				</cfif>
 			</cfif>
 			<!--- function removes existing query param if you pass it in --->
-			<a href="#$.slatwall.getService('hibachiCollectionService').buildURL( '#queryParam#=#unformattedValue#' )#" class="badge badge-secondary"> #value# &times;</a>
+			<a href="#$.slatwall.getService('hibachiCollectionService').buildURL( '#queryParam#=#unformattedValue#' )#" class="badge badge-secondary"> #$.slatwall.getService('hibachiUtilityService').hibachiHTMLEditFormat(value)# &times;</a>
 		</cfloop>
 	  	</cfif>
 </cfloop>
 <!--- remove all saved query params --->
 <cfif len(allFiltersAndValues)>
-	<a href="#$.slatwall.getService('hibachiCollectionService').buildURL('#allFiltersAndValues#')#" class="badge badge-danger">Clear All &times;</a>  
+	<a href="#$.slatwall.getService('hibachiCollectionService').buildURL('#htmlEditFormat(allFiltersAndValues)#')#" class="badge badge-danger">Clear All &times;</a>  
 </cfif>
 </cfoutput>
