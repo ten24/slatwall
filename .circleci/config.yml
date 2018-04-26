@@ -38,6 +38,8 @@ jobs:
       - store_artifacts:
           path: /tmp/circleci-test-results
   deploy:
+    machine: true
+    - checkout
     - steps:
       - run: meta/ci/version_merge.sh
 workflows:
