@@ -2241,12 +2241,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
 	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
 		var logicalOperator = "";
+		
+		var hasEmptyBeginningFilterGroup = false;
+		
 		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
 			getCollectionConfigStruct()['filterGroups'] = [];
 		}else if(arraylen(getCollectionConfigStruct()['filterGroups'])){
 			//if filter group is empty ignore it otherwise make a logicaloperator
 			if(structKeyExists(getCollectionConfigStruct()['filterGroups'][1],'filterGroup') && !arrayLen(getCollectionConfigStruct()['filterGroups'][1].filterGroup)){
-				
+				hasEmptyBeginningFilterGroup = true;			
 			}else{
 				logicalOperator = 'AND';
 			}
@@ -2274,11 +2277,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					filterGroup['logicalOperator'] = logicalOperator;
 				}
 				if(!len(filterGroupAlias) || !hasFilterGroupByFilterGroupAlias(filterGroupAlias)){
-					arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
+					if(hasEmptyBeginningFilterGroup){
+						getCollectionConfigStruct()['filterGroups'][1] = filterGroup;
+						hasEmptyBeginningFilterGroup = false;
+					}else{
+						
+						arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
+					}
 				}
 			}
 		}
-		
 	}
 	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
 
@@ -2567,6 +2575,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getRecordsCountData(){
 		if(!structkeyExists(variables,'recordsCountData')){
 			getRecordsCount();
+			if(!structkeyExists(variables,'recordsCountData')){
+				variables.recordsCountData['recordsCount'] = 0;	
+			}
 		}
 	
 		return variables.recordsCountData;
@@ -2601,15 +2612,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						
-						var recordCount = recordsCountData['recordsCount'];
+						var recordCount = 0;
+						
+						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){
+							recordCount = variables.recordsCountData['recordsCount'];
+						}
+						
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
 						}
 
 					}
-					if(isNull(recordCount)){
-						recordCount = 0;
-					}
+
 					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};
