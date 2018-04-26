@@ -7,4 +7,4 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     steps: 
       - checkout
-      - run: echo "A first hello"
+      - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
