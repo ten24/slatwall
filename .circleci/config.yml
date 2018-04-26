@@ -42,7 +42,7 @@ jobs:
       - run: meta/ci/version_merge.sh
 workflows:
   version: 2
-  build-and-deploy:
+  build_and_deploy:
     jobs:
       - build
       
