@@ -3053,8 +3053,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
-
-				}
+					
+				} else if(
+					structKeyExists(column, 'isVisible') && column.isVisible
+				){ 
+					columnsHQL &= " #column.propertyIdentifier# as #columnAlias#";
+					addingColumn = true;
+				} 
 				//check whether a comma is needed
 				if(i != columnCount && addingColumn){
 					columnsHQL &= ',';
