@@ -54,10 +54,7 @@
             <h6><strong>#arrayLen(productCollection)#</strong> Available Product#arrayLen(productCollection) GT 1 ? 's' : '' #</h6>
         </div>
         <div class="col-sm-6">
-            <a href="##" class="badge badge-secondary">Category &times;</a>
-            <a href="##" class="badge badge-secondary">Price &times;</a>
-            <a href="##" class="badge badge-secondary">Type &times;</a>
-            <a href="##" class="badge badge-danger">Clear All &times;</a>
+    		<cfinclude template="inc/productListingUrlFilterBadges.cfm">
         </div>
         
         <div class="col-sm-2 offset-md-1">

@@ -68,8 +68,7 @@
 				/>
 				
 				<hb:HibachiFilterCountDisplayItem
-		 			propertyIdentifier="skus.options"
-		 			discriminatorProperty="optionGroup"
+		 			propertyIdentifier="skus.options.optionName"
 		 			inversePropertyIdentifier="skus.product"
 		 			title="Options"
 		 		/>
