@@ -48,4 +48,10 @@ workflows:
       - deploy
         requires:
           - build
-          
+          filters:
+            branches:
+              only: 
+                - master
+                - hotfix
+                - develop 
+                - /develop-.*/
