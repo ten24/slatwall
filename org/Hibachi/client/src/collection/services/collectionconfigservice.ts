@@ -185,7 +185,7 @@ class CollectionConfig {
     };
 
     public clone= () =>{
-        return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(JSON.parse(JSON.stringify(this.getCollectionConfig())));
+        return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(JSON.parse(angular.toJson(this.getCollectionConfig())));
     }
 
     public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
@@ -217,7 +217,8 @@ class CollectionConfig {
             allRecords: this.allRecords,
             dirtyRead: this.dirtyRead,
             isDistinct: this.isDistinct,
-            orderBy:this.orderBy
+            orderBy:this.orderBy,
+            periodInterval:this.periodInterval
         };
     };
 
@@ -329,7 +330,7 @@ class CollectionConfig {
     };
 
     public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
-        if(!this.columns || options.aggregate != null || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
+        if(!this.columns || this.isReport() || options.aggregate != null || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
                 isSearchable = true,
@@ -495,7 +496,9 @@ class CollectionConfig {
         hidden:boolean=false,
         isKeywordFilter=true,
         isOnlyKeywordFilter=false,
-        filterGroupAlias? : string)
+        filterGroupAlias? : string,
+        filterGroupLogicalOperator:string='AND'
+        )
         :CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
             logicalOperator = undefined;
@@ -505,16 +508,26 @@ class CollectionConfig {
             this.processJoin(propertyIdentifier);
         }
 		//create filter
+		
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
         var filterGroupIndex = 0;
         if(filterGroupAlias){
-            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias);
+            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias,filterGroupLogicalOperator);
         }
+        
         if(!isOnlyKeywordFilter){
-            this.filterGroups[filterGroupIndex].filterGroup.push(filter);
+            if(filterGroupIndex == 0){
+                this.filterGroups[filterGroupIndex].filterGroup.push(filter);
+            }else{
+                this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
+            }
         }
         if(isKeywordFilter){
-            this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
+            if(filterGroupIndex == 0){
+                this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
+            }else{
+                //this.keywordFilterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
+            }
         }
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
@@ -584,7 +597,7 @@ class CollectionConfig {
             filterGroup:[],
             logicalOperator: 'AND'
         };
-        for(var i =  0; i < filterGroup.length; i++){
+        for(var i =  0; i <= filterGroup.length-1; i++){
             var filter = this.createFilter(
                 filterGroup[i].propertyIdentifier,
                 filterGroup[i].comparisonValue,
@@ -601,7 +614,7 @@ class CollectionConfig {
         });
         return this;
     };
-    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator?:string) => {
+    public formatFilterGroup = (filterGroup:any, filterGroupLogicalOperator:string) => {
         var group = {
             filterGroup:[]
         };
@@ -632,7 +645,7 @@ class CollectionConfig {
         return this.filterGroupAliasMap[filterGroupAlias];
     };
 
-    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator:string):number =>{
+    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator?:string):number =>{
         var newFilterGroup = {"filterGroup": []};
         if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
             newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
@@ -640,7 +653,7 @@ class CollectionConfig {
             newFilterGroup["logicalOperator"] = "AND";
         }
         this.filterGroups[0].filterGroup.push(newFilterGroup);
-        return this.filterGroups[0].filterGroup.length -1;
+        return this.filterGroups[0].filterGroup.length-1;
     };
 
     public upsertFilterGroup = (filterGroupName:string, filterGroup:any):CollectionConfig=>{
@@ -809,6 +822,15 @@ class CollectionConfig {
         });
         return false;
     };
+    
+    public getPeriodColumnFromColumns(columns:any){
+        for(var i in columns){
+            var column = columns[i];
+            if(column.isPeriod){
+                return column;
+            }            
+        }
+    }
 
     public setCurrentPage= (pageNumber):CollectionConfig =>{
         this.currentPage = pageNumber;
@@ -889,7 +911,12 @@ class CollectionConfig {
         }else if(angular.isArray(filter.filterGroup)){
             this.validateFilter(filter.filterGroup,filter.filterGroup);
         }else{
-            if((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)){
+            if(
+                (
+                    (!filter.comparisonOperator || !filter.comparisonOperator.length) 
+                    && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)
+                ) 
+            ){
                 var index = currentGroup.indexOf(filter);
                 if(index > -1) {
                     this.notify('filterItemAction', {

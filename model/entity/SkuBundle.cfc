@@ -67,13 +67,19 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Non-Persistent Properties
 	property name="measurementUnitOptions" persistent="false";
 
-	public numeric function getBundleQATS(string locationID){
-		if(structKeyExists(arguments,'locationID') && len(arguments.locationID)){
-			var skuQATS = getBundledSku().getQuantity(quantityType='QATS',locationID=locationID);
-		}else{
-			var skuQATS = getBundledSku().getQATS();
+	public numeric function getBundleQATS(string locationID=''){
+		
+		var locationArray = getService('LocationService').getLocationOptions(arguments.locationID);
+		var skuQATS = 0;
+		var bundleQATS = 0;
+		
+		for (var location in locationArray){
+			skuQATS = getBundledSku().getQuantity(quantityType='QATS',locationID=location['value']);
+			if ( skuQATS > 0){
+				bundleQATS += ( int(convertNativeToBundledUnits(skuQATS) / getBundledQuantity()) );
+			}
 		}
-		var bundleQATS = int(convertNativeToBundledUnits(skuQATS) / getBundledQuantity());
+		
 		return bundleQATS;
 	}
 

@@ -70,6 +70,9 @@ component entityname="SlatwallPhysical" table="SwPhysical" output="false" persis
 	
 	// Related Object Properties (many-to-many - inverse)
 	
+	// Related Object Properties (one-to-one)
+	property name="cycleCountBatch" cfc="CycleCountBatch"fieldtype="one-to-one" mappedby="physical";
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
