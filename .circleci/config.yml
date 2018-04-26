@@ -39,5 +39,12 @@ jobs:
           path: /tmp/circleci-test-results
   deploy:
     - run: meta/ci/version_merge.sh
-
-  
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy
+        requires:
+          - build
+        
