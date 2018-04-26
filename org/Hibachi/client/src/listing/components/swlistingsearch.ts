@@ -154,12 +154,10 @@ class SWListingSearchController {
                 this.collectionNameSaveIsOpen = false;
                 this.hasPersonalCollections=false;
             });
-            return
+            return;
         }
 
         this.collectionNameSaveIsOpen = true;
-
-
     }
 
     public getPersonalCollections = ()=>{
@@ -168,6 +166,7 @@ class SWListingSearchController {
             personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
             personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
+            personalCollectionList.addFilter('reportFlag',0);
             if(angular.isDefined(this.personalCollectionIdentifier)){
                 personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
             }

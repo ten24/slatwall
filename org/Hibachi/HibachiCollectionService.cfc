@@ -812,7 +812,6 @@ component output="false" accessors="true" extends="HibachiService" {
 					}
 				}
 			}
-
 			if(structKeyExists(collectionOptions,'joinsConfig') && len(collectionOptions.joinsConfig)){
 				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(collectionOptions.joinsConfig);
 

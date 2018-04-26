@@ -49,7 +49,6 @@ Notes:
 
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
-
 <cfoutput>
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
@@ -180,6 +179,8 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listinventoryanalysis" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcyclecountgroup" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcyclecountbatch" type="list">
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listminmaxsetup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listminmaxstocktransfer" type="list">
