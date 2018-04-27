@@ -65,6 +65,9 @@ component entityname="SlatwallPhysicalCountItem" table="SwPhysicalCountItem" per
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
+
+	// Related Object Properties (one-to-one)
+	property name="cycleCountBatchItem" cfc="CycleCountBatchItem"fieldtype="one-to-one" mappedby="physicalCountItem";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";

@@ -586,11 +586,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 
 			// TODO: Add Retry Logic
-			if(!isNull(order.getOrderNumber())){
-				arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getOrderNumber()# - #order.getStatus()#</a>');
-			} else {
-				arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getStatus()#</a>');
+			var errorResponseMessage = rbKey('validate.processSubscriptionUsage_renew.order.newFlag');
+			
+			// TODO: Add Retry Logic
+			if (getHibachiScope().getAccount().getAdminAccountFlag()){
+				if( !isNull(order.getOrderNumber()) ){
+					errorResponseMessage = errorResponseMessage	& ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getOrderNumber()# - #order.getStatus()#</a>';
+				}else{
+					errorResponseMessage = errorResponseMessage	& ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getStatus()#</a>';
+				}
 			}
+			
+			arguments.subscriptionUsage.addError('renew', errorResponseMessage);
 		}
 
 		return arguments.subscriptionUsage;

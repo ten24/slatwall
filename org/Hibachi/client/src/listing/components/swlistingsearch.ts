@@ -51,12 +51,20 @@ class SWListingSearchController {
 
         if(this.swListingControls.showPrintOptions){
             //load the options
+            
+            //this will prevent icon from flashing on action bar
+            this.swListingControls.showPrintOptions=false
+            
             var printTemplateOptionsCollection = this.collectionConfig.newCollectionConfig('PrintTemplate');
             printTemplateOptionsCollection.addFilter('printTemplateObject', this.swListingDisplay.collectionConfig.baseEntityName);
             printTemplateOptionsCollection.setAllRecords(true); 
             printTemplateOptionsCollection.getEntity().then(
                 (response)=>{
+                    
                     this.printTemplateOptions = response.records; 
+                    if (this.printTemplateOptions.length !== 0) {
+                        this.swListingControls.showPrintOptions=true;
+                    }
                 }, 
                 (reason)=>{
                     throw("swListingSearch couldn't load printTemplateOptions because: " + reason);
@@ -154,12 +162,10 @@ class SWListingSearchController {
                 this.collectionNameSaveIsOpen = false;
                 this.hasPersonalCollections=false;
             });
-            return
+            return;
         }
 
         this.collectionNameSaveIsOpen = true;
-
-
     }
 
     public getPersonalCollections = ()=>{
@@ -168,6 +174,7 @@ class SWListingSearchController {
             personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
             personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
+            personalCollectionList.addFilter('reportFlag',0);
             if(angular.isDefined(this.personalCollectionIdentifier)){
                 personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
             }

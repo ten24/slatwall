@@ -50,12 +50,10 @@
 		<cfif structKeyExists(THISTAG.Parent.attributes,'collectionlist') && isObject(THISTAG.Parent.attributes.collectionlist)>
 			<cfset attributes.collectionList = THISTAG.Parent.attributes.collectionList/> 
 		</cfif>
-		<cfif !structKeyExists(attributes,'template') && structKeyExists(THISTAG.Parent.attributes,'template') && len(THISTAG.Parent.attributes.template)>
-			<cfset attributes.template = THISTAG.Parent.attributes.template/>
-			
+ 		<cfif !structKeyExists(attributes,'template') && structKeyExists(THISTAG.Parent.attributes,'filterCountDisplayItemTemplate') && len(THISTAG.Parent.attributes.filterCountDisplayItemTemplate)>
+			<cfset attributes.template = THISTAG.Parent.attributes.filterCountDisplayItemTemplate />
 		</cfif>
 				
-	
 		<!--- object collection list will be based on if you want an implied list --->
 		<cfparam name="attributes.entityName" default=""/>
 		<!--- what property are we counting --->
@@ -161,7 +159,7 @@
 						<cfset optionDataStruct['value'] = optionPair['value']/>
 						
 						<cfset optionPairCollectionList = attributes.collectionList.duplicateCollection()/>
-						<cfset optionPairCollectionList.setDisplayProperties('color')/>
+						<cfset optionPairCollectionList.setDisplayProperties(attributes.propertyIdentifier)/>
 						<cfset optionPairCollectionList.addFilter(attributes.propertyIdentifier,optionPair['value'])/>
 						<cfset optionPairCollectionList.setDirtyReadFlag(true)/>
 						

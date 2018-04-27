@@ -485,9 +485,14 @@ class SWListingDisplayController{
     }
     public hasNumerical=()=>{
         // Iterate over columns, find out if we have any numericals and return
-        return this.columns.reduce((totalNumericalCols, col) => {
-            return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
-        });
+        if(this.columns.length){
+            return this.columns.reduce((totalNumericalCols, col) => {
+                return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
+            });    
+        }else{
+            return false;
+        }
+        
     }
 
     public columnOrderByIndex = (column) =>{

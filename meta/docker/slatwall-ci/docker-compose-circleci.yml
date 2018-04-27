@@ -15,7 +15,7 @@ slatwallweb:
    LUCEE_PASSWORD: CiPassword
    LUCEE_JAVA_OPTS: -Xms1024m -Xmx1024m
 slatwalldb:
-  image: mysql
+  image: mysql:5
   environment:
    MYSQL_ROOT_PASSWORD : CiPassword
    MYSQL_DATABASE : Slatwall
