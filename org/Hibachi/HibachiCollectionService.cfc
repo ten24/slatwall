@@ -520,7 +520,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		for(var key in oldQueryKeys) {
 			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
 				if(!structKeyExists(newQueryKeys, key)) {
-					modifiedURL &= "#getHibachiUtilityService().hibachiHTMLEditFormat(key)#=#getHibachiUtilityService().hibachiHTMLEditFormat(oldQueryKeys[key])#&";
+					modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 				} else {
 					if(arguments.toggleKeys && structKeyExists(oldQueryKeys, key) && structKeyExists(newQueryKeys, key) && oldQueryKeys[key] == newQueryKeys[key]) {
 						structDelete(newQueryKeys, key);
@@ -541,9 +541,9 @@ component output="false" accessors="true" extends="HibachiService" {
 							}
 						}
 						if(len(oldQueryKeys[key]) && len(newQueryKeys[key])) {
-								modifiedURL &= "#getHibachiUtilityService().hibachiHTMLEditFormat(key)#=#getHibachiUtilityService().hibachiHTMLEditFormat(oldQueryKeys[key])##delimiter##getHibachiUtilityService().hibachiHTMLEditFormat(newQueryKeys[key])#&";
+								modifiedURL &= "#key#=#oldQueryKeys[key]##delimiter##newQueryKeys[key]#&";
 						} else if(len(oldQueryKeys[key])) {
-							modifiedURL &= "#getHibachiUtilityService().hibachiHTMLEditFormat(key)#=#getHibachiUtilityService().hibachiHTMLEditFormat(oldQueryKeys[key])#&";
+							modifiedURL &= "#key#=#oldQueryKeys[key]#&";
 						}
 						structDelete(newQueryKeys, key);
 					}
@@ -554,24 +554,24 @@ component output="false" accessors="true" extends="HibachiService" {
 		// Get all keys and values from the additional query string added
 		for(var key in newQueryKeys) {
 			if(key != "P#variables.dataKeyDelimiter#Current" && key != "P#variables.dataKeyDelimiter#Start" && key != "P#variables.dataKeyDelimiter#Show") {
-				modifiedURL &= "#getHibachiUtilityService().hibachiHTMLEditFormat(key)#=#getHibachiUtilityService().hibachiHTMLEditFormat(newQueryKeys[key])#&";
+				modifiedURL &= "#key#=#newQueryKeys[key]#&";
 			}
 		}
 
 		if(!structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show")) {
 			// Add the correct page start
 			if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Start") ) {
-				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#getHibachiUtilityService().hibachiHTMLEditFormat(newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ])#&";
+				modifiedURL &= "P#variables.dataKeyDelimiter#Start=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Start' ]#&";
 			} else if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Current") ) {
-				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#getHibachiUtilityService().hibachiHTMLEditFormat(newQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ])#&";
+				modifiedURL &= "P#variables.dataKeyDelimiter#Current=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Current' ]#&";
 			}
 		}
 
 		// Add the correct page show
 		if( structKeyExists(newQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
-			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#getHibachiUtilityService().hibachiHTMLEditFormat(newQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ])#&";
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#newQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
 		} else if( structKeyExists(oldQueryKeys, "P#variables.dataKeyDelimiter#Show") ) {
-			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#getHibachiUtilityService().hibachiHTMLEditFormat(oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ])#&";
+			modifiedURL &= "P#variables.dataKeyDelimiter#Show=#oldQueryKeys[ 'P#variables.dataKeyDelimiter#Show' ]#&";
 		}
 
 		if(right(modifiedURL, 1) eq "&") {
