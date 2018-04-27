@@ -42,15 +42,15 @@
 			<script>
 				//we'll only do this after DOM is rendered
 				$(document).ready(function() {
-					//the input checkbox in tags/tagtemplates/filterCountDisplay.cfm has the same value as query param + value, so it's easy to find
-	    			var inputID = $('input[value="#local.queryParam#=#local.unformattedValue#"]')[0].id;
+					//the input checkbox in tags/tagtemplates/filterCountDisplay.cfm has a data-identifer attribute as the id
+	    			var inputID = $('input[data-identifier="#local.value#"]')[0].id;
 					//make sure the input's label has a 'for' attribute pointing to it in the filterCountDisplay.cfm template
 					var labelText = $('label[for="' + inputID + '"').text();
 					//let's set the badge's text to the same from the label. The <a> tag ID is set below
-					$('###local.unformattedValue#-badge').text(labelText);
+					$('###local.value#-badge').text(labelText);
 				});
 			</script>
-			<!--- let's make this badge text empty, because it'll display for a second before the whole DOM renders ---->
+			<!--- let's make this input empty, because it'll display for a second before the whole DOM renders ---->
 			<cfset local.value = '' />
 			</cfif>
 			<!--- function removes existing query param if you pass it in --->
