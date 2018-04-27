@@ -49,7 +49,7 @@
 										checked
 									</cfif>
 			                		>
-			                	<label class="form-check-label">#option['name']#</label>
+			                	<label class="form-check-label" for="#arguments.title##option['name']#">#option['name']#</label>
 							</cfif>
 						</cfif>
 						</div>
