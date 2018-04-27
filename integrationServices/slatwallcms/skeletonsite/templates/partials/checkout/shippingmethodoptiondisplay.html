@@ -6,7 +6,8 @@
 			    <!-- Add save shipping method to API and add public service method in slatwall... -->
 			    <p class="shippingMethodOption" 
 			    ng-repeat="option in slatwall.cart.orderFulfillments[fulfillmentIndex].data.shippingMethodOptions track by $index" 
-			    ng-click="slatwall.selectShippingMethod(option, fulfillmentIndex)">
+			    ng-click="slatwall.selectShippingMethod(option, fulfillmentIndex)"
+			    ng-if="option.value != 'Courier'">
 			    	<span class="loader-wrapper" ng-show="slatwall.loadingThisRequest('addShippingMethodUsingShippingMethodID',{fulfillmentID:fulfillmentID,shippingMethodID:option.value})">
 						<i class="fa fa-spinner fa-spin fa-fw"></i>
 					</span>

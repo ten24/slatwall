@@ -62,6 +62,7 @@ Notes:
 		<swa:SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
 		<swa:SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
 		<swa:SlatwallSetting settingName="accountLockMinutes" />
+		<swa:SlatwallSetting settingName="accountDisableGravatars"/>
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
 			<swa:SlatwallSetting settingName="accountDisplayTemplate" settingFilterEntities="#[site]#" />

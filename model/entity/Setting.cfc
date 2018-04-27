@@ -59,8 +59,10 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="cmsContentID" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
+	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID";
 	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
 	property name="email" cfc="Email" fieldtype="many-to-one" fkcolumn="emailID";
 	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";

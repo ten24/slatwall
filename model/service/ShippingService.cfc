@@ -1,5 +1,5 @@
 /*
-
+ 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
@@ -55,7 +55,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
-		var shippingMethodRatesSmartList = shippingMethod.getShippingMethodRatesSmartList();
+		var shippingMethodRatesSmartList = getService('shippingService').getShippingMethodRateSmartList();
+		shippingMethodRatesSmartList.addFilter('shippingMethod.shippingMethodID',shippingMethod.getShippingMethodID());
 		shippingMethodRatesSmartList.addFilter('activeFlag',1);
 		
 		var subTotalAfterDiscounts = arguments.orderFulfillment.getSubtotalAfterDiscounts();
@@ -67,7 +68,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #totalShippingWeight#');
 		
 		var totalShippingQuantity = arguments.orderFulfillment.getTotalShippingQuantity();
-		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentQuantity,0) <= #totalShippingQuantity#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentQuantity,0) <= :totalShippingQuantity', {totalShippingQuantity=totalShippingQuantity} );
 		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentQuantity,100000000) >= #totalShippingQuantity#');
 		
 		var records = shippingMethodRatesSmartList.getRecords();
@@ -112,17 +113,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return mergedRatesResponseBean;	
 	} 
 	
-	public struct function getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment){
+	public array function getShippingMethodRatesRequestBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment ){
+		var integrationsCount = arrayLen(arguments.integrations); 
+		var ratesRequestBeans = [];
+		for(var i=1; i<=integrationsCount; i++) {
+			var ratesRequestBean = getTransient("ShippingRatesRequestBean");
+			ratesRequestBean.populateWithOrderFulfillment(arguments.orderFulfillment);
+			arrayAppend(ratesRequestBeans,ratesRequestBean);
+		}
+		return ratesRequestBeans;
+	}
+	
+	public struct function getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(required array integrations, required any orderFulfillment, required ratesRequestBeans){
 		var responseBeans = {};
 		var integrationsCount = arrayLen(arguments.integrations); 
+		
 		for(var i=1; i<=integrationsCount; i++) {
 
 			// Get the integrations shipping.cfc object
 			var integrationShippingAPI = arguments.integrations[i].getIntegrationCFC("shipping");
 
 			// Create rates request bean and populate it with the orderFulfillment Info
-			var ratesRequestBean = getTransient("ShippingRatesRequestBean");
-			ratesRequestBean.populateWithOrderFulfillment(arguments.orderFulfillment);
+			var ratesRequestBean = arguments.ratesRequestBeans[i];
 
 			var splitShipmentFlag = false;
 			var splitShipmentWeights = [];  
@@ -243,14 +255,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			priceGroupsSmartList.addFilter('shippingMethodRates.shippingMethodRateID',arguments.shippingMethodRate.getShippingMethodRateID()); 
 			priceGroups = priceGroupsSmartList.getRecords();
 		}
+		
 		// check to make sure that this rate applies to the current orderFulfillment
-		if(
-			isShippingMethodRateUsable(
-				arguments.shippingMethodRate, 
-				arguments.orderFulfillment.getShippingAddress(), 
-				priceGroups
-			)
-		) {
+		var useAddressZone = false;
+		if (!isNull(orderFulfillment.getAddressZone())){
+			useAddressZone = true;
+		}
+		// Check using address
+		if(!useAddressZone && isShippingMethodRateUsable(arguments.shippingMethodRate, arguments.orderFulfillment.getShippingAddress(), priceGroups)) {
+			return arguments.shippingMethodRate.getShippingIntegration();
+		}
+		// Check using address zone
+		if(useAddressZone && isShippingMethodRateUsable(arguments.shippingMethodRate, orderFulfillment.getAddressZone(), priceGroups)) {
 			return arguments.shippingMethodRate.getShippingIntegration();
 		}
 	}	
@@ -329,14 +345,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
 					priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
 				}
-				if (isShippingMethodRateUsable(
-						shippingMethodRate,
-						arguments.orderFulfillment.getShippingAddress(), 
-						priceGroups)){
-							
-							var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
-							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+				
+				// check to make sure that this rate applies to the current orderFulfillment
+				var useAddressZone = false;
+				if (!isNull(orderFulfillment.getAddressZone())){
+					useAddressZone = true;
 				}
+				// Check using address
+				if(!useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment.getShippingAddress(), priceGroups)) {
+						var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
+						arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+				}
+				// Check using address zone
+				if(useAddressZone && isShippingMethodRateUsable(shippingMethodRate, orderFulfillment.getAddressZone(), priceGroups)) {
+						var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate, chargeAmount);
+						arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+				}
+			
 				
 			// If we got a response bean from the shipping integration then find those details inside the response
 			}else{
@@ -356,7 +381,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(methodResponse.getShippingProviderMethod() == shippingMethodRate.getShippingIntegrationMethod()) {
 							var qualifiedRateOption = newQualifiedRateOption(
 								shippingMethodRate,
-								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate),
+								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate, arguments.orderFulfillment),
 								false, 
 								thisResponseBean
 							);
@@ -374,11 +399,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
 					}
 					// check to make sure that this rate applies to the current orderFulfillment
-					if (isShippingMethodRateUsable(
-						shippingMethodRate,
-						arguments.orderFulfillment.getShippingAddress(), 
-						priceGroups)){
-							
+					var useAddressZone = false;
+					if (!isNull(orderFulfillment.getAddressZone())){
+						useAddressZone = true;
+					}
+					// Check using address
+					if(!useAddressZone && isShippingMethodRateUsable(shippingMethodRate, arguments.orderFulfillment.getShippingAddress(), priceGroups)) {
+							var qualifiedRateOption = newQualifiedRateOption(
+							shippingMethodRate,
+							nullReplace(shippingMethodRate.getDefaultAmount(), 0),
+							true);
+							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+					}
+					// Check using address zone
+					if(useAddressZone && isShippingMethodRateUsable(shippingMethodRate, orderFulfillment.getAddressZone(), priceGroups)) {
 							var qualifiedRateOption = newQualifiedRateOption(
 							shippingMethodRate,
 							nullReplace(shippingMethodRate.getDefaultAmount(), 0),
@@ -393,7 +427,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment ) {
-
+		
 		// Container to hold all shipping integrations that are in all the usable rates
 
 		// This will be used later to update existing methodOptions
@@ -404,141 +438,168 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smsl.addFilter('activeFlag', '1');
 		smsl.addOrder("sortOrder|ASC");
 		var shippingMethods = smsl.getRecords();
+
 		var integrations = getIntegrationsByOrderFulfillmentAndShippingMethods(arguments.orderFulfillment, shippingMethods);
-
-		// Loop over all of the shipping integrations and add thier rates response to the 'responseBeans' struct that is key'd by integrationID
-		var shippingMethodRateResponseBeans = getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment);
 		
-		var shippingMethodsCount = arrayLen(shippingMethods);
-		// Loop over the shippingMethods again, and loop over each of the rates to find the quote in the response bean.
-		for(var m=1; m<=shippingMethodsCount; m++) {
-			var shippingMethod = shippingMethods[m];
-			var shippingMethodRates = getShippingMethodRatesByOrderFulfillmentAndShippingMethod(arguments.orderFulfillment,shippingMethod); 
-			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
+		var orderfulfillmentaddress = "";
+		if(!isNull(arguments.orderFulfillment.getShippingAddress())){
+			orderfulfillmentaddress &= arguments.orderFulfillment.getShippingAddress().getFullAddress();
+		}
+		
+		if(!isNull(arguments.orderFulfillment.getAccountAddress())){
+			orderfulfillmentaddress &= arguments.orderFulfillment.getAccountAddress().getAddress().getFullAddress();
+		}
+		
+		if(!isnull(arguments.orderFulfillment.getAddressZone())){
+			orderfulfillmentaddress &= arguments.orderFulfillment.getAddressZone().getAddressZoneCode();
+		}
+		
+		// Loop over all of the shipping integrations and add thier rates response to the 'responseBeans' struct that is key'd by integrationID
+		var shippingMethodRatesRequestBeans = getShippingMethodRatesRequestBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment);
+		var fulfillmentMethodOptionsCacheKey = [];
+		for(var shippingMethodRatesRequestBean in shippingMethodRatesRequestBeans){
+			arrayAppend(fulfillmentMethodOptionsCacheKey,shippingMethodRatesRequestBean.getJSON());
+		}
+		var fulfillmentMethodOptionsCacheKey = hash(serializeJson(fulfillmentMethodOptionsCacheKey)&orderfulfillmentaddress & arguments.orderFulfillment.getOrder().getSubtotalAfterItemDiscounts(),'md5');
+		
+		if(isNull(arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey()) || arguments.orderFulfillment.getFulfillmentMethodOptionsCacheKey() != fulfillmentMethodOptionsCacheKey){
 			
-			var qualifiedRateOptions = [];
 			
+			var shippingMethodRateResponseBeans = getShippingMethodRatesResponseBeansByIntegrationsAndOrderFulfillment(integrations,arguments.orderFulfillment,shippingMethodRatesRequestBeans);
 			
-			var qualifiedRateOptions = getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
-				arguments.orderFulfillment,
-				shippingMethodRates,
-				shippingMethodRateResponseBeans
-			);
-
-			// Create an empty struct to put the rateToUse based on settings
-			var rateToUse = {};
-
-			// If the qualified rate options were returned and then the first one is the rateToUse for right now
-			if(arrayLen(qualifiedRateOptions) gt 0) {
-
-				var rateToUse = qualifiedRateOptions[1];
-			}
-
-			// If the qualified rate options are greater than 1, then we need too loop over them and replace rateToUse with whichever one is best
-			if (arrayLen(qualifiedRateOptions) gt 1) {
-				var qualifiedRateOptionsCount = arrayLen(qualifiedRateOptions);
-				for(var qr=2; qr<=qualifiedRateOptionsCount; qr++) {
-
-					if( (shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'sortOrder' && qualifiedRateOptions[ qr ].shippingMethodRate.getSortOrder() < rateToUse.shippingMethodRate.getSortOrder()) ||
-						(shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'lowest' && qualifiedRateOptions[ qr ].totalCharge < rateToUse.totalCharge) ||
-						(shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'highest' && qualifiedRateOptions[ qr ].totalCharge > rateToUse.totalCharge)	) {
-
-							rateToUse = qualifiedRateOptions[ qr ];
+			var shippingMethodsCount = arrayLen(shippingMethods);
+			// Loop over the shippingMethods again, and loop over each of the rates to find the quote in the response bean.
+			for(var m=1; m<=shippingMethodsCount; m++) {
+				var shippingMethod = shippingMethods[m];
+				var shippingMethodRates = getShippingMethodRatesByOrderFulfillmentAndShippingMethod(arguments.orderFulfillment,shippingMethod); 
+				var shippingMethodRatesCount = arrayLen(shippingMethodRates);
+				
+				var qualifiedRateOptions = [];
+				
+				
+				var qualifiedRateOptions = getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
+					arguments.orderFulfillment,
+					shippingMethodRates,
+					shippingMethodRateResponseBeans
+				);
+	
+				// Create an empty struct to put the rateToUse based on settings
+				var rateToUse = {};
+	
+				// If the qualified rate options were returned and then the first one is the rateToUse for right now
+				if(arrayLen(qualifiedRateOptions) gt 0) {
+	
+					var rateToUse = qualifiedRateOptions[1];
+				}
+	
+				// If the qualified rate options are greater than 1, then we need too loop over them and replace rateToUse with whichever one is best
+				if (arrayLen(qualifiedRateOptions) gt 1) {
+					var qualifiedRateOptionsCount = arrayLen(qualifiedRateOptions);
+					for(var qr=2; qr<=qualifiedRateOptionsCount; qr++) {
+	
+						if( (shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'sortOrder' && qualifiedRateOptions[ qr ].shippingMethodRate.getSortOrder() < rateToUse.shippingMethodRate.getSortOrder()) ||
+							(shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'lowest' && qualifiedRateOptions[ qr ].totalCharge < rateToUse.totalCharge) ||
+							(shippingMethods[m].setting('shippingMethodQualifiedRateSelection') eq 'highest' && qualifiedRateOptions[ qr ].totalCharge > rateToUse.totalCharge)	) {
+	
+								rateToUse = qualifiedRateOptions[ qr ];
+						}
 					}
 				}
-			}
-
-			// If there actually is a rateToUse, then we create a shippingMethodOption
-			if(structCount(rateToUse)) {
-
-				// Add the shippingMethodID to the list of new options
-				shippingMethodIDOptionsList = listAppend(shippingMethodIDOptionsList, rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID());
-
-				// This is just a flag to let us know if we just updated an existing option
-				var optionUpdated = false;
-
-				// If this method already exists in the fulfillment, then just update it and set optionUpdated to true so that we don't create a new one
-				var fullfillmentShippingMethodOptionsCount = arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions());
-				for(var e=1; e<=fullfillmentShippingMethodOptionsCount; e++) {
-					var fulfillmentShippingMethodOption = arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e]; 
-					if(fulfillmentShippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID() == rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID()) {
-						optionUpdated = true;
-
+	
+				// If there actually is a rateToUse, then we create a shippingMethodOption
+				if(structCount(rateToUse)) {
+	
+					// Add the shippingMethodID to the list of new options
+					shippingMethodIDOptionsList = listAppend(shippingMethodIDOptionsList, rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID());
+	
+					// This is just a flag to let us know if we just updated an existing option
+					var optionUpdated = false;
+	
+					// If this method already exists in the fulfillment, then just update it and set optionUpdated to true so that we don't create a new one
+					var fullfillmentShippingMethodOptionsCount = arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions());
+					for(var e=1; e<=fullfillmentShippingMethodOptionsCount; e++) {
+						var fulfillmentShippingMethodOption = arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[e]; 
+						if(fulfillmentShippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID() == rateToUse.shippingMethodRate.getShippingMethod().getShippingMethodID()) {
+							optionUpdated = true;
+	
+							if(structKeyExists(rateToUse, "responseBean") && rateToUse.responseBean.hasShippingMethodOptionSplitShipments()){
+								setShippingMethodOptionOnShippingMethodOptionSplitShipments(fulfillmentShippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
+							} 
+	
+							fulfillmentShippingMethodOption.setTotalCharge( rateToUse.totalCharge );
+							fulfillmentShippingMethodOption.setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
+							fulfillmentShippingMethodOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
+							fulfillmentShippingMethodOption.setShipToPostalCode( arguments.orderFulfillment.getShippingAddress().getPostalCode() );
+							fulfillmentShippingMethodOption.setShipToStateCode( arguments.orderFulfillment.getShippingAddress().getStateCode() );
+							fulfillmentShippingMethodOption.setShipToCountryCode( arguments.orderFulfillment.getShippingAddress().getCountryCode() );
+							fulfillmentShippingMethodOption.setShipToCity( arguments.orderFulfillment.getShippingAddress().getCity() );
+							fulfillmentShippingMethodOption.setShippingMethodRate( rateToUse.shippingMethodRate );
+						}
+					}
+	
+					// If we didn't update an existing option then we need to create a new one.
+					if(!optionUpdated) {
+	
+						var newOption = this.newShippingMethodOption();
+	
+						newOption.setTotalCharge( rateToUse.totalCharge );
+						newOption.setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
+						newOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
+						newOption.setShipToPostalCode( arguments.orderFulfillment.getShippingAddress().getPostalCode() );
+						newOption.setShipToStateCode( arguments.orderFulfillment.getShippingAddress().getStateCode() );
+						newOption.setShipToCountryCode( arguments.orderFulfillment.getShippingAddress().getCountryCode() );
+						newOption.setShipToCity( arguments.orderFulfillment.getShippingAddress().getCity() );
+						newOption.setShippingMethodRate( rateToUse.shippingMethodRate );
+	
+						arguments.orderFulfillment.addFulfillmentShippingMethodOption( newOption );
+	
+						var shippingMethodOption = this.saveShippingMethodOption(newOption);
+						
 						if(structKeyExists(rateToUse, "responseBean") && rateToUse.responseBean.hasShippingMethodOptionSplitShipments()){
-							setShippingMethodOptionOnShippingMethodOptionSplitShipments(fulfillmentShippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
-						} 
-
-						fulfillmentShippingMethodOption.setTotalCharge( rateToUse.totalCharge );
-						fulfillmentShippingMethodOption.setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
-						fulfillmentShippingMethodOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
-						fulfillmentShippingMethodOption.setShipToPostalCode( arguments.orderFulfillment.getShippingAddress().getPostalCode() );
-						fulfillmentShippingMethodOption.setShipToStateCode( arguments.orderFulfillment.getShippingAddress().getStateCode() );
-						fulfillmentShippingMethodOption.setShipToCountryCode( arguments.orderFulfillment.getShippingAddress().getCountryCode() );
-						fulfillmentShippingMethodOption.setShipToCity( arguments.orderFulfillment.getShippingAddress().getCity() );
-						fulfillmentShippingMethodOption.setShippingMethodRate( rateToUse.shippingMethodRate );
+							this.setShippingMethodOptionOnShippingMethodOptionSplitShipments(shippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
+						}
 					}
+	
 				}
-
-				// If we didn't update an existing option then we need to create a new one.
-				if(!optionUpdated) {
-
-					var newOption = this.newShippingMethodOption();
-
-					newOption.setTotalCharge( rateToUse.totalCharge );
-					newOption.setTotalShippingWeight( arguments.orderFulfillment.getTotalShippingWeight() );
-					newOption.setTotalShippingItemPrice( arguments.orderFulfillment.getSubtotalAfterDiscounts() );
-					newOption.setShipToPostalCode( arguments.orderFulfillment.getShippingAddress().getPostalCode() );
-					newOption.setShipToStateCode( arguments.orderFulfillment.getShippingAddress().getStateCode() );
-					newOption.setShipToCountryCode( arguments.orderFulfillment.getShippingAddress().getCountryCode() );
-					newOption.setShipToCity( arguments.orderFulfillment.getShippingAddress().getCity() );
-					newOption.setShippingMethodRate( rateToUse.shippingMethodRate );
-
-					arguments.orderFulfillment.addFulfillmentShippingMethodOption( newOption );
-
-					var shippingMethodOption = this.saveShippingMethodOption(newOption);
-					
-					if(structKeyExists(rateToUse, "responseBean") && rateToUse.responseBean.hasShippingMethodOptionSplitShipments()){
-						this.setShippingMethodOptionOnShippingMethodOptionSplitShipments(shippingMethodOption, rateToUse.responseBean.getShippingMethodOptionSplitShipments()); 
-					}
+			}
+	
+			// If the previously selected shipping method does not exist in the options now, then we just remove it.
+			if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
+				arguments.orderFulfillment.setFulfillmentCharge(0);
+				arguments.orderFulfillment.setShippingMethod(javaCast("null",""));
+			}
+	
+			// Loop over all of the options now in the fulfillment, and do the final clean up
+			var fullfillmentShippingMethodOptionsCount = arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions());
+			for(var c=fullfillmentShippingMethodOptionsCount; c >= 1 ; c--) {
+	
+				// If the shippingMethod was not part of the new methods, then remove it
+				if(!listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID())) {
+					arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
+	
+				// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
+				} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
+						   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
+						   !arguments.orderFulfillment.getManualFulfillmentChargeFlag()
+				) {
+					arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
 				}
-
 			}
-		}
-
-		// If the previously selected shipping method does not exist in the options now, then we just remove it.
-		if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
-			arguments.orderFulfillment.setFulfillmentCharge(0);
-			arguments.orderFulfillment.setShippingMethod(javaCast("null",""));
-		}
-
-		// Loop over all of the options now in the fulfillment, and do the final clean up
-		var fullfillmentShippingMethodOptionsCount = arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions());
-		for(var c=fullfillmentShippingMethodOptionsCount; c >= 1 ; c--) {
-
-			// If the shippingMethod was not part of the new methods, then remove it
-			if(!listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID())) {
-				arguments.orderFulfillment.removeFulfillmentShippingMethodOption( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c] );
-
-			// Else if this method option is the same shipping method that the user previously selected, then we can just update the fulfillmentCharge, as long as this wasn't set manually.
-			} else if (!isNull(arguments.orderFulfillment.getShippingMethod()) && 
-					   arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getShippingMethodRate().getShippingMethod().getShippingMethodID() == arguments.orderFulfillment.getShippingMethod().getShippingMethodID() && 
-					   !arguments.orderFulfillment.getManualFulfillmentChargeFlag()
-			) {
-				arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[c].getTotalCharge() );
+	
+			// Now if there is no method yet selected, and one shippingMethod exists as an option, we can automatically just select it.
+			if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
+	
+				// Set the method
+				arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
+	
+				// If the fulfillmentCharge wasn't done manually then this can be updated
+				if(!arguments.orderFulfillment.getManualFulfillmentChargeFlag()) {
+					arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getTotalCharge() );
+				}
 			}
+			arguments.orderFulfillment.setfulfillmentMethodOptionsCacheKey(fulfillmentMethodOptionsCacheKey);
 		}
-
-		// Now if there is no method yet selected, and one shippingMethod exists as an option, we can automatically just select it.
-		if(isNull(arguments.orderFulfillment.getShippingMethod()) && arrayLen(arguments.orderFulfillment.getFulfillmentShippingMethodOptions()) == 1) {
-
-			// Set the method
-			arguments.orderFulfillment.setShippingMethod( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getShippingMethodRate().getShippingMethod() );
-
-			// If the fulfillmentCharge wasn't done manually then this can be updated
-			if(!arguments.orderFulfillment.getManualFulfillmentChargeFlag()) {
-				arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getTotalCharge() );
-			}
-		}
+		
 	}
 
 	public void function setShippingMethodOptionOnShippingMethodOptionSplitShipments(required any shippingMethodOption, required array shippingMethodOptionSplitShipments){
@@ -574,8 +635,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, any accountPriceGroups) {
-			
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddressOrAddressZone, any accountPriceGroups) {
+		var useAddressZoneLookup = false;
+		
+		//Check if we are to use an Address Zone to calculate the rate instead of a the shipping address
+        if (shipToAddressOrAddressZone.getEntityName() == "SlatwallAddressZone") {
+        	useAddressZoneLookup = true;
+        }else if(shipToAddressOrAddressZone.getEntityName() == "SlatwallAddress"){
+        	useAddressZoneLookup = false ;
+        }
         
         // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
         //If this rate has price groups assigned but the user does not, then fail.
@@ -601,8 +669,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         	}
         }
         
+        // Make sure that the addresszones match
+        if (useAddressZoneLookup == true && !isNull(arguments.shipToAddressOrAddressZone) && !isNull(arguments.shipToAddressOrAddressZone.getAddressZoneCode()) && arguments.shipToAddressOrAddressZone.getAddressZoneCode() != arguments.shippingMethodRate.getAddressZone().getAddressZoneCode()){
+        	return false;
+        	
         // Make sure that the address is in the address zone
-		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
+        } else if(!useAddressZoneLookup && !isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddressOrAddressZone, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
 		
@@ -610,7 +682,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public numeric function calculateShippingRateAdjustment(required numeric originalAmount, required any shippingMethodRate) {
+	public numeric function calculateShippingRateAdjustment(required numeric originalAmount, required any shippingMethodRate, any ShippingMethodResponseBean) {
 		var returnAmount = arguments.originalAmount;
 		var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
               if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {

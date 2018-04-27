@@ -43,19 +43,39 @@ component accessors="true" output="false" extends="HibachiService" {
 	
 	public any function hasCachedValue( required string key ) {
 		// If using the internal cache, then check there
-		if( getInternalCacheFlag() && structKeyExists(getCache(), arguments.key) && structKeyExists(getCache()[ arguments.key ], "reset") && !getCache()[ arguments.key ].reset ) {
+		if( getInternalCacheFlag() && 
+			structKeyExists(getCache(), arguments.key) && 
+			structKeyExists(getCache()[ arguments.key ], "reset") && 
+			!getCache()[ arguments.key ].reset &&
+			( !structKeyExists(getCache()[ arguments.key ], 'expirationDateTime') ||
+			  getCache()[ arguments.key ].expirationDateTime > now() ) 
+		) {
 			return true;
 			
 		// If using the external cache, then check there
 		} else if ( !getInternalCacheFlag() && getRailoFlag() && cacheKeyExists(arguments.key) ) {
 			var fullValue = cacheGet( arguments.key );
-			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
+			if(!isNull(fullValue) && 
+				isStruct(fullValue) && 
+				structKeyExists(fullValue, "reset") && 
+				!fullValue.reset && 
+				structKeyExists(fullValue, "value") &&
+				( !structKeyExists(fullValue, 'expirationDateTime') ||
+				  fullValue.expirationDateTime > now() ) 
+			) {
 				return true;	
 			}
 			
 		} else if ( !getInternalCacheFlag() ) {
 			var fullValue = cacheGet( arguments.key );
-			if(!isNull(fullValue) && isStruct(fullValue) && structKeyExists(fullValue, "reset") && !fullValue.reset && structKeyExists(fullValue, "value")) {
+			if(!isNull(fullValue) && 
+				isStruct(fullValue) && 
+				structKeyExists(fullValue, "reset") && 
+				!fullValue.reset && 
+				structKeyExists(fullValue, "value")  &&
+				( !structKeyExists(fullValue, 'expirationDateTime') ||
+				  fullValue.expirationDateTime > now() ) 
+			) {
 				return true;
 			}
 			
@@ -91,31 +111,32 @@ component accessors="true" output="false" extends="HibachiService" {
 		
 	public any function getCachedValue( required string key ) {
 		// If using the internal cache, then check there
-		if(getInternalCacheFlag() && structKeyExists(getCache(), key) ) {
+		if(getInternalCacheFlag() && structKeyExists(getCache(), key) && (!structKeyExists(getCache()[key],"expirationDateTime") || getCache()[key].expirationDateTime > now()) ) {
 			return getCache()[ arguments.key ].value;
 			
 		// If using the external cache, then check there
-		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) ) {
+		} else if (!getInternalCacheFlag() && !isNull(cacheGet( arguments.key )) && (!structKeyExists(cacheGet( arguments.key ),"expirationDateTime") || cacheGet( arguments.key ).expirationDateTime > now())  ) {
 			return cacheGet( arguments.key ).value;
-			
 		}
 	}
 	
-	public any function setCachedValue( required string key, required any value ) {
+	public any function setCachedValue( required string key, required any value, date expirationDateTime ) {
 		// If using the internal cache, then set value there
+
+		var dataToCache = {
+			value = arguments.value,
+			reset = false
+		};
+  
+		if(structKeyExists(arguments, "expirationDateTime")){ 
+			dataToCache.expirationDateTime = arguments.expirationDateTime; 
+		} 
+
 		if(getInternalCacheFlag()) {
-			getCache()[ arguments.key ] = {
-				value = arguments.value,
-				reset = false
-			};
-			
+			getCache()[ arguments.key ] = dataToCache;  			
 		// If using the external cache, then set value there
 		} else if (!getInternalCacheFlag()) {
-			cachePut( arguments.key, {
-				value = arguments.value,
-				reset = false
-			});
-			
+			cachePut( arguments.key, dataToCache);
 		}
 	}
 	

@@ -93,7 +93,7 @@ Notes:
 						</tr>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Order Placed</strong></td>
-							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "DD/MM/YYYY")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</td>
+							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"> #DateFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "MM/DD/YYYY")# - #TimeFormat(orderDelivery.getOrder().getOrderOpenDateTime(), "short")#</td>
 						</tr>
 						<tr>
 							<td style="border: 1px solid ##d8d8d8; padding:0px 5px;"><strong>Customer</strong></td>

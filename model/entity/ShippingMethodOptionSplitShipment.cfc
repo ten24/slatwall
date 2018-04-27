@@ -51,7 +51,7 @@ component entityname="SlatwallShippingMethodOptionSplitShipment" table="SwShipMe
 	// Persistent Properties
 	property name="shipMethodOptSplitShipmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="shipmentWeight" ormtype="float"; 
-	property name="shipmentCharge" ormtype="big_decimal"; 
+	property name="shipmentCharge" ormtype="big_decimal" hb_formatType="currency"; 
 
 	property name="shippingMethodOption" cfc="ShippingMethodOption" fieldtype="many-to-one" fkcolumn="shippingMethodOptionID";
 	property name="shipmentOrderItems" singularname="shipmentOrderItem" cfc="OrderItem" fieldtype="many-to-many" linktable="SwShipMethodOptSplitShipOrdItm" fkcolumn="shipMethodOptSplitShipmentID" inversejoincolumn="orderItemID"; 

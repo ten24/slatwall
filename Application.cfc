@@ -86,7 +86,6 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		
 		// SET Database Type
 		request.slatwallScope.setApplicationValue("databaseType", this.ormSettings.dialect);
-		
 		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
 		var beanFactory = getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory( getBeanFactory() );
 		

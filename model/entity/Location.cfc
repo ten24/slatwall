@@ -46,15 +46,17 @@
 Notes:
 
 */
-component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation" {
+component displayname="Location" entityname="SlatwallLocation" table="SwLocation" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="locationService" hb_permission="this" hb_parentPropertyName="parentLocation"  hb_childPropertyName="childLocations" {
 	
 	// Persistent Properties
 	property name="locationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="locationCode" ormtype="string";
 	property name="locationIDPath" ormtype="string";
 	property name="locationName" ormtype="string";
 	property name="activeFlag" ormtype="boolean" ;
 	
 	// Related Object Properties (Many-to-One)
+	property name="currencyCode" ormtype="string" length="3" hb_formFieldType="select";
 	property name="primaryAddress" cfc="LocationAddress" fieldtype="many-to-one" fkcolumn="locationAddressID";
 	property name="parentLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="parentLocationID";
 	
@@ -64,11 +66,18 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
 	property name="childLocations" singularname="childLocation" cfc="Location" fieldtype="one-to-many" inverse="true" fkcolumn="parentLocationID" cascade="all" type="array";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="locationID" cascade="all-delete-orphan" inverse="true";
+	property name="minMaxStockTransferItemToTopLocationIDs" singularname="minMaxStockTransferItemToTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemToLeafLocationIDs" singularname="minMaxStockTransferItemToLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="toLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemFromTopLocationIDs" singularname="minMaxStockTransferItemFromTopLocationIDs" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromTopLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="minMaxStockTransferItemFromLeafLocationIDs" singularname="minMaxStockTransferItemFromLeafLocationID" cfc="MinMaxStockTransferItem" type="array" fieldtype="one-to-many" fkcolumn="locationID" inversejoincolumn="fromLeafLocationID" cascade="all-delete-orphan" inverse="true" lazy="extra";
+	property name="skuLocationQuantities" singularname="skuLocationQuantity" fieldtype="one-to-many" fkcolumn="locationID" cfc="SkuLocationQuantity" inverse="true" cascade="all-delete-orphan";
 
 	// Related Object Properties (Many-to-Many - owner)
+	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwLocationSite" fkcolumn="locationID" inversejoincolumn="siteID";
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
+	property name="cycleCountGroups" singularname="cycleCountGroup" cfc="CycleCountGroup" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocation" fkcolumn="locationID" inversejoincolumn="cycleCountGroupID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -112,13 +121,21 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	//get top level locations 
 	public any function getBaseLocation() {
-		return getService("locationService").getLocation(listFirst(getlocationIDPath())).getLocationName();
+		var baseID = listFirst(getlocationIDPath());
+	
+		var cacheKey = 'location_getBaseLocation#baseID#';
+	
+		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
+			getService('HibachiCacheService').setCachedValue(cacheKey,getService("locationService").getLocation().getLocationName());
+		}
+		return getService('HibachiCacheService').getCachedValue(cacheKey);
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getLocationPathName() {
 		if(!structKeyExists(variables, "locationPathName")) {
+			
 			variables.locationPathName = "";
 			
 			//Add each of the parents in the chain to the string.
@@ -134,13 +151,39 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 			variables.locationPathName = listAppend(variables.locationPathName, this.getLocationName(), "#chr(187)#");
 			variables.locationPathName = rereplace(variables.locationPathName,'#chr(187)#',' #chr(187)# ','all');
 		}
+		
 		return variables.locationPathName;
+	}
+	
+	public boolean function isRootLocation(  ){
+		return isNull(this.getParentLocation());
+	}
+	
+	public any function getRootLocation(  ){
+		
+		// If we don't have a parent, we are a root.
+		if (isNull( this.getParentLocation() )){
+			return this;
+		}
+		// Else, find the root.
+		var rootLocation = this.getParentLocation();
+		while (!isNull(rootLocation)){
+			if(isNull(rootLocation.getParentLocation())){
+				break;
+			}
+			rootLocation = rootLocation.getParentLocation();
+		}
+		return rootLocation;
 	}
 	
 	public any function getLocationOptions(){
 		return getService("locationService").getLocationOptions(this.getLocationID());
 	}
 	
+	public array function getCurrencyCodeOptions() {
+		return getService("currencyService").getCurrencyOptions();
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
@@ -213,13 +256,13 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	
 	public string function getSimpleRepresentation() {
+
 		if(!isNull(getCalculatedLocationPathName())){
 			return getCalculatedLocationPathName();
 		}else{
 			return getLocationPathName();
 		}
 	}
-	
 	
 	// ==================  END:  Overridden Methods ========================
 		

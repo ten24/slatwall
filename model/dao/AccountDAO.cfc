@@ -57,11 +57,20 @@ Notes:
 		<cfelse>
 			<cfset comparisonValue = "pea.emailAddress"/>
 		</cfif>
-
 		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
+			<cfset var primaryInUseData = ormExecuteQuery(
+				"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress AND a.accountID <> :accountID"
+				, {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID}
+				,true
+			)/>
+			<cfreturn not primaryInUseData />
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+		<cfset var primaryInUseData = ormExecuteQuery(
+			"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress"
+			, {emailAddress=lcase(arguments.emailAddress)},
+			true
+		)/>
+		<cfreturn not primaryInUseData />
 	</cffunction>
 
 	<cffunction name="getAccountIDByPrimaryEmailAddress">
@@ -75,7 +84,7 @@ Notes:
 		<cfreturn getAccountIDByPrimaryEmailAddress.accountID />
 
 	</cffunction>
-
+	
 	<cffunction name="removeAccountAuthenticationFromSessions">
 		<cfargument name="accountAuthenticationID" type="string" required="true" >
 
@@ -89,6 +98,36 @@ Notes:
 				accountID = null
 			WHERE
 				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" />
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="removePrimaryAddress">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				primaryAddressID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
+		</cfquery>
+	</cffunction>
+	
+		<cffunction name="removeOwnerAccount">
+		<cfargument name="accountID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccount
+			SET
+				ownerAccountID = null
+			WHERE
+				accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" />
 		</cfquery>
 	</cffunction>
 
@@ -115,6 +154,20 @@ Notes:
 		<cfquery name="rs">
 			UPDATE
 				SwOrderPayment
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
+		<cffunction name="removeAccountAddressFromAccountPaymentMethods">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwAccountPaymentMethod
 			SET
 				billingAccountAddressID = null
 			WHERE
@@ -367,4 +420,3 @@ Notes:
 	</cffunction>
 
 </cfcomponent>
-

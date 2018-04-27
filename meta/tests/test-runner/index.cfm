@@ -43,11 +43,12 @@ if( url.opt_run ){
 				}
 				case "junit":  {
 					xmlReport = xmlParse( results );
-
-
+					
+					
 				     for( thisSuite in xmlReport.testsuites.XMLChildren ){
 				          fileWrite( reportdestination & "results.xml", toString( thisSuite ) );
 				     }
+					
 				     break;
 				}
 				case "antjunit": {

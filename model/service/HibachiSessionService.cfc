@@ -55,33 +55,38 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	public string function loginAccount(required any account, required any accountAuthentication) {
 		super.loginAccount(argumentCollection=arguments);
 		
-		// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
-		if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
-			
-			var newOrder = getOrderService().duplicateOrderWithNewAccount( getHibachiScope().getSession().getOrder(), getHibachiScope().getSession().getAccount() ); 
-			getHibachiScope().getSession().setOrder( newOrder );
-			
-		// If the current order doesn't have an account, and the current order is not new, then set this account in the current order
-		} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().getNewFlag() ) {
-			
-			getHibachiScope().getSession().getOrder().setAccount( getHibachiScope().getAccount() );
-			
-		// If there is not current order, and the account has existing cart or carts attach the most recently modified
-		} else if ( getHibachiScope().getSession().getOrder().getNewFlag() ) {
-			
-			var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getAccount().getAccountID() );
-			if(!isNull(mostRecentCart)) {
-				getHibachiScope().getSession().setOrder( mostRecentCart );
-			}
-			
-		}
-		this.saveSession(getHibachiScope().getSession());
-		// Force persistance
-		getHibachiDAO().flushORMSession();
+		if(request.context.fw.getSubsystem(request.context[request.context.fw.getAction()]) != 'admin'){
 		
-		// If the current order is not new, and has an account, and  orderitems array length is greater than 1
-		if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
-			getService('orderService').processOrder( getHibachiScope().getSession().getOrder(), {}, 'updateOrderAmounts');	
+			// If the current order has an account, and it is different from the one being logged in... then create a copy of the order without any personal information
+			if( !isNull(getHibachiScope().getSession().getOrder().getAccount()) && getHibachiScope().getSession().getOrder().getAccount().getAccountID() != arguments.account.getAccountID()) {
+				
+				var newOrder = getOrderService().duplicateOrderWithNewAccount( getHibachiScope().getSession().getOrder(), getHibachiScope().getSession().getAccount() ); 
+				getHibachiScope().getSession().setOrder( newOrder );
+				
+			// If the current order doesn't have an account, and the current order is not new, then set this account in the current order
+			} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().getNewFlag() ) {
+				
+				getHibachiScope().getSession().getOrder().setAccount( getHibachiScope().getAccount() );
+				
+			// If there is not current order, and the account has existing cart or carts attach the most recently modified
+			} else if ( getHibachiScope().getSession().getOrder().getNewFlag() ) {
+				
+				var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getAccount().getAccountID() );
+				if(!isNull(mostRecentCart)) {
+					getHibachiScope().getSession().setOrder( mostRecentCart );
+				}
+				
+			}
+			this.saveSession(getHibachiScope().getSession());
+			
+			// Force persistance
+			getHibachiDAO().flushORMSession();
+			
+			// If the current order is not new, and has an account, and  orderitems array length is greater than 1
+			if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
+				getService('orderService').processOrder( getHibachiScope().getSession().getOrder(), {}, 'updateOrderAmounts');	
+			}
+		
 		}
 		
 		// Add the CKFinder Permissions

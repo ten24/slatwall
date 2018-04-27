@@ -49,6 +49,45 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public numeric function getCurrentMargin(required string productID){
+			return ORMExecuteQuery('
+				SELECT COALESCE((COALESCE(sku.price,0) - COALESCE(product.calculatedAverageCost,0)) / COALESCE(sku.price,0),0)
+				FROM SlatwallSku sku
+				LEFT JOIN sku.product product
+				WHERE product.productID=:productID
+			',{productID=arguments.productID},true);
+		}
+		
+		public any function getAverageCost(required string productID){
+				
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.cost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock stock
+				LEFT JOIN stock.sku sku
+				LEFT JOIN sku.product product
+				WHERE product.productID=:productID
+				',
+				{productID=arguments.productID},
+				true
+			);
+		}
+		
+		public any function getAverageLandedCost(required string productID){
+			
+			return ORMExecuteQuery(
+				'SELECT COALESCE(AVG(i.landedCost/i.quantityIn),0)
+				FROM SlatwallInventory i 
+				LEFT JOIN i.stock stock
+				LEFT JOIN stock.sku sku
+				LEFT JOIN sku.proudct product
+				WHERE product.productID=:productID
+				',
+				{productID=arguments.productID},
+				true
+			);
+		}
+		
         public any function getChildrenProductTypeIDs(required any productType){
             return ormExecuteQuery(
                 'Select productTypeID from #getApplicationKey()#ProductType
@@ -491,5 +530,17 @@ Notes:
 		<cfreturn ormExecuteQuery("FROM #getApplicationKey()#Sku s WHERE s.productSchedule.productScheduleID = :productScheduleID ORDER BY s.eventStartDateTime ASC", {productScheduleID=arguments.productScheduleID},false, {maxresults=1})[1] />
 	</cffunction>
 		
+	<cffunction name="getProductHasRelatedProduct" access="public">
+		<cfargument name="productID" type="string" required="true" />
+		<cfargument name="relatedProductID" type="string" required="true">
+		<cfreturn !isNull(ORMExecuteQuery('
+			select pr from SlatwallProductRelationship pr
+			where product.productID = :productID
+			  and relatedProduct.productID = :relatedProductID
+			',
+			{productID=arguments.productID,relatedProductID=arguments.relatedProductID},
+			true
+			))>
+	</cffunction>
 </cfcomponent>
 

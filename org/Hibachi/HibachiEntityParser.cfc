@@ -15,7 +15,23 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		variables.customFunctionEndString = '//CUSTOM FUNCTIONS END';
 		variables.lineBreak = getHibachiScope().getService('HibachiUtilityService').getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
 	}
-
+	
+	public void function setCustomPropertyBeginString(required customPropertyBeginString){
+		variables.customPropertyBeginString = arguments.customPropertyBeginString;
+	}
+	
+	public void function setCustomPropertyEndString(required customPropertyEndString){
+		variables.customPropertyEndString = arguments.customPropertyEndString;
+	}
+	
+	public void function setCustomFunctionBeginString(required customFunctionBeginString){
+		variables.customFunctionBeginString = arguments.customFunctionBeginString;
+	}
+	
+	public void function setCustomFunctionEndString(required customFunctionEndString){
+		variables.customFunctionEndString = arguments.customFunctionEndString;
+	}
+	
 	public string function getFileContent(){
 		if(!structKeyExists(variables,'fileContent')){
 			variables.fileContent =fileRead( "#ExpandPath('/#getDao('hibachiDAO').getApplicationKey()#/')#" & getFilePath());

@@ -740,7 +740,6 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_create(required any product, required any processObject) {
-
 		// GENERATE - CONTENT ACCESS SKUS
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 
@@ -893,7 +892,11 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-
+		
+		if(!isNull(arguments.processObject.getBrand())){
+			arguments.product.setBrand(arguments.processObject.getBrand());
+		}
+		
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
 
@@ -966,47 +969,50 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
-
-				//Update currencies
-				for(var processSkuCurrency in processObject.getSkuCurrencies()){
-					skuCurrencyFound=false;
-					skuCurrenciesToRemove=[];
-
-					for(var skuCurrency in skus[i].getSkuCurrencies()){
-						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
-							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
-								skuCurrency.setPrice(processSkuCurrency.price);
+				var skuCurrencies = processObject.getSkuCurrencies();
+				
+				if( !isNull(skuCurrencies)){
+					//Update currencies
+					for(var processSkuCurrency in skuCurrencies){
+						skuCurrencyFound=false;
+						skuCurrenciesToRemove=[];
+	
+						for(var skuPrice in skus[i].getSkuPrices()){
+							if(processSkuCurrency.currencyCode eq skuPrice.getCurrencyCode()){
+								if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+									skuPrice.setPrice(processSkuCurrency.price);
+								}
+								if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
+									skuPrice.setListPrice(processSkuCurrency.listPrice);
+								}
+	
+								if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+									arrayAppend(skuCurrenciesToRemove,skuPrice);
+								}
+	
+							 skuCurrencyFound=true;
 							}
-							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
-								skuCurrency.setListPrice(processSkuCurrency.listPrice);
+						}
+						for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
+							skuCurrenciesToRemove[j].removeSku(skus[i]);
+						}
+						if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
+							var newSkuPrice=this.newSkuPrice();
+							newSkuPrice.setCurrencyCode(processSkuCurrency.currencyCode);
+							if(arguments.processObject.getUpdatePriceFlag()) {
+								newSkuPrice.setPrice(processSkuCurrency.price);
 							}
-
-							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
-								arrayAppend(skuCurrenciesToRemove,skuCurrency);
+							if(arguments.processObject.getUpdateListPriceFlag()) {
+								newSkuPrice.setPrice(processSkuCurrency.listPrice);
 							}
-
-						 skuCurrencyFound=true;
+							newSkuPrice.setSku(skus[i]);
+							save(newSkuPrice);
+	
 						}
 					}
-					for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
-						skuCurrenciesToRemove[j].removeSku(skus[i]);
-					}
-					if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
-						var newSkuCurrency=this.newSkuCurrency();
-						newSkuCurrency.setCurrency(getService('currencyService').getCurrencyByCurrencyCode(processSkuCurrency.currencyCode));
-						if(arguments.processObject.getUpdatePriceFlag()) {
-							newSkuCurrency.setPrice(processSkuCurrency.price);
-						}
-						if(arguments.processObject.getUpdateListPriceFlag()) {
-							newSkuCurrency.setPrice(processSkuCurrency.listPrice);
-						}
-						newSkuCurrency.setSku(skus[i]);
-						save(newSkuCurrency);
-
-					}
+	
 				}
-
-			}
+			}	
 		}
 
 		return arguments.product;
@@ -1017,6 +1023,8 @@ component extends="HibachiService" accessors="true" {
 		try {
 
 			// Get the upload directory for the current property
+			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
+			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
@@ -1027,7 +1035,12 @@ component extends="HibachiService" accessors="true" {
 
 			// Do the upload, and then move it to the new location
 			var uploadData = fileUpload( getHibachiTempDirectory(), 'uploadFile', arguments.processObject.getPropertyMetaData('uploadFile').hb_fileAcceptMIMEType, 'makeUnique' );
-			fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+			var fileSize = uploadData.fileSize;
+ 			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
+ 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
+ 			} else {
+ 				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 			}
 
 		} catch(any e) {
 			processObject.addError('imageFile', getHibachiScope().rbKey('validate.fileUpload'));
@@ -1042,7 +1055,6 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
-
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
@@ -1076,6 +1088,46 @@ component extends="HibachiService" accessors="true" {
 				newProductListingPage = this.saveProductListingPage(newProductListingPage);
 			}
 		}
+		
+		if(structKeyExists(data, "relatedProductIDList")){
+			var productExistingRelatedProducts = arguments.product.getRelatedProducts();
+			var productRelationshipsToDelete = [];
+			for(var ProductRelationship in productExistingRelatedProducts){
+				if(listFind(data.relatedProductIDList, ProductRelationship.getRelatedProduct().getProductID()) == 0){
+					ArrayAppend(ProductRelationshipsToDelete, ProductRelationship);
+				}
+			}
+
+			for(var productRelationship in productRelationshipsToDelete){
+				productRelationship.removeProduct();
+			}
+
+			var relatedProductIDArray = ListToArray(data.relatedProductIDList);
+
+			for(var relatedProductID in relatedProductIDArray){
+				if(!this.getProductDAO().getProductHasRelatedProduct(arguments.product.getProductID(),relatedProductID)){
+					var newProductRelationship = this.newProductRelationship();
+					if(structKeyExists(data, "relatedProductSortOrder") && structKeyExists(deserializeJSON(data.relatedProductSortOrder),relatedProductID)){
+						newProductRelationship.setSortOrder = deserializeJSON(data.relatedProductSortOrder)[relatedProductID];
+					}
+					newProductRelationship.setProduct(arguments.product);
+					newProductRelationship.setRelatedProduct(this.getProduct(relatedProductID));
+					this.saveProductRelationship(newProductRelationship);
+				}
+			}
+		}
+
+		if(structKeyExists(data, "relatedProductSortOrder")){
+			var relatedProductSortOrderStruct = deserializeJSON(data.relatedProductSortOrder);
+			for(var key in relatedProductSortOrderStruct){
+				var productRelationship = this.getProductRelationship(key);
+				if(!isNull(productRelationship)){
+					productRelationship.setSortOrder(relatedProductSortOrderStruct[key]);
+					this.saveProductRelationship(productRelationship);
+				}
+			}
+		}
+
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
@@ -1208,4 +1260,3 @@ component extends="HibachiService" accessors="true" {
 	// ======================  END: Private Helper ============================
 
 }
-

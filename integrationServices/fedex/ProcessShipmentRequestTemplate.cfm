@@ -72,7 +72,7 @@
         <ns:RequestedShipment>
 	        <ns:ShipTimestamp>#DateFormat(Now(),'yyyy-mm-dd')#T#TimeFormat(Now(),'hh:mm:ss')#</ns:ShipTimestamp>
 	        <ns:DropoffType>REGULAR_PICKUP</ns:DropoffType>
-	        <ns:ServiceType>STANDARD_OVERNIGHT</ns:ServiceType>
+	        <ns:ServiceType>#arguments.requestBean.getShippingIntegrationMethod()#</ns:ServiceType>
 	        <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
 	        <ns:TotalWeight>
 	            <ns:Units>LB</ns:Units>
@@ -107,7 +107,10 @@
 	           </ns:Contact>
 	        	<ns:Address>
 	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
-	                <ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+	                <cfif not isNull( arguments.requestBean.getShipToStreet2Address() ) >
+	                	 <ns:StreetLines>#arguments.requestBean.getShipToStreet2Address()#</ns:StreetLines>
+			</cfif>
+		   	<ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
 					<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
 	                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
 					<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
@@ -143,7 +146,7 @@
            
            <ns:LabelSpecification>
 	           <ns:LabelFormatType>COMMON2D</ns:LabelFormatType>
-	           <ns:ImageType>PDF</ns:ImageType>
+	           <ns:ImageType>#trim(setting('labelImageType'))#</ns:ImageType>
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
 	        

@@ -1,5 +1,5 @@
 /*
-
+ 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -48,11 +48,27 @@ Notes:
 */
 component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
 
-	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, required any integration, required string entityQueueData){
-		return ORMExecuteQuery('SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType AND integration=:integration AND entityQueueData=:entityQueueData',
-			{baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType,integration=arguments.integration,entityQueueData=arguments.entityQueueData}
+	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, any integration, string entityQueueData){
+		var hql = 'SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType 
+		var params = {baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType};
+				 ';
+		if(structKeyExists(arguments,'integration')){
+			hql &= ' AND integration=:integration ';
+			params.integration = arguments.integration;
+		}	
+		if(structKeyExists(arguments,'entityQueueData')){
+			hql &= ' AND entityQueueData=:entityQueueData ';
+			params.entityQueueData = arguments.entityQueueData;
+		}	
 			
+		return ORMExecuteQuery(
+			hql,
+			params
 		);
+	}
+	
+	public void function addEntityToQueue(required any entity,required entityQueueType){
+		
 	}
 	
 	// ===================== START: Logical Methods ===========================

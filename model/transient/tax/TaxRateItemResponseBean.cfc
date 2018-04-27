@@ -48,7 +48,9 @@ Notes:
 */
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean" {
 
+	property name="orderFulfillmentID" type="string";
 	property name="orderItemID" type="string";
+	property name="referenceObjectType" type="string" default=""; // value should either be 'orderFulfillment' or 'orderItem'
 	property name="taxRate" type="numeric";
 	property name="taxAmount" type="numeric";
 	

@@ -53,17 +53,33 @@ Notes:
 <cfparam name="rc.emailSmartList" type="any" />
 
 <cfoutput>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" showCreate="false" />
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" createModal="true" />
-
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
+<!--- <hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
 						   recordDetailAction="admin:entity.detailemail"
 						   recordEditAction="admin:entity.editemail"
 						   recordEditQueryString="redirectAction=admin:entity.listemail">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailSubject" search="true" />
 	<hb:HibachiListingColumn propertyIdentifier="emailTo" search="true" />
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime">
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay> --->
+
+<sw-listing-display data-using-personal-collection="true"
+    data-collection="'Email'"
+    data-edit="false"
+    data-has-search="true"
+    record-edit-action="admin:entity.editemail"
+    record-edit-query-string="redirectAction=admin:entity.listemail"
+    record-detail-action="admin:entity.detailemail"
+    data-is-angular-route="false"
+    data-angular-links="false"
+    data-has-action-bar="false"
+>
+    <sw-listing-column data-property-identifier="emailID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="emailSubject" search="true" tdclass="primary" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="emailTo" search="true" ></sw-listing-column>
+    <sw-listing-column data-property-identifier="createdDateTime">
+</sw-listing-display>
 
 </cfoutput>
 

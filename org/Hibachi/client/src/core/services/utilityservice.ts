@@ -462,6 +462,7 @@ class UtilityService extends BaseService{
             return returnArray;
     };
 
+
         public minutesOfDay = (m):number=>{
             return m.getMinutes() + m.getHours() * 60;
         };
@@ -472,6 +473,7 @@ class UtilityService extends BaseService{
             correctDate.setUTCFullYear(date.getFullYear(),date.getMonth(),date.getDate());
             return correctDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
         };
+
 }
 export {
     UtilityService

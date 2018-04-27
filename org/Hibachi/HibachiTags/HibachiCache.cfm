@@ -1,4 +1,4 @@
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" /> 
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.cacheKey" type="string" default="" />
 	<cfparam name="attributes.timespan" type="string" default="#createTimeSpan(0,0,0,60)#" />
@@ -16,21 +16,21 @@
 		</cfif>
 		
 		<cfif attributes.timespan neq 0>
-		<!--- used to clear template cache --->
-		<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
-		<cfcache action="flush" expireURL="#expireUrl#">
-		<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
-		
-		<cfif !isNull(cacheContent)>
-		
-			<cfsavecontent variable="hibachiTagContent" >
-				<cfoutput>#cacheContent#</cfoutput>
-			</cfsavecontent>
-			<cfoutput>#hibachiTagContent#</cfoutput>
-			<cfexit>
+			<!--- used to clear template cache --->
+			<cfset expireUrl= "*#attributes.hibachiScope.content().getUrlTitlePath()#?clearTemplateCache=true"/>
+			<cfcache action="flush" expireURL="#expireUrl#">
+			<cfcache name="cacheContent" action="get" id="#attributes.cacheKey#" timespan="#attributes.timespan#">
+			
+			<cfif !isNull(cacheContent)>
+			
+				<cfsavecontent variable="hibachiTagContent" >
+					<cfoutput>#cacheContent#</cfoutput>
+				</cfsavecontent>
+				<cfoutput>#hibachiTagContent#</cfoutput>
+				<cfexit>
+			</cfif>
 		</cfif>
 	</cfif>
-</cfif>
 </cfif>
 
 <cfif thisTag.executionMode is 'end'>

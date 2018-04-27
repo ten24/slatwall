@@ -29,8 +29,9 @@ class SWListingDisplayCellController{
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.listingPartialPath = listingPartialPath;
         this.$scope = $scope;
+        if(!this.value && this.pageRecord && this.column){
         this.value = this.listingService.getPageRecordValueByColumn(this.pageRecord, this.column);        
-        
+        }
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
@@ -45,7 +46,7 @@ class SWListingDisplayCellController{
         }
 
         if(this.cellView){
-
+            console.log("Cellview?", this.cellView);
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
             this.template = htmlCellView;
             
@@ -72,7 +73,7 @@ class SWListingDisplayCellController{
     }
 
     public getDirectiveTemplate = ()=>{
-
+        
         var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycell.html';
         
         if(this.expandable || (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary')){
@@ -83,7 +84,9 @@ class SWListingDisplayCellController{
             if(this.column.ormtype === 'timestamp'){
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
             }else if(this.column.type==='currency'){
-
+                if(this.column.aggregate){
+                    this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
+                }
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
             }else if(this.column.aggregate){
                 this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
@@ -103,6 +106,7 @@ class SWListingDisplayCell {
         swListingDisplay:"=?",
         column:"=?",
         pageRecord:"=?",
+        value:"=?",
         cellView:"@?",
         expandableRules:"=?"
     }
