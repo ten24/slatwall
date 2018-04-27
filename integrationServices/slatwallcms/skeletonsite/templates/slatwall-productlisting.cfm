@@ -42,22 +42,20 @@
 
     <cfset productCollectionList.addFilter("publishedFlag",1)>
     <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />
-    <cfset productCollectionList.setDisplayProperties("productDescription,urlTitle,productType.productTypeName,productType.urlTitle,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
+    <cfset productCollectionList.setDisplayProperties("brand.brandName,productDescription,urlTitle,productType.productTypeName,productType.urlTitle,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
+    <!----- Add additional fields here to enhance search scope ---->
     <cfset productCollectionList.addDisplayProperty(displayProperty="productName",columnConfig={isVisible=true, isSearchable=true, isDeletable=true}) />
     <!--- This allows filters applied to collection list --->
     <cfset productCollectionList.applyData()>
     <cfset productCollection = productCollectionList.getPageRecords()>
-
+    
     <div class="row mb-4">
         <div class="col-sm-3">
         	<!--- ternary operator displays char 's' if there's more than one product --->
             <h6><strong>#arrayLen(productCollection)#</strong> Available Product#arrayLen(productCollection) GT 1 ? 's' : '' #</h6>
         </div>
         <div class="col-sm-6">
-            <a href="##" class="badge badge-secondary">Category &times;</a>
-            <a href="##" class="badge badge-secondary">Price &times;</a>
-            <a href="##" class="badge badge-secondary">Type &times;</a>
-            <a href="##" class="badge badge-danger">Clear All &times;</a>
+    		<cfinclude template="inc/productListingUrlFilterBadges.cfm">
         </div>
         
         <div class="col-sm-2 offset-md-1">
@@ -68,11 +66,12 @@
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|ASC',false )#">Name - A to Z</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|DESC',false )#">Name - Z to A</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|asc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - A to Z</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brandName|desc'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brandName|ASC',false )#">Brand - Z to A</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'createdDateTime|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=createdDateTime|DESC',false )#">Date Created - Newest to Oldest</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'createdDateTime|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=createdDateTime|ASC',false )#">Date Created - Oldest to Newest</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brand.brandName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brand.brandName|ASC',false )#">Brand - A to Z</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brand.brandName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brand.brandName|DESC',false )#">Brand - Z to A</a>
 				</div>
 			</div>
         </div>
@@ -128,7 +127,12 @@
 	        </cfif>
 
             <!--- Pagination --->
-            <sw:SlatwallCollectionPagination collection="#productCollectionList#" slatwallScope="#$.slatwall#"></sw:SlatwallCollectionPagination>
+            <sw:SlatwallCollectionPagination
+            	collection="#productCollectionList#"
+            	template="../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/CollectionPagination.cfm"
+            	slatwallScope="#$.slatwall#"
+            	showFirstAndLast="false">
+            </sw:SlatwallCollectionPagination>
             
             <!--- Example Pagination Markup --->
    <!---     	<nav class="mt-5">--->
