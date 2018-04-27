@@ -44,8 +44,8 @@
 			                		onclick="window.location='#attributes.hibachiScope.getService('hibachiCollectionService').buildURL( '#optionBuildURl#' )#'" 
 			                		type="checkbox" 
 			                		value="#optionBuildUrl#" 
-			                		data-identifer="#buildURLValue#"
-			                		id="#arguments.title##option['name']#"
+			                		data-identifier="#buildURLValue#"
+			                		data-option-name="#option['name']#"
             		                <cfif isFilterApplied>
 										checked
 									</cfif>

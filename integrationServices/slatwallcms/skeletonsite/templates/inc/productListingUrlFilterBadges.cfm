@@ -19,6 +19,10 @@
 		<!--- let's split them, since we want one badge for each value ---->
 		<cfset local.values = listToArray(local.queryValuesSeparatedWithCommas) />
 		<cfloop array="#local.values#" index="local.value">
+			
+			<!---- let's create a unique id to use in the <a> tag and keep track of it---->
+			<cfset local.badgeID = rereplace(createUUID(),'-','','all') />
+			
 			<!---- save unformatted value so we can use it to remove the filter from the url later ----> 
 			<cfset local.unformattedValue = local.value />
 			
@@ -43,18 +47,16 @@
 				//we'll only do this after DOM is rendered
 				$(document).ready(function() {
 					//the input checkbox in tags/tagtemplates/filterCountDisplay.cfm has a data-identifer attribute as the id
-	    			var inputID = $('input[data-identifier="#local.value#"]')[0].id;
-					//make sure the input's label has a 'for' attribute pointing to it in the filterCountDisplay.cfm template
-					var labelText = $('label[for="' + inputID + '"').text();
-					//let's set the badge's text to the same from the label. The <a> tag ID is set below
-					$('###local.value#-badge').text(labelText);
+	    			var optionName = $('input[data-identifier="#local.value#"]').data('option-name');
+					//let's set the badge's text to the same from the label. The <a> badge ID is set below
+					$('###local.badgeID#-badge').text(optionName);
 				});
 			</script>
 			<!--- let's make this input empty, because it'll display for a second before the whole DOM renders ---->
 			<cfset local.value = '' />
 			</cfif>
 			<!--- function removes existing query param if you pass it in --->
-			<a id="#local.unformattedValue#-badge" href="#$.slatwall.getService('hibachiCollectionService').buildURL( '#local.queryParam#=#local.unformattedValue#' )#" class="badge badge-secondary"> #$.slatwall.getService('hibachiUtilityService').hibachiHTMLEditFormat(local.value)# &times;</a>
+			<a id="#local.badgeID#-badge" href="#$.slatwall.getService('hibachiCollectionService').buildURL( '#local.queryParam#=#local.unformattedValue#' )#" class="badge badge-secondary"> #$.slatwall.getService('hibachiUtilityService').hibachiHTMLEditFormat(local.value)# &times;</a>
 		</cfloop>
 	  	</cfif>
 </cfloop>
