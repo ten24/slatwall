@@ -1088,6 +1088,46 @@ component extends="HibachiService" accessors="true" {
 				newProductListingPage = this.saveProductListingPage(newProductListingPage);
 			}
 		}
+		
+		if(structKeyExists(data, "relatedProductIDList")){
+			var productExistingRelatedProducts = arguments.product.getRelatedProducts();
+			var productRelationshipsToDelete = [];
+			for(var ProductRelationship in productExistingRelatedProducts){
+				if(listFind(data.relatedProductIDList, ProductRelationship.getRelatedProduct().getProductID()) == 0){
+					ArrayAppend(ProductRelationshipsToDelete, ProductRelationship);
+				}
+			}
+
+			for(var productRelationship in productRelationshipsToDelete){
+				productRelationship.removeProduct();
+			}
+
+			var relatedProductIDArray = ListToArray(data.relatedProductIDList);
+
+			for(var relatedProductID in relatedProductIDArray){
+				if(!this.getProductDAO().getProductHasRelatedProduct(arguments.product.getProductID(),relatedProductID)){
+					var newProductRelationship = this.newProductRelationship();
+					if(structKeyExists(data, "relatedProductSortOrder") && structKeyExists(deserializeJSON(data.relatedProductSortOrder),relatedProductID)){
+						newProductRelationship.setSortOrder = deserializeJSON(data.relatedProductSortOrder)[relatedProductID];
+					}
+					newProductRelationship.setProduct(arguments.product);
+					newProductRelationship.setRelatedProduct(this.getProduct(relatedProductID));
+					this.saveProductRelationship(newProductRelationship);
+				}
+			}
+		}
+
+		if(structKeyExists(data, "relatedProductSortOrder")){
+			var relatedProductSortOrderStruct = deserializeJSON(data.relatedProductSortOrder);
+			for(var key in relatedProductSortOrderStruct){
+				var productRelationship = this.getProductRelationship(key);
+				if(!isNull(productRelationship)){
+					productRelationship.setSortOrder(relatedProductSortOrderStruct[key]);
+					this.saveProductRelationship(productRelationship);
+				}
+			}
+		}
+
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){

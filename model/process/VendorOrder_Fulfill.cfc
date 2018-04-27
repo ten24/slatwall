@@ -73,4 +73,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.locationIDOptions;
 	}
 	
+	// @hint Validates to check if delivered quantities exceed vendor order items undelivered quantities
+	public boolean function validateVendorOrderItemsQuantities() {
+		for (var data in getVendorOrderItems()) {
+			var vendorOrderItem = getService('vendorOrderService').getVendorOrderItem( data.vendorOrderItem.vendorOrderItemID );
+			if (data.quantity > vendorOrderItem.getQuantityUndelivered()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 }

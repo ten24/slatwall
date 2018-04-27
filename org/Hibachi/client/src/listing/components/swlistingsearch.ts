@@ -51,12 +51,20 @@ class SWListingSearchController {
 
         if(this.swListingControls.showPrintOptions){
             //load the options
+            
+            //this will prevent icon from flashing on action bar
+            this.swListingControls.showPrintOptions=false
+            
             var printTemplateOptionsCollection = this.collectionConfig.newCollectionConfig('PrintTemplate');
             printTemplateOptionsCollection.addFilter('printTemplateObject', this.swListingDisplay.collectionConfig.baseEntityName);
             printTemplateOptionsCollection.setAllRecords(true); 
             printTemplateOptionsCollection.getEntity().then(
                 (response)=>{
+                    
                     this.printTemplateOptions = response.records; 
+                    if (this.printTemplateOptions.length !== 0) {
+                        this.swListingControls.showPrintOptions=true;
+                    }
                 }, 
                 (reason)=>{
                     throw("swListingSearch couldn't load printTemplateOptions because: " + reason);

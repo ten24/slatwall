@@ -1,5 +1,6 @@
 <cfimport prefix="hb" taglib="../../../../../../org/Hibachi/HibachiTags"/>
 <cfoutput>
+			
 <button class="btn btn-primary d-md-none d-lg-none d-xl-none" type="button" data-toggle="collapse" data-target="##sidebarCollapse" aria-expanded="false" aria-controls="sidebarCollapse">
     Filter Options
 </button>
@@ -16,107 +17,97 @@
     		</div>
     		<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="##accordion">
     			<div class="card-body">
-                    <input type="text" name="search" class="form-control form-control-sm">
-                    <button type="submit" class="btn btn-sm btn-block btn-secondary mt-1">Search</button>
+                    <input type="text" id="searchBox" name="search" class="form-control form-control-sm">
+                    <a href="##" id="searchButton" class="btn btn-sm btn-block btn-secondary mt-1">Search</a>
+                    <cfif structKeyExists(url,'keywords')>
+						<a href="#$.slatwall.getService('hibachiCollectionService').buildURL('keywords=#url[listFirst('keywords=','=')]#')#">Clear Search</a>
+					</cfif>
                 </div>
     		</div>
     	</div>
-        <div class="card mb-4">
-    		<div class="card-header" id="headingOne">
-    			<h5 class="mb-0">
-    				<button class="btn btn-link p-0" data-toggle="collapse" data-target="##collapseOne" aria-expanded="true" aria-controls="collapseOne">
-    				Product Type
-    				</button>
-    			</h5>
-    		</div>
-    		<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="##accordion">
-    			<div class="card-body">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="productType">
-                      <label class="form-check-label" for="category">Product Type 1</label>
-                      <span class="badge badge-secondary float-right mt-1">24</span>
-                    </div>
-                </div>
-    		</div>
-    	</div>
-    	<div class="card mb-4">
-    		<div class="card-header" id="headingOne">
-    			<h5 class="mb-0">
-    				<button class="btn btn-link p-0" data-toggle="collapse" data-target="##collapseOne" aria-expanded="true" aria-controls="collapseOne">
-    				Categories
-    				</button>
-    			</h5>
-    		</div>
-    		<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="##accordion">
-    			<div class="card-body">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="category">
-                      <label class="form-check-label" for="category">Category 1</label>
-                      <span class="badge badge-secondary float-right mt-1">24</span>
-                    </div>
-                </div>
-    		</div>
-    	</div>
-    	<div class="card mb-4">
-    		<div class="card-header" id="headingTwo">
-    			<h5 class="mb-0">
-    				<button class="btn btn-link p-0 collapsed" data-toggle="collapse" data-target="##collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-    				Price
-    				</button>
-    			</h5>
-    		</div>
-    		<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="##accordion">
-                <div class="card-body">
-                    <form>
-                        <div class="form-row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Min">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Max">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-sm btn-block btn-secondary mt-1">Apply</button>
-                    </form>
-                </div>
-    		</div>
-    	</div>
-    	<div class="card mb-4">
-    		<div class="card-header" id="headingThree">
-    			<h5 class="mb-0">
-    				<button class="btn btn-link p-0 collapsed" data-toggle="collapse" data-target="##collapseThree" aria-expanded="false" aria-controls="collapseThree">
-    				Brand
-    				</button>
-    			</h5>
-    		</div>
-    		<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="##accordion">
-                <div class="card-body">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="brand">
-                      <label class="form-check-label" for="type">Brand 1</label>
-                      <span class="badge badge-secondary float-right mt-1">24</span>
-                    </div>
-                </div>
-    		</div>
-    	</div>
-        <div class="card mb-4">
-    		<div class="card-header" id="headingThree">
-    			<h5 class="mb-0">
-    				<button class="btn btn-link p-0 collapsed" data-toggle="collapse" data-target="##collapseThree" aria-expanded="false" aria-controls="collapseThree">
-    				Options
-    				</button>
-    			</h5>
-    		</div>
-    		<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="##accordion">
-                <div class="card-body">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="options">
-                      <label class="form-check-label" for="type">Option 1</label>
-                      <span class="badge badge-secondary float-right mt-1">24</span>
-                    </div>
-                </div>
-    		</div>
-    	</div>
+      <hb:HibachiFilterCountDisplay
+	    	hibachiScope="#$.slatwall#"
+	    	collectionList="#productCollectionList#"
+	    	template="../../../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/FilterCountDisplayItem.cfm"
+	        filterCountDisplayTemplate="../../../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/FilterCountDisplay.cfm"
+	    >
+
+		    	<hb:HibachiFilterCountDisplayItem
+					propertyIdentifier="defaultSku.price"
+					rangeData="#[
+						{
+							minValue=0,
+							maxValue=30,
+							displayValue="Under $30"
+						},
+						{
+							minValue=30,
+							maxValue=75,
+							displayValue="$30 - $75"
+						},
+						{
+							minValue=75,
+							maxValue=150,
+							displayValue="$75 - $150"
+						},
+						{
+							minValue=150,
+							maxValue=300,
+							displayValue="$150 - $300"
+						},
+						{
+							minValue=300,
+							displayValue="$300 +"
+						}
+					]#"
+				/>
+                
+                <hb:HibachiFilterCountDisplayItem
+					propertyIdentifier="brand.brandName"
+					title="Brands"
+				/>
+				
+				<hb:HibachiFilterCountDisplayItem
+		 			propertyIdentifier="skus.options.optionName"
+		 			inversePropertyIdentifier="skus.product"
+		 			title="Options"
+		 		/>
+		 		
+		</hb:HibachiFilterCountDisplay >
     </div>
 </div>
+<script>
+	(function(){
+		$('##searchBox').on('input',function (e) {
+			//remove previous params
+			var urlAndQueryParams = window.location.toString().split('?');
+			var queryParams = []; 
+			if(urlAndQueryParams.length>1){ 
+				queryParams = urlAndQueryParams[1].split("&");
+			}
+			
+			var keywordsExistsFlag = false;
+			for(var i = 0; i < queryParams.length; i++){
+				if(queryParams[i].indexOf('keywords')>-1){
+					queryParams.splice(i,1);
+					keywordsExistsFlag = true;
+				}
+			}
+			
+			queryParams.push('keywords=' + this.value);
+			
+			var url = urlAndQueryParams[0];
+			if(queryParams && queryParams.length){
+				console.log(queryParams);
+				url += "?" + queryParams.join("&");
+			}
+			
+		    if (url.indexOf('?') === -1){
+				url += "?";
+			}
+	
+	        $('##searchButton').attr('href',url);
+	    });
+	})();
+</script>
 </cfoutput>
