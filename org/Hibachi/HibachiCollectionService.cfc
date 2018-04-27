@@ -1,5 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiService" type="any";
+	property name="HibachiUtilityService" type="any";
 	property name="aliasMap" type="struct";
 	property name="collectionCache" type="struct";
 	
