@@ -20,16 +20,10 @@
 /// <reference path="../src/content/components/swcontentnode.ts" />
 /// <reference path="../src/content/components/swsiteselector.ts" />
 /// <reference path="../src/formbuilder/components/swformresponselisting.ts" />
-<<<<<<< HEAD
-<<<<<<< HEAD
 /// <reference path="../src/fulfillmentbatch/actions/fulfillmentbatchactions.ts" />
 /// <reference path="../src/fulfillmentbatch/components/swfulfillmentbatchdetail.ts" />
 /// <reference path="../src/fulfillmentbatch/components/swfulfillmentbatchlist.spec.ts" />
-=======
 /// <reference path="../src/giftcard/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
->>>>>>> 3fa9ca69bb419c0a874391f7e6c99c075d87cfc9
-=======
->>>>>>> 6f0c7fea19614120f8aa28b2f6e18e8a4844305f
 /// <reference path="../src/giftcard/components/swaddorderitemgiftrecipient.ts" />
 /// <reference path="../src/giftcard/components/swgiftcardbalance.ts" />
 /// <reference path="../src/giftcard/components/swgiftcarddetail.ts" />
@@ -38,22 +32,14 @@
 /// <reference path="../src/giftcard/components/swgiftcardoverview.ts" />
 /// <reference path="../src/giftcard/components/swgiftcardrecipientinfo.ts" />
 /// <reference path="../src/giftcard/components/sworderitemgiftrecipientrow.ts" />
-/// <reference path="../src/giftcard/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
 /// <reference path="../src/giftcard/models/giftcard.ts" />
 /// <reference path="../src/giftcard/models/giftrecipient.ts" />
 /// <reference path="../src/optiongroup/components/swaddoptiongroup.ts" />
 /// <reference path="../src/optiongroup/components/swoptionsforoptiongroup.ts" />
-<<<<<<< HEAD
-<<<<<<< HEAD
 /// <reference path="../src/orderfulfillment/components/sworderfulfillmentlist.spec.ts" />
 /// <reference path="../src/orderfulfillment/components/sworderfulfillmentlist.ts" />
 /// <reference path="../src/orderfulfillment/services/orderfulfillmentservice.spec.ts" />
 /// <reference path="../src/orderfulfillment/services/orderfulfillmentservice.ts" />
-=======
->>>>>>> 3fa9ca69bb419c0a874391f7e6c99c075d87cfc9
-=======
-/// <reference path="../src/orderfulfillment/components/sworderfulfillmentlist.spec.ts" />
->>>>>>> 6f0c7fea19614120f8aa28b2f6e18e8a4844305f
 /// <reference path="../src/orderitem/components/swchildorderitem.ts" />
 /// <reference path="../src/orderitem/components/swoishippinglabelstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitem.ts" />
@@ -61,6 +47,7 @@
 /// <reference path="../src/orderitem/components/sworderitems.ts" />
 /// <reference path="../src/orderitem/components/swresizedimage.ts" />
 /// <reference path="../src/product/components/swproductlistingpages.ts" />
+/// <reference path="../src/product/components/swrelatedproducts.ts" />
 /// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlecollectionfilteritemtypeahead.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroup.ts" />
