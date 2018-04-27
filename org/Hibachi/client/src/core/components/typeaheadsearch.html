@@ -1,12 +1,12 @@
 <div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
         <div class="input-group">
-             <div class="input-group-btn s-left">
+             <div class="input-group-btn s-left" ng-class="{'open':swTypeaheadSearch.dropdownOpen}">
                 <button type="button"
                         class="btn btn-default"
                         data-ng-disabled="swTypeaheadSearch.disabled"
                         ng-click="swTypeaheadSearch.toggleDropdown()"
                         aria-expanded="true">
-                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <span class="caret"></span>
+                        <span>{{swTypeaheadSearch.searchableColumnSelection}}</span> <i class="fa" data-ng-class="(swTypeaheadSearch.dropdownOpen) ? 'fa-caret-up' : 'fa-caret-down'" ></i>
                 </button>
                 <ul ng-if="swTypeaheadSearch.dropdownOpen" class="dropdown-menu" role="menu">
                     <li>
