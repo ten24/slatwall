@@ -46580,11 +46580,16 @@ var SWListingSearchController = /** @class */ (function () {
             _this.configureSearchableColumns(_this.selectedSearchColumn);
             if (_this.swListingControls.showPrintOptions) {
                 //load the options
+                //this will prevent icon from flashing on action bar
+                _this.swListingControls.showPrintOptions = false;
                 var printTemplateOptionsCollection = _this.collectionConfig.newCollectionConfig('PrintTemplate');
                 printTemplateOptionsCollection.addFilter('printTemplateObject', _this.swListingDisplay.collectionConfig.baseEntityName);
                 printTemplateOptionsCollection.setAllRecords(true);
                 printTemplateOptionsCollection.getEntity().then(function (response) {
                     _this.printTemplateOptions = response.records;
+                    if (_this.printTemplateOptions.length !== 0) {
+                        _this.swListingControls.showPrintOptions = true;
+                    }
                 }, function (reason) {
                     throw ("swListingSearch couldn't load printTemplateOptions because: " + reason);
                 });
