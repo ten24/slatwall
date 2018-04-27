@@ -44,12 +44,13 @@
 			                		onclick="window.location='#attributes.hibachiScope.getService('hibachiCollectionService').buildURL( '#optionBuildURl#' )#'" 
 			                		type="checkbox" 
 			                		value="#optionBuildUrl#" 
-			                		id="#arguments.title##option['name']#"
+			                		data-identifier="#buildURLValue#"
+			                		data-option-name="#option['name']#"
             		                <cfif isFilterApplied>
 										checked
 									</cfif>
 			                		>
-			                	<label class="form-check-label">#option['name']#</label>
+			                	<label class="form-check-label" for="#arguments.title##option['name']#">#option['name']#</label>
 							</cfif>
 						</cfif>
 						</div>
