@@ -394,7 +394,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					// Check for 'remove' on this side
 					if(findNoCase("function remove#property.singularname#", entityFile) && !listFindNoCase(validMethodsList, "#entityName#:remove#property.singularName#")) {
 						pass = false;
-						addToDebug(property);
+						addToDebug( "OTM-BD-Helper: incorrect bidirectional helper method on extra lazy relationship - #entityName# 'remove#property.singularName#'");
 					}
 
 					var thatEntityName = "Slatwall#property.cfc#";
