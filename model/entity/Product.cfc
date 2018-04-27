@@ -80,10 +80,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="relatedProducts" singularname="relatedProduct" cfc="ProductRelationship" type="array" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
-	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
 	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductSite" fkcolumn="productID" inversejoincolumn="siteID";
 
 	// Related Object Properties (many-to-many - inverse)
@@ -1223,6 +1223,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	public void function removeProductImage(required any productImage) {
 		arguments.productImage.removeProduct( this );
+	}
+
+	// Related Products (one-to-many)
+	public void function addRelatedProduct(required any relatedProduct) {
+		arguments.relatedProduct.setProduct( this );
+	}
+	public void function removeRelatedProduct(required any relatedProduct) {
+		arguments.relatedProduct.removeProduct( this );
 	}
 
 	// Skus (one-to-many)

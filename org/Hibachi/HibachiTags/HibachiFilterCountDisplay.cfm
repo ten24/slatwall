@@ -4,13 +4,22 @@
 		<cfset attributes.hibachiScope = request.context.fw.getHibachiScope()/>
 	</cfif>
 	<cfparam name="attributes.collectionList" type="any" default="" />
+	<cfparam name="attributes.filterCountDisplayTemplate" type="any" default="./tagtemplates/hibachifiltercountdisplay.cfm" />
+	<cfparam name="attributes.filterCountDisplayItemTemplate" type="any" default="" />
 	<cfparam name="attributes.template" type="any" default="" />
 	<cfparam name="thistag.filterCountGroups" type="array" default="#arrayNew(1)#" />
-	
+	<cfif len(attributes.template) && !len(attributes.filterCountDisplayItemTemplate) >
+		<cfset attributes.filterCountDisplayItemTemplate = attributes.template />
+	</cfif>
 <cfelse>
 	
 	<cfoutput>
 		<script>
+			
+			var stripSpecialCharacters = function(string){
+				return string.replace(/[^a-zA-Z ]/g, "");
+			};
+			
 			var updateApplyHref = function(id,baseBuildUrl){
 	        	var minValue = $('##min'+id).val() || '';
 	            var maxValue = $('##max'+id).val() || '';
@@ -24,8 +33,8 @@
 				
 				var baseBuildUrlExistsFlag = false;
 				for(var i = 0; i < queryParams.length; i++){
-					if(queryParams[i].indexOf(baseBuildUrl)>-1){
-						queryParams[i] = baseBuildUrl + minValue + "^" + maxValue;
+					if(stripSpecialCharacters(queryParams[i]).indexOf(stripSpecialCharacters(baseBuildUrl))>-1){
+						queryParams[i] += "," + minValue + "^" + maxValue;
 						baseBuildUrlExistsFlag = true;
 					}
 				}
@@ -77,26 +86,6 @@
 			  }
 			}
 		</script>
-		<div class="widget shop-categories">
-    		<div class="widget-content">
-    			<form action="##">
-    				<ul class="product_list checkbox">
-    					<cfset currentIndex = 0/>
-    					<cfset filterCountGroupsCount = arraylen(thistag.filterCountGroups)/>
-    					<cfloop array="#thistag.filterCountGroups#" index="filterCountGroup">
-    						<cfset currentIndex++/>	
-	    					<cfoutput>
-	    						#filterCountGroup.htmlContent#
-	    					</cfoutput>
-	    					<!--- apply url data to main collection at the end --->
-	    					<cfif currentIndex eq filterCountGroupsCount>
-	    						
-	    						<cfset filterCountGroup.collectionList.applyData(url)/>
-	    					</cfif>
-						</cfloop>
-    					
-    			</form>
-    		</div>
-    	</div>
+		<cfinclude template="#attributes.filterCountDisplayTemplate#" >
 	</cfoutput>
 </cfif>

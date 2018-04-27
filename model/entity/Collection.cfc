@@ -775,6 +775,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var direction = 'ASC';
 		if(listLen(arguments.orderByString,"|") > 1){
 			direction = listLast(arguments.orderByString,'|');
+			if (lcase(direction) != "asc" && lcase(direction) != "desc"){
+				direction = "ASC"; //Default to ASC if the user is passing in something abnormal.
+			}
 		}
 
 		var propertyIdentifierAlias = getPropertyIdentifierAlias(propertyIdentifier);
@@ -783,20 +786,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		var orderByExists=false;// variable used as flag to mark if new propertyIdentifier already exists or not
-
+		//identify duplicates
 		for(var orderBy in collectionConfig.orderBy){
-
 			if(	orderBy.propertyIdentifier == propertyIdentifierAlias ){
 				orderBy.direction = direction;
 				orderByExists = true;
 			}
 		}
 		if(!orderByExists){
-				var orderBy = {
-					"propertyIdentifier"= propertyIdentifierAlias,
-					"direction"=direction
-				};
+			var orderBy = {
+				"propertyIdentifier"= propertyIdentifierAlias,
+				"direction"=direction
+			};
+			//Checks that the property identifier being passed in exists.
+			if (hasPropertyByPropertyIdentifier(orderBy.propertyIdentifier)){
 				arrayAppend(collectionConfig.orderBy,orderBy); //|[{direction={asc},propertyIdentifier={_product.productName}}]
+			}else{
+				throw("That was an invalid property identifier!");
+	
+			}
+
 		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
@@ -2256,12 +2265,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
 	public void function applyRelatedFilterGroups(required string propertyIdentifier, required array relatedFilterGroups){
 		var logicalOperator = "";
+		
+		var hasEmptyBeginningFilterGroup = false;
+		
 		if(!structKeyExists(getCollectionConfigStruct(),'filterGroups')){
 			getCollectionConfigStruct()['filterGroups'] = [];
 		}else if(arraylen(getCollectionConfigStruct()['filterGroups'])){
 			//if filter group is empty ignore it otherwise make a logicaloperator
 			if(structKeyExists(getCollectionConfigStruct()['filterGroups'][1],'filterGroup') && !arrayLen(getCollectionConfigStruct()['filterGroups'][1].filterGroup)){
-				
+				hasEmptyBeginningFilterGroup = true;			
 			}else{
 				logicalOperator = 'AND';
 			}
@@ -2289,11 +2301,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					filterGroup['logicalOperator'] = logicalOperator;
 				}
 				if(!len(filterGroupAlias) || !hasFilterGroupByFilterGroupAlias(filterGroupAlias)){
-					arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
+					if(hasEmptyBeginningFilterGroup){
+						getCollectionConfigStruct()['filterGroups'][1] = filterGroup;
+						hasEmptyBeginningFilterGroup = false;
+					}else{
+						
+						arrayAppend(getCollectionConfigStruct()['filterGroups'],filterGroup);
+					}
 				}
 			}
 		}
-		
 	}
 	//this function is used to allow a collection, example:orderitem to absord filters from a related collection such as example: order
 
@@ -2577,6 +2594,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getRecordsCountData(){
 		if(!structkeyExists(variables,'recordsCountData')){
 			getRecordsCount();
+			if(!structkeyExists(variables,'recordsCountData')){
+				variables.recordsCountData['recordsCount'] = 0;	
+			}
 		}
 	
 		return variables.recordsCountData;
@@ -2587,6 +2607,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.refresh){
 			clearRecordsCache();
 		}
+	
 
 		applyPermissions();
 		if(!structKeyExists(variables, "recordsCount") || !structKeyExists(variables,'recordsCountData')) {
@@ -2609,17 +2630,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							var currentTransactionIsolation = variables.connection.getTransactionIsolation();
 							variables.connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 						}
+						
 						variables.recordsCountData = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true",maxresults=1});
 						
-						var recordCount = recordsCountData['recordsCount'];
+						var recordCount = 0;
+						
+						if(structkeyExists(variables,'recordsCountData') && structkeyExists(variables.recordsCountData,'recordsCount')){
+							recordCount = variables.recordsCountData['recordsCount'];
+						}
+						
 						if( getDirtyReadFlag() ) {
 							variables.connection.setTransactionIsolation(currentTransactionIsolation);
 						}
 
 					}
-					if(isNull(recordCount)){
-						recordCount = 0;
-					}
+
 					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};
@@ -2924,9 +2949,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var countHQLSuffix = "";
 		if(
 			hasAggregateFilter() 
-			|| (
-				structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-			)
+			|| hasGroupBys()
 		){
 			var countHQLSelections = "SELECT NEW MAP(COUNT(DISTINCT tempAlias.id) as recordsCount ";
 			var countHQLSuffix = ' FROM  #getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject())# tempAlias WHERE tempAlias.id IN ( SELECT MIN(#getBaseEntityAlias()#.id) #getHQL(true, false, true)# )';
@@ -2938,9 +2961,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalAvgAggregate in variables.totalAvgAggregates){
 			if(
 				hasAggregateFilter() 
-				|| (
-					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-				)
+				||
+				hasGroupBys()
 			){
 				countHQLSelections &= ", COALESCE(AVG(tempAlias.#convertAliasToPropertyIdentifier(totalAvgAggregate.propertyIdentifier)#),0) as recordsAvg#getColumnAlias(totalAvgAggregate)# ";
 			}else{
@@ -2951,9 +2973,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var totalSumAggregate in variables.totalSumAggregates){
 			if(
 				hasAggregateFilter() 
-				|| (
-					structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
-				)
+				||
+				hasGroupBys()
 			){
 				countHQLSelections &= ", COALESCE(SUM(tempAlias.#convertAliasToPropertyIdentifier(totalSumAggregate.propertyIdentifier)#),0) as recordsSum#getColumnAlias(totalSumAggregate)# ";
 			}else{
@@ -3186,7 +3207,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	}
 	
-	public void function getGroupBys(){
+	public boolean function hasGroupBys(){
+		getGroupBys();
+		if (
+			structKeyExists(getCollectionConfigStruct(),'groupBys') && len(getCollectionConfigStruct()['groupBys'])
+			||
+			(structKeyExists(variables,'groupBys') && len(variables['groupBys']))
+		){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public any function getGroupBys(){
 		if(!structKeyExists(variables,'groupBys')){
 			if(isReport()){
 				
@@ -3279,8 +3313,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				variables.groupBys = groupByList;
 			}
+		} 
+		if(structKeyExists(variables,'groupBys')){
+			return variables.groupBys;
 		}
-		
 	}
 
 	public any function createHQLFromCollectionObject(required any collectionObject,
