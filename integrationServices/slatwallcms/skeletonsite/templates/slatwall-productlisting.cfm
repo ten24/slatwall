@@ -67,7 +67,7 @@
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|ASC',false )#">Name - A to Z</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'productName|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=productName|DESC',false )#">Name - Z to A</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|ASC',false )#">Price - Low to High</a>
-			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to High</a>
+			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'calculatedSalePrice|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=calculatedSalePrice|DESC',false )#">Price - High to Low</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'createdDateTime|DESC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=createdDateTime|DESC',false )#">Date Created - Newest to Oldest</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'createdDateTime|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=createdDateTime|ASC',false )#">Date Created - Oldest to Newest</a>
 			    	<a class="dropdown-item <cfif !isNull(url.orderby) AND url.orderBy EQ 'brand.brandName|ASC'>active</cfif>" href="#productCollectionList.buildURL( 'orderBy=brand.brandName|ASC',false )#">Brand - A to Z</a>

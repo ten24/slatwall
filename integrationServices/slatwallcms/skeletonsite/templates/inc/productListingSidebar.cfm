@@ -63,14 +63,15 @@
 				/>
                 
                 <hb:HibachiFilterCountDisplayItem
-					propertyIdentifier="brand.brandName"
+					propertyIdentifier="brand"
+					inversePropertyIdentifier="products"
 					title="Brands"
 				/>
 				
 				<hb:HibachiFilterCountDisplayItem
-		 			propertyIdentifier="skus.options.optionName"
+		 			propertyIdentifier="skus.options"
+		 			discriminatorProperty="optionGroup"
 		 			inversePropertyIdentifier="skus.product"
-		 			title="Options"
 		 		/>
 		 		
 		</hb:HibachiFilterCountDisplay >

@@ -16710,6 +16710,7 @@ exports.partition = partition;
 
 "use strict";
 
+<<<<<<< HEAD
 var map_1 = __webpack_require__(30);
 /**
  * Maps each source value (an object) to its specified nested property.
@@ -16766,6 +16767,83 @@ function plucker(props, length) {
     return mapper;
 }
 //# sourceMappingURL=pluck.js.map
+=======
+function isPromise(value) {
+    return value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
+}
+exports.isPromise = isPromise;
+//# sourceMappingURL=isPromise.js.map
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(484);
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62)))
+>>>>>>> 21395038a04cdd1db42a4a24b161c42ef87678c6
 
 /***/ }),
 /* 129 */
@@ -77855,9 +77933,31 @@ var SWInputController = /** @class */ (function () {
             if (_this.swPropertyDisplay) {
                 _this.utilityService.setPropertyValue(_this.swPropertyDisplay.object, _this.propertyIdentifier, _this.value);
             }
+<<<<<<< HEAD
             if (_this.swfPropertyDisplay) {
                 _this.utilityService.setPropertyValue(_this.swfPropertyDisplay.object, _this.propertyIdentifier, _this.value);
                 _this.swfPropertyDisplay.edit = false;
+=======
+            //snapshot searchable options in the beginning
+            _this.searchableOptions = angular.copy(_this.swListingDisplay.collectionConfig.columns);
+            _this.selectedSearchColumn = { title: 'All' };
+            _this.configureSearchableColumns(_this.selectedSearchColumn);
+            if (_this.swListingControls.showPrintOptions) {
+                //load the options
+                //this will prevent icon from flashing on action bar
+                _this.swListingControls.showPrintOptions = false;
+                var printTemplateOptionsCollection = _this.collectionConfig.newCollectionConfig('PrintTemplate');
+                printTemplateOptionsCollection.addFilter('printTemplateObject', _this.swListingDisplay.collectionConfig.baseEntityName);
+                printTemplateOptionsCollection.setAllRecords(true);
+                printTemplateOptionsCollection.getEntity().then(function (response) {
+                    _this.printTemplateOptions = response.records;
+                    if (_this.printTemplateOptions.length !== 0) {
+                        _this.swListingControls.showPrintOptions = true;
+                    }
+                }, function (reason) {
+                    throw ("swListingSearch couldn't load printTemplateOptions because: " + reason);
+                });
+>>>>>>> 21395038a04cdd1db42a4a24b161c42ef87678c6
             }
             _this.utilityService.setPropertyValue(_this.swFormField.object, _this.propertyIdentifier, _this.value);
         };
