@@ -50,7 +50,7 @@
 					$('###local.unformattedValue#-badge').text(labelText);
 				});
 			</script>
-			<!--- let's make this input empty, because it'll display for a second before the whole DOM renders ---->
+			<!--- let's make this badge text empty, because it'll display for a second before the whole DOM renders ---->
 			<cfset local.value = '' />
 			</cfif>
 			<!--- function removes existing query param if you pass it in --->
