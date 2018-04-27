@@ -2,14 +2,19 @@
 	<!--- let's keep track of all the applied filters so we can clear all later --->
   <cfset allFiltersAndValues = '' />
   <!--- for every property in the url struct...--->
+  <cfset counter = 0 />
   <cfloop collection="#url#" item="queryParam">
-  	
+
   	<!--- We don't want property names that start with p:, for pagination, among other stuff. Let's
   	define only the ones we want --->
   	<cfif findNoCase("r:",queryParam) OR findNoCase("f:",queryParam) OR findNoCase("keywords",queryParam)>
-  		
+  		<cfset counter++ />
   		<!--- some values will be comma separated such as r:defaultSku.price:10^20,100^ --->
 	  	<cfset queryValuesSeparatedWithCommas = url[queryParam] />
+	  	<!--- If this is not the first filter, let's add & between them ---->
+	  	<cfif counter GT 1>
+	  		<cfset allFiltersAndValues = allFiltersAndValues & '&' />
+	  	</cfif>
 	  	<cfset allFiltersAndValues = allFiltersAndValues & queryParam & '=' & queryValuesSeparatedWithCommas />
 		<!--- let's split them, since we want one badge for each value ---->
 		<cfset values = listToArray(queryValuesSeparatedWithCommas) />
