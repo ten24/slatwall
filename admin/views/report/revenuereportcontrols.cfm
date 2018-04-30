@@ -14,36 +14,53 @@
 		<input type="hidden" name="slatAction" value="#slatAction#"/>
 		<div id="u119_state0" class="panel_state" data-label="State1" style="">
 		    <div id="u119_state0_content" class="panel_state_content">
-		        <!--get avaiable order item subscripiont type-->
-		        <cfset subscriptionOrderItemTypeCollectionList = $.slatwall.getService('hibachiService').getTypeCollectionList()/>
-		        <cfset subscriptionOrderItemTypeCollectionList.setDisplayProperties('systemCode,typeName')/>
-		        <cfset subscriptionOrderItemTypeCollectionList.addFilter('typeIDPath','444df3100babdbe1086cf951809a60ca,%','like')/>
-		        <div id="u122" class="ax_default droplist">
-		            Subscription Type:
-		            <cfloop array="#subscriptionOrderItemTypeCollectionList.getRecords()#" index="subscriptionOrderItemTypeRecord">
-		                <div>
-		                    #subscriptionOrderItemTypeRecord['typeName']#
-		                    <input name="subscriptionType" type="checkbox" value="#subscriptionOrderItemTypeRecord['systemCode']#" <cfif structKeyExists(rc,'subscriptionType') && listFind(rc.subscriptionType,subscriptionOrderItemTypeRecord['systemCode'])>checked=checked</cfif>/>
-		                </div>
-		            </cfloop>
+		        <div class="col-xl-3 col-md-4">
+			        <!--get avaiable order item subscripiont type-->
+			        <cfset subscriptionOrderItemTypeCollectionList = $.slatwall.getService('hibachiService').getTypeCollectionList()/>
+			        <cfset subscriptionOrderItemTypeCollectionList.setDisplayProperties('systemCode,typeName')/>
+			        <cfset subscriptionOrderItemTypeCollectionList.addFilter('typeIDPath','444df3100babdbe1086cf951809a60ca,%','like')/>
+			         <div class="multi-select">
+                        <h4>Subscription Type</h4>
+                        <select name="subscriptionType" class="selectpicker" data-live-search="true" data-width="auto" multiple>
+                          <cfloop array="#subscriptionOrderItemTypeCollectionList.getRecords()#" index="subscriptionOrderItemTypeRecord">
+                        	 <option value="#subscriptionOrderItemTypeRecord['systemCode']#" <cfif structKeyExists(rc,'subscriptionType') && listFind(rc.subscriptionType,subscriptionOrderItemTypeRecord['systemCode'])>selected</cfif>>#subscriptionOrderItemTypeRecord['typeName']#</option>
+                          </cfloop>
+                        </select>
+                    </div>
+			        
 		        </div>
-		        <br/>
-		        <!-- get available subscription product types -->
-		        <cfset productTypeCollectionList = $.slatwall.getService('hibachiService').getProductTypeCollectionList()/>
-		        <cfset productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName')/>
-		        <cfset productTypeCollectionList.addFilter('productTypeIDPath','444df2f9c7deaa1582e021e894c0e299,%','like')/>
-		        <div id="u122" class="ax_default droplist">
-		            Product Type:
-		            <cfloop array="#productTypeCollectionList.getRecords()#" index="productTypeRecord">
-		                <div>
-		                    #productTypeRecord['productTypeName']#
-		                    <input name="productType" type="checkbox" value="#productTypeRecord['productTypeID']#" <cfif structKeyExists(rc,'productType') && listFind(rc.productType,productTypeRecord['productTypeID'])>checked=checked</cfif>/>
-		                </div>
-		            </cfloop>
-		        </div>
-		        <br/>
-		        
-		        <div class="col-sm-4">
+		        <div class="col-xl-3 col-md-4">
+		        	
+			        <!-- get available subscription product types -->
+			        <cfset productTypeCollectionList = $.slatwall.getService('hibachiService').getProductTypeCollectionList()/>
+			        <cfset productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName')/>
+			        <cfset productTypeCollectionList.addFilter('productTypeIDPath','444df2f9c7deaa1582e021e894c0e299,%','like')/>
+                    <div class="multi-select">
+                        <h4>Product Type</h4>
+                        <select name="productType" class="selectpicker" data-live-search="true" data-width="auto" multiple>
+                          <cfloop array="#productTypeCollectionList.getRecords()#" index="productTypeRecord">
+                        	 <option value="#productTypeRecord['productTypeID']#" <cfif structKeyExists(rc,'productType') && listFind(rc.productType,productTypeRecord['productTypeID'])>selected</cfif>>#productTypeRecord['productTypeName']#</option>
+                          </cfloop>
+                        </select>
+                    </div>
+			    </div>
+                    <div class="col-xl-3 col-md-4">
+                        <div class="single-select">
+                            <h4>Year</h4>
+                            <select name="reportYear" class="selectpicker" data-live-search="true" data-width="auto" >
+				                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
+				                    <option 
+				                    	value="#possibleYearsRecord#"
+				                    	<cfif structKeyExists(rc,'reportYear') && rc.reportYear eq possibleYearsRecord>selected</cfif>
+				                    >#possibleYearsRecord#
+				                    </option>
+				                </cfloop>
+				            </select>
+                        </div>
+                    </div>
+		    </div>
+		    <div class="col-xl-3 col-md-8">	
+			    <div class="single-select">
 		            <sw-typeahead-input-field
 		            		data-entity-name="Product"
 		                    data-property-to-save="productID"
@@ -86,41 +103,17 @@
 		            	<span sw-typeahead-search-line-item data-property-identifier="productName" is-searchable="true"></span><br>
 		            
 		            </sw-typeahead-input-field>
-		        </div>
-		        <br/><br/>
-		        <!-- Unnamed (Droplist) -->
-		        
-		        <div id="u122" class="ax_default droplist">
-		        	<!---<select name="reportMonth" id="u122_input" style="-webkit-appearance: menulist-button;" >
-		                <cfloop array="#possibleMonths#" index="possibleMonthRecord">
-		                	
-		                    <option 
-		                    	value="#possibleMonthRecord#"
-		                    	<cfif structKeyExists(rc,'reportMonth') && rc.reportMonth eq possibleMonthRecord>selected</cfif>
-		                    >#possibleMonthRecord#
-		                    </option>
-		                </cfloop>
-		            </select>--->
-		            <select name="reportYear" id="u122_input" style="-webkit-appearance: menulist-button;" >
-		                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
-		                	
-		                    <option 
-		                    	value="#possibleYearsRecord#"
-		                    	<cfif structKeyExists(rc,'reportYear') && rc.reportYear eq possibleYearsRecord>selected</cfif>
-		                    >#possibleYearsRecord#
-		                    </option>
-		                </cfloop>
-		            </select>
-		        </div>
-				<br/>
-		        <!-- Button (Rectangle) -->
-		        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
-		            <div id="u123_div" class="" tabindex="0"></div>
-		            <div id="u123_text" class="text ">
-		                <button >Apply</button>
-		            </div>
-		        </div>
+	            </div>
 		    </div>
 		</div>
+		<!-- Button (Rectangle) -->
+		<div class="col-xl-3 col-md-4">	
+	        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
+	            <div id="u123_div" class="" tabindex="0"></div>
+	            <div id="u123_text" class="text single-select ">
+	                <button class="btn btn-primary">Apply</button>
+	            </div>
+	        </div>
+        </div>
 	</form>
 </cfoutput>

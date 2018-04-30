@@ -271,6 +271,7 @@ Notes:
 			    (oi.calculatedExtendedPrice/st.itemsToDeliver) as pricePerDelivery, 
 			    (oi.calculatedTaxAmount/st.itemsToDeliver) as taxPerDelivery
 			FROM swSubscriptionOrderItem soi
+			inner join SwType t on t.typeID = soi.subscriptionOrderItemTypeID
 			inner join SwSubscriptionOrderDeliveryItem sodi on sodi.subscriptionOrderItemID = soi.subscriptionOrderItemID
 			inner join SwSubsUsage su on su.subscriptionUsageID = soi.subscriptionUsageID
 			inner join SwSubscriptionTerm st on su.subscriptionTermID = st.subscriptionTermID
