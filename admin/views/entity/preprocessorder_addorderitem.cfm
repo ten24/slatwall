@@ -285,7 +285,18 @@ Notes:
 										</cfif>
 										<span ng-init="shippingAccountAddressID = '#defaultValue#'"></span>
 										<!--- Account Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
+										<div class="form-group">
+											<label for="shippingAccountAddressID" class="control-label col-sm-4">
+												<span class="s-title">Shipping Account Address</span>
+											</label>
+											<div class="col-sm-8">
+												<select name="shippingAccountAddressID" class="form-control valid" ng-model="shippingAccountAddressID">
+														<cfloop array="#rc.processObject.getShippingAccountAddressIDOptions()#" item="shippingAccountAddressID">
+															<option value="#shippingAccountAddressID.value#">#shippingAccountAddressID.name#</option>
+														</cfloop>
+												</select>
+											</div>
+										</div>
 									</cfif>
 										<!---Existing Addresses--->
 										<cfloop array="#rc.processObject.getShippingAccountAddresses()#" index="accountAddress">
