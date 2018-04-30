@@ -283,10 +283,18 @@ Notes:
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
-
+										<span ng-init="shippingAccountAddressID = '#defaultValue#'"></span>
 										<!--- Account Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
 									</cfif>
+										<!---Existing Addresses--->
+										<cfloop array="#rc.processObject.getShippingAccountAddresses()#" index="accountAddress">
+											<span ng-if="shippingAccountAddressID == '#accountAddress.getAccountAddressID()#'">
+												<!--- Address Display --->
+												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
+										</cfloop>
+										<span ng-if="shippingAccountAddressID == ''">
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
