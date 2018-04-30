@@ -10,6 +10,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
   </head>
 
@@ -25,7 +26,8 @@
                         <h5 class="mb-0 pt-2 pb-2">Cart Items</h5>
                     </div>
                     <div class="col-sm-3">
-                        <a href="/checkout" class="btn-block btn btn-success float-right">Checkout</a>
+                        <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
+                        <a href="" class="btn-block btn btn-success float-right disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
                     </div>
                 </div>
             </div>
@@ -38,27 +40,33 @@
                         <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4">
                             <small class="text-secondary">Product Type</small>
                             <h4><a href="#">Product Name</a></h4>
-                            <p class="mb-3"><small><strong>Sku Defintion Label: </strong>Sku Definition Value</small></p>
+                            <small><strong>SKU Code:</strong> Sku Code Value</small>
+                            <p class="mb-3"><small><strong>SKU Defintion Label: </strong>SKU Definition Value</small></p>
                         </div>
                         <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
                             <div class="col-3 col-sm-3 col-md-4 text-md-right pt-2">
                                 <h6>$25.00 <small class="text-muted"><s>$50.00</s></small></h6>
                             </div>
-                            <div class="col-4 col-sm-3">
-                                <input type="number" class="form-control" min="1" value="2">
+                            <div class="col-3 col-sm-3">
+                                <input type="number" class="form-control" min="1" value="2" required>
                             </div>
-                            <div class="col-3 col-sm-3 text-md-right pt-2">
+                            <div class="col-4 col-sm-3 text-md-right pt-2">
+                                <i class="fa fa-refresh fa-spin fa-fw float-left mb-2 mr-1"></i>
                                 <h6><strong>$50.00</strong></h6>
                             </div>
                             <div class="col-2 col-sm-2 text-right">
-                                <button type="button" class="btn btn-outline-danger">&times;</button>
+                                <button type="button" class="btn btn-danger btn-sm rounded">&times;</button>
+                                <button type="button" class="btn btn-danger btn-sm rounded disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
                             </div>
                         </div>
                     </div>
                     <hr>
                     <!-- END PRODUCT -->
                     <!-- PRODUCT -->
-                    <div class="alert alert-success">Item removed from cart/quantity updated</div>
+                    <div class="alert alert-success">Item removed from cart</div>
+                    <div class="alert alert-danger">Item removed failure</div>
+                    <div class="alert alert-success">Quantity updated</div>
+                    <div class="alert alert-danger">Quantity update failure</div>
                     <div class="row">
                         <div class="col-12 col-sm-12 col-md-2 text-center">
                             <img class="img-fluid" src="http://placehold.it/120x100" alt="preview">
@@ -66,20 +74,23 @@
                         <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4">
                             <small class="text-secondary">Product Type</small>
                             <h4><a href="#">Product Name</a></h4>
-                            <p class="mb-3"><small><strong>Sku Defintion Label: </strong>Sku Definition Value</small></p>
+                            <small><strong>SKU Code:</strong> SKU Code Value</small>
+                            <p class="mb-3"><small><strong>SKU Defintion Label: </strong>SKU Definition Value</small></p>
                         </div>
                         <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
-                            <div class="col-3 col-sm-3 col-md-4 text-md-right pt-2">
+                            <div class="col-6 col-sm-3 col-md-4 text-md-right pt-2">
                                 <h6>$25.00 <small class="text-muted"><s>$50.00</s></small></h6>
                             </div>
-                            <div class="col-4 col-sm-3">
-                                <input type="number" class="form-control" min="1" value="2">
+                            <div class="col-6 col-sm-3">
+                                <input type="number" class="form-control text-center mb-2" min="1" value="2" required>
                             </div>
-                            <div class="col-3 col-sm-3 text-md-right pt-2">
+                            <div class="col-6 col-sm-3 text-md-right pt-2">
+                                <i class="fa fa-refresh fa-spin fa-fw float-left mb-2 mr-1"></i>
                                 <h6><strong>$50.00</strong></h6>
                             </div>
-                            <div class="col-2 col-sm-2 text-right">
-                                <button type="button" class="btn btn-outline-danger">&times;</button>
+                            <div class="col-6 col-sm-2 text-right">
+                                <button type="button" class="btn btn-danger btn-sm rounded">&times;</button>
+                                <button type="button" class="btn btn-danger btn-sm rounded disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
                             </div>
                         </div>
                     </div>
@@ -89,20 +100,23 @@
                         <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-4 offset-lg-2">
                             <small class="text-secondary">Product Type</small>
                             <h6><a href="#">Product Child Item</a></h6>
+                            <small><strong>SKU Code:</strong> Sku Code Value</small>
                             <p class="mb-3"><small><strong>Sku Defintion Label: </strong>Sku Definition Value</small></p>
                         </div>
                         <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
                             <div class="col-3 col-sm-3 col-md-4 text-md-right pt-1">
                                 <small>$25.00 <span class="text-muted"><s>$50.00</s></span></small>
                             </div>
-                            <div class="col-4 col-sm-3">
-                                <input type="number" class="form-control form-control-sm" min="1" value="2">
+                            <div class="col-3 col-sm-3">
+                                <input type="number" class="form-control form-control-sm text-center" min="1" value="2">
                             </div>
                             <div class="col-3 col-sm-3 text-md-right pt-1">
+                                <i class="fa fa-refresh fa-spin fa-fw float-left mt-1 mr-1"></i>
                                 <small><strong>$50.00</strong></small></h6>
                             </div>
                             <div class="col-2 col-sm-2 text-right">
-                                <button type="button" class="btn btn-outline-danger btn-sm">&times;</button>
+                                <button type="button" class="btn btn-danger btn-sm rounded">&times;</button>
+                                <button type="button" class="btn btn-danger btn-sm rounded disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
                             </div>
                         </div>
                     </div>
@@ -113,7 +127,8 @@
 
                     </div>
                     <div class="col-sm-3">
-                        <a href="" class="btn-block btn btn-success float-right">Checkout</a>
+                        <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
+                        <a href="" class="btn-block btn btn-success float-right disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
                     </div>
                 </div>
             </div>
@@ -134,13 +149,15 @@
                                     <input type="text" class="form-control" placeholder="Enter Promo Code..." required>
                                 </div>
                                 <div class="col-sm-4 col-5">
-                                    <input type="submit" class="btn btn-secondary btn-block" value="Apply">
+                                    <button type="submit" class="btn btn-secondary btn-block">Apply</button>
+                                    <button type="submit" class="btn btn-secondary btn-block disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
                                 </div>
                             </div>
                         </form>
 
                         <span class="badge badge-pill badge-primary">10% Special Promo</span>
-                        <button type="button btn-sm" class="btn btn-link btn-sm">Remove</button>
+                        <button type="button btn-sm" class="btn btn-link btn-sm disabled">Remove</button>
+                        <i class="fa fa-refresh fa-spin fa-fw my-1"></i>
                     </div>
                 </div>
             </div>
@@ -151,13 +168,41 @@
                     </div>
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between"><span>Order Subtotal </span>$390.00</li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Item Discount Total </span><span class="text-danger">- $50.00</span></li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Order Discount Total </span><span class="text-danger">- $50.00</span></li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Shipping Discount Total </span><span class="text-danger">- $50.00</span></li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Shipping and handling</span>$10.00</li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Tax</span>$0.00</li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Total</span><strong>$400.00</strong></li>
+                            <li class="list-group-item">
+                                <span>Order Subtotal</span>
+                                <span class="float-right">$390.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Item Discount Total</span>
+                                <span class="text-danger float-right">- $50.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Order Discount Total</span>
+                                <span class="text-danger float-right">- $50.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Shipping Discount Total</span>
+                                <span class="text-danger float-right">- $50.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Shipping and handling</span>
+                                <span class="float-right">$10.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Tax</span>
+                                <span class="float-right">$0.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Total</span>
+                                <strong class="float-right">$400.00</strong>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -165,7 +210,8 @@
         </div>
 
         <div class="text-center m-4">
-            <a href="#" class="btn btn-lg btn-success">Continue to Checkout</a>
+            <a href="/checkout/" class="btn btn-lg btn-success">Continue to Checkout</a>
+            <a href="/checkout/" class="btn btn-lg btn-success disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
         </div>
 
     </div>
