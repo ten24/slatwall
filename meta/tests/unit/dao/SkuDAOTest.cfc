@@ -2,45 +2,45 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
@@ -48,33 +48,33 @@ Notes:
 */
 component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 
-	
+
 	public void function setUp() {
 		super.setup();
-		
+
 		variables.dao = variables.mockservice.getSkuDAOMock();
 	}
-		
+
 	/**
 	* @test
 	*/
 	public void function inst_ok() {
 		assert(isObject(variables.dao));
 	}
-	
+
 	private any function createMockSku() {
 		var skuData = {
 			skuID = ""
 		};
 		return createPersistedTestEntity('Sku', skuData);
 	}
-	
+
 	private any function createMockProduct(string productID) {
 		var productData = {
 			productID = ""
 		};
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -83,14 +83,14 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			skuID=""
 		};
 		var sku = createPersistedTestEntity('Sku',skuData);
-		
+
 		var optionGroupData={
 			optionGroupID="",
 			optionGroupName='optionGroupNameb'&createUUID()
 		};
 		var optionGroup = createPersistedTestEntity('OptionGroup',optionGroupData);
 		optionGroup.setSortOrder(7);
-		
+
 		var optionGroupData2={
 			optionGroupID="",
 			optionGroupName='optionGroupNamea'&createUUID()
@@ -108,7 +108,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			}
 		};
 		var option = createPersistedTestEntity('option',optionData);
-		
+
 		var optionData2 = {
 			optionID="",
 			optionName="optionNamec"&createUUID(),
@@ -120,18 +120,18 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			}
 		};
 		var option2 = createPersistedTestEntity('option',optionData2);
-		
+
 		var skuDefinition = variables.dao.getSkuDefinitionForMerchandiseBySkuID(sku.getSkuID());
-		
+
 		assertEquals(trim(skuDefinition),'#optionGroup.getOptionGroupName()#: #option.getOptionName()#, #optionGroup2.getOptionGroupName()#: #option2.getOptionName()#');
 		optionGroup2.setSortOrder(1);
 		persistTestEntity(optionGroup2,{});
-		
+
 		var skuDefinition2 = variables.dao.getSkuDefinitionForMerchandiseBySkuID(sku.getSkuID());
 		assertEquals(trim(skuDefinition2),'#optionGroup2.getOptionGroupName()#: #option2.getOptionName()#, #optionGroup.getOptionGroupName()#: #option.getOptionName()#');
-		
+
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -139,7 +139,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		//Testing the flag without any where-exists in hql
 		var mockSku1 = createMockSku();
 		var mockSku2 = createMockSku();
-		
+
 		var productData = {
 			productID = "",
 			skus = [
@@ -148,28 +148,28 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 				}, {
 					skuID = mockSku2.getSkuID()
 				}
-				
+
 			]
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
+
 		var resultBothArgus = variables.dao.getTransactionExistsFlag(mockProduct.getProductID(), mockSku1.getSkuID());
 		assertFalse(resultBothArgus);
 
 		var resultProductArgu = variables.dao.getTransactionExistsFlag(mockProduct.getProductID());
 		assertFalse(resultProductArgu);
-		
+
 		var resultSkuArgu = variables.dao.getTransactionExistsFlag("", mockSku1.getSkuID());
 		assertFalse(resultSkuArgu);
 	}
-		
+
 	/**
 	* @test
 	*/
 	public void function getTransactionExistsFlagTest_OrderItem() {
 		//Testing then the orderItem exists
 		var mockSku = createMockSku();
-		
+
 		var orderItemData = {
 			orderItem = "",
 			sku = {
@@ -181,7 +181,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var resultOrderItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultOrderItem);
 	}
-	
+
 	private any function createMockStock(string skuID='') {
 		var stockData = {
 			stockID = ""
@@ -193,7 +193,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		}
 		return createPersistedTestEntity('Stock', stockData);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -208,18 +208,18 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			}
 		};
 		var mockInventory = createPersistedTestEntity('Inventory', inventoryData);
-		
+
 		var resultInventory = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
-		assertTrue(resultInventory);	
+		assertTrue(resultInventory);
 	}
-		
+
 	/**
 	* @test
 	*/
 	public void function getTransactionExistsFlagTest_PhysicalCountItemID() {
 		var mockSku = createMockSKu();
 		var mockStock = createMockStock(mockSku.getSkuID());
-		
+
 		var physicalCountItemData = {
 			physicalCountItemID = "",
 			stock = {
@@ -231,7 +231,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var resultPhysicalCountItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultPhysicalCountItem);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -239,7 +239,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var mockSku = createMockSKu();
 		var mockStock1 = createMockStock(mockSku.getSkuID());
 		var mockStock2 = createMockStock(mockSku.getSkuID());
-		
+
 		var StockAdjustmentItemData = {
 			physicalCountItemID = "",
 			fromStock = {
@@ -254,22 +254,36 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var resultStockAdjustmentItem = variables.dao.getTransactionExistsFlag("", mockSku.getSkuID());
 		assertTrue(resultStockAdjustmentItem);
 	}
-	
+
+	/**
+	* @test
+	*/
 	public void function getAverageCostTest(){
 		var skuData = {
 			skuID=""
 		};
 		var sku = createPersistedTestEntity('Sku',skuData);
-		
+
+		var locationData = {
+			locationID = '',
+			currencyCode="USD"
+		};
+		var location = createPersistedTestEntity('Location',locationData);
+
 		var stockData = {
 			stockID="",
+			averageCost = 50,
 			sku={
 				skuID=sku.getSkuID()
+			},
+			location = {
+				locationID = location.getLocationID()
 			},
 			currencyCode="USD"
 		};
 		var stock = createPersistedTestEntity('Stock',stockData);
-		
+
+		/*
 		var inventoryData ={
 			inventoryID="",
 			cost=50,
@@ -280,10 +294,12 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			currencyCode="USD"
 		};
 		var inventory = createPersistedTestEntity('Inventory',inventoryData);
-		
+		*/
+
 		var averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
 		assertEquals(50,averageCost);
-		
+
+		/*
 		var inventoryData2 = {
 			inventoryID="",
 			cost=35,
@@ -294,21 +310,51 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			currencyCode="USD"
 		};
 		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
-		
-		averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
-		assertEquals(42.5,averageCost);
-		
-		//second stock
+		*/
+
+		var locationData2 = {
+			locationID = '',
+			currencyCode="USD"
+		};
+		var location2 = createPersistedTestEntity('Location',locationData2);
+
 		var stockData2 = {
 			stockID="",
+			averageCost = 35,
 			sku={
 				skuID=sku.getSkuID()
+			},
+			location = {
+				locationID = location2.getLocationID()
 			},
 			currencyCode="USD"
 		};
 		var stock2 = createPersistedTestEntity('Stock',stockData2);
-		
-		var inventoryData3 ={
+
+		averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
+		assertEquals(42.5,averageCost);
+
+		var locationData3 = {
+			locationID = '',
+			currencyCode="USD"
+		};
+		var location3= createPersistedTestEntity('Location',locationData3);
+
+		//second stock
+		var stockData2 = {
+			stockID="",
+			averageCost = 100,
+			sku={
+				skuID=sku.getSkuID()
+			},
+			location = {
+				locationID = location3.getLocationID()
+			},
+			currencyCode="USD"
+		};
+		var stock2 = createPersistedTestEntity('Stock',stockData2);
+
+		/*var inventoryData3 ={
 			inventoryID="",
 			cost=100,
 			quantityin=5,
@@ -318,21 +364,21 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			currencyCode="USD"
 		};
 		var inventory3 = createPersistedTestEntity('Inventory',inventoryData3);
-		
+		*/
 		averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
-		assertEquals(61.666666666,left(averageCost,len(61.666666666)));
+		assertEquals(61.666667,averageCost);
 	}
-	
+
 	public void function getAverageLandedCostTest(){
-		
+
 	}
-	
+
 	public void function getAveragePriceSold(){
 		var skuData = {
 			skuID=""
 		};
 		var sku = createPersistedTestEntity('Sku',skuData);
-		
+
 		var orderData = {
 			orderID="",
 			orderStatusType={
@@ -341,7 +387,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			}
 		};
 		var order = createPersistedTestEntity('Order',orderData);
-		
+
 		var orderItemData = {
 			orderItemID="",
 			orderItemStatusType={
@@ -359,7 +405,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
 		order.addOrderItem(orderItem);
 		orderItem.setOrder(order);
-		
+
 		var orderItemData2 = {
 			orderItemID="",
 			orderItemStatusType={
@@ -377,7 +423,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var orderItem2 = createPersistedTestEntity('OrderItem',orderItemData2);
 		order.addOrderItem(orderItem2);
 		orderItem2.setOrder(order);
-		
+
 		var orderDeliveryItemData = {
 			orderDeliveryItemID="",
 			quantity=7,
@@ -388,7 +434,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var orderDeliveryItem = createTestEntity('OrderDeliveryItem',orderDeliveryItemData);
 		injectMethod(orderDeliveryItem, this, 'returnVoid', 'preInsert');
 		persistTestEntity(orderDeliveryItem, orderDeliveryItemData);
-		
+
 		var orderDeliveryItemData2 = {
 			orderDeliveryItemID="",
 			quantity=2,
@@ -399,12 +445,12 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var orderDeliveryItem2 = createTestEntity('OrderDeliveryItem',orderDeliveryItemData2);
 		injectMethod(orderDeliveryItem2, this, 'returnVoid', 'preInsert');
 		persistTestEntity(orderDeliveryItem2, orderDeliveryItemData2);
-		
+
 		var averagePriceSold = variables.dao.getAveragePriceSold(sku.getSkuID());
 		assertEquals(averagePriceSold,6.67,'((2*2)+ (8*7)) /9 )');
 	}
-	
+
 	private  void function returnVoid() {
-		
+
 	}
 }
