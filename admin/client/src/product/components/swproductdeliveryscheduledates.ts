@@ -36,6 +36,11 @@ class SWProductDeliveryScheduleDatesController {
         });
     }
     
+    public removeDeliveryScheduleDate=(index)=>{
+        this.deliverScheduleDates.splice(index,1);
+        this.sortDeliveryScheduleDates();  
+    }
+    
     public getDeliveryScheduleDates=()=>{
         console.log(this.collectionConfigService);
         var deliveryScheduleDateCollection = this.collectionConfigService.newCollectionConfig('DeliveryScheduleDate');

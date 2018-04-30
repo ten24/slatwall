@@ -1127,8 +1127,13 @@ component extends="HibachiService" accessors="true" {
 				}
 			}
 		}
+		//clear delivery Schedule Dates before adding again, ideally this should be checking which items are in the db that are not in the array and removing thoses specifically	
+		if(structKeyExists(data,'deliveryScheduleDates')){
+			arrayClear(arguments.product.getDeliveryScheduleDates());
+		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
+		
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);

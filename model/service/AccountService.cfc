@@ -1704,17 +1704,19 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.accountPaymentMethod.isDeletable()) {
 
 			var account = arguments.accountPaymentMethod.getAccount();
-
+			
 			arguments.accountPaymentMethod.setOrderPayments([]);
 
 			arguments.accountPaymentMethod.removeAccount();
-
+			
 			// If the primary payment method is this payment method then set the primary to null
 			if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
 				account.setPrimaryPaymentMethod(javaCast("null",""));
 			}
 
 			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+			
+			
 		}
 
 		return delete(arguments.accountPaymentMethod);

@@ -32030,6 +32030,10 @@ var SWProductDeliveryScheduleDatesController = /** @class */ (function () {
                 return 0;
             });
         };
+        this.removeDeliveryScheduleDate = function (index) {
+            _this.deliverScheduleDates.splice(index, 1);
+            _this.sortDeliveryScheduleDates();
+        };
         this.getDeliveryScheduleDates = function () {
             console.log(_this.collectionConfigService);
             var deliveryScheduleDateCollection = _this.collectionConfigService.newCollectionConfig('DeliveryScheduleDate');

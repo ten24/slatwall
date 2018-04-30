@@ -57,4 +57,22 @@ component displayname="DeliveryScheduleDate" entityname="SlatwallDeliverySchedul
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
+	
+	// Product (many-to-one)
+	public void function setProduct(required any product) {
+		variables.product = arguments.product;
+		if(isNew() or !arguments.product.hasDeliveryScheduleDate( this )) {
+			arrayAppend(arguments.product.getDeliveryScheduleDates(), this);
+		}
+	}
+	public void function removeProduct(any product) {
+		if(!structKeyExists(arguments, "product")) {
+			arguments.product = variables.product;
+		}
+		var index = arrayFind(arguments.product.getDeliveryScheduleDates(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.product.getDeliveryScheduleDates(), index);
+		}
+		structDelete(variables, "product");
+	}
 }

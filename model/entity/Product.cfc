@@ -83,7 +83,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
-	property name="deliveryScheduleDates" singularName="deliveryScheduleDate" cfc="DeliveryScheduleDate" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan";
+	property name="deliveryScheduleDates" singularName="deliveryScheduleDate" cfc="DeliveryScheduleDate" type="array" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="relatedProducts" singularname="relatedProduct" cfc="ProductRelationship" type="array" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
@@ -1283,6 +1283,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	public void function removeProductReview(required any productReview) {
 		arguments.productReview.removeProduct( this );
+	}
+	
+	// Delivery Schedule Date
+	public void function addDeliveryScheduleDate(required any deliveryScheduleDate){
+		arguments.deliveryScheduleDate.setProduct(this);
+	}
+	
+	public void function removeDeliveryScheduleDate(required any deliveryScheduleDate){
+		arguments.deliveryScheduleDate.removeProduct(this);
 	}
 
 	//  (many-to-many - owner)
