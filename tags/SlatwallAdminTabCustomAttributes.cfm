@@ -57,7 +57,7 @@
 	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
 	
 	<cfset attributes.tabid = "attSet" & attributes.attributeSet.getAttributeSetCode() />
-	<cfset attributes.text = attributes.attributeSet.getAttributeSetName() />
+	<cfset attributes.text = !isNull(attributes.attributeSet.getAttributeSetName()) ? attributes.attributeSet.getAttributeSetName() : "" />
 	<cfset attributes.view = "" />
 	<cfset attributes.property = "" />
 	<cfset attributes.count = 0 />

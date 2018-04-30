@@ -60,6 +60,8 @@
   "scripts": {
     "postbuild": "bower install",
     "prestart": "npm install",
+    "prebuildHibachi": "npm install",
+    "prebuildSlatwall": "npm install",
     "start": "http-server -a localhost -p 8000",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
