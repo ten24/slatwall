@@ -45,14 +45,14 @@
 Notes:
 */
 component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
-	
+
 	public void function setUp() {
 		super.setup();
 
 		variables.dao = variables.mockService.getOrderDAOMock();
 
 	}
-	
+
 	/**
 	* @test
 	*/
@@ -60,7 +60,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assert(isObject(variables.dao));
 	}
 
-	//getPeerOrderPaymentNullAmountExistsFlag()	
+	//getPeerOrderPaymentNullAmountExistsFlag()
 	/**
 	* @test
 	*/
@@ -99,11 +99,11 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var order2 = createPersistedTestEntity('order', orderFalseData);
 
 		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[2].getOrderPaymentID()));
-		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[1].getOrderPaymentID()));
+		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[1].getOrderPaymentID()));
 		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId()));
 		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order2.getOrderId(), order2.getOrderPayments()[1].getOrderPaymentID()));
 	}
-	
+
 	private any function createOrderReturn(numeric fulfillAmount) {
 		var orderReturnData = {
 			orderReturnID = ''
@@ -113,7 +113,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		}
 		return createPersistedTestEntity('OrderReturn', orderReturnData);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -121,12 +121,12 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var mockOrderReturn1 = createOrderReturn(100);
 		var mockOrderReturn2 = createOrderReturn(10);
 		var mockOrderReturn3 = createOrderReturn();
-		
+
 		var orderData = {
 			orderID = ''
 		};
 		var mockParentOrder = createPersistedTestEntity('Order', orderData);
-		
+
 		var orderData = {
 			orderID = '',
 			referencedOrder = {
@@ -145,16 +145,16 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			]
 		};
 		var mockOrder = createPersistedTestEntity('Order', orderData);
-		
+
 		//Testing the orderReturn without fulfillmentReturnAmount
 		var result = variables.dao.getPreviouslyReturnedFulfillmentTotal(mockParentOrder.getOrderID());
 		assertEquals(110, result);
-		
+
 		//Testing the argument
 		var resultInvalidArgu = variables.dao.getPreviouslyReturnedFulfillmentTotal('SomeFakeParentORdrID');
 		assertEquals(0, resultInvalidArgu);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -166,9 +166,9 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			}
 		};
 		var mockProduct = createPersistedTestEntity('Product', productData);
-		
+
 		var mockTerm = createSimpleMockEntityByEntityName('Term');
-		
+
 		var skuData = {
 			skuID = '',
 			product = {
@@ -177,20 +177,20 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			giftCardExpirationTerm = {
 				termID = mockTerm.getTermID()
 			}
-			
+
 		};
 		var mockSku = createPersistedTestEntity('Sku', skuData);
-		
+
 		var orderItemData = {
 			orderItem = '',
 			sku = {
 				skuID = mockSku.getSkuID()
 			},
 			quantity = 50
-			
+
 		};
 		var mockOrderItem = createPersistedTestEntity('OrderItem', orderItemData);
-		
+
 		var orderData = {
 			orderID = '',
 			orderItems=[
@@ -200,7 +200,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 			]
 		};
 		var mockOrder = createPersistedTestEntity('Order', orderData);
-		
+
 		var resultOrderItems = variables.dao.getGiftCardOrderItems(mockOrder.getOrderID());
 		assertEquals(mockOrderItem.getOrderItemID(), resultOrderItems[1].getOrderItemID());
 	}
