@@ -120,8 +120,7 @@
         <cfset subscriptionOrderItemList.addFilter('orderItem.order.orderCloseDateTime', CreateDateTime(INT(url.reportYear),12,31,23,59,59),'<=')/>
     </cfif>
     <cfset subscriptionOrderItemList.addGroupBy('orderItem.sku.product.productName')/>
-    <cfset productsWithDeliveries = subscriptionOrderItemList.getRecords()/>
-    
+    <cfset productsWithDeliveries = subscriptionOrderItemList.getPageRecords()/>
     
     <cfset earnedRevenueCollectionList.addDisplayProperty('subscriptionOrderItem.orderItem.sku.product.productName',javacast('null',''),{isVisible=true})/>
     <cfset earnedRevenueCollectionList.setOrderBy('subscriptionOrderItem.orderItem.sku.product.productName')/>
