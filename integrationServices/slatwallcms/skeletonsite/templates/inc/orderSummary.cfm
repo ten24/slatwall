@@ -28,9 +28,9 @@
                 <span>Tax</span>
                 <span class="float-right" ng-bind="slatwall.cart.taxTotal | currency"></span>
             </li>
-            <li ng-if="slatwall.cart.total" class="list-group-item">
+            <li ng-if="slatwall.cart.calculatedTotal" class="list-group-item">
                 <span>Total</span>
-                <strong class="float-right" ng-bind="slatwall.cart.total | currency"></strong>
+                <strong class="float-right" ng-bind="slatwall.cart.calculatedTotal | currency"></strong>
             </li>
         </ul>
     </div>
