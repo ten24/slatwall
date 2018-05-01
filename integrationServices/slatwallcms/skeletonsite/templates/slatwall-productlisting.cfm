@@ -2,7 +2,6 @@
 <cfimport prefix="sw" taglib="../tags" />
 <cfoutput>
 <cfinclude template="_slatwall-header.cfm" />
-
 <div class="container">
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
