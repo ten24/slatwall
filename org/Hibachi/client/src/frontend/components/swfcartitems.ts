@@ -1,15 +1,5 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-/**
- * True if the data type matches the given data type.
- */
-/**
- * Validates true if the model value is a numeric value.
- */
-class SWFCartItemsController{
-    
-    
-}
  
 class SWFCartItems{
     public static Factory(){
@@ -40,7 +30,9 @@ class SWFCartItems{
                             'orderItem.orderItemID':orderItemID,
                             'orderItem.quantity':newQuantity
                     };
-                    $rootScope.slatwall.doAction('updateOrderItemQuantity',data).then(success=>{
+                    $rootScope.slatwall.doAction('updateOrderItemQuantity',data).then(result=>{
+                        $rootScope.slatwall.cart = result.cart;
+                        $rootScope.slatwall.account = result.account;
                         scope.updateOrderItemQuantityIsLoading = false;
                     });
                 }
@@ -51,7 +43,9 @@ class SWFCartItems{
                     let data = {
                         'orderItemID':scope.orderItem.orderItemID
                     };
-                    $rootScope.slatwall.doAction('removeOrderItem',data).then(success=>{
+                    $rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
+                        $rootScope.slatwall.cart = result.cart;
+                        $rootScope.slatwall.account = result.account;
                         scope.removeOrderItemIsLoading = false;
                     });
                 }
