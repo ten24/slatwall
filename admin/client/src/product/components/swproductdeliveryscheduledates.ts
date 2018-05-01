@@ -5,7 +5,7 @@ class SWProductDeliveryScheduleDatesController {
 
     public productId:string;
     public componentId:string;
-    
+    public currentDateTime:any;
     public deliverScheduleDates;
 
     //@ngInject
@@ -20,6 +20,8 @@ class SWProductDeliveryScheduleDatesController {
                 this.sortDeliveryScheduleDates();
             }
         })
+        this.currentDateTime = Date.today();
+        console.log(this.currentDateTime,'test'); 
     }
     
     public sortDeliveryScheduleDates=()=>{
@@ -48,6 +50,9 @@ class SWProductDeliveryScheduleDatesController {
         deliveryScheduleDateCollection.setAllRecords(true);
         deliveryScheduleDateCollection.getEntity().then((data)=>{
             this.deliverScheduleDates = data.records;
+            for(var i in this.deliverScheduleDates){
+                this.deliverScheduleDates[i].formattedDate = Date.parse(this.deliverScheduleDates[i].deliveryScheduleDateValue);
+            }
         });
         
     }

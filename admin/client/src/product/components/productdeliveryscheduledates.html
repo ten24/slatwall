@@ -18,7 +18,7 @@
                             <span ng-bind="deliverScheduleDate.deliveryScheduleDateValue"></span><br/>
                         </td>
                         <td>
-                            <a class="btn  s-remove j-tool-tip-item" title="Remove" ng-click="swProductDeliveryScheduleDates.removeDeliveryScheduleDate($index)">
+                            <a ng-if="deliverScheduleDate.formattedDate > swProductDeliveryScheduleDates.currentDateTime" class="btn  s-remove j-tool-tip-item" title="Remove" ng-click="swProductDeliveryScheduleDates.removeDeliveryScheduleDate($index)">
                             	<i class="fa fa-times"></i>
                             </a>
                         </td>

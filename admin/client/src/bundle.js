@@ -32041,6 +32041,9 @@ var SWProductDeliveryScheduleDatesController = /** @class */ (function () {
             deliveryScheduleDateCollection.setAllRecords(true);
             deliveryScheduleDateCollection.getEntity().then(function (data) {
                 _this.deliverScheduleDates = data.records;
+                for (var i in _this.deliverScheduleDates) {
+                    _this.deliverScheduleDates[i].formattedDate = Date.parse(_this.deliverScheduleDates[i].deliveryScheduleDateValue);
+                }
             });
         };
         this.addDate = function (newDeliverScheduleDate) {
@@ -32057,6 +32060,8 @@ var SWProductDeliveryScheduleDatesController = /** @class */ (function () {
                 _this.sortDeliveryScheduleDates();
             }
         });
+        this.currentDateTime = Date.today();
+        console.log(this.currentDateTime, 'test');
     }
     return SWProductDeliveryScheduleDatesController;
 }());
