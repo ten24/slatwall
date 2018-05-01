@@ -207,7 +207,7 @@ Notes:
 						AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 					</cfif>
 					
-					AND su.expirationDate > <cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>
+					AND su.expirationDate >= <cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>
 					group by DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%M')
 				)
 				<cfif i neq 12>
