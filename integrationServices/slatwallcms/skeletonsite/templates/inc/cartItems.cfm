@@ -1,10 +1,9 @@
-<div ng-if="false" class="alert alert-success">Item removed from cart</div>
-<div ng-if="false" class="alert alert-danger">Item removed failure</div>
-<div ng-if="false" class="alert alert-success">Quantity updated</div>
-<div ng-if="false" class="alert alert-danger">Quantity update failure</div>
+    <div ng-show="slatwall.successfulActions.includes('public:cart.removeOrderItem')" class="alert alert-success">Item removed from cart</div>
+    <div ng-show="slatwall.failureActions.includes('public:cart.removeOrderItem')" class="alert alert-danger">Item removed failure</div>
+    <div ng-show="slatwall.successfulActions.includes('public:cart.updateOrderItem')" class="alert alert-success">Quantity updated</div>
+    <div ng-show="slatwall.failureActions.includes('public:cart.updateOrderItem')" class="alert alert-danger">Quantity update failure</div>
 
-<div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items ng-model="orderItem">
-
+<div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items ng-model="orderItem" ng-cloak>
 <!---- the directive swf-cart-items passed in as an attribute above drives all the functionality in this template.
        all methods and variables (excluding the ones preceded by "slatwall") will be applied to the current orderItem 
        and belong to the swf-cart-items directive's scope.

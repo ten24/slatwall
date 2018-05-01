@@ -31,6 +31,8 @@ class SWFCartItems{
                             'orderItem.quantity':newQuantity
                     };
                     $rootScope.slatwall.doAction('updateOrderItemQuantity',data).then(result=>{
+                        console.log(result);
+                        scope.result = result;
                         $rootScope.slatwall.cart = result.cart;
                         $rootScope.slatwall.account = result.account;
                         scope.updateOrderItemQuantityIsLoading = false;
@@ -44,6 +46,8 @@ class SWFCartItems{
                         'orderItemID':scope.orderItem.orderItemID
                     };
                     $rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
+                        scope.result = result;
+                        console.log(result);
                         $rootScope.slatwall.cart = result.cart;
                         $rootScope.slatwall.account = result.account;
                         scope.removeOrderItemIsLoading = false;
