@@ -1,3 +1,7 @@
+<cfparam name="rc.subscriptionType" default=""/>
+<cfparam name="rc.productType" default=""/>
+<cfparam name="rc.productID" default=""/>
+<cfparam name="rc.reportYear" default="#Year(now())#"/>
 <cfoutput>
     <cfset slatAction = 'report.earnedRevenueReport'/>
     <!---<cfset earningSubscriptionsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
@@ -23,6 +27,11 @@
     <cfloop array="#possibleYearsData#" index="possibleYearDataRecord">
         <cfset arrayAppend(possibleYearsRecords,possibleYearDataRecord['createdDateTime'])/>
     </cfloop>
+    <!---used to determine when to end the loop--->
+    <cfset currentMonth = 12/>
+    <cfif Year(now()) eq rc.reportYear>
+        <cfset currentMonth = Month(now())/>
+    </cfif>
     
     <!--apply filters-->
     <cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
@@ -54,7 +63,7 @@
     <cfset earned = []/>
     <cfset taxAmount = []/>
     <cfset possibleYearTotal = []/>
-    <cfloop from="1" to="12" index="i">
+    <cfloop from="1" to="#currentMonth#" index="i">
         <cfset subscriptionsEarning[i] = 0/>
         <cfset earned[i] = 0/>
         <cfset taxAmount[i] = 0/>
@@ -71,9 +80,9 @@
         <thead>
             <tr>
                 <th>Created Date Time</th>
-                <cfloop array="#possibleMonths#" index="possibleMonth">
+                <cfloop from="1" to="#currentMonth#" index="w">
                     <th>
-                        #possibleMonth#
+                        #possibleMonths[w]#
                     </th>
                 </cfloop>
             </tr>
@@ -135,7 +144,7 @@
             earned = [],
             taxAmount = []
         }/>
-        <cfloop from="1" to="12" index="i">
+        <cfloop from="1" to="#currentMonth#" index="i">
             <cfset productsWithDeliveriesMap[productName].subscriptionsEarning[i] = 0/>
             <cfset productsWithDeliveriesMap[productName].earned[i] = 0/>
             <cfset productsWithDeliveriesMap[productName].taxAmount[i] = 0/>
@@ -157,9 +166,9 @@
         <thead>
             <tr>
                 <th>Created Date Time</th>
-                <cfloop array="#possibleMonths#" index="possibleMonth">
+                <cfloop from="1" to="#currentMonth#" index="w">
                     <th>
-                        #possibleMonth#
+                        #possibleMonths[w]#
                     </th>
                 </cfloop>
             </tr>
