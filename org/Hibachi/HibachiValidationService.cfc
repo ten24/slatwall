@@ -705,7 +705,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
 		}
-		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue == comparePropertyValue)) {
+		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && ( (isnumeric(propertyValue) && propertyValue == comparePropertyValue) || Compare(propertyValue, comparePropertyValue) == 0 )  )) {
 			return true;
 		}
 		return false;
