@@ -939,11 +939,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!isNull(variables.primaryPaymentMethod)) {
 			return variables.primaryPaymentMethod;
 		}
-		if (this.getAccountPaymentMethodsCount()) {
-			variables.primaryPaymentMethod = this.getAccountPaymentMethodsSmartList().getFirstRecord();
-			return variables.primaryPaymentMethod;
-		}
-		
+
 		//check for in memory
 		if(hasAccountPaymentMethod()){
 			variables.primaryPaymentMethod = getAccountPaymentMethods()[1]; 	
