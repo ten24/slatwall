@@ -28,8 +28,8 @@
       <hb:HibachiFilterCountDisplay
 	    	hibachiScope="#$.slatwall#"
 	    	collectionList="#productCollectionList#"
-	    	template="../../../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/FilterCountDisplayItem.cfm"
-	        filterCountDisplayTemplate="../../../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/FilterCountDisplay.cfm"
+	    	template="../../../custom/apps/#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/FilterCountDisplayItem.cfm"
+	        filterCountDisplayTemplate="../../../custom/apps//#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/FilterCountDisplay.cfm"
 	    >
 
 		    	<hb:HibachiFilterCountDisplayItem
