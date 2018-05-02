@@ -129,7 +129,7 @@
             <!--- Pagination --->
             <sw:SlatwallCollectionPagination
             	collection="#productCollectionList#"
-            	template="../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/CollectionPagination.cfm"
+            	template="../custom/apps/#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/CollectionPagination.cfm"
             	slatwallScope="#$.slatwall#"
             	showFirstAndLast="false">
             </sw:SlatwallCollectionPagination>
