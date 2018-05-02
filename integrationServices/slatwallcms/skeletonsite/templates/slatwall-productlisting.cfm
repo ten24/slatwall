@@ -2,18 +2,9 @@
 <cfimport prefix="sw" taglib="../tags" />
 <cfoutput>
 <cfinclude template="_slatwall-header.cfm" />
-
 <div class="container">
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
-    
-    <!--- Add to cart success/fail messages --->
-    <div class="alert alert-success">Item added to cart</div>
-    
-    <div class="alert alert-danger">Item could not be added to cart</div>
-    
-    <!--- No Product search results found message --->
-    <div class="alert alert-warning">No products found</div>
     
     <!--- If this item was just added show the success message --->
 	<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
