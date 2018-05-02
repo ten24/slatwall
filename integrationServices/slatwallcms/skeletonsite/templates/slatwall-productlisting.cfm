@@ -2,18 +2,9 @@
 <cfimport prefix="sw" taglib="../tags" />
 <cfoutput>
 <cfinclude template="_slatwall-header.cfm" />
-
 <div class="container">
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
-    
-    <!--- Add to cart success/fail messages --->
-    <div class="alert alert-success">Item added to cart</div>
-    
-    <div class="alert alert-danger">Item could not be added to cart</div>
-    
-    <!--- No Product search results found message --->
-    <div class="alert alert-warning">No products found</div>
     
     <!--- If this item was just added show the success message --->
 	<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
@@ -32,9 +23,9 @@
 			<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
 		</div>
 	</cfif>
-	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+	<cfset productCollectionList.setPageRecordsShow(9)/>
 	<cfif structKeyExists(url,'keywords')>
 		<cfset productCollectionList.setKeywords(url.keywords) />
 	</cfif>
@@ -129,21 +120,11 @@
             <!--- Pagination --->
             <sw:SlatwallCollectionPagination
             	collection="#productCollectionList#"
-            	template="../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/CollectionPagination.cfm"
+            	template="../custom/apps/#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/CollectionPagination.cfm"
             	slatwallScope="#$.slatwall#"
-            	showFirstAndLast="false">
+            	showFirstAndLast="true">
             </sw:SlatwallCollectionPagination>
             
-            <!--- Example Pagination Markup --->
-   <!---     	<nav class="mt-5">--->
-			<!---	<ul class="pagination">--->
-			<!---		<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>--->
-			<!---    	<li class="page-item active"><a class="page-link" href="##">1</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">2</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">3</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">Next</a></li>--->
-			<!---	</ul>--->
-			<!--</nav>--->
     	</div>
     </div>
 </div>

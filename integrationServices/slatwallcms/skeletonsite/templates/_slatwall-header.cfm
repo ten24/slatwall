@@ -8,7 +8,9 @@
     <meta name="author" content="">
 
     <title>#$.slatwall.getCurrentRequestSite().getSiteName()#</title>
-    <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></script>
+
     <!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
     #$.slatwall.renderJSObject( subsystem="public" )#
 		<style>
@@ -22,9 +24,9 @@
 				,basePartialsPath: '/org/Hibachi/client/src/'
 				,customPartialsPath:'/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/partials/'
 	        };
-	    </script>
-
+	   </script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
     <style media="screen">
     @media (min-width: 768px) {
