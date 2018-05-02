@@ -40,8 +40,8 @@
 	</cfif>
     <cfset productCollectionList.addFilter("activeFlag",1)>
 
-    <!---<cfset productCollectionList.addFilter("publishedFlag",1)>
-    <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />--->
+    <cfset productCollectionList.addFilter("publishedFlag",1)>
+    <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />
     <cfset productCollectionList.setDisplayProperties("brand.brandName,productDescription,urlTitle,productType.productTypeName,productType.urlTitle,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
     <!----- Add additional fields here to enhance search scope ---->
     <cfset productCollectionList.addDisplayProperty(displayProperty="productName",columnConfig={isVisible=true, isSearchable=true, isDeletable=true}) />
