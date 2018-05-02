@@ -32,16 +32,16 @@
 			<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
 		</div>
 	</cfif>
-	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+	<cfset productCollectionList.setPageRecordsShow(9)/>
 	<cfif structKeyExists(url,'keywords')>
 		<cfset productCollectionList.setKeywords(url.keywords) />
 	</cfif>
     <cfset productCollectionList.addFilter("activeFlag",1)>
 
-    <cfset productCollectionList.addFilter("publishedFlag",1)>
-    <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />
+    <!---<cfset productCollectionList.addFilter("publishedFlag",1)>
+    <cfset productCollectionList.addFilter("listingPages.content.contentID",$.slatwall.content('contentID')) />--->
     <cfset productCollectionList.setDisplayProperties("brand.brandName,productDescription,urlTitle,productType.productTypeName,productType.urlTitle,defaultSku.price,defaultSku.listPrice,defaultSku.skuID")>
     <!----- Add additional fields here to enhance search scope ---->
     <cfset productCollectionList.addDisplayProperty(displayProperty="productName",columnConfig={isVisible=true, isSearchable=true, isDeletable=true}) />
@@ -131,7 +131,7 @@
             	collection="#productCollectionList#"
             	template="../custom/apps/#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/CollectionPagination.cfm"
             	slatwallScope="#$.slatwall#"
-            	showFirstAndLast="false">
+            	showFirstAndLast="true">
             </sw:SlatwallCollectionPagination>
             
             <!--- Example Pagination Markup --->
