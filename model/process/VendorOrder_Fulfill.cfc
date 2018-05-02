@@ -65,7 +65,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			sl = getService("locationService").getLocationSmartList();
+			var  sl = getService("locationService").getLocationSmartList();
 			sl.addSelect('locationName', 'name');
 			sl.addSelect('locationID', 'value');
 			variables.locationIDOptions = sl.getRecords();
