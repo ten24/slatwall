@@ -3,7 +3,7 @@
     <div ng-show="slatwall.successfulActions.includes('public:cart.updateOrderItem')" class="alert alert-success">Quantity updated</div>
     <div ng-show="slatwall.failureActions.includes('public:cart.updateOrderItem')" class="alert alert-danger">Quantity update failure</div>
 
-<div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items ng-model="orderItem" ng-cloak>
+<div class="row" ng-repeat-start="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" ng-cloak>
 <!---- the directive swf-cart-items passed in as an attribute above drives all the functionality in this template.
        all methods and variables (excluding the ones preceded by "slatwall") will be applied to the current orderItem 
        and belong to the swf-cart-items directive's scope.
@@ -36,7 +36,7 @@
     
     <div class="col-12 col-sm-12 text-sm-center col-md-6 text-md-right row">
         <div class="col-3 col-sm-3 col-md-4 text-md-right pt-2">
-            <h6>{{orderItem.extendedUnitPriceAfterDiscount | currency}} <small class="text-muted" ng-if="orderItem.extendedPriceAfterDiscount < orderItem.extendedPrice"><s ng-bind="orderItem.extendedUnitPrice | currency"></s></small></h6>
+            <h6>{{orderItem.extendedUnitPriceAfterDiscount | currency}} <small class="text-muted" ng-if="orderItem.extendedUnitPriceAfterDiscount < orderItem.extendedUnitPrice"><s ng-bind="orderItem.extendedUnitPrice | currency"></s></small></h6>
         </div>
         <div class="col-3 col-sm-3">
             <input
@@ -45,16 +45,23 @@
                 min="1" 
                 ng-value="orderItem.quantity" 
                 ng-model="newQuantity" 
-                ng-change="updateOrderItemQuantity(newQuantity)" 
+                ng-change="swfCartItems.updateOrderItemQuantity(newQuantity)" 
             required>
         </div>
         <div class="col-4 col-sm-3 text-md-right pt-2">
-            <i ng-show="updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw float-left mb-2 mr-1"></i>
+            <i ng-show="swfCartItems.updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw float-left mb-2 mr-1"></i>
             <h6><strong ng-bind="orderItem.extendedPriceAfterDiscount | currency"></strong></h6>
         </div>
         <div class="col-2 col-sm-2 text-right">
-            <button ng-show="!removeOrderItemIsLoading" ng-click="removeOrderItem()" type="button" class="btn btn-danger btn-sm rounded">&times;</button>
-            <button ng-show="removeOrderItemIsLoading" type="button" class="btn btn-danger btn-sm rounded disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
+            <button 
+                ng-disabled="swfCartItems.removeOrderItemIsLoading" 
+                ng-click="swfCartItems.removeOrderItem()" 
+                ng-class="{disabled: swfCartItems.removeOrderItemIsLoading}" 
+                type="button" 
+                class="btn btn-danger btn-sm rounded">
+                &times;
+                <i ng-show="swfCartItems.removeOrderItemIsLoading" class="fa fa-refresh fa-spin fa-fw"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -79,16 +86,23 @@
                 min="1" 
                 ng-value="child.quantity" 
                 ng-model="childQuantity"
-                ng-change="updateOrderItemQuantity(newQuantity,child)" 
+                ng-change="swfCartItems.updateOrderItemQuantity(newQuantity,child)" 
             required>
         </div>
         <div class="col-3 col-sm-3 text-md-right pt-1">
-            <i ng-show="updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw float-left mt-1 mr-1"></i>
+            <i ng-show="swfCartItems.updateOrderItemQuantityIsLoading" class="fa fa-refresh fa-spin fa-fw float-left mt-1 mr-1"></i>
             <small><strong ng-bind="child.extendedPriceAfterDiscount | currency"></strong></small>
         </div>
         <div class="col-2 col-sm-2 text-right">
-            <button ng-show="!removeOrderItemIsLoading" ng-click="removeOrderItem(child)" type="button" class="btn btn-danger btn-sm rounded">&times;</button>
-            <button ng-show="removeOrderItemIsLoading" type="button" class="btn btn-danger btn-sm rounded disabled" ng-if="false"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
+            <button 
+                ng-disabled="swfCartItems.removeOrderItemIsLoading" 
+                ng-click="swfCartItems.removeOrderItem(child)" 
+                ng-class="{disabled: swfCartItems.removeOrderItemIsLoading}" 
+                type="button" 
+                class="btn btn-danger btn-sm rounded">
+                &times;
+                <i ng-show="swfCartItems.removeOrderItemIsLoading" class="fa fa-refresh fa-spin fa-fw"></i>
+            </button>
         </div>
     </div>
     

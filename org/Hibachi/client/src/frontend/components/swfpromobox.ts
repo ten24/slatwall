@@ -1,6 +1,43 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+
+class SWFPromoBoxController{
+    //@ngInject
+    public addPromotionCodeIsLoading:boolean;
+    public removePromotionCodeIsLoading:boolean;
+    
+    constructor(private $rootScope){
+        this.$rootScope = $rootScope;
+    }
+    public addPromotionCode = (promoCode)=>{
+        this.addPromotionCodeIsLoading = true;
+        let data = {
+            'promotionCode':promoCode
+        }
+        this.$rootScope.slatwall.doAction('addPromotionCode',data).then(result=>{
+            this.addPromotionCodeIsLoading = false;
+            this.$rootScope.slatwall.cart = result.cart;
+            this.$rootScope.slatwall.account = result.account;
+            this.$rootScope.slatwall.successfulActions = result.successfulActions;
+            this.$rootScope.slatwall.errors = result.errors;
+        });
+    }
+    public removePromotionCode = (promoCode)=>{
+        this.removePromotionCodeIsLoading = true;
+        let data = {
+            'promotionCode':promoCode.promotionCode
+        }
+        this.$rootScope.slatwall.doAction('removePromotionCode',data).then(result=>{
+            this.removePromotionCodeIsLoading = false;
+            this.$rootScope.slatwall.cart = result.cart;
+            this.$rootScope.slatwall.account = result.account;
+            this.$rootScope.slatwall.successfulActions = result.successfulActions;
+            this.$rootScope.slatwall.errors = result.errors;
+        }); 
+    }
+}
+
 class SWFPromoBox{
     public static Factory(){
         var directive = (
@@ -17,39 +54,15 @@ class SWFPromoBox{
         $rootScope
     ){
         return {
+            controller:SWFPromoBoxController,
+            controllerAs:"swfPromoBox",
             restrict: "A",
-            require:"^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                
-                scope.addPromotionCode = (promoCode)=>{
-                    scope.addPromotionCodeIsLoading = true;
-                    let data = {
-                        'promotionCode':promoCode
-                    }
-                    $rootScope.slatwall.doAction('addPromotionCode',data).then(result=>{
-                        scope.result = result;
-                        $rootScope.slatwall.cart = result.cart;
-                        $rootScope.slatwall.account = result.account;
-                        scope.addPromotionCodeIsLoading = false;
-                    });
-                }
-                
-                scope.removePromotionCode = (promoCode)=>{
-                    scope.removePromotionCodeIsLoading = true;
-                    let data = {
-                        'promotionCode':promoCode.promotionCode
-                    }
-                    $rootScope.slatwall.doAction('removePromotionCode',data).then(result=>{
-                        scope.result = result;
-                        $rootScope.slatwall.cart = result.cart;
-                        $rootScope.slatwall.account = result.account;
-                        scope.removePromotionCodeIsLoading = false;
-                    }); 
-                }
             }
         };
     }
 }
 export{
+    SWFPromoBoxController,
     SWFPromoBox
 }
