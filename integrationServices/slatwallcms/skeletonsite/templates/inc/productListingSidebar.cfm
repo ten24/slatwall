@@ -65,7 +65,7 @@
                 <hb:HibachiFilterCountDisplayItem
 					propertyIdentifier="brand"
 					inversePropertyIdentifier="products"
-					title="Brands"
+					title="#$.slatwall.rbkey('entity.brand_plural')#"
 				/>
 				
 				<hb:HibachiFilterCountDisplayItem
@@ -73,6 +73,7 @@
 		 			discriminatorProperty="optionGroup"
 		 			inversePropertyIdentifier="skus.product"
 		 		/>
+		 		
 		 		
 		</hb:HibachiFilterCountDisplay >
     </div>
