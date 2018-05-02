@@ -12,9 +12,9 @@
                 <span>Item Discount Total</span>
                 <span class="text-danger float-right" ng-bind=" '-' + slatwall.cart.itemDiscountAmountTotal | currency"></span>
             </li>
-            <li ng-if="slatwall.cart.orderDiscountAmountTotal" class="list-group-item">
+            <li ng-if="slatwall.cart.discountTotal" class="list-group-item">
                 <span>Order Discount Total</span>
-                <span class="text-danger float-right" ng-bind="'-' + slatwall.cart.orderDiscountAmountTotal | currency"></span>
+                <span class="text-danger float-right" ng-bind="'-' + slatwall.cart.discountTotal | currency"></span>
             </li>
             <li ng-if="slatwall.cart.fulfillmentDiscountAmountTotal" class="list-group-item">
                 <span>Shipping Discount Total</span>
@@ -28,9 +28,9 @@
                 <span>Tax</span>
                 <span class="float-right" ng-bind="slatwall.cart.taxTotal | currency"></span>
             </li>
-            <li ng-if="slatwall.cart.calculatedTotal" class="list-group-item">
+            <li ng-if="slatwall.cart.total" class="list-group-item">
                 <span>Total</span>
-                <strong class="float-right" ng-bind="slatwall.cart.calculatedTotal | currency"></strong>
+                <strong class="float-right" ng-bind="slatwall.cart.total | currency"></strong>
             </li>
         </ul>
     </div>
