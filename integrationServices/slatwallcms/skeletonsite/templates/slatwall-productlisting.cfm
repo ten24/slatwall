@@ -32,9 +32,9 @@
 			<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
 		</div>
 	</cfif>
-	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+	<cfset productCollectionList.setPageRecordsShow(9)/>
 	<cfif structKeyExists(url,'keywords')>
 		<cfset productCollectionList.setKeywords(url.keywords) />
 	</cfif>
@@ -129,21 +129,11 @@
             <!--- Pagination --->
             <sw:SlatwallCollectionPagination
             	collection="#productCollectionList#"
-            	template="../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/CollectionPagination.cfm"
+            	template="../custom/apps/#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/CollectionPagination.cfm"
             	slatwallScope="#$.slatwall#"
-            	showFirstAndLast="false">
+            	showFirstAndLast="true">
             </sw:SlatwallCollectionPagination>
             
-            <!--- Example Pagination Markup --->
-   <!---     	<nav class="mt-5">--->
-			<!---	<ul class="pagination">--->
-			<!---		<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>--->
-			<!---    	<li class="page-item active"><a class="page-link" href="##">1</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">2</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">3</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">Next</a></li>--->
-			<!---	</ul>--->
-			<!--</nav>--->
     	</div>
     </div>
 </div>
