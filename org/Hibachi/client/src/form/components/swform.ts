@@ -160,12 +160,12 @@ class SWFormController {
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
             if(!result) return;
-            if(result.sucessfulActions.length){
+            if(result.successfulActions.length){
                 this.completedActions++;
             }
             if( (angular.isArray(this.actions) && this.completedActions === this.actions.length)
                 ||
-                (!angular.isArray(this.actions)) && result.sucessfulActions.length)
+                (!angular.isArray(this.actions)) && result.successfulActions.length)
             {
                 //if we have an array of actions and they're all complete, or if we have just one successful action
                 if(this.sRedirectUrl){
