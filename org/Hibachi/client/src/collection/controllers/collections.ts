@@ -108,7 +108,7 @@ class CollectionController{
 					if(angular.isUndefined($scope.collectionConfig)){
 	
 	                    var test = collectionConfigService.newCollectionConfig();
-						test.loadJson(value.collectionConfig);
+						test.loadJson($scope.propertyName);
 	                    $scope.collectionConfig = test.getCollectionConfig();
 					}
 	
