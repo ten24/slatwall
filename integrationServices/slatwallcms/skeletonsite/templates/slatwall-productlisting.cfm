@@ -92,7 +92,7 @@
 								    </a>
 								</cfif>
 		    					<div class="card-body">
-		                            <small><a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
+		                            <small><a href="#$.slatwall.setting('globalURLKeyProductType')#/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
 		                            <h4><a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">#local.product['productName']#</a></h4>
 		                            <!--- Only displays crossed out list price if it's greater than actual price --->
 		                            <cfif local.product['defaultSku_listPrice'] GT local.product['defaultSku_price']>
