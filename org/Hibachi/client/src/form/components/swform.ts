@@ -163,17 +163,12 @@ class SWFormController {
             if(result.sucessfulActions.length){
                 this.completedActions++;
             }
-            if( 
-                (angular.isArray(this.actions) && this.completedActions === this.actions.length)
-                
+            if( (angular.isArray(this.actions) && this.completedActions === this.actions.length)
                 ||
-                
-                (!angular.isArray(this.actions))
-            )
+                (!angular.isArray(this.actions)) && result.sucessfulActions.length)
             {
-                //if we have an array of actions and they're all complete, or if we have just one action
+                //if we have an array of actions and they're all complete, or if we have just one successful action
                 if(this.sRedirectUrl){
-                    console.log('here');
                     this.$rootScope.slatwall.redirectExact(this.sRedirectUrl);
                 }
             }
