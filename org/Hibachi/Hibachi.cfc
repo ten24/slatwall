@@ -1,5 +1,5 @@
 component extends="framework.one" {
-	// ======= START: ENVIORNMENT CONFIGURATION =======
+	// ======= START: ENVIRONMENT CONFIGURATION =======
 
 	// =============== configApplication
 
@@ -219,7 +219,7 @@ component extends="framework.one" {
 		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
-	// =======  END: ENVIORNMENT CONFIGURATION  =======
+	// =======  END: ENVIRONMENT CONFIGURATION  =======
 	
 	public void function setupApplication() {
 		
