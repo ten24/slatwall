@@ -264,7 +264,8 @@ component extends="HibachiService"  accessors="true" output="false"
       **/
     public any function forgotPassword( required struct data ) {
         var account = getService("AccountService").processAccount( getHibachiScope().getAccount(), arguments.data, 'forgotPassword');
-        getHibachiScope().addActionResult( "public:account.forgotPassword", account.hasErrors() );
+        //let's hard code the action to always be successful. Indicating failure exposes if the account exists and is a security issue
+        getHibachiScope().addActionResult( "public:account.forgotPassword", false );
         return account;
     }
     
