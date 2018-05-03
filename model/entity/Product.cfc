@@ -160,6 +160,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getDao('productDao').getCurrentMargin(this.getProductID());
 	}
 	
+	public any function getSkuBundleCollectionList(){
+		var skuCollectionList = getService('skuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getDefaultSku().getSkuID());
+		return skuCollectionList;
+	}
+	
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
