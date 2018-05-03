@@ -28,6 +28,7 @@ class SWFCartItemsController{
     public removeOrderItem = (child?)=>{
         let orderItemID = child ? child.orderItemID  : this.orderItem.orderItemID;
         this.removeOrderItemIsLoading = true;
+
         let data = {
             'orderItemID':this.orderItem.orderItemID
         };
@@ -37,6 +38,7 @@ class SWFCartItemsController{
             this.$rootScope.slatwall.successfulActions = result.successfulActions;
             this.$rootScope.slatwall.errors = result.errors;
             this.removeOrderItemIsLoading = false;
+
         });
     }
 }
