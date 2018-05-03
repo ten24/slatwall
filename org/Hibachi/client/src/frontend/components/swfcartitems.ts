@@ -26,10 +26,9 @@ class SWFCartItemsController{
         });
     }
     public removeOrderItem = (child?)=>{
-        console.log('in directive');
         let orderItemID = child ? child.orderItemID  : this.orderItem.orderItemID;
         this.removeOrderItemIsLoading = true;
-        console.log(this.removeOrderItemIsLoading)
+
         let data = {
             'orderItemID':this.orderItem.orderItemID
         };
@@ -39,7 +38,7 @@ class SWFCartItemsController{
             this.$rootScope.slatwall.successfulActions = result.successfulActions;
             this.$rootScope.slatwall.errors = result.errors;
             this.removeOrderItemIsLoading = false;
-            console.log(this.removeOrderItemIsLoading)
+
         });
     }
 }
