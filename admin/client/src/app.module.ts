@@ -5,11 +5,13 @@ import { bootstrapper } from './bootstrap';
 import { HeroDetailComponent } from './slatwall/components/herodetail.component';
 import { slatwalladminmodule } from './slatwall/slatwalladmin.module';
 import {AlertModule} from "../../../org/Hibachi/client/src/alert/alert.module";
+import {DialogModule} from "../../../org/Hibachi/client/src/dialog/dialog.module";
 @NgModule({
   imports: [
     BrowserModule,
     UpgradeModule,
-    AlertModule
+    AlertModule,
+    DialogModule
   ],
   declarations:[
       HeroDetailComponent

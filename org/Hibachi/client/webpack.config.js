@@ -31,6 +31,7 @@ var appConfig = {
             'zone.js':'../../../../node_modules/zone.js/dist/zone.js',
             'date': '../lib/date/date.min.js',
             'angular': '../lib/angular/angular.min.js',
+			'angular-lazy-bootstrap':'../lib/angular-lazy-bootstrap/bootstrap.js',
             'ui.bootstrap':'../lib/angular-ui-bootstrap/ui.bootstrap.min.js',
             'angular-resource':'../lib/angular/angular-resource.min.js',
             'angular-cookies':'../lib/angular/angular-cookies.min.js',
