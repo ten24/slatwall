@@ -30,6 +30,9 @@ class SWFormController {
     public eventListeners;
     public submitOnEnter;
     public parseObjectErrors:boolean = true;
+    public sRedirectUrl;
+    public fRedirectUrl;
+    public completedActions:number = 0;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -125,17 +128,18 @@ class SWFormController {
     /** create the generic submit function */
     public submit = (actions) =>
     {   
-        actions = actions || this.action;
-        console.log('actions!', actions);
+        this.actions = actions || this.action;
+        console.log('actions!', this.actions);
         this.clearErrors();
         this.formData = this.getFormData() || "";
-        this.doActions(actions);
+        this.doActions(this.actions);
     }
 
     //array or comma delimited
     public doActions = (actions:string | string[]) =>
     {
         if (angular.isArray(actions)) {
+            this.completedActions = 0;
             for (var action of <string[]>actions) {
                 this.doAction(action);
             }
@@ -156,9 +160,29 @@ class SWFormController {
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
             if(!result) return;
+            if(result.sucessfulActions.length){
+                this.completedActions++;
+            }
+            if( 
+                (angular.isArray(this.actions) && this.completedActions === this.actions.length)
+                
+                ||
+                
+                (!angular.isArray(this.actions))
+            )
+            {
+                //if we have an array of actions and they're all complete, or if we have just one action
+                if(this.sRedirectUrl){
+                    console.log('here');
+                    this.$rootScope.slatwall.redirectExact(this.sRedirectUrl);
+                }
+            }
             this.object.forms[this.name].$setSubmitted(true);
             if (result.errors) {
                 this.parseErrors(result.errors);
+                if(this.fRedirectUrl){
+                    this.$rootScope.slatwall.redirectExact(this.fRedirectUrl);
+                }
             }
         });
 
@@ -309,7 +333,9 @@ class SWForm implements ng.IDirective {
             eventListeners:"=?",
             eventAnnouncers:"@",
             submitOnEnter:"@",
-            parseObjectErrors:"@?"
+            parseObjectErrors:"@?",
+            sRedirectUrl:"@?",
+            fRedirectUrl:"@?"
     };
 
     /**

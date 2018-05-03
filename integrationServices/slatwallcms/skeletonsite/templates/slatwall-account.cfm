@@ -221,9 +221,9 @@ Notes:
 					<cfinclude template="./inc/myaccount/forgotPassword.cfm" />
 					
 				</div>
-				
+			</div>	
+			<div class="row">
 				<cfinclude template="./inc/myaccount/createAccount.cfm" />
-				
 			</div>
 		</cfif>
 	</div>
