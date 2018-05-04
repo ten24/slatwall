@@ -525,6 +525,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var skuData = {
 			skuID = "",
+			skuCode = 'test'&createUUID(),
 			productBundleGroups = [
 				{
 					productBundleGroupID = mockProductBundleGroup1.getProductBundleGroupID()
@@ -538,6 +539,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var skuData2 = {
 			skuID = "",
+			skuCode = 'test'&createUUID(),
 			productBundleGroups = [
 				{
 					productBundleGroupID = mockProductBundleGroup3.getProductBundleGroupID()
@@ -646,13 +648,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productID = "",
 			skus = [
 				{
-					skuID = mockSku1.getSkuID()
+					skuID = mockSku1.getSkuID(),
+					skuCode = 'test'&createUUID()
 				},
 				{
-					skuID = mockSku2.getSkuID()
+					skuID = mockSku2.getSkuID(),
+					skuCode = 'test'&createUUID()
 				},
 				{
-					skuID = mockSku3.getSkuID()
+					skuID = mockSku3.getSkuID(),
+					skuCode = 'test'&createUUID()
 				}
 			]
 		};
