@@ -827,9 +827,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(9, result[2].QNRORO, 'Should be 10 - (1) = 9');
 	}
 
-	/**
-	* @test
-	*/
+	/*
 	public void function getQNDOSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -944,11 +942,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(1290, result[2].QNDOSA, 'Should be 1300 - (10) = 1290');
 
 	}
-
-	/**
-	* @test
-	*/
-	/*public void function getQNROVOTest_mulitipleSkus() {
+	public void function getQNROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
 			productCode='test'&createUUID()
