@@ -71,16 +71,9 @@ Notes:
 	be injected into the template and paramed at the top.					
 																			
 --->
-<cfparam name="email" type="any" />
+<cfparam name="email" type="any" />	
 <cfparam name="emailData" type="struct" default="#structNew()#" />
-<cfparam name="formResponse" type="any" />
-
-<cfsilent>
-    <cfif !isNull(formResponse.getForm()) && !isNull(formResponse.getForm().getEmailTo())>
-        <cfset email.setEmailTo(formResponse.getForm().getEmailTo()) />
-    </cfif>
-    <cfset email.setEmailSubject("Form Submission") />
-</cfsilent>
+<cfparam name="account" type="any" />
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
@@ -104,19 +97,22 @@ Notes:
 											 <table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 												 <tbody>
 													 <tr>
-														 <td class="column_cell px pte tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 32px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
-															 <table class="ic_h" align="center" width="64" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;width: 64px;">
-																 <tbody>
-																	 <tr>
-																		 <td class="default_b" style="box-sizing: border-box;vertical-align: middle;background-color: #colorBackground#;line-height: 100%;font-family: Helvetica, Arial, sans-serif;text-align: center;mso-line-height-rule: exactly;padding: 16px;border-radius: 80px;">
-																			 <p class="imgr mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 0;line-height: 100%;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;clear: both;"><img src="/assets/images/flash.png" width="32" height="32" alt="" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 32px;width: 100% !important;height: auto !important;display: block;margin-left: auto;margin-right: auto;"></p>
-																		 </td>
-																	 </tr>
-																 </tbody>
-															 </table>
+														 <td class="column_cell px pte tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 32px;padding-bottom: 32px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
 															 
 															 <!------- HEADER COPY ------->
-															 <h1 class="mb_xxs" style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 20px;margin-bottom: 16px;padding: 0;font-weight: bold;font-size: 32px;line-height: 42px;">You Have a new Form Submission!</h1>
+															 <h1 class="mb_xxs" style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 0;margin-bottom: 4px;padding: 0;font-weight: bold;font-size: 32px;line-height: 42px;">Welcome!</h1>
+															 
+															 <!------- SUB-HEAD COPY ------->
+															 <p class="lead" style="font-family: Helvetica, Arial, sans-serif;font-size: 19px;line-height: 27px;color: #colorLighterText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">You have finished setting up your new account</p>
+															 
+															 <!------- LINK ------->
+															 <table class="ebtn" align="center" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;">
+																	<tbody>
+																		<tr>
+																			<td class="success_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: Helvetica, Arial, sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 13px 22px;"><a href="/my-account/" style="text-decoration: none;line-height: inherit;color: #colorContainer#;"><span style="text-decoration: none;line-height: inherit;color: #colorContainer#;">My Account</span></a></td>
+																		</tr>
+																	</tbody>
+																</table>
 														 </td>
 													 </tr>
 												 </tbody>
@@ -134,18 +130,18 @@ Notes:
 		 </tr>
 	 </tbody>
 	</table>
-
+	
 	<!-- content_center -->
 	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 		<tbody>
 			<tr>
-				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: left;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
+				<td class="email_body tc" style="box-sizing: border-box;vertical-align: top;line-height: 100%;text-align: center;padding-left: 16px;padding-right: 16px;background-color: #colorBackground#;font-size: 0 !important;">
 					<!--[if (mso)|(IE)]><table width="632" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:632px;Margin:0 auto;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: left;line-height: inherit;min-width: 0 !important;">
+					<div class="email_container" style="box-sizing: border-box;font-size: 0;display: inline-block;width: 100%;vertical-align: top;max-width: 632px;margin: 0 auto;text-align: center;line-height: inherit;min-width: 0 !important;">
 						<table class="content_section" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 							<tbody>
 								<tr>
-									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: left; padding: 20px 15px 45px; line-height: inherit;min-width: 0 !important;">
+									<td class="content_cell" style="box-sizing: border-box;vertical-align: top;width: 100%;background-color: #colorContainer#;font-size: 0;text-align: center; padding: 0 15px 45px; line-height: inherit;min-width: 0 !important;">
 										<!-- col-6 -->
 										<div class="email_row tl" style="box-sizing: border-box;font-size: 0;display: block;width: 100%;vertical-align: top;margin: 0 auto;text-align: left;clear: both;line-height: inherit;min-width: 0 !important;max-width: 600px !important;">
 										<!--[if (mso)|(IE)]><table width="600" border="0" cellspacing="0" cellpadding="0" align="center" style="vertical-align:top;width:600px;Margin:0 auto 0 0;"><tbody><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
@@ -153,16 +149,8 @@ Notes:
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 													<tbody>
 														<tr>
-															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding:15px 15px 30px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: left;">
-																
-																<!------- BODY COPY ------->
-																<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">
-																    <ul style="padding-left: 20px;">
-                                                                        <cfloop index="local.value" array="#formResponse.getAttributeValues()#">
-                                                                            <li>#value.getAttribute().getAttributeCode()# : #value.getAttributeValue()#</li> 
-                                                                        </cfloop>
-                                                                    </ul>
-																</p>
+															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
+																<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 16px;margin-bottom: 16px;">TODO - add email template HTML Body.</p>
 															</td>
 														</tr>
 													</tbody>
@@ -180,17 +168,20 @@ Notes:
 			</tr>
 		</tbody>
 	</table>
-
 	
 	<cfinclude template="../inc/footer.cfm" />
 	</cfoutput>
 </cfsavecontent>
-<cfsavecontent variable="emailData.emailBodyText"> 
-    =============================================
-    You have a new Form Submission!
-    ============================================
-    <cfloop index="local.value" array="#formResponse.getAttributeValues()#">
-        #value.getAttribute().getAttributeCode()# : #value.getAttributeValue()#
-    </cfloop>
-</cfsavecontent> 
+<cfsavecontent variable="emailData.emailBodyText">
+	
+	<!-- PLAIN TEXT VERSION -->
+	<cfoutput>
+		Welcome!
+		
+		You have finished setting up your new account
+		
+		<a href="/my-account/" target="_blank">My Account</a>
+	</cfoutput>
+	
+</cfsavecontent>
 
