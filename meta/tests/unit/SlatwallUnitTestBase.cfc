@@ -164,6 +164,20 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 	private any function createTestEntity( required string entityName, struct data={}, boolean createRandomData=false, boolean persist=false, boolean saveWithService=false ) {
 		// Create the new Entity
 		var newEntity = request.slatwallScope.newEntity( arguments.entityName );
+		
+		//create default data for product
+		if(arguments.entityName == 'Product' && !structKeyExists(arguments.data,'productCode')){
+			arguments.data.productCode = 'test'&createUUID();
+		}
+		//create default data for sku
+		if(arguments.entityName == 'Sku' && !structKeyExists(arguments.data,'skuCode')){
+			arguments.data.skuCode = 'test'&createUUID();
+		}
+		
+		if((arguments.entityName == 'VendorOrder' || arguments.entityName == 'VendorOrderItem') && !structKeyExists(arguments.data,'currencyCode')){
+			arguments.data.currencyCode = 'USD';
+		}
+		
 
 		var arguments.data = createTestEntityData( newEntity, arguments.data, arguments.createRandomData );
 
