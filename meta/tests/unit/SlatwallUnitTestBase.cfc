@@ -173,6 +173,11 @@ component displayName="mytestcase" extends="testbox.system.compat.framework.Test
 		if(arguments.entityName == 'Sku' && !structKeyExists(arguments.data,'skuCode')){
 			arguments.data.skuCode = 'test'&createUUID();
 		}
+		
+		if((arguments.entityName == 'VendorOrder' || arguments.entityName == 'VendorOrderItem') && !structKeyExists(arguments.data,'currencyCode')){
+			arguments.data.currencyCode = 'USD';
+		}
+		
 
 		var arguments.data = createTestEntityData( newEntity, arguments.data, arguments.createRandomData );
 
