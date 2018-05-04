@@ -1,3 +1,5 @@
+<cfoutput>
+
 <!-- Set Color Variables Here -->
 <cfset colorAccent = "##f1842f" />
 <cfset colorBackground = "##475359" />
@@ -27,7 +29,7 @@ table, td, div { box-sizing: border-box; }
 html, body { width: 100% !important; min-width: 100%; margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 .email_body td, .email_body div, .email_body a, .email_body span { line-height: inherit; }
 a, a:visited, a span { text-decoration: none; }
-#outlook a { padding: 0; }
+##outlook a { padding: 0; }
 img { outline: none; border: 0; text-decoration: none; -ms-interpolation-mode: bicubic; clear: both; line-height: 100%; }
 table { border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
 td { vertical-align: top; }
@@ -214,6 +216,9 @@ table.tr { margin-left: auto; margin-right: 0; }
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 													<tbody>
 														<tr>
+															
+															
+															<!------- LOGO IMAGE ------->
 															<td class="column_cell px pt_xs pb_0 logo_c tl sc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 0px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 100%;color: #colorContainer#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;"><img src="/assets/images/ten24-yourlogo.png" width="100" height="49" alt="logo" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 100px;height: auto !important;"></td>
 														</tr>
 													</tbody>
@@ -230,3 +235,5 @@ table.tr { margin-left: auto; margin-right: 0; }
 			</tr>
 		</tbody>
 	</table>
+	
+</cfoutput>

@@ -87,7 +87,7 @@ Notes:
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
-	<cfinclude template="/inc/header.cfm" />
+	<cfinclude template="../inc/header.cfm" />
 	
 	<!-- jumbotron_light_icon -->
 	<table class="email_table" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
@@ -112,11 +112,13 @@ Notes:
 																 <tbody>
 																	 <tr>
 																		 <td class="default_b" style="box-sizing: border-box;vertical-align: middle;background-color: #colorBackground#;line-height: 100%;font-family: Helvetica, Arial, sans-serif;text-align: center;mso-line-height-rule: exactly;padding: 16px;border-radius: 80px;">
-																			 <p class="imgr mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 0;line-height: 100%;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;clear: both;"><img src="../themeforest-9608791-simpleapp-responsive-notification-email-html-templates/compact/default/html/images/unlocked.png" width="32" height="32" alt="" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 32px;width: 100% !important;height: auto !important;display: block;margin-left: auto;margin-right: auto;"></p>
+																			 <p class="imgr mb_0" style="font-family: Helvetica, Arial, sans-serif;font-size: 0;line-height: 100%;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 0;clear: both;"><img src="/assets/images/unlocked.png" width="32" height="32" alt="" style="outline: none;border: 0;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;line-height: 100%;max-width: 32px;width: 100% !important;height: auto !important;display: block;margin-left: auto;margin-right: auto;"></p>
 																		 </td>
 																	 </tr>
 																 </tbody>
 															 </table>
+															 
+															 <!------- HEADER COPY ------->
 															 <h1 class="mb_xxs" style="color: #colorHeaderText#;margin-left: 0;margin-right: 0;margin-top: 20px;margin-bottom: 16px;padding: 0;font-weight: bold;font-size: 32px;line-height: 42px;">Password Reset</h1>
 														 </td>
 													 </tr>
@@ -182,6 +184,8 @@ Notes:
 													<tbody>
 														<tr>
 															<td class="column_cell px tc" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 16px;padding-bottom: 16px;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;text-align: center;padding-left: 16px;padding-right: 16px;">
+																
+																<!------- BODY COPY ------->
 																<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorText#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Please reset your password by clicking this link where you will be prompted to enter a new password.</p>
 															</td>
 														</tr>
@@ -218,6 +222,8 @@ Notes:
 														<table class="ebtn" align="center" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;display: table;margin-left: auto;margin-right: auto;">
 															<tbody>
 																<tr>
+																	
+																	<!------- RESET PASSWORD LINK ------->
 																	<td class="active_b" style="box-sizing: border-box;vertical-align: top;background-color: #colorAccent#;line-height: 20px;font-family: Helvetica, Arial, sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 17px;padding: 13px 22px;"><a href="#resetLink#" style="text-decoration: none;line-height: inherit;color: #colorContainer#;"><span style="text-decoration: none;line-height: inherit;color: #colorContainer#;">Reset password</span></a></td>
 																</tr>
 															</tbody>
@@ -265,10 +271,12 @@ Notes:
 		</tbody>
 	</table>
 	
-	<cfinclude template="/inc/footer.cfm" />
+	<cfinclude template="../inc/footer.cfm" />
 	</cfoutput>
 </cfsavecontent>
 <cfsavecontent variable="emailData.emailBodyText">
+	
+	<!-- PLAIN TEXT VERSION -->
 	<cfoutput>
 		Password Reset
 		
@@ -276,4 +284,5 @@ Notes:
 		
 		#resetLink#
 	</cfoutput>
+	
 </cfsavecontent>
