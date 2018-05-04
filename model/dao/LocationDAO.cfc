@@ -91,13 +91,4 @@ component extends="HibachiDAO" {
 			,{locationID=arguments.locationID},true
 		);
 	}
-	
-	public numeric function removeBatchLocation(required string locationID, required string fulfillmentBatchID){
-		return ORMExecuteQuery('
-			DELETE from 
-			FROM SwFulfillmentBatchLocation l 
-			WHERE l.locationID=:locationID
-			AND FulfillmentBatchID=:fulfillmentBatchID',
-		{locationID=arguments.locationID, fulfillmentBatchID=arguments.fulfillmentBatchID},true);
-	}
 }

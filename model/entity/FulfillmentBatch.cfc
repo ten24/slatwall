@@ -135,10 +135,26 @@ component displayname="Fulfillment Batch" entityname="SlatwallFulfillmentBatch" 
 		return totalQuantityOnBatchCompleted;
 	}
 	
-	public any function removeLocation(required any location) {
-		return getDao("LocationDao").removeBatchLocation(location.getLocationID(), getFulfillmentBatchID());
+	// Locations (many-to-many - owner)
+	public void function addLocation(required any location) {
+		if(arguments.location.isNew() or !hasLocation(arguments.location)) {
+			arrayAppend(variables.locations, arguments.location);
+		}
+		if(isNew() or !arguments.location.hasFulfillmentBatch( this )) {
+			arrayAppend(arguments.location.getFulfillmentBatches(), this);
+		}
 	}
 	
+	public void function removeLocation(required any location) {
+		var thisIndex = arrayFind(variables.locations, arguments.location);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.locations, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.location.getFulfillmentBatches(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.location.getFulfillmentBatches(), thatIndex);
+		}
+	}
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
