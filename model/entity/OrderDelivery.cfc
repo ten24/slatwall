@@ -50,6 +50,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 
 	// Persistent Properties
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="invoiceNumber" ormtype="string";
 	property name="trackingNumber" ormtype="string";
 	property name="containerLabel" ormtype="clob";
 	// Related Object Properties (Many-To-One)
