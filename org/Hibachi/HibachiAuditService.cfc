@@ -871,6 +871,10 @@ component extends="HibachiService" accessors="true" {
 			baseTitle = rbKey('entity.audit.nosummary');
 		}
 		
+		if(isNull(baseTitle)){
+			baseTitle = rbKey('entity.audit.nosummary');
+		}
+		
 		return baseTitle;
 	}
 	

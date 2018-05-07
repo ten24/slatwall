@@ -827,9 +827,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(9, result[2].QNRORO, 'Should be 10 - (1) = 9');
 	}
 
-	/**
-	* @test
-	*/
+	/*
 	public void function getQNDOSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -944,10 +942,6 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(1290, result[2].QNDOSA, 'Should be 1300 - (10) = 1290');
 
 	}
-
-	/**
-	* @test
-	*/
 	public void function getQNROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1152,9 +1146,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(100, result[3].QNROVO);
 	}
 
-	/**
-	* @test
-	*/
+
 	public void function getQOVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1295,9 +1287,6 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(2030, result[2].QOVO);
 	}
 
-	/**
-	* @test
-	*/
 	public void function getQROVOTest_mulitipleSkus() {
 		var productData = {
 			productID="",
@@ -1438,9 +1427,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(40, result[2].QROVO, 'QROVO should be (40) = 40');
 	}
 
-	/**
-	* @test
-	*/
+	
 	public void function getQNROVOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -1546,9 +1533,8 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		var result = variables.dao.getQNROVO(mockProduct.getProductID());
 		assertEquals(230, result[1].QNROVO, 'QNROVO should be (100+200) - (10+20+40) = 230');
 	}
-	/**
-	* @test
-	*/
+
+
 	public void function getQNDORVOTest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -1612,9 +1598,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(300, result[1].QNDORVO, 'QNDORVO should be (100+200) = 300');
 	}
 
-	/**
-	* @test
-	*/
+
 	public void function getQNROSATest() {
 		var mockProduct = createMockProduct();
 		var mockLocation = createMockLocation();
@@ -1724,7 +1708,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		mockStockAdjustmentItem2.addStockReceiverItem(mockstockReceiverItem3);
 		var result = variables.dao.getQNROSA(mockProduct.getProductID());
 		assertEquals(70, result[1].QNROSA, 'Should be 100 - (10 + 20) = 70');
-	}
+	}*/
 
 
 	//============ START: Helpers to mock the data ============

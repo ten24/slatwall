@@ -71,19 +71,19 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		}
 		/*need valid iat*/
 		if(!structKeyExists(getPayload(),'iat')){
-			throw(type="No Valid issue at time date"); 
+			throw(type="No Valid issue at time date",message="No Valid issue at time date"); 
 		}
 		/*need valid iat*/
 		if(!structKeyExists(getPayload(),'issuer')){
-			throw(type="No Valid issuer"); 
+			throw(type="No Valid issuer",message="No Valid issuer"); 
 		}
 		/*need valid exp*/
 		if(!structKeyExists(getPayload(),'exp')){
-			throw(type="No Valid expiration time date"); 
+			throw(type="No Valid expiration time date",message="No Valid expiration time date"); 
 		}
 		/*need valid account*/
 		if(!structKeyExists(getPayload(), 'accountID')){
-			throw(type="No Account ID");
+			throw(type="No Account ID",message="No Account ID");
 		}
 
 		/*if has session then verify session account against token*/
@@ -92,17 +92,17 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			&& !getHibachiScope().getSession().getAccount().getNewFlag()
 			&& getHibachiScope().getSession().getAccount().getAccountID() != getPayload().accountID
 		){
-			throw(type='AccountID is not valid');
+			throw(type='AccountID is not valid',message='AccountID is not valid');
 		}
 
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		if(currentTime lt getPayload().iat || currentTime gt getPayload().exp){
-			throw(type="Token is expired"); 
+			throw(type="Token is expired",message="Token is expired"); 
 		}
 		
 		var serverName = CGI['server_name'];
 		if(getPayload().issuer != serverName){
-			throw(type="Invalid token issuer");
+			throw(type="Invalid token issuer",message="Invalid token issuer");
 		}
 		return this;
 	}

@@ -1116,78 +1116,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	 	assertTrue(arrayContains(result, mockOrderItemGiftRecepient1), 'The object should be added in the smartlist but fails');
 	 	assertTrue(arrayContains(result, mockOrderItemGiftRecepient2), 'The object should be added in the smartlist but fails');
 	 }
-	/**
-	* @test
-	*/ 
-	 public void function getDynamicChargeOrderPaymentTest_general() {
-	 	//Testing the systemCode
-	 	var mockOrderPayment2 = createMockOrderPayment(orderPaymentTypeID='444df2f1cc40d0ea8a2de6f542ab4f1d'); //optCredit
-	 	
-	 	var orderData = {
-	 		orderID = '',
-	 		orderPayments = [{
-	 			orderPaymentID = mockOrderPayment2.getOrderPaymentID()
-	 		}]
-	 	};
-	 	
-	 	var mockOrderSystemCode = createPersistedTestEntity('Order', orderData);
-	 	
-	 	var resultSystemCode = mockOrderSystemCode.getDynamicChargeOrderPayment();
-	 	assertTrue(isNull(resultSystemCode), 'The orderPaymentTYpe.systemCode fails ');
-	 	
-	 		//Testing the getDynamicAmountFlag()
-	 	var mockOrderPayment3 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b', amount = 500); //optCharge
-	 	
-	 	var orderData = {
-	 		orderID = '',
-	 		orderPayments = [{
-	 			orderPaymentID = mockOrderPayment3.getOrderPaymentID()
-	 		}]
-	 	};
-	 	var mockOrderFlag = createPersistedTestEntity('Order', orderData);
-	 	
-	 	var resultFlag = mockOrderFlag.getDynamicChargeOrderPayment();
-	 	assertTrue(isNull(resultFlag), 'The orderPayment.getDynamicAmountFlag() fails ');
-	 	
-	 	//Testing the condition statements
-	 	var mockOrderPayment1 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
-	 	
-	 	var orderData = {
-	 		orderID = '',
-	 		orderPayments = [{
-	 			orderPaymentID = mockOrderPayment1.getOrderPaymentID()
-	 		}]
-	 	};
-	 	var mockOrderOnePayment = createPersistedTestEntity('Order', orderData);
-	 	
-	 	var resultGeneral = mockOrderOnePayment.getDynamicChargeOrderPayment();
-	 	assertEquals(mockOrderPayment1.getOrderPaymentID(), resultGeneral.getOrderPaymentID(), 'General test did not pass, one of the conditions fails');
-	 	
-	 	//Testing on two orderPayments isNull(returnOrderPayment)
-	 	var mockOrderPayment4 = createMockOrderPayment(orderPaymentTypeID='444df2f0fed139ff94191de8fcd1f61b'); //optCharge
-	 	
-	 	var orderData = {
-	 		orderID = ''
-	 	
-	 	};
-	 	var mockOrderTwoPayments = createPersistedTestEntity('Order', orderData);
-	 	
-	 	mockOrderTwoPayments.addOrderPayment(mockOrderPayment4);
-	 	ormflush();
-	 	mockOrderTwoPayments.addOrderPayment(mockOrderPayment1);
-	 	ormflush();
-	 	
-	 	
-	 	
-	 	var resultTwoPayments = mockOrderTwoPayments.getDynamicChargeOrderPayment();
-	 	assertEquals(mockOrderPayment4.getOrderPaymentID(), resultTwoPayments.getOrderPaymentID(), 'When two orderPayments involved, the second should be returned');
-	 	
-	 	//Testing on the order without orderPayment
-	 	var mockOrderNoPayment = createMockOrder();
-	 	
-	 	var resultNoOrderPayment = 	mockOrderNoPayment.getDynamicChargeOrderPayment();
-	 	assertTrue(isNULL(resultNoOrderPayment),'The mockOrder without orderPayment should return nulls');
-	 }
+	
 	/**
 	* @test
 	*/ 
@@ -1629,59 +1558,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isNull(result));
 	}
 		
-	/**
-	* @test
-	*/
-	public void function getDynamicCreditOrderPaymentTest_ifsInForLoop() {
-		// These mock entities, getStatusCode() is set to 'opstActive' by default
-		var orderPaymentData1 = {
-			orderPaymentID = '',
-			orderPaymentType = {
-				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
-			},
-			amount = 100 //getDynamicAmountFlag() FALSE
-		};
-		var MockOrderPayment1 = createPersistedTestEntity('OrderPayment', orderPaymentData1); //testing dynamicAmountFlag
-		
-		var orderPaymentData2 = {
-			orderPaymentID = '',
-			orderPaymentType = {
-				typeID = '444df2f1cc40d0ea8a2de6f542ab4f1d'//optCredit
-			}
-			//getDynamicAmountFlag() TRUE
-		};
-		var MockOrderPayment2 = createPersistedTestEntity('OrderPayment', orderPaymentData2); //testing normal case
-		
-		var orderPaymentData3 = {
-			orderPaymentID = '',
-			orderPaymentType = {
-				typeID = '444df2f0fed139ff94191de8fcd1f61b'//optCharge
-			}
-			//getDynamicAmountFlag() TRUE
-		};
-		var MockOrderPayment3 = createPersistedTestEntity('OrderPayment', orderPaymentData3); //Testing orderPaymentType
-		
-		var orderData = {
-			orderID = '',
-			orderPayments = [
-				{
-					orderPaymentID = mockOrderPayment1.getOrderPaymentID()
-				},
-				{
-					orderPaymentID = mockOrderPayment2.getOrderPaymentID()
-				},
-				{
-					orderPaymentID = mockOrderPayment3.getOrderPaymentID()
-				}
-			]
-		};
-		var mockOrder = createPersistedTestEntity('Order', orderData);
-		
-		var result = mockOrder.getDynamicCreditOrderPayment();
-		assertFalse(isNull(result));
-		assertEquals(mockOrderPayment1.getOrderPaymentID(), result.getOrderPaymentID(), 'The filter of orderPayments fails');
-		
-	}
+	
 		
 	/**
 	* @test
