@@ -2044,6 +2044,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.orderDelivery;
 	}
+	
+	private any function generateInvoiceNumber(required any processObject){
+		var orderDeliveryCollectionList = this.getOrderDeliveryCollectionList();
+		//orderDeliveryCollectionList.setDisplayProperties("orderDeliveryId");
+		orderDeliveryCollectionList.addFilter("order.orderID", arguments.processObject.getOrder().getOrderID());
+		
+		var orderDeliveriesForOrder = orderDeliveryCollectionList.getRecordsCount();
+		var invoiceNumber = "#arguments.processObject.getOrder().getOrderNumber()#-#orderDeliveriesForOrder#";
+		
+		return invoiceNumber;
+	}
 
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
@@ -2238,6 +2249,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
 				ormFlush();
 			}
+			
+			// generate invoice number for this order delivery
+			arguments.orderDelivery.setInvoiceNumber(generateInvoiceNumber(arguments.processObject));
 			
 			// Update the orderFulfillmentStatus
 			if (arguments.processObject.getOrderFulfillment().getQuantityUnDelivered() == 0) {
