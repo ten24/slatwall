@@ -58,6 +58,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="quoteExpiration" ormtype="timestamp";
+	property name="quoteFlag" omtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
@@ -1391,6 +1393,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ============== START: Overridden Implicet Getters ===================
+	
+	public boolean function getQuoteFlag(){
+		if(!structKeyExists(variables,'quoteFlag')){
+			variables.quoteFlag = false;
+		}
+		return variables.quoteFlag;
+	}
+
+	public boolean function getQuoteExpiration(){
+		if(!structKeyExists(variables,'quoteExpiration')){
+			//snap shot expiration by setting
+			variables.quoteExpiration = setting('globalQuotePriceFreezeExpiration');
+		}
+		return variables.quoteExpiration;
+	}
 
 	public any function getBillingAddress() {
 		if(structKeyExists(variables, "billingAddress")) {
