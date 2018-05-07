@@ -58,7 +58,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
-	property name="quoteExpiration" ormtype="timestamp";
+	property name="quotePriceExpiration" ormtype="timestamp";
 	property name="quoteFlag" omtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
 	//used to check whether tax calculations should be run again
@@ -1401,12 +1401,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return variables.quoteFlag;
 	}
 
-	public boolean function getQuoteExpiration(){
-		if(!structKeyExists(variables,'quoteExpiration')){
+	public any function getQuotePriceExpiration(){
+		if(!structKeyExists(variables,'quotePriceExpiration')){
 			//snap shot expiration by setting
-			variables.quoteExpiration = setting('globalQuotePriceFreezeExpiration');
+			variables.quotePriceExpiration = setting('globalQuotePriceFreezeExpiration');
 		}
-		return variables.quoteExpiration;
+		return variables.quotePriceExpiration;
+	}
+	
+	public boolean function isQuotePriceExpired(){
+		var isQuotePriceExpired = now() > getQuotePriceExpiration();
+		if(isQuotePriceExpired){
+			//if quote price is expired then it is no longer a quote and is instead an abandoned cart
+			setQuoteFlag(false);
+		}
+		return isQuotePriceExpired;
 	}
 
 	public any function getBillingAddress() {
