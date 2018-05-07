@@ -1021,7 +1021,7 @@
 				if(i mod 1000 EQ 0){
 					fileWriteLine(dataFile,buffer.toString());
 					buffer.setLength(0);
-				}else{
+				}else if (i != arguments.queryData.recordcount){ 
 					buffer.append(JavaCast('string', newLine));
 				}
 			}
