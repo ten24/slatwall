@@ -1908,18 +1908,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 
-			// Loop over the orderItems to see if the skuPrice Changed
+			
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(var orderItem in arguments.order.getOrderItems()){
-					var skuPrice = val(orderItem.getSkuPrice());
-					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
- 					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
- 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
- 							orderItem.setPrice(SkuPriceByCurrencyCode);
- 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
- 						}
+				//quote logic should freeze the price based on the expiration therefore short circuiting the logic
+				if(
+ 					!arguments.order.getQuoteFlag() 
+ 					|| (
+ 						arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired()
+ 					)
+ 				){
+ 					// Loop over the orderItems to see if the skuPrice Changed
+					for(var orderItem in arguments.order.getOrderItems()){
+						var skuPrice = val(orderItem.getSkuPrice());
+						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+	 					
+	 					if(
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
+	 					){
+	 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
+	 							orderItem.setPrice(SkuPriceByCurrencyCode);
+	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
+	 						}
+						}
 					}
-				}
+ 				}
 			}
 
 			// First Re-Calculate the 'amounts' base on price groups
@@ -3078,7 +3090,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
-
+		
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 

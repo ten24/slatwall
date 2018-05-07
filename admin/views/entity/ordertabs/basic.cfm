@@ -25,7 +25,14 @@
 
 			<!--- Order Type --->
 			<hb:HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="#rc.edit#">
-
+				
+			<!--- Quote Flag --->
+			<hb:HibachiPropertyDisplay object="#rc.order#" property="quoteFlag" edit="#rc.edit#">
+			
+			<!--- Quote Price Expiration --->
+			<cfif rc.order.getQuoteFlag()>
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="quotePriceExpiration" edit="false">	
+			</cfif>
 			<!--- Short Refenece, Quote Number --->
 			<cfif rc.order.getShortReferenceID(false) neq "">
 				<hb:HibachiFieldDisplay title="#$.slatwall.rbkey('entity.order.quoteNumber')#" value="#rc.order.getShortReferenceID(false)#" edit="false" displayType="dl">
