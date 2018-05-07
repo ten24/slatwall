@@ -2050,8 +2050,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//orderDeliveryCollectionList.setDisplayProperties("orderDeliveryId");
 		orderDeliveryCollectionList.addFilter("order.orderID", arguments.processObject.getOrder().getOrderID());
 		
-		var orderDeliveriesForOrder = orderDeliveryCollectionList.getRecordsCount();
-		var invoiceNumber = "#arguments.processObject.getOrder().getOrderNumber()#-#orderDeliveriesForOrder#";
+		var orderDeliveriesCount = orderDeliveryCollectionList.getRecordsCount();
+		var invoiceNumber = "#arguments.processObject.getOrder().getOrderNumber()#-#orderDeliveriesCount#";
 		
 		return invoiceNumber;
 	}
