@@ -1410,6 +1410,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public boolean function isQuotePriceExpired(){
+		
 		var isQuotePriceExpired = now() > getQuotePriceExpiration();
 		if(isQuotePriceExpired){
 			//if quote price is expired then it is no longer a quote and is instead an abandoned cart

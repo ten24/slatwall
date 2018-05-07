@@ -1913,7 +1913,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var orderItem in arguments.order.getOrderItems()){
 					var skuPrice = val(orderItem.getSkuPrice());
 					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
- 					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
+ 					//base logic is to check if we need to update the price
+ 					//quote logic should freeze the price based on the expiration therefore short circuiting the logic
+ 					if(
+ 						(
+ 							!arguments.order.getQuoteFlag() 
+ 							|| (
+ 								arguments.order.getQuoteFlag() && arguments.order.isQuoteExpired()
+ 							)
+ 						&& listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
+ 					){
  						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
  							orderItem.setPrice(SkuPriceByCurrencyCode);
  							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
