@@ -59,7 +59,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="quotePriceExpiration" ormtype="timestamp";
-	property name="quoteFlag" omtype="boolean" default="0";
+	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
@@ -1400,22 +1400,40 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		return variables.quoteFlag;
 	}
+	
+	public void function setQuoteFlag(boolean quoteFlag=false){
+		//if the quoteFlag was previously false and is being set to true then we should reset the quote price expiration
+		if(!getQuoteFlag() && arguments.quoteFlag){
+			setQuotePriceExpiration(generateQuotePriceExpiration());
+		}
+		variables.quoteFlag = arguments.quoteFlag;
+	}
+	
+	public any function generateQuotePriceExpiration(string datePart="d"){
+		var generatedQuotePriceExpiration = dateAdd(arguments.datePart,setting('globalQuotePriceFreezeExpiration'),now());
+		//var generatedQuotePriceExpiration = dateAdd(arguments.datePart,'5',now());
+		return generatedQuotePriceExpiration;
+	}
 
 	public any function getQuotePriceExpiration(){
 		if(!structKeyExists(variables,'quotePriceExpiration')){
 			//snap shot expiration by setting
-			variables.quotePriceExpiration = setting('globalQuotePriceFreezeExpiration');
+			variables.quotePriceExpiration = generateQuotePriceExpiration();
 		}
-		return variables.quotePriceExpiration;
+		if(structKeyExists(variables,'quotePriceExpiration')){
+			return variables.quotePriceExpiration;
+		}
 	}
 	
 	public boolean function isQuotePriceExpired(){
-		
 		var isQuotePriceExpired = now() > getQuotePriceExpiration();
+		
 		if(isQuotePriceExpired){
 			//if quote price is expired then it is no longer a quote and is instead an abandoned cart
-			setQuoteFlag(false);
+			structDelete(variables,'quoteFlag');
+			structDelete(variables,'quotePriceExpiration');
 		}
+		
 		return isQuotePriceExpired;
 	}
 

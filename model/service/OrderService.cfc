@@ -1914,7 +1914,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(
  					!arguments.order.getQuoteFlag() 
  					|| (
- 						arguments.order.getQuoteFlag() && arguments.order.isQuoteExpired()
+ 						arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired()
  					)
  				){
  					// Loop over the orderItems to see if the skuPrice Changed
@@ -3076,7 +3076,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
-
+		
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 
