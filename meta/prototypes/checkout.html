@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Checkout</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div class="container">
+        <h1 class="my-4">Checkout</h4>
+
+        <div class="row">
+            <!-- Checkout body -->
+            <div class="col-12 col-md-8">
+
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="account" data-toggle="pill" href="#account" role="tab" aria-controls="account" aria-selected="true">Account</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" id="shipping" data-toggle="pill" href="#shipping" role="tab" aria-controls="shipping" aria-selected="true">Shipping</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" id="payment" data-toggle="pill" href="#payment" role="tab" aria-controls="payment" aria-selected="true">Payment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" id="review" data-toggle="pill" href="#review" role="tab" aria-controls="review" aria-selected="true">Review</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                        	<div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account">
+
+                                <!-- Account Login -->
+                        		<form action="#">
+                        			<h5>Account Login</h5>
+
+                                    <div class="alert alert-danger">The username or password entered is invalid.</div>
+
+                        			<div class="row">
+                                        <div class="col-6 offset-md-3">
+                            				<div class="form-group">
+                            					<label for="email" class="form-label">Email Address</label>
+                            					<input id="email" type="email" name="email" placeholder="Email Address" class="form-control" required>
+                                                <div class="px-2 mt-1 bg-danger text-white"><small>Email Address Required</small></div>
+                            				</div>
+                                            <div class="form-group">
+                            					<label for="password" class="form-label">Password</label>
+                            					<input id="password" type="text" name="password" placeholder="Password" class="form-control" required>
+                                                <div class="px-2 mt-1 bg-danger text-white"><small>Password Required</small></div>
+                            				</div>
+                                            <a href="#" class="btn btn-link float-right">Reset Password</a>
+                                            <button type="submit" class="btn btn-primary btn-block">Login & Continue</button>
+                                            <button type="submit" class="btn btn-primary btn-block disabled">
+                                                <i class="fa fa-refresh fa-spin fa-fw"></i>
+                                            </button>
+                                        </div>
+                        			</div>
+                                </form>
+
+                                <!-- Account Login -->
+                        		<form action="#">
+                        			<h5>Reset Password</h5>
+                                    <!-- Reset Password Fail Message -->
+                                    <div class="alert alert-danger">The email address entered is invalid.</div>
+                                    <!-- Reset Password Success Message -->
+                                    <div class="alert alert-success">An email with instructions to reset your password has been sent to your inbox.</div>
+
+                        			<div class="row">
+                                        <div class="col-6 offset-md-3">
+                                            <p>Enter your email to receive a password reset email or login.</p>
+                            				<div class="form-group">
+                            					<label for="email" class="form-label">Email Address</label>
+                            					<input id="email" type="email" name="email" placeholder="Email Address" class="form-control" required>
+                                                <div class="px-2 mt-1 bg-danger text-white"><small>Email Address Required</small></div>
+                            				</div>
+                                            <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+                                            <button type="submit" class="btn btn-primary btn-block disabled">
+                                                <i class="fa fa-refresh fa-spin fa-fw"></i>
+                                            </button>
+                                        </div>
+                        			</div>
+                                </form>
+
+                                <!-- Create Account -->
+                        		<form action="#">
+                        			<h5>Create Account</h5>
+
+                                    <div class="alert alert-danger">Error creating account. See errors below.</div>
+
+                                    <form action="#">
+                                        	<div class="row">
+                                        		<div class="form-group col-md-6">
+                                        			<label for="firstname" class="form-label">First Name</label>
+                                        			<input id="firstname" type="text" name="first-name" placeholder="First Name" class="form-control" required>
+                                                    <div class="px-2 mt-1 bg-danger text-white"><small>First Name Required</small></div>
+                                                </div>
+                                        		<div class="form-group col-md-6">
+                                        			<label for="lastname" class="form-label">Last Name</label>
+                                        			<input id="lastname" type="text" name="last-name" placeholder="Last Name" class="form-control" required>
+                                                    <div class="px-2 mt-1 bg-danger text-white"><small>Last Name Required</small></div>
+                                                </div>
+                                        		<div class="form-group col-md-6">
+                                        			<label for="email" class="form-label">Email Address</label>
+                                        			<input id="email" type="email" name="email" placeholder="Email Address" class="form-control" required>
+                                                    <div class="px-2 mt-1 bg-danger text-white"><small>Email Address Required</small></div>
+                                                </div>
+                                        		<div class="form-group col-md-6">
+                                        			<label for="street" class="form-label">Confirm Email Address</label>
+                                        			<input id="street" type="text" name="address" placeholder="Your street name" class="form-control" required>
+                                                    <div class="px-2 mt-1 bg-danger text-white"><small>Confirm Email Address Required</small></div>
+                                                </div>
+                                        		<div class="form-group col-md-6">
+                                        			<label for="password" class="form-label">Password</label>
+                                        			<input id="password" type="tel" name="password" placeholder="Password" class="form-control" required>
+                                                    <div class="px-2 mt-1 bg-danger text-white"><small>Password Required</small></div>
+                                                </div>
+                                        		<div class="form-group col-md-6">
+                                        			<label for="confirmPassword" class="form-label">Confirm Password</label>
+                                        			<input id="confirmPassword" type="text" name="confirmPassword" placeholder="Confirm Password" class="form-control" required>
+                                                    <div class="px-2 mt-1 bg-danger text-white"><small>Confirm Password Required</small></div>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                        			<label for="phoneNumber" class="form-label">Phone Number</label>
+                                        			<input id="phoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" class="form-control" required>
+                                        		</div>
+
+                                                <div class="col-6 offset-md-3">
+                                                    <button type="submit" class="btn btn-primary btn-block">Create Account & Continue</button>
+                                                    <button type="submit" class="btn btn-primary btn-block disabled">
+                                                        <i class="fa fa-refresh fa-spin fa-fw"></i>
+                                                    </button>
+                                                </div>
+                                        	</div>
+                                        </form>
+                        			</div>
+                                </form>
+
+                			<!-- Shipping Tab 2-->
+                			<div class="tab-pane" id="shipping" role="tabpanel" aria-labelledby="shipping">
+                				<div class="block-header mb-5 mt-3">
+                					<h6>Shipping address</h6>
+                				</div>
+                				<div class="row">
+                					<div class="form-group col-md-6">
+                						<label for="shipping_firstname" class="form-label">First Name</label>
+                						<input id="shipping_firstname" type="text" name="shipping_first-name" placeholder="Enter you first name" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>First Name Required</small></div>
+                					</div>
+                					<div class="form-group col-md-6">
+                						<label for="shipping_lastname" class="form-label">Last Name</label>
+                						<input id="lshipping_astname" type="text" name="shipping_last-name" placeholder="Enter your last name" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>First Name Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-6">
+                						<label for="shipping_email" class="form-label">Email Address</label>
+                						<input id="shipping_email" type="email" name="shipping_email" placeholder="enter your email address" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>Email Address Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-6">
+                						<label for="shipping_street" class="form-label">Street</label>
+                						<input id="shipping_street" type="text" name="shipping_address" placeholder="Your street name" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>Street Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-3">
+                						<label for="shipping_city" class="form-label">City</label>
+                						<input id="shipping_city" type="text" name="shipping_city" placeholder="Your city" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>City Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-3">
+                						<label for="shipping_zip" class="form-label">ZIP Code</label>
+                						<input id="shipping_zip" type="text" name="shipping_zip" placeholder="ZIP code" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>Zip Code Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-3">
+                						<label for="shipping_state" class="form-label">State</label>
+                						<input id="shipping_state" type="text" name="shipping_state" placeholder="Your state" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>State Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-3">
+                						<label for="shipping_country" class="form-label">Country</label>
+                						<input id="shipping_country" type="text" name="shipping_country" placeholder="Your country" class="form-control">
+                                        <div class="px-2 mt-1 bg-danger text-white"><small>Country Required</small></div>
+                                    </div>
+                					<div class="form-group col-md-6">
+                						<label for="shipping_phone-number" class="form-label">Phone Number</label>
+                						<input id="shipping_phone-number" type="tel" name="shipping_phone-number" placeholder="Your phone number" class="form-control">
+                					</div>
+                					<div class="form-group col-md-6">
+                						<label for="shipping_company" class="form-label">Company</label>
+                						<input id="shipping_company" type="text" name="shipping_company" placeholder="Your company name" class="form-control">
+                					</div>
+                				</div>
+                			</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout sidebar Order Summary -->
+            <div class="col-12 col-md-4">
+
+                <!-- Order Summary -->
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <span>Order Subtotal</span>
+                                <span class="float-right">$390.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Item Discount Total</span>
+                                <span class="text-danger float-right">- $50.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Order Discount Total</span>
+                                <span class="text-danger float-right">- $50.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Shipping Discount Total</span>
+                                <span class="text-danger float-right">- $50.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Shipping and handling</span>
+                                <span class="float-right">$10.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Tax</span>
+                                <span class="float-right">$0.00</span>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Total</span>
+                                <strong class="float-right">$400.00</strong>
+                                <i class="fa fa-refresh fa-spin fa-fw float-right my-1 mr-1"></i>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Order Items Summary -->
+                <div class="card mb-5">
+                    <div class="card-header">
+                        <h5 class="mb-0">Order Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <img class="img-fluid" src="http://placehold.it/50x50" alt="preview">
+                            </div>
+                            <div class="col-9 pl-0">
+                                <small class="text-secondary">Product Type</small>
+                                <h5><a href="#">Product Name</a></h5>
+
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="number" class="form-control form-control-sm" min="1" value="2" required>
+                                    </div>
+                                    <div class="col-8 pl-0">
+                                        <small>$25.00 <span class="text-muted"><s>$50.00</s></span></small>
+                                        <strong>$50.00</strong>
+                                    </div>
+                                </div>
+
+                                <small><strong>SKU Code:</strong> Sku Code Value</small>
+                                <p class="mb-3"><small><strong>SKU Defintion Label: </strong>SKU Definition Value</small></p>
+
+                                <button type="button" class="btn btn-danger btn-sm rounded">&times;</button>
+                                <button type="button" class="btn btn-danger btn-sm rounded disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promotion -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Promotion Code</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-success">Promotion successfully added.</div>
+                        <div class="alert alert-danger">Invalid Promotion.</div>
+                        <form action="#" class="mb-1">
+                            <div class="row">
+                                <div class="col-sm-8 col-7">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Enter Promo Code..." required>
+                                </div>
+                                <div class="col-sm-4 col-5">
+                                    <button type="submit" class="btn btn-secondary btn-sm btn-block">Apply</button>
+                                    <button type="submit" class="btn btn-secondary btn-sm btn-block disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <span class="badge badge-pill badge-primary">10% Special Promo</span>
+                        <button type="button btn-sm" class="btn btn-link btn-sm disabled">Remove</button>
+                        <i class="fa fa-refresh fa-spin fa-fw my-1"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Cart Empty Message -->
+        <div class="alert alert-danger my-5">There are no items in your cart.</div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  </body>
+
+</html>
