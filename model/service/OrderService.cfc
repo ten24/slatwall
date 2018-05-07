@@ -2047,7 +2047,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	private any function generateInvoiceNumber(required any processObject){
 		var orderDeliveryCollectionList = this.getOrderDeliveryCollectionList();
-		//orderDeliveryCollectionList.setDisplayProperties("orderDeliveryId");
+
 		orderDeliveryCollectionList.addFilter("order.orderID", arguments.processObject.getOrder().getOrderID());
 		
 		var orderDeliveriesCount = orderDeliveryCollectionList.getRecordsCount();
