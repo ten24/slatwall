@@ -1411,7 +1411,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function generateQuotePriceExpiration(string datePart="d"){
 		var generatedQuotePriceExpiration = dateAdd(arguments.datePart,setting('globalQuotePriceFreezeExpiration'),now());
-		//var generatedQuotePriceExpiration = dateAdd(arguments.datePart,'5',now());
 		return generatedQuotePriceExpiration;
 	}
 
