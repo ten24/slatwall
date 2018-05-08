@@ -1,5 +1,8 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
@@ -87,8 +90,28 @@ import {SWOrderByControls} from "./components/sworderbycontrols";
 import {alertmodule} from "../alert/alert.module";
 import {dialogmodule} from "../dialog/dialog.module";
 
+import {AlertModule} from '../alert/alert.module';
+import {DialogModule} from '../dialog/dialog.module';
 
 import {BaseObject} from "./model/baseobject";
+
+@NgModule({
+    declarations: [],
+    providers: [
+        LocalStorageService
+    ],  
+    imports: [
+        CommonModule,
+        UpgradeModule,
+        AlertModule,
+        DialogModule
+    ]  
+})
+export class CoreModule{
+    constructor() {
+        
+    }    
+}
 
 declare var $:any;
 
@@ -213,7 +236,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiScope',HibachiScope)
 .service('scopeService',ScopeService)
 .service('skuService', SkuService)
-.service('localStorageService',LocalStorageService)
+.service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',RequestService)
 .service('accountService',AccountService)
 .service('orderService',OrderService)

@@ -1,17 +1,19 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Injectable } from '@angular/core';
 
-class LocalStorageService{
+@Injectable()
+export class LocalStorageService{
 
 
     //@ngInject
     constructor(
-       public $window:ng.IWindowService
+       
     ){
-        this.$window = $window;
+        
     }
 
-    hasItem = (key:string)=>{
+    hasItem(key:string){
         //try catch to handle safari in private mode which does not allow localstorage
         try{
             return (
@@ -24,7 +26,7 @@ class LocalStorageService{
         }
     }
 
-    getItem = (key:string)=>{
+    getItem(key:string){
         let value = this.$window.localStorage.getItem(key);
         if(value.charAt(0)==='{' || value.charAt(0)==='['){
             value = angular.fromJson(value);
@@ -32,7 +34,8 @@ class LocalStorageService{
         return value;
     }
 
-    setItem = (key:string, data:any)=>{
+    setItem(key:string, data:any){
+        console.log(data);
         //try catch to handle safari in private mode which does not allow localstorage
         try{
             if(angular.isObject(data) || angular.isArray(data)){
@@ -46,6 +49,3 @@ class LocalStorageService{
 
 
 }
-export {
-    LocalStorageService
-};
