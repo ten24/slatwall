@@ -43350,6 +43350,7 @@ var SWFormController = /** @class */ (function () {
         this.eventsObj = [];
         this.formData = {};
         this.parseObjectErrors = true;
+        this.completedActions = 0;
         this.$onInit = function () {
             if (_this.object && _this.parseObjectErrors) {
                 _this.$timeout(function () {
@@ -43368,15 +43369,16 @@ var SWFormController = /** @class */ (function () {
         };
         /** create the generic submit function */
         this.submit = function (actions) {
-            actions = actions || _this.action;
-            console.log('actions!', actions);
+            _this.actions = actions || _this.action;
+            console.log('actions!', _this.actions);
             _this.clearErrors();
             _this.formData = _this.getFormData() || "";
-            _this.doActions(actions);
+            _this.doActions(_this.actions);
         };
         //array or comma delimited
         this.doActions = function (actions) {
             if (angular.isArray(actions)) {
+                _this.completedActions = 0;
                 for (var _i = 0, _a = actions; _i < _a.length; _i++) {
                     var action = _a[_i];
                     _this.doAction(action);
@@ -43400,9 +43402,23 @@ var SWFormController = /** @class */ (function () {
                 .then(function (result) {
                 if (!result)
                     return;
+                if (result.successfulActions.length) {
+                    _this.completedActions++;
+                }
+                if ((angular.isArray(_this.actions) && _this.completedActions === _this.actions.length)
+                    ||
+                        (!angular.isArray(_this.actions)) && result.successfulActions.length) {
+                    //if we have an array of actions and they're all complete, or if we have just one successful action
+                    if (_this.sRedirectUrl) {
+                        _this.$rootScope.slatwall.redirectExact(_this.sRedirectUrl);
+                    }
+                }
                 _this.object.forms[_this.name].$setSubmitted(true);
                 if (result.errors) {
                     _this.parseErrors(result.errors);
+                    if (_this.fRedirectUrl) {
+                        _this.$rootScope.slatwall.redirectExact(_this.fRedirectUrl);
+                    }
                 }
             });
         };
@@ -43602,7 +43618,9 @@ var SWForm = /** @class */ (function () {
             eventListeners: "=?",
             eventAnnouncers: "@",
             submitOnEnter: "@",
-            parseObjectErrors: "@?"
+            parseObjectErrors: "@?",
+            sRedirectUrl: "@?",
+            fRedirectUrl: "@?"
         };
         /**
             * Sets the context of this form
