@@ -40451,6 +40451,7 @@ var PublicService = /** @class */ (function () {
         *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
         */
         this.doAction = function (action, data, method) {
+            //purge angular $ prefixed propertie
             //Prevent sending the same request multiple times in parallel
             if (_this.getRequestByAction(action) && _this.loadingThisRequest(action, data, false))
                 return _this.$q.when();

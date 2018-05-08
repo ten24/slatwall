@@ -87,13 +87,13 @@
 		    					<cfset local.mediumimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.product['defaultSku_skuID']#","medium") />
 		    					<a href="/product/#local.product['urlTitle']#">
 								<cfif arrayLen(local.mediumimages)>
-								    <a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">
+								    <a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">
 								        <img src="#local.mediumimages[1]#" class="img-fluid" alt="#local.product['productName']#" />
 								    </a>
 								</cfif>
 		    					<div class="card-body">
-		                            <small><a href="#$.slatwall.setting('globalURLKeyProductType')#/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
-		                            <h4><a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">#local.product['productName']#</a></h4>
+		                            <small><a href="/#$.slatwall.setting('globalURLKeyProductType')#/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
+		                            <h4><a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">#local.product['productName']#</a></h4>
 		                            <!--- Only displays crossed out list price if it's greater than actual price --->
 		                            <cfif local.product['defaultSku_listPrice'] GT local.product['defaultSku_price']>
 		                            	<s class="float-right">#local.product['defaultSku_listPrice']#</s>
@@ -107,7 +107,7 @@
 		    							<input type="hidden" name="skuID" value="#local.product['defaultSku_skuID']#" />
 		    							<input type="hidden" name="slatAction" value="public:cart.addOrderItem">
 		    						</form>
-		                            <a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
+		                            <a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
 		    					</div>
 		    				</div>
     					</div>
