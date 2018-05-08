@@ -17,9 +17,9 @@ export class LocalStorageService{
         //try catch to handle safari in private mode which does not allow localstorage
         try{
             return (
-                this.$window.localStorage.getItem(key)
-                && this.$window.localStorage.getItem(key) !== null
-                && this.$window.localStorage.getItem(key) !== "undefined"
+                window.localStorage.getItem(key)
+                && window.localStorage.getItem(key) !== null
+                && window.localStorage.getItem(key) !== "undefined"
             );
         }catch(e){
             return false;    
@@ -27,7 +27,7 @@ export class LocalStorageService{
     }
 
     getItem(key:string){
-        let value = this.$window.localStorage.getItem(key);
+        let value = window.localStorage.getItem(key);
         if(value.charAt(0)==='{' || value.charAt(0)==='['){
             value = angular.fromJson(value);
         }
@@ -35,13 +35,12 @@ export class LocalStorageService{
     }
 
     setItem(key:string, data:any){
-        console.log(data);
         //try catch to handle safari in private mode which does not allow localstorage
         try{
             if(angular.isObject(data) || angular.isArray(data)){
                 data = angular.toJson(data);
             }
-            this.$window.localStorage.setItem(key,data);
+            window.localStorage.setItem(key,data);
         }catch(e){
             
         }
