@@ -98,7 +98,8 @@ import {BaseObject} from "./model/baseobject";
 @NgModule({
     declarations: [],
     providers: [
-        LocalStorageService
+        LocalStorageService,
+        CacheService
     ],  
     imports: [
         CommonModule,
@@ -217,7 +218,7 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
-.service('cacheService', CacheService)
+.service('cacheService', downgradeInjectable(CacheService))
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
