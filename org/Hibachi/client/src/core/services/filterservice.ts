@@ -1,6 +1,8 @@
 import {BaseService} from "./baseservice";
+import {Injectable} from "@angular/core";
 
-class FilterService { 
+@Injectable()
+export class FilterService { 
 
     //ngInject
     constructor(){
@@ -53,7 +55,4 @@ class FilterService {
         }
         return false; 
     }
-}
-export {
-    FilterService
 }
