@@ -2,14 +2,13 @@
 <cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
 	<!--- CREATE ACCOUNT --->
-	<div class="span6">
-		<h5>Create New Account</h5>
-		
+	<div class="span6 card">
 		<!--- Sets up the create account processObject --->
 		<cfset createAccountObj = $.slatwall.account().getProcessObject('create') />
 		
 		<!--- Create Account Form --->
-		<form action="?s=1" method="post">
+		<form class="card-body" action="?s=1" method="post">
+			<h5 class="card-title">Create New Account - Server Side</h5>
 			<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
 			<input type="hidden" name="slatAction" value="public:account.create,public:account.login" />
 			
@@ -110,8 +109,98 @@
   			</div>
 			
 		</form>
+	</div>
 		<!--- End: Create Account Form --->
 		
+		<!--- Start: Create Account Form - CLIENT SIDE --->
+	
+	<div class="card span6" ng-show="!slatwall.account.userIsLoggedIn()">
+		<sw-form
+	    data-is-process-form="true"
+	    data-object="'Account_Create'"
+	    data-form-class="card-body"
+	    data-error-class="error"
+	    data-name="Account_Create"
+		data-event-announcers="click,blur,change"
+	    >
+			
+		<h5 class="card-title">Create New Account - Client Side</h5>
 		
-	</div>
+		<div class="col-sm-12 form-group">
+		   <swf-property-display
+	            data-name="firstName"
+	            data-type="string"
+	            data-property-identifier="firstName"
+	            data-label-text="First Name"
+	            data-class="form-control"
+	            >
+		    </swf-property-display>
+		</div>
+		    <div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="lastName"
+		            data-type="string"
+		            data-property-identifier="lastName"
+		            data-label-text="Last Name"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+		   <div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="emailAddress"
+		            data-type="email"
+		            data-property-identifier="emailAddress"
+		            data-label-text="Email Address"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+		    <div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="emailAddressConfirm"
+		            data-type="email"
+		            data-property-identifier="emailAddressConfirm"
+		            data-label-text="Confirm Email Address"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+			<div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="password"
+		            data-type="password"
+					on-change="myfunc"
+					on-click="myclick"
+		
+		            data-property-identifier="password"
+		            data-label-text="Password"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+		    <div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="passwordConfirm"
+		            data-type="passwordConfirm"
+					on-change="myfunc"
+					on-click="myclick"
+		
+		            data-property-identifier="passwordConfirm"
+		            data-label-text="Confirm Password"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+		    <div class="col-sm-12 form-group">
+			    <sw-action-caller
+			        data-action="createAccount"
+			        data-modal="false"
+			        data-type="button"
+			        data-class="btn-yellow"
+			        data-error-class="error"
+			        data-text="{{(slatwall.getRequestByAction('login').loading ? 'Loading...' : 'Sign Up')}}">
+			    </sw-action-caller>
+			</div>
+		</sw-form>
 </cfoutput>
