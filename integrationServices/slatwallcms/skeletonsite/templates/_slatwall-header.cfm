@@ -10,7 +10,7 @@
 
     <title>#$.slatwall.getCurrentRequestSite().getSiteName()#</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></script>
 
     <!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
     #$.slatwall.renderJSObject( subsystem="public" )#
@@ -31,7 +31,6 @@
         customPartialsPath: '/custom/apps/#$.slatwall.getSite().getApp().getAppName()#/#$.slatwall.getSite().getSiteName()#/templates/partials/'
       };
     </script>
-    <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -61,69 +60,16 @@
             <li class="nav-item">
               <a class="nav-link" href="##">Pricing</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="##"><span ng-show="slatwall.cart.orderItems.length">Cart {{slatwall.cart.orderItems.length}}</span></a>
-
-              <article class="cart-sec miniCart" ng-cloak style="display: block;background-color:white;position:absolute;border:thin solid ##333;z-index: 1">
-                <div class="top">
-                  <h3>Your Cart<span><a href="/shopping-cart">VIEW</a></span></h3>
-                </div>
-                <div class="mid">
-                  <ul>
-                    <li ng-repeat="orderItem in slatwall.cart.orderItems" swf-cart-items order-item="orderItem" class="ng-scope">
-                      <i ng-class="{'fa fa-refresh fa-spin fa-fw': swfCartItems.removeOrderItemIsLoading || swfCartItems.updateOrderItemQuantityIsLoading || slatwall.getRequestByAction('getCart').loading}"></i>
-                      <div class="image" ng-if="orderItem.sku.imagePath">
-                        <a ng-href="/sp/{{orderItem.sku.product.productName}}"><img ng-alt="orderItem.sku.product.productName" ng-src="orderItem.sku.imagePath"></a>
-                      </div>
-
-                      <div class="text">
-                        <h4>
-                          <a ng-href="/sp/{{orderItem.sku.product.productName}}" class="ng-scope">
-										        <span ng-bind="orderItem.sku.product.productName"></span>
-									        </a>
-                        </h4>
-                        <div class="price-box">
-                          <div class="col1">
-                            <aside>
-                              <span class="price" ng-bind="orderItem.price | currency"></span>
-                            </aside>
-                          </div>
-
-                          <div class="col2">
-                            <aside>
-                              <input type="number" class="form-control" min="1" ng-value="orderItem.quantity" ng-model="newQuantity" ng-change="swfCartItems.updateOrderItemQuantity(newQuantity)">
-                            </aside>
-                          </div>
-                        </div>
-
-                        <a href="##" ng-click="swfCartItems.removeOrderItem()" class="delete-btn">
-										    Remove Item
-										</a>
-                      </div>
-                    </li>
-                  </ul>
-
-                </div>
-                <div class="bottom">
-
-                  <div class="price">
-                    <span>ORDER Total
-										<small ng-bind="slatwall.cart.orderItems.length"></small>
-								</span>
-
-                    <span ng-bind="slatwall.cart.calculatedTotal | currency" class="ng-binding"></span>
-                  </div>
-
-                  <a href="/checkout" class="black-btn">CONTINUE TO Checkout</a>
-                  <div class="text-center">
-                    <a href="/shopping-cart" class="view-cart">VIEW Cart</a>
-                  </div>
-                  <div ng-show="slatwall.successfulActions.includes('public:cart.removeOrderItem')" class="alert alert-success">Item removed from cart</div>
-                  <div ng-show="slatwall.failureActions.includes('public:cart.removeOrderItem')" class="alert alert-danger">Item removed failure</div>
-                  <div ng-show="slatwall.successfulActions.includes('public:cart.updateOrderItem')" class="alert alert-success">Quantity updated</div>
-                  <div ng-show="slatwall.failureActions.includes('public:cart.updateOrderItem')" class="alert alert-danger">Quantity update failure</div>
-                  <a href="javascript:void(0)" class="cart-close-btn">Close</a>
-              </article>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle col-xs-12" href="##" id="navbarDropdown" role="button" data-toggle="dropdown" >
+                <i class="fa fa-shopping-cart"></i>
+                <span ng-show="slatwall.cart.orderItems.length">
+                  {{slatwall.cart.orderItems.length}}
+                </span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <cfinclude template="inc/header/minicart.cfm" />
+              </div>
             </li>
           </ul>
           </div>
