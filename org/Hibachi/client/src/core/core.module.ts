@@ -103,7 +103,8 @@ import {BaseObject} from "./model/baseobject";
         DraggableService,
         ExpandableService,
         FilterService,
-        HistoryService
+        HistoryService,
+        ScopeService
     ],  
     imports: [
         CommonModule,
@@ -239,7 +240,7 @@ var coremodule = angular.module('hibachi.core',[
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
-.service('scopeService',ScopeService)
+.service('scopeService',downgradeInjectable(ScopeService))
 .service('skuService', SkuService)
 .service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',RequestService)
