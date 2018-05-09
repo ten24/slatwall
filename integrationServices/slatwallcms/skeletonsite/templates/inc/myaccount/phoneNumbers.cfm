@@ -4,7 +4,7 @@
     	<!--- START: PHONE NUMBERS --->
 		<div class="span4">
 			<h5>Phone Numbers</h5>
-			
+			<hr style="margin-top:10px;border-top-color:##ddd;" />
 			<!--- Start: Existing Phone Numbers --->
 			<table class="table table-condensed">
 				
