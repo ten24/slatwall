@@ -11,7 +11,6 @@
     <title>#$.slatwall.getCurrentRequestSite().getSiteName()#</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/vendor.bundle.js" charset="utf-8"></script>
 
     <!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
     #$.slatwall.renderJSObject( subsystem="public" )#
