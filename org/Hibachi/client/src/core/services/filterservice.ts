@@ -9,7 +9,7 @@ export class FilterService {
 
     }
 
-    public filterMatch = (valueToCompareAgainst, comparisonOperator, comparisonValue) => {
+    public filterMatch (valueToCompareAgainst, comparisonOperator, comparisonValue) {
         switch (comparisonOperator){
             case "!=":
                 if(valueToCompareAgainst != comparisonValue){
