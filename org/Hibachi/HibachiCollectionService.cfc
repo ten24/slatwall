@@ -579,7 +579,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			modifiedURL = "?c=1";
 		}
 		
-		return getHibachiUtilityService().hibachiHTMLEditFormat(modifiedURL);
+		return getHibachiUtilityService().hibachiHTMLEditFormat(lcase(modifiedURL));
 	}
 
 
