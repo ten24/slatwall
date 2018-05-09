@@ -1,7 +1,9 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Injectable } from '@angular/core';
 
-class ExpandableService{
+@Injectable()
+export class ExpandableService{
     
     public recordStates = {};
     
@@ -12,14 +14,14 @@ class ExpandableService{
         
     }
     
-    addRecord = (recordID:string, state?:any) => {
+    addRecord(recordID:string, state?:any)  {
         if(angular.isUndefined(state)){
             state = {isLoaded:true};
         }
         this.recordStates[recordID] = state; 
     } 
     
-    updateState = (recordID:string, state:any) => {
+    updateState (recordID:string, state:any) {
         if(angular.isUndefined(this.recordStates[recordID])){
             this.recordStates[recordID] = {}; 
         }
@@ -28,7 +30,7 @@ class ExpandableService{
         }
     }
     
-    getState = (recordID:string, key?:string) => {
+    getState (recordID:string, key?:string)  {
         if(angular.isDefined(this.recordStates[recordID]) && angular.isDefined(key)){
             var dataToReturn = this.recordStates[recordID][key];
         } else {
@@ -40,7 +42,3 @@ class ExpandableService{
         return false; 
     }
 }
-
-export{
-    ExpandableService
-};
