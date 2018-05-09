@@ -21,7 +21,7 @@
 												<table class="column" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;min-width: 100%;">
 													<tbody>
 														<tr>
-															<td class="column_cell px pt_xs pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;padding-top: 8px;padding-bottom: 0;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;text-align: left;padding-left: 16px;padding-right: 16px;">
+															<td class="column_cell px pt_xs pb_0 tl" style="box-sizing: border-box;vertical-align: top;width: 100%;min-width: 100%;font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;text-align: left;padding: 8px 16px 25px;">
 																
 																<!-- FOOTER COPY -->
 																<p class="mb_xxs" style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #colorContainerAccent#;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 4px;">

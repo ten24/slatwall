@@ -8,6 +8,7 @@
 <cfset colorHeaderText = "##3e484d" />
 <cfset colorText = "##616161" />
 <cfset colorLighterText = "##a7b1b6" />
+<cfset colorRule = "##d7dbe0" />
 
 <cfset colorSuccess = "##32d373" />
 <cfset colorDanger = "##d04e53" />
@@ -186,7 +187,7 @@ table.tr { margin-left: auto; margin-right: 0; }
   .pte_xs, .py.pte_xs { padding-top: 8px !important; }
   .pbe_xs, .py.pbe_xs { padding-bottom: 8px !important; }
   .ord_cell, .invoice_qty, .invoice_price { text-align: left !important; }
-  .ord_cell { padding-top: 8px !important; }
+  .ord_cell { padding-top: 0!important; padding-left: 16px!important; }
   .hide { max-height: 0 !important; display: none !important; mso-hide: all !important; overflow: hidden !important; font-size: 0 !important; }
 }
 
