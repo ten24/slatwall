@@ -20,6 +20,8 @@
 			<div class="ajax-product-options">
 				<!--- Loop over all options groups --->
 				<cfloop array="#optionGroupsArr#" index="optionGroup">
+				
+				<cfif structKeyExists(skuOptionDetails,optionGroup.getOptionGroupCode()) AND NOT isNull(skuOptionDetails[ optionGroup.getOptionGroupCode() ])>
 
 					<!--- Option Selector --->
 					<div class="control-group">
@@ -27,51 +29,59 @@
     					<div class="controls">
 
 							<!--- We can pull this optionGroup's Option out of the skuOptionDetails --->
-							<cfset optionGroupOptions = skuOptionDetails[ optionGroup.getOptionGroupCode() ].options />
-
-							<!--- Option Select Dropdown --->
-							<select name="selectedOptionIDList" data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="ajax-option-selector">
-
-								<!--- First we include the unselected option --->
-								<option value="" selected="selected">Select #optionGroup.getOptionGroupName()#...</option>
-
-								<!--- New we loop over all options for this optionGroup --->
-								<cfloop array="#optionGroupOptions#" index="optionDetails">
-
-									<!--- Make sure that this option has a totalQATS > 0 --->
-									<cfif optionDetails.totalQATS gte 1>
-										<option value="#optionDetails.optionID#">#optionDetails.optionName#</option>
-									</cfif>
-
-								</cfloop>
-
-							</select>
-
-
+								<cfset optionGroupOptions = skuOptionDetails[ optionGroup.getOptionGroupCode() ].options />
+	
+								<!--- Option Select Dropdown --->
+								<div data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="ajax-option-selector form-group">
+	
+									<!--- First we include the unselected option --->
+									<h6>Select #optionGroup.getOptionGroupName()#</h6>
+	
+									<!--- New we loop over all options for this optionGroup --->
+									<cfloop array="#optionGroupOptions#" index="optionDetails">
+	
+										<!--- Make sure that this option has a totalQATS > 0 --->
+										<cfif optionDetails.totalQATS gte 1>
+										<div class="card">
+											<input class="splitOption-#local.product.getProductID()#" name="#optionGroup.getOptionGroupCode()#" id="#optionDetails.optionID#" type="radio" value="#optionDetails.optionID#">
+											<label for="#optionDetails.optionID#">#optionDetails.optionName#</label>
+										</div>
+										</cfif>
+	
+									</cfloop>
+	
+								</div>
     					</div>
   					</div>
-
+				</cfif>
 				</cfloop>
 
 				<!--- jQuery that allows for dynamic updating of options --->
 				<script type="text/javascript">
 					(function($){
 						$(document).ready(function(e){
-							$('body').on('change', '.ajax-option-selector', function(){
-
-								var selectedOptionIDList = $.map($(this).closest('.ajax-product-options').find('select[name=selectedOptionIDList]'), function(n, i){
-									if(n.value.length) {
-										return n.value;
-									}
-								}).join(',');
-
+							//If one of our options gets clicked
+							$('body').on('click', '.splitOption-#local.product.getProductID()#', function(){
+								
+								//if the one I clicked was unavailable (marked here by the text-danger class) 
+								if($(this).next().hasClass("text-danger")){
+									$(this).next().removeClass('text-danger'); //let's make it available by removing the class
+									selectedOptionIDList = $(this).val(); //and we'll request from the server only the available options that match this one selected option
+								} else { // if the option selected was not unavailable
+									//let's loop through all selected radio inputs and make a list of their ids
+									var selectedOptionIDList = $.map($(this).closest('.ajax-product-options').find('input[type="radio"]:checked'), function(n, i){
+										if(n.value.length) {
+											return n.value;
+										}
+									}).join(','); //and request from the server the options that match the list	
+								}
+								
+								//preparing ajax call
 								var data = {
-									'slatAction': 'public:ajax.productSkuOptionDetails',
+									'slatAction': 'public:ajax.productAvailableSkuOptions',
 									'productID': '#local.product.getProductID()#',
 									'selectedOptionIDList': selectedOptionIDList
 								};
-
-								var thisOptionSelector = this;
 
 								jQuery.ajax({
 									type: 'get',
@@ -83,25 +93,29 @@
 									error: function( err ) {
 										alert('There was an error processing request: ' + err);
 									},
-									success: function(r) {
-										for(var optionGroup in r.skuOptionDetails) {
-											if( $(thisOptionSelector).data('optiongroupcode') != optionGroup ) {
-												for(var index in r.skuOptionDetails[ optionGroup ].options) {
-													var optionDetails = r.skuOptionDetails[ optionGroup ].options[ index ];
-
-													// This default dersion will just add the 'disabled' attribute to ones with no inventory
-													if(optionDetails.selectedQATS <= 0) {
-														$(thisOptionSelector).closest('.ajax-product-options').find('option[value=' + optionDetails.optionID + ']').attr('disabled', 'disabled');
-													} else {
-														$(thisOptionSelector).closest('.ajax-product-options').find('option[value=' + optionDetails.optionID + ']').removeAttr('disabled');
-													}
-
+									success: function(r) { // if call is successful
+										//for each option in this form
+										$('.splitOption-#local.product.getProductID()#').each(function(index){
+											//make it enabled for now
+											$(this).next().removeClass('text-danger');
+											if(
+												r.availableSkuOptions.indexOf($(this).val()) === -1 // if value is not in the list of available options
+											){
+												$(this).next().addClass('text-danger'); //disable the option
+												if($(this).is(':checked')){ //if this was previously checked
+													$(this).prop('checked',false); //uncheck
 												}
 											}
+										});
+										//let's make the add to cart button disabled unless all option groups have been selected
+										$('##ajax-submit-#local.product.getProductID()#').prop('disabled',true);
+										//if number of selected inputs equals the number of option groups
+										if($('.ajax-option-selector').length === $('.ajax-option-selector').find('input[type="radio"]:checked').length){
+											$('##ajax-submit-#local.product.getProductID()#').prop('disabled',false); //make button enabled
 										}
 									}
 								});
-
+								
 							});
 
 						});
@@ -124,7 +138,7 @@
   			</div>
 
 			<!--- Add to Cart Button --->
-			<button type="submit" class="btn">Add To Cart</button>
+			<button type="submit" id="ajax-submit-#local.product.getProductID()#" class="btn" disabled>Add To Cart</button>
 		</form>
 		<!--- END: ADD TO CART EXAMPLE 3 --->
 	</div>
