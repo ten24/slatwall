@@ -43296,17 +43296,25 @@ var SWFFormController = /** @class */ (function () {
         this.validationService = validationService;
         this.hibachiValidationService = hibachiValidationService;
         this.$onInit = function () {
-            if (_this.entityName.split('_').length > 1) {
-                _this.context = _this.entityName.split('_')[1];
-            }
-            else {
-                _this.context = 'save';
-            }
         };
         this.submitForm = function () {
             //example of entityName Account_Login
             if (_this.form.$valid) {
-                _this.$rootScope.slatwall.doAction(_this.context, _this.ngModel.$modelValue);
+                _this.$rootScope.slatwall.doAction(_this.method, _this.ngModel.$modelValue).then(function (result) {
+                    if (!result)
+                        return;
+                    if (result.successfulActions.length) {
+                        //if we have an array of actions and they're all complete, or if we have just one successful action
+                        if (_this.sRedirectUrl) {
+                            _this.$rootScope.slatwall.redirectExact(_this.sRedirectUrl);
+                        }
+                    }
+                    if (result.errors) {
+                        if (_this.fRedirectUrl) {
+                            _this.$rootScope.slatwall.redirectExact(_this.fRedirectUrl);
+                        }
+                    }
+                });
             }
             else {
                 _this.form.$setSubmitted(true);
@@ -43326,12 +43334,14 @@ var SWFForm = /** @class */ (function () {
         this.priority = 1000;
         this.restrict = "A";
         //needs to have false scope to not interfere with form controller
-        this.scope = false;
+        this.scope = true;
         /**
          * Binds all of our variables to the controller so we can access using this
          */
         this.bindToController = {
-            entityName: "@?"
+            method: "@?",
+            sRedirectUrl: "@?",
+            fRedirectUrl: "@?",
         };
         this.controller = SWFFormController;
         this.controllerAs = "swfForm";
