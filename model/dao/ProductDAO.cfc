@@ -541,6 +541,10 @@ Notes:
 			</cfif>
 			WHERE 
 				s.calculatedQATS > 0
+			AND
+				s.activeFlag = 1
+			AND
+				s.publishedFlag = 1
 			AND 
 				s.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" >
 			<cfif structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID)>
