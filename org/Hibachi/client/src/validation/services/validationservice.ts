@@ -137,7 +137,7 @@ class ValidationService{
 
     public validateRequired=(value):boolean=>{
 
-        if(value){
+        if(value && value){
             return true;
         }else{
             return false;
