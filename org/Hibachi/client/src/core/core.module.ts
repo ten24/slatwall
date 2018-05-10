@@ -104,7 +104,9 @@ import {BaseObject} from "./model/baseobject";
         ExpandableService,
         FilterService,
         HistoryService,
-        ScopeService
+        ScopeService,
+        UtilityService,
+        HibachiValidationService
     ],  
     imports: [
         CommonModule,
@@ -225,7 +227,7 @@ var coremodule = angular.module('hibachi.core',[
 //services
 .service('cacheService', downgradeInjectable(CacheService))
 .service('publicService',PublicService)
-.service('utilityService',UtilityService)
+.service('utilityService',downgradeInjectable(UtilityService))
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
 .service('draggableService',downgradeInjectable(DraggableService))
@@ -248,7 +250,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
-.service('hibachiValidationService',HibachiValidationService)
+.service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
 .service('entityService',EntityService)
 //controllers
 .controller('globalSearch',GlobalSearchController)

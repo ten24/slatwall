@@ -8,8 +8,13 @@ import {AlertModule} from "../../../org/Hibachi/client/src/alert/alert.module";
 import {DialogModule} from "../../../org/Hibachi/client/src/dialog/dialog.module";
 import { LoggerModule } from "../../../org/Hibachi/client/src/logger/logger.module";
 import { CoreModule }  from  "../../../org/Hibachi/client/src/core/core.module";
+import { parseProvider,logProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
+  providers: [
+    parseProvider,
+    logProvider
+  ],
   imports: [
     BrowserModule,
     UpgradeModule,
