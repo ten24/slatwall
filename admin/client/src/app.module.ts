@@ -9,7 +9,8 @@ import {DialogModule} from "../../../org/Hibachi/client/src/dialog/dialog.module
 import { LoggerModule } from "../../../org/Hibachi/client/src/logger/logger.module";
 import { CoreModule }  from  "../../../org/Hibachi/client/src/core/core.module";
 import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
-import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity/module";
+import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity.module";
+import {ContentModule} from "./content/content.module";
 import { parseProvider,logProvider,interpolateProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { parseProvider,logProvider,interpolateProvider } from "./ajs-upgraded-pr
     LoggerModule,
     CoreModule,
     CardModule,
-    EntityModule
+    EntityModule,
+    ContentModule
   ],
   declarations:[
       HeroDetailComponent

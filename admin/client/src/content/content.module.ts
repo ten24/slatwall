@@ -2,6 +2,7 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+import {CoreModule} from "../../../../org/Hibachi/client/src/core/core.module";
 //services
 
 //filters
@@ -13,6 +14,23 @@ import {SWContentList} from "./components/swcontentlist";
 import {SWContentNode} from "./components/swcontentnode";
 import {SWAssignedProducts} from "./components/swassignedproducts";
 import {SWSiteSelector} from "./components/swsiteselector";
+
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
+@NgModule({
+    declarations : [],
+    providers :[],
+    imports :[
+        CoreModule
+    ]
+})
+export class ContentModule {
+    constructor() {
+        
+    }    
+}
 
 var contentmodule = angular.module('hibachi.content',[coremodule.name]).config(()=>{
 
