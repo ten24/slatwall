@@ -1,7 +1,7 @@
 component {
-    variables._fw1_version = "4.1.0";
+    variables._fw1_version = "4.2.0";
     /*
-      Copyright (c) 2009-2017, Sean Corfield, Marcin Szczepanski, Ryan Cogswell
+      Copyright (c) 2009-2018, Sean Corfield, Marcin Szczepanski, Ryan Cogswell
 
       Licensed under the Apache License, Version 2.0 (the "License");
       you may not use this file except in compliance with the License.
@@ -114,10 +114,12 @@ component {
         path = pathData.path;
         var omitIndex = pathData.omitIndex;
         queryString = normalizeQueryString( queryString );
+        var q = 0;
+        var a = 0;
         if ( queryString == '' ) {
             // extract query string from action section:
-            var q = find( '?', action );
-            var a = find( '##', action );
+            q = find( '?', action );
+            a = find( '##', action );
             if ( q > 0 ) {
                 if ( q < len( action ) ) {
                     queryString = right( action, len( action ) - q );
@@ -1095,14 +1097,14 @@ component {
             if ( append == 'all' ) {
                 for ( var key in request.context ) {
                     if ( isSimpleValue( request.context[ key ] ) ) {
-                        baseQueryString = listAppend( baseQueryString, key & '=' & urlEncodedFormat( request.context[ key ] ), '&' );
+                        baseQueryString = listAppend( baseQueryString, key & '=' & encodeForURL( request.context[ key ] ), '&' );
                     }
                 }
             } else {
                 var keys = listToArray( append );
                 for ( var key in keys ) {
                     if ( structKeyExists( request.context, key ) && isSimpleValue( request.context[ key ] ) ) {
-                        baseQueryString = listAppend( baseQueryString, key & '=' & urlEncodedFormat( request.context[ key ] ), '&' );
+                        baseQueryString = listAppend( baseQueryString, key & '=' & encodeForURL( request.context[ key ] ), '&' );
                     }
                 }
 
@@ -1418,6 +1420,60 @@ component {
             return onMissingView( request.context );
         }
     }
+
+    // EXPERIMENTAL COLDBOX MODULE SUPPORT
+
+    /*
+     * in Application.cfc, call as follows:
+     *   this.mappings = moduleMappings( "qb, supermod" );
+     *   this.mappings = moduleMappings( [ "mod1", "mod2"], "modules" );
+     */
+    public struct function moduleMappings( any modules, string modulePath = "modules" ) {
+    		if ( isSimpleValue( modules ) ) modules = listToArray( modules );
+    		var cleanModules = [ ];
+    		var mappings = { };
+    		for ( var m in modules ) {
+    			m = trim( m );
+    			arrayAppend( cleanModules, m );
+    			mappings[ "/" & m ] = expandPath( "/" & modulePath & "/" & m );
+    		}
+    		variables._fw1_coldbox_modulePath = modulePath;
+    		variables._fw1_coldbox_modules = cleanModules;
+    		return mappings;
+  	}
+
+    /*
+     * call this in setupApplication() to load the modules for which
+     * you set up moduleMappings() using the function above -- the
+     * frameworkPath argument can override the default location for FW/1
+     */
+  	public void function installModules( string frameworkPath = "framework" ) {
+    		var bf = new "#frameworkPath#.WireBoxAdapter"();
+    		getBeanFactory().setParent( bf );
+    		var builder = bf.getBuilder();
+    		var nullObject = new "#frameworkPath#.nullObject"();
+    		var cbdsl = { };
+    		cbdsl.init = function() { return cbdsl; };
+    		cbdsl.process = function() { return nullObject; };
+    		builder.vars = __vars;
+    		builder.vars().instance.ColdBoxDSL = cbdsl;
+    		for ( var module in variables._fw1_coldbox_modules ) {
+      			var cfg = new "#variables._fw1_coldbox_modulePath#.#module#.ModuleConfig"();
+      			cfg.vars = __vars;
+      			cfg.vars().binder = bf.getBinder();
+            cfg.vars().controller = {
+                getWireBox : function() { return bf; }
+            };
+      			cfg.configure();
+      			if ( structKeyExists( variables.framework, "modules" ) &&
+      	  			 structKeyExists( variables.framework.modules, module ) ) {
+			         structAppend( cfg.vars().settings, variables.framework.modules[ module ] );
+      			}
+      			cfg.onLoad();
+    		}
+  	}
+    // helper to allow mixins:
+  	private struct function __vars() { return variables; }
 
     // THE FOLLOWING METHODS SHOULD ALL BE CONSIDERED PRIVATE / UNCALLABLE
 
@@ -1964,7 +2020,7 @@ component {
             var q = '';
             for( var key in queryString ) {
                 if ( isSimpleValue( queryString[key] ) ) {
-                    q &= urlEncodedFormat( key ) & '=' & urlEncodedFormat( queryString[ key ] ) & '&';
+                    q = listAppend(q, encodeForURL( key ) & '=' & encodeForURL( queryString[ key ] ), '&');
                 }
             }
             queryString = q;
@@ -1987,7 +2043,7 @@ component {
         return segments;
     }
 
-    public string function parseViewOrLayoutPath( string path, string type ) {
+    private string function parseViewOrLayoutPath( string path, string type ) {
         var folder = type;
         switch ( folder ) {
         case 'layout':
