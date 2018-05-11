@@ -8,7 +8,8 @@ import {AlertModule} from "../../../org/Hibachi/client/src/alert/alert.module";
 import {DialogModule} from "../../../org/Hibachi/client/src/dialog/dialog.module";
 import { LoggerModule } from "../../../org/Hibachi/client/src/logger/logger.module";
 import { CoreModule }  from  "../../../org/Hibachi/client/src/core/core.module";
-import { parseProvider,logProvider } from "./ajs-upgraded-providers"; 
+import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
+import { parseProvider,logProvider,interpolateProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
   providers: [
@@ -21,7 +22,8 @@ import { parseProvider,logProvider } from "./ajs-upgraded-providers";
     AlertModule,
     DialogModule,
     LoggerModule,
-    CoreModule
+    CoreModule,
+    CardModule
   ],
   declarations:[
       HeroDetailComponent

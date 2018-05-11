@@ -1,8 +1,13 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UpgradeModule,downgradeInjectable } from '@angular/upgrade/static';
 
 //modules
 import {coremodule} from '../core/core.module';
+
+import {CoreModule} from "../core/core.module";
 //services
 
 //components
@@ -13,6 +18,21 @@ import {SWCardBody} from "./components/swcardbody";
 import {SWCardIcon} from "./components/swcardicon";
 import {SWCardProgressBar} from "./components/swcardprogressbar";
 import {SWCardListItem} from "./components/swcardlistitem";
+
+@NgModule({
+    declarations :[],
+    providers :[],
+    imports :[
+        CoreModule
+    ]
+})
+export class CardModule {
+    constructor() {
+        
+    }    
+}
+
+
 var cardmodule = angular.module('hibachi.card',[coremodule.name])
 .config([()=>{
 
