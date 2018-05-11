@@ -248,9 +248,20 @@ component extends="framework.one" {
 
 
 	public any function bootstrap() {
+		writeLog(file="#variables.framework.applicationKey#", text="General Log - Request Entry Point - bootstrap() method");
 		
+		// Required for Mura reload to work properly, otherwise request._fw1 is undefined
+		setupRequestFW1Struct();
 		
-		setupGlobalRequest();
+		// Verify framework applicationStart has executed at least once so we don't bypass framework's lifecycle
+		if (!variables.framework.hibachi.isApplicationStart) {
+			onApplicationStart();
+		}
+		
+		createHibachiScope();
+
+		// And prevent redirect after reload/update
+		setupGlobalRequest(noredirect=true);
 
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
@@ -259,13 +270,15 @@ component extends="framework.one" {
 	}
 
 	public any function reloadApplication() {
-		setupApplicationWrapper();
-		createHibachiScope();
-		lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="20" {
-			if( !structKeyExists(application, getHibachiInstanceApplicationScopeKey()) ) {
-				application[ getHibachiInstanceApplicationScopeKey() ] = {};
+		// Only if application has run
+		if (variables.framework.hibachi.isApplicationStart) {
+			setupApplicationWrapper();
+			lock name="application_#getHibachiInstanceApplicationScopeKey()#_initialized" timeout="20" {
+				if( !structKeyExists(application, getHibachiInstanceApplicationScopeKey()) ) {
+					application[ getHibachiInstanceApplicationScopeKey() ] = {};
+				}
+				application[ getHibachiInstanceApplicationScopeKey() ].initialized = false;
 			}
-			application[ getHibachiInstanceApplicationScopeKey() ].initialized = false;
 		}
 	}
 
@@ -274,12 +287,11 @@ component extends="framework.one" {
 		super.onApplicationStart();
 	}
 
-	public void function setupGlobalRequest() {
-		createHibachiScope();
+	public void function setupGlobalRequest(boolean noredirect=false) {
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
-		verifyApplicationSetup();
+		verifyApplicationSetup(noredirect=arguments.noredirect);
 
 			if(!variables.framework.hibachi.isApplicationStart && variables.framework.hibachi.useServerInstanceCacheControl){
 			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
@@ -352,14 +364,8 @@ component extends="framework.one" {
 	}
 
 	public void function setupRequest() {
-
-		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
-            if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
-                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
-            } else {
-                request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.model.transient.HibachiScope").init();
-            }
-        }
+		writeLog(file="#variables.framework.applicationKey#", text="General Log - Request Entry Point - setupRequest() method");
+		createHibachiScope();
 		var status = 200;
 		setupGlobalRequest();
 		
@@ -545,7 +551,6 @@ component extends="framework.one" {
 	}
 
 	public void function verifyApplicationSetup(reloadByServerInstance=false,noredirect=false) {
-		createHibachiScope();
 		if(
 			(
 				hasReloadKey()
