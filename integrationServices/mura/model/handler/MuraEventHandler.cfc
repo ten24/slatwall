@@ -565,6 +565,10 @@
 					//Set the category to the updated name
 					slatwallCategory.setCategoryName( muraCategory.getName() );
 					
+					if(!isNull(muraCategory.getUrlTitle()) && len(muraCategory.getUrlTitle()) ){
+						slatwallCategory.setURLTitle ( muraCategory.getUrlTitle() );
+					}
+					
 					if(!muraCategory.getParent().getIsNew()) {
 						var parentCategory = $.slatwall.getService("ContentService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getParent().getcategoryID(), muraCategory.getSiteID() );
 						

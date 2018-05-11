@@ -120,6 +120,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			rc.ajaxResponse["skuOptionDetails"] = product.getSkuOptionDetails( arguments.rc.selectedOptionIDList );
 		}
 	}
+	
+	public void function productAvailableSkuOptions( required struct rc ) {
+		param name="arguments.rc.productID" type="string" default="";
+		param name="arguments.rc.selectedOptionIDList" type="string" default="";
+
+		var product = getProductService().getProduct( arguments.rc.productID );
+
+		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
+			rc.ajaxResponse["availableSkuOptions"] = product.getAvailableSkuOptions( arguments.rc.selectedOptionIDList );
+		}
+	}
 
 	public void function productSkuSelected(required struct rc){
 		param name="arguments.rc.productID" type="string" default="";

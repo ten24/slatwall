@@ -80,10 +80,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="relatedProducts" singularname="relatedProduct" cfc="ProductRelationship" type="array" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 
 	// Related Object Properties (many-to-many - owner)
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
-	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
 	property name="sites" singularname="site" cfc="Site" type="array" fieldtype="many-to-many" linktable="SwProductSite" fkcolumn="productID" inversejoincolumn="siteID";
 
 	// Related Object Properties (many-to-many - inverse)
@@ -158,6 +158,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public numeric function getCurrentMargin(){
 		return getDao('productDao').getCurrentMargin(this.getProductID());
+	}
+	
+	public any function getSkuBundleCollectionList(){
+		var skuCollectionList = getService('skuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getDefaultSku().getSkuID());
+		return skuCollectionList;
 	}
 	
 
@@ -246,7 +252,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return count;
 	}
-
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
@@ -547,9 +552,28 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSkusBySelectedOptions(string selectedOptions="") {
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
-
+	
+	public any function getAvailableSkuOptions(string selectedOptionIDList="", string locationID){
+		var query = getDAO('ProductDAO').getAvailableSkuOptions(
+			productID=this.getProductID(),
+			skuOptionIdArray=listToArray(arguments.selectedOptionIDLIst),
+			arguments=arguments);
+			
+		//We got a raw query object from the DAO method with one row for every available sku and its options, so some
+		//might be duplicated
+		
+		var availableOptionIDs = '';
+		for(var row in local.query){ //for every sku
+			for(var optionID in row.optionIDs){
+			//add options to the list
+				availableOptionIDs = listAppend(availableOptionIDs,optionID);
+			}
+		}
+		return listRemoveDuplicates(availableOptionIDs);
+	}
+	
 	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true, string locationID ) {
-
+		
 		// Setup return structure
 		var skuOptionDetails = {};
 
@@ -597,9 +621,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
 				}
 			}
-			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-				break;
-			}
+			// if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+			// 	break;
+			// }
 		}
 
 		var skuOptionIDArray = [];
@@ -1223,6 +1247,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 	public void function removeProductImage(required any productImage) {
 		arguments.productImage.removeProduct( this );
+	}
+
+	// Related Products (one-to-many)
+	public void function addRelatedProduct(required any relatedProduct) {
+		arguments.relatedProduct.setProduct( this );
+	}
+	public void function removeRelatedProduct(required any relatedProduct) {
+		arguments.relatedProduct.removeProduct( this );
 	}
 
 	// Skus (one-to-many)

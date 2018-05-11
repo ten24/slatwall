@@ -394,23 +394,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				method:'get',
 				success: function(response){
 					jQuery('#adminModal').modal();
-					
-					var elem = angular.element(document.getElementById('ngApp'));
-				    var injector = elem.injector();
-				    var $compile = injector.get('$compile'); 
-				    var $rootScope = injector.get('$rootScope'); 
-				    
-				    jQuery('#adminModal').html($compile(response)($rootScope));
-					initUIElements('#adminModal');
-					
-					jQuery('#adminModal').css({
-						'width': 'auto'
-					});
-					
-					jQuery('#adminModal input').each(function(index,input){
-						//used to digest previous jquery value into the ng-model
-						jQuery(input).trigger('input');
-					});
+					renderModal(response);
 				},
 				error:function(response,status){
 					//returns 401 in the case of unauthorized access and boots to the appropriate login page
@@ -838,23 +822,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 						if(("preProcessView" in r)) {
 							jQuery('#adminModal').modal();
-							
-							var elem = angular.element(document.getElementById('ngApp'));
-						    var injector = elem.injector();
-						    var $compile = injector.get('$compile'); 
-						    var $rootScope = injector.get('$rootScope'); 
-						    
-						    jQuery('#adminModal').html($compile(r.preProcessView)($rootScope));
-							initUIElements('#adminModal');
-							
-							jQuery('#adminModal').css({
-								'width': 'auto'
-							});
-							
-							jQuery('#adminModal input').each(function(index,input){
-								//used to digest previous jquery value into the ng-model
-								jQuery(input).trigger('input');
-							});
+							renderModal(r.preProcessView);
 						} else {
 							jQuery.each(r.messages, function(i, v){
 								jQuery('#' + thisTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + (v.MESSAGE || v.message) + '</div>');
@@ -1091,7 +1059,30 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		return modalLink;
 	}
-	
+	function renderModal( html ) {
+		var elem = document.getElementById('ngApp');
+		if (typeof(elem) != 'undefined' && elem != null){
+			elem = angular.element(elem);
+			var injector = elem.injector();
+		    var $compile = injector.get('$compile');
+		    var $rootScope = injector.get('$rootScope');
+		    jQuery('#adminModal').html($compile(html)($rootScope));
+		}else{
+			jQuery('#adminModal').html(html);
+		}
+
+		initUIElements('#adminModal');
+
+		jQuery('#adminModal').css({
+			'width': 'auto'
+		});
+
+		jQuery('#adminModal input').each(function(index,input){
+			//used to digest previous jquery value into the ng-model
+			jQuery(input).trigger('input');
+		});
+	}
+
 	function updatePermissionCheckboxDisplay( checkbox ) {
 		jQuery.each( jQuery('.hibachi-permission-checkbox[data-hibachi-parentcheckbox="' + jQuery( checkbox ).attr('name') + '"]'), function(i, v) {
 	

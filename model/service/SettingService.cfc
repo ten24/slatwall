@@ -262,7 +262,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
-
+			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},

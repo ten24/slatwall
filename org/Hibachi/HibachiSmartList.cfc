@@ -987,7 +987,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		}
 		
 		// Always return lower case
-		return lcase(modifiedURL);
+		return getHibachiUtilityService().hibachiHTMLEditFormat(lcase(modifiedURL));
 	}
 	
 	public boolean function isFilterApplied(required string filter, required string value){

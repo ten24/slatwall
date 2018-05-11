@@ -112,13 +112,13 @@ component output="false" accessors="true" extends="HibachiService" {
 				} else if ( left(itemName, 4) == "list" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 				} else if ( left(itemName, 15) == "multiPreProcess" ) {
-					authDetails.authorizedFlag = true;
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-15), account=arguments.account);
 				} else if ( left(itemName, 12) == "multiProcess" ) {
-					authDetails.authorizedFlag = true;
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-12), account=arguments.account);
 				} else if ( left(itemName, 10) == "preProcess" ) {
-					authDetails.authorizedFlag = true;
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-10), account=arguments.account);
 				} else if ( left(itemName, 7) == "process" ) {
-					authDetails.authorizedFlag = true;
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="process", entityName=right(itemName, len(itemName)-7), account=arguments.account);
 				} else if ( left(itemName, 4) == "save" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-4), account=arguments.account);
 					if(!authDetails.authorizedFlag) {

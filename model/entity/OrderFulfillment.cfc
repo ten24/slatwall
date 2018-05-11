@@ -61,7 +61,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
-	property name="fulfillmentMethodOptionsCacheKey" ormtype="string" hb_auditable="false";
+	property name="fulfillmentMethodOptionsCacheKey" column="fulfillMethOptionsCacheKey" ormtype="string" hb_auditable="false";
 	
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";

@@ -348,9 +348,7 @@
 										<sw-collection-filter data-property-identifier="order.orderType.systemCode" data-comparison-operator="=" data-comparison-value="otSalesOrder"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ostNew,ostProcessing"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderCreatedSite.siteCode" data-comparison-operator="="  data-comparison-value="ny"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="orderFulfillmentStatusType.systemCode"  data-comparison-operator="!="  data-comparison-value="ofstFulfilled"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="="  data-comparison-value="shipping"></sw-collection-filter>
 									</sw-collection-filters>
 									
 									<sw-collection-columns>
@@ -398,10 +396,7 @@
 										<sw-collection-filter data-property-identifier="order.orderType.systemCode" data-comparison-operator="=" data-comparison-value="otSalesOrder"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderStatusType.systemCode" data-comparison-operator="NOT IN" data-comparison-value="ostClosed,ostCanceled"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="order.orderOpenDateTime" data-comparison-operator="IS NOT" data-comparison-value="NULL"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="order.orderCreatedSite.siteCode" data-comparison-operator="="  data-comparison-value="ny"></sw-collection-filter>
 										<sw-collection-filter data-property-identifier="orderFulfillment.orderFulfillmentStatusType.systemCode"  data-comparison-operator="!="  data-comparison-value="ofstFulfilled"></sw-collection-filter>
-										<sw-collection-filter data-property-identifier="orderFulfillment.fulfillmentMethod.fulfillmentMethodType" data-comparison-operator="IN"  data-comparison-value="shipping,pickup"></sw-collection-filter>
-									
 									</sw-collection-filters>
 									
 									<sw-collection-columns>

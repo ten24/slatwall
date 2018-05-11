@@ -255,79 +255,11 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertTrue(resultStockAdjustmentItem);
 	}
 	
-	public void function getAverageCostTest(){
-		var skuData = {
-			skuID=""
-		};
-		var sku = createPersistedTestEntity('Sku',skuData);
-		
-		var stockData = {
-			stockID="",
-			sku={
-				skuID=sku.getSkuID()
-			},
-			currencyCode="USD"
-		};
-		var stock = createPersistedTestEntity('Stock',stockData);
-		
-		var inventoryData ={
-			inventoryID="",
-			cost=50,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			},
-			currencyCode="USD"
-		};
-		var inventory = createPersistedTestEntity('Inventory',inventoryData);
-		
-		var averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
-		assertEquals(50,averageCost);
-		
-		var inventoryData2 = {
-			inventoryID="",
-			cost=35,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			},
-			currencyCode="USD"
-		};
-		var inventory2 = createPersistedTestEntity('Inventory',inventoryData2);
-		
-		averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
-		assertEquals(42.5,averageCost);
-		
-		//second stock
-		var stockData2 = {
-			stockID="",
-			sku={
-				skuID=sku.getSkuID()
-			},
-			currencyCode="USD"
-		};
-		var stock2 = createPersistedTestEntity('Stock',stockData2);
-		
-		var inventoryData3 ={
-			inventoryID="",
-			cost=100,
-			quantityin=5,
-			stock={
-				stockID=stock.getStockID()
-			},
-			currencyCode="USD"
-		};
-		var inventory3 = createPersistedTestEntity('Inventory',inventoryData3);
-		
-		averageCost = variables.dao.getAverageCost(sku.getSkuID(),'USD');
-		assertEquals(61.666666666,left(averageCost,len(61.666666666)));
-	}
-	
-	public void function getAverageLandedCostTest(){
+	private void function getAverageLandedCostTest(){
 		
 	}
 	
-	public void function getAveragePriceSold(){
+	private void function getAveragePriceSold(){
 		var skuData = {
 			skuID=""
 		};

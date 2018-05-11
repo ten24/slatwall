@@ -128,6 +128,13 @@ component entityname="SlatwallStockReceiverItem" table="SwStockReceiverItem" per
     	return relationshipCount == 1;
     }
     
+    public boolean function stockHasLeafLocation(){
+    	if(isNull(getStock())){
+    		return false;
+    	}
+    	return getService('stockService').stockHasLeafLocation(getStock());
+    }
+    
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
