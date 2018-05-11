@@ -17,6 +17,25 @@ import {SWDetail} from "./components/swdetail";
 import {SWList} from "./components/swlist";
 import {coremodule} from "../core/core.module";
 
+import {CoreModule} from "../core/core.module";
+
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
+@NgModule({
+    declarations : [],
+    providers :[],
+    imports :[
+        CoreModule
+    ]
+})
+export class EntityModule {
+    constructor() {
+        
+    }    
+}
+
 declare var $:any;
 
 var entitymodule = angular.module('hibachi.entity',['ngRoute',coremodule.name])
