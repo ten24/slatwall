@@ -2,20 +2,24 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 import {BaseService} from "./baseservice";
-class UtilityService extends BaseService{
+import { Parse } from "../../../../../../admin/client/src/ajs-upgraded-providers";
+import { Injectable } from "@angular/core";
+
+@Injectable()
+export class UtilityService  extends BaseService{
     //@ngInject
     constructor(
-        public $parse
+        private $parse : Parse
     ){
         super();
-
+        
     }
     
-    public structKeyExists = (struct,key) =>{
+    public structKeyExists(struct,key) {
         return key in struct; 
     }
     
-    public keyToAttributeString = (key)=> {
+    public keyToAttributeString (key) {
         var attributeString = "data-"; 
         for(var i=0; i<key.length; i++){
             if(key.charAt(i) == "_"){ 
@@ -44,23 +48,23 @@ class UtilityService extends BaseService{
         return attributeString; 
     }
     
-    public isUpperCase = (character)=>{
+    public isUpperCase (character){
         return character == character.toUpperCase()
     }
     
-     public isLowerCase = (character)=>{
+     public isLowerCase (character){
         return character == character.toLowerCase()
     }
 
-    public snakeToCapitalCase = (s)=>{
+    public snakeToCapitalCase (s){
         return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
     }
 
-    public camelCaseToSnakeCase = (s)=>{
+    public camelCaseToSnakeCase (s){
         return s.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
     }
 
-    public replaceStringWithProperties = (stringItem:string, context:any) =>{
+    public replaceStringWithProperties (stringItem:string, context:any) {
         var properties = this.getPropertiesFromString(stringItem);
         if(!properties) return;
         var data = [];
@@ -75,12 +79,12 @@ class UtilityService extends BaseService{
     }
 
     //used to do inheritance at runtime
-    public extend = (ChildClass, ParentClass)=> {
+    public extend (ChildClass, ParentClass) {
         ChildClass.prototype = new ParentClass();
         ChildClass.prototype.constructor = ChildClass;
     }
 
-    public getQueryParamsFromUrl = (url) =>{
+    public getQueryParamsFromUrl (url) {
       // This function is anonymous, is executed immediately and
       // the return value is assigned to QueryString!
       var query_string = {};
@@ -113,11 +117,11 @@ class UtilityService extends BaseService{
         return query_string;
     };
 
-    public isAngularRoute = () =>{
+    public isAngularRoute() {
         return /[\?&]ng#!/.test(window.location.href);
     };
 
-    public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{
+    public ArrayFindByPropertyValue (arr:any[],property:string,value:any):number {
         let currentIndex = -1;
         arr.forEach((arrItem,index)=>{
            if(arrItem[property] && arrItem[property] === value){
@@ -127,14 +131,14 @@ class UtilityService extends BaseService{
         return currentIndex;
     };
 
-    public listLast = (list:string='',delimiter:string=','):string =>{
+    public listLast (list:string='',delimiter:string=','):string {
 
         var listArray = list.split(delimiter);
 
-		return listArray[listArray.length-1];
+        return listArray[listArray.length-1];
     };
 
-    public listRest = (list:string='',delimiter:string=","):string =>{
+    public listRest (list:string='',delimiter:string=","):string {
         var listArray = list.split(delimiter);
         if(listArray.length){
             listArray.splice(0,1);
@@ -142,14 +146,14 @@ class UtilityService extends BaseService{
         return listArray.join(delimiter);
     };
 
-    public listFirst = (list:string='',delimiter:string=','):string =>{
+    public listFirst (list:string='',delimiter:string=','):string {
 
         var listArray = list.split(delimiter);
 
         return listArray[0];
     };
 
-    public listPrepend = (list: string = '', substring: string = '', delimiter: string = ','): string => {
+    public listPrepend (list: string = '', substring: string = '', delimiter: string = ','): string  {
 
         var listArray = list.split(delimiter);
         if(listArray.length){
@@ -159,7 +163,7 @@ class UtilityService extends BaseService{
         }
     };
 
-    public listAppend = (list: string = '', substring: string = '', delimiter: string = ','): string => {
+    public listAppend (list: string = '', substring: string = '', delimiter: string = ','): string  {
         var listArray = list.split(delimiter);
         if (list.trim() != '' && listArray.length) {
             return list + delimiter + substring;
@@ -168,13 +172,13 @@ class UtilityService extends BaseService{
         }
     };
 
-    public listAppendUnique = (list: string = '', substring: string = '', delimiter: string = ','): string => {
+    public listAppendUnique (list: string = '', substring: string = '', delimiter: string = ','): string  {
         var listArray = list.split(delimiter);
         if (list.trim() != '' && listArray.length && listArray.indexOf(substring) == -1) {
             return list + delimiter + substring;
         } else {
             return substring
-    }
+        }
     };
 
     /**
@@ -183,7 +187,7 @@ class UtilityService extends BaseService{
      * subStr: The string to remove.
      * returns the modified string.
      */
-     public listRemove = (str:string, substring:string) => {
+     public listRemove (str:string, substring:string) {
         if (str.indexOf(substring) != -1){
             //remove it cause its no longer selected.
             str = str.replace(substring, "");
@@ -200,7 +204,7 @@ class UtilityService extends BaseService{
         return str;
     }
 
-    public formatValue=(value,formatType,formatDetails,entityInstance)=>{
+    public formatValue(value,formatType,formatDetails,entityInstance){
         if(angular.isUndefined(formatDetails)){
             formatDetails = {};
         }
@@ -212,19 +216,19 @@ class UtilityService extends BaseService{
         return value;
     };
 
-    public format_currency=(value,formatDetails,entityInstance)=>{
+    public format_currency(value,formatDetails,entityInstance){
         if(angular.isUndefined){
             formatDetails = {};
         }
     };
 
-    public format_date=(value,formatDetails,entityInstance)=>{
+    public format_date(value,formatDetails,entityInstance){
         if(angular.isUndefined){
             formatDetails = {};
         }
     };
 
-   public format_datetime=(value,formatDetails,entityInstance)=>{
+   public format_datetime(value,formatDetails,entityInstance){
         if(angular.isUndefined){
             formatDetails = {};
         }
@@ -236,7 +240,7 @@ class UtilityService extends BaseService{
         }
     };
 
-   public  format_yesno=(value,formatDetails,entityInstance)=>{
+   public  format_yesno(value,formatDetails,entityInstance){
         if(angular.isUndefined){
             formatDetails = {};
         }
@@ -247,21 +251,21 @@ class UtilityService extends BaseService{
         }
     };
 
-    public left = (stringItem:string,count:number):string =>{
+    public left (stringItem:string,count:number):string {
         return stringItem.substring(0,count);
     };
 
-    public right = (stringItem:string,count:number):string =>{
+    public right (stringItem:string,count:number):string {
         return stringItem.substring(stringItem.length-count,stringItem.length);
     };
 
     //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
-    public mid = (stringItem:string,start:number,count:number):string =>{
+    public mid (stringItem:string,start:number,count:number):string {
         var end = start + count;
         return stringItem.substring(start,end);
     };
 
-    public getPropertiesFromString = (stringItem:string):Array<string> =>{
+    public getPropertiesFromString (stringItem:string):Array<string> {
         if(!stringItem) return;
         var capture = false;
         var property = '';
@@ -281,7 +285,7 @@ class UtilityService extends BaseService{
         return results;
     };
 
-        public replacePropertiesWithData = (stringItem:string, data)=>{
+        public replacePropertiesWithData (stringItem:string, data){
             var results = this.getPropertiesFromString(stringItem);
             for(var i=0; i < results.length; i++){
                 stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
@@ -289,15 +293,15 @@ class UtilityService extends BaseService{
             return stringItem;
     };
 
-    public replaceAll = (stringItem:string, find:string, replace:string):string => {
+    public replaceAll (stringItem:string, find:string, replace:string):string  {
         return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
     };
 
-    public escapeRegExp = (stringItem:string) =>{
+    public escapeRegExp (stringItem:string) {
         return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
 
-    public createID = (count:number):string =>{
+    public createID (count:number):string {
           var count = count || 26;
 
           var text = "";
@@ -319,7 +323,7 @@ class UtilityService extends BaseService{
     };
 
       //list functions
-      public arrayToList = (array:Array<any>, delimiter?:string) =>{
+      public arrayToList  (array:Array<any>, delimiter?:string) {
           if(delimiter != null){
               return array.join(delimiter);
           } else {
@@ -328,7 +332,7 @@ class UtilityService extends BaseService{
     };
 
 
-    public getPropertyValue=(object, propertyIdentifier)=> {
+    public getPropertyValue(object, propertyIdentifier) {
         var keys = propertyIdentifier.split('.'), obj = object, keyPart;
         while ((keyPart = keys.shift()) && keys.length) {
             obj = obj[keyPart];
@@ -337,7 +341,7 @@ class UtilityService extends BaseService{
 
     }
 
-    public setPropertyValue=(object, propertyIdentifier,value):void=> {
+    public setPropertyValue(object, propertyIdentifier,value):void {
 
         var keys = propertyIdentifier.split('.'), obj = object, keyPart;
 
@@ -355,7 +359,7 @@ class UtilityService extends BaseService{
 
     };
 
-    public nvpToObject=(NVPData):{}=>{
+    public nvpToObject(NVPData):{}{
         var object = {};
         for(var key in NVPData){
             var value = NVPData[key];
@@ -367,7 +371,7 @@ class UtilityService extends BaseService{
         return object;
     };
 
-    public isDescendantElement = (parent, child) => {
+    public isDescendantElement (parent, child) {
         var node = child.parentNode;
         while (node != null) {
             if (node == parent) {
@@ -379,7 +383,7 @@ class UtilityService extends BaseService{
     };
 
     //utility service toJson avoids circular references
-    public toJson = (obj) =>{
+    public toJson (obj) {
         var seen = [];
 
         return JSON.stringify(obj, (key, val)=>{
@@ -393,7 +397,7 @@ class UtilityService extends BaseService{
         });
     }
 
-    public listFind = (list: string = '', value: string = '', delimiter: string = ','): number => {
+    public listFind (list: string = '', value: string = '', delimiter: string = ','): number  {
           var splitString = list.split(delimiter);
           var stringFound = -1;
           for (var i = 0; i < splitString.length; i++) {
@@ -405,14 +409,14 @@ class UtilityService extends BaseService{
          return stringFound;
     };
 
-      public listLen = (list:string='',delimiter:string=','):number =>{
+      public listLen (list:string='',delimiter:string=','):number {
 
           var splitString = list.split(delimiter);
           return splitString.length;
     };
 
         //This will enable you to sort by two separate keys in the order they are passed in
-      public arraySorter = (array:any[], keysToSortBy:string[]):any[] =>{
+      public arraySorter (array:any[], keysToSortBy:string[]):any[] {
           var arrayOfTypes = [],
                 returnArray = [],
                 firstKey = keysToSortBy[0];
@@ -463,11 +467,11 @@ class UtilityService extends BaseService{
     };
 
 
-        public minutesOfDay = (m):number=>{
+        public minutesOfDay (m):number{
             return m.getMinutes() + m.getHours() * 60;
         };
 
-        public removeTimeOffset = (timestampStr) =>{ 
+        public removeTimeOffset (timestampStr) { 
             var date = new Date(timestampStr);
             var correctDate = new Date();
             correctDate.setUTCFullYear(date.getFullYear(),date.getMonth(),date.getDate());
@@ -475,7 +479,3 @@ class UtilityService extends BaseService{
         };
 
 }
-export {
-    UtilityService
-};
-

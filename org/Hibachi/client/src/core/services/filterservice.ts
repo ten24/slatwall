@@ -1,13 +1,15 @@
 import {BaseService} from "./baseservice";
+import {Injectable} from "@angular/core";
 
-class FilterService { 
+@Injectable()
+export class FilterService { 
 
     //ngInject
     constructor(){
 
     }
 
-    public filterMatch = (valueToCompareAgainst, comparisonOperator, comparisonValue) => {
+    public filterMatch (valueToCompareAgainst, comparisonOperator, comparisonValue) {
         switch (comparisonOperator){
             case "!=":
                 if(valueToCompareAgainst != comparisonValue){
@@ -53,7 +55,4 @@ class FilterService {
         }
         return false; 
     }
-}
-export {
-    FilterService
 }

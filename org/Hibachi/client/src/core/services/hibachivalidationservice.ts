@@ -1,16 +1,18 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Log } from "../../../../../../admin/client/src/ajs-upgraded-providers";
+import { Injectable } from "@angular/core";
 
-
-class HibachiValidationService{
+@Injectable()
+export class HibachiValidationService{
     //@ngInject
     constructor(
-		public $log
+		public $log : Log
     ){
 		this.$log = $log;
 
     }
-    public getObjectSaveLevel = (entityInstance)=>{
+    public getObjectSaveLevel  (entityInstance){
 		var objectLevel:any = entityInstance;
 
 		var entityID = entityInstance.$$getID();
@@ -30,7 +32,7 @@ class HibachiValidationService{
 		return objectLevel;
 	};
 
-    public getModifiedDataByInstance = (entityInstance)=>{
+    public getModifiedDataByInstance (entityInstance){
 		var modifiedData:any = {};
 
 		var objectSaveLevel = this.getObjectSaveLevel(entityInstance);
@@ -47,7 +49,7 @@ class HibachiValidationService{
 		return modifiedData;
 	}
 
-    public getValidationByPropertyAndContext = (entityInstance,property,context)=>{
+    public getValidationByPropertyAndContext (entityInstance,property,context){
         var validations = this.getValidationsByProperty(entityInstance,property);
         for(var i in validations){
 
@@ -61,11 +63,11 @@ class HibachiValidationService{
         }
     }
 
-    public getValidationsByProperty = (entityInstance,property)=>{
+    public getValidationsByProperty (entityInstance,property){
         return entityInstance.validations.properties[property];
     };
 
-    public validateObject = (entityInstance)=>{
+    public validateObject (entityInstance){
         var modifiedData:any = {};
         var valid = true;
 
@@ -163,7 +165,7 @@ class HibachiValidationService{
         };
     }
 
-    public validateChildren = (entityInstance)=>{
+    public validateChildren (entityInstance){
 
         var data = {}
 
@@ -173,7 +175,7 @@ class HibachiValidationService{
         }
         return data;
     }
-    public init=(entityInstance,data):void=>{
+    public init(entityInstance,data):void{
 		for(var key in data) {
 			if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
 
@@ -190,7 +192,7 @@ class HibachiValidationService{
 		}
 	}
 
-	public processForm = (form,entityInstance)=>{
+	public processForm (form,entityInstance){
 		this.$log.debug('begin process form');
 		var data = {};
 		form.$setSubmitted();
@@ -217,7 +219,7 @@ class HibachiValidationService{
 		return data;
 	}
 
-	public processParent = (entityInstance)=>{
+	public processParent (entityInstance){
 		var data = {};
 		if(entityInstance.$$getID() !== ''){
 			data[entityInstance.$$getIDName()] = entityInstance.$$getID();
@@ -236,7 +238,7 @@ class HibachiValidationService{
 		return data;
 	}
 
-	public processChild = (entityInstance,entityInstanceParent)=>{
+	public processChild (entityInstance,entityInstanceParent){
 
 		var data = {};
 		var forms = entityInstance.forms;
@@ -262,7 +264,7 @@ class HibachiValidationService{
 		return data;
 	}
 
-	public getDataFromParents = (entityInstance,entityInstanceParent)=>{
+	public getDataFromParents (entityInstance,entityInstanceParent){
 		var data = {};
 
 		for(var c in entityInstance.parents){
@@ -287,7 +289,7 @@ class HibachiValidationService{
 		return data;
 	}
 
-	public getDataFromChildren = (entityInstance)=>{
+	public getDataFromChildren (entityInstance){
 		var data = {};
 
 		this.$log.debug('childrenFound');
@@ -327,8 +329,4 @@ class HibachiValidationService{
 		return data;
 	}
 
-}
-
-export{
-	HibachiValidationService
 }

@@ -1,52 +1,44 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import {PageDialog} from "../model/pagedialog";
+import {Injectable} from "@angular/core";
 
-interface IDialogService {
-    get (): PageDialog[];
-}
-
-class DialogService{
-    public static $inject = [
-        'hibachiPathBuilder'
-    ];
-    private _pageDialogs;
+@Injectable()
+export class DialogService{
+    private pageDialogs;
     constructor(
-         private hibachiPathBuilder
+         //private hibachiPathBuilder
     ){
-        this._pageDialogs = [];
-        this.hibachiPathBuilder = hibachiPathBuilder;
+        this.pageDialogs = [];
+        //this.hibachiPathBuilder = hibachiPathBuilder;
     }
 
-    get = (): PageDialog[] =>{
-        return this._pageDialogs || [];
+    get(): PageDialog[] {
+        return this.pageDialogs || [];
     };
 
-    addPageDialog = ( name:string, params?:any ):void =>{
+   addPageDialog( name:string, params?:any ):void {
         var newDialog = {
             'path' : name + '.html',
             'params' : params
         };
-        this._pageDialogs.push( newDialog );
+        this.pageDialogs.push( newDialog );
+        //this.pageDialogs.push(new PageDialog(name+".html",params));
     };
 
-    removePageDialog = ( index:number ):void =>{
-        this._pageDialogs.splice(index, 1);
+    removePageDialog( index:number ):void {
+        this.pageDialogs.splice(index, 1);
     };
 
-    getPageDialogs = ():any =>{
-        return this._pageDialogs;
+    getPageDialogs():any {
+        return this.pageDialogs;
     };
 
-    removeCurrentDialog = ():void =>{
-        this._pageDialogs.splice(this._pageDialogs.length -1, 1);
+    removeCurrentDialog():void {
+        this.pageDialogs.splice(this.pageDialogs.length -1, 1);
     };
 
-    getCurrentDialog = ():any =>{
-        return this._pageDialogs[this._pageDialogs.length -1];
+    getCurrentDialog():any {
+        return this.pageDialogs[this.pageDialogs.length -1];
     };
 }
-export {
-    DialogService,
-    IDialogService
-};

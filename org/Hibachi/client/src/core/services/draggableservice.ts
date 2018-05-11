@@ -1,22 +1,24 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Injectable } from '@angular/core';
 
-class DraggableService{
+@Injectable()
+export class DraggableService{
 
     //ngInject
     constructor(
 
     ){
-
+        
     }
 
-    public isDropAllowed = (event) =>{
+    public isDropAllowed(event) {
         //todo implement
 
         return true;
     }
 
-    public isMouseInFirstHalf = (event, targetNode, relativeToParent, horizontal) =>{
+    public isMouseInFirstHalf(event, targetNode, relativeToParent, horizontal){
         var mousePointer = horizontal ? (event.offsetX || event.layerX)
                                       : (event.offsetY || event.layerY);
         var targetSize = horizontal ? targetNode.offsetWidth : targetNode.offsetHeight;
@@ -26,7 +28,3 @@ class DraggableService{
         return mousePointer < targetPosition + targetSize / 2;
     }
 }
-
-export{
-    DraggableService
-};
