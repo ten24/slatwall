@@ -523,6 +523,49 @@ Notes:
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="getAvailableSkuOptions">
+		<cfargument name="productID" type="string" required="true" >
+		<cfargument name="skuOptionIdArray" type="array" >
+		<cfargument name="locationID" type="string" >
+		<cfquery name="local.query" >
+			SELECT
+				GROUP_CONCAT(o.optionID) as optionIDs,
+				GROUP_CONCAT(o.optionName) as optionNames 
+			FROM swSku s
+			INNER JOIN swSkuOption so ON s.skuID = so.skuID
+			INNER JOIN swOption o ON so.optionID = o.optionID
+			INNER JOIN swOptionGroup og ON o.optionGroupID = og.optionGroupID
+			<cfif structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID)>
+			INNER JOIN swSkuLocationQuantity sq ON s.skuID = sq.skuID
+			</cfif>
+			WHERE 
+				s.calculatedQATS > 0
+			AND
+				s.activeFlag = 1
+			AND
+				s.publishedFlag = 1
+			AND 
+				s.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" >
+			<cfif structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID)>
+			AND
+				sq.calculatedQATS > 0
+			</cfif>
+			GROUP BY skuCode
+			<cfif NOT isNull(skuOptionIDArray) AND arrayLen(skuOptionIDArray) >
+				<cfset counter = 1 />
+				<cfloop array="#skuOptionIDArray#" index="optionID">
+					<cfif counter EQ 1>
+						HAVING optionIDs LIKE <cfqueryparam value="%#optionID#%" cfsqltype="cf_sql_varchar" >
+					<cfelse>
+						AND optionIDs LIKE <cfqueryparam value="%#optionID#%" cfsqltype="cf_sql_varchar" >
+					</cfif>
+					<cfset counter++ />
+				</cfloop>
+			</cfif>
+		</cfquery>
+		<cfreturn local.query>
+	</cffunction>
 
 	<cffunction name="getFirstScheduledSku" hint="Return the event sku with the earliest startDateTime">
 		<cfargument name="productScheduleID" type="string" required ="true">
