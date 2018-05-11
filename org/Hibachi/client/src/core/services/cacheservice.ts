@@ -1,38 +1,41 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class CacheService{
+import { Injectable } from '@angular/core';
+import { LocalStorageService } from './localstorageservice';
+
+@Injectable()
+export class CacheService{
 
     private cacheData = {};
 
     //@ngInject
     constructor(
-        private localStorageService
+        private localStorageService: LocalStorageService
     ){
         if(localStorageService.hasItem("cacheData")){
             this.cacheData = localStorageService.getItem("cacheData");
         }
     }
 
-    private saveCacheData = () =>{
+    private saveCacheData() {
         this.localStorageService.setItem("cacheData",this.cacheData);
     }
 
-    public hasKey = (key) =>{
-
+    public hasKey(key) {
         if(angular.isDefined(this.cacheData[key])){
             return true;
         }
         return false;
     }
 
-    public dateExpired = (key) =>{
+    public dateExpired(key) {
         if(this.cacheData[key].expiresTime=="forever"){
             return false;
         }
         return this.cacheData[key].expiresTime < Date.now();
     }
 
-    public put = (key, dataPromise, dataTarget, expiresTime="forever") =>{
+    public put(key, dataPromise, dataTarget, expiresTime="forever") {
         this.cacheData[key] = {};
         this.cacheData[key].expiresTime = expiresTime;
         this.cacheData[key].dataPromise = dataPromise;
@@ -49,7 +52,7 @@ class CacheService{
         return dataPromise;
     }
 
-    public reload = (key,expiresTime="forever") =>{
+    public reload(key,expiresTime="forever") {
         this.cacheData[key].expiresTime = expiresTime;
         this.cacheData[key].dataPromise.then(
             (response)=>{
@@ -63,7 +66,7 @@ class CacheService{
         return this.cacheData[key].dataPromise;
     }
 
-    public fetch = (key) =>{
+    public fetch(key) {
         if(this.hasKey(key) && !this.dateExpired(key)){
             if(this.localStorageService.hasItem(key)){
                 return this.localStorageService.getItem(key);
@@ -92,5 +95,4 @@ class CacheService{
     }
 
 }
-export{CacheService};
 

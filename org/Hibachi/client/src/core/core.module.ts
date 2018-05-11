@@ -1,5 +1,8 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
@@ -87,8 +90,36 @@ import {SWOrderByControls} from "./components/sworderbycontrols";
 import {alertmodule} from "../alert/alert.module";
 import {dialogmodule} from "../dialog/dialog.module";
 
+import {AlertModule} from '../alert/alert.module';
+import {DialogModule} from '../dialog/dialog.module';
 
 import {BaseObject} from "./model/baseobject";
+
+@NgModule({
+    declarations: [],
+    providers: [
+        LocalStorageService,
+        CacheService,
+        DraggableService,
+        ExpandableService,
+        FilterService,
+        HistoryService,
+        ScopeService,
+        UtilityService,
+        HibachiValidationService
+    ],  
+    imports: [
+        CommonModule,
+        UpgradeModule,
+        AlertModule,
+        DialogModule
+    ]  
+})
+export class CoreModule{
+    constructor() {
+        
+    }    
+}
 
 declare var $:any;
 
@@ -194,16 +225,16 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
-.service('cacheService', CacheService)
+.service('cacheService', downgradeInjectable(CacheService))
 .service('publicService',PublicService)
-.service('utilityService',UtilityService)
+.service('utilityService',downgradeInjectable(UtilityService))
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
-.service('draggableService',DraggableService)
-.service('expandableService',ExpandableService)
-.service('filterService',FilterService)
+.service('draggableService',downgradeInjectable(DraggableService))
+.service('expandableService',downgradeInjectable(ExpandableService))
+.service('filterService',downgradeInjectable(FilterService))
 .service('formService',FormService)
-.service('historyService',HistoryService)
+.service('historyService',downgradeInjectable(HistoryService))
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .service('typeaheadService', TypeaheadService)
@@ -211,15 +242,15 @@ var coremodule = angular.module('hibachi.core',[
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
-.service('scopeService',ScopeService)
+.service('scopeService',downgradeInjectable(ScopeService))
 .service('skuService', SkuService)
-.service('localStorageService',LocalStorageService)
+.service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',RequestService)
 .service('accountService',AccountService)
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
-.service('hibachiValidationService',HibachiValidationService)
+.service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
 .service('entityService',EntityService)
 //controllers
 .controller('globalSearch',GlobalSearchController)

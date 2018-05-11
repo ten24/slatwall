@@ -1,13 +1,15 @@
 import {BaseService} from "./baseservice";
+import { Injectable } from "@angular/core";
 
-class ScopeService { 
+@Injectable()
+export class ScopeService { 
 
     //ngInject
     constructor(){
 
     }
 
-    public getRootParentScope = (scope, targetScopeName) =>{ 
+    public getRootParentScope (scope, targetScopeName) { 
         var currentScope = scope; 
         while(currentScope != null && angular.isUndefined(currentScope[targetScopeName])){
             if(angular.isDefined(currentScope.$parent)){
@@ -21,13 +23,10 @@ class ScopeService {
         } 
     }
 
-    public hasParentScope = (scope, targetScopeName) =>{
+    public hasParentScope (scope, targetScopeName) {
         if(this.getRootParentScope(scope, targetScopeName) != null){
             return true; 
         }
         return false; 
     }
-}
-export {
-    ScopeService
 }
