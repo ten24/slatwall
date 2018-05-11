@@ -100,6 +100,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	public any function getOrderFulfillment(){
 		return this.getOrderDeliveryItems()[1].getOrderItem().getOrderFulfillment();
 	}
+	
+	public boolean function getLocationIsLeafNode(){
+		return  !getLocation().hasChildren();
+	}
 
     // ============ START: Non-Persistent Property Methods =================
 
