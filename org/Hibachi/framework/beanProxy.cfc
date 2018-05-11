@@ -1,8 +1,8 @@
 component {
-    variables._fw1_version  = "4.1.0";
-    variables._aop1_version = "2.0.3";
+    variables._fw1_version  = "4.2.0";
+    variables._aop1_version = variables._fw1_version;
 /*
-	Copyright (c) 2013-2017, Mark Drew, Sean Corfield, Daniel Budde
+	Copyright (c) 2013-2018, Mark Drew, Sean Corfield, Daniel Budde
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -54,17 +54,22 @@ component {
 	public any function onMissingMethod(string missingMethodName, struct missingMethodArguments = {})
 	{
 		// Prevent infinite loop and make sure the method is publically accessible.
-		if (!structKeyExists(variables.targetBean, arguments.missingMethodName) && !structKeyExists(variables.targetBean, variables.preName & arguments.missingMethodName))
+		if ( !structKeyExists(variables.targetBean, arguments.missingMethodName) &&
+         !structKeyExists(variables.targetBean, variables.preName & arguments.missingMethodName) &&
+         !structKeyExists(variables.targetBean, "onMissingMethod") &&
+         !structKeyExists(variables.targetBean, variables.preName & "onMissingMethod") )
 		{
-			var objectName = listLast(getMetadata(this).name, ".");
-			throw(	message="Unable to locate method in (" & objectName & ").",
-					detail="The method (" & arguments.missingMethodName & ") could not be found. Please verify the method exists and is publically accessible.");
+			var objectName = listLast(getMetadata(variables.targetBean).name, ".");
+      var stdout = createObject("java","java.lang.System").out;
+			stdout.println("Unable to locate method in (" & objectName & "). " &
+					"The method (" & arguments.missingMethodName & ") could not be found. Please verify the method exists and is publically accessible.");
 		}
+    else
+    {
+    		local.result = runStacks(arguments.missingMethodName, arguments.missingMethodArguments);
 
-
-		local.result = runStacks(arguments.missingMethodName, arguments.missingMethodArguments);
-
-		if (structKeyExists(local, "result") && !isNull(local.result)) return local.result;
+    		if (structKeyExists(local, "result") && !isNull(local.result)) return local.result;
+    }
 	}
 
 

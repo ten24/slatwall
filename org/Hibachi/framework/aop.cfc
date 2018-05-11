@@ -1,8 +1,8 @@
 component extends="framework.ioc" {
-    variables._fw1_version  = "4.1.0";
-    variables._aop1_version = "2.0.3";
+    variables._fw1_version  = "4.2.0";
+    variables._aop1_version = variables._fw1_version;
 /*
-	Copyright (c) 2013-2017, Mark Drew, Sean Corfield, Daniel Budde
+	Copyright (c) 2013-2018, Mark Drew, Sean Corfield, Daniel Budde
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ component extends="framework.ioc" {
 	// -------------- //
 
 	/** Constructor. */
-	public any function init(string folders, struct config = {})
+	public any function init(any folders, struct config = {})
 	{
 		super.init(argumentCollection = arguments);
 
@@ -307,6 +307,6 @@ component extends="framework.ioc" {
 	private void function setupFrameworkDefaults()
 	{
 		super.setupFrameworkDefaults();
-		variables.config.version = variables._aop1_version & " (" & variables._di1_version & ")";
+		variables.config.version = variables._fw1_version;
 	}
 }
