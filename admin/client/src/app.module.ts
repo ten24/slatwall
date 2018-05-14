@@ -12,7 +12,7 @@ import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
 import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity.module";
 import {ContentModule} from "./content/content.module";
 import {FormBuilderModule} from "./formbuilder/formbuilder.module";
-import { parseProvider,logProvider,interpolateProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
   providers: [
