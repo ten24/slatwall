@@ -199,7 +199,7 @@
 									arrayAppend(successfulEntities,trim(entityData['entityQueueID']));
 								}catch(any e){
 									//if failed then log the recent failure
-									ORMExecuteQuery('UPDATE SlatwallEntityQueue SET mostRecentError=:mostRecentError WHERE entityQueueID=:entityQueueID',{entityQueueID=trim(entityData['entityQueueID']),mostRecentError=e.mesage & ' - ' &e.detail});
+									ORMExecuteQuery('UPDATE SlatwallEntityQueue SET mostRecentError=:mostRecentError WHERE entityQueueID=:entityQueueID',{entityQueueID=trim(entityData['entityQueueID']),mostRecentError=e.message & ' - ' &e.detail});
 								}
 								
 				    		}
