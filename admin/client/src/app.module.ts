@@ -12,6 +12,7 @@ import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
 import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity.module";
 import {ContentModule} from "./content/content.module";
 import {FormBuilderModule} from "./formbuilder/formbuilder.module";
+import {OptionGroupModule} from "./optiongroup/optiongroup.module";
 import { parseProvider,logProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { parseProvider,logProvider } from "./ajs-upgraded-providers";
     CardModule,
     EntityModule,
     ContentModule,
-    FormBuilderModule
+    FormBuilderModule,
+    OptionGroupModule
   ],
   declarations:[
       HeroDetailComponent
