@@ -50,7 +50,6 @@ class HibachiValidationService{
     public getValidationByPropertyAndContext = (entityInstance,property,context)=>{
         var validations = this.getValidationsByProperty(entityInstance,property);
         for(var i in validations){
-			console.log(validations[i]);
             var contexts = validations[i].contexts.split(',');
             for(var j in contexts){
                 if(contexts[j] === context){
