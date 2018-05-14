@@ -1,7 +1,12 @@
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+import {CoreModule} from "../../../../org/Hibachi/client/src/core/core.module";
 //services
 
 //controllers
@@ -11,6 +16,20 @@ import {ProductCreateController} from "./controllers/preprocessproduct_create";
 //directives
 import {SWProductListingPages} from "./components/swproductlistingpages"; 
 import {SWRelatedProducts} from "./components/swrelatedproducts";
+
+@NgModule({
+    declarations :[],
+    providers: [],
+    imports : [
+        CoreModule
+    ]
+})
+export class ProductModule{
+    constructor() {
+        
+    }    
+}
+
 
 var productmodule = angular.module('hibachi.product',[coremodule.name]).config(()=>{
 
