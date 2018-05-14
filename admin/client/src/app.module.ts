@@ -14,6 +14,7 @@ import {ContentModule} from "./content/content.module";
 import {FormBuilderModule} from "./formbuilder/formbuilder.module";
 import {OptionGroupModule} from "./optiongroup/optiongroup.module";
 import {GiftCardModule} from "./giftcard/giftcard.module";
+import {OrderItemModule} from "./orderitem/orderitem.module";
 import { parseProvider,logProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { parseProvider,logProvider } from "./ajs-upgraded-providers";
     ContentModule,
     FormBuilderModule,
     OptionGroupModule,
-    GiftCardModule
+    GiftCardModule,
+    OrderItemModule
   ],
   declarations:[
       HeroDetailComponent
