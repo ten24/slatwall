@@ -77,7 +77,8 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalLocation" fkcolumn="locationID" inversejoincolumn="physicalID" inverse="true";
-	property name="cycleCountGroups" singularname="cycleCountGroup" cfc="CycleCountGroup" type="array" fieldtype="many-to-many" linktable="SwcycleCountGroupLocation" fkcolumn="locationID" inversejoincolumn="cycleCountGroupID" inverse="true";
+	property name="cycleCountGroups" singularname="cycleCountGroup" cfc="CycleCountGroup" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocation" fkcolumn="locationID" inversejoincolumn="cycleCountGroupID" inverse="true";
+	property name="fulfillmentBatches" singularname="fulfillmentBatch" cfc="FulfillmentBatch" type="array" fieldtype="many-to-many" linktable="SwFulfillmentBatchLocation" fkcolumn="locationID" inversejoincolumn="fulfillmentBatchID" inverse="true";
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -220,6 +221,14 @@ component displayname="Location" entityname="SlatwallLocation" table="SwLocation
 	}
 	public void function removePhysical(required any physical) {
 		arguments.physical.removeLocation( this );
+	}
+	
+	// FulfillmentBatches (many-to-many - inverse)
+	public void function addFulfillmentBatch(required any fulfillmentBatch) {
+		arguments.fulfillmentBatch.addLocation( this );
+	}
+	public void function removeFulfillmentBatch(required any fulfillmentBatch) {
+		arguments.fulfillmentBatch.removeLocation( this );
 	}
 	
 	// Primary Location Address (many-to-one | circular)

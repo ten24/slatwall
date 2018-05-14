@@ -303,6 +303,7 @@ class PublicService {
     *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
     */
     public doAction=(action:string, data?:any, method?:any) => {
+        //purge angular $ prefixed propertie
         //Prevent sending the same request multiple times in parallel
         if(this.getRequestByAction(action) && this.loadingThisRequest(action, data, false)) return this.$q.when();
 
@@ -1413,9 +1414,9 @@ class PublicService {
 
         //Post the new order payment and set errors as needed.
         this.doAction('addOrderPayment', data, 'post').then((result)=>{
+            
             var serverData = result;
-
-
+            
             if (serverData.cart.hasErrors || angular.isDefined(this.cart.orderPayments[this.cart.orderPayments.length-1]['errors']) && !this.cart.orderPayments[this.cart.orderPayments.length-1]['errors'].hasErrors){
                 this.cart.hasErrors = true;
                 this.readyToPlaceOrder = true;

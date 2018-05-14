@@ -1,5 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
 	property name="hibachiService" type="any";
+	property name="HibachiUtilityService" type="any";
 	property name="aliasMap" type="struct";
 	property name="collectionCache" type="struct";
 	
@@ -483,7 +484,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	*/
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
-		
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
@@ -579,7 +579,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			modifiedURL = "?c=1";
 		}
 		
-		return modifiedURL;
+		return getHibachiUtilityService().hibachiHTMLEditFormat(modifiedURL);
 	}
 
 

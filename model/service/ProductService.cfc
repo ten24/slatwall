@@ -969,47 +969,50 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
-
-				//Update currencies
-				for(var processSkuCurrency in processObject.getSkuCurrencies()){
-					skuCurrencyFound=false;
-					skuCurrenciesToRemove=[];
-
-					for(var skuCurrency in skus[i].getSkuCurrencies()){
-						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
-							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
-								skuCurrency.setPrice(processSkuCurrency.price);
+				var skuCurrencies = processObject.getSkuCurrencies();
+				
+				if( !isNull(skuCurrencies)){
+					//Update currencies
+					for(var processSkuCurrency in skuCurrencies){
+						skuCurrencyFound=false;
+						skuCurrenciesToRemove=[];
+	
+						for(var skuPrice in skus[i].getSkuPrices()){
+							if(processSkuCurrency.currencyCode eq skuPrice.getCurrencyCode()){
+								if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+									skuPrice.setPrice(processSkuCurrency.price);
+								}
+								if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
+									skuPrice.setListPrice(processSkuCurrency.listPrice);
+								}
+	
+								if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+									arrayAppend(skuCurrenciesToRemove,skuPrice);
+								}
+	
+							 skuCurrencyFound=true;
 							}
-							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
-								skuCurrency.setListPrice(processSkuCurrency.listPrice);
+						}
+						for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
+							skuCurrenciesToRemove[j].removeSku(skus[i]);
+						}
+						if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
+							var newSkuPrice=this.newSkuPrice();
+							newSkuPrice.setCurrencyCode(processSkuCurrency.currencyCode);
+							if(arguments.processObject.getUpdatePriceFlag()) {
+								newSkuPrice.setPrice(processSkuCurrency.price);
 							}
-
-							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
-								arrayAppend(skuCurrenciesToRemove,skuCurrency);
+							if(arguments.processObject.getUpdateListPriceFlag()) {
+								newSkuPrice.setPrice(processSkuCurrency.listPrice);
 							}
-
-						 skuCurrencyFound=true;
+							newSkuPrice.setSku(skus[i]);
+							save(newSkuPrice);
+	
 						}
 					}
-					for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
-						skuCurrenciesToRemove[j].removeSku(skus[i]);
-					}
-					if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
-						var newSkuCurrency=this.newSkuCurrency();
-						newSkuCurrency.setCurrency(getService('currencyService').getCurrencyByCurrencyCode(processSkuCurrency.currencyCode));
-						if(arguments.processObject.getUpdatePriceFlag()) {
-							newSkuCurrency.setPrice(processSkuCurrency.price);
-						}
-						if(arguments.processObject.getUpdateListPriceFlag()) {
-							newSkuCurrency.setPrice(processSkuCurrency.listPrice);
-						}
-						newSkuCurrency.setSku(skus[i]);
-						save(newSkuCurrency);
-
-					}
+	
 				}
-
-			}
+			}	
 		}
 
 		return arguments.product;
@@ -1085,6 +1088,46 @@ component extends="HibachiService" accessors="true" {
 				newProductListingPage = this.saveProductListingPage(newProductListingPage);
 			}
 		}
+		
+		if(structKeyExists(data, "relatedProductIDList")){
+			var productExistingRelatedProducts = arguments.product.getRelatedProducts();
+			var productRelationshipsToDelete = [];
+			for(var ProductRelationship in productExistingRelatedProducts){
+				if(listFind(data.relatedProductIDList, ProductRelationship.getRelatedProduct().getProductID()) == 0){
+					ArrayAppend(ProductRelationshipsToDelete, ProductRelationship);
+				}
+			}
+
+			for(var productRelationship in productRelationshipsToDelete){
+				productRelationship.removeProduct();
+			}
+
+			var relatedProductIDArray = ListToArray(data.relatedProductIDList);
+
+			for(var relatedProductID in relatedProductIDArray){
+				if(!this.getProductDAO().getProductHasRelatedProduct(arguments.product.getProductID(),relatedProductID)){
+					var newProductRelationship = this.newProductRelationship();
+					if(structKeyExists(data, "relatedProductSortOrder") && structKeyExists(deserializeJSON(data.relatedProductSortOrder),relatedProductID)){
+						newProductRelationship.setSortOrder = deserializeJSON(data.relatedProductSortOrder)[relatedProductID];
+					}
+					newProductRelationship.setProduct(arguments.product);
+					newProductRelationship.setRelatedProduct(this.getProduct(relatedProductID));
+					this.saveProductRelationship(newProductRelationship);
+				}
+			}
+		}
+
+		if(structKeyExists(data, "relatedProductSortOrder")){
+			var relatedProductSortOrderStruct = deserializeJSON(data.relatedProductSortOrder);
+			for(var key in relatedProductSortOrderStruct){
+				var productRelationship = this.getProductRelationship(key);
+				if(!isNull(productRelationship)){
+					productRelationship.setSortOrder(relatedProductSortOrderStruct[key]);
+					this.saveProductRelationship(productRelationship);
+				}
+			}
+		}
+
 		arguments.product = super.save(arguments.product, arguments.data);
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){

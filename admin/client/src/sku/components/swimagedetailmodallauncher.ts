@@ -40,7 +40,7 @@ class SWImageDetailModalLauncherController{
                 this.imagePathToUse = this.imagePath + "?version="+Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5); 
             },
             ()=>{
-                this.imagePathToUse = '/assets/images/image-placeholder.jpg';
+                this.imagePathToUse = 'assets/images/image-placeholder.jpg';
             }
         ).finally(
             ()=>{

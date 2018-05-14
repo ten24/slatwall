@@ -211,7 +211,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 	// ==================== START: Logical Methods =========================	
-	
+	public any function getSkuBundleCollectionList(){
+		var skuCollectionList = getService('skuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getSkuID());
+		return skuCollectionList;
+	}
 	
 	public any function getVendorSkusSmartList(){
 		var vendorSkuSmartList = getService('VendorOrderService').getVendorSkuSmartList();
@@ -657,19 +661,32 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
 			// If this is a calculated quantity and locationID exists, then delegate
 			if( structKeyExists(arguments, "locationID") ) {
-				//Need to get location and all children of location
-				var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
-				var totalQuantity = 0;
 				
-				for(var i=1;i<=arraylen(locations);i++) {
-					var location = getService("locationService").getLocation(locations[i].value);
-					if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
-						var stock = getService("stockService").getStockBySkuAndLocation(this, location);
-						totalQuantity += stock.getQuantity(arguments.quantityType);
-					}  
+				// Don't need to loop over locations for MQATSBOM as this is handled in the service calculationa.
+				if (arguments.quantityType == 'MQATSBOM' ){
+					var location = getService("locationService").getLocation(arguments.locationID);
+					var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+					
+					return stock.getQuantity(arguments.quantityType);
+					
+				}else{
+					//Need to get location and all children of location
+					var locations = getService("locationService").getLocationAndChildren(arguments.locationID);
+					var totalQuantity = 0;
+					
+					for(var i=1;i<=arraylen(locations);i++) {
+						var location = getService("locationService").getLocation(locations[i].value);
+						
+						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
+							var stock = getService("stockService").getStockBySkuAndLocation(this, location);
+							totalQuantity += stock.getQuantity(arguments.quantityType);
+							
+						}  
 				}
 				
 				return totalQuantity;
+
+				}
 
 			// If this is a calculated quantity and stockID exists, then delegate
 			} else if ( structKeyExists(arguments, "stockID") ) {

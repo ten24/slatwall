@@ -61,7 +61,7 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="locations" singularname="location" cfc="Location" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocation" fkcolumn="cycleCountGroupID" inversejoincolumn="locationID";
-	property name="locationCollections" singularname="locationCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupLocationCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
+	property name="locationCollections" singularname="locationCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCntGroupLocCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
 	property name="skuCollections" singularname="skuCollection" cfc="Collection" type="array" fieldtype="many-to-many" linktable="SwCycleCountGroupSkuCollection" fkcolumn="cycleCountGroupID" inversejoincolumn="collectionID";
 	
 	// Related Object Properties (many-to-many - inverse)

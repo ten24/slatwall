@@ -248,7 +248,7 @@ Notes:
 											<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
 										</cfif>
 
-										<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="pickupLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+										<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="pickupLocationID"  locationLabelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
 										
 									</hb:HibachiDisplayToggle>
 
@@ -268,7 +268,7 @@ Notes:
 											</cfif>
 
 											<!--- Display typeahead if options exist --->
-											<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="locationID"  locationLabelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" edit="#rc.edit#" showActiveLocationsFlag="true" ignoreParentLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
+											<swa:SlatwallLocationTypeahead selectedLocationID="#selectedLocationID#" locationPropertyName="locationID"  locationLabelText="#rc.$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" edit="#rc.edit#" showActiveLocationsFlag="true" topLevelLocationID="#topLevelLocationID#" ></swa:SlatwallLocationTypeahead>
 											<!---
 											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="locationID" edit="#rc.edit#" title="#$.slatwall.rbKey('processObject.Order_AddOrderItem.locationID')#" />  
 											--->
@@ -283,10 +283,19 @@ Notes:
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
-
+										<cfset fieldAttributes = "ng-model=""shippingAccountAddressID"" ng-init=""shippingAccountAddressID = '#defaultValue#'""" />
 										<!--- Account Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
-									</cfif>
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" fieldAttributes="#fieldAttributes#"  />
+											
+										</cfif>
+										<!---Existing Addresses--->
+										<cfloop array="#rc.processObject.getShippingAccountAddresses()#" index="accountAddress">
+											<span ng-if="shippingAccountAddressID == '#accountAddress.getAccountAddressID()#'">
+												<!--- Address Display --->
+												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
+										</cfloop>
+										<span ng-if="shippingAccountAddressID == ''">
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">

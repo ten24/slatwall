@@ -65,12 +65,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
-			sl = getService("locationService").getLocationSmartList();
+			var  sl = getService("locationService").getLocationSmartList();
 			sl.addSelect('locationName', 'name');
 			sl.addSelect('locationID', 'value');
 			variables.locationIDOptions = sl.getRecords();
 		}
 		return variables.locationIDOptions;
+	}
+	
+	// @hint Validates to check if delivered quantities exceed vendor order items undelivered quantities
+	public boolean function validateVendorOrderItemsQuantities() {
+		for (var data in getVendorOrderItems()) {
+			var vendorOrderItem = getService('vendorOrderService').getVendorOrderItem( data.vendorOrderItem.vendorOrderItemID );
+			if (data.quantity > vendorOrderItem.getQuantityUndelivered()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

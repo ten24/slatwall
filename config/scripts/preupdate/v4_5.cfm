@@ -2,10 +2,9 @@
 <cfparam name="this.datasource.name" />
 <cfparam name="this.datasource.username" default="" />
 <cfparam name="this.datasource.password" default="" />
-
 <cfsetting requesttimeout="1200" />
-	
 <cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="tables" name="currenttables" pattern="SwProductListingPage" />
+
 <cfif currenttables.recordCount>
 	<cfdbinfo datasource="#this.datasource.name#" username="#this.datasource.username#" password="#this.datasource.password#" type="columns" name="productlistingpagecolumns" table="SwProductListingPage" />
 	<cfset local.found = false /> 

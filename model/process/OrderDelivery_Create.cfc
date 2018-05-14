@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderDeliveryItems" type="array" hb_populateArray="true";
 	property name="giftCardCodes" type="array" hb_populateArray="true";
+	property name="containers" type="array" hb_populateArray="true";
 	
 	property name="useShippingIntegrationForTrackingNumber" hb_formFieldType="yesno";
 	property name="trackingNumber";
@@ -85,6 +86,19 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return placeholders;
 	}
 	
+	public boolean function isValidQuantity(){
+		for(var i=1; i<=arrayLen(getOrderDeliveryItems()); i++) {
+			if(IsNumeric(getOrderDeliveryItems()[i].quantity) && getOrderDeliveryItems()[i].quantity > 0) {
+				var orderItem = getService('orderService').getOrderItem(getOrderDeliveryItems()[i].orderItem.orderItemID);
+				var thisQuantity = getOrderDeliveryItems()[i].quantity;
+				if(thisQuantity > orderItem.getQuantityUndelivered()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	public any function getShippingIntegration(){
 		if(
 			!isNull(getOrderFulfillment().getShippingMethodRate())
@@ -95,7 +109,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(structKeyExists(variables,'shippingIntegration')){
 			return variables.shippingIntegration;
 		}
-		
 	}
 	
 	public boolean function getUseShippingIntegrationForTrackingNumber(){
@@ -119,7 +132,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return false;
 	}
-	
 
 	// @hint Returns a struct to assist with quick lookup for orderDeliveryItem data by using orderItemID
 	private struct function getOrderDeliveryItemsStruct() {
