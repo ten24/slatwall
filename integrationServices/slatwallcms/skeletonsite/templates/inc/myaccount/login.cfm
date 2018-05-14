@@ -1,7 +1,119 @@
 <!--- This import allows for the custom tags required by this page to work --->
 <cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
-	
+	<!--- Start: Login Form - CLIENT SIDE --->
+	<div ng-show="!slatwall.account.userIsLoggedIn()">
+		<form  
+			ng-model="Account_Login" 
+			ng-submit="swfForm.submitForm()" 
+			swf-form 
+			data-method="Login"
+			ng-show="!slatwall.showCreateAccount"
+		>
+			<div class="control-group">
+				<label class="control-label" for="rating">Email Address</label>
+				<div class="controls">
+					<input name="emailAddress" ng-model="Account_Login.emailAddress" swvalidationdatatype="email" swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="emailAddress"/>
+				</div>
+		  	</div>
+	    	
+		    <div class="control-group">
+				<label class="control-label" for="rating">Password</label>
+				<div class="controls">
+					<input name="password" type="password" ng-model="Account_Login.password" swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="password"/>
+				</div>
+		  	</div>
+		    <br>
+		    <button >{{(slatwall.getRequestByAction('Login').loading ? 'Loading...' : 'Sign In')}}</button>
+		    <button ng-click="slatwall.showCreateAccount=1">New Account</button>
+		    <br>
+			<!---<br>
+			Errors:
+			<br>
+			{{swfForm.form.$error}}
+		    <br>
+		    Current Object
+		    <br>
+		    {{Account_Login| json}}
+		    <br>
+		    
+		    model value:
+		    <br>
+		    {{swfForm.ngModel}}
+		    <br>
+		    current Form:
+			<br>
+			{{swfForm.form| json}}
+			slatwallScope:
+		    <br>
+		    {{slatwall|json}}
+		    <br>--->
+		    
+		</form>
+		<form  
+			ng-model="Account_Create" 
+			ng-submit="swfForm.submitForm()" 
+			swf-form 
+			data-method="createAccount"
+			ng-show="slatwall.showCreateAccount"
+		>
+			<input name="accountID" ng-model="Account_Create.accountID" type="hidden"/>
+			<div class="control-group">
+				<label class="control-label" for="rating">First Name</label>
+				<div class="controls">
+					<input name="firstName" ng-model="Account_Create.firstName"  swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="firstName"/>
+				</div>
+		  	</div>
+		  	
+		  	<div class="control-group">
+				<label class="control-label" for="rating">Last Name</label>
+				<div class="controls">
+					<input name="lastName"  ng-model="Account_Create.lastName" swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="lastName"/>
+				</div>
+		  	</div>
+		  	
+		  	<div class="control-group">
+				<label class="control-label" for="rating">Email Address</label>
+				<div class="controls">
+					<input name="emailAddress" ng-model="Account_Create.emailAddress"  swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="emailAddress"/>
+				</div>
+		  	</div>
+		  	
+		  	<div class="control-group">
+				<label class="control-label" for="rating">Confirm Email Address</label>
+				<div class="controls">
+					<input name="emailAddressConfirm" ng-model="Account_Create.emailAddressConfirm"  swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="emailAddressConfirm"/>
+				</div>
+		  	</div>
+	    	
+	    	<div class="control-group">
+				<label class="control-label" for="rating">Password</label>
+				<div class="controls">
+					<input name="password"  ng-model="Account_Create.password" swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="password"/>
+				</div>
+		  	</div>
+		  	<div class="control-group">
+				<label class="control-label" for="rating">Password Confirm</label>
+				<div class="controls">
+					<input name="passwordConfirm"  ng-model="Account_Create.passwordConfirm" swvalidationrequired="true"/>
+					<sw:SwfErrorDisplay propertyIdentifier="passwordConfirm"/>
+				</div>
+		  	</div>
+		    
+		    <br>
+		    <button >{{(slatwall.getRequestByAction('createAccount').loading ? 'Loading...' : 'Create Account')}}</button>
+		    <button ng-click="slatwall.showCreateAccount=0">Back</button>
+		    <br>
+		</form>
+	</div>
+
 	<!--- Start: Login Form - SERVER SIDE --->
 	<div class="card">
 		<form class="card-body" action="?s=1" method="post">
@@ -42,7 +154,7 @@
 	</div>
 	<!--- End: Login Form SERVER SIDE --->
 	
-	<!--- Start: Login Form - CLIENT SIDE --->
+
 	
 	<div class="card" ng-show="!slatwall.account.userIsLoggedIn()">
 		<sw-form
@@ -88,7 +200,7 @@
 			        data-type="button"
 			        data-class="btn-yellow"
 			        data-error-class="error"
-			        data-text="{{(slatwall.getRequestByAction('login').loading ? 'Loading...' : 'Sign In')}}">
+			        data-text="{{(slatwall.getRequestByAction('Login').loading ? 'Loading...' : 'Sign In')}}">
 			    </sw-action-caller>
 			</div>
 		</sw-form>
