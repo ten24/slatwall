@@ -204,6 +204,14 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeImage( this );
 	}
+	
+	// Skus (many-to-many - inverse)
+	public void function addSku(required any sku) {
+		arguments.sku.addAssignedAlternateImage( this );
+	}
+	public void function removeSku(required any sku) {
+		arguments.sku.removeAssignedAlternateImage( this );
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 	
