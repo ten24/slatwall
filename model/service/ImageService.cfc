@@ -85,6 +85,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
      * skuIDList = "8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5"
      * ...should return three paths.
      */
+     
     public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 
         if(arguments.profileName == "medium"){

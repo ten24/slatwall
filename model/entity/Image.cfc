@@ -78,16 +78,19 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	property name="calculatedAssignedSkuCodeList" ormtype="string";
-	property name="calculatedAssignedSkuIDList" ormtype="string";
+	property name="calculatedAssignedSkuCodeList" ormtype="string" length="8000";
+	property name="calculatedAssignedSkuIDList" ormtype="string" length="8000";
 	
 	property name="assignedSkuCodeList" persistent="false";
 	property name="assignedSkuIDList" persistent="false";
 	
 	public string function getAssignedSkuCodeList(){
 		var assignedSkuCodeList = '';
-		for(var sku in this.getAssignedSkus()){
-			listAppend(assignedSkuCodeList,sku.getSkuCode());
+		var skuCollectionList = getService('SkuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedAlternateImages.imageID',getImageID());
+		var skus = skuCollectionList.getRecords();
+		for(var sku in skus){
+			assignedSkuCodeList = listAppend(assignedSkuCodeList,sku.skuCode);
 		}
 		variables.assignedSkuCodeList = assignedSkuCodeList;
 		return assignedSkuCodeList;
@@ -95,8 +98,11 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	
 	public string function getAssignedSkuIDList(){
 		var assignedSkuIDList = '';
-		for(var sku in this.getAssignedSkus()){
-			listAppend(assignedSkuIDList,sku.getSkuID());
+		var skuCollectionList = getService('SkuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedAlternateImages.imageID',getImageID());
+		var skus = skuCollectionList.getRecords();
+		for(var sku in skus){
+			assignedSkuIDList = listAppend(assignedSkuIDList,sku.skuID);
 		}
 		variables.assignedSkuIDList = assignedSkuIDList;
 		return assignedSkuIDList;
