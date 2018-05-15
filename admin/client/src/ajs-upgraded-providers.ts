@@ -7,6 +7,10 @@ export abstract class Log {
     [key:string]: any;    
 }
 
+export abstract class Filter {
+    [key:string]: any;    
+}
+
 // define factory function to return Angularjs Service
 export function parseFactory(i:any) {
     return i.get("$parse");    
@@ -14,6 +18,10 @@ export function parseFactory(i:any) {
 
 export function logFactory(i:any)  {
     return i.get("$log");    
+}
+
+export function filterFactory(i:any) {
+    return i.get("$filter");    
 }
 
 // define angular factory provider
@@ -27,4 +35,10 @@ export const logProvider = {
     provide    : Log,
     useFactory : logFactory,
     deps       : ["$injector"]    
+};
+
+export const filterProvider = {
+    provide    : Filter,
+    useFactory : filterFactory,
+    deps       : ["$injector"]  
 };
