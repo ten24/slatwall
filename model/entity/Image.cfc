@@ -57,6 +57,7 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	
 	// Related Object Properties (many-to-many)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="imageID" inversejoincolumn="optionID"; 
+	property name="assignedSkus" singularname="assignedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwImageSku" fkcolumn="imageID" inversejoincolumn="skuID" inverse="true";
 
 	// Related entity properties (many-to-one)
 	property name="imageType" cfc="Type" fieldtype="many-to-one" fkcolumn="imageTypeID" hb_optionsSmartListData="f:parentType.systemCode=imageType";
