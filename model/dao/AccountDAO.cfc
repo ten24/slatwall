@@ -50,18 +50,24 @@ Notes:
 
 	<cffunction name="getPrimaryEmailAddressNotInUseFlag" returntype="boolean" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
-		<cfargument name="accountID" type="string" />
 		<cfset var comparisonValue =""/>
 		<cfif getApplicationValue("databaseType") eq "Oracle10g">
 			<cfset comparisonValue = "lower(pea.emailAddress)"/>
 		<cfelse>
 			<cfset comparisonValue = "pea.emailAddress"/>
 		</cfif>
-
-		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
-		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE #comparisonValue#=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+		<!--- make sure that we enforce this only against other non guest accounts --->
+		<cfset var primaryInUseData = ormExecuteQuery(
+			"SELECT COALESCE(count(aa),0) as primaryEmailAddressCount 
+			FROM #getApplicationKey()#AccountAuthentication aa 
+			INNER JOIN aa.account a 
+			INNER JOIN a.primaryEmailAddress pea 
+			WHERE #comparisonValue#=:emailAddress
+			AND"
+			, {emailAddress=lcase(arguments.emailAddress)},
+			true
+		)/>
+		<cfreturn not primaryInUseData />
 	</cffunction>
 
 	<cffunction name="getAccountIDByPrimaryEmailAddress">

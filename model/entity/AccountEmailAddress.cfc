@@ -92,11 +92,7 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 		if(!structKeyExists(variables, "primaryEmailAddressNotInUseFlag")) {
 			variables.primaryEmailAddressNotInUseFlag = true;
 			if(!isNull(getEmailAddress())) {
-				if(!isNull(getAccount())) {
-					variables.primaryEmailAddressNotInUseFlag = getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress(), accountID=getAccount().getAccountID() );
-				} else {
-					variables.primaryEmailAddressNotInUseFlag = getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress() );	
-				}
+				variables.primaryEmailAddressNotInUseFlag = getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress() );	
 			}
 		}
 		
