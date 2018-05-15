@@ -1386,8 +1386,9 @@ var coremodule = angular.module('hibachi.core', [
         //Pulls seperate http requests into a single digest cycle.
         $httpProvider.useApplyAsync(true);
     }])
-    .run(['$rootScope', '$hibachi', '$route', '$location', function ($rootScope, $hibachi, $route, $location) {
+    .run(['$rootScope', '$hibachi', '$route', '$location', 'rbkeyService', function ($rootScope, $hibachi, $route, $location, rbkeyService) {
         $rootScope.buildUrl = $hibachi.buildUrl;
+        $rootScope.rbKey = rbkeyService.rbKey;
         var original = $location.path;
         $location.path = function (path, reload) {
             if (reload === false) {
@@ -51595,7 +51596,98 @@ exports.SWErrorDisplay = SWErrorDisplay;
 
 
 /***/ }),
-/* 675 */,
+/* 675 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+* Form Controller handles the logic for this directive.
+*/
+var SWFFormController = /** @class */ (function () {
+    // @ngInject
+    function SWFFormController($rootScope, $scope, $timeout, $hibachi, $element, validationService, hibachiValidationService) {
+        var _this = this;
+        this.$rootScope = $rootScope;
+        this.$scope = $scope;
+        this.$timeout = $timeout;
+        this.$hibachi = $hibachi;
+        this.$element = $element;
+        this.validationService = validationService;
+        this.hibachiValidationService = hibachiValidationService;
+        this.$onInit = function () {
+        };
+        this.submitForm = function () {
+            //example of entityName Account_Login
+            if (_this.form.$valid) {
+                _this.$rootScope.slatwall.doAction(_this.method, _this.ngModel.$modelValue).then(function (result) {
+                    if (!result)
+                        return;
+                    if (result.successfulActions.length) {
+                        //if we have an array of actions and they're all complete, or if we have just one successful action
+                        if (_this.sRedirectUrl) {
+                            _this.$rootScope.slatwall.redirectExact(_this.sRedirectUrl);
+                        }
+                    }
+                    if (result.errors) {
+                        if (_this.fRedirectUrl) {
+                            _this.$rootScope.slatwall.redirectExact(_this.fRedirectUrl);
+                        }
+                    }
+                });
+            }
+            else {
+                _this.form.$setSubmitted(true);
+            }
+        };
+    }
+    return SWFFormController;
+}());
+exports.SWFFormController = SWFFormController;
+var SWFForm = /** @class */ (function () {
+    // @ngInject
+    function SWFForm() {
+        this.require = {
+            form: '?^form',
+            ngModel: '?^ngModel'
+        };
+        this.priority = 1000;
+        this.restrict = "A";
+        //needs to have false scope to not interfere with form controller
+        this.scope = true;
+        /**
+         * Binds all of our variables to the controller so we can access using this
+         */
+        this.bindToController = {
+            method: "@?",
+            sRedirectUrl: "@?",
+            fRedirectUrl: "@?",
+        };
+        this.controller = SWFFormController;
+        this.controllerAs = "swfForm";
+        /**
+            * Sets the context of this form
+            */
+        this.link = function (scope, element, attrs, formController) {
+        };
+    }
+    /**
+     * Handles injecting the partials path into this class
+     */
+    SWFForm.Factory = function () {
+        var directive = function () { return new SWFForm(); };
+        directive.$inject = [];
+        return directive;
+    };
+    return SWFForm;
+}());
+exports.SWFForm = SWFForm;
+
+
+/***/ }),
 /* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -53111,6 +53203,7 @@ var fileservice_1 = __webpack_require__(687);
 var swinput_1 = __webpack_require__(685);
 var swfformfield_1 = __webpack_require__(676);
 var swform_1 = __webpack_require__(677);
+var swfform_1 = __webpack_require__(675);
 var swformfield_1 = __webpack_require__(678);
 var swformfieldfile_1 = __webpack_require__(679);
 var swformfieldjson_1 = __webpack_require__(680);
@@ -53129,6 +53222,7 @@ var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker', co
     .directive('swInput', swinput_1.SWInput.Factory())
     .directive('swfFormField', swfformfield_1.SWFFormField.Factory())
     .directive('swForm', swform_1.SWForm.Factory())
+    .directive('swfForm', swfform_1.SWFForm.Factory())
     .directive('swFormField', swformfield_1.SWFormField.Factory())
     .directive('swFormFieldFile', swformfieldfile_1.SWFormFieldFile.Factory())
     .directive('swFormFieldJson', swformfieldjson_1.SWFormFieldJson.Factory())
