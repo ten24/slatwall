@@ -31205,7 +31205,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/tsd.d.ts' />
 var SWOrderItem = /** @class */ (function () {
     //@ngInject
-    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
+    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, $timeout, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder) {
         return {
             restrict: "A",
             scope: {
@@ -31608,25 +31608,48 @@ var SWOrderItem = /** @class */ (function () {
                         scope.orderItem.clicked = !scope.orderItem.clicked;
                         scope.orderItem.hide = !scope.orderItem.hide;
                         scope.orderItem.childItemsRetrieved = true;
-                        var orderItemsPromise = $hibachi.getEntity('orderItem', options);
-                        orderItemsPromise.then(function (value) {
-                            var collectionConfig = {};
-                            collectionConfig.columns = columnsConfig;
-                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
-                            collectionConfig.baseEntityAlias = '_orderitem';
-                            var childOrderItems = $hibachi.populateCollection(value.records, collectionConfig);
-                            angular.forEach(childOrderItems, function (childOrderItem) {
-                                childOrderItem.depth = scope.orderItem.depth + 1;
-                                scope.childOrderItems.push(childOrderItem);
-                                childOrderItem.data.productBundleGroupPercentage = 1;
-                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
-                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
-                                }
-                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
-                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+                        if (scope.orderItem.sku.bundleFlag === 'Yes ' || scope.orderItem.sku.bundleFlag === 1) {
+                            var skuBundleCollection = collectionConfigService.newCollectionConfig('SkuBundle');
+                            skuBundleCollection.setDisplayProperties('bundledQuantity, bundledSku.skuCode, bundledSku.price, bundledSku.product.productName');
+                            skuBundleCollection.addFilter('sku.skuID', scope.orderItem.sku.skuID);
+                            var skuBundleCollectionPromise = skuBundleCollection.getEntity().then(function (data) {
+                                if (data.pageRecords.length) {
+                                    var childOrderItems = $hibachi.populateCollection(data.pageRecords, skuBundleCollection);
+                                    angular.forEach(childOrderItems, function (childOrderItem) {
+                                        childOrderItem.depth = scope.orderItem.depth + 1;
+                                        scope.childOrderItems.push(childOrderItem);
+                                        childOrderItem.data.productBundleGroupPercentage = 1;
+                                        if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
+                                            childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
+                                        }
+                                        else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
+                                            childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+                                        }
+                                    });
                                 }
                             });
-                        });
+                        }
+                        else {
+                            var orderItemsPromise = $hibachi.getEntity('orderItem', options);
+                            orderItemsPromise.then(function (value) {
+                                var collectionConfig = {};
+                                collectionConfig.columns = columnsConfig;
+                                collectionConfig.baseEntityName = 'SlatwallOrderItem';
+                                collectionConfig.baseEntityAlias = '_orderitem';
+                                var childOrderItems = $hibachi.populateCollection(value.records, collectionConfig);
+                                angular.forEach(childOrderItems, function (childOrderItem) {
+                                    childOrderItem.depth = scope.orderItem.depth + 1;
+                                    scope.childOrderItems.push(childOrderItem);
+                                    childOrderItem.data.productBundleGroupPercentage = 1;
+                                    if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
+                                        childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
+                                    }
+                                    else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
+                                        childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+                                    }
+                                });
+                            });
+                        }
                     }
                     else {
                         //We already have the items so we just need to show them.
@@ -31640,13 +31663,15 @@ var SWOrderItem = /** @class */ (function () {
         };
     }
     SWOrderItem.Factory = function () {
-        var directive = function ($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) { return new SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder); };
+        var directive = function ($log, $compile, $http, $templateCache, $hibachi, $timeout, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder) { return new SWOrderItem($log, $compile, $http, $templateCache, $hibachi, $timeout, collectionConfigService, orderItemPartialsPath, slatwallPathBuilder); };
         directive.$inject = [
             '$log',
             '$compile',
             '$http',
             '$templateCache',
             '$hibachi',
+            '$timeout',
+            'collectionConfigService',
             'orderItemPartialsPath',
             'slatwallPathBuilder'
         ];
@@ -31822,7 +31847,7 @@ var SWOrderItems = /** @class */ (function () {
                         scope.pageShow = 50;
                     }
                     var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
-                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
+                    orderItemCollection.setDisplayProperties("orderItemID,currencyCode,sku.skuName\n                         ,price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID\n\t\t\t\t\t\t ,sku.product.productID\n \t\t\t\t\t\t ,sku.product.productName,sku.product.productDescription\n\t\t\t\t\t\t ,sku.eventStartDateTime\n \t\t\t\t\t\t ,quantity\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodName\n\t\t\t\t\t\t ,orderFulfillment.orderFulfillmentID\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.streetAddress\n     \t\t\t\t\t ,orderFulfillment.shippingAddress.street2Address\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.postalCode\n\t\t\t\t\t\t ,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode\n \t\t\t\t\t\t ,orderFulfillment.shippingAddress.countryCode\n                         ,orderItemType.systemCode\n\t\t\t\t\t\t ,orderFulfillment.fulfillmentMethod.fulfillmentMethodType\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.street2Address\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderFulfillment.pickupLocation.primaryAddress.address.stateCode\n                         ,orderFulfillment.pickupLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,orderReturn.orderReturnID\n \t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.streetAddress\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.street2Address\n                         ,orderReturn.returnLocation.primaryAddress.address.city\n\t\t\t\t\t\t ,orderReturn.returnLocation.primaryAddress.address.stateCode\n                         ,orderReturn.returnLocation.primaryAddress.address.postalCode\n\t\t\t\t\t\t ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType\n                         ,sku.subscriptionBenefits\n\t\t\t\t\t\t ,sku.product.productType.systemCode\n\t\t\t\t\t\t ,sku.bundleFlag \n\t\t\t\t\t\t ,sku.options\n\t\t\t\t\t\t ,sku.locations\n \t\t\t\t\t\t ,sku.subscriptionTerm.subscriptionTermName\n \t\t\t\t\t\t ,sku.imageFile\n                         ,stock.location.locationName")
                         .addFilter('order.orderID', scope.orderId)
                         .addFilter('parentOrderItem', 'null', 'IS')
                         .setKeywords(scope.keywords)

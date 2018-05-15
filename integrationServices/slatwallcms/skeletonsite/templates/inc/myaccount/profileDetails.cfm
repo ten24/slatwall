@@ -1,8 +1,9 @@
 <!--- This import allows for the custom tags required by this page to work --->
 <cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
-    	<!--- Start: Update Account Form --->
-		<form action="?s=1" method="post">
+    	<!--- Start: Update Account Form - Server Side --->
+    	<h6>Server Side</h6>
+		<form class="card-body" action="?s=1" method="post">
 			
 			<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
 			<input type="hidden" name="slatAction" value="public:account.update" />
@@ -40,6 +41,7 @@
 					
 					<!--- display the attribute set name --->
 					<h5>#attributeSet.getAttributeSetName()#</h5>
+					<hr style="margin-top:10px;border-top-color:##ddd;" />
 					
 					<!--- Loop over all of the attributes --->
 					<cfloop array="#attributeSet.getAttributes()#" index="attribute">
@@ -86,5 +88,48 @@
   			</div>
 			
 		</form>
-		<!--- End: Update Account Form --->
+		<!--- End: Update Account Form - Server Side --->
+		
+		<!--- Start: Update Account Form - Client Side --->
+		
+		<sw-form
+		data-is-process-form="true"
+	    data-object="'Account'"
+	    data-error-class="error"
+	    data-name="Account_Update"
+		data-event-announcers="click,blur,change"
+	    >
+			
+		<h6>Update Account - Client Side</h6>
+		   <div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="firstName"
+		            data-type="string"
+		            data-property-identifier="firstName"
+		            data-label-text="First Name"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+		    <div class="col-sm-12 form-group">
+		        <swf-property-display
+		            data-name="lastName"
+		            data-type="string"
+		            data-property-identifier="lastName"
+		            data-label-text="Last Name"
+		            data-class="form-control"
+		            >
+		        </swf-property-display>
+		    </div>
+		    <div class="col-sm-12 form-group">
+			    <sw-action-caller
+			        data-action="updateAccount"
+			        data-modal="false"
+			        data-type="button"
+			        data-class="btn-yellow"
+			        data-error-class="error"
+			        data-text="{{(slatwall.getRequestByAction('login').loading ? 'Loading...' : 'Update Account')}}">
+			    </sw-action-caller>
+			</div>
+		</sw-form>
 </cfoutput>

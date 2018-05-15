@@ -120,26 +120,19 @@ Notes:
 								<div class="row">
 									
 									<!--- Left Side General Details --->
-									<div class="span4">
-										
-										<h5>Profile Details</h5>
-										<hr style="margin-top:10px;border-top-color:##ddd;" />
-										
-										<cfinclude template="./inc/myaccount/detailAccount.cfm" />
-										
+									<div class="col-md-5">
+										<div class="card">
+											<h5 class="card-title">Profile Details</h5>
+											<cfinclude template="./inc/myaccount/profileDetails.cfm" />
+										</div>
 										<br />
-										
 										<h5>Change Password</h5>
 										<hr style="margin-top:10px;border-top-color:##ddd;" />
-										
-										<cfinclude template="./inc/myaccount/changePassword.cfm" />
-										
+											<cfinclude template="./inc/myaccount/changePassword.cfm" />
 										<br />
-										
 									</div>
-									
 									<!--- Start: Right Side Contact & Payment Methods --->
-									<div class="span8">
+									<div class="col-md-5 col-md-offset-2">
 										
 										<!--- Start: Email & Phone --->
 										<div class="row">

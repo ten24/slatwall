@@ -73,6 +73,14 @@
 		 			discriminatorProperty="optionGroup"
 		 			inversePropertyIdentifier="skus.product"
 		 		/>
+		 		<hb:HibachiFilterCountDisplayItem
+		 			propertyIdentifier="categories"
+		 			inversePropertyIdentifier="products"
+		 		/>
+		 		<hb:HibachiFilterCountDisplayItem
+		 			propertyIdentifier="productType"
+		 			inversePropertyIdentifier="products"
+		 		/>
 		 		
 		 		
 		</hb:HibachiFilterCountDisplay >

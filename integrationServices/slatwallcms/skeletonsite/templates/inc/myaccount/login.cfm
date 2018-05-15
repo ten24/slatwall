@@ -117,7 +117,7 @@
 	<!--- Start: Login Form - SERVER SIDE --->
 	<div class="card">
 		<form class="card-body" action="?s=1" method="post">
-			<h5 class="card-title">Server Side</h5>
+			<h5 class="card-title">Login - Server Side</h5>
 			<!--- This hidden input is what tells slatwall to try and login the account --->
 			<input type="hidden" name="slatAction" value="public:account.login" />
 			
@@ -167,7 +167,7 @@
 		data-event-announcers="click,blur,change"
 	    >
 			
-		<h5 class="card-title">Client Side</h5>
+		<h5 class="card-title">Login - Client Side</h5>
 		
 		   <div class="col-sm-12 form-group">
 		        <swf-property-display

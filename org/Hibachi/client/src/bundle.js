@@ -39458,7 +39458,6 @@ var HibachiValidationService = /** @class */ (function () {
         this.getValidationByPropertyAndContext = function (entityInstance, property, context) {
             var validations = _this.getValidationsByProperty(entityInstance, property);
             for (var i in validations) {
-                console.log(validations[i]);
                 var contexts = validations[i].contexts.split(',');
                 for (var j in contexts) {
                     if (contexts[j] === context) {
@@ -49098,7 +49097,7 @@ var ValidationService = /** @class */ (function () {
             return regex.test(value);
         };
         this.validateRequired = function (value) {
-            if (value && value) {
+            if (value) {
                 return true;
             }
             else {
