@@ -111,5 +111,8 @@ Notes:
         </div>
 
     </div>
+    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length">
+        <div class="alert alert-danger">There are no items in your cart.</div>
+    </div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
