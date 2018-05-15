@@ -66,7 +66,7 @@ Notes:
 --->
 
 <cfoutput>
-<div class="container" ng-cloak>
+<div class="container" ng-cloak ng-if="slatwall.cart.orderItems.length">
         <h1 class="my-4">Shopping Cart</h1>
         <div class="card mb-5">
             <div class="card-header bg-dark text-light">
