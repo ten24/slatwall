@@ -432,7 +432,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
-		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory,calculatedAssignedSkuCodeList,calculatedAssignedSkuIDList');
 		
 		var productImagesRecords = productImagesCollectionList.getRecords();
 		var productImagesRecordsCount = arrayLen(productImagesRecords);

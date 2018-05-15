@@ -78,6 +78,30 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	property name="calculatedAssignedSkuCodeList" ormtype="string";
+	property name="calculatedAssignedSkuIDList" ormtype="string";
+	
+	property name="assignedSkuCodeList" persistent="false";
+	property name="assignedSkuIDList" persistent="false";
+	
+	public string function getAssignedSkuCodeList(){
+		var assignedSkuCodeList = '';
+		for(var sku in this.getAssignedSkus()){
+			listAppend(assignedSkuCodeList,sku.getSkuCode());
+		}
+		variables.assignedSkuCodeList = assignedSkuCodeList;
+		return assignedSkuCodeList;
+	}
+	
+	public string function getAssignedSkuIDList(){
+		var assignedSkuIDList = '';
+		for(var sku in this.getAssignedSkus()){
+			listAppend(assignedSkuIDList,sku.getSkuID());
+		}
+		variables.assignedSkuIDList = assignedSkuIDList;
+		return assignedSkuIDList;
+	}
+	
 	public string function getImageFileUploadDirectory() {
 		return setting('globalAssetsImageFolderPath') & "/" & getDirectory();
 	}
