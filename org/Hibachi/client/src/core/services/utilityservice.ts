@@ -72,7 +72,7 @@ export class UtilityService  extends BaseService{
             if(property.indexOf('.') != -1){
                 property = property.replace('.','_');
             }
-            var parseFunction = this.$parse.get(property);
+            var parseFunction = this.$parse(property);
             data.push(parseFunction(context));
         });
         return this.replacePropertiesWithData(stringItem, data);
