@@ -698,7 +698,11 @@
 		}
 
 		public string function sanitizeForAngular(required string html){
-			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
+				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+			}else{
+				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
+			}
 		}
 
 		public string function decryptValue(required string value, string salt="") {
