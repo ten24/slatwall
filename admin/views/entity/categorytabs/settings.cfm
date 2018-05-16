@@ -56,6 +56,9 @@ Notes:
 <cfset rc.sitesArray = sites.getRecords() />
 <cfoutput>
 	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" >
+	    <swa:SlatwallSetting settingName="categoryHTMLTitleString" />
+		<swa:SlatwallSetting settingName="categoryMetaDescriptionString" />
+		<swa:SlatwallSetting settingName="categoryMetaKeywordsString" />
 		<cfloop array="#rc.sitesArray#" index="site">
 			<swa:SlatwallSetting settingName="categoryDisplayTemplate" settingObject="#rc.category#" settingFilterEntities="#[site]#" />
 		</cfloop>
