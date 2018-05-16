@@ -254,7 +254,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	// Category
 	public any function getCategory() {
 		if(!structKeyExists(variables, "category")) {
-			variables.address = getService("contentService").newCategory();
+			variables.category = getService("contentService").newCategory();
 		}
 		return variables.category;
 	}
