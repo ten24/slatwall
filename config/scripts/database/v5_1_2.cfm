@@ -69,6 +69,18 @@ Notes:
 	</cfcatch>
 </cftry>
 
+<cftry>
+	<cfquery name="local.updateContentColumnLengths">
+		ALTER TABLE swcontent
+		MODIFY COLUMN urlTitlePath varchar(255) NULL,
+		MODIFY COLUMN urlTitle varchar(255) NULL
+	</cfquery>
+	
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Content Column Lengths">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v5_1.2 had errors when running">
