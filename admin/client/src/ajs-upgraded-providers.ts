@@ -24,6 +24,10 @@ export function filterFactory(i:any) {
     return i.get("$filter");    
 }
 
+export function timeoutFactory(i:any) {
+    return i.get('$timeout');    
+}
+
 // define angular factory provider
 export const parseProvider = {
     provide    : '$parse',
@@ -41,4 +45,10 @@ export const filterProvider = {
     provide    : '$filter',
     useFactory : filterFactory,
     deps       : ["$injector"]  
+};
+
+export const timeoutProvider = {
+    provide    : '$timeout',
+    useFactory : timeoutFactory,
+    deps       : ["$injector"]    
 };

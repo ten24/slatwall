@@ -16,13 +16,14 @@ import {OptionGroupModule} from "./optiongroup/optiongroup.module";
 import {GiftCardModule} from "./giftcard/giftcard.module";
 import {OrderItemModule} from "./orderitem/orderitem.module";
 import {ProductModule} from "./product/product.module";
-import { parseProvider,logProvider,filterProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
   providers: [
     parseProvider,
     logProvider,
-    filterProvider
+    filterProvider,
+    timeoutProvider
   ],
   imports: [
     BrowserModule,
