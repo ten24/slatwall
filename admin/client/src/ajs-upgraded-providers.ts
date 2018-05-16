@@ -1,7 +1,7 @@
 // important to use "any" to allow methods of upgraded service to be call
-export abstract class Parse {
+/*export abstract class Parse {
     [key:string]: any;    
-}
+}*/
 
 export abstract class Log {
     [key:string]: any;    
@@ -26,7 +26,7 @@ export function filterFactory(i:any) {
 
 // define angular factory provider
 export const parseProvider = {
-    provide    : Parse,
+    provide    : '$parse',
     useFactory : parseFactory,
     deps       : ['$injector']//The deps property is an array of provider tokens. The injector resolves these tokens and injects the corresponding services into the matching factory function parameters.
 };

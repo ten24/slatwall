@@ -2,17 +2,17 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 import {BaseService} from "./baseservice";
-import { Parse } from "../../../../../../admin/client/src/ajs-upgraded-providers";
-import { Injectable } from "@angular/core";
+//import { Parse } from "../../../../../../admin/client/src/ajs-upgraded-providers";
+import { Injectable,Inject } from "@angular/core";
 
 @Injectable()
 export class UtilityService  extends BaseService{
-    //@ngInject
+    $parse: any;
     constructor(
-        private $parse : Parse
+        @Inject('$parse') $parse:any 
     ){
         super();
-        
+        this.$parse = $parse;
     }
     
     public structKeyExists(struct,key) {
