@@ -19,8 +19,6 @@ export class MetaDataService {
         this.$log = $log;
         this._propertiesList = {};
         this._orderBy = $filter('orderBy');
-        console.log('metadataservice');
-        
     }
 
     getPropertyHintByObjectAndPropertyIdentifier(object:any,propertyIdentifier:string){
