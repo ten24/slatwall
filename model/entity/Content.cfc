@@ -126,19 +126,19 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			contentCacheKey &= getDao('hibachiDao').getApplicationKey();
 			contentCacheKey &= getHibachiScope().site().getSiteCode();
 			contentCacheKey &= getUrlTitlePath();
-			if (!isNull(getHibachiScope().getBrand())) {
+			if (!isNull(getHibachiScope().getBrand()) && !getHibachiScope().getBrand().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getBrand().getBrandID();
 			}
-			if(!isNull(getHibachiScope().getProduct())) {
+			if(!isNull(getHibachiScope().getProduct()) && !getHibachiScope().getProduct().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getProduct().getProductID();
 			}
-			if (!isNull(getHibachiScope().getProductType())) {
+			if (!isNull(getHibachiScope().getProductType()) && !getHibachiScope().getProductType().getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getProductType().getProductTypeID();
 			}
-			if (!isNull(getHibachiScope().getRouteEntity('Address'))) {
+			if (!isNull(getHibachiScope().getRouteEntity('Address')) && !getHibachiScope().getRouteEntity('Address').getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getRouteEntity('Address').getPrimaryIDValue();
 			}
-			if (!isNull(getHibachiScope().getRouteEntity('Account'))) {
+			if (!isNull(getHibachiScope().getRouteEntity('Account'))  && !getHibachiScope().getRouteEntity('Account').getNewFlag()) {
 				contentCacheKey &= getHibachiScope().getRouteEntity('Account').getPrimaryIDValue();
 			}
 			contentCacheKey &= replace(CGI.QUERY_STRING,'clearTemplateCache=true',''); 

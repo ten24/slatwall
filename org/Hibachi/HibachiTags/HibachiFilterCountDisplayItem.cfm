@@ -35,7 +35,6 @@
 			<cfset arrayAppend(arrayToPrepend,arguments.optionData,true)/>
 			<cfset arguments.optionData = arrayToPrepend/>
 		</cfif>
-		
 		<cfsavecontent variable="local.htmlContent" >
 			<cfinclude template="#arguments.template#" >
 		</cfsavecontent>
@@ -128,7 +127,9 @@
 			<cfset attributes.filterType = 'f'/>
 			
 			<!--- get the option data here --->
-			<cfif isArray(attributes.rangeData)>
+			<cfif attributes.propertyIdentifier eq 'categories'>
+				<cfset attributes.optionData = attributes.hibachiScope.getDAO('contentDao').getCategoryOptions(attributes.collectionList)/>
+			<cfelseif isArray(attributes.rangeData)>
 				<cfset attributes.optionData = attributes.hibachiScope.getService('HibachiService').getOptionsByEntityNameAndPropertyIdentifierAndRangeData(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.rangeData)/>
 				<cfset attributes.filterType = 'r'/>
 			<cfelseif len(attributes.discriminatorProperty)>
@@ -142,10 +143,7 @@
 				
 				<cfif structKeyExists(propertyMetaData,'fieldtype')>
 					<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
-					
 					<cfset attributes.optionData = optionCollectionList.getRecords()/>
-					
-					
 				<cfelseif structKeyExists(propertyMetaData,'ormtype') >
 					
 					<cfset optionCollectionList = attributes.hibachiScope.getService('HibachiService').getOptionsCollectionListByEntityNameAndPropertyIdentifier(copyOfCollectionList,attributes.entityName,attributes.propertyIdentifier,attributes.inversePropertyIdentifier)/>
@@ -283,9 +281,11 @@
 			
 			<!--- create the html now that we have all the data we need --->
 			<cfset attributes.htmlContent = ""/>
+			
 			<cfif isArray(attributes.optionData)>
 				<cfset attributes.htmlContent = getHTML(attributes.title,attributes.optionData,attributes.template,attributes.formatter,attributes.openTab,attributes.optionPriorityList)/>
 			<cfelseif isStruct(attributes.optionData)>
+			
 				<cfloop collection="#attributes.optionData#" item="discriminatorName">
 					 
 					<cfset attributes.htmlContent &=getHTML(discriminatorName,attributes.optionData[discriminatorName],attributes.template,attributes.formatter,attributes.openTab,attributes.optionPriorityList)/>

@@ -67,6 +67,18 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 		);
 	}
 	
+	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
+		var queryService = new query();
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
+			VALUES ('#createHibachiUUID()#','#arguments.entityQueueType#','#arguments.entityName#','#arguments.entityID#',:createdDateTime,'#getHibachiScope().getAccount().getAccountID()#',
+				'#getHibachiScope().getAccount().getAccountID()#',:modifiedDatetime
+			)
+		";
+		queryService.addParam(name='createdDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='modifiedDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.execute(sql=sql);
+	}
+	
 	public void function addEntityToQueue(required any entity,required entityQueueType){
 		
 	}
