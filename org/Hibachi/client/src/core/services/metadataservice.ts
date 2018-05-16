@@ -1,16 +1,17 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-import { Injectable } from "@angular/core";
-import { Filter,Log } from "../../../../../../admin/client/src/ajs-upgraded-providers";
+import { Injectable,Inject } from "@angular/core";
 
 @Injectable()
 export class MetaDataService {
     private _propertiesList;
     private _orderBy;
+    private $filter: any;
+    private $log : any;
     
     constructor(
-        private $filter:Filter,
-        private $log:Log
+        @Inject('$filter') $filter: any,
+        @Inject('$log') $log:any
 
     ){
 
@@ -18,6 +19,8 @@ export class MetaDataService {
         this.$log = $log;
         this._propertiesList = {};
         this._orderBy = $filter('orderBy');
+        console.log('metadataservice');
+        
     }
 
     getPropertyHintByObjectAndPropertyIdentifier(object:any,propertyIdentifier:string){
@@ -153,7 +156,6 @@ export class MetaDataService {
         propertiesList.data = temp;
         this.$log.debug("----------------------PropertyList\n\n\n\n\n");
         propertiesList.data = this._orderBy(propertiesList.data,['propertyIdentifier'],false);
-
 
         //--------------------------------End remove empty lines.
     }

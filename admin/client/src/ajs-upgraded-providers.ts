@@ -3,13 +3,13 @@
     [key:string]: any;    
 }*/
 
-export abstract class Log {
+/*export abstract class Log {
     [key:string]: any;    
-}
+}*/
 
-export abstract class Filter {
+/*export abstract class Filter {
     [key:string]: any;    
-}
+}*/
 
 // define factory function to return Angularjs Service
 export function parseFactory(i:any) {
@@ -32,13 +32,13 @@ export const parseProvider = {
 };
 
 export const logProvider = {
-    provide    : Log,
+    provide    : '$log',
     useFactory : logFactory,
     deps       : ["$injector"]    
 };
 
 export const filterProvider = {
-    provide    : Filter,
+    provide    : '$filter',
     useFactory : filterFactory,
     deps       : ["$injector"]  
 };
