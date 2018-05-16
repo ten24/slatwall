@@ -170,15 +170,6 @@
 								//add to the entityQueue
 								for(var entity in attributes.entityDataArray){
 									//always make a new one so we can calculate multiple times
-									/*var	entityQueue = getService('HibachiEntityQueueService').newEntityQueue();
-									entityQueue.setBaseObject(entity.entityName);
-									entityQueue.setBaseID(entity.entityID);
-									entityQueue.setEntityQueueType('calculatedProperty');
-									if(!isNull(entityQueue)){
-										getService('HibachiEntityQueueService').saveEntityQueue(
-											entityQueue
-										);
-									}*/
 									getService('HibachiEntityQueueDAO').insertEntityQueue(entity.entityID,entity.entityName,'calculatedProperty');
 								}
 								ormFlush();	
@@ -234,8 +225,6 @@
 							}
 						}catch(any e){
 							getHibachiScope().logHibachi(e.detail ,true);
-							getHibachiScope().logHibachi(e.stackTrace ,true);
-							getHibachiScope().logHibachi('inThread' ,serializeJSON(entityDataArray));
 						}
 			    	}
 				}
