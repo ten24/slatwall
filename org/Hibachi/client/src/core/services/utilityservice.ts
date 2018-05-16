@@ -301,7 +301,7 @@ export class UtilityService  extends BaseService{
         return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
 
-    public createID (count:number):string {
+    public createID (count?:number):string {
           var count = count || 26;
 
           var text = "";
