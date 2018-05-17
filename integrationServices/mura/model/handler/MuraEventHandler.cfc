@@ -54,7 +54,7 @@
 		public void function onSiteRequestStart( required any $ ) {
 			// Setup the slatwallScope into the muraScope
 			verifySlatwallRequest( $=$ );
-			
+
 			// Update Login / Logout if needed
 			autoLoginLogoutFromSlatwall( $=$ );
 			
@@ -136,6 +136,8 @@
 				var productTypeKeyLocation = 0;
 				var addressKeyLocation = 0;
 				var accountKeyLocation = 0;
+				var categoryKeyLocation = 0;
+				var attributeKeyLocation = 0;
 				
 				// First look for the Brand URL Key
 				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyBrand'), "/")) {
@@ -174,6 +176,22 @@
 					accountKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAccount'), "/");
 					if(accountKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setRouteEntity("account", $.slatwall.getService("addressService").getAccountByURLTitle(listGetAt($.event('path'), accountKeyLocation + 1, "/"), true) );
+					}
+				}
+				
+				// Look for the Category URL Key
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyCategory'), "/")) {
+					categoryKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyCategory'), "/");
+					if(categoryKeyLocation < listLen($.event('path'),"/")) {
+						$.slatwall.setRouteEntity("category", $.slatwall.getService("hibachiService").getCategoryByURLTitle(listGetAt($.event('path'), categoryKeyLocation + 1, "/"), true) );
+					}
+				}
+				
+				// Look for the Attribute URL Key
+				if (listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAttribute'), "/")) {
+					attributeKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAttribute'), "/");
+					if(attributeKeyLocation < listLen($.event('path'),"/")) {
+						$.slatwall.setRouteEntity("attribute", $.slatwall.getService("attributeService").getAttributeByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 1, "/"), true) );
 					}
 				}
 				
@@ -236,7 +254,7 @@
 					}
 					
 				} else if ( productTypeKeyLocation && productTypeKeyLocation > brandKeyLocation && !$.slatwall.getProductType().isNew() && $.slatwall.getProductType().getActiveFlag() ) {
-					
+
 					// Attempt to find the productType template
 					var productTypeTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getProductType().setting('productTypeDisplayTemplate', [$.slatwall.getSite()]) );
 					
@@ -362,8 +380,69 @@
 						throw("Slatwall has attempted to display a 'Account' on your website, however the 'Account Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Account Display Template' assigned.");
 						
 					}
+				} else if ( categoryKeyLocation && !isNull($.slatwall.getRouteEntity("category")) && !$.slatwall.getRouteEntity("category").isNew() ) {
+
+					// Attempt to find the category template
+					var categoryTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRouteEntity("category").setting('categoryDisplayTemplate', [$.slatwall.getSite()]) );
+					
+					// As long as the content is not null, and has all the necessary values we can continue
+					if(!isNull(categoryTemplateContent) && !isNull(categoryTemplateContent.getCMSContentID()) && !isNull(categoryTemplateContent.getSite()) && !isNull(categoryTemplateContent.getSite().getCMSSiteID())) {
+						
+						// Setup the content node in the slatwallScope
+						$.slatwall.setContent( categoryTemplateContent );
+						
+						// Override the contentBean for the request
+						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
+						
+						// Change Title, HTMLTitle & Meta Details of page
+						$.content().setTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
+						if(len($.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("category").getCategoryName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("category").stringReplace( $.slatwall.getRouteEntity("category").setting('categoryMetaKeywordsString') ) );
+						
+					} else {
+						
+						throw("Slatwall has attempted to display a 'Category' on your website, however the 'Category Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Category Display Template' assigned.");
+						
+					}
+				} else if ( attributeKeyLocation && !isNull($.slatwall.getRouteEntity("attribute")) && !$.slatwall.getRouteEntity("attribute").isNew() ) {
+
+					// Attempt to find the category template
+					var attributeTemplateContent = $.slatwall.getService("contentService").getContent( $.slatwall.getRouteEntity("attribute").setting('attributeDisplayTemplate', [$.slatwall.getSite()]) );
+					
+					// As long as the content is not null, and has all the necessary values we can continue
+					if(!isNull(attributeTemplateContent) && !isNull(attributeTemplateContent.getCMSContentID()) && !isNull(attributeTemplateContent.getSite()) && !isNull(attributeTemplateContent.getSite().getCMSSiteID())) {
+						
+						// Setup the content node in the slatwallScope
+						$.slatwall.setContent( attributeTemplateContent );
+						
+						// Override the contentBean for the request
+						$.event('contentBean', $.getBean("content").loadBy( contentID=$.slatwall.getContent().getCMSContentID(), siteID=$.slatwall.getContent().getSite().getCMSSiteID() ) );
+						$.event('muraForceFilename', false);
+						
+						// Change Title, HTMLTitle & Meta Details of page
+						$.content().setTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
+						if(len($.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString'))) {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeHTMLTitleString') ) );	
+						} else {
+							$.content().setHTMLTitle( $.slatwall.getRouteEntity("attribute").getAttributeName() );
+						}
+						$.content().setMetaDesc( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeMetaDescriptionString') ) );
+						$.content().setMetaKeywords( $.slatwall.getRouteEntity("attribute").stringReplace( $.slatwall.getRouteEntity("attribute").setting('attributeMetaKeywordsString') ) );
+						
+					} else {
+						
+						throw("Slatwall has attempted to display an 'Attribute' on your website, however the 'Attribute Display Template' setting is either blank or invalid.  Please navigate to the Slatwall admin and make sure that there is a valid 'Category Display Template' assigned.");
+						
+					}
 				}
 			}
+
 		}
 		
 		public void function onRenderStart( required any $ ) {
