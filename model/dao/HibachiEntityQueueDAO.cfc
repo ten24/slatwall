@@ -46,64 +46,7 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiEntityQueueDAO">
 
 
-<cfparam name="rc.accountAddress" type="any">
-<cfparam name="rc.account" type="any" default="#rc.accountAddress.getAccount()#">
-<cfparam name="rc.edit" type="boolean">
-
-<cfif rc.edit>
-	<cfset rc.pageTitle = 'Edit Account Address' />
-<cfelse>
-	<cfset rc.pageTitle = 'Detail Account Address' />
-</cfif>
-
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.accountAddress#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.accountAddress#" edit="#rc.edit#"
-					backAction="admin:entity.detailAccount"
-					backQueryString="accountID=#rc.account.getAccountID()#"
-					cancelAction="admin:entity.detailAccount"
-					cancelQueryString="accountID=#rc.account.getAccountID()#">
-		</hb:HibachiEntityActionBar>
-
-		<!--- Hidden field to attach this to the account --->
-		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
-
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.accountAddress#" property="accountAddressName" edit="#rc.edit#">
-				<swa:SlatwallAdminAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		<!--- Custom Attributes --->
-		<hb:HibachiEntityDetailGroup object="#rc.accountAddress#">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="s-property form-horizontal">
-						<cfloop array="#rc.accountAddress.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-							<swa:SlatwallAdminAttributeSetDisplay entity="#rc.accountAddress#" attributeSet="#attributeSet#" edit="#rc.edit#" />
-						</cfloop>
-					</div>
-				</div>
-			</div>
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</cfcomponent>
