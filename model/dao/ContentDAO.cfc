@@ -339,7 +339,9 @@ Notes:
 			}
 		</cfscript>
 		<cfset leafCollectionList.setDisplayProperties('categoryName|name,categoryID|value,parentCategory.categoryID,parentCategory.categoryName')/>
+		<cfset leafCollectionList.setDistinct(true)/>
 		<cfset leafCollectionList.addFilter('products.productID','NULL',"IS NOT")/>
+		<cfset leafCollectionList.setOrderBy('parentCategory.categoryName,categoryName')/>
 		<cfset optionData = {}/>
 		<cfloop array="#leafCollectionList.getRecords()#" index="local.leafRecord">
 			<cfif !structKeyExists(optionData,local.leafRecord['parentCategory_categoryName'])>
