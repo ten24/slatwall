@@ -29,7 +29,7 @@ import {SWFormSubscriber} from "./components/swformsubscriber";
 @NgModule({
     declarations: [],
     providers: [
-        
+        FileService
     ],  
     imports: [
         CommonModule,
@@ -49,7 +49,7 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',core
 })
 .constant('coreFormPartialsPath','form/components/')
 
-.service('fileService',FileService)
+.service('fileService',downgradeInjectable(FileService))
 //directives
 .directive('swInput',SWInput.Factory())
 .directive('swfFormField',SWFFormField.Factory())
