@@ -119,7 +119,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return representation;
 	}
 	
-	public any function getEquivalentSkuLocationQuantity(){
+	public any function getSkuLocationQuantity(){
 		return getService('InventoryService').getSkuLocationQuantityBySkuIDANDLocationID(this.getSku().getSkuID(),this.getLocation().getLocationID());
 	}
 	

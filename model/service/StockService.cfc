@@ -388,7 +388,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 				stockReceiverItem.setStock(stock);
 				getHibachiScope().addModifiedEntity(stock);
-				getHibachiScope().addModifiedEntity(stock.getEquivalentSkuLocationQuantity());
+				getHibachiScope().addModifiedEntity(stock.getSkuLocationQuantity());
 			}
 		
 			this.saveStockReceiver(stockReceiver);
@@ -412,7 +412,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				stockAdjustmentDeliveryItem.setCost(stockAdjustmentItem.getCost());
 				stockAdjustmentDeliveryItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 				getHibachiScope().addModifiedEntity(stock);
-				getHibachiScope().addModifiedEntity(stock.getEquivalentSkuLocationQuantity());
+				getHibachiScope().addModifiedEntity(stock.getSkuLocationQuantity());
 			}
 
 			this.saveStockAdjustmentDelivery(stockAdjustmentDelivery);
@@ -448,7 +448,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
 					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock());
-					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock().getEquivalentSkuLocationQuantity());
+					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock().getSkuLocationQuantity());
 
 				// If this is Out, create delivery
 				} else if (!isNull(stockAdjustmentItem.getFromStock())) {
