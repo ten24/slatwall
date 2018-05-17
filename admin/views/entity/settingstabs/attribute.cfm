@@ -53,6 +53,9 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
+	    <swa:SlatwallSetting settingName="attributeHTMLTitleString" />
+		<swa:SlatwallSetting settingName="attributeMetaDescriptionString" />
+		<swa:SlatwallSetting settingName="attributeMetaKeywordsString" />
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
 			<swa:SlatwallSetting settingName="attributeDisplayTemplate" settingFilterEntities="#[site]#" />

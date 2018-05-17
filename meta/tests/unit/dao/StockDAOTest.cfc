@@ -68,7 +68,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		variables.dao.updateStockLocation(toLocationID="1",fromLocationID="1");
 	}
 	
-	public void function getAverageCostTest(){
+	private void function getAverageCostTest(){
 		var stockData = {
 			stockID="",
 			currencyCode="USD"
@@ -104,7 +104,7 @@ component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 		assertEquals(42.5,averageCost);
 	}
 	
-	public void function getCurrentMarginTest(){
+	private void function getCurrentMarginTest(){
 		var skuData = {
 			skuID="",
 			price=77

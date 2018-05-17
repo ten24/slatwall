@@ -51,11 +51,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setUp();
 		
-		variables.totpAuthenticator = new Slatwall.org.hibachi.marcins.TOTPAuthenticator();
+		variables.totpAuthenticator = new Slatwall.org.Hibachi.marcins.TOTPAuthenticator();
 		
 		// During development only
 		//variables.slatwallFW1Application.setBeanFactory(variables.slatwallFW1Application.getConfiguredBeanFactoryInstance());
-		variables.integrationService =  request.slatwallScope.getBean("integrationService");
+		variables.integrationService = variables.mockService.getIntegrationServiceMock();
 	}
 	
 	/**

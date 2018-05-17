@@ -125,12 +125,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//add items to vendorOrderDelivery
 		addVendorOrderItemsToVendorOrderDelivery(vendorOrderDelivery,arguments.processObject);
 		
-		arguments.vendorOrderDelivery = this.saveVendorOrderDelivery(vendorOrderDelivery);
+		vendorOrderDelivery = this.saveVendorOrderDelivery(vendorOrderDelivery);
 		
+		if(!vendorOrderDelivery.hasErrors()){
 			// Update the orderStatus
-		this.processVendorOrder(arguments.vendorOrder, {updateItems=true}, 'updateStatus');
+			this.processVendorOrder(arguments.vendorOrder, {updateItems=true}, 'updateStatus');
+		}else{
+			arguments.vendorOrder.addErrors(vendorOrderDelivery.getErrors());
+		}
 		
-
 		return arguments.vendorOrder;
 	}
 	
@@ -277,6 +280,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				stockreceiverItem.setVendorOrderItem( vendorOrderItem );
 				stockreceiverItem.setCurrencyCode(vendorOrderItem.getCurrencyCode());
 				stockreceiverItem.setStockReceiver( stockReceiver );
+				
+				stockReceiverItem.validate(context="save");
+				if(stockReceiverItem.hasErrors()){
+					arguments.vendorOrder.addErrors(stockReceiverItem.getErrors());
+					return arguments.vendorOrder;
+				}
+
 
 				// Adding vendor to product/sku if no existing relationship
 				if(!isNull(vendorOrderItem.getSku()) && !isNull(vendorOrderItem.getSku().getProduct())){

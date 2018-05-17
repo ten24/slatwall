@@ -2,18 +2,9 @@
 <cfimport prefix="sw" taglib="../tags" />
 <cfoutput>
 <cfinclude template="_slatwall-header.cfm" />
-
 <div class="container">
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
-    
-    <!--- Add to cart success/fail messages --->
-    <div class="alert alert-success">Item added to cart</div>
-    
-    <div class="alert alert-danger">Item could not be added to cart</div>
-    
-    <!--- No Product search results found message --->
-    <div class="alert alert-warning">No products found</div>
     
     <!--- If this item was just added show the success message --->
 	<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
@@ -24,7 +15,7 @@
 		</div>
 	<!--- If this item was just tried to be added, but failed then show the failure message --->
 	<cfelseif $.slatwall.hasFailureAction( "public:cart.addOrderItem" )>
-		<div class="alert alert-error alert-dismissible fade show" role="alert">
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
 			<!--- Display whatever errors might have been associated with the specific options --->
 			<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" />
 
@@ -32,9 +23,9 @@
 			<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
 		</div>
 	</cfif>
-	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
+	<cfset productCollectionList.setPageRecordsShow(9)/>
 	<cfif structKeyExists(url,'keywords')>
 		<cfset productCollectionList.setKeywords(url.keywords) />
 	</cfif>
@@ -96,13 +87,13 @@
 		    					<cfset local.mediumimages = $.slatwall.getService("ImageService").getResizedImageByProfileName("#local.product['defaultSku_skuID']#","medium") />
 		    					<a href="/product/#local.product['urlTitle']#">
 								<cfif arrayLen(local.mediumimages)>
-								    <a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">
+								    <a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">
 								        <img src="#local.mediumimages[1]#" class="img-fluid" alt="#local.product['productName']#" />
 								    </a>
 								</cfif>
 		    					<div class="card-body">
-		                            <small><a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
-		                            <h4><a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">#local.product['productName']#</a></h4>
+		                            <small><a href="/#$.slatwall.setting('globalURLKeyProductType')#/#local.product['productType_urlTitle']#" class="text-secondary">#local.product['productType_productTypeName']#</a></small>
+		                            <h4><a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#">#local.product['productName']#</a></h4>
 		                            <!--- Only displays crossed out list price if it's greater than actual price --->
 		                            <cfif local.product['defaultSku_listPrice'] GT local.product['defaultSku_price']>
 		                            	<s class="float-right">#local.product['defaultSku_listPrice']#</s>
@@ -116,7 +107,7 @@
 		    							<input type="hidden" name="skuID" value="#local.product['defaultSku_skuID']#" />
 		    							<input type="hidden" name="slatAction" value="public:cart.addOrderItem">
 		    						</form>
-		                            <a href="#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
+		                            <a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
 		    					</div>
 		    				</div>
     					</div>
@@ -129,21 +120,11 @@
             <!--- Pagination --->
             <sw:SlatwallCollectionPagination
             	collection="#productCollectionList#"
-            	template="../custom/apps/slatwallcms/slatwallcms/tags/tagtemplates/CollectionPagination.cfm"
+            	template="../custom/apps/#$.slatwall.getApp().getAppCode()#/#$.slatwall.getSite().getSiteCode()#/tags/tagtemplates/CollectionPagination.cfm"
             	slatwallScope="#$.slatwall#"
-            	showFirstAndLast="false">
+            	showFirstAndLast="true">
             </sw:SlatwallCollectionPagination>
             
-            <!--- Example Pagination Markup --->
-   <!---     	<nav class="mt-5">--->
-			<!---	<ul class="pagination">--->
-			<!---		<li class="page-item disabled"><a class="page-link" href="##">Previous</a></li>--->
-			<!---    	<li class="page-item active"><a class="page-link" href="##">1</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">2</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">3</a></li>--->
-			<!---    	<li class="page-item"><a class="page-link" href="##">Next</a></li>--->
-			<!---	</ul>--->
-			<!--</nav>--->
     	</div>
     </div>
 </div>

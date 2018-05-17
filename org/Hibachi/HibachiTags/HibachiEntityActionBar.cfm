@@ -44,7 +44,7 @@
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
 						<cfset hasItemEntityName = structKeyExists(request,'context') AND structKeyExists(request.context,'entityactiondetails') AND structKeyExists(request.context.entityactiondetails,'itementityname')/>
-						<h1 class="actionbar-title">#attributes.pageTitle#<cfif hasItemEntityName><span ng-if="$root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#'].collectionName"></span></cfif></h1>
+						<h1 class="actionbar-title">#attributes.pageTitle#<cfif hasItemEntityName AND structKeyExists(request.context.entityactiondetails,'itemname') AND left(request.context.entityactiondetails.itemname,4) EQ 'list' ><span ng-if="$root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#'].collectionName"></span></cfif></h1>
 
 					</div>
 

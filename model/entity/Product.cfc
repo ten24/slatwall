@@ -189,6 +189,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getDao('productDao').getCurrentMargin(this.getProductID());
 	}
 	
+	public any function getSkuBundleCollectionList(){
+		var skuCollectionList = getService('skuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getDefaultSku().getSkuID());
+		return skuCollectionList;
+	}
+	
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
@@ -275,7 +281,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return count;
 	}
-
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
@@ -576,9 +581,28 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSkusBySelectedOptions(string selectedOptions="") {
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
-
+	
+	public any function getAvailableSkuOptions(string selectedOptionIDList="", string locationID){
+		var query = getDAO('ProductDAO').getAvailableSkuOptions(
+			productID=this.getProductID(),
+			skuOptionIdArray=listToArray(arguments.selectedOptionIDLIst),
+			arguments=arguments);
+			
+		//We got a raw query object from the DAO method with one row for every available sku and its options, so some
+		//might be duplicated
+		
+		var availableOptionIDs = '';
+		for(var row in local.query){ //for every sku
+			for(var optionID in row.optionIDs){
+			//add options to the list
+				availableOptionIDs = listAppend(availableOptionIDs,optionID);
+			}
+		}
+		return listRemoveDuplicates(availableOptionIDs);
+	}
+	
 	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true, string locationID ) {
-
+		
 		// Setup return structure
 		var skuOptionDetails = {};
 
@@ -626,9 +650,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
 				}
 			}
-			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-				break;
-			}
+			// if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+			// 	break;
+			// }
 		}
 
 		var skuOptionIDArray = [];

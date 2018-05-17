@@ -55,13 +55,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 
 	// addAuditToCommit()
-	/**
-	* @test
-	*/
-	public void function loadYamlTest() {
-		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
-		assert(isStruct(yamlStruct));
-	}
 
 	/**
 	* @test

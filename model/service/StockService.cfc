@@ -683,6 +683,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
+	
+	public boolean function stockHasLeafLocation(required any stock){
+		var location = arguments.stock.getLocation();
+		if(isNull(location)){
+			return false;
+		}
+		return !location.hasChildren();
+	}
 
 	// ======================  END: Status Methods ============================
 

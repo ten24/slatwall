@@ -36,7 +36,7 @@
 			<cfset tab.tabid = "tab" & listLast(tab.view, '/') />
 		</cfif>
 		<!--- Make sure there is text for the tab name --->
-		<cfif  not len(tab.text)>
+		<cfif !structKeyExists(tab,'text') || not len(tab.text)>
 			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />
 		</cfif>
 

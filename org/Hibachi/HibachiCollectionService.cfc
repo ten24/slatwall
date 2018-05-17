@@ -484,7 +484,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	*/
 	public string function buildURL(required string queryAddition, boolean appendValues=true, boolean toggleKeys=true, string currentURL="") {
-		
 		// Generate full URL if one wasn't passed in
 		if(!len(arguments.currentURL)) {
 			if(len(cgi.query_string)) {
@@ -579,11 +578,8 @@ component output="false" accessors="true" extends="HibachiService" {
 		} else if (right(modifiedURL, 1) eq "?") {
 			modifiedURL = "?c=1";
 		}
-		
-		return modifiedURL;
+		return getHibachiUtilityService().hibachiHTMLEditFormat(modifiedURL);
 	}
-
-
 
 	public any function applyData(required any collection){
 		arguments.collection.applyData();
