@@ -1,8 +1,12 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 //module
 import {coremodule} from "../core/core.module";
+import {CoreModule} from "../core/core.module";
 //services
 import {FileService} from "./services/fileservice"; 
 //directives
@@ -21,6 +25,24 @@ import {SWAddressForm} from "./components/swaddressform";
 import {SWPropertyDisplay} from "./components/swpropertydisplay";
 import {SWFPropertyDisplay} from "./components/swfpropertydisplay";
 import {SWFormSubscriber} from "./components/swformsubscriber";
+
+@NgModule({
+    declarations: [],
+    providers: [
+        
+    ],  
+    imports: [
+        CommonModule,
+        UpgradeModule,
+        CoreModule
+    ]  
+})
+export class FormModule{
+    constructor() {
+        
+    }    
+}
+
 
 var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker',coremodule.name]).config(()=>{
 

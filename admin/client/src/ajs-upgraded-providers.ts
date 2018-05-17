@@ -28,6 +28,10 @@ export function timeoutFactory(i:any) {
     return i.get('$timeout');    
 }
 
+export function qFactory(i:any) {
+    return i.get("$q");    
+}
+
 // define angular factory provider
 export const parseProvider = {
     provide    : '$parse',
@@ -51,4 +55,10 @@ export const timeoutProvider = {
     provide    : '$timeout',
     useFactory : timeoutFactory,
     deps       : ["$injector"]    
+};
+
+export const qProvider = {
+    provide    : '$q',
+    useFactory : qFactory,
+    deps       : ['$injector']    
 };

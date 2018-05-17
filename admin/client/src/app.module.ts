@@ -10,20 +10,22 @@ import { LoggerModule } from "../../../org/Hibachi/client/src/logger/logger.modu
 import { CoreModule }  from  "../../../org/Hibachi/client/src/core/core.module";
 import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
 import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity.module";
+import { FormModule }   from "../../../org/Hibachi/client/src/form/form.module";
 import {ContentModule} from "./content/content.module";
 import {FormBuilderModule} from "./formbuilder/formbuilder.module";
 import {OptionGroupModule} from "./optiongroup/optiongroup.module";
 import {GiftCardModule} from "./giftcard/giftcard.module";
 import {OrderItemModule} from "./orderitem/orderitem.module";
 import {ProductModule} from "./product/product.module";
-import { parseProvider,logProvider,filterProvider,timeoutProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider } from "./ajs-upgraded-providers"; 
 
 @NgModule({
   providers: [
     parseProvider,
     logProvider,
     filterProvider,
-    timeoutProvider
+    timeoutProvider,
+    qProvider
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,8 @@ import { parseProvider,logProvider,filterProvider,timeoutProvider } from "./ajs-
     OptionGroupModule,
     GiftCardModule,
     OrderItemModule,
-    ProductModule
+    ProductModule,
+    FormModule
   ],
   declarations:[
       HeroDetailComponent
