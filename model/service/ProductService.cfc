@@ -685,7 +685,7 @@ component extends="HibachiService" accessors="true" {
 		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
 			newSku.setListPrice( arguments.processObject.getListPrice() );
 		}
-		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+		newSku.setSkuCode( arguments.product.getProductCode() & "-#arguments.product.getNextSkuCodeCount()#");
 		newSku.setSubscriptionTerm( newSubscriptionTerm );
 		for(var b=1; b <= listLen( arguments.processObject.getSubscriptionBenefits() ); b++) {
 			newSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
@@ -817,7 +817,7 @@ component extends="HibachiService" accessors="true" {
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
                     setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
-					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+					newSku.setSkuCode(product.getProductCode() & "-#arguments.product.getNextSkuCodeCount()#");
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
 					arguments.product.addSku(newSku);
