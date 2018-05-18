@@ -105,7 +105,7 @@ component extends="HibachiService" accessors="true" {
 
 			var newSku = getSkuService().newSku();
 			newSku.setProduct( arguments.processObject.getProduct() );
-			newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+			newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
 			newSku.setSkuName( arguments.processObject.getSkuName() );
 			newSku.setPrice( arguments.processObject.getPrice() );
 			newSku.setEventStartDateTime( arguments.startDateTime );
@@ -176,7 +176,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -562,7 +562,7 @@ component extends="HibachiService" accessors="true" {
 	
 					// Set up new bundle data
 					var newBundleData = {
-						skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
+						skuCode = "product.getNextSkuCodeCount()",
 						price = 0,
 						skus = skus
 					};
@@ -685,7 +685,7 @@ component extends="HibachiService" accessors="true" {
 		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
 			newSku.setListPrice( arguments.processObject.getListPrice() );
 		}
-		newSku.setSkuCode( arguments.product.getProductCode() & "-#arguments.product.getNextSkuCodeCount()#");
+		newSku.setSkuCode( arguments.product.getNextSkuCode());
 		newSku.setSubscriptionTerm( newSubscriptionTerm );
 		for(var b=1; b <= listLen( arguments.processObject.getSubscriptionBenefits() ); b++) {
 			newSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
@@ -817,7 +817,7 @@ component extends="HibachiService" accessors="true" {
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
                     setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
-					newSku.setSkuCode(product.getProductCode() & "-#arguments.product.getNextSkuCodeCount()#");
+					newSku.setSkuCode(arguments.product.getNextSkuCode());
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
 					arguments.product.addSku(newSku);
