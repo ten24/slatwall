@@ -24,7 +24,6 @@ export class FileService {
             deferred.resolve();
         };
         image.src = src;
-        console.log(deferred.promise);
         return deferred.promise;
     }
     

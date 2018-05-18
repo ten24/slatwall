@@ -11,6 +11,7 @@ import { CoreModule }  from  "../../../org/Hibachi/client/src/core/core.module";
 import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
 import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity.module";
 import { FormModule }   from "../../../org/Hibachi/client/src/form/form.module";
+import { Pagination } from "../../../org/Hibachi/client/src/pagination/pagination.module";
 import {ContentModule} from "./content/content.module";
 import {FormBuilderModule} from "./formbuilder/formbuilder.module";
 import {OptionGroupModule} from "./optiongroup/optiongroup.module";
@@ -42,7 +43,8 @@ import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider } fr
     GiftCardModule,
     OrderItemModule,
     ProductModule,
-    FormModule
+    FormModule,
+    Pagination
   ],
   declarations:[
       HeroDetailComponent
