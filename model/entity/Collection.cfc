@@ -1741,18 +1741,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-		var firstFilterGroup = true;
 		for(var filterGroup in arguments.FilterGroups){
 			var logicalOperator = '';
 
-			if(!firstFilterGroup && structKeyExists(filterGroup,'logicalOperator')){
+			if(structKeyExists(filterGroup,'logicalOperator')){
 				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
 			}
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
-				firstFilterGroup = false;
 			}
 		}
 
