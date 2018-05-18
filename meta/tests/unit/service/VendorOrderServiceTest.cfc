@@ -54,75 +54,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = createMock(object=request.slatwallScope.getBean("vendorOrderService"));
 	}
 	
-	public void function processVendorOrder_receiveTest(){
-		
-		var productData={
-			productID="",
-			productName="test",
-			productCode="test"&createUUID()
-		};
-		var product = createPersistedTestENtity('product',productData);
-		
-		var skuData = {
-			skuID="",
-			skuName="test",
-			skuCode="test"&createUUID(),
-			product={
-				productID=product.getProductID()
-			}
-		};
-		var sku = createPersistedTestEntity('sku',skuData);
-		
-		var stockData = {
-			stockID="",
-			sku={
-				skuID=sku.getSkuID()
-			},
-			locations=[
-				{
-					locationID='88e6d435d3ac2e5947c81ab3da60eba2'
-				}
-			]
-		};
-		var stock = createPersistedTestEntity('stock',stockData);
-		
-		var vendorOrderItemData = {
-			vendorOrderItemID="",
-			stock={
-				stockid=stock.getStockID()
-			}
-		};
-		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
-		
-		
-		var vendorOrderData = {
-			vendorOrderID="",
-			vendorOrderItems=[
-				{
-					quantity=5,
-					vendorOrderItemID=vendorOrderItem.getVendorOrderItemID()
-				}
-			]
-		};
-		var vendorOrder = createPersistedTestEntity('VendorOrder',vendorOrderData);
-		
-		var vendorOrder_ReceiveData = {
-			//default location
-			locationID='88e6d435d3ac2e5947c81ab3da60eba2',
-			vendorOrderItems=[
-				{
-					quantity=5,
-					vendorOrderItem.vendorOrderItemID=vendorOrderItem.getVendorOrderItemID()
-				}
-			]
-		};
-		
-		vendorOrder = variables.service.processVendorOrder(vendorOrder,vendorOrder_ReceiveData,'Receive');
-		
-		//make sure that a stockReceiverItem is created
-		assert(arrayLen(vendorOrder.getVendorOrderItems()[1].getStockReceiverItems()));
-		assertEquals(vendorOrder.getVendorOrderStatusType().getSystemCode(),'vostClosed');
-	}
+	
 	
 	public void function processVendorOrder_receiveTest_partiallyRecieived(){
 		

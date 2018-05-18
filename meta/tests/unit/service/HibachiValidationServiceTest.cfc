@@ -372,8 +372,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = request.SlatwallScope.newEntity('Account');
 		account.setFirstName('Joe');
 		account.setCompany(javacast("null",""));
-		assertfalse(variables.service.validate_null(account,'firstName', false));
-		assertfalse(variables.service.validate_null(account,'company', false));
+		assert(variables.service.validate_null(account,'firstName', false));
+		assert(variables.service.validate_null(account,'company', true));
 	}
 
 	// validate_gte()

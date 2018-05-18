@@ -240,13 +240,15 @@ component extends="testbox.system.BaseSpec"{
 		var hibachiTagService = createMock('Slatwall.org.Hibachi.HibachiTagService');
 		var settingService = this.getSettingServiceMock();
 		var skuService = createMock('Slatwall.model.service.SkuService');
+		var siteService = createMock('Slatwall.model.service.SiteService');
 
 		var imageService = onMissingMethod('getImageServiceMock',{});
 
 		imageService.sethibachiTagService(hibachiTagService);
 		imageService.setsettingService(settingService);
 		imageService.setskuService(skuService);
-
+		imageService.setSiteService(siteService);
+		
 		return imageService;
 	}
 

@@ -1670,6 +1670,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterGroupHQL = '';
 		var isFirstFilter = true;
 		for(var filter in arguments.filterGroup){
+			
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -3681,7 +3682,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
 		if(structKeyExists(arguments.collectionConfigStruct,'filterGroups')){
 			for(var filter in variables.collectionConfigStruct['filterGroups'][1].filterGroup){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+				if(structKeyExists(filter,'propertyIdentifier')){
+					getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+				}
 			}
 		}
 	}

@@ -497,7 +497,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}else{
 				var comparisonOperator = getComparisonOperator(workflowCondition.comparisonOperator);
 				if(len(comparisonOperator)){
-					workflowCondition.propertyIdentifier = Replace(workflowCondition.propertyIdentifier, '_','.', 'ALL');
+					workflowCondition.propertyIdentifier = workflowCondition.propertyIdentifier;
 					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
 				}
 			}
@@ -580,9 +580,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.taskConditions = rereplace(arguments.taskConditions,'"eq"','"="','all');
 			arguments.taskConditions = rereplace(arguments.taskConditions,'"neq"','"!="','all');
 			arguments.taskConditions = deserializeJSON(arguments.taskConditions);
-			
 			entityCollectionlist.setCollectionConfigStruct(arguments.taskConditions);
-			entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
+			//if filter group is empty then we can use it otherwise isolate the new filter
+			if(!arrayLen(arguments.taskConditions.filterGroups[1].filterGroup)){
+				entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND');
+			}else{
+				entityCollectionlist.addFilter(arguments.entity.getPrimaryIDPropertyName(),arguments.entity.getPrimaryIDValue(),'=','AND',"","isolatedFilter");
+			}
+			
 			entityCollectionlist.setDisplayProperties(arguments.entity.getPrimaryIDPropertyName());
 			//only can return 1 item or no items
 			return arraylen(entityCollectionlist.getRecords());
