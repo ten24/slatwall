@@ -17,7 +17,7 @@ jobs:
       #    background: true
       - run: sleep 10
       - run: curl http://localhost:80
-      - run: sleep 5
+      - run: sleep 10
       # This is based on your 1.0 configuration file or project settings
       - run:
           command: cd meta/docker/slatwall-ci && docker-compose exec slatwallweb ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";
