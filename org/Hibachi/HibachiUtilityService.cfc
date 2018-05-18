@@ -270,9 +270,9 @@
 		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
 			var addon = 0;
 
-			var propertyValue = createSEOString(arguments.propertyValue);
+			arguments.propertyValue = createSEOString(arguments.propertyValue);
 			
-			var returnValue = propertyValue;
+			var returnValue = arguments.propertyValue;
 			
 			if (requiresCount) {
 				returnValue = '#returnValue#-1';
@@ -282,7 +282,7 @@
 
 			while(!unique) {
 				addon++;
-				returnValue = "#propertyValue#-#addon#";
+				returnValue = "#arguments.propertyValue#-#addon#";
 				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 			}
 
