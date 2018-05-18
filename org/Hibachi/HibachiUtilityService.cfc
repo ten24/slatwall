@@ -286,7 +286,7 @@
 				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 			}
 
-			return returnTitle;
+			return returnValue;
 		}
 
   		public string function generateRandomID( numeric numCharacters = 8){
