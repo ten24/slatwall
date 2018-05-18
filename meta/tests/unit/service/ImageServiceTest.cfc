@@ -95,17 +95,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		//Test default, should hit global assertion
 		var imagePath = variables.service.getResizedImagePath('falsepath');
+		debug(imagePath);
 		assertEquals(imagePath,"#variables.service.getApplicationValue('baseUrl')##variables.service.getHibachiScope().setting('imageMissingImagePath')#"	);
-	}
-
-	/**
-	* @test
-	*/
-	public void function missingImageSettingTest_customMissingImageFile(){
-		//Test custom file, should hit custom assertion
-		createTestFile(expandPath(variables.service.getHibachiScope().setting('imageMissingImagePath')), '\custom\assets\images\missingimage.jpg');
-		imagePath = variables.service.getResizedImagePath('falsepath');
-		assertEquals(imagePath,"#variables.service.getApplicationValue('baseUrl')#/custom/assets/images/missingimage.jpg");
 	}
 
 	/**
