@@ -602,9 +602,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var workflowTriggerSmartList = variables.service.getWorkflowTriggerSmartList();
 		workflowTriggerSmartList.addFilter('workflow.activeFlag',1);
 		workflowTriggerSmartList.addFilter('triggerEvent','afterOrderProcess_placeOrderSuccess');
+		
 		var workflowTrigger = workflowTriggerSmartList.getPageRecords()[1];
 		var successFlag = variables.service.runWorkflowByEventTrigger(workflowTrigger,order);
-		
 		assert(successFlag);
 		assert(!request.slatwallScope.getORMHasErrors());
 	}
