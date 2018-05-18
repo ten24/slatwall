@@ -146,7 +146,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		         "filterGroup":[
 		            {
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -164,7 +164,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"AND",
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -182,7 +182,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"OR",
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -202,7 +202,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            	"filterGroup":[
 			            	 {
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -220,7 +220,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				            {
 				            	"logicalOperator":"AND",
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -238,7 +238,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				            {
 				            	"logicalOperator":"OR",
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -258,7 +258,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		         ]
 		      }
 		   ],
-		   "baseEntityAlias":"Product",
+		   "baseEntityAlias":"_product",
 		   "baseEntityName":"Product"
 		}';
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
@@ -293,7 +293,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		         "filterGroup":[
 		            {
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -311,7 +311,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"AND",
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -329,7 +329,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"OR",
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -349,7 +349,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            	"filterGroup":[
 			            	 {
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -367,7 +367,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				            {
 				            	"logicalOperator":"AND",
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -385,7 +385,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				            {
 				            	"logicalOperator":"OR",
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -604,6 +604,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		workflowTriggerSmartList.addFilter('triggerEvent','afterOrderProcess_placeOrderSuccess');
 		var workflowTrigger = workflowTriggerSmartList.getPageRecords()[1];
 		var successFlag = variables.service.runWorkflowByEventTrigger(workflowTrigger,order);
+		
 		assert(successFlag);
 		assert(!request.slatwallScope.getORMHasErrors());
 	}

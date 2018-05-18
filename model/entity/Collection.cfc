@@ -1670,6 +1670,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterGroupHQL = '';
 		var isFirstFilter = true;
 		for(var filter in arguments.filterGroup){
+			
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -1740,16 +1741,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
+		var firstFilterGroup = true;
 		for(var filterGroup in arguments.FilterGroups){
 			var logicalOperator = '';
 
-			if(structKeyExists(filterGroup,'logicalOperator')){
+			if(!firstFilterGroup && structKeyExists(filterGroup,'logicalOperator')){
 				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
 			}
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+				firstFilterGroup = false;
 			}
 		}
 
@@ -3681,7 +3684,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
 		if(structKeyExists(arguments.collectionConfigStruct,'filterGroups')){
 			for(var filter in variables.collectionConfigStruct['filterGroups'][1].filterGroup){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+				if(structKeyExists(filter,'propertyIdentifier')){
+					getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+				}
 			}
 		}
 	}
