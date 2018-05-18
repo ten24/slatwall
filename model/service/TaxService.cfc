@@ -763,6 +763,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(isNull(appliedTax.getManualTaxAmountFlag()) || !appliedTax.getManualTaxAmountFlag()){
 					appliedTax.removeOrderItem( orderItem );
 				}
+				orderItem.clearVariablesKey('taxAmount');
+				orderItem.clearVariablesKey('taxLiabilityAmount');
 			}
 
 		}
