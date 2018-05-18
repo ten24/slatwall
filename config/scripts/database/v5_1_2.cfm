@@ -48,7 +48,7 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-
+<!---
 <cftry>
 	<cfquery name="local.taskConditionsConfigs">
 		SELECT workflowtaskID, taskConditionsConfig FROM swWorkflowTask where taskConditionsConfig not like '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"%'
@@ -67,7 +67,7 @@ Notes:
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update workflowtask taskConditionsConfig">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
-</cftry>
+</cftry>--->
 
 
 <cfif local.scriptHasErrors>
