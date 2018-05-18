@@ -562,7 +562,7 @@ component extends="HibachiService" accessors="true" {
 	
 					// Set up new bundle data
 					var newBundleData = {
-						skuCode = "product.getNextSkuCodeCount()",
+						skuCode = "product.getNextSkuCode()",
 						price = 0,
 						skus = skus
 					};
@@ -817,7 +817,7 @@ component extends="HibachiService" accessors="true" {
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.processObject.getPrice());
                     setListPriceOnSkuByProductAndProcessObject(newSku, arguments.product, arguments.processObject);
-					newSku.setSkuCode(arguments.product.getNextSkuCode());
+					newSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
 					arguments.product.addSku(newSku);
@@ -845,6 +845,8 @@ component extends="HibachiService" accessors="true" {
 							}
 						}
 					}
+					
+					
 				}
 
 			// If no options were passed in we will just create a single sku
