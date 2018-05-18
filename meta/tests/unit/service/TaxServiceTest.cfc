@@ -182,7 +182,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(!isNull(firstAppTax.getOrderItem()));
 		assertEquals(firstOrderItem, firstAppTax.getOrderItem());
 
-		variables.service.removeTaxesFromAllOrderItems( newOrder );
+		variables.service.removeTaxesFromAllOrderItemsAndOrderFulfillments( newOrder );
 
 		assertEquals(0, arrayLen(firstOrderItem.getAppliedTaxes()));
 		assert(isNull(firstAppTax.getOrderItem()));
