@@ -123,13 +123,13 @@
 		    						<!----- AJAX Add to Cart Button -------->
 		    						
 		    						<!---- since we are inside a loop, we need a unique id for each ngModel variable to avoid conflicts ------>
-		    						<cfset formUniqueID = getHibachiScope().createHibachiUUID() />
+		    						<cfset local.formUniqueID = getHibachiScope().createHibachiUUID() />
 		    						
 		    						<!----- use ng-init for hidden inputs ----->
 
-		    						<span ng-init="OrderItem_Add_#formUniqueID# = {skuID:'#local.product['defaultSku_skuID']#'}"></span>
+		    						<span ng-init="OrderItem_Add_#local.formUniqueID# = {skuID:'#local.product['defaultSku_skuID']#'}"></span>
 		    						<form  
-										ng-model="OrderItem_Add_#formUniqueID#" 
+										ng-model="OrderItem_Add_#local.formUniqueID#" 
 										ng-submit="swfForm.submitForm()" 
 										swf-form 
 										data-method="addOrderItem"
