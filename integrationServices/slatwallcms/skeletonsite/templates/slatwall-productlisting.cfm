@@ -6,6 +6,8 @@
 
     <h1 class="my-4">#$.slatwall.content('title')#</h4>
     
+    <!---- SERVER SIDE ACTIONS' ALERTS ----->
+    
     <!--- If this item was just added show the success message --->
 	<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
 		<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -23,6 +25,13 @@
 			<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderItem" />
 		</div>
 	</cfif>
+	
+	
+	 <!---- CLIENT SIDE (AJAX) ACTIONS' ALERTS ----->
+	 
+	<div ng-show="slatwall.hasSuccessfulAction('addOrderItem')" class="alert alert-success">Item Added to Cart</div>
+    <div ng-show="slatwall.hasFailureAction('addOrderItem')" class="alert alert-danger">There was an error adding item to cart</div>
+	
 	<!--- Base Product Collection List --->
 	<cfset productCollectionList = $.slatwall.getService('productService').getProductCollectionList()>
 	<cfset productCollectionList.setPageRecordsShow(9)/>
@@ -102,12 +111,38 @@
 		    						#local.product['productDescription']#
 		    					</div>
 		    					<div class="card-footer">
+		    						
+		    						<!----- Server Side Add to Cart Button -------->
+		    						
 		    						<form action="?s=1" method="post">
-		    							<button type="submit" class="btn btn-primary float-left">Buy Now</button>
+		    							<button type="submit" class="btn btn-primary float-left">Buy Now (server side)</button>
 		    							<input type="hidden" name="skuID" value="#local.product['defaultSku_skuID']#" />
 		    							<input type="hidden" name="slatAction" value="public:cart.addOrderItem">
 		    						</form>
-		                            <a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
+		    						
+		    						<!----- AJAX Add to Cart Button -------->
+		    						
+		    						<!---- since we are inside a loop, we need a unique id for each ngModel variable to avoid conflicts ------>
+		    						<cfset formUniqueID = getHibachiScope().createHibachiUUID() />
+		    						
+		    						<!----- use ng-init for hidden inputs ----->
+
+		    						<span ng-init="OrderItem_Add_#formUniqueID# = {skuID:'#local.product['defaultSku_skuID']#'}"></span>
+		    						<form  
+										ng-model="OrderItem_Add_#formUniqueID#" 
+										ng-submit="swfForm.submitForm()" 
+										swf-form 
+										data-method="addOrderItem"
+										<!--- use s-redirect-url or f-redirect-url as attributes here if needed ---->
+									>
+									    <button class="btn btn-primary float-left" >{{(slatwall.getRequestByAction('addOrderItem').loading ? 'Loading...' : 'Buy Now (client side)')}}</button>
+
+									</form>
+									
+									<!------ End of add to cart buttons -------->
+									
+									<a href="/#$.slatwall.setting('globalURLKeyProduct')#/#local.product['urlTitle']#" class="btn btn-default float-right">Learn More</a>
+									
 		    					</div>
 		    				</div>
     					</div>
