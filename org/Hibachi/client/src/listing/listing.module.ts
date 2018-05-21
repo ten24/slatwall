@@ -3,8 +3,14 @@
 
 //modules
 import {collectionmodule} from "../collection/collection.module";
+import {CollectionModule} from "../collection/collection.module";
+import {NgModule} from "@angular/core";
+import {CommonModule} from "@angular/common";
+import {UpgradeModule, downgradeInjectable} from "@angular/upgrade/static";
+
 //services
 import {ListingService} from "./services/listingservice";
+
 //directives
 import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
@@ -21,6 +27,22 @@ import {SWListingRowSave} from "./components/swlistingrowsave";
 import {SWListingSearch} from "./components/swlistingsearch";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		CollectionModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class ListingModule{
+	constructor(){
+		
+	}
+}
 
 var listingmodule = angular.module('hibachi.listing', [collectionmodule.name])
 .run([function() {
