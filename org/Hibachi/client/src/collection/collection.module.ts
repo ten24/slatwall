@@ -2,15 +2,21 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {coremodule} from '../core/core.module';
-//services
+import {CoreModule} from "../core/core.module";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 
+//services
 import {CollectionConfig} from "./services/collectionconfigservice";
 import {CollectionService} from "./services/collectionservice";
+
 //controllers
 import {CollectionController} from "./controllers/collections";
 import {CreateCollection} from "./controllers/createcollection";
 import {ConfirmationController} from "./controllers/confirmationcontroller";
 import {CollectionCreateController} from "./controllers/entity_createcollection";
+
 //directives
 import {SWCollection} from "./components/swcollection";
 import {SWAddFilterButtons} from "./components/swaddfilterbuttons";
@@ -34,8 +40,26 @@ import {SWFilterGroups} from "./components/swfiltergroups";
 import {SWFilterItem} from "./components/swfilteritem";
 import {SWFilterGroupItem} from "./components/swfiltergroupitem";
 import {SWRestrictionConfig} from "./components/swrestrictionconfig";
+
 //filters
 import {AggregateFilter} from "./filters/aggregatefilter";
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		CoreModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class CollectionModule{
+	constructor(){
+
+	}
+}
 
 var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .config([()=>{
