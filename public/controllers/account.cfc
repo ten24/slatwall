@@ -269,10 +269,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 		if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
 			var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.rc, 'renew' );
-			getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
+			getHibachiScope().addActionResult( "public:account.renewSubscriptionUsage", subscriptionUsage.hasErrors() );
 
 		} else {
-			getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
+			getHibachiScope().addActionResult( "public:account.renewSubscriptionUsage", true );
 		}
 	}
 
