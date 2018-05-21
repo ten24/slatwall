@@ -1,9 +1,11 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 /// <reference path="../../../typings/hibachiTypescript.d.ts" />
 /*collection service is used to maintain the state of the ui*/
+import {ObserverService} from "../../core/services/observerservice";
+import {UtilityService} from "../../core/services/utilityservice";
+import { Injectable } from "@angular/core";
 
-
-class Pagination{
+export class Pagination{
 
     public pageShow:number=10;
     public currentPage:number = 1;
@@ -25,9 +27,8 @@ class Pagination{
     public notifyById = true;
     public getCollection;
 
-    //@ngInject
     constructor(
-        public observerService,
+        public observerService:ObserverService,
         private uuid:string
     ){
         this.uuid = uuid;
@@ -35,89 +36,89 @@ class Pagination{
         this.observerService.attach(this.setPageRecordsInfo, 'swPaginationUpdate', this.uuid);
     }
 
-    public getSelectedPageShowOption = () =>{
+    public getSelectedPageShowOption() {
         return this.selectedPageShowOption;
     };
 
-    public pageShowOptionChanged = (pageShowOption) => {
+    public pageShowOptionChanged (pageShowOption) {
         this.setPageShow(pageShowOption.value);
         this.currentPage = 1;
         this.notify('swPaginationAction', {type:'setPageShow', payload:this.getPageShow()});
     };
 
-    public getTotalPages=():number =>{
+    public getTotalPages():number {
         return this.totalPages;
     };
-    public setTotalPages=(totalPages:number):void =>{
+    public setTotalPages(totalPages:number):void {
         this.totalPages = totalPages;
     };
-    public getPageStart=():number =>{
+    public getPageStart():number {
         return this.pageStart;
     };
-    public setPageStart=(pageStart:number):void =>{
+    public setPageStart(pageStart:number):void {
         this.pageStart = pageStart;
     };
-    public getPageEnd=():number =>{
+    public getPageEnd():number {
         return this.pageEnd;
     };
-    public setPageEnd=(pageEnd:number):void =>{
+    public setPageEnd(pageEnd:number):void {
         this.pageEnd = pageEnd;
     };
-    public getRecordsCount=():number =>{
+    public getRecordsCount():number {
         return this.recordsCount;
     };
-    public setRecordsCount=(recordsCount:number):void =>{
+    public setRecordsCount(recordsCount:number):void {
         this.recordsCount = recordsCount;
     };
-    public getPageShowOptions=() =>{
+    public getPageShowOptions() {
         return this.pageShowOptions;
     };
-    public setPageShowOptions=(pageShowOptions) =>{
+    public setPageShowOptions(pageShowOptions) {
         this.pageShowOptions = pageShowOptions;
     };
-    public getPageShow=():number =>{
+    public getPageShow():number {
         return this.pageShow;
     };
-    public setPageShow=(pageShow:any):void =>{
+    public setPageShow(pageShow:any):void {
         this.pageShow = pageShow;
     };
-    public getCurrentPage=():number =>{
+    public getCurrentPage():number {
         return this.currentPage;
     };
-    public setCurrentPage=(currentPage:number):void =>{
+    public setCurrentPage(currentPage:number):void {
         this.currentPage = currentPage;
         //this.observerService.notifyById('swPaginationAction', this.uuid,{action:'pageChange', currentPage});
         this.notify('swPaginationAction', {type:'setCurrentPage', payload:this.getCurrentPage()});
     };
-    public previousPage=():void =>{
+    public previousPage():void {
         if(this.getCurrentPage() == 1) return;
         this.setCurrentPage(this.getCurrentPage() - 1);
     };
-    public nextPage=():void =>{
+    public nextPage():void {
         if(this.getCurrentPage() < this.getTotalPages()){
             this.setCurrentPage(this.getCurrentPage() + 1);
             this.notify('swPaginationAction', {type:'nextPage', payload:this.getCurrentPage()});
         }
     };
-    public hasPrevious=():boolean =>{
+    public hasPrevious():boolean {
         return (this.getPageStart() <= 1);
     };
-    public hasNext=():boolean =>{
+    public hasNext():boolean {
         return (this.getPageEnd() === this.getRecordsCount());
     };
-    public showPreviousJump=():boolean =>{
+    public showPreviousJump():boolean {
         return (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 3);
     };
-    public showNextJump=():boolean =>{
+    public showNextJump():boolean {
         return !!(this.getCurrentPage() < this.getTotalPages() - 3 && this.getTotalPages() > 6);
     };
-    public previousJump=():void =>{
+    public previousJump():void {
         this.setCurrentPage(this.currentPage - 3);
     };
-    public nextJump=():void =>{
+    public nextJump():void {
         this.setCurrentPage(this.getCurrentPage() + 3);
     };
-    public showPageNumber = (pageNumber:number):boolean =>{
+    public showPageNumber (pageNumber:number):boolean {
         if(this.getCurrentPage() >= this.getTotalPages() - 3){
             if(pageNumber > this.getTotalPages() - 6){
                 return true;
@@ -140,7 +141,7 @@ class Pagination{
     
     
     
-    public setPageRecordsInfo = (collection):void =>{
+    public setPageRecordsInfo (collection):void {
         this.setRecordsCount(collection.recordsCount);
         if(this.getRecordsCount() === 0 ){
             this.setPageStart(0);
@@ -175,24 +176,24 @@ class Pagination{
 
 }
 
-interface IPaginationService{
+export interface IPaginationService{
     createPagination(uuid?:string):Pagination;
     getPagination(uuid:string):Pagination;
 }
 
-class PaginationService implements IPaginationService{
+@Injectable()
+export class PaginationService implements IPaginationService{
     
-
     private paginations = {};
-    //@ngInject
+    
     constructor(
-        private utilityService,
-        public observerService
+        private utilityService:UtilityService,
+        public observerService:ObserverService
     ){
-
+        
     }
 
-    public createPagination = (id):Pagination =>{
+    public createPagination (id):Pagination{
         var uuid = this.utilityService.createID(10);
         if(angular.isDefined(id)){
             uuid = id;
@@ -201,13 +202,8 @@ class PaginationService implements IPaginationService{
         return this.paginations[uuid];
     };
 
-    public getPagination=(uuid:string):Pagination =>{
+    public getPagination(uuid:string):Pagination{
         if(!uuid) return;
         return this.paginations[uuid];
     };
-}
-export{
-    PaginationService,
-    Pagination,
-    IPaginationService
 }

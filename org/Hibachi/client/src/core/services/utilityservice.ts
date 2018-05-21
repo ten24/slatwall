@@ -2,17 +2,17 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 import {BaseService} from "./baseservice";
-import { Parse } from "../../../../../../admin/client/src/ajs-upgraded-providers";
-import { Injectable } from "@angular/core";
+//import { Parse } from "../../../../../../admin/client/src/ajs-upgraded-providers";
+import { Injectable,Inject } from "@angular/core";
 
 @Injectable()
 export class UtilityService  extends BaseService{
-    //@ngInject
+    $parse: any;
     constructor(
-        private $parse : Parse
+        @Inject('$parse') $parse:any 
     ){
         super();
-        
+        this.$parse = $parse;
     }
     
     public structKeyExists(struct,key) {
@@ -72,7 +72,7 @@ export class UtilityService  extends BaseService{
             if(property.indexOf('.') != -1){
                 property = property.replace('.','_');
             }
-            var parseFunction = this.$parse.get(property);
+            var parseFunction = this.$parse(property);
             data.push(parseFunction(context));
         });
         return this.replacePropertiesWithData(stringItem, data);
@@ -301,7 +301,7 @@ export class UtilityService  extends BaseService{
         return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
 
-    public createID (count:number):string {
+    public createID (count?:number):string {
           var count = count || 26;
 
           var text = "";

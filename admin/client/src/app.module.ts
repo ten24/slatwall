@@ -10,6 +10,8 @@ import { LoggerModule } from "../../../org/Hibachi/client/src/logger/logger.modu
 import { CoreModule }  from  "../../../org/Hibachi/client/src/core/core.module";
 import { CardModule } from "../../../org/Hibachi/client/src/card/card.module";
 import { EntityModule } from "../../../org/Hibachi/client/src/entity/entity.module";
+import { FormModule }   from "../../../org/Hibachi/client/src/form/form.module";
+import { Pagination } from "../../../org/Hibachi/client/src/pagination/pagination.module";
 import { ValidationModule } from "../../../org/Hibachi/client/src/validation/validation.module";
 import { WorkflowModule } from "../../../org/Hibachi/client/src/workflow/workflow.module";
 import {ContentModule} from "./content/content.module";
@@ -18,13 +20,16 @@ import {OptionGroupModule} from "./optiongroup/optiongroup.module";
 import {GiftCardModule} from "./giftcard/giftcard.module";
 import {OrderItemModule} from "./orderitem/orderitem.module";
 import {ProductModule} from "./product/product.module";
-import { parseProvider,logProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider } from "./ajs-upgraded-providers"; 
 
 
 @NgModule({
   providers: [
     parseProvider,
-    logProvider
+    logProvider,
+    filterProvider,
+    timeoutProvider,
+    qProvider
   ],
   imports: [
     BrowserModule,
@@ -41,6 +46,8 @@ import { parseProvider,logProvider } from "./ajs-upgraded-providers";
     GiftCardModule,
     OrderItemModule,
     ProductModule,
+    FormModule,
+    Pagination,
     ValidationModule,
     WorkflowModule
   ],

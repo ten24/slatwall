@@ -1,13 +1,12 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-import { Log } from "../../../../../../admin/client/src/ajs-upgraded-providers";
-import { Injectable } from "@angular/core";
+import { Injectable,Inject } from "@angular/core";
 
 @Injectable()
 export class HibachiValidationService{
-    //@ngInject
+    private $log: any;
     constructor(
-		public $log : Log
+		@Inject('$log') $log : any
     ){
 		this.$log = $log;
 

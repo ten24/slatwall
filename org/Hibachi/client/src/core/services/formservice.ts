@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {Injectable,Inject} from "@angular/core";
 
 class Form implements ng.IFormController{
     [name: string]: any;
@@ -33,41 +34,41 @@ class Form implements ng.IFormController{
     }
 }
 
-class FormService{
-    public static $inject = ['$log'];
+@Injectable()
+export class FormService{
+    private $log : any;
     private _forms;
     private _pristinePropertyValue;
 
     constructor(
-        private $log:ng.ILogService
+        @Inject('$log') $log:any
     ){
         this.$log = $log;
         this._forms = {};
         this._pristinePropertyValue = {};
-
     }
 
-    setPristinePropertyValue = (property:string,value:any):void =>{
+    setPristinePropertyValue (property:string,value:any):void {
         this._pristinePropertyValue[property] = value;
     }
 
-    getPristinePropertyValue = (property:string):any =>{
+    getPristinePropertyValue (property:string):any {
         return this._pristinePropertyValue[property];
     }
 
-    setForm = (form:Form):void =>{
+    setForm (form:Form):void {
         this._forms[form.name] = form;
     }
 
-    getForm = (formName:string):Form =>{
+    getForm (formName:string):Form {
         return this._forms[formName];
     }
 
-    getForms = ():any =>{
+    getForms ():any {
         return this._forms;
     }
 
-    getFormsByObjectName = (objectName:string):any =>{
+    getFormsByObjectName (objectName:string):any {
         var forms = [];
         for(var f in this._forms){
 
@@ -78,7 +79,7 @@ class FormService{
         return forms;
     }
 
-    createForm = (name:string,object:any,editing:boolean):Form =>{
+    createForm (name:string,object:any,editing:boolean):Form {
         var _form = new Form(
             name,
             object,
@@ -88,8 +89,7 @@ class FormService{
         return _form;
     }
 
-    resetForm = (form:Form):void =>{
-
+    resetForm (form:Form):void {
         this.$log.debug('resetting form');
         this.$log.debug(form);
 
@@ -114,9 +114,3 @@ class FormService{
         form.$setUntouched();
     }
 }
-export{
-    FormService
-}
-
-
-
