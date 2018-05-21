@@ -20,6 +20,27 @@ import {SWSchedulePreview} from "./components/swschedulepreview";
 
 //filters
 
+//modules
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class WorkflowModule{
+	constructor(){
+
+	}
+}
+
 
 var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).config(()=>{
 })

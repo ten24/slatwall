@@ -19,7 +19,32 @@ import {SWValidationUnique} from "./components/swvalidationunique";
 import {SWValidationUniqueOrNull} from "./components/swvalidationuniqueornull";
 //services
 import {ValidationService} from "./services/validationservice";
+
+//modules
 import {coremodule} from "../core/core.module";
+import {CoreModule} from "../core/core.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		CoreModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class ValidationModule{
+	constructor(){
+
+	}
+}
+
 var validationmodule = angular.module('hibachi.validation', [coremodule.name])
 .run([function() {
 }])
