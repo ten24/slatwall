@@ -696,6 +696,14 @@
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
+		
+		public string function hibachiEncodeForXML(required string xmlString){
+			arguments.xmlString = encodeForXML(arguments.xmlString);
+			arguments.xmlString = ReReplace(arguments.xmlString, '&', '&amp;', 'all');
+			arguments.xmlString = ReReplace(arguments.xmlString, '<', '&lt;', 'all');
+			arguments.xmlString = ReReplace(arguments.xmlString, '>', '&rt;', 'all');
+			return arguments.xmlString;
+		}
 
 		public string function sanitizeForAngular(required string html){
 			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
