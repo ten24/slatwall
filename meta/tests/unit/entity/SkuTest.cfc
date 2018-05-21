@@ -503,7 +503,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assert(!isNull(skuPrice.getSku()));
 		
 		var result = mockSku.getPriceByCurrencyCode('USD',7,[priceGroup]);
-		debug(result);
 		assertEquals(50, result);
 		
 		
