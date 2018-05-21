@@ -108,7 +108,8 @@ import {BaseObject} from "./model/baseobject";
         UtilityService,
         HibachiValidationService,
         MetaDataService,
-        ObserverService
+        ObserverService,
+        FormService
     ],  
     imports: [
         CommonModule,
@@ -235,7 +236,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('draggableService',downgradeInjectable(DraggableService))
 .service('expandableService',downgradeInjectable(ExpandableService))
 .service('filterService',downgradeInjectable(FilterService))
-.service('formService',FormService)
+.service('formService',downgradeInjectable(FormService))
 .service('historyService',downgradeInjectable(HistoryService))
 .service('metadataService',downgradeInjectable(MetaDataService))
 .service('rbkeyService',RbKeyService)
