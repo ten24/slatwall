@@ -421,12 +421,16 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 	public any function deleteImage(any image) {
 		var filename = arguments.image.getImageFile();
-		var imageFullPath = getProductImagePathByImageFile(filename);
-		if(fileExists(imageFullPath)) {
-			fileDelete(imageFullPath);
+
+		var deleteOK = super.delete(arguments.image);
+		if(deleteOK){
+			var imageFullPath = getProductImagePathByImageFile(filename);
+			if(fileExists(imageFullPath)) {
+				fileDelete(imageFullPath);
+			}
+			clearImageCache("#getHibachiScope().getBaseImageURL()#/product/default",filename);
 		}
-		clearImageCache("#getHibachiScope().getBaseImageURL()#/product/default",filename);
-		return super.delete(arguments.image);
+		return deleteOK;
 	}
 
 
