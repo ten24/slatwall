@@ -20,7 +20,7 @@ import {OptionGroupModule} from "./optiongroup/optiongroup.module";
 import {GiftCardModule} from "./giftcard/giftcard.module";
 import {OrderItemModule} from "./orderitem/orderitem.module";
 import {ProductModule} from "./product/product.module";
-import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider } from "./ajs-upgraded-providers"; 
 
 
 @NgModule({
@@ -29,7 +29,10 @@ import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,http
     logProvider,
     filterProvider,
     timeoutProvider,
-    qProvider
+    qProvider,
+    httpProvider,
+    appConfigProvider,
+    resourceBundlesProvider
   ],
   imports: [
     BrowserModule,

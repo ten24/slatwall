@@ -15,8 +15,8 @@ export class RbKeyService{
     constructor(
         @Inject("$http") $http:any,
         @Inject("$q") $q,
-        public appConfig:any,
-        public resourceBundles:any
+        @Inject("appConfig") public appConfig:any,
+        @Inject("resourceBundles") public resourceBundles:any
     ){
         this.$q = $q;
         this.$http = $http;
