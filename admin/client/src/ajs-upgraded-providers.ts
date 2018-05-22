@@ -32,6 +32,10 @@ export function qFactory(i:any) {
     return i.get("$q");    
 }
 
+export function httpFactory(i:any) {
+    return i.get("$http");    
+}
+
 // define angular factory provider
 export const parseProvider = {
     provide    : '$parse',
@@ -61,4 +65,10 @@ export const qProvider = {
     provide    : '$q',
     useFactory : qFactory,
     deps       : ['$injector']    
+};
+
+export const httpProvider = {
+    provide    : '$http',
+    useFactory : httpFactory,
+    deps       : ["$injector"]  
 };

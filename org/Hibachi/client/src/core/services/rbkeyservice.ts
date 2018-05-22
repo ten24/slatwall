@@ -1,23 +1,27 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Injectable,Inject } from "@angular/core";
 
-class RbKeyService{
+@Injectable()
+export class RbKeyService{
 
     public _resourceBundle = {};
 	public _resourceBundleLastModified = '';
 	public _loadingResourceBundle = false;
 	public _loadedResourceBundle = false;
-    //@ngInject
+    private $http:any;
+    private $q:any;
+    
     constructor(
-        public $http:ng.IHttpService,
-        public $q:ng.IQService,
+        @Inject("$http") $http:any,
+        @Inject("$q") $q,
         public appConfig:any,
         public resourceBundles:any
     ){
         this.$q = $q;
         this.$http = $http;
         this.appConfig = appConfig;
-        this.resourceBundles = resourceBundles
+        this.resourceBundles = resourceBundles;
     }
     getRBLoaded= () => {
 		return this._loadedResourceBundle;
@@ -120,6 +124,3 @@ class RbKeyService{
 
 
 }
-export {
-    RbKeyService
-};
