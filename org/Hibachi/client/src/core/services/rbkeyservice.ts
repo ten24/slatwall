@@ -23,11 +23,11 @@ export class RbKeyService{
         this.appConfig = appConfig;
         this.resourceBundles = resourceBundles;
     }
-    getRBLoaded= () => {
+    getRBLoaded ()  {
 		return this._loadedResourceBundle;
 	}
 
-    rbKey= (key,replaceStringData) => {
+    rbKey (key,replaceStringData) {
 		////$log.debug('rbkey');
 		////$log.debug(key);
 		////$log.debug(this.getConfig().rbLocale);
@@ -37,7 +37,7 @@ export class RbKeyService{
 
 		return keyValue;
 	}
-	getRBKey= (key:string,locale?:string,checkedKeys?:string,originalKey?:string) => {
+	getRBKey (key:string,locale?:string,checkedKeys?:string,originalKey?:string) {
 		////$log.debug('getRBKey');
 		////$log.debug('loading:'+this._loadingResourceBundle);
 		////$log.debug('loaded'+this._loadedResourceBundle);
