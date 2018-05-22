@@ -897,6 +897,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+				
+		for(var orderItem in arguments.order.getOrderItems()){
+			getHibachiScope().addModifiedEntity(orderItem.getStock());
+			getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
+		}
 
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
@@ -1588,6 +1593,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!isNull(orderItem.getStock())){
 										//via cascade calculate stock should update sku then product 
 										getHibachiScope().addModifiedEntity(orderItem.getStock());
+										getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 										getHibachiScope().flushORMSession();
 									}else{
 										//via cascade calculate stock should update product 
