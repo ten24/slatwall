@@ -1,13 +1,14 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
+
+//modules
+import {coremodule} from '../core/core.module';
+import {CoreModule} from "../core/core.module";
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UpgradeModule,downgradeInjectable } from '@angular/upgrade/static';
 
-//modules
-import {coremodule} from '../core/core.module';
-
-import {CoreModule} from "../core/core.module";
 //services
 
 //components
@@ -23,7 +24,9 @@ import {SWCardListItem} from "./components/swcardlistitem";
     declarations :[],
     providers :[],
     imports :[
-        CoreModule
+        CoreModule,
+        CommonModule,
+        UpgradeModule
     ]
 })
 export class CardModule {

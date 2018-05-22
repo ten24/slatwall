@@ -1,23 +1,26 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 
+//modules
+import {alertmodule} from "../alert/alert.module";
+import {AlertModule} from "../alert/alert.module";
 import {NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
-import {alertmodule} from "../alert/alert.module";
-import {AlertModule} from "../alert/alert.module";
+
 import {ExceptionHandler} from "./services/exceptionhandler";
 
 @NgModule({
     declarations : [],
     providers: [],
     imports:[
+        AlertModule,
         CommonModule, 
-        UpgradeModule,
-        AlertModule
+        UpgradeModule      
     ]    
 })
+
 export class LoggerModule {
     constructor(){
         

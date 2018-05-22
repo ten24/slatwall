@@ -1,14 +1,17 @@
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
-import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 import {CoreModule} from "../../../../org/Hibachi/client/src/core/core.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
 //controllers
 import {OrderItemGiftRecipientControl} from "./controllers/preprocessorderitem_addorderitemgiftrecipient";
+
 //directives
 import {SWAddOrderItemGiftRecipient} from "./components/swaddorderitemgiftrecipient";
 import {SWGiftCardBalance} from "./components/swgiftcardbalance";
@@ -18,6 +21,7 @@ import {SWGiftCardOverview} from "./components/swgiftcardoverview";
 import {SWGiftCardOrderInfo} from "./components/swgiftcardorderinfo";
 import {SWGiftCardRecipientInfo} from "./components/swgiftcardrecipientinfo";
 import {SWOrderItemGiftRecipientRow} from "./components/sworderitemgiftrecipientrow";
+
 //models
 import {GiftCard} from "./models/giftcard";
 import {GiftRecipient} from "./models/giftrecipient";
@@ -26,7 +30,9 @@ import {GiftRecipient} from "./models/giftrecipient";
     declarations :[],
     providers: [],
     imports : [
-        CoreModule
+        CoreModule,
+        CommonModule,
+        UpgradeModule
     ]
 })
 export class GiftCardModule{

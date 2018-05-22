@@ -1,8 +1,5 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
-import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
@@ -87,13 +84,19 @@ import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWOrderByControls} from "./components/sworderbycontrols";
 
+//modules
 import {alertmodule} from "../alert/alert.module";
 import {dialogmodule} from "../dialog/dialog.module";
-
 import {AlertModule} from '../alert/alert.module';
 import {DialogModule} from '../dialog/dialog.module';
 
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
+
 import {BaseObject} from "./model/baseobject";
+
 
 @NgModule({
     declarations: [],
@@ -112,12 +115,14 @@ import {BaseObject} from "./model/baseobject";
         FormService
     ],  
     imports: [
-        CommonModule,
-        UpgradeModule,
         AlertModule,
-        DialogModule
+        DialogModule,
+        CommonModule,
+        UpgradeModule
+        
     ]  
 })
+
 export class CoreModule{
     constructor() {
         

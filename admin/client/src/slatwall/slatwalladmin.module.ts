@@ -14,6 +14,24 @@ import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {skumodule} from "../sku/sku.module";
 
+import {HibachiModule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
+import {WorkflowModule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
+import {EntityModule} from "../../../../org/Hibachi/client/src/entity/entity.module";
+import {ContentModule} from "../content/content.module";
+import {FormBuilderModule} from "../formbuilder/formbuilder.module";
+import {GiftCardModule} from "../giftcard/giftcard.module";
+import {OptionGroupModule} from "../optiongroup/optiongroup.module";
+import {OrderItemModule} from "../orderitem/orderitem.module";
+import {OrderFulfillmentModule} from "../orderfulfillment/orderfulfillment.module";
+import {FulfillmentBatchDetailModule} from "../fulfillmentbatch/fulfillmentbatchdetail.module";
+import {ProductModule} from "../product/product.module";
+import {ProductBundleModule} from "../productbundle/productbundle.module";
+import {SkuModule} from "../sku/sku.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 
@@ -29,6 +47,37 @@ import {SWCurrency} from "./filters/swcurrency";
 /* . . . */
 
 import { downgradeComponent } from '@angular/upgrade/static';
+
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+        HibachiModule,
+        EntityModule,
+        ContentModule,
+        FormBuilderModule,
+        GiftCardModule,
+        OptionGroupModule,
+        OrderItemModule,
+        OrderFulfillmentModule,
+        FulfillmentBatchDetailModule,
+        ProductModule,
+        ProductBundleModule,
+        SkuModule,
+        WorkflowModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class SlatwallAdminModule{
+	constructor(){
+		
+	}
+}
+
 //declare variables out of scope
 declare var $:any;
 

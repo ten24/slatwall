@@ -1,16 +1,21 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
-import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 //module
 import {coremodule} from "../core/core.module";
 import {CoreModule} from "../core/core.module";
+
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
 //services
 import {FileService} from "./services/fileservice"; 
+
 //directives
+
 //  components
+
 //form
 import {SWInput} from "./components/swinput";
 import {SWFFormField} from "./components/swfformfield";
@@ -37,6 +42,7 @@ import {SWFormSubscriber} from "./components/swformsubscriber";
         CoreModule
     ]  
 })
+
 export class FormModule{
     constructor() {
         

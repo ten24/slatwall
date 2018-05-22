@@ -4,6 +4,7 @@
 //modules
 import {collectionmodule} from "../collection/collection.module";
 import {CollectionModule} from "../collection/collection.module";
+
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {UpgradeModule, downgradeInjectable} from "@angular/upgrade/static";
