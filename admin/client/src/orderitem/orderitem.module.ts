@@ -1,24 +1,28 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypescript.d.ts" />
-import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 import {coremodule} from '../../../../org/Hibachi/client/src/core/core.module';
 import {CoreModule} from '../../../../org/Hibachi/client/src/core/core.module';
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
 //directives
 import {SWChildOrderItem} from "./components/swchildorderitem";
 import {SWOrderItem} from "./components/sworderitem";
 import {SWOiShippingLabelStamp} from "./components/swoishippinglabelstamp";
 import {SWOrderItemDetailStamp} from "./components/sworderitemdetailstamp";
 import {SWOrderItems} from "./components/sworderitems";
- import {SWResizedImage} from "./components/swresizedimage";
+import {SWResizedImage} from "./components/swresizedimage";
 
 @NgModule({
     declarations :[],
     providers: [],
     imports : [
-        CoreModule
+        CoreModule,
+        CommonModule,
+        UpgradeModule
     ]
 })
 export class OrderItemModule{

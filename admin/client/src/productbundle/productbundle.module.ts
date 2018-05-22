@@ -3,6 +3,12 @@
 
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+import {CoreModule} from "../../../../org/Hibachi/client/src/core/core.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
 //services
 import {ProductBundleService} from "./services/productbundleservice";
 //controllers
@@ -13,6 +19,23 @@ import {SWProductBundleGroups} from "./components/swproductbundlegroups";
 import {SWProductBundleGroup} from "./components/swproductbundlegroup";
 import {SWProductBundleCollectionFilterItemTypeahead} from "./components/swproductbundlecollectionfilteritemtypeahead";
 //filters
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		CoreModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class ProductBundleModule{
+	constructor(){
+		
+	}
+}
 
 
 var productbundlemodule = angular.module('hibachi.productbundle',[coremodule.name]).config(()=>{

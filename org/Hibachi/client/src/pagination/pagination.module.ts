@@ -1,14 +1,17 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
+
+//modules
+import {coremodule} from '../core/core.module';
+import {CoreModule} from '../core/core.module';
+
 import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 //services
 import {PaginationService} from "./services/paginationservice";
 import {SWPaginationBar} from "./components/swpaginationbar";
-import {coremodule} from '../core/core.module';
-import {CoreModule} from '../core/core.module';
 
 @NgModule({
     declarations: [],
@@ -16,12 +19,13 @@ import {CoreModule} from '../core/core.module';
         PaginationService
     ],  
     imports: [
+        CoreModule,
         CommonModule,
-        UpgradeModule,
-        CoreModule
+        UpgradeModule
     ]  
 })
-export class Pagination{
+
+export class PaginationModule{
     
 }
 

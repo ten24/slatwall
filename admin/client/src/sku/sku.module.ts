@@ -3,6 +3,12 @@
 
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
+import {CoreModule} from "../../../../org/Hibachi/client/src/core/core.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
 //services
 import {DefaultSkuService} from "./services/defaultskuservice";
 import {SkuPriceService} from "./services/skupriceservice";
@@ -23,6 +29,23 @@ import {SWSkuPriceQuantityEdit} from "./components/swskupricequantityedit";
 import {SWSkuThumbnail} from "./components/swskuthumbnail";
 //filters
 
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		CoreModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class SkuModule{
+	constructor(){
+		
+	}
+}
 
 var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 })

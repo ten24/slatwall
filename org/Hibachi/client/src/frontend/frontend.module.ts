@@ -1,14 +1,38 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/hibachiTypescript.d.ts" />
 //modules
-import {hibachimodule} 	from "../hibachi/hibachi.module";
+import {hibachimodule} from "../hibachi/hibachi.module";
+import {HibachiModule} from "../hibachi/hibachi.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
 //controllers
 import {FrontendController} from './controllers/frontend';
+
 //directives
 import {SWFDirective} 		from "./components/swfdirective";
 import {SWShippingCostEstimator} from "./components/swshippingcostestimator";
 import {SWFCartItems} from "./components/swfcartitems";
 import {SWFPromoBox} from "./components/swfpromobox";
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+		HibachiModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class FrontendModule{
+	constructor(){
+		
+	}
+}
+
 
 declare var hibachiConfig:any;
 //need to inject the public service into the rootscope for use in the directives.

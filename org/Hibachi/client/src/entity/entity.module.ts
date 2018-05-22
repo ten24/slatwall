@@ -15,8 +15,9 @@ import {RouterController} from "./controllers/routercontroller";
 import {SWDetailTabs} from "./components/swdetailtabs";
 import {SWDetail} from "./components/swdetail";
 import {SWList} from "./components/swlist";
-import {coremodule} from "../core/core.module";
 
+//modules
+import {coremodule} from "../core/core.module";
 import {CoreModule} from "../core/core.module";
 
 import {NgModule} from '@angular/core';
@@ -27,9 +28,12 @@ import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
     declarations : [],
     providers :[],
     imports :[
-        CoreModule
+        CoreModule,
+        CommonModule,
+        UpgradeModule
     ]
 })
+
 export class EntityModule {
     constructor() {
         
