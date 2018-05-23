@@ -43,7 +43,12 @@ export function appConfigFactory(i:any){
 export function resourceBundlesFactory(i:any) {
     return i.get("resourceBundles");    
 }
-// define angular factory provider
+
+export function injectorFactory(i:any) {
+    return i.get('$injector');    
+}
+
+// define angular factory provider 
 export const parseProvider = {
     provide    : '$parse',
     useFactory : parseFactory,
@@ -90,4 +95,10 @@ export const resourceBundlesProvider = {
     provide    : "resourceBundles",
     useFactory : resourceBundlesFactory,
     deps       : ["$injector"]    
+};
+
+export const injectorProvider ={
+    provide    : "$injector",
+    useFactory : injectorFactory,
+    deps       : ["$injector"]  
 };

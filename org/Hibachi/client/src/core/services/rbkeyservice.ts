@@ -13,8 +13,8 @@ export class RbKeyService{
     private $q:any;
     
     constructor(
-        @Inject("$http") $http:any,
-        @Inject("$q") $q,
+        @Inject("$http") public $http:any,
+        @Inject("$q") public $q:any,
         @Inject("appConfig") public appConfig:any,
         @Inject("resourceBundles") public resourceBundles:any
     ){

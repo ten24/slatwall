@@ -110,7 +110,8 @@ import {BaseObject} from "./model/baseobject";
         MetaDataService,
         ObserverService,
         FormService,
-        RbKeyService
+        RbKeyService,
+        RequestService
     ],  
     imports: [
         CommonModule,
@@ -249,7 +250,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('scopeService',downgradeInjectable(ScopeService))
 .service('skuService', SkuService)
 .service('localStorageService',downgradeInjectable(LocalStorageService))
-.service('requestService',RequestService)
+.service('requestService',downgradeInjectable(RequestService))
 .service('accountService',AccountService)
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
