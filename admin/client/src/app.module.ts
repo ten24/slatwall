@@ -14,7 +14,7 @@ import {EntityModule} from "../../../org/Hibachi/client/src/entity/entity.module
 import {FormModule} from "../../../org/Hibachi/client/src/form/form.module";
 import {FrontendModule} from "../../../org/Hibachi/client/src/frontend/frontend.module";
 import {HibachiModule} from "../../../org/Hibachi/client/src/hibachi/hibachi.module";
-import {ListingModule} from "../../../org/hibachi/client/src/listing/listing.module";
+//import {ListingModule} from "../../../org/hibachi/client/src/listing/listing.module";
 import {LoggerModule} from "../../../org/Hibachi/client/src/logger/logger.module";
 import {PaginationModule} from "../../../org/Hibachi/client/src/pagination/pagination.module";
 import {ValidationModule} from "../../../org/Hibachi/client/src/validation/validation.module";
@@ -54,7 +54,7 @@ import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider } fr
     FormModule,
     FrontendModule,
     HibachiModule,
-    ListingModule,
+   // ListingModule,
     LoggerModule,
     PaginationModule,
     ValidationModule,
