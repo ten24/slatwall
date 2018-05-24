@@ -16,14 +16,16 @@ import {SWAssignedProducts} from "./components/swassignedproducts";
 import {SWSiteSelector} from "./components/swsiteselector";
 
 import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 @NgModule({
     declarations : [],
     providers :[],
     imports :[
-        CoreModule
+        CoreModule,
+        CommonModule,
+        UpgradeModule
     ]
 })
 export class ContentModule {

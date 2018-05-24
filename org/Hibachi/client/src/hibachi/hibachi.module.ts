@@ -12,8 +12,49 @@ import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
 import {workflowmodule} from "../workflow/workflow.module";
 
+import {AlertModule} from "../alert/alert.module";
+import {CardModule} from "../card/card.module";
+import {CollectionModule} from "../collection/collection.module";
+import {ListingModule} from "../listing/listing.module";
+import {DialogModule} from "../dialog/dialog.module";
+import {EntityModule} from "../entity/entity.module";
+import {PaginationModule} from "../pagination/pagination.module";
+import {FormModule} from "../form/form.module";
+import {ValidationModule} from "../validation/validation.module";
+import {WorkflowModule} from "../workflow/workflow.module";
+
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
+
 //directives
 import {SWSaveAndFinish} from "./components/swsaveandfinish";
+
+
+@NgModule({
+	declarations : [],
+	providers : [],
+	imports : [
+        AlertModule,
+        CardModule,
+        CollectionModule,
+        ListingModule,
+        DialogModule,
+        EntityModule,
+        PaginationModule,
+        FormModule,
+        ValidationModule,
+        WorkflowModule,
+		CommonModule,
+		UpgradeModule
+	]
+})
+
+export class HibachiModule{
+    constructor(){
+        
+    }
+}
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,

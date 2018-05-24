@@ -1,11 +1,14 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+
+//modules
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 //services
 import {DialogService} from "./services/dialogservice";
+
 //controllers
 import {PageDialogController} from "./controllers/pagedialog";
 
@@ -14,8 +17,12 @@ import {PageDialogController} from "./controllers/pagedialog";
     providers:[
         DialogService
     ],
-    imports:[CommonModule,UpgradeModule]
+    imports:[
+        CommonModule,
+        UpgradeModule
+    ]
 })
+
 export class DialogModule{
     constructor(){
     

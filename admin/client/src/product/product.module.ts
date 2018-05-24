@@ -1,16 +1,19 @@
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
-import {NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 //modules
 import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 import {CoreModule} from "../../../../org/Hibachi/client/src/core/core.module";
+
+import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
+
 //services
 
 //controllers
 import {ProductCreateController} from "./controllers/preprocessproduct_create";
+
 //filters
 
 //directives
@@ -21,7 +24,9 @@ import {SWRelatedProducts} from "./components/swrelatedproducts";
     declarations :[],
     providers: [],
     imports : [
-        CoreModule
+        CoreModule,
+        CommonModule,
+        UpgradeModule
     ]
 })
 export class ProductModule{
