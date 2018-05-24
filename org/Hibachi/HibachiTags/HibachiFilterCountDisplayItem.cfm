@@ -161,7 +161,7 @@
 						<cfset optionPairCollectionList.addFilter(attributes.propertyIdentifier,optionPair['value'])/>
 						<cfset optionPairCollectionList.setDirtyReadFlag(true)/>
 						
-						<!---<cfset optionDataStruct['count'] = optionPairCollectionList.getRecordsCount()/>--->
+						<cfset optionDataStruct['count'] = optionPairCollectionList.getRecordsCount()/>
 						
 						<cfset optionPairCollectionList.removeFilter(attributes.propertyIdentifier,optionPair['value'])/>
 					
@@ -219,7 +219,7 @@
 							<cfloop list="#option['value']#" index="listItem">
 								<cfif len(trim(listItem))>
 									<cfif structKeyExists(newOptionStruct,listItem)>
-										<!---<cfset newOptionStruct[listItem]['count'] += option['count']/>--->
+										<cfset newOptionStruct[listItem]['count'] += option['count']/>
 									<cfelse>
 										<cfset optionLabelCollectionList = attributes.hibachiScope.getService('HibachiService').getAttributeOptionCollectionList()/>
 										<cfset optionLabelCollectionList.addFilter('attribute.attributeCode',listLast(attributes.propertyIdentifier,'.'))/>
@@ -230,7 +230,8 @@
 											<cfset optionName = optionLabelRecords[1]['attributeOptionLabel']/>
 											<cfset newOptionStruct[listItem] = {
 												name=optionName,
-												value=listItem
+												value=listItem,
+												count=optionLabelCollectionList.getRecordsCount()
 											}/>
 										</cfif>
 										<!--- array append structure by reference to prevent dupes --->
