@@ -267,22 +267,26 @@
 			return returnTitle;
 		}
 		
-		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
+		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
 			var addon = 0;
 
-			var urlTitle = createSEOString(arguments.titleString);
+			arguments.propertyValue = createSEOString(arguments.propertyValue);
+			
+			var returnValue = arguments.propertyValue;
+			
+			if (requiresCount) {
+				returnValue = '#returnValue#-1';
+			}
 
-			var returnTitle = urlTitle;
-
-			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 
 			while(!unique) {
 				addon++;
-				returnTitle = "#urlTitle#-#addon#";
-				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+				returnValue = "#arguments.propertyValue#-#addon#";
+				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 			}
 
-			return returnTitle;
+			return returnValue;
 		}
 
   		public string function generateRandomID( numeric numCharacters = 8){
