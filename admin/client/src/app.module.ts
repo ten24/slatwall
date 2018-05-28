@@ -14,7 +14,7 @@ import {EntityModule} from "../../../org/Hibachi/client/src/entity/entity.module
 import {FormModule} from "../../../org/Hibachi/client/src/form/form.module";
 import {FrontendModule} from "../../../org/Hibachi/client/src/frontend/frontend.module";
 import {HibachiModule} from "../../../org/Hibachi/client/src/hibachi/hibachi.module";
-import {ListingModule} from "../../../org/hibachi/client/src/listing/listing.module";
+//import {ListingModule} from "../../../org/hibachi/client/src/listing/listing.module";
 import {LoggerModule} from "../../../org/Hibachi/client/src/logger/logger.module";
 import {PaginationModule} from "../../../org/Hibachi/client/src/pagination/pagination.module";
 import {ValidationModule} from "../../../org/Hibachi/client/src/validation/validation.module";
@@ -28,7 +28,7 @@ import {OrderFulfillmentModule} from "./orderfulfillment/orderfulfillment.module
 import {OrderItemModule} from "./orderitem/orderitem.module";
 
 import {ProductModule} from "./product/product.module";
-import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider,injectorProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider } from "./ajs-upgraded-providers"; 
 
 import {ProductBundleModule} from "./productbundle/productbundle.module";
 import {SkuModule} from "./sku/sku.module";
@@ -45,7 +45,11 @@ import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
     qProvider,
     httpProvider,
     appConfigProvider,
-    resourceBundlesProvider
+    resourceBundlesProvider,
+    windowProvider,
+    rootScopeProvider,
+    locationProvider,
+    anchorScrollProvider
   ],
   imports: [
     BrowserModule,
@@ -59,7 +63,7 @@ import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
     FormModule,
     FrontendModule,
     HibachiModule,
-    ListingModule,
+//    ListingModule,
     LoggerModule,
     PaginationModule,
     ValidationModule,

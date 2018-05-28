@@ -48,6 +48,22 @@ export function injectorFactory(i:any) {
     return i.get('$injector');    
 }
 
+export function windowFactory(i:any) {
+    return i.get('$injector');    
+}
+
+export function rootScopeFactory(i:any) {
+    return i.get('$rootScope');
+}
+
+export function locationFactory(i:any){
+    return i.get('$location');
+}
+
+export function anchorScrollFactory(i:any) {
+    return i.get('$anchorScroll');
+}
+
 // define angular factory provider 
 export const parseProvider = {
     provide    : '$parse',
@@ -101,4 +117,28 @@ export const injectorProvider ={
     provide    : "$injector",
     useFactory : injectorFactory,
     deps       : ["$injector"]  
+};
+
+export const windowProvider = {
+    provide    : "$window",
+    useFactory : windowFactory,
+    deps       : ["$injector"]    
+};
+
+export const rootScopeProvider ={
+    provide    : "$rootScope",
+    useFactory : rootScopeFactory,
+    deps       : ["$injector"]    
+};
+
+export const locationProvider = {
+    provide    : "$location",
+    useFactory : locationFactory,
+    deps       : ["$injector"]    
+};
+
+export const anchorScrollProvider = {
+    provide    : "$anchorScroll",
+    useFactory : anchorScrollFactory,
+    deps       : ["$injector"]    
 };

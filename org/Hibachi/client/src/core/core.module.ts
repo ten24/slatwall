@@ -115,7 +115,8 @@ import {BaseObject} from "./model/baseobject";
         FormService,
         RbKeyService,
         RequestService,
-        HibachiScope
+        HibachiScope,
+        $Hibachi
     ],  
     imports: [
         AlertModule,
@@ -249,7 +250,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('metadataService',downgradeInjectable(MetaDataService))
 .service('rbkeyService',downgradeInjectable(RbKeyService))
 .service('typeaheadService', TypeaheadService)
-.provider('$hibachi',$Hibachi)
+.service('$hibachi',downgradeInjectable($Hibachi))
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',downgradeInjectable(HibachiScope))
