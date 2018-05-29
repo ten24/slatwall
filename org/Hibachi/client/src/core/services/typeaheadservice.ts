@@ -5,9 +5,11 @@
 import * as TypeaheadStore from '../prototypes/swstore';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
+import { Injectable,Inject } from "@angular/core";
+import { ObserverService } from "./observerservice";
 
-
-class TypeaheadService {
+@Injectable()
+export class TypeaheadService {
     
     public typeaheadData = {};
     
@@ -49,9 +51,9 @@ class TypeaheadService {
 
 
     //@ngInject
-    constructor(public $timeout, public observerService){
+    constructor(@Inject("$timeout") public $timeout, public observerService : ObserverService){
         this.typeaheadStore = new TypeaheadStore.IStore(this.state, this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
-    }
+     }
     
     public getTypeaheadSelectionUpdateEvent = (key:string) =>{
         return "typeaheadSelectionUpdated" + key; 
@@ -271,6 +273,3 @@ class TypeaheadService {
     }
 }
 
-export{
-    TypeaheadService
-};
