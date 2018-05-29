@@ -3,12 +3,18 @@
 
 declare var escape;
 import {AdminRequest} from "../model/transient/adminrequest";
+import { Injectable,Inject } from "@angular/core";
+import { RequestService } from "./requestservice";
+import { UtilityService } from "./utilityservice";
+import { FormService } from "./formservice";
+import { RbKeyService } from "./rbkeyservice";
+
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
 // 	loadingResourceBundle:boolean;
 // } 
 
-class HibachiService{
+export class HibachiService{
 
 	public _deferred = {};
     public _resourceBundle = {};
@@ -29,8 +35,8 @@ class HibachiService{
         private rbkeyService,
 
         private appConfig,
-		private _config:any,
-		public _jsEntities:any,
+		public _config?:any,
+		public _jsEntities?:any,
 		public _jsEntityInstances?:any
 	){
         this.$window = $window;
@@ -47,7 +53,7 @@ class HibachiService{
         this.rbkeyService = rbkeyService;
 
         this.appConfig = appConfig;
-        this._config = _config;
+        this._config = appConfig;
         this._jsEntities = _jsEntities;
         this._jsEntityInstances = _jsEntityInstances;
 	}
@@ -450,7 +456,7 @@ class HibachiService{
 
 	};
 
-	getResourceBundle= (locale) => {
+	getResourceBundle= (locale?) => {
 
 		var locale = locale || this.appConfig.rbLocale;
 
@@ -485,91 +491,43 @@ class HibachiService{
 	};
 }
 
-class $Hibachi implements ng.IServiceProvider{
+@Injectable()
+export class $Hibachi extends HibachiService {
+    
+	constructor(@Inject("$window") $window:any,
+                @Inject("$q") $q:any,
+                @Inject("$http") $http:any,
+                @Inject("$timeout") $timeout:any,
+                @Inject("$log") $log:any,
+                @Inject("$rootScope") $rootScope:any,
+                @Inject("$location") $location:any,
+                @Inject("$anchorScroll") $anchorScroll:any,
+                requestService : RequestService,
+                utilityService : UtilityService,
+                formService : FormService,
+                rbKeyService : RbKeyService,
+                
+                @Inject("appConfig") appConfig:any
+                 ){
 
-	public _config = {};
-	private angular:ng.IAngularStatic = angular;
-	public _jsEntities;
-	public _jsEntityInstances;
-	public setJsEntities = (jsEntities):void =>{
-		this._jsEntities = jsEntities;
-	};
-    //@ngInject
-	constructor(appConfig){
+        super(          
+            $window,
+            $q,
+            $http,
+            $timeout,
+            $log,
+            $rootScope,
+            $location,
+            $anchorScroll,
+            requestService,
+            utilityService,
+            formService,
+            rbKeyService,
 
+            appConfig);
 		this._config = appConfig;
 
-		this.$get.$inject = [
-			'$window',
-			'$q',
-			'$http',
-			'$timeout',
-			'$log',
-			'$rootScope',
-			'$location',
-			'$anchorScroll',
-			'requestService',
-			'utilityService',
-			'formService',
-            'rbkeyService',
-
-            'appConfig'
-		];
 	}
 
-
-	public $get(
-		$window:ng.IWindowService,
-		$q:ng.IQService,
-		$http:ng.IHttpService,
-		$timeout:ng.ITimeoutService,
-		$log:ng.ILogService,
-		$rootScope:ng.IRootScopeService,
-		$location:ng.ILocationService,
-		$anchorScroll:ng.IAnchorScrollService,
-		requestService,
-		utilityService,
-		formService,
-        rbkeyService,
-
-        appConfig
-	) {
-		return new HibachiService(
-			$window,
-			$q,
-			$http,
-			$timeout,
-			$log,
-			$rootScope,
-			$location,
-			$anchorScroll,
-			requestService,
-			utilityService,
-			formService,
-            rbkeyService,
-
-            appConfig,
-			this._config,
-			this._jsEntities,
-			this._jsEntityInstances
-		);
-
-	}
-	public getConfig = () =>{
-		return this._config;
-	};
-	public getConfigValue = (key) =>{
-		return this._config[key];
-	};
-	public setConfigValue = (key,value) =>{
-		this._config[key] = value;
-	};
-	public setConfig = (config) =>{
-		this._config = config;
-	};
 }
 
-export{
-	HibachiService,
-	$Hibachi
-}
