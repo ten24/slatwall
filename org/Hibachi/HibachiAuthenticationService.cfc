@@ -11,7 +11,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return authDetails.authorizedFlag;
 	}
 	
-	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo) {
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo, string processContext) {
 		
 		var authDetails = {
 			authorizedFlag = false,
@@ -44,7 +44,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		} else {
 			var itemName = 'default';
 		}
-		
+		if(structKeyExists(arguments, 'processContext') && len(arguments.processContext)){
+			itemName &= '_#arguments.processContext#';
+		}
+
 		var actionPermissions = getActionPermissionDetails();
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
 		if(!structKeyExists(actionPermissions, subsystemName) || !actionPermissions[ subsystemName ].hasSecureMethods || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
