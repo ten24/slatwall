@@ -3,14 +3,17 @@
 import {BaseObject} from "../model/baseobject";
 import * as Entities from "../model/entity/entities";
 import * as Processes from "../model/process/processes";
+import { HibachiService } from "./hibachiservice";
+import { UtilityService } from "./utilityservice";
+import { Inject } from "@angular/core";
 
-abstract class BaseEntityService extends BaseObject{
+export abstract class BaseEntityService extends BaseObject{
 
     //@ngInject
     constructor(
-        public $injector,
-        public $hibachi,
-        public utilityService,
+        @Inject("$injector") public $injector,
+        public $hibachi : HibachiService,
+        public utilityService : UtilityService,
         public baseObjectName?:string,
         public objectName?:string
     ){
@@ -25,10 +28,10 @@ abstract class BaseEntityService extends BaseObject{
         this['new'+this.objectName] = ()=>{
             return this.newEntity(this.baseObjectName,this.objectName);
         }
-
+        
     }
 
-    public newEntity = (baseObjectName:string,objectName?:string)=>{
+    public newEntity (baseObjectName:string,objectName?:string){
         if(!objectName){
             objectName = baseObjectName;
         }
@@ -36,14 +39,15 @@ abstract class BaseEntityService extends BaseObject{
         return this.newObject('Entity',baseObjectName,objectName);
     }
 
-    public newProcessObject = (baseObjectName:string,objectName?:string)=>{
+    public newProcessObject (baseObjectName:string,objectName?:string){
+        
         if(!objectName){
             objectName = baseObjectName;
         }
         return this.newObject('Process',baseObjectName,objectName);
     }
 
-    public newObject = (type:string,baseObjectName:string,objectName?:string)=>{
+    public newObject (type:string,baseObjectName:string,objectName?:string){
         if(!objectName){
             objectName = baseObjectName;
         }
@@ -71,5 +75,4 @@ abstract class BaseEntityService extends BaseObject{
         }
     }
 }
-export{BaseEntityService};
 
