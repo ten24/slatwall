@@ -1,5 +1,4 @@
-/*
-
+<!---
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,66 +39,12 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
+--->
+<!--- You can pass in a object, or just an array of errors --->
+<cfparam name="attributes.propertyIdentifier" type="string" default="" />
+<cfparam name="attributes.formController" type="string" default="swfForm" />
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Entity
-	property name="order";
-	
-	// Data Properties
-	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
-	property name="orderItemIDList";
-	
-	// Lazy Load Entities
-	property name="orderID";
-	property name="orderFulfillmentID";
-	
-	property name="orderItems" hb_populateEnabled="false";
-	
-	public any function getOrder() {
-		if(isNull(variables.order) && !isNull(getOrderID())){
-			variables.order = getService('orderService').getOrder(getOrderID());
-		}
-		return variables.order;
-	}
-	
-	public any function getOrderFulfillment() {
-		if(isNull(variables.orderFulfillment) && !isNull(getOrderFulfillmentID())){
-			variables.orderFulfillment = getService('orderService').getOrderFulfillment(getOrderFulfillmentID());
-		}
-		return variables.orderFulfillment;
-	}
-	
-	public any function getOrderItems() {
-		if(!structKeyExists(variables, "orderItems")) {
-			variables.orderItems = [];
-			if(!isNull(getOrderItemIDList())) {
-				for(var i=1; i<=listLen(getOrderItemIDList()); i++) {
-					var orderItem = getService('orderService').getOrderItem( listGetAt(getOrderItemIDList(),i) );
-					if(!isNull(orderItem)) {
-						arrayAppend(variables.orderItems, orderItem);
-					}
-				}
-			}
-		}
-		
-		return variables.orderItems;
-	}
-	
-	public boolean function getOrderFulfillmentMatchesOrderFlag() {
-		return orderFulfillment.getNewFlag() || (!isNull(orderFulfillment.getOrder()) && orderFulfillment.getOrder().getOrderID() == getOrder().getOrderID());
-	}
-	
-	public boolean function getOrderItemIDListMatchesOrder() {
-		for(var orderItem in getOrderItems()) {
-			if(isNull(orderItem.getOrder) || orderItem.getOrder().getOrderID() != getOrder().getOrderID()) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-}
+<cfif thisTag.executionMode is "start">
+	<cfinclude template="./tagtemplates/errorDisplay.cfm"/>
+</cfif>

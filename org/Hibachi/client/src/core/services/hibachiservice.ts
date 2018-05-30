@@ -23,16 +23,17 @@ class HibachiService{
 		private $rootScope:ng.IRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
+		private $injector,
 		private requestService,
 		private utilityService,
 		private formService,
         private rbkeyService,
-
         private appConfig,
 		private _config:any,
 		public _jsEntities:any,
 		public _jsEntityInstances?:any
 	){
+		this.$injector = $injector;
         this.$window = $window;
         this.$q = $q;
         this.$http = $http;
@@ -50,6 +51,7 @@ class HibachiService{
         this._config = _config;
         this._jsEntities = _jsEntities;
         this._jsEntityInstances = _jsEntityInstances;
+        
 	}
 
 
@@ -508,6 +510,7 @@ class $Hibachi implements ng.IServiceProvider{
 			'$rootScope',
 			'$location',
 			'$anchorScroll',
+			'$injector',
 			'requestService',
 			'utilityService',
 			'formService',
@@ -527,6 +530,7 @@ class $Hibachi implements ng.IServiceProvider{
 		$rootScope:ng.IRootScopeService,
 		$location:ng.ILocationService,
 		$anchorScroll:ng.IAnchorScrollService,
+		$injector,
 		requestService,
 		utilityService,
 		formService,
@@ -543,6 +547,7 @@ class $Hibachi implements ng.IServiceProvider{
 			$rootScope,
 			$location,
 			$anchorScroll,
+			$injector,
 			requestService,
 			utilityService,
 			formService,
