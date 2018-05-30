@@ -117,7 +117,8 @@ import {BaseObject} from "./model/baseobject";
         RequestService,
         HibachiScope,
         $Hibachi,
-        TypeaheadService
+        TypeaheadService,
+        EntityService
     ],  
     imports: [
         AlertModule,
@@ -264,7 +265,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
-.service('entityService',EntityService)
+.service('entityService',downgradeInjectable(EntityService))
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

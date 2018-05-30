@@ -3,14 +3,18 @@
 import {BaseEntityService} from "./baseentityservice";
 import * as Entities from "../model/entity/entities";
 import * as Processes from "../model/process/processes";
+import { Injectable,Inject } from "@angular/core";
+import { $Hibachi } from "./hibachiservice";
+import { UtilityService } from "./utilityservice";
 
-abstract class EntityService extends BaseEntityService{
+@Injectable()
+export class EntityService extends BaseEntityService{
 
     //@ngInject
     constructor(
-        public $injector,
-        public $hibachi,
-        public utilityService
+        @Inject("$injector") public $injector,
+        public $hibachi : $Hibachi,
+        public utilityService : UtilityService
     ){
         super(
             $injector,
@@ -21,5 +25,4 @@ abstract class EntityService extends BaseEntityService{
     }
 
 }
-export{EntityService};
 
