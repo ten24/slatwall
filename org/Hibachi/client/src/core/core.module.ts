@@ -112,7 +112,8 @@ import {BaseObject} from "./model/baseobject";
         HibachiValidationService,
         MetaDataService,
         ObserverService,
-        FormService
+        FormService,
+        SelectionService
     ],  
     imports: [
         AlertModule,
@@ -230,13 +231,13 @@ var coremodule = angular.module('hibachi.core',[
         return original.apply($location, [path]);
     };
 }])
-.constant('hibachiPathBuilder',new HibachiPathBuilder())
+.constant('hibachiPathBuilder', new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
 .service('cacheService', downgradeInjectable(CacheService))
 .service('publicService',PublicService)
 .service('utilityService',downgradeInjectable(UtilityService))
-.service('selectionService',SelectionService)
+.service('selectionService',downgradeInjectable(SelectionService))
 .service('observerService',downgradeInjectable(ObserverService))
 .service('draggableService',downgradeInjectable(DraggableService))
 .service('expandableService',downgradeInjectable(ExpandableService))
