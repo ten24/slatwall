@@ -53,8 +53,7 @@ Notes:
 <cfparam name="rc.subscriptionUsageSmartList" type="any" />
 
 <cfoutput>
-<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false" />
-
+	
 	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,subscriptionOrderItemName,currentStatusType,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
 	<cfset rc.subscriptionUsageCollectionList.setDisplayProperties(
 		displayPropertyList,
@@ -70,8 +69,24 @@ Notes:
 		isDeletable=false
 	})/>
 	<!---check for report year and month to filter--->
-	
+	<cfset currentMonth = ""/>
 	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
+		<cfset months=[	
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+				"August",
+				"September",
+				"October",
+				"November",
+				"December"
+			]
+		/>
+		<cfset currentMonth = months[rc.reportMonth]/>
 		<cfset filterDate = dateAdd('d',-1,CreateDate(reportYear,rc.reportMonth,1))/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
@@ -86,8 +101,11 @@ Notes:
         </cfif> 
 	</cfif>
 	
-
+	<cfif len(currentMonth)>
+		<cfset rc.pageTitle = 'Active #rc.pageTitle# for #currentMonth# #rc.reportYear#'/>	
+	</cfif>
 	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false"  />
 	
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.subscriptionUsageCollectionList#"
