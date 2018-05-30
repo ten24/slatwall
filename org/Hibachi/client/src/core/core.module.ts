@@ -220,8 +220,9 @@ var coremodule = angular.module('hibachi.core',[
    $httpProvider.useApplyAsync(true);
 
 }])
-.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
+    $rootScope.rbKey = rbkeyService.rbKey;
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {

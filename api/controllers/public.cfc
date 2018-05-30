@@ -49,7 +49,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 actions = listToArray(arguments.rc.context);
             }
             if (!arrayLen(actions)){
-                publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+                publicService.invokeMethod(
+                    "#arguments.rc.context#", 
+                    {data=arguments.rc}
+                );
             }else{
                 //iterate through all the actions calling the method.
                 for (var eachAction in actions){
