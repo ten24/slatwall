@@ -322,5 +322,34 @@ Notes:
 
 		<cfreturn entityNew("SlatwallCategory") />
 	</cffunction>
+	
+	<cffunction name="getLeafCategoriesCollectionList">
+		<cfset var leafCategoryCollectionList = getService('contentService').getCategoryCollectionList()/>
+		<cfreturn leafCategoryCollectionList/>
+	</cffunction>
+	
+	<cffunction name="getCategoryOptions">
+		<cfargument name="relatedCollectionList"/>
+	
+		<cfset var leafCollectionList = getLeafCategoriesCollectionList()/>
+		<cfscript>
+			if(structKeyExists(arguments.relatedCollectionList.getCollectionConfigStruct(),'filterGroups')){
+				leafCollectionList.applyRelatedFilterGroups('products',duplicate(arguments.relatedCollectionList.getCollectionConfigStruct()['filterGroups']));
+				leafCollectionList.removeFilter('products.productID');
+			}
+		</cfscript>
+		<cfset leafCollectionList.setDisplayProperties('categoryName|name,categoryID|value,parentCategory.categoryID,parentCategory.categoryName')/>
+		<cfset leafCollectionList.setDistinct(true)/>
+		<cfset leafCollectionList.addFilter('products.productID','NULL',"IS NOT")/>
+		<cfset leafCollectionList.setOrderBy('parentCategory.categoryName,categoryName')/>
+		<cfset optionData = {}/>
+		<cfloop array="#leafCollectionList.getRecords()#" index="local.leafRecord">
+			<cfif !structKeyExists(optionData,local.leafRecord['parentCategory_categoryName'])>
+				<cfset optionData[local.leafRecord['parentCategory_categoryName']] = []/>
+			</cfif>
+			<cfset arrayAppend(optionData[local.leafRecord['parentCategory_categoryName']],local.leafRecord)/>
+		</cfloop>
+		<cfreturn optionData/>
+	</cffunction>
 
 </cfcomponent>

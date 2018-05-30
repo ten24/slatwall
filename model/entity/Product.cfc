@@ -931,19 +931,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.brandOptions;
 	}
 
-	public string function getNextSkuCodeCount() {
-		var highestResult = 0;
+	public string function getNextSkuCode() {
+	
+		return getService('HibachiUtilityService').createUniqueProperty(propertyValue=getProductCode(), entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
 
-		for(var sku in getSkus()) {
-			if(!isNull(sku.getSkuCode())) {
-				var thisCount = listLast(sku.getSkuCode(),"-");
-				if(isNumeric(thisCount) && thisCount > highestResult) {
-					highestResult = thisCount;
-				}
-			}
-		}
-
-		return highestResult+1;
 	}
 
 	public string function getTitle() {

@@ -79,7 +79,7 @@ Notes:
 					<sw-collection-column data-property-identifier="fulfillmentBatchNumber" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
 					<sw-collection-column data-property-identifier="fulfillmentBatchName" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
 		            <sw-collection-column data-property-identifier="description" data-is-exportable="true"  data-is-visible="true"></sw-collection-column>
-		            <sw-collection-column data-property-identifier="assignedAccount.fullName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
+		            <sw-collection-column data-property-identifier="assignedAccount.calculatedFullName" data-is-exportable="true" data-is-visible="true"></sw-collection-column>
 		        </sw-collection-columns>
 				<sw-collection-filters>
 					<sw-collection-filter data-property-identifier="fulfillmentBatchItems.orderFulfillment.orderFulfillmentStatusType.systemCode" data-comparison-operator="IN" data-comparison-value="ofstUnfulfilled,ofstPartiallyFulfilled"></sw-collection-filter>

@@ -113,7 +113,13 @@ import {BaseObject} from "./model/baseobject";
         MetaDataService,
         ObserverService,
         FormService,
-        SelectionService
+        SelectionService,
+        RbKeyService,
+        RequestService,
+        HibachiScope,
+        $Hibachi,
+        TypeaheadService,
+        EntityService
     ],  
     imports: [
         AlertModule,
@@ -217,8 +223,9 @@ var coremodule = angular.module('hibachi.core',[
    $httpProvider.useApplyAsync(true);
 
 }])
-.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
+    $rootScope.rbKey = rbkeyService.rbKey;
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {
@@ -245,22 +252,22 @@ var coremodule = angular.module('hibachi.core',[
 .service('formService',downgradeInjectable(FormService))
 .service('historyService',downgradeInjectable(HistoryService))
 .service('metadataService',downgradeInjectable(MetaDataService))
-.service('rbkeyService',RbKeyService)
-.service('typeaheadService', TypeaheadService)
-.provider('$hibachi',$Hibachi)
+.service('rbkeyService',downgradeInjectable(RbKeyService))
+.service('typeaheadService', downgradeInjectable(TypeaheadService))
+.service('$hibachi',downgradeInjectable($Hibachi))
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
-.service('hibachiScope',HibachiScope)
+.service('hibachiScope',downgradeInjectable(HibachiScope))
 .service('scopeService',downgradeInjectable(ScopeService))
 .service('skuService', SkuService)
 .service('localStorageService',downgradeInjectable(LocalStorageService))
-.service('requestService',RequestService)
+.service('requestService',downgradeInjectable(RequestService))
 .service('accountService',AccountService)
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
-.service('entityService',EntityService)
+.service('entityService',downgradeInjectable(EntityService))
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

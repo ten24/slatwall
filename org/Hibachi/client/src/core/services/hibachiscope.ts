@@ -1,7 +1,9 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Injectable,Inject } from "@angular/core";
 
-class HibachiScope{
+@Injectable()
+export class HibachiScope{
     
     public loginDisplayed:boolean=false;
     public config:any;
@@ -11,12 +13,12 @@ class HibachiScope{
     public isValidToken:boolean=true;
     //@ngInject
     constructor(
-        appConfig
+        @Inject("appConfig") public appConfig:any
     ){
         this.config = appConfig;
     }
     
-    public setToken = (token:string):void=>{
+    public setToken (token:string):void {
         this.token = token;
         var stringArray = token.split('.');
         try{
@@ -28,9 +30,3 @@ class HibachiScope{
     }
     
 }
-export{
-    HibachiScope
-}
-
-
-

@@ -1,4 +1,36 @@
 component extends="framework.one" {
+	// ======= START: FW/1 Overrides =======
+	setupRequestFW1Struct();
+	// do not rely on these, they are meant to be true magic...
+    variables.magicApplicationSubsystem = '][';
+    variables.magicApplicationController = '[]';
+    variables.magicApplicationAction = '__';
+    variables.magicBaseURL = '-[]-';
+    public void function setupRequestFW1Struct() {
+        if ( !structKeyExists( request, '_fw1' ) ) {
+            request._fw1 = {
+                cgiScriptName = CGI.SCRIPT_NAME,
+                cgiPathInfo = CGI.PATH_INFO,
+                cgiRequestMethod = CGI.REQUEST_METHOD,
+                controllers = [ ],
+                requestDefaultsInitialized = false,
+                routeMethodsMatched = { },
+                doTrace = false,
+                trace = [ ]
+            };
+            if ( len( getContextRoot() ) ) {
+                request._fw1.cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+                request._fw1.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+            }
+        }
+        
+        // do not rely on these, they are meant to be true magic...
+        variables.magicApplicationSubsystem = '][';
+        variables.magicApplicationController = '[]';
+        variables.magicApplicationAction = '__';
+        variables.magicBaseURL = '-[]-';
+    }
+    // ======= END: FW/1 Overrides =======
 	// ======= START: ENVIRONMENT CONFIGURATION =======
 
 	// =============== configApplication

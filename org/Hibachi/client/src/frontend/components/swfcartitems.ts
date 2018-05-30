@@ -18,10 +18,6 @@ class SWFCartItemsController{
                 'orderItem.quantity':newQuantity
         };
         this.$rootScope.slatwall.doAction('updateOrderItemQuantity',data).then(result=>{
-            this.$rootScope.slatwall.cart = result.cart;
-            this.$rootScope.slatwall.account = result.account;
-            this.$rootScope.slatwall.successfulActions = result.successfulActions;
-            this.$rootScope.slatwall.errors = result.errors;
             this.updateOrderItemQuantityIsLoading = false;
         });
     }
@@ -32,10 +28,6 @@ class SWFCartItemsController{
             'orderItemID':this.orderItem.orderItemID
         };
         this.$rootScope.slatwall.doAction('removeOrderItem',data).then(result=>{
-            this.$rootScope.slatwall.cart = result.cart;
-            this.$rootScope.slatwall.account = result.account;
-            this.$rootScope.slatwall.successfulActions = result.successfulActions;
-            this.$rootScope.slatwall.errors = result.errors;
             this.removeOrderItemIsLoading = false;
         });
     }

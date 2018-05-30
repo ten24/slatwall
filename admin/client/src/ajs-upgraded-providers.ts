@@ -32,7 +32,39 @@ export function qFactory(i:any) {
     return i.get("$q");    
 }
 
-// define angular factory provider
+export function httpFactory(i:any) {
+    return i.get("$http");    
+}
+
+export function appConfigFactory(i:any){
+    return i.get("appConfig");    
+}
+
+export function resourceBundlesFactory(i:any) {
+    return i.get("resourceBundles");    
+}
+
+export function injectorFactory(i:any) {
+    return i.get('$injector');    
+}
+
+export function windowFactory(i:any) {
+    return i.get('$injector');    
+}
+
+export function rootScopeFactory(i:any) {
+    return i.get('$rootScope');
+}
+
+export function locationFactory(i:any){
+    return i.get('$location');
+}
+
+export function anchorScrollFactory(i:any) {
+    return i.get('$anchorScroll');
+}
+
+// define angular factory provider 
 export const parseProvider = {
     provide    : '$parse',
     useFactory : parseFactory,
@@ -61,4 +93,52 @@ export const qProvider = {
     provide    : '$q',
     useFactory : qFactory,
     deps       : ['$injector']    
+};
+
+export const httpProvider = {
+    provide    : '$http',
+    useFactory : httpFactory,
+    deps       : ["$injector"]  
+};
+
+export const appConfigProvider = {
+    provide    : 'appConfig',
+    useFactory : appConfigFactory,
+    deps       : ["$injector"]    
+};
+
+export const resourceBundlesProvider = {
+    provide    : "resourceBundles",
+    useFactory : resourceBundlesFactory,
+    deps       : ["$injector"]    
+};
+
+export const injectorProvider ={
+    provide    : "$injector",
+    useFactory : injectorFactory,
+    deps       : ["$injector"]  
+};
+
+export const windowProvider = {
+    provide    : "$window",
+    useFactory : windowFactory,
+    deps       : ["$injector"]    
+};
+
+export const rootScopeProvider ={
+    provide    : "$rootScope",
+    useFactory : rootScopeFactory,
+    deps       : ["$injector"]    
+};
+
+export const locationProvider = {
+    provide    : "$location",
+    useFactory : locationFactory,
+    deps       : ["$injector"]    
+};
+
+export const anchorScrollProvider = {
+    provide    : "$anchorScroll",
+    useFactory : anchorScrollFactory,
+    deps       : ["$injector"]    
 };
