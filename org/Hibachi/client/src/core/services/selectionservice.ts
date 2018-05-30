@@ -3,28 +3,36 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 
 import {BaseService} from "./baseservice";
+import {Injectable,Inject} from "@angular/core";
+import {ObserverService} from "./observerservice";
 
-class SelectionService extends BaseService{
-    private _selection ={};
-    //@ngInject
+
+@Injectable()
+export class SelectionService extends BaseService{
+private _selection ={};
+    
     constructor(
-        public observerService
+        public observerService : ObserverService
     ){
-        super();
+        super();     
     }
+
+
     /* add current selectionid to main selection object*/
-    createSelections=(selectionid)=>{
+    createSelections(selectionid){
         this._selection[selectionid] = {
             allSelected: false,
             ids: []
         };
     };
-    radioSelection=(selectionid:string,selection:any):void =>{  
+    radioSelection(selectionid:string,selection:any):void {
         this.createSelections(selectionid);
         this._selection[selectionid].ids.push(selection);
         this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'check',selectionid,selection});
+        this.getSelections(selectionid);
+        this.getSelectionCount(selectionid);
     };
-    addSelection=(selectionid:string,selection:any):void =>{
+    addSelection(selectionid:string,selection:any):void {
         /*if allSelected flag is true addSelection will remove selection*/
         if(this.isAllSelected(selectionid)){
             var index = this._selection[selectionid].ids.indexOf(selection);
@@ -39,13 +47,13 @@ class SelectionService extends BaseService{
 
         console.info(this._selection[selectionid])
     };
-    setSelection=(selectionid:string,selections:any[]):void =>{
+    setSelection(selectionid:string,selections:any[]):void {
         if(angular.isUndefined(this._selection[selectionid])){
             this.createSelections(selectionid);
         }
         this._selection[selectionid].ids = selections;
     };
-    removeSelection=(selectionid?:string,selection?:any):void =>{
+    removeSelection(selectionid?:string,selection?:any):void {
         if(angular.isUndefined(this._selection[selectionid])){
             return;
         }
@@ -63,30 +71,31 @@ class SelectionService extends BaseService{
         }
         console.info(this._selection[selectionid])
     };
-    hasSelection=(selectionid:string,selection:any):boolean =>{
+    hasSelection(selectionid:string,selection:any):boolean {
         if(angular.isUndefined(this._selection[selectionid])) {
             return false;
         }
         return this._selection[selectionid].ids.indexOf(selection) > -1;
     };
-    getSelections=(selectionid:string):any =>{
+    getSelections(selectionid:string):any {
         if(angular.isUndefined(this._selection[selectionid])){
             this.createSelections(selectionid);
         }
         return this._selection[selectionid].ids;
+       
     };
-    getSelectionCount=(selectionid:string):any =>{
+    getSelectionCount(selectionid:string):any {
         if(angular.isUndefined(this._selection[selectionid])){
             this.createSelections(selectionid);
         }
         return this._selection[selectionid].ids.length;
     };
-    clearSelection=(selectionid):void=>{
+    clearSelection(selectionid):void {
         this.createSelections(selectionid);
         this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'clear'});
         console.info(this._selection[selectionid])
     };
-    selectAll=(selectionid):void=>{
+    selectAll (selectionid):void {
         this._selection[selectionid] = {
             allSelected: true,
             ids: []
@@ -94,13 +103,10 @@ class SelectionService extends BaseService{
         this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'selectAll'});
         console.info(this._selection[selectionid])
     };
-    isAllSelected=(selectionid)=>{
+    isAllSelected (selectionid) {
         if(angular.isUndefined(this._selection[selectionid])){
             this.createSelections(selectionid);
         }
         return this._selection[selectionid].allSelected;
     }
 }
-export {
-    SelectionService
-};
