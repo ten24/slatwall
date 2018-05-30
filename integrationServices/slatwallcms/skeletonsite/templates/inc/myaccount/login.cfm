@@ -2,6 +2,7 @@
 <cfimport prefix="sw" taglib="../../../tags" />
 <cfoutput>
 	<!--- Start: Login Form - CLIENT SIDE --->
+	
 	<div ng-show="!slatwall.account.userIsLoggedIn()">
 		<form  
 			ng-model="Account_Login" 

@@ -66,7 +66,7 @@ Notes:
 --->
 
 <cfoutput>
-<div class="container" ng-cloak ng-if="slatwall.cart.orderItems.length">
+<div class="container" ng-cloak>
         <h1 class="my-4">Shopping Cart</h1>
         <div class="card mb-5">
             <div class="card-header bg-dark text-light">
@@ -110,9 +110,6 @@ Notes:
             <a href="/checkout/" class="btn btn-lg btn-success disabled"><i class="fa fa-refresh fa-spin fa-fw"></i></a>
         </div>
 
-    </div>
-    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length">
-        <div class="alert alert-danger">There are no items in your cart.</div>
     </div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
