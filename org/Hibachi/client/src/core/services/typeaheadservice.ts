@@ -25,7 +25,7 @@ export class TypeaheadService {
     /**
      * The reducer is responsible for modifying the state of the state object into a new state.
      */
-    public typeaheadStateReducer = (state, action:TypeaheadStore.Action<string>):Object => {
+    public typeaheadStateReducer  (state, action:TypeaheadStore.Action<string>):Object  {
         switch(action.type) {
             case 'TYPEAHEAD_QUERY':
                 //modify the state.
@@ -55,31 +55,31 @@ export class TypeaheadService {
         this.typeaheadStore = new TypeaheadStore.IStore(this.state, this.typeaheadStateReducer);//.combineLatest(this.loggerEpic)
      }
     
-    public getTypeaheadSelectionUpdateEvent = (key:string) =>{
+    public getTypeaheadSelectionUpdateEvent  (key:string) {
         return "typeaheadSelectionUpdated" + key; 
     }
 
-    public attachTypeaheadSelectionUpdateEvent = (key:string, callback) =>{
+    public attachTypeaheadSelectionUpdateEvent  (key:string, callback) {
         this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
     }
 
-    public notifyTypeaheadSelectionUpdateEvent = (key:string, data:any) =>{
+    public notifyTypeaheadSelectionUpdateEvent (key:string, data:any) {
         this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key), data); 
     }
 
-    public setTypeaheadState = (key:string, state:any) =>{
+    public setTypeaheadState (key:string, state:any) {
         this.typeaheadStates[key] = state;
     }
 
-    public getTypeaheadState = (key:string) =>{
+    public getTypeaheadState (key:string) {
         return this.typeaheadStates[key];
     }
 
-    public getTypeaheadPrimaryIDPropertyName = (key:string) =>{
+    public getTypeaheadPrimaryIDPropertyName (key:string) {
         return this.getTypeaheadState(key).primaryIDPropertyName;
     }
 
-    public getIndexOfSelection = (key:string, data:any) =>{
+    public getIndexOfSelection (key:string, data:any) {
         for(var j = 0; j < this.getData(key).length; j++){
             if( angular.isDefined(data[this.getTypeaheadPrimaryIDPropertyName(key)]) &&
                 data[this.getTypeaheadPrimaryIDPropertyName(key)] == this.getData(key)[j][this.getTypeaheadPrimaryIDPropertyName(key)]
@@ -92,7 +92,7 @@ export class TypeaheadService {
         return -1; 
     }
     
-    public addSelection = (key:string, data:any) => {
+    public addSelection (key:string, data:any)  {
         if(angular.isUndefined(this.typeaheadData[key])){
             this.typeaheadData[key] = [];
         }
@@ -101,7 +101,7 @@ export class TypeaheadService {
        
     } 
 
-    public removeSelection = (key:string, index:number, data?:any) => {
+    public removeSelection (key:string, index:number, data?:any)  {
         if( angular.isUndefined(index) &&
             angular.isDefined(data)
         ){
@@ -118,7 +118,7 @@ export class TypeaheadService {
         }
     }
 
-    public initializeSelections = (key:string, selectedCollectionConfig) => {
+    public initializeSelections (key:string, selectedCollectionConfig)  {
         selectedCollectionConfig.setAllRecords(true);
         this.typeaheadPromises[key] = selectedCollectionConfig.getEntity();
         this.typeaheadPromises[key].then(
@@ -133,7 +133,7 @@ export class TypeaheadService {
         );
     }
 
-     public updateSelections = (key:string) =>{
+     public updateSelections (key:string) {
         if(angular.isDefined(this.getData(key)) && this.getData(key).length){
             for(var j = 0; j < this.getTypeaheadState(key).results.length; j++){
                 for(var i = 0; i < this.getData(key).length; i++){
@@ -154,12 +154,12 @@ export class TypeaheadService {
         }
     }
 
-    private markResultSelected = (result, index) => {
+    private markResultSelected  (result, index)  {
         result.selected = true;
         result.selectedIndex = index; 
     }   
 
-    private checkAgainstFallbackProperties = (key:string, selection:any, result:any, selectionIndex?:number) =>{
+    private checkAgainstFallbackProperties  (key:string, selection:any, result:any, selectionIndex?:number) {
         var resultPrimaryID = result[this.getTypeaheadPrimaryIDPropertyName(key)];
         //is there a singular property to compare against
         if(angular.isDefined(this.getTypeaheadState(key).propertyToCompare) && 
@@ -209,7 +209,7 @@ export class TypeaheadService {
         return false; 
     }
 
-    public updateSelectionList = (key:string)=>{
+    public updateSelectionList (key:string){
         var selectionIDArray = [];
 
         if(angular.isDefined(this.getData(key))){
@@ -237,7 +237,7 @@ export class TypeaheadService {
         return selectionIDArray.join(",");
     }
     
-    getData = (key:string) => {
+    getData (key:string) {
         if(key in this.typeaheadPromises){
             //wait until it's been intialized
             this.typeaheadPromises[key].then().finally(()=>{
@@ -251,7 +251,7 @@ export class TypeaheadService {
     
     //strips out dangerous directives that cause infinite compile errors 
     // - this probably belongs in a different service but is used for typeahead only at the moment
-    stripTranscludedContent = (transcludedContent) => {
+    stripTranscludedContent (transcludedContent) {
         for(var i=0; i < transcludedContent.length; i++){
             if(angular.isDefined(transcludedContent[i].localName) && 
             transcludedContent[i].localName == 'ng-transclude'
