@@ -55,44 +55,46 @@ Notes:
 <cfoutput>
 <hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false" />
 
-<!--- <hb:HibachiListingDisplay smartList="#rc.subscriptionUsageSmartList#"
-						   recordDetailAction="admin:entity.detailsubscriptionUsage"
-						   recordEditAction="admin:entity.editsubscriptionUsage">
+	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,subscriptionOrderItemName,currentStatusType,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
+	<cfset rc.subscriptionUsageCollectionList.setDisplayProperties(
+		displayPropertyList,
+		{
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}
+	)/>
+	<cfset rc.subscriptionUsageCollectionList.addDisplayProperty(displayProperty='subscriptionUsageID',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
+	<!---check for report year and month to filter--->
+	
+	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
+		<cfset filterDate = dateAdd('d',-1,CreateDate(reportYear,rc.reportMonth,1))/>
+		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
+		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+		<cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
+            <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode',rc.subscriptionType,'IN')/>
+        </cfif> 
+        <cfif structKeyExists(rc,'productType') && len(rc.productType)>
+            <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID',rc.productType,'IN')/>
+        </cfif> 
+        <cfif structKeyExists(rc,'productID') && len(rc.productID)>
+            <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID',rc.productID,'IN')/>
+        </cfif> 
+	</cfif>
+	
 
-	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
-	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
-	<hb:HibachiListingColumn propertyIdentifier="account.company" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItemName" />
-	<hb:HibachiListingColumn propertyIdentifier="currentStatusType" />
-	<hb:HibachiListingColumn propertyIdentifier="nextBillDate" />
-	<hb:HibachiListingColumn propertyIdentifier="expirationDate" />
-	<hb:HibachiListingColumn propertyIdentifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" />
-	<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
-	<hb:HibachiListingColumn propertyIdentifier="autoPayFlag" />
-
-</hb:HibachiListingDisplay> --->
-
-	<sw-listing-display data-using-personal-collection="true"
-			data-collection="'SubscriptionUsage'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-edit-action="admin:entity.editsubscriptionUsage"
-			data-record-detail-action="admin:entity.detailsubscriptionUsage"
-			data-is-angular-route="false"
-			data-angular-links="false"
-			data-has-action-bar="false"
-						>
-		<sw-listing-column data-property-identifier="subscriptionUsageID" data-is-visible="false" data-is-deletable="false" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.firstName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.lastName" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="account.company" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="subscriptionOrderItemName" tdclass="primary" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="currentStatusType" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="nextBillDate" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="expirationDate" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="renewalPrice" ></sw-listing-column>
-		<sw-listing-column data-property-identifier="autoPayFlag" ></sw-listing-column>
-	</sw-listing-display>
+	
+	
+	<hb:HibachiListingDisplay 
+		collectionList="#rc.subscriptionUsageCollectionList#"
+		usingPersonalCollection="true"
+		recordEditAction="admin:entity.edit#lcase(rc.subscriptionUsageCollectionList.getCollectionObject())#"
+		recordDetailAction="admin:entity.detail#lcase(rc.subscriptionUsageCollectionList.getCollectionObject())#"
+	>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

@@ -39,7 +39,17 @@
                 <cfloop from="#currentMonth#" to="12" index="i">
                     <cfset possibleMonth = possibleMonths[i]/>
                     <cfset key = '#rc.reportYear#-#possibleMonth#'/>
-                    <td>#deferredRevenueData[key].activeSubscriptions#</td>
+                    <cfset activeSubscriptionQueryString = "?slatAction=entity.listsubscriptionusage&reportYear=#rc.reportYear#&reportMonth=#i#"/>
+                    <cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
+                        <cfset activeSubscriptionQueryString &= "&subscriptionType=#rc.subscriptionType#"/>
+                    </cfif> 
+                    <cfif structKeyExists(rc,'productType') && len(rc.productType)>
+                        <cfset activeSubscriptionQueryString &= "&productType=#rc.productType#"/>
+                    </cfif> 
+                    <cfif structKeyExists(rc,'productID') && len(rc.productID)>
+                        <cfset activeSubscriptionQueryString &= "&productID=#rc.productID#"/>
+                    </cfif> 
+                    <td><a href="#activeSubscriptionQueryString#">#deferredRevenueData[key].activeSubscriptions#</a></td>
                 </cfloop>
             </tr>
             <tr>
