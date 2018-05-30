@@ -89,7 +89,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>Subscription Earnings</td>
+                <td>Subscriptions Earning</td>
                 <cfloop array="#subscriptionsEarning#" index="subscriptionsEarningRecord">
                     <td>#subscriptionsEarningRecord#</td>
                 </cfloop>

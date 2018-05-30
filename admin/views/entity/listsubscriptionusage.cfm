@@ -69,7 +69,6 @@ Notes:
 		isDeletable=false
 	})/>
 	<!---check for report year and month to filter--->
-	<cfset currentMonth = ""/>
 	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
 		<cfset months=[	
 				"January",
@@ -90,6 +89,9 @@ Notes:
 		<cfset filterDate = dateAdd('d',-1,CreateDate(reportYear,rc.reportMonth,1))/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+		
+		<cfset rc.pageTitle = 'Active #rc.pageTitle# for #currentMonth# #rc.reportYear#'/>	
+		
 		<cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode',rc.subscriptionType,'IN')/>
         </cfif> 
@@ -99,10 +101,6 @@ Notes:
         <cfif structKeyExists(rc,'productID') && len(rc.productID)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID',rc.productID,'IN')/>
         </cfif> 
-	</cfif>
-	
-	<cfif len(currentMonth)>
-		<cfset rc.pageTitle = 'Active #rc.pageTitle# for #currentMonth# #rc.reportYear#'/>	
 	</cfif>
 	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false"  />
