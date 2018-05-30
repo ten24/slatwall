@@ -419,12 +419,25 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	}
 
 
-	// =================== OLD FUNCTIONS =================================
+	public any function deleteImage(any image) {
+		var filename = arguments.image.getImageFile();
+
+		var deleteOK = super.delete(arguments.image);
+		if(deleteOK){
+			var imageFullPath = getProductImagePathByImageFile(filename);
+			if(fileExists(imageFullPath)) {
+				fileDelete(imageFullPath);
+			}
+			clearImageCache("#getHibachiScope().getBaseImageURL()#/product/default",filename);
+		}
+		return deleteOK;
+	}
+
 
 	public void function clearImageCache(string directoryPath, string imageName){
 		var cacheFolder = expandpath(arguments.directoryPath & "/cache/");
 
-		var files = getUtilityTagService().cfdirectory(action="list",directory=cacheFolder);
+		var files = DirectoryList(cacheFolder,false,'query');
 
 		cachedFiles = new Query();
 	    cachedFiles.setDBType('query');

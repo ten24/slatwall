@@ -20,18 +20,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
-			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
-			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
-			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
-			entityCollectionList.setDisplayProperties(primaryIDName);
-			entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
-			entityCollectionList.setCheckDORPermissions(true);
+			try{
+				var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
+				var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+				var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
+				entityCollectionList.setDisplayProperties(primaryIDName);
+				entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
+				entityCollectionList.setCheckDORPermissions(true);
 
-			var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
-			//if the collection returns a record then 
-			if(!entityCollectionRecordsCount){
-				throwNoAccess();				
-			}
+				var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+				//if the collection returns a record then 
+				if(!entityCollectionRecordsCount){
+					throwNoAccess();				
+				}
+			}catch(any e){
+				writedump(var=e);abort;
+ 			}
 		}
 	}
 	

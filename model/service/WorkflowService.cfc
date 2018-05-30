@@ -121,7 +121,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var allWorkflowTriggerEventsArray = getHibachiCacheService().getOrCacheFunctionValue("workflowDAO_getWorkflowTriggerEventsArray", getWorkflowDAO(), "getWorkflowTriggerEventsArray");
 		
 		// Make sure that this event has workflows attached before creating a thread
-		if(arrayFind(allWorkflowTriggerEventsArray, arguments.eventName)) {
+		if(arrayFindNoCase(allWorkflowTriggerEventsArray, arguments.eventName)) {
 			
 			// Run all workflows inside of a thread
 			//thread action="run" name="#createUUID()#" application="#application#" eventName="#arguments.eventName#" entity="#arguments.entity#" {
