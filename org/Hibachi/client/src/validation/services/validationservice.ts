@@ -1,13 +1,16 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
+import { Injectable,Inject } from "@angular/core";
+import {$Hibachi} from "../../core/services/hibachiservice";
 
-class ValidationService{
+@Injectable()
+export class ValidationService{
     public MY_EMAIL_REGEXP =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     //@ngInject
     constructor(
-        public $hibachi,
-        public $q
+        public $hibachi : $Hibachi,
+        @Inject("$q") public $q
     ){
         this.$hibachi = $hibachi;
         this.$q = $q;
@@ -15,8 +18,7 @@ class ValidationService{
 
 
 
-    public validateUnique=(value, object, property)=>{
-
+    public validateUnique(value, object, property){
         var deferred = this.$q.defer();
         //First time the asyncValidators function is loaded the
         //key won't be set  so ensure that we have
@@ -39,7 +41,7 @@ class ValidationService{
         return deferred.promise;
     }
 
-    public validateUniqueOrNull=(value, object, property)=>{
+    public validateUniqueOrNull(value, object, property){
         var deferred = this.$q.defer();
         //First time the asyncValidators function is loaded the
         //key won't be set  so ensure that we have
@@ -62,11 +64,11 @@ class ValidationService{
         return deferred.promise;
     }
 
-    public validateEmail=(value):boolean=>{
+    public validateEmail(value):boolean{
         return this.validateDataType(value,'email')
     }
 
-    public validateDataType=(value,type):boolean=>{
+    public validateDataType(value,type):boolean{
         if(value == null){return true;}//let required validate this
         if (angular.isString(value) && type === "string"){return true;}
         if (angular.isNumber(parseInt(value)) && type === "numeric"){return true;}
@@ -80,17 +82,17 @@ class ValidationService{
         return false;
     }
 
-    public validateEq=(value,expectedValue):boolean=>{
+    public validateEq(value,expectedValue):boolean{
         return (value === expectedValue);
     }
 
-    public validateNeq=(value,expectedValue):boolean=>{
+    public validateNeq(value,expectedValue):boolean{
         return (value !== expectedValue);
     }
 
 
 
-    public validateGte=(value:number|string,comparisonValue:number|string=0):boolean=>{
+    public validateGte(value:number|string,comparisonValue:number|string=0):boolean{
         if(angular.isString(value)){
             value = parseInt(<string>value)
         }
@@ -100,7 +102,7 @@ class ValidationService{
         return (value >= comparisonValue);
     }
 
-    public validateLte=(value:number|string,comparisonValue:number|string=0):boolean=>{
+    public validateLte(value:number|string,comparisonValue:number|string=0):boolean{
         if(angular.isString(value)){
             value = parseInt(<string>value)
         }
@@ -110,32 +112,32 @@ class ValidationService{
         return (value <= comparisonValue);
     }
 
-    public validateMaxLength=(value:number|string,comparisonValue:number|string=0):boolean=>{
+    public validateMaxLength(value:number|string,comparisonValue:number|string=0):boolean{
         return this.validateLte(value,comparisonValue);
     }
 
-    public validateMaxValue=(value:number|string,comparisonValue:number|string=0):boolean=>{
+    public validateMaxValue(value:number|string,comparisonValue:number|string=0):boolean{
         return this.validateLte(value,comparisonValue);
     }
 
-    public validateMinLength=(value:number|string,comparisonValue:number|string=0):boolean=>{
+    public validateMinLength(value:number|string,comparisonValue:number|string=0):boolean{
         return this.validateGte(value,comparisonValue);
     }
 
-    public validateMinValue=(value:number|string,comparisonValue:number|string=0):boolean=>{
+    public validateMinValue(value:number|string,comparisonValue:number|string=0):boolean{
         return this.validateGte(value,comparisonValue);
     }
 
-    public validateNumeric=(value):boolean=>{
+    public validateNumeric(value):boolean{
         return !isNaN(value);
     }
 
-    public validateRegex=(value:string,pattern:string):boolean=>{
+    public validateRegex(value:string,pattern:string):boolean{
         var regex:RegExp = new RegExp(pattern);
         return regex.test(value);
     }
 
-    public validateRequired=(value):boolean=>{
+    public validateRequired(value):boolean{
 
         if(value){
             return true;
@@ -145,7 +147,5 @@ class ValidationService{
     }
 
 }
-export {
-    ValidationService
-};
+
 
