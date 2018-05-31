@@ -119,7 +119,8 @@ import {BaseObject} from "./model/baseobject";
         $Hibachi,
         TypeaheadService,
         EntityService,
-        CartService
+        CartService,
+        OrderService
     ],  
     imports: [
         AlertModule,
@@ -262,7 +263,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',downgradeInjectable(RequestService))
 .service('accountService',AccountService)
-.service('orderService',OrderService)
+.service('orderService',downgradeInjectable(OrderService))
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',downgradeInjectable(CartService))
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
