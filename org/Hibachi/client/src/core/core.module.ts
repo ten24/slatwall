@@ -113,6 +113,7 @@ import {BaseObject} from "./model/baseobject";
         MetaDataService,
         ObserverService,
         FormService,
+        SelectionService,
         RbKeyService,
         RequestService,
         HibachiScope,
@@ -224,8 +225,9 @@ var coremodule = angular.module('hibachi.core',[
    $httpProvider.useApplyAsync(true);
 
 }])
-.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
+    $rootScope.rbKey = rbkeyService.rbKey;
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {
@@ -238,13 +240,13 @@ var coremodule = angular.module('hibachi.core',[
         return original.apply($location, [path]);
     };
 }])
-.constant('hibachiPathBuilder',new HibachiPathBuilder())
+.constant('hibachiPathBuilder', new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
 .service('cacheService', downgradeInjectable(CacheService))
 .service('publicService',PublicService)
 .service('utilityService',downgradeInjectable(UtilityService))
-.service('selectionService',SelectionService)
+.service('selectionService',downgradeInjectable(SelectionService))
 .service('observerService',downgradeInjectable(ObserverService))
 .service('draggableService',downgradeInjectable(DraggableService))
 .service('expandableService',downgradeInjectable(ExpandableService))

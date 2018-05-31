@@ -553,8 +553,8 @@ Notes:
 			</cfif>
 			GROUP BY skuCode
 			<cfif NOT isNull(skuOptionIDArray) AND arrayLen(skuOptionIDArray) >
-				<cfset counter = 1 />
-				<cfloop array="#skuOptionIDArray#" index="optionID">
+				<cfset var counter = 1 />
+				<cfloop array="#skuOptionIDArray#" index="local.optionID">
 					<cfif counter EQ 1>
 						HAVING optionIDs LIKE <cfqueryparam value="%#optionID#%" cfsqltype="cf_sql_varchar" >
 					<cfelse>

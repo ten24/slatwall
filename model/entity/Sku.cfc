@@ -593,29 +593,27 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
 
-	public any function getPriceByCurrencyCode( required string currencyCode, numeric quantity ) {
+	public any function getPriceByCurrencyCode( required string currencyCode, numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups() ) {
 		var cacheKey = 'getPriceByCurrencyCode#arguments.currencyCode#';
 		
 		if(structKeyExists(arguments, "quantity")){
 			cacheKey &= '#arguments.quantity#';
 			if(!structKeyExists(variables,cacheKey)){
-				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), currencyCode, quantity);
+				var skuPriceResults = getDAO("SkuPriceDAO").getSkuPricesForSkuCurrencyCodeAndQuantity(this.getSkuID(), arguments.currencyCode, arguments.quantity,arguments.priceGroups);
 				if(!isNull(skuPriceResults) && isArray(skuPriceResults) && arrayLen(skuPriceResults) > 0){
 					var prices = [];
 					for(var i=1; i <= arrayLen(skuPriceResults); i++){
-						ArrayAppend(prices, skuPriceResults[i].getPrice());
+						ArrayAppend(prices, skuPriceResults[i]['price']);
 					}
 					ArraySort(prices, "numeric","asc");
 					variables[cacheKey]= prices[1];
-				} else if (!isNull(skuPriceResults) && !isNull(skuPriceResults.getPrice())){
-					variables[cacheKey]= skuPriceResults.getPrice();
-				}
+				} 
 				
 				if(structKeyExists(variables,cacheKey)){
 					return variables[cacheKey];
 				}
 				
-				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), currencyCode);  
+				var baseSkuPrice = getDAO("SkuPriceDAO").getBaseSkuPriceForSkuByCurrencyCode(this.getSkuID(), arguments.currencyCode);  
 				if(!isNull(baseSkuPrice)){
 					variables[cacheKey] = baseSkuPrice.getPrice(); 
 				}

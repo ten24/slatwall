@@ -17,10 +17,6 @@ class SWFPromoBoxController{
         }
         this.$rootScope.slatwall.doAction('addPromotionCode',data).then(result=>{
             this.addPromotionCodeIsLoading = false;
-            this.$rootScope.slatwall.cart = result.cart;
-            this.$rootScope.slatwall.account = result.account;
-            this.$rootScope.slatwall.successfulActions = result.successfulActions;
-            this.$rootScope.slatwall.errors = result.errors;
         });
     }
     public removePromotionCode = (promoCode)=>{
@@ -30,10 +26,6 @@ class SWFPromoBoxController{
         }
         this.$rootScope.slatwall.doAction('removePromotionCode',data).then(result=>{
             this.removePromotionCodeIsLoading = false;
-            this.$rootScope.slatwall.cart = result.cart;
-            this.$rootScope.slatwall.account = result.account;
-            this.$rootScope.slatwall.successfulActions = result.successfulActions;
-            this.$rootScope.slatwall.errors = result.errors;
         }); 
     }
 }

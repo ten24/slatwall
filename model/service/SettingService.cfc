@@ -151,6 +151,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//Attribute
 			attributeDisplayTemplate = {fieldType="select"},
+			attributeHTMLTitleString = {fieldType="text", defaultValue="${attributeName}"},
+			attributeMetaDescriptionString = {fieldType="textarea", defaultValue="${attributeName}"},
+			attributeMetaKeywordsString = {fieldType="textarea", defaultValue="${attributeName}"},
 
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
@@ -174,6 +177,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Category
 			categoryDisplayTemplate = {fieldType="select"},
+			categoryHTMLTitleString = {fieldType="text", defaultValue="${categoryName}"},
+			categoryMetaDescriptionString = {fieldType="textarea", defaultValue="${categoryName}"},
+			categoryMetaKeywordsString = {fieldType="textarea", defaultValue="${categoryName}"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
