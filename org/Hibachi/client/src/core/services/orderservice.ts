@@ -19,7 +19,7 @@ export class OrderService extends BaseEntityService{
         super($injector,$hibachi,utilityService,'Order');
     }
 
-    public newOrder_AddOrderPayment = ()=>{
+    public newOrder_AddOrderPayment (){
         return this.newProcessObject('Order_AddOrderPayment');
     }
 }
