@@ -1769,6 +1769,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//Save the new password
 		var accountAuthentication = this.newAccountAuthentication();
 		accountAuthentication.setAccount( arguments.account );
+		accountAuthentication.setActiveFlag( true );
 
 		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
 		getHibachiDAO().save(accountAuthentication);
