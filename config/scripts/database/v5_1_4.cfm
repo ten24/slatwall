@@ -52,7 +52,7 @@ Notes:
 <cftry>
 	<cfquery name="local.updateTaxRateColumnLengths">
 	    ALTER TABLE swtaxapplied 
-	    MODIFY COLUMN taxRate decimal(19,4)
+	    MODIFY COLUMN taxRate decimal(19,5)
 	</cfquery>
 	
 	<cfcatch>
