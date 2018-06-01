@@ -76,6 +76,7 @@ Notes:
 	
 	<cffunction name="update">
 		<cfargument name="branch" type="string" default="master">
+		<cfargument name="branchType" type="string" default="standard">
 		
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
@@ -83,15 +84,19 @@ Notes:
 			<cfset var updateCopyStarted = false />
 			<cfset var zipName  = ''/> 		
 			<cfset var isZipFromGithub = false/>
+			
+			<cfif arguments.branchType EQ 'custom'>
+				<cfset isZipFromGithub = true />
+			</cfif>
+			
 			<cfif arguments.branch eq 'master'>
 				<cfset zipName  = 'slatwall-latest'/> 	
 			<cfelseif arguments.branch eq 'hotfix'>
 				<cfset zipName = 'slatwall-hotfix'/>	
 			<cfelseif arguments.branch eq 'develop'>
 				<cfset zipName  = 'slatwall-be'/> 		
-			<cfelse>
-				<cfset isZipFromGithub = true/>
 			</cfif>
+			
 			<cfif isZipFromGithub>
 				<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfelse>
