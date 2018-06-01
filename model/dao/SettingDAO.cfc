@@ -74,16 +74,23 @@ Notes:
 		
 		<cfset var rs = "" />
 		
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "LOWER(settingName)"/>
+		<cfelse>
+			<cfset comparisonValue = "settingName"/>
+		</cfif>
+		
 		<cfquery name="rs" maxrows="1">
 			SELECT
 				settingID
 			FROM
 				SwSetting
 			WHERE
-			  	LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
+			  	#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingName)#">
 		  		<cfif structKeyExists(arguments, "settingValue")>
 			  	  		AND
-			  		LOWER(settingValue) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingValue)#">  
+			  		#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#lcase(arguments.settingValue)#">  
 		  		</cfif>
 		</cfquery>
 		
@@ -94,9 +101,16 @@ Notes:
 		<cfargument name="settingName" type="string" required="true" />
 		<cfargument name="settingRelationships" type="struct" default="#structNew()#" />
 		
-		<cfset var potentialRelationships = "accountID,contentID,brandID,emailID,emailTemplateID,fulfillmentMethodID,locationID,locationConfigurationID,paymentMethodID,productID,productTypeID,shippingMethodID,shippingMethodRateID,siteID,skuID,subscriptionTermID,subscriptionUsageID,taskID" />
+		<cfset var potentialRelationships = "accountID,attributeID,categoryID,contentID,brandID,emailID,emailTemplateID,fulfillmentMethodID,locationID,locationConfigurationID,paymentMethodID,productID,productTypeID,shippingMethodID,shippingMethodRateID,siteID,skuID,subscriptionTermID,subscriptionUsageID,taskID" />
 		<cfset var relationship = "">
 		<cfset var rs = "">
+		
+		<cfset var comparisonValue =""/>
+		<cfif getApplicationValue("databaseType") eq "Oracle10g">
+			<cfset comparisonValue = "LOWER(settingName)"/>
+		<cfelse>
+			<cfset comparisonValue = "settingName"/>
+		</cfif>
 		
 		<cfquery name="rs" >
 			SELECT
@@ -106,7 +120,7 @@ Notes:
 			FROM
 				SwSetting
 			WHERE
-				LOWER(settingName) = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingName)#">
+				#comparisonValue# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#LCASE(arguments.settingName)#">
 				<cfloop list="#potentialRelationships#" index="local.relationship">
 					<cfif structKeyExists(arguments.settingRelationships, relationship)>
 						AND #relationship# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.settingRelationships[ relationship ]#" > 

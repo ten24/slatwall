@@ -70,11 +70,16 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
-			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
-			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
+			<hb:HibachiListingColumn propertyIdentifier="stock.sku.inventoryMeasurementUnit.unitCode" sort="false" search="false" />
+			<hb:HibachiListingColumn propertyidentifier="quantityDelivered" />
+			<hb:HibachiListingColumn propertyidentifier="quantityUnDelivered" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
-			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
+			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
+			
+			
+			
+			<!---<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />--->
 			
 		</hb:HibachiListingDisplay>
 		
@@ -92,7 +97,9 @@ Notes:
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
 				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
 				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+				<hb:HibachiListingColumn processObjectProperty="deliverFromLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverFromLocationID')#" fieldClass="span2" value="#rc.vendorOrder.getBillToLocation().getLocationID()#" />
 				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+				<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			</hb:HibachiListingDisplay>
 		</cfif>
 		
@@ -115,37 +122,80 @@ Notes:
 			<hb:HibachiListingColumn propertyidentifier="stock.sku.calculatedSkuDefinition" />
 			<hb:HibachiListingColumn propertyidentifier="stock.location.locationName" />
 			<hb:HibachiListingColumn propertyidentifier="quantity" />
+			<hb:HibachiListingColumn propertyIdentifier="stock.sku.inventoryMeasurementUnit.unitCode" sort="false" search="false" />
 			<hb:HibachiListingColumn propertyidentifier="quantityReceived" />
 			<hb:HibachiListingColumn propertyidentifier="quantityUnreceived" />
+			<hb:HibachiListingColumn propertyidentifier="skuPrice" />
 			<hb:HibachiListingColumn propertyidentifier="cost" />
+			<hb:HibachiListingColumn propertyidentifier="price" />
 			<hb:HibachiListingColumn propertyidentifier="extendedCost" />
+			<hb:HibachiListingColumn propertyidentifier="extendedWeight" />
+
+			<hb:HibachiListingColumn propertyidentifier="grossProfitMargin" />
 			<hb:HibachiListingColumn propertyidentifier="estimatedReceivalDateTime" />
-			
+			<hb:HibachiListingColumn propertyidentifier="vendorAlternateSkuCode.alternateSkuCode" />
+			<hb:HibachiListingColumn propertyidentifier="currencyCode" />
 		</hb:HibachiListingDisplay>
 		
 		<cfif rc.edit and listFindNoCase("vostNew", rc.vendorOrder.getVendorOrderStatusType().getSystemCode())>
 			<h5>#$.slatwall.rbKey('define.add')#</h5>
 			
-			<hb:HibachiListingDisplay smartList="#rc.vendorOrder.getAddVendorOrderItemSkuOptionsSmartList()#"
-									  recordProcessAction="admin:entity.processVendorOrder"
-									  recordProcessQueryString="vendorOrderItemTypeSystemCode=voitPurchase"
-									  recordProcessContext="addVendorOrderItem"
-									  recordProcessEntity="#rc.vendorOrder#"
-									  recordProcessUpdateTableID="LD#replace(rc.vendorOrder.getVendorOrderItemsSmartList().getSavedStateID(),'-','','all')#">
-									    
-				<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-				<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
-				<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-				<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
-				<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-				<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
-				
-				<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" />
-				<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-				<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
-				
-			</hb:HibachiListingDisplay>
+			<sw-tab-group id="#request.slatwallScope.createHibachiUUID()#">
+				<sw-tab-content id="#request.slatwallScope.createHibachiUUID()#" name="#$.slatwall.rbKey('admin.vendororder.addItems.assigned')#">
+					
+					<hb:HibachiListingDisplay smartList="#rc.vendorOrder.getAddVendorOrderItemSkuOptionsSmartList()#"
+											recordProcessAction="admin:entity.processVendorOrder"
+											recordProcessQueryString="vendorOrderItemTypeSystemCode=voitPurchase"
+											recordProcessContext="addVendorOrderItem"
+											recordProcessEntity="#rc.vendorOrder#"
+											recordProcessUpdateTableID="LD#replace(rc.vendorOrder.getVendorOrderItemsSmartList().getSavedStateID(),'-','','all')#">
+												
+						<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+						<hb:HibachiListingColumn propertyIdentifier="skuName" />
+						<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" />
+						<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
+						<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
+						<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+						<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
+						<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+						<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+						
+						<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" />
+						<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+						<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
+						<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
+						<hb:HibachiListingColumn processObjectProperty="vendorSkuCode" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.vendorSkuCode')#" fieldClass="span1"/>
+						
+					</hb:HibachiListingDisplay>
+				</sw-tab-content>
+
+				<sw-tab-content id="#request.slatwallScope.createHibachiUUID()#" name="#$.slatwall.rbKey('admin.vendororder.addItems.all')#">
+					<hb:HibachiListingDisplay smartList="#rc.vendorOrder.getAddVendorOrderItemAllSkuOptionsSmartList()#"
+											recordProcessAction="admin:entity.processVendorOrder"
+											recordProcessQueryString="vendorOrderItemTypeSystemCode=voitPurchase"
+											recordProcessContext="addVendorOrderItem"
+											recordProcessEntity="#rc.vendorOrder#"
+											recordProcessUpdateTableID="LD#replace(rc.vendorOrder.getVendorOrderItemsSmartList().getSavedStateID(),'-','','all')#">
+												
+						<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+						<hb:HibachiListingColumn propertyIdentifier="skuName" />
+						<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" />
+						<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
+						<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
+						<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+						<hb:HibachiListingColumn propertyIdentifier="calculatedSkuDefinition" />
+						<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+						<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+						
+						<hb:HibachiListingColumn processObjectProperty="deliverToLocationID" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.deliverToLocationID')#" fieldClass="span2" />
+						<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+						<hb:HibachiListingColumn propertyIdentifier="inventoryMeasurementUnit.unitCode" sort="false" search="false" />
+						<hb:HibachiListingColumn processObjectProperty="cost" title="#$.slatwall.rbKey('define.cost')#" fieldClass="span1" />
+						<hb:HibachiListingColumn processObjectProperty="vendorSkuCode" title="#$.slatwall.rbKey('process.vendorOrder_AddVendorOrderItem.vendorSkuCode')#" fieldClass="span1"/>
+						
+					</hb:HibachiListingDisplay>
+				</sw-tab-content>
+		</sw-tab-group>
 		</cfif>
 	</cfif>
 </cfoutput>

@@ -71,6 +71,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="address" cfc="Address" fieldtype="many-to-one" fkcolumn="addressID";
 	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
+	property name="category" cfc="Category" fieldtype="many-to-one" fkcolumn="categoryID";
 	property name="eventRegistration" cfc="EventRegistration" fieldtype="many-to-one" fkcolumn="eventRegistrationID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
@@ -90,6 +91,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
+	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
 	property name="type" cfc="Type" fieldtype="many-to-one" fkcolumn="typeID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
@@ -331,7 +333,25 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "brand");
 	}
 	
-	// Event Registrationf (many-to-one)
+	// Category (many-to-one)
+	public void function setCategory(required any Category) {
+		variables.category = arguments.category;
+		if(isNew() or !arguments.category.hasAttributeValue( this )) {
+			arrayAppend(arguments.category.getAttributeValues(), this);
+		}
+	}
+	public void function removeCategory(any category) {
+		if(!structKeyExists(arguments, "category")) {
+			arguments.category = variables.category;
+		}
+		var index = arrayFind(arguments.category.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.category.getAttributeValues(), index);
+		}
+		structDelete(variables, "category");
+	}
+
+	// Event Registration (many-to-one)
 	public void function setEventRegistration(required any eventRegistration) {
 		variables.eventRegistration = arguments.eventRegistration;
 		if(isNew() or !arguments.eventRegistration.hasAttributeValue( this )) {
@@ -672,6 +692,25 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "site");
 	}
+	
+	// Stock (many-to-one)
+	public void function setStock(required any stock) {
+		variables.stock = arguments.stock;
+		if(isNew() or !arguments.stock.hasAttributeValue( this )) {
+			arrayAppend(arguments.stock.getAttributeValues(), this);
+		}
+	}
+	public void function removeStock(any stock) {
+		if(!structKeyExists(arguments, "stock")) {
+			arguments.stock = variables.stock;
+		}
+		var index = arrayFind(arguments.stock.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.stock.getAttributeValues(), index);
+		}
+		structDelete(variables, "stock");
+	}
+
 
 	// Subscription Benefit (many-to-one)
 	public void function setSubscriptionBenefit(required any subscriptionBenefit) {

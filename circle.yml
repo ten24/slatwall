@@ -7,16 +7,23 @@ machine:
     version: 6.9.1
 
 dependencies:
+  cache_directories:
+    - /home/ubuntu/nvm/versions/node/v6.9.1/
+    
+  pre:
+    # Install node modules for building JS
+    #- if [ ! -e /home/ubuntu/nvm/versions/node/v6.9.1/bin/webpack ]; then npm install -g webpack@2.7.0 gulp less; else echo "global dependencies seems to be cached"; fi;
+    - npm install -g webpack@2.7.0 gulp less;
+
+    - npm install compression-webpack-plugin gulp gulp-inject@3 gulp-chmod@1.3.0 gulp-util run-sequence webpack@2.7.0 force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin@0.2.0 tsify typescript ts-loader@1.3.0 md5 blueimp-md5 rxjs
+
   override:
+
     # Setup git user for deployment
     - git config --global user.email "info@slatwallcommerce.com"
     - git config --global user.name "Big Boy (Slatwall Robot)"
     - git config --global push.default current
 
-    # Install node modules for building JS
-    - npm install -g webpack@1.13.3 gulp less
-
-    - npm install gulp gulp-inject@3 gulp-chmod@1.3.0 gulp-util run-sequence webpack@1.13.3 force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript ts-loader@1.3.0 md5 blueimp-md5
 
     # Install awscli so that we can push builds to S3
     - pip install awscli
@@ -25,11 +32,12 @@ dependencies:
 
     # Minify JS
      # generate typings
-    - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
+    - cd org/Hibachi/client && webpack --config webpack-production.config.js
+    - cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js --display-error-details
     - cd admin/client && gulp gen-ts-refs
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details 
-    # Minify 
+    - cd admin/client && webpack --config webpack-production.config.js --display-error-details
+    # Minify
     - cd admin/client/css && lessc main.less main.css
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -62,15 +70,15 @@ test:
     # Run Build
     #- sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml buildDocsAndTests
   override:
-    
+
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
     #- if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=5 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json --silent; fi
 
     # Run Unit Tests
-    
+
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";:
-        timeout: 1800
-        
+    #    timeout: 1800
+
   post:
     # Kill the Sauce Labs tunnel
     #- if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi

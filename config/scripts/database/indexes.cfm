@@ -111,9 +111,32 @@ Notes:
 	</cfcatch>
 </cftry>
 
+<!--- INDEX to inforce SlatwallProductListingPage has unique Content & Product combo --->
+<cftry>
+	<cfdbinfo type="Index" name="dbiContentProduct" table="SwProductListingPage">
+	<cfquery name="indexExists" dbtype="query">
+		SELECT
+			*
+		FROM
+			dbiContentProduct
+		WHERE
+			INDEX_NAME = <cfqueryparam cfsqltype="cf_sql_varchar" value="ContentProduct">
+	</cfquery>
+	
+	<cfif not indexExists.recordcount>
+		<cfquery name="createIndex">
+			CREATE UNIQUE INDEX ContentProduct ON SwProductListingPage (contentID,productID)
+		</cfquery>
+	</cfif>
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR in ContentProduct Unique index creation">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+</cftry>
+
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of index creation script had errors when running">
-	<cfthrow detail="Part of Script v3_0 had errors when running">
+	<cfthrow detail="Part of Script indexes had errors when running">
 <cfelse>
 	<cflog file="Slatwall" text="General Log - Index creation script ran with no errors">
 </cfif>

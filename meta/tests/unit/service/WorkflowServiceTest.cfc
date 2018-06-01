@@ -2,67 +2,68 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-	
+
 	public void function setUp() {
 		super.setup();
-		
-		variables.service = request.slatwallScope.getBean("workflowService");
+
+		//variables.service = request.slatwallScope.getBean("workflowService");
+		variables.service = variables.mockService.getWorkFlowServiceMock();
 	}
-	
+
 	/*public void function processWorkflow_execute_Test(){
 		var orderData = {
 			orderID = ''
-			
-			
+
+
 		};
 		var order = createPersistedTestEntity('order',orderData);
-		
-		
+
+
 		var workflowEntityData = {
 			workflowid = '',
 			workflowName = 'testWorkflow',
@@ -89,7 +90,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 									"value":"true"
 								}
 							]
-									
+
 						}
 					]',
 					workflowTaskActions=[
@@ -103,9 +104,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			]
 		};
 		var workflowEntity = createPersistedTestEntity('workflow',workflowEntityData);
-		
+
 		var data = {
-			
+
 		};
 		data = {
 			entity=order,
@@ -117,10 +118,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		variables.service.processWorkflow_execute(workflowEntity,data);
-		
+
 		////addToDebug(workflowEntity.getWorkflowID());
 	}*/
-		
+
 	/**
 	* @test
 	*/
@@ -134,21 +135,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					price = 3
 				}
 			]
-			
+
 		};
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
-		
-		var workflowTasksConditionsConfig = '{  
-		   "filterGroups":[  
-		      {  
-		         "filterGroup":[  
-		            {  
+
+		var workflowTasksConditionsConfig = '{
+		   "filterGroups":[
+		      {
+		         "filterGroup":[
+		            {
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -160,13 +161,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		               "ormtype":"boolean",
 		               "conditionDisplay":"True"
 		            },
-		            {  
+		            {
 		            	"logicalOperator":"AND",
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -178,13 +179,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		               "ormtype":"boolean",
 		               "conditionDisplay":"True"
 		            },
-		            {  
+		            {
 		            	"logicalOperator":"OR",
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -199,12 +200,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"AND",
 		            	"filterGroup":[
-			            	 {  
+			            	 {
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -216,13 +217,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				               "ormtype":"boolean",
 				               "conditionDisplay":"True"
 				            },
-				            {  
+				            {
 				            	"logicalOperator":"AND",
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -234,13 +235,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				               "ormtype":"boolean",
 				               "conditionDisplay":"True"
 				            },
-				            {  
+				            {
 				            	"logicalOperator":"OR",
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -263,12 +264,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
 			MakePublic(variables.service,'getWorkflowConditionGroupsString');
-		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct.filterGroups);	
+		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct.filterGroups);
 		addToDebug(conditionsGroupString);
 		var evalString = variables.service.entityPassesAllWorkflowTaskConditions(product, workflowTasksConditionsConfigStruct);
 		addToDebug(evalString);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -282,20 +283,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					price = 3
 				}
 			]
-			
+
 		};
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
-		
-		var workflowTasksConditionsConfig = '[  
-		      {  
-		         "filterGroup":[  
-		            {  
+
+		var workflowTasksConditionsConfig = '[
+		      {
+		         "filterGroup":[
+		            {
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -307,13 +308,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		               "ormtype":"boolean",
 		               "conditionDisplay":"True"
 		            },
-		            {  
+		            {
 		            	"logicalOperator":"AND",
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -325,13 +326,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		               "ormtype":"boolean",
 		               "conditionDisplay":"True"
 		            },
-		            {  
+		            {
 		            	"logicalOperator":"OR",
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -346,12 +347,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"AND",
 		            	"filterGroup":[
-			            	 {  
+			            	 {
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -363,13 +364,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				               "ormtype":"boolean",
 				               "conditionDisplay":"True"
 				            },
-				            {  
+				            {
 				            	"logicalOperator":"AND",
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -381,13 +382,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				               "ormtype":"boolean",
 				               "conditionDisplay":"True"
 				            },
-				            {  
+				            {
 				            	"logicalOperator":"OR",
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -406,10 +407,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		   ]';
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'getWorkflowConditionGroupString');
-		var conditionsGroupString = variables.service.getWorkflowConditionGroupString(product,workflowTasksConditionsConfigStruct);	
+		var conditionsGroupString = variables.service.getWorkflowConditionGroupString(product,workflowTasksConditionsConfigStruct);
 		addToDebug(conditionsGroupString);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -424,14 +425,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				}
 			],
 			activeFlag=true
-			
+
 		};
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
 		var test = request.slatwallScope.getBean("HibachiValidationService").invokeMethod('validate_eq',{1=product, 2='activeFlag', 3='true'});
 		addToDebug(test);
 	}
-		
+
 	/**
 	* @test
 	*/
@@ -445,20 +446,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					price = 3
 				}
 			]
-			
+
 		};
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
-		
-		var workflowTasksConditionsConfig = '[  
-		      {  
-		         "filterGroup":[  
-		            {  
+
+		var workflowTasksConditionsConfig = '[
+		      {
+		         "filterGroup":[
+		            {
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -470,13 +471,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		               "ormtype":"boolean",
 		               "conditionDisplay":"True"
 		            },
-		            {  
+		            {
 		            	"logicalOperator":"AND",
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -488,13 +489,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		               "ormtype":"boolean",
 		               "conditionDisplay":"True"
 		            },
-		            {  
+		            {
 		            	"logicalOperator":"OR",
 		               "displayPropertyIdentifier":"Active",
 		               "propertyIdentifier":"Product.activeFlag",
 		               "comparisonOperator":"eq",
-		               "breadCrumbs":[  
-		                  {  
+		               "breadCrumbs":[
+		                  {
 		                     "rbKey":"Product",
 		                     "entityAlias":"Product",
 		                     "cfc":"Product",
@@ -509,12 +510,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"AND",
 		            	"filterGroup":[
-			            	 {  
+			            	 {
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -526,13 +527,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				               "ormtype":"boolean",
 				               "conditionDisplay":"True"
 				            },
-				            {  
+				            {
 				            	"logicalOperator":"AND",
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -544,13 +545,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				               "ormtype":"boolean",
 				               "conditionDisplay":"True"
 				            },
-				            {  
+				            {
 				            	"logicalOperator":"OR",
 				               "displayPropertyIdentifier":"Active",
 				               "propertyIdentifier":"Product.activeFlag",
 				               "comparisonOperator":"eq",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Product",
 				                     "entityAlias":"Product",
 				                     "cfc":"Product",
@@ -570,7 +571,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		   ';
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'getWorkflowConditionGroupsString');
-		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct);	
+		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct);
 		addToDebug(conditionsGroupString);
 	}
 	/**
@@ -584,7 +585,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			lastName="marchand"
 		};
 		var account = createPersistedTestEntity('account',accountData);
-		
+
 		var orderData = {
 			orderID="",
 			account={
@@ -592,12 +593,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var order = createPersistedTestEntity('Order',orderData);
-		
+
 		var orderItemData = {
 			orderItemID=""
 		};
-		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);		
-		
+		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
+
 		var workflowTriggerSmartList = variables.service.getWorkflowTriggerSmartList();
 		workflowTriggerSmartList.addFilter('workflow.activeFlag',1);
 		workflowTriggerSmartList.addFilter('triggerEvent','afterOrderProcess_placeOrderSuccess');
@@ -606,12 +607,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(successFlag);
 		assert(!request.slatwallScope.getORMHasErrors());
 	}
-	
+
 	public void function runWorkflowByEventTriggerTest(){
-		
+
 	}
-	
-	
+
+
 }
 
 

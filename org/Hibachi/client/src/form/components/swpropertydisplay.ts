@@ -59,10 +59,9 @@ class SWPropertyDisplayController {
 	public valueObjectProperty;
     public valueOptions;
 	public processObject;
-	public optionValues:Array<string> = [];
+	public optionValues:any;
 	public propertyDisplay;
     public edit:boolean;
-
 	public value;
 	public submit;
 	public labelText;
@@ -95,11 +94,8 @@ class SWPropertyDisplayController {
 				this[i] = this.swForm[i];
 			}
 		}
-
-
         this.errors = {};
         this.edited = false;
-
         this.edit = this.edit || this.editing;
         this.editing = this.editing || this.edit;
 

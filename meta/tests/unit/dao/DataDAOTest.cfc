@@ -46,12 +46,12 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase">
+<cfcomponent extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase">
 
 	<cffunction name="setup">
 		<cfset super.setup() />
 
-		<cfset variables.dao = request.slatwallScope.getDAO("hibachiDataDAO") />
+		<cfset variables.dao = variables.mockService.getHibachiDataDAOMock() />
 	</cffunction>
 
 	<cffunction name="getShortReferenceID_1Test">

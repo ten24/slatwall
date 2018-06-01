@@ -9,7 +9,7 @@
 	},
 	"properties":{
 		"stockAdjustmentType":			[{"contexts":"save","required":true}],
-		"stockAdjustmentStatusType":	[{"contexts":"save","required":true}],
+		"stockAdjustmentStatusType":	[{"contexts":"save","required":true},{"contexts":"edit","method":"isNotClosed"}],
 		"fromLocation":					[{"contexts":"save","conditions":"shouldHaveFromLocation","required":true}],
 		"toLocation":					[{"contexts":"save","conditions":"shouldHaveToLocation","required":true}],
 		"statusCode":					[{"contexts":"addItems,processAdjustment,delete","inList":"sastNew"}],

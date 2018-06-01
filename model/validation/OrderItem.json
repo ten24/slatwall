@@ -1,7 +1,8 @@
 {
 	"conditions":{
 	   "shouldValidateQuantity":{
-			"quantityHasChangedOrOrderNotPlaced":{"eq":true}
+			"quantityHasChangedOrOrderNotPlaced":{"eq":true},
+			"sellOnBackOrderFlag":{"eq":false}
 		}
 	},
 	"properties":{

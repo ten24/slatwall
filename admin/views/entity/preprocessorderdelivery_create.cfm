@@ -54,6 +54,7 @@ Notes:
 <cfparam name="rc.orderFulfillment" type="any" />
 <cfparam name="rc.processObject" type="any" />
 
+<!--- manually set 'orderFulfillment' because rc.orderFulfilmment.orderFulfillmentID overwritten by HibachiControllerEntity automatically loading entity by ID --->
 <cfset rc.processObject.setOrderFulfillment( rc.orderFulfillment ) />
 
 <cfoutput>
@@ -67,7 +68,7 @@ Notes:
 
 				<input type="hidden" name="order.orderID" value="#rc.processObject.getOrder().getOrderID()#" />
 				<input type="hidden" name="orderFulfillment.orderFulfillmentID" value="#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" />
-				<input type="hidden" name="location.locationID" value="#rc.processObject.getLocation().getLocationID()#" />
+				<swa:SlatwallLocationTypeahead locationPropertyName="location.locationID"  locationLabelText="#$.slatwall.rbKey('entity.location')#" edit="#rc.edit#" showActiveLocationsFlag="true" ></swa:SlatwallLocationTypeahead>
 
 				<!--- Shipping - Hidden Fields --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
@@ -96,21 +97,47 @@ Notes:
 					</cfif>
 				</cfif>
 
-				<!--- Gift Card Codes --->
-				<cfif !rc.orderFulfillment.hasGiftCardCodes()>
+				<cfif rc.processObject.getCapturableAmount() gt 0 AND rc.processObject.getOrder().hasCreditCardPaymentMethod()>
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
+				</cfif>
 
+				<!--- Gift Card Codes (Manual) --->
+				<cfif rc.processObject.hasUndeliveredOrderItemsWithoutProvidedGiftCardCode()>
+					<hb:HibachiEntityDetailGroup>
+					
+					<cfsavecontent variable="giftCardCodeContent">
+					<!--- Gift card order items can have multiple quantities in which each need unique card codes --->
+					<cfset giftCardIndex = 0 />
+					
+					<cfloop index="placeholder" array="#rc.processObject.getUndeliveredOrderItemsWithoutProvidedGiftCardCodePlaceholders()#">
+						<cfloop index="giftCardPlaceholder" array="#placeholder.orderItem.getProvidedGiftCardCodePlaceholderOptions(maxPlaceholders=placeholder.quantity)#">
+							<cfset giftCardIndex++ />
+							<cfset giftCardCodeFieldTitle = giftCardPlaceholder.name />
+							<cfset giftCardCodeValue = "" />
+							<cfif not isNull(rc.processObject.getGiftCardCodes()) AND  giftCardIndex LTE arrayLen(rc.processObject.getGiftCardCodes() ) >
+								<cfset giftCardCodeValue = rc.processObject.getGiftCardCodes()[giftCardIndex].giftCardCode />
+							</cfif>
+							<!--- Add title prefix if necessary --->
+							<cfif arrayLen(rc.processObject.getUndeliveredOrderItemsWithoutProvidedGiftCardCode()) GT 1 or arrayLen(placeholder.orderItem.getProvidedGiftCardCodePlaceholderOptions(placeholder.quantity)) GT 1 >
+								<cfset giftCardCodeFieldTitle = "#giftCardIndex#. #giftCardCodeFieldTitle#" />
+							</cfif>
+							<hb:HibachiFieldDisplay fieldType="hidden" fieldName="giftCardCodes[#giftCardIndex#].orderItemID" value="#placeholder.orderItem.getOrderItemID()#" displayType="plain" edit="true" />
+							<hb:HibachiFieldDisplay fieldType="text" fieldName="giftCardCodes[#giftCardIndex#].giftCardCode" value="#giftCardCodeValue#" title="#giftCardCodeFieldTitle#" edit="true" />
+						</cfloop>
+					</cfloop>
+					</cfsavecontent>
+
+					<hb:HibachiEntityDetailItem tabContent="#giftCardCodeContent#" open="true" text="#$.slatwall.rbKey('admin.entity.orderdeliverytabs.giftcardscodeentry')#" />	
+					<!---
 					<cfloop index="codeCount" from="1" to="#rc.orderFulfillment.getNumberOfNeededGiftCardCodes()#">
 						<div class="form-group">
 							<label for="giftCardCodes[#codeCount#]">#rc.orderFulfillment.getGiftCardListLabels()[codeCount]# Gift Card Code</label>
 							<input type="text" name="giftCardCodes[#codeCount#]" />
 						</div>
 					</cfloop>
-
-				</cfif>
-
-				<cfif rc.processObject.getCapturableAmount() gt 0 AND rc.processObject.getOrder().hasCreditCardPaymentMethod()>
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
+					--->
+					</hb:HibachiEntityDetailGroup>
 				</cfif>
 
 				<hr />

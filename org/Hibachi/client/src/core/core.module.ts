@@ -9,6 +9,7 @@ import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
+import {AccountAddressService} from "./services/accountaddressservice";
 import {CartService} from "./services/cartservice";
 import {DraggableService} from "./services/draggableservice";
 import {UtilityService} from "./services/utilityservice";
@@ -62,6 +63,7 @@ import {SWDraggableContainer} from "./components/swdraggablecontainer";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWExpiringSessionNotifier} from "./components/swexpiringsessionnotifier";
 import {SWGravatar} from "./components/swgravatar";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swmodallauncher";
@@ -170,9 +172,14 @@ var coremodule = angular.module('hibachi.core',[
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
    // $provide.decorator('$hibachi',
    $httpProvider.interceptors.push('hibachiInterceptor');
+   
+   //Pulls seperate http requests into a single digest cycle.
+   $httpProvider.useApplyAsync(true);
+
 }])
-.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
+.run(['$rootScope','$hibachi', '$route', '$location','rbkeyService',($rootScope,$hibachi, $route, $location,rbkeyService)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;
+    $rootScope.rbKey = rbkeyService.rbKey;
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {
@@ -210,6 +217,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
+.service('accountAddressService',AccountAddressService)
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
@@ -241,6 +249,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swExpiringSessionNotifier',SWExpiringSessionNotifier.Factory())
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swDraggable',SWDraggable.Factory())
 .directive('swDraggableContainer', SWDraggableContainer.Factory())

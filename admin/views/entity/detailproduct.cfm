@@ -51,7 +51,6 @@ Notes:
 
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
-
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.product#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
@@ -109,6 +108,7 @@ Notes:
 			<hb:HibachiEntityDetailItem property="listingPages" count="#rc.product.getListingPagesCount()#"/>
 			<hb:HibachiEntityDetailItem property="categories" />
 			<hb:HibachiEntityDetailItem property="relatedProducts" count="#rc.product.getRelatedProductsCount()#" />
+			<hb:HibachiEntityDetailItem property="sites" count="#rc.product.getSitesCount()#" />
 
 			<!--- Reference --->
 			<hb:HibachiEntityDetailItem property="productReviews" count="#rc.product.getProductReviewsCount()#" />

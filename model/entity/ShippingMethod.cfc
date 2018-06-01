@@ -51,6 +51,7 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	// Persistent Properties
 	property name="shippingMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
+	property name="publishedFlag" ormtype="boolean";
 	property name="shippingMethodName" ormtype="string";
 	property name="shippingMethodCode" ormtype="string";
 	property name="sortOrder" ormtype="integer" sortContext="fulfillmentMethod";
@@ -61,7 +62,7 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	
 	// Related Object Properties (one-to-many)
 	property name="shippingMethodRates" singularname="shippingMethodRate" cfc="ShippingMethodRate" fieldtype="one-to-many" fkcolumn="shippingMethodID" inverse="true" cascade="all-delete-orphan";
-	property name="orderFulfillments" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="shippingMethodID" inverse="true" lazy="extra";
+	property name="orderFulfillments" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="shippingMethodID" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	

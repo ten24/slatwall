@@ -12,8 +12,13 @@ class SWListingControlsController {
     private listingColumns;
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
+    private personalCollectionsClosed:boolean=true;
+    private showExport:boolean; 
     private showFilters:boolean;
+    private showPersonalCollections:boolean;
+    private showPrintOptions:boolean; 
     private showToggleFilters:boolean;
+    private showToggleSearch:boolean;
     private showToggleDisplayOptions:boolean;
     private newFilterPosition;
     private itemInUse;
@@ -31,6 +36,16 @@ class SWListingControlsController {
         public listingService,
         public observerService
     ) {
+        if(angular.isUndefined(this.showPrintOptions)){
+            this.showPrintOptions = false;
+        }
+        if(angular.isUndefined(this.showExport)){
+            this.showExport = true; 
+        }
+        
+        if(angular.isUndefined(this.showToggleSearch)){
+            this.showToggleSearch = true;
+        }
         if(angular.isUndefined(this.showToggleFilters)){
             this.showToggleFilters = true;
         }
@@ -64,8 +79,7 @@ class SWListingControlsController {
     public filterActions =(res)=>{
 
         if(res.action == 'add' || res.action == 'remove'){
-
-            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+            this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
         }
         this.filtersClosed = true;
     };
@@ -76,7 +90,7 @@ class SWListingControlsController {
 
     public canDisplayColumn = (column) =>{
 
-        if(!this.listingColumns.length){
+        if(!this.listingColumns || !this.listingColumns.length){
             return true;
         }
 
@@ -110,7 +124,7 @@ class SWListingControlsController {
 
         this.searchText = '';
         this.collectionConfig.setKeywords(this.searchText);
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+        this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
     };
 
     public toggleDisplayOptions= (closeButton:boolean=false)=>{
@@ -128,18 +142,23 @@ class SWListingControlsController {
     public removeFilter = (array, index, reloadCollection:boolean=true)=>{
         array.splice(index, 1);
         if(reloadCollection){
-            this.observerService.notify('swPaginationAction',{type:'setCurrentPage', payload:1});
+            this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage', payload:1});
         }
     };
 
     public toggleFilters = ()=>{
         if(this.filtersClosed) {
-            this.filtersClosed = false;
+
             if(this.simple){
-            this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+            }
         }
-        }
+        this.filtersClosed = !this.filtersClosed;
     };
+
+    public togglePersonalCollections = () =>{
+        this.personalCollectionsClosed = !this.personalCollectionsClosed;
+    }
 
     public selectFilterItem = (filterItem) =>{
         this.filtersClosed = false;
@@ -151,8 +170,16 @@ class SWListingControlsController {
             this.collectionConfig = collectionConfig;
         }
         this.swListingDisplay.collectionConfig = this.collectionConfig;
-        this.observerService.notify('swPaginationAction',{type:'setCurrentPage',payload:1});
+        this.observerService.notifyById('swPaginationAction',this.tableId ,{type:'setCurrentPage',payload:1});
     };
+
+    public exportCollection = () =>{
+        this.swListingDisplay.exportCurrentList(); 
+    }
+
+    public printCollection = (printTemplateID) =>{
+        this.swListingDisplay.printCurrentList(printTemplateID);
+    }
 
 }
 
@@ -168,9 +195,13 @@ class SWListingControls  implements ng.IDirective{
         collectionConfig : "=",
         tableId : "=?",
         getCollection : "&",
+        showExport: "=?",
         showFilters : "=?",
+        showPrintOptions: "=?",
+        showToggleSearch: "=?",
         showToggleFilters : "=?",
         showToggleDisplayOptions : "=?",
+        displayOptionsClosed:"=?",
         simple:"=?"
     };
     public controller = SWListingControlsController;

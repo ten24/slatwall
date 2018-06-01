@@ -181,6 +181,20 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		];
 	}
 	
+	public any function getStateCodeFromAddressZoneOptions(){
+		var collectionList = getService('AddressService').getAddressZoneCollectionList();
+		collectionList.setDisplayProperties('stateCode|value,stateName|name');
+		if(!isNull(getCountryCode())) {
+			collectionList.addFilter("addressZoneCode", getCountryCode());	
+		} else {
+			collectionList.addFilter("addressZoneCode", 'US');
+		}
+		var options = [{'value' ='', 'name'='-- Select a State'}];
+		arrayAppend(options, collectionList.getRecords(), true );
+
+		return options;
+	}
+	
 	public array function getStateCodeOptions() {
 		if(!structKeyExists(variables, "stateCodeOptions")) {
 			var smartList = getService("addressService").getStateSmartList();

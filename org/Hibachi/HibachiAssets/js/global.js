@@ -163,15 +163,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			jQuery( jQuery(this).data('hibachi-selector') ).on('change', bindData, function(e) {
 				
 	            var selectedValue = jQuery(this).val() || '';
-				
-	            if(bindData.valueAttribute.length) {
-					var selectedValue = jQuery(this).children(":selected").data(bindData.valueAttribute) || '';
-				}
 	
-				if( jQuery( '#' + bindData.id ).hasClass('hide') 
+	            if(bindData.valueAttribute.length) {
+					var selectedValue = jQuery(this).children(":selected").attr(bindData.valueAttribute) || '';
+				}
+					if( jQuery( '#' + bindData.id ).hasClass('hide') 
 	                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
 	                     || bindData.showValues === '*' && selectedValue.length) 
-	            ) {
+	            )
+				 {
 					
 	                jQuery( '#' + bindData.id ).removeClass('hide');
 	                
@@ -394,23 +394,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				method:'get',
 				success: function(response){
 					jQuery('#adminModal').modal();
-					
-					var elem = angular.element(document.getElementById('ngApp'));
-				    var injector = elem.injector();
-				    var $compile = injector.get('$compile'); 
-				    var $rootScope = injector.get('$rootScope'); 
-				    
-				    jQuery('#adminModal').html($compile(response)($rootScope));
-					initUIElements('#adminModal');
-					
-					jQuery('#adminModal').css({
-						'width': 'auto'
-					});
-					
-					jQuery('#adminModal input').each(function(index,input){
-						//used to digest previous jquery value into the ng-model
-						jQuery(input).trigger('input');
-					});
+					renderModal(response);
 				},
 				error:function(response,status){
 					//returns 401 in the case of unauthorized access and boots to the appropriate login page
@@ -562,8 +546,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			}
 			
 			data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
-			
-			listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
+
+			var tableID = jQuery(this).closest('.table').attr('id'); 
+ 
+			jQuery('#' + tableID).find("input[name='OrderBy']").val(data[ 'OrderBy' ]);
+
+			listingDisplayUpdate( tableID, data);
+
 		});
 	
 		// Listing Display - Filtering
@@ -833,26 +822,10 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 						if(("preProcessView" in r)) {
 							jQuery('#adminModal').modal();
-							
-							var elem = angular.element(document.getElementById('ngApp'));
-						    var injector = elem.injector();
-						    var $compile = injector.get('$compile'); 
-						    var $rootScope = injector.get('$rootScope'); 
-						    
-						    jQuery('#adminModal').html($compile(r.preProcessView)($rootScope));
-							initUIElements('#adminModal');
-							
-							jQuery('#adminModal').css({
-								'width': 'auto'
-							});
-							
-							jQuery('#adminModal input').each(function(index,input){
-								//used to digest previous jquery value into the ng-model
-								jQuery(input).trigger('input');
-							});
+							renderModal(r.preProcessView);
 						} else {
 							jQuery.each(r.messages, function(i, v){
-								jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
+								jQuery('#' + thisTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + (v.MESSAGE || v.message) + '</div>');
 							});
 						}
 					}
@@ -1086,7 +1059,30 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 		return modalLink;
 	}
-	
+	function renderModal( html ) {
+		var elem = document.getElementById('ngApp');
+		if (typeof(elem) != 'undefined' && elem != null){
+			elem = angular.element(elem);
+			var injector = elem.injector();
+		    var $compile = injector.get('$compile');
+		    var $rootScope = injector.get('$rootScope');
+		    jQuery('#adminModal').html($compile(html)($rootScope));
+		}else{
+			jQuery('#adminModal').html(html);
+		}
+
+		initUIElements('#adminModal');
+
+		jQuery('#adminModal').css({
+			'width': 'auto'
+		});
+
+		jQuery('#adminModal input').each(function(index,input){
+			//used to digest previous jquery value into the ng-model
+			jQuery(input).trigger('input');
+		});
+	}
+
 	function updatePermissionCheckboxDisplay( checkbox ) {
 		jQuery.each( jQuery('.hibachi-permission-checkbox[data-hibachi-parentcheckbox="' + jQuery( checkbox ).attr('name') + '"]'), function(i, v) {
 	
@@ -1289,7 +1285,28 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			data[ 'adminAttributes' ] = JSON.stringify(jQuery('#' + tableID).find('th.admin').data());
 			data[ 'savedStateID' ] = jQuery('#' + tableID).data('savedstateid');
 			data[ 'entityName' ] = jQuery('#' + tableID).data('entityname');
+			data[ 'recordAlias' ] = jQuery('#' + tableID).data('recordalias');
 	
+			var tableHeadRowSelector = '#' + tableID + ' thead tr';
+					
+			// Loop over each column of the header to set data[ 'actionCallerAttributes' ]
+	 		data[ 'methodIdentifier' ] = {};
+	 	
+			if(data['OrderBy'] == null){
+				data[ 'OrderBy' ] =jQuery('#' + tableID).find("input[name='OrderBy']").val(); 
+			}
+
+	 		jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
+				if( jQuery(cv).hasClass('data') ) {
+					if( jQuery(cv).data('methodidentifier') !== undefined ) {
+						data[ 'methodIdentifier' ][ jQuery(cv).data('propertyidentifier') ] = jQuery(cv).data('methodidentifier');
+					}
+				}
+			});
+			
+			// convert data[ 'methodIdentifier' ] to string so we can pass it in ajax request
+			data[ 'methodIdentifier' ] = JSON.stringify(data[ 'methodIdentifier' ]) ;
+				 
 			var idProperty = jQuery('#' + tableID).data('idproperty');
 			var nextRowDepth = 0;
 	
@@ -1297,6 +1314,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 				nextRowDepth = jQuery('#' + afterRowID).find('[data-depth]').attr('data-depth');
 				nextRowDepth++;
 			}
+
 			if(data['entityName']){
 				jQuery.ajax({
 					url: hibachiConfig.baseURL + '/',
@@ -1314,7 +1332,7 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						// Setup Selectors
 						var tableBodySelector = '#' + tableID + ' tbody';
 						var tableHeadRowSelector = '#' + tableID + ' thead tr';
-		
+						
 						// Clear out the old Body, if there is no afterRowID
 						if(!afterRowID) {
 							jQuery(tableBodySelector).html('');
@@ -1332,13 +1350,13 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 								jQuery(rowSelector).attr('data-parentid', afterRowID);
 								jQuery(rowSelector).data('parentid', afterRowID);
 							}
-		
+							
 							// Loop over each column of the header to pull the data out of the response and populate new td's
 							jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
 		
 								var newtd = '';
 								var link = '';
-		
+								
 								if( jQuery(cv).hasClass('data') ) {
 		
 									if( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && rv[jQuery(cv).data('propertyidentifier')] ) {
@@ -1420,6 +1438,9 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 						if(jQuery('#' + tableID).data('selectfield')) {
 							updateSelectTableUI( jQuery('#' + tableID).data('selectfield') );
 						}
+		
+						// Broadcast event on table element
+						jQuery("#" + tableID).trigger("listingDisplayUpdateComplete");
 		
 						// Unload the loading icon
 						removeLoadingDiv( tableID );
@@ -1821,6 +1842,18 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 			timeFormat = timeFormat.replace('tt', 'TT');
 		}
 		return timeFormat;
+	}
+	
+	function getTabHTMLForTabGroup( element, tab ){
+		
+		var tabID = tab.TABID || tab.tabid;
+		var view = tab.VIEW || tab.view;
+		
+		if($('#'+tabID).html().trim().length === 0){
+			
+			$('#'+tabID).load(url=window.location.href,data={viewPath:view.split(/\/(.+)/)[1]});
+		}
+		
 	}
 	
 	// =========================  END: HELPER METHODS =================================

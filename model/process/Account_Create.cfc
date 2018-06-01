@@ -68,6 +68,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	property name="parentAccount" cfc="Account" fieldtype="many-to-one";
 	property name="childAccount" cfc="account" fieldtype="many-to-one";
+	property name="accountCreatedSite" cfc="Site" fieldtype="many-to-one";
 	
 	public any function getParentAccount(){
 		if(!structKeyExists(variables,'parentAccount')){
@@ -103,6 +104,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			return getService("accountService").getPrimaryEmailAddressNotInUseFlag( emailAddress=getEmailAddress() );	
 		}
 		return true;
+	}
+	
+	public any function getAccountCreatedSiteOptions(){
+		var collectionList = getService('SiteService').getCollectionList('Site');
+		collectionList.addDisplayProperty('siteID|value');
+		collectionList.addDisplayProperty('siteName|name');
+		
+		var options = [{value ="", name="None"}];
+		
+		arrayAppend(options, collectionList.getRecords(), true );
+		
+		return options;
 	}
 	
 }

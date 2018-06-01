@@ -57,6 +57,11 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
+		// if account is tax exempt return after removing any tax previously applied to order
+		if(!isNull(arguments.requestBean.getOrder().getAccount()) && !isNull(arguments.requestBean.getOrder().getAccount().getTaxExemptFlag()) && arguments.requestBean.getOrder().getAccount().getTaxExemptFlag()) {
+			return responseBean;
+		}
+		
 		// Loop over each unique tax address
 		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			

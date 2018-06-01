@@ -15,6 +15,7 @@ class SWFormController {
     public object:any;
     public events: any;
     public name: string;
+    public errorClass:string;
     //onSuccessEvents
     public onSuccess:string;
     //onErrorEvents
@@ -28,6 +29,10 @@ class SWFormController {
     public inputAttributes:string;
     public eventListeners;
     public submitOnEnter;
+    public parseObjectErrors:boolean = true;
+    public sRedirectUrl;
+    public fRedirectUrl;
+    public completedActions:number = 0;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
@@ -101,6 +106,14 @@ class SWFormController {
 
     }
 
+    public $onInit=()=>{
+        if(this.object && this.parseObjectErrors){
+            this.$timeout(()=>{
+                this.parseErrors(this.object.errors)
+            });
+        }
+    }
+
     public isObject=()=>{
         return (angular.isObject(this.object));
     }
@@ -115,17 +128,18 @@ class SWFormController {
     /** create the generic submit function */
     public submit = (actions) =>
     {   
-        actions = actions || this.action;
-        console.log('actions!', actions);
+        this.actions = actions || this.action;
+        console.log('actions!', this.actions);
         this.clearErrors();
         this.formData = this.getFormData() || "";
-        this.doActions(actions);
+        this.doActions(this.actions);
     }
 
     //array or comma delimited
     public doActions = (actions:string | string[]) =>
     {
         if (angular.isArray(actions)) {
+            this.completedActions = 0;
             for (var action of <string[]>actions) {
                 this.doAction(action);
             }
@@ -146,9 +160,24 @@ class SWFormController {
         let request = this.$rootScope.hibachiScope.doAction(action, this.formData)
         .then( (result) =>{
             if(!result) return;
+            if(result.successfulActions.length){
+                this.completedActions++;
+            }
+            if( (angular.isArray(this.actions) && this.completedActions === this.actions.length)
+                ||
+                (!angular.isArray(this.actions)) && result.successfulActions.length)
+            {
+                //if we have an array of actions and they're all complete, or if we have just one successful action
+                if(this.sRedirectUrl){
+                    this.$rootScope.slatwall.redirectExact(this.sRedirectUrl);
+                }
+            }
             this.object.forms[this.name].$setSubmitted(true);
             if (result.errors) {
                 this.parseErrors(result.errors);
+                if(this.fRedirectUrl){
+                    this.$rootScope.slatwall.redirectExact(this.fRedirectUrl);
+                }
             }
         });
 
@@ -164,8 +193,16 @@ class SWFormController {
             angular.forEach(errors, (val, key) => {
                     let primaryElement = this.$element.find("[error-for='" + key + "']");
                     this.$timeout(()=> {
+                        
+                        /**
+                        if an error class has been attached to this form
+                        by its children propertydisplay or errorDisplay, use it.
+                        Otherwise, just add a generic 'error' class
+                        to the error message **/
+                        let errorClass = this.errorClass ? this.errorClass : "error";
+                        
                         errors[key].forEach((error)=>{
-                            primaryElement.append("<div name='" + key + "Error'>" + error + "</div>");
+                            primaryElement.append("<div class='" + errorClass + "' name='" + key + "Error'>" + error + "</div>");
                         })
                     }, 0);
             }, this);
@@ -235,9 +272,9 @@ class SWFormController {
 
         angular.forEach(iterable, (val, key) => {
             if(typeof val === 'object' && val.hasOwnProperty('$modelValue')){
-                 if(this.object.forms[this.name][key].$modelValue){
+                 if(this.object.forms[this.name][key].$modelValue != undefined){
                     val = this.object.forms[this.name][key].$modelValue;
-                }else if(this.object.forms[this.name][key].$viewValue){
+                }else if(this.object.forms[this.name][key].$viewValue != undefined){
                     val = this.object.forms[this.name][key].$viewValue;
                 }else if(this.object.forms[this.name][key].$dirty){
                     val="";
@@ -290,7 +327,10 @@ class SWForm implements ng.IDirective {
             inputAttributes:"@?",
             eventListeners:"=?",
             eventAnnouncers:"@",
-            submitOnEnter:"@"
+            submitOnEnter:"@",
+            parseObjectErrors:"@?",
+            sRedirectUrl:"@?",
+            fRedirectUrl:"@?"
     };
 
     /**

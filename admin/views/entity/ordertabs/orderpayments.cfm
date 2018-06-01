@@ -53,20 +53,53 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfsilent>
-	<cfset local.chargeList = duplicate(rc.order.getOrderPaymentsSmartList()) />
-	<cfset local.chargeList.addFilter('orderPaymentType.systemCode', 'optCharge') />
-	<cfset local.chargeList.addFilter('orderPaymentStatusType.systemCode', 'opstActive') />
 	
-	<cfset local.creditList = duplicate(rc.order.getOrderPaymentsSmartList()) />
-	<cfset local.creditList.addFilter('orderPaymentType.systemCode', 'optCredit') />
-	<cfset local.creditList.addFilter('orderPaymentStatusType.systemCode', 'opstActive') />
+	<cfset local.collectionChargeList = $.slatwall.getService('orderService').getOrderPaymentCollectionList()  >
+	<cfset local.collectionChargeList.setDisplayProperties("paymentMethod.paymentMethodName,orderPaymentType.typeName,dynamicAmountFlag,amount,amountReceived,amountCredited",{
+	    isVisible=true,
+	    isSearchable=true,
+	    isDeletable=true
+	}) >
+	<cfset local.collectionChargeList.addDisplayProperty(displayProperty="orderPaymentID",columnConfig={isVisible=false})>
+	<cfset local.collectionChargeList.addFilter("order.orderID",rc.order.getOrderID())>
+	<cfset local.collectionChargeList.addFilter('orderPaymentType.systemCode', 'optCharge') >
+	<cfset local.collectionChargeList.addFilter('orderPaymentStatusType.systemCode', 'opstActive')>
+
 	
-	<cfset local.nonActiveList = duplicate(rc.order.getOrderPaymentsSmartList()) />
-	<cfset local.nonActiveList.addInFilter('orderPaymentStatusType.systemCode', 'opstInvalid,opstRemoved') />
+	
+	<cfset local.collectionCreditList = $.slatwall.getService('orderService').getOrderPaymentCollectionList()  >
+	<cfset local.collectionCreditList.setDisplayProperties("paymentMethod.paymentMethodName,orderPaymentType.typeName,dynamicAmountFlag,amount,amountReceived,amountCredited",{
+	    isVisible=true,
+	    isSearchable=true,
+	    isDeletable=true
+	}) >
+	<cfset local.collectionCreditList.addDisplayProperty(displayProperty="orderPaymentID",columnConfig={isVisible=false})>
+	<cfset local.collectionCreditList.addFilter("order.orderID",rc.order.getOrderID())>
+	<cfset local.collectionCreditList.addFilter('orderPaymentType.systemCode', 'optCredit') >
+	<cfset local.collectionCreditList.addFilter('orderPaymentStatusType.systemCode', 'opstActive')	>
+	
+	
+	
+	<cfset local.collectionNonActiveList = $.slatwall.getService('orderService').getOrderPaymentCollectionList()  >
+	<cfset local.collectionNonActiveList.setDisplayProperties("paymentMethod.paymentMethodName,orderPaymentType.typeName,dynamicAmountFlag,amount,amountReceived,amountCredited",{
+	    isVisible=true,
+	    isSearchable=true,
+	    isDeletable=true
+	}) >
+	<cfset local.collectionNonActiveList.addDisplayProperty(displayProperty="orderPaymentID",columnConfig={isVisible=false})>
+	<cfset local.collectionNonActiveList.addFilter("order.orderID",rc.order.getOrderID())>
+	<cfset local.collectionNonActiveList.addFilter(propertyIdentifier="orderPaymentStatusType.systemCode",value="opstInvalid",filterGroupAlias="nonActive")>
+	<cfset local.collectionNonActiveList.addFilter(propertyIdentifier="orderPaymentStatusType.systemCode",value="opstRemoved",comparisonOperator="=",logicalOperator="OR",filterGroupAlias="nonActive")>
+
 </cfsilent>
 
 <cfoutput>
-	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.charges')#" smartList="#local.chargeList#" 
+	
+	
+	
+	
+	
+	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.charges')#" collectionList="#local.collectionChargeList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
@@ -77,7 +110,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.credits')#" smartList="#local.creditList#" 
+	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.credits')#" collectionList="#local.collectionCreditList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
@@ -88,7 +121,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#" smartList="#local.nonActiveList#" 
+	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#" collectionList="#local.collectionNonActiveList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="orderPaymentStatusType.typeName" />

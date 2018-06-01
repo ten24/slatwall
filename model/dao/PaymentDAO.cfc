@@ -60,7 +60,7 @@ Notes:
 		<!--- check for any transaction for this payment in last 60 sec with same type and amount --->
 		<cfquery name="rs">
 			SELECT
-				#idColumnName#
+				count(#idColumnName#) as theCount
 			FROM
 				SwPaymentTransaction
 			WHERE
@@ -79,7 +79,7 @@ Notes:
 				)
 		</cfquery>
 
-		<cfreturn rs.recordcount />
+		<cfreturn rs.theCount />
 	</cffunction>
 
 	<cffunction name="getOriginalAuthorizationCode" access="public" returntype="string" output="false">

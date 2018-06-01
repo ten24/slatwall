@@ -50,7 +50,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
+		//variables.service = request.slatwallScope.getService("productService");
+		variables.service = variables.mockService.getProductServiceMock();
 	}
 
 	/**
@@ -151,7 +152,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmountType(),'percentage');
 		assertEquals(yetAnotherProduct.getDefaultSku().getRedemptionAmount(),2);
 	}
-
+ 
 	/**
 	* @test
 	*/

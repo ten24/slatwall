@@ -1,8 +1,13 @@
 {
-    "conditions":{},
+    "conditions":{
+    	"fulfillmentTypeNotAuto":{
+	        "orderFulfillment.fulfillmentMethod.fulfillmentMethodType":	{"neq":"auto"}
+	    }
+    },
 	"properties":{
-	    "orderDeliveryItems":					[{"method":"hasQuantityOnOneOrderDeliveryItem", "method":"hasRecipientsForAllGiftCardDeliveryItems"}],
-	    "giftCardCodes":						[{"method":"hasAllGiftCardCodes"}]
+	    "orderDeliveryItems":					[{"method":"isValidQuantity"},{"method":"hasQuantityOnOneOrderDeliveryItem"},{"method":"hasRecipientsForAllGiftCardDeliveryItems"}],
+	    "giftCardCodes":						[{"method":"hasGiftCardCodesForAllGiftCardDeliveryItems"}],
+	    "location":								[{"conditions":"fulfillmentTypeNotAuto","required":true}]
 	},
 	"populatedPropertyValidation":{}
 }

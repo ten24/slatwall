@@ -371,6 +371,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// ===================== START: Process Methods ===========================
 
+
+	public any function processSubscriptionUsageBenefitAccount_addUsageBenefitAccount(required any subscriptionUsageBenefitAccount, required any processObject) {
+
+		var subscriptionUsageBenefit = this.getSubscriptionUsageBenefit(arguments.processObject.getSubscriptionUsageBenefitID());
+		var account = this.getAccount(arguments.processObject.getAccountID());
+
+		if(!isNull(subscriptionUsageBenefit) && !isNull(account)){
+
+			var subsBenefitAccount = createSubscriptionUsageBenefitAccountBySubscriptionUsageBenefit(subscriptionUsageBenefit, account);
+			if(!isNull(subsBenefitAccount)){
+				arguments.subscriptionUsageBenefitAccount = subsBenefitAccount;
+			}
+		}
+
+		return arguments.subscriptionUsageBenefitAccount;
+	}
+
 	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
 
 		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
@@ -569,11 +586,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 
 			// TODO: Add Retry Logic
-			if(!isNull(order.getOrderNumber())){
-				arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getOrderNumber()# - #order.getStatus()#</a>');
-			} else {
-				arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getStatus()#</a>');
+			var errorResponseMessage = rbKey('validate.processSubscriptionUsage_renew.order.newFlag');
+			
+			// TODO: Add Retry Logic
+			if (getHibachiScope().getAccount().getAdminAccountFlag()){
+				if( !isNull(order.getOrderNumber()) ){
+					errorResponseMessage = errorResponseMessage	& ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getOrderNumber()# - #order.getStatus()#</a>';
+				}else{
+					errorResponseMessage = errorResponseMessage	& ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('entity.Order')#: #order.getStatus()#</a>';
+				}
 			}
+			
+			arguments.subscriptionUsage.addError('renew', errorResponseMessage);
 		}
 
 		return arguments.subscriptionUsage;

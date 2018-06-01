@@ -43,7 +43,9 @@
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
-						<h1 class="actionbar-title">#attributes.pageTitle#</h1>
+						<cfset hasItemEntityName = structKeyExists(request,'context') AND structKeyExists(request.context,'entityactiondetails') AND structKeyExists(request.context.entityactiondetails,'itementityname')/>
+						<h1 class="actionbar-title">#attributes.pageTitle#<cfif hasItemEntityName AND structKeyExists(request.context.entityactiondetails,'itemname') AND left(request.context.entityactiondetails.itemname,4) EQ 'list' ><span ng-if="$root.hibachiScope.selectedPersonalCollection && $root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#']" ng-bind="' - '+$root.hibachiScope.selectedPersonalCollection['#lcase(request.context.entityactiondetails.itementityname)#'].collectionName"></span></cfif></h1>
+
 					</div>
 
 					<div class="col-md-6">
@@ -84,6 +86,10 @@
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<hb:HibachiDividerHider>
+												<cfif attributes.object.hasCalculatedProperties()>
+											
+													<hb:HibachiActionCaller action="admin:entity.updateCalculatedProperties" queryString="entityName=#attributes.object.getClassName()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" type="list">
+												</cfif>
 												#thistag.generatedcontent#
 											</hb:HibachiDividerHider>
 										</ul>

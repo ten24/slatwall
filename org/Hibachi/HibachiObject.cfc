@@ -8,6 +8,10 @@ component accessors="true" output="false" persistent="false" {
 		return this;
 	}
 	
+	public any function getApplicationKey(){
+		return getBeanFactory().getBean('applicationKey');
+	}
+	
 	// @help Public method to determine if this is a persistent object (an entity)
 	public any function isPersistent() {
 		var metaData = getThisMetaData();
@@ -39,8 +43,8 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	// @hint gets a bean out of whatever the fw1 bean factory is
-	public any function getBean(required string beanName) {
-		return getBeanFactory().getBean( arguments.beanName );
+	public any function getBean(required string beanName, struct constructorArgs = { }) {
+		return getBeanFactory().getBean( arguments.beanName, arguments.constructorArgs);
 	}
 	
 	// @hint has a bean out of whatever the fw1 bean factory is
@@ -77,8 +81,8 @@ component accessors="true" output="false" persistent="false" {
 	}
 	
 	// @hint returns a new transient bean
-	public any function getTransient(required string transientName) {
-		return getBean(arguments.transientName);
+	public any function getTransient(required string transientName, struct constructorArgs = { } ) {
+		return getBean(arguments.transientName, arguments.constructorArgs);
 	}
 	
 	// @hint returns an application specfic virtual filesystem
@@ -193,6 +197,10 @@ component accessors="true" output="false" persistent="false" {
 		return getService("hibachiUtilityService").decryptValue(argumentcollection=arguments);
 	}
 	
+	public string function getIdentityHashCode() {
+		return getService("hibachiUtilityService").getIdentityHashCode(this);
+	}
+	
 	public void function logHibachi(required string message, boolean generalLog=false){
 		getService("hibachiUtilityService").logMessage(message=arguments.message, generalLog=arguments.generalLog);		
 	}
@@ -221,9 +229,10 @@ component accessors="true" output="false" persistent="false" {
 	// ========================= START: APPLICATION VAUES ===========================================
 	
 	// @hint setups an application scope value that will always be consistent
-	private any function getHibachiInstanceApplicationScopeKey() {
-		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey")) {
+	public any function getHibachiInstanceApplicationScopeKey() {
+		if(!structKeyExists(variables, "hibachiInstanceApplicationScopeKey") || isNull(variables.hibachiInstanceApplicationScopeKey)) {
 			var metaData = getThisMetaData();
+			
 			do {
 				var filePath = metaData.path;
 				metaData = metaData.extends;
@@ -234,6 +243,7 @@ component accessors="true" output="false" persistent="false" {
 			
 			variables.hibachiInstanceApplicationScopeKey = appKey;	
 		}
+		
 		return variables.hibachiInstanceApplicationScopeKey;
 	}
 	
@@ -289,20 +299,29 @@ component accessors="true" output="false" persistent="false" {
 		}
 	}
 	
-	// @hint facade method to check the application scope for a value
+	// @hint facade method to check the session scope for a value
+	public void function clearSessionValue(required any key) {
+		getHibachiScope().clearSessionValue(arguments.key);
+	}
+	
+	// @hint facade method to check the session scope for a value
 	public boolean function hasSessionValue(required any key) {
-		getHibachiScope().hasSessionValue(arguments.key);
+		return getHibachiScope().hasSessionValue(arguments.key);
 	}
 	
-	// @hint facade method to get values from the application scope
+	// @hint facade method to get values from the session scope
 	public any function getSessionValue(required any key) {
-		getHibachiScope().getSessionValue(arguments.key);
+		return getHibachiScope().getSessionValue(arguments.key);
 	}
 	
-	// @hint facade method to set values in the application scope 
+	// @hint facade method to set values in the session scope 
 	public void function setSessionValue(required any key, required any value) {
 		getHibachiScope().setSessionValue(arguments.key,arguments.value);
 	}
 	
-	// ========================= START: APPLICATION VAUES ===========================================
+	public void function clearVariablesKey(required string key){
+		structDelete(variables,arguments.key);
+	}
+
+	// ========================= END: APPLICATION VAUES ===========================================
 }

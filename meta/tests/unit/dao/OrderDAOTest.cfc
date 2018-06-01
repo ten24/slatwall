@@ -44,12 +44,12 @@
 
 Notes:
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.dao.SlatwallDAOTestBase" {
 	
 	public void function setUp() {
 		super.setup();
 
-		variables.dao = request.slatwallScope.getDAO("orderDAO");
+		variables.dao = variables.mockService.getOrderDAOMock();
 
 	}
 	
@@ -60,49 +60,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(isObject(variables.dao));
 	}
 
-	//getPeerOrderPaymentNullAmountExistsFlag()	
-	/**
-	* @test
-	*/
-	public void function getPeerOrderPaymentNullAmountExistsFlagTest(){
-		var orderTrueData = {
-			orderID = '',
-			orderPayments=[
-				{
-					orderPaymentID='',
-					orderPaymentStatusType={
-						orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'
-					}
-				},
-				{
-					orderPaymentID='',
-					orderPaymentStatusType={
-						orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'
-					}
-				}
-			]
-		};
-
-		var orderFalseData = {
-			orderID = '',
-			orderPayments=[
-				{
-					orderPaymentID='',
-					orderPaymentStatusType={
-						orderPaymentStatusTypeID = '5accbf58a94b61fe031f854ffb220f4b'
-					}
-				}
-			]
-		};
-
-		var order1 = createPersistedTestEntity('order', orderTrueData);
-		var order2 = createPersistedTestEntity('order', orderFalseData);
-
-		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[2].getOrderPaymentID()));
-		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[1].getOrderPaymentID()));
-		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId()));
-		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order2.getOrderId(), order2.getOrderPayments()[1].getOrderPaymentID()));
-	}
+	
 	
 	private any function createOrderReturn(numeric fulfillAmount) {
 		var orderReturnData = {

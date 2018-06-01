@@ -55,6 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("skuService").newSku();
 	}
 	
+
+	
 	/**
 	* @test
 	*/
@@ -465,6 +467,46 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//@Suppress See other currencyCode types tests in getCurrencyDetailsTest()
 	}
+	
+	/**
+	* @test
+	*/
+	public void function getPriceByCurrencyCodeTest_withPriceGroup() {
+		var priceGroupData = {
+			priceGroupID="",
+			priceGroupName="testPriceGroup"
+		};
+		var priceGroup = createPersistedTestEntity('PriceGroup',priceGroupData);
+		
+		//Testing the default currencyCode in SKU
+		var skuData = {
+			skuID = "",
+			price = 100
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var skuPriceData = {
+			skuPriceID="",
+			minQuantity=5,
+			maxQuantity=10,
+			price="50",
+			currencyCode="USD",
+			sku={
+				skuID=mockSku.getSkuID()
+			},
+			priceGroup={
+				priceGroupID=priceGroup.getPriceGroupID()
+			}
+		};
+		var skuPrice = createPersistedTestEntity('SkuPrice',skuPriceData);
+		assert(!isNull(skuPrice.getPriceGroup()));
+		assert(!isNull(skuPrice.getSku()));
+		
+		var result = mockSku.getPriceByCurrencyCode('USD',7,[priceGroup]);
+		assertEquals(50, result);
+		
+		
+	}
 		
 	/**
 	* @test
@@ -566,6 +608,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var result = mockSku.getLivePrice();
 		assertEquals(200, result);
 	}
+	
+	
 }
 
 

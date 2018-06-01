@@ -310,10 +310,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue) && arguments.constraintValue) {
-			return true;
+		if(arguments.constraintValue == true){
+			return isNull(propertyValue);			
+		}else{
+			return !isNull(propertyValue);			
 		}
-		return false;
 	}
 
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
@@ -704,7 +705,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(comparePropertyObject)) {
 			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");
 		}
-		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue == comparePropertyValue)) {
+		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && ( (isnumeric(propertyValue) && propertyValue == comparePropertyValue) || Compare(propertyValue, comparePropertyValue) == 0 )  )) {
 			return true;
 		}
 		return false;
@@ -752,7 +753,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue)) {
+		if(isNull(propertyValue) || !len(propertyValue)) {
 			return true;
 		}
 		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
@@ -763,7 +764,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		}
-		if(isNull(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
+		if(isNull(propertyValue) || !len(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
 			return true;
 		}
 		return false;
