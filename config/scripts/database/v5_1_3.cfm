@@ -50,21 +50,14 @@ Notes:
 <cfset local.scriptHasErrors = false />
 
 <cftry>
-	<cfquery name="local.taskConditionsConfigs">
-		SELECT workflowtaskID, taskConditionsConfig FROM swWorkflowTask where taskConditionsConfig not like '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"%'
+	<cfquery name="local.updateContentColumnLengths">
+		ALTER TABLE swcontent
+		MODIFY COLUMN urlTitlePath varchar(255) NULL,
+		MODIFY COLUMN urlTitle varchar(255) NULL
 	</cfquery>
-	<cfif local.taskConditionsConfigs.recordCount GT 0>
-		<cfloop query="local.taskConditionsConfigs" >
-			<cfset local.newConfig = rereplace(local.taskConditionsConfigs.taskConditionsConfig, '"(baseEntityAlias|propertyIdentifier|entityAlias)":"([A-Z])', '"\1":"_\2', 'ALL') />
-			<cfquery>
-				UPDATE swWorkflowTask
-				SET taskConditionsConfig = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.newConfig#" />
-                WHERE workflowtaskID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#local.taskConditionsConfigs.workflowtaskID#" />
-			</cfquery>
-		</cfloop>
-	</cfif>
+	
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update workflowtask taskConditionsConfig">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Content Column Lengths">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 </cftry>

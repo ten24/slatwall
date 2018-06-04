@@ -9,6 +9,7 @@ import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
+import {AccountAddressService} from "./services/accountaddressservice";
 import {CartService} from "./services/cartservice";
 import {DraggableService} from "./services/draggableservice";
 import {UtilityService} from "./services/utilityservice";
@@ -216,6 +217,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('localStorageService',LocalStorageService)
 .service('requestService',RequestService)
 .service('accountService',AccountService)
+.service('accountAddressService',AccountAddressService)
 .service('orderService',OrderService)
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',CartService)
