@@ -68,8 +68,40 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
 	}
 
-	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity){
-		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity AND currencyCode = :currencyCode", { skuID=arguments.skuID, currencyCode=arguments.currencyCode, quantity=arguments.quantity }, true );
+	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups()){
+		var priceGroupString = "";
+		
+		if(arraylen(arguments.priceGroups)){
+			priceGroupString = "OR _skuPrice.priceGroup in :priceGroups";
+		}
+		
+		var hql = "
+			SELECT NEW MAP(_skuPrice.price as price, _skuPrice.skuPriceID as skuPriceID)
+			FROM SlatwallSkuPrice _skuPrice 
+			left join _skuPrice.sku as _sku
+			WHERE _sku.skuID = :skuID 
+			AND _skuPrice.minQuantity <= :quantity 
+			AND _skuPrice.maxQuantity >= :quantity 
+			AND _skuPrice.currencyCode = :currencyCode
+			AND (
+				_skuPrice.priceGroup IS NULL
+				#priceGroupString#
+			)
+			GROUP BY _skuPrice.price,_skuPrice.skuPriceID
+			";
+			
+		var params = { 
+			skuID=arguments.skuID, 
+			currencyCode=arguments.currencyCode, 
+			quantity=arguments.quantity
+			
+		};
+		if(len(priceGroupString)){
+			params.priceGroups=arguments.priceGroups;
+		}
+		return  ormExecuteQuery( hql,
+			params
+		);
 	}
 
 	public function getSkuPricesForSkuAndQuantityRange (required string skuID, required numeric minQuantity, required numeric maxQuantity ){

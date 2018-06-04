@@ -9,6 +9,8 @@ import {SWFDirective} 		from "./components/swfdirective";
 import {SWShippingCostEstimator} from "./components/swshippingcostestimator";
 import {SWFCartItems} from "./components/swfcartitems";
 import {SWFPromoBox} from "./components/swfpromobox";
+import {SWFNavigation} from "./components/swfnavigation";
+import {SWFAddressForm} from "./components/swfaddressform";
 
 declare var hibachiConfig:any;
 //need to inject the public service into the rootscope for use in the directives.
@@ -44,6 +46,8 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 .directive('swfDirective', SWFDirective.Factory())
 .directive('swfCartItems', SWFCartItems.Factory())
 .directive('swfPromoBox',SWFPromoBox.Factory())
+.directive('swfNavigation',SWFNavigation.Factory())
+.directive('swfAddressForm',SWFAddressForm.Factory())
 
 export{
 	frontendmodule
