@@ -445,6 +445,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.originalFilename = productImageData['imageFile'];
 				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
+				thisImage.assignedSkuCodeList = productImageData['calculatedAssignedSkuCodeList'];
+				thisImage.assignedSkuIDList = productImageData['calculatedAssignedSkuIDList'];
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();
 				thisImage.name = "";
