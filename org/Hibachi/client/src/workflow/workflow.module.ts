@@ -28,7 +28,9 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+		ScheduleService
+	],
 	imports : [
 		CommonModule,
 		UpgradeModule
@@ -48,7 +50,7 @@ var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).c
 .constant('workflowPartialsPath','workflow/components/')
 //services
 .service('workflowConditionService',WorkflowConditionService)
-.service('scheduleService',ScheduleService)
+.service('scheduleService',downgradeInjectable(ScheduleService))
 //directives
 .directive('swAdminCreateSuperUser',SWAdminCreateSuperUser.Factory())
 .directive('swWorkflowBasic',SWWorkflowBasic.Factory())

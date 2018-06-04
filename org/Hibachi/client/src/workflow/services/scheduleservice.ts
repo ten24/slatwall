@@ -1,24 +1,29 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import {BaseEntityService} from "../../core/services/baseentityservice";
-class ScheduleService extends BaseEntityService{
+import {Injectable, Inject} from "@angular/core";
+import {$Hibachi} from "../../core/services/hibachiservice";
+import {UtilityService} from "../../core/services/utilityservice";
+
+@Injectable()
+export class ScheduleService extends BaseEntityService{
+
     private schedulePreview = {};
 
     //@ngInject
     constructor(
-        public $injector:ng.auto.IInjectorService,
-        public $hibachi,
-        public utilityService
+        @Inject("$injector") public $injector:ng.auto.IInjectorService,
+        public $hibachi : $Hibachi,
+        public utilityService : UtilityService
     ){
         super($injector,$hibachi,utilityService,'Schedule');
-
     }
 
-    public clearSchedulePreview =()=>{
+    public clearSchedulePreview() {
         this.schedulePreview = {};
     };
 
-    private addSchedulePreviewItem = (cdate:any, longMonthName:boolean = true):void=>{
+    private addSchedulePreviewItem(cdate:any, longMonthName:boolean = true):void {
         var weekday =  [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         var monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -35,9 +40,9 @@ class ScheduleService extends BaseEntityService{
         this.schedulePreview[currentDate].times.push(cdate.toLocaleTimeString());
     };
 
-    public buildSchedulePreview =(scheduleObject:any, totalOfPreviews:number=10):any=>{
+    public buildSchedulePreview(scheduleObject:any, totalOfPreviews:number=10):any {
         this.clearSchedulePreview();
-        var startTime = new Date(<any>Date.parse(scheduleObject.frequencyStartTime));
+        var startTime  = new Date(<any>Date.parse(scheduleObject.frequencyStartTime));
         var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(<any>Date.parse(scheduleObject.frequencyEndTime)) : false;
         var now = new Date();
         var startPoint = new Date();
@@ -88,4 +93,3 @@ class ScheduleService extends BaseEntityService{
         return this.schedulePreview;
     }
 }
-export {ScheduleService};
