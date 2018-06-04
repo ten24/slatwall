@@ -137,7 +137,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return monthData;
 		
 	}
-
+	
+	public any function getSubscriptionOrderItemByOrderItem(required any orderItem){
+		return getSubscriptionDAO().getSubscriptionOrderItemByOrderItemID(arguments.orderItem.getOrderItemID());
+	}
+	
 	public boolean function createSubscriptionUsageBenefitAccountByAccess(required any access, required any account) {
 		var subscriptionUsageBenefitAccountCreated = false;
 		if(!isNull(arguments.access.getSubscriptionUsageBenefitAccount()) && isNull(arguments.access.getSubscriptionUsageBenefitAccount().getAccount())) {

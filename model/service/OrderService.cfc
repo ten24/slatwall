@@ -1233,19 +1233,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// 'placeOrder' process will handle logic for the order payment
 				returnOrder = this.processOrder(returnOrder, placeOrderData, 'placeOrder');
 
-				// If the process object was set to automatically receive these items, then we will do that
-				if(!returnOrder.hasErrors() && (arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())) {
-					var receiveData = {};
-					receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
-					receiveData.orderReturnItems = [];
-					receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
-					for(var returnItem in orderReturn.getOrderReturnItems()) {
-						var thisData = {};
-						thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
-						thisData.quantity = returnItem.getQuantity();
-						arrayAppend(receiveData.orderReturnItems, thisData);
+				if(!returnOrder.hasErrors()) {
+					//if no errors and the order has a product with deferred revenue then check if we need to record a subscriptionOrderDeliveryItem
+					for(var orderItem in returnOrder.getOrderItems()){
+						if(orderItem.getSku().getProduct().getDeferredRevenueFlag()){
+							var subscriptionOrderItem = orderItem.getReferencedOrderItem().getSubscriptionOrderItem();
+							if(!isNull(subscriptionOrderItem)){
+								var refundBalance = orderItem.getPrice() - subscriptionOrderItem.getDeferredRevenue();
+								var refundTaxBalance = orderItem.getTaxAmount() - subscriptionOrderItem.getDeferredTaxAmount();
+								//if refundBalance is greater than the deferredRevenue then we are balanceing previous deliveries, prorating, 
+								//or providing a courteous refund greater than a single delivery
+								if(refundBalance != 0 || refundTaxBalance != 0){
+									var subscriptionOrderDeliveryItem = this.newSubscriptionOrderDeliveryItem();
+									var subscriptionOrderDeliveryItemType = getService('TypeService').getTypeBySystemCode('soditRefunded');
+									subscriptionOrderDeliveryItem.setSubscriptionOrderDeliveryItemType(subscriptionOrderDeliveryItemType);
+									subscriptionOrderDeliveryItem.setEarned(refundBalance);
+									subscriptionOrderDeliveryItem.setTaxAmount(refundTaxBalance);
+									subscriptionOrderDeliveryItem.setQuantity(1);
+									subscriptionOrderDeliveryItem.setSubscriptionOrderItem(subscriptionOrderItem);
+									subscriptionOrderDeliveryItem = getService('subscriptionService').saveSubscriptionOrderDeliveryItem(subscriptionOrderDeliveryItem);
+								}
+							}
+						}
 					}
-					orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
+					
+					// If the process object was set to automatically receive these items, then we will do that
+					if((arguments.processObject.getReceiveItemsFlag() || arguments.processObject.getStockLossFlag())){
+						var receiveData = {};
+						receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
+						receiveData.orderReturnItems = [];
+						receiveData.stockLossFlag = arguments.processObject.getStockLossFlag();
+						for(var returnItem in orderReturn.getOrderReturnItems()) {
+							var thisData = {};
+							thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
+							thisData.quantity = returnItem.getQuantity();
+							arrayAppend(receiveData.orderReturnItems, thisData);
+						}
+						orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');	
+					}
 				}
 			}
 			

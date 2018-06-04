@@ -176,6 +176,11 @@ Notes:
 		<cfreturn ormExecuteQuery(hql, {productID=arguments.productID}) />
 	</cffunction>
 	
+	<cffunction name="getSubscriptionOrderItemByOrderItemID">
+		<cfargument name="orderItemID" type="string" required="true"/>
+		<cfreturn ORMExecuteQuery('SELECT soi FROM SlatwallSubscriptionOrderItem soi where soi.orderItem.orderItemID=:orderItemID',{orderItemID=arguments.orderItemID},true)/>
+	</cffunction>
+	
 	<cffunction name="getDeferredActiveSubscriptionData">
 		<cfargument name="subscriptionTypeSystemCode" type="string"/>
 		<cfargument name="productTypeID" type="string"/>

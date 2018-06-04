@@ -13,24 +13,22 @@
     <!---collection list for delivered items--->
     <cfset earnedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset earnedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
-    <cfset earnedRevenueCollectionList.addDisplayProperty('subscriptionOrderDeliveryItemType.systemCode')/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.setReportFlag(1)/>
     <cfset earnedRevenueCollectionList.setPeriodInterval('Month')/>
-    <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soidtDelivered')/>
+    <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soditDelivered')/>
     
     <!---Collection list for refunded items--->
     <cfset refundedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset refundedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
-    <cfset refundedRevenueCollectionList.addDisplayProperty('subscriptionOrderDeliveryItemType.systemCode')/>
     <cfset refundedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset refundedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
     <cfset refundedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
     <cfset refundedRevenueCollectionList.setReportFlag(1)/>
     <cfset refundedRevenueCollectionList.setPeriodInterval('Month')/>
-    <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soidtRefunded')/>
+    <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soditRefunded')/>
     
     <cfset possibleYearsRecordsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset possibleYearsRecordsCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
@@ -80,17 +78,22 @@
     
     <cfset earnedDataRecords = earnedRevenueCollectionList.getRecords()/>
     <cfset refundedDataRecords = refundedRevenueCollectionList.getRecords()/>
+    
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <cfset subscriptionsEarning = []/>
     <cfset earned = []/>
     <cfset taxAmount = []/>
+    <cfset refunded = []/>
+    <cfset refundedTaxAmount = []/>
     <cfset possibleYearTotal = []/>
     <cfloop from="1" to="#currentMonth#" index="i">
         <cfset subscriptionsEarning[i] = 0/>
         <cfset earned[i] = 0/>
         <cfset taxAmount[i] = 0/>
+        <cfset refunded[i] = 0/>
+        <cfset refundedTaxAmount[i] = 0/>
         <cfset possibleYearTotal[i] = 0/>
     </cfloop>
     <cfloop array="#earnedDataRecords#" index="dataRecord">
@@ -102,8 +105,8 @@
     <!---subtract refunds--->
     <cfloop array="#refundedDataRecords#" index="dataRecord">
         <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
-        <cfset earned[index] -= dataRecord['earnedSUM']/>
-        <cfset taxAmount[index] -= dataRecord['taxAmountSUM']/>
+        <cfset refunded[index] = dataRecord['earnedSUM']/>
+        <cfset refundedTaxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>
     
     <table class="table table-bordered s-detail-content-table">
@@ -136,10 +139,22 @@
                     <td>#$.slatwall.getService('hibachiUtilityService').formatValue(taxAmountRecord,'currency')#</td>
                 </cfloop>
             </tr>
+             <tr>
+                <td>Refunded Revenue</td>
+                <cfloop array="#refunded#" index="refundRecord">
+                    <td>#$.slatwall.getService('hibachiUtilityService').formatValue(refundRecord,'currency')#</td>
+                </cfloop>
+            </tr>
+            <tr>
+                <td>Refunded Tax</td>
+                <cfloop array="#refundedTaxAmount#" index="refundedTaxAmountRecord">
+                    <td>#$.slatwall.getService('hibachiUtilityService').formatValue(refundedTaxAmountRecord,'currency')#</td>
+                </cfloop>
+            </tr>
             <tr>
                 <td>Total</td>
                 <cfloop from="1" to="#arraylen(taxAmount)#" index="i">
-                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(earned[i]+taxAmount[i],'currency')#</td>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(earned[i]+taxAmount[i]-refunded[i]-refundedTaxAmount[i],'currency')#</td>
                 </cfloop>
             </tr>
         </tbody>
@@ -163,7 +178,12 @@
     
     <cfset earnedRevenueCollectionList.addDisplayProperty('subscriptionOrderItem.orderItem.sku.product.productName',javacast('null',''),{isVisible=true})/>
     <cfset earnedRevenueCollectionList.setOrderBy('subscriptionOrderItem.orderItem.sku.product.productName')/>
-    <cfset dataRecords = earnedRevenueCollectionList.getRecords(true)/>
+    
+    <cfset refundedRevenueCollectionList.addDisplayProperty('subscriptionOrderItem.orderItem.sku.product.productName',javacast('null',''),{isVisible=true})/>
+    <cfset refundedRevenueCollectionList.setOrderBy('subscriptionOrderItem.orderItem.sku.product.productName')/>
+    
+    <cfset earnedDataRecords = earnedRevenueCollectionList.getRecords(true)/>
+    <cfset refundedDataRecords = refundedRevenueCollectionList.getRecords(true)/>
     
     <cfset productsWithDeliveriesMap = {}/>
     
@@ -172,22 +192,33 @@
         <cfset productsWithDeliveriesMap[productName] = {
             subscriptionsEarning = [],
             earned = [],
-            taxAmount = []
+            taxAmount = [],
+            refunded = [],
+            refundedTaxAmount = []
         }/>
         <cfloop from="1" to="#currentMonth#" index="i">
             <cfset productsWithDeliveriesMap[productName].subscriptionsEarning[i] = 0/>
             <cfset productsWithDeliveriesMap[productName].earned[i] = 0/>
             <cfset productsWithDeliveriesMap[productName].taxAmount[i] = 0/>
+            <cfset productsWithDeliveriesMap[productName].refunded[i] = 0/>
+            <cfset productsWithDeliveriesMap[productName].refundedTaxAmount[i] = 0/>
         </cfloop>
         
     </cfloop>
     
-    <cfloop array="#dataRecords#" index="dataRecord">
+    <cfloop array="#earnedDataRecords#" index="dataRecord">
         <cfset productName = dataRecord['subscriptionOrderItem_orderItem_sku_product_productName']/>
         <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
         <cfset productsWithDeliveriesMap[productName].subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
         <cfset productsWithDeliveriesMap[productName].earned[index] = dataRecord['earnedSUM']/>
         <cfset productsWithDeliveriesMap[productName].taxAmount[index] = dataRecord['taxAmountSUM']/>
+    </cfloop>
+    
+    <cfloop array="#refundedDataRecords#" index="dataRecord">
+        <cfset productName = dataRecord['subscriptionOrderItem_orderItem_sku_product_productName']/>
+        <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
+        <cfset productsWithDeliveriesMap[productName].refunded[index] = dataRecord['earnedSUM']/>
+        <cfset productsWithDeliveriesMap[productName].refundedTaxAmount[index] = dataRecord['taxAmountSUM']/>
     </cfloop>
     
     
@@ -210,8 +241,8 @@
                     <td>#productName#</td>
                     <cfloop from="1" to="#arrayLen(productsWithDeliveriesMap[productName].earned)#" index="i">
                         
-                        <td>#$.slatwall.getService('hibachiUtilityService').formatValue(productsWithDeliveriesMap[productName].earned[i],'currency')#</td>
-                        <cfset possibleYearTotal[i]+=productsWithDeliveriesMap[productName].earned[i]/>
+                        <td>#$.slatwall.getService('hibachiUtilityService').formatValue((productsWithDeliveriesMap[productName].earned[i] - productsWithDeliveriesMap[productName].refunded[i]),'currency')#</td>
+                        <cfset possibleYearTotal[i]+=(productsWithDeliveriesMap[productName].earned[i] - productsWithDeliveriesMap[productName].refunded[i])/>
                     </cfloop>
                 </tr>
             </cfloop>
