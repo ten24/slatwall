@@ -61,6 +61,8 @@ component displayname="SubscriptionOrderDeliveryItem" entityname="SlatwallSubscr
 	
 	// Related Object Properties (many-to-one)
 	property name="subscriptionOrderItem" cfc="SubscriptionOrderItem" fieldtype="many-to-one" fkcolumn="subscriptionOrderItemID";
+	property name="subscriptionOrderDeliveryItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="subscriptionOrderDeliveryItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=subscriptionOrderDeliveryItemType";
+	
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
