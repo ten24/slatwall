@@ -183,10 +183,8 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 
-		//try{
-
+		try{
 			//get workflowTriggers Object
-		
 			//execute Collection and return only the IDs
 			if(!isNull(arguments.workflowTrigger.getScheduleCollection())){
 				var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
@@ -257,14 +255,14 @@ component extends="HibachiService" accessors="true" output="false" {
 				workflowTriggerHistory.setResponse( "" );
 			}
 
-		/*} catch(any e){
+		} catch(any e){
 			if(!isNull(workflowTriggerHistory)) {
 				// Update the workflowTriggerHistory
 				workflowTriggerHistory.setSuccessFlag(false);
 				workflowTriggerHistory.setResponse(e.Message);
 				workflowTrigger.setWorkflowTriggerException(e);
 			}
-		}*/
+		}
 
 		//Change WorkflowTrigger runningFlag to FALSE
 		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);

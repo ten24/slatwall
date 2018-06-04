@@ -198,9 +198,11 @@ Notes:
 			q.addParam(name='createdDateTime',value=now(),cfsqltype="cf_sql_timestamp");
 			q.addParam(name='modifiedByAccountID',value=getHibachiScope().getAccount().getAccountID());
 			q.addParam(name='modifiedDateTime',value=now(),cfsqltype="cf_sql_timestamp");
+			//Subscription Order Delivery Item Type Delivered
+			q.addParam(name='subscriptionOrderDeliveryItemTypeID',value='f22e6a41d678334700a550bddec925d2');
 			
-			var sql = "INSERT INTO swsubscriptionorderdeliveryitem (subscriptionOrderDeliveryItemID,subscriptionOrderItemID,quantity,createdByAccountID,createdDateTime,modifiedByAccountID,modifiedDateTime,earned,taxAmount) 
-						VALUES (:subscriptionOrderDeliveryItemID,:subscriptionOrderItemID,:quantity,:createdByAccountID,:createdDateTime,:modifiedByAccountID,:modifiedDateTime,:earned,:taxAmount)";
+			var sql = "INSERT INTO swsubscriptionorderdeliveryitem (subscriptionOrderDeliveryItemID,subscriptionOrderItemID,quantity,createdByAccountID,createdDateTime,modifiedByAccountID,modifiedDateTime,earned,taxAmount,subscriptionOrderDeliveryItemTypeID) 
+						VALUES (:subscriptionOrderDeliveryItemID,:subscriptionOrderItemID,:quantity,:createdByAccountID,:createdDateTime,:modifiedByAccountID,:modifiedDateTime,:earned,:taxAmount,:subscriptionOrderDeliveryItemTypeID)";
 			
 			q.setSQL(sql);
 			
