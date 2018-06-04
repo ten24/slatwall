@@ -55,7 +55,7 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="taxAmount" ormtype="big_decimal" hb_formatType="currency";
 	property name="taxLiabilityAmount" ormtype="big_decimal" hb_formatType="currency";
-	property name="taxRate" ormtype="big_decimal" hb_formatType="percentage";
+	property name="taxRate" ormtype="big_decimal" scale="5" hb_formatType="percentage";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="taxStreetAddress" hb_populateEnabled="public" ormtype="string";
