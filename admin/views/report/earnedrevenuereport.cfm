@@ -3,19 +3,34 @@
 <cfparam name="rc.productID" default=""/>
 <cfparam name="rc.reportYear" default="#Year(now())#"/>
 <cfoutput>
+    
     <cfset slatAction = 'report.earnedRevenueReport'/>
     <!---<cfset earningSubscriptionsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
     <cfset earningSubscriptionsCollectionList.setReportFlag(1)/>
     <cfset earningSubscriptionsCollectionList.setPeriodInterval('Month')/>
     <cfset earningSubscriptionsCollectionList.setDisplayProperties()--->
     
+    <!---collection list for delivered items--->
     <cfset earnedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset earnedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
+    <cfset earnedRevenueCollectionList.addDisplayProperty('subscriptionOrderDeliveryItemType.systemCode')/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
     <cfset earnedRevenueCollectionList.setReportFlag(1)/>
     <cfset earnedRevenueCollectionList.setPeriodInterval('Month')/>
+    <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soidtDelivered')/>
+    
+    <!---Collection list for refunded items--->
+    <cfset refundedRevenueCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
+    <cfset refundedRevenueCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
+    <cfset refundedRevenueCollectionList.addDisplayProperty('subscriptionOrderDeliveryItemType.systemCode')/>
+    <cfset refundedRevenueCollectionList.addDisplayAggregate('earned','SUM','earnedSUM',false,{isMetric=true})/>
+    <cfset refundedRevenueCollectionList.addDisplayAggregate('taxAmount','SUM','taxAmountSUM',false,{isMetric=true})/>
+    <cfset refundedRevenueCollectionList.addDisplayAggregate('subscriptionOrderItem.subscriptionUsage.subscriptionUsageID','COUNT','subscriptionUsageCount',true,{isMetric=true})/>
+    <cfset refundedRevenueCollectionList.setReportFlag(1)/>
+    <cfset refundedRevenueCollectionList.setPeriodInterval('Month')/>
+    <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderDeliveryItemType.systemCode','soidtRefunded')/>
     
     <cfset possibleYearsRecordsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionOrderDeliveryItemCollectionList()/>
     <cfset possibleYearsRecordsCollectionList.setDisplayProperties('createdDateTime',{isPeriod=true})/>
@@ -37,25 +52,34 @@
     <cfif arraylen(possibleYearsRecords) and !structKeyExists(rc,'reportYear')>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],1,1,0,0,0),'>=')/>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],12,31,23,59,59),'<=')/>
+        
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],1,1,0,0,0),'>=')/>
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(possibleYearsRecords[1],12,31,23,59,59),'<=')/>
     <cfelseif structKeyExists(rc,'reportYear')>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),1,1,0,0,0),'>=')/>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),12,31,23,59,59),'<=')/>
+        
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),1,1,0,0,0),'>=')/>
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.order.orderCloseDateTime', CreateDateTime(INT(rc.reportYear),12,31,23,59,59),'<=')/>
     </cfif>
     
     <cfif structKeyExists(rc,'productType') and len(rc.productType)>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productType.productTypeID', rc.productType,'IN')/>
     </cfif>
     
     <cfif structKeyExists(rc,'productID') and len(rc.productID)>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productID', rc.productID,'IN')/>
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.orderItem.sku.product.productID', rc.productID,'IN')/>
     </cfif>
     
     <cfif structKeyExists(rc,'subscriptionType') and len(rc.subscriptionType)>
         <cfset earnedRevenueCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemType.systemCode', rc.subscriptionType,'IN')/>
+        <cfset refundedRevenueCollectionList.addFilter('subscriptionOrderItem.subscriptionOrderItemType.systemCode', rc.subscriptionType,'IN')/>
     </cfif>
     
-    <cfset dataRecords = earnedRevenueCollectionList.getRecords()/>
-    
+    <cfset earnedDataRecords = earnedRevenueCollectionList.getRecords()/>
+    <cfset refundedDataRecords = refundedRevenueCollectionList.getRecords()/>
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
@@ -69,11 +93,17 @@
         <cfset taxAmount[i] = 0/>
         <cfset possibleYearTotal[i] = 0/>
     </cfloop>
-    <cfloop array="#dataRecords#" index="dataRecord">
+    <cfloop array="#earnedDataRecords#" index="dataRecord">
         <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
         <cfset subscriptionsEarning[index] = dataRecord['subscriptionUsageCount']/>
         <cfset earned[index] = dataRecord['earnedSUM']/>
         <cfset taxAmount[index] = dataRecord['taxAmountSUM']/>
+    </cfloop>
+    <!---subtract refunds--->
+    <cfloop array="#refundedDataRecords#" index="dataRecord">
+        <cfset index = INT(right(dataRecord['createdDateTime'],2))/>
+        <cfset earned[index] -= dataRecord['earnedSUM']/>
+        <cfset taxAmount[index] -= dataRecord['taxAmountSUM']/>
     </cfloop>
     
     <table class="table table-bordered s-detail-content-table">
