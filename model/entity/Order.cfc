@@ -603,6 +603,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
 			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
+				if(getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')){
+					fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getHandlingFee());
+				}
 				continue;
 			}
 			fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
