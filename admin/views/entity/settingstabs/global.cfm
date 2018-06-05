@@ -78,6 +78,6 @@ Notes:
 		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
         <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
+        <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
-
