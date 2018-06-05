@@ -1,33 +1,29 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-import { Injectable,Inject } from "@angular/core";
 
-@Injectable()
-export class RbKeyService{
+class RbKeyService{
 
     public _resourceBundle = {};
 	public _resourceBundleLastModified = '';
 	public _loadingResourceBundle = false;
 	public _loadedResourceBundle = false;
-    private $http:any;
-    private $q:any;
-    
+    //@ngInject
     constructor(
-        @Inject("$http") $http:any,
-        @Inject("$q") $q:any,
-        @Inject("appConfig") public appConfig:any,
-        @Inject("resourceBundles") public resourceBundles:any
+        public $http:ng.IHttpService,
+        public $q:ng.IQService,
+        public appConfig:any,
+        public resourceBundles:any
     ){
         this.$q = $q;
         this.$http = $http;
         this.appConfig = appConfig;
-        this.resourceBundles = resourceBundles;
+        this.resourceBundles = resourceBundles
     }
-    getRBLoaded ()  {
+    getRBLoaded= () => {
 		return this._loadedResourceBundle;
 	}
 
-    rbKey (key,replaceStringData) {
+    rbKey= (key,replaceStringData) => {
 		////$log.debug('rbkey');
 		////$log.debug(key);
 		////$log.debug(this.getConfig().rbLocale);
@@ -37,7 +33,7 @@ export class RbKeyService{
 
 		return keyValue;
 	}
-	getRBKey (key:string,locale?:string,checkedKeys?:string,originalKey?:string) {
+	getRBKey= (key:string,locale?:string,checkedKeys?:string,originalKey?:string) => {
 		////$log.debug('getRBKey');
 		////$log.debug('loading:'+this._loadingResourceBundle);
 		////$log.debug('loaded'+this._loadedResourceBundle);
@@ -124,3 +120,6 @@ export class RbKeyService{
 
 
 }
+export {
+    RbKeyService
+};
