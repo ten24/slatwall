@@ -46,18 +46,30 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfcomponent extends="HibachiDAO">
+	<cffunction name='getShippingMethodRateIntegrationMethodIDByShippingIntegrationIDAndShippingMethodRateID'>
+		<cfargument name="shippingIntegrationID" required="true" >
+		<cfargument name="shippingMethodRateID" required="true"  >
 
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentType" />
-		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentAmount" />
-		<swa:SlatwallSetting settingName="shippingMethodRateMinimumAmount" />
-		<swa:SlatwallSetting settingName="shippingMethodRateMaximumAmount" />
-	    <swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeFlag" />
-		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeType" />
-		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeAmount" />
-		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeePercentage" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+		<cfquery name="local.query">
+			SELECT shipMethodRateIntegrationMethodID FROM SwShipMethodRateIntegrationMethod
+			WHERE shippingIntegrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingIntegrationID#">
+			AND shippingMethodRateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingMethodRateID#">
+		</cfquery>	
+		<cfreturn local.query.shipMethodRateIntegrationMethodID/>
+	</cffunction>
+	
+	<cffunction name='hasShippingMethodRateIntegrationMethod'>
+		<cfargument name="shippingMethodRateID" required="true" >
+		<cfargument name="method" required="true" >
+		<cfargument name="integrationID" required="true"  >
+
+		<cfquery name="local.query">
+			SELECT COALESCE(COUNT(shipMethodRateIntegrationMethodID),0) as hasShippingMethodRateIntegrationMethod FROM SwShipMethodRateIntegrationMethod
+			WHERE shippingIntegrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.integrationID#">
+			AND shippingIntegrationMethod = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.method#">
+			AND shippingMethodRateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingMethodRateID#">
+		</cfquery>	
+		<cfreturn local.query.hasShippingMethodRateIntegrationMethod/>
+	</cffunction>
+</cfcomponent>

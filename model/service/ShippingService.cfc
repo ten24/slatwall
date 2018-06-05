@@ -298,6 +298,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return integrations;
 	}
 	
+	public numeric function getChargeAmountByRatePercentage (required any orderFulfillment,required numeric percentage){
+		var chargeAmount = 0;
+		for(item in orderFulfillment.getOrderFulfillmentItems()){
+			chargeAmount += val(getService('HibachiUtilityService').precisionCalculate(item.getItemTotal() * (percentage / 100)));
+		}
+		return chargeAmount;
+	}
+	
 	public struct function newQualifiedRateOption(required any shippingMethodRate, required numeric totalCharge, required boolean integrationFailed=false, any responseBean){
 		var qualifiedRateOption = {
 			shippingMethodRate=arguments.shippingMethodRate,
@@ -327,6 +335,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var shippingMethodRatesCount = arraylen(arguments.shippingMethodRates);
 		for(var r=1; r<=shippingMethodRatesCount; r++) {
 			var shippingMethodRate = arguments.shippingMethodRates[r];
+
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
 				
@@ -335,11 +344,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					shipmentItemMultiplier = arguments.orderFulfillment.getShipmentItemMultiplier();
 				}
 				
-				var chargeAmount = getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(
+				//Adding support to different rate types. If the type is percentage, we use the property
+				//rate percentage to calculate the charge amount. If it comes out zero or less than the default amount,
+				//we default to the defaultAmount.
+				if(shippingMethodRate.getRateType() == 'Percentage'){
+					var chargeAmount = getChargeAmountByRatePercentage(orderFulfillment,nullReplace(shippingMethodRate.getRatePercentage(),0));
+					if(!chargeAmount || chargeAmount < shippingMethodRate.getDefaultAmount()){
+						chargeAmount = nullReplace(shippingMethodRate.getDefaultAmount(),0);
+					}
+				} else {
+					var chargeAmount = getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(
 					nullReplace(shippingMethodRate.getDefaultAmount(),0),
 					shipmentItemMultiplier,
 					nullReplace(shippingMethodRate.getRateMultiplierAmount(),0)
-				);
+					);
+				}
+				
+				//if handling fee setting is on,let's add it to the charge
+				if(shippingMethodRate.setting('shippingMethodRateHandlingFeeFlag')){
+					
+					switch(shippingMethodRate.setting('shippingMethodRateHandlingFeeType')){
+						case 'amount':
+							chargeAmount += shippingMethodRate.setting('shippingMethodRateHandlingFeeAmount');
+						break;
+						case 'percentage':
+							chargeAmount += getChargeAmountByRatePercentage(arguments.orderFulfillment,shippingMethodRate.setting('shippingMethodRateHandlingFeePercentage'));
+						break;
+					}
+				}
+				
 				//make sure the manual rate is usable
 				var priceGroups = [];
 				if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
@@ -602,6 +635,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 
+	public any function getShippingMethodRateIntegrationMethodByShippingIntegrationIDAndShippingMethodRateID(shippingIntegrationID,shippingMethodRateID,returnNewFlag=false){
+		if( (isNull(shippingIntegrationID) || isNull(shippingMethodRateID)) && returnNewFlag){
+			return this.newShippingMethodRateIntegrationMethod();
+		}
+		else if( (isNull(returnNewFlag) || !returnNewFlag) && (isNull(shippingIntegrationID) || isNull(shippingMethodRateID)) ) {
+			return;
+		} else {
+			var id = getDAO('ShippingDAO').getShippingMethodRateIntegrationMethodIDByShippingIntegrationIDAndShippingMethodRateID(shippingIntegrationID,shippingMethodRateID);
+			if(!isNull(id)){
+				return this.getShippingMethodRateIntegrationMethodByShipMethodRateIntegrationMethodID(id,returnNewFlag);
+			}
+		}
+	}
+	
 	public void function setShippingMethodOptionOnShippingMethodOptionSplitShipments(required any shippingMethodOption, required array shippingMethodOptionSplitShipments){
 		for(var j = 1; j <= ArrayLen(arguments.shippingMethodOptionSplitShipments); j++){ 
 			var shippingMethodOptionSplitShipment = arguments.shippingMethodOptionSplitShipments[j];

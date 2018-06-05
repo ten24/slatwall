@@ -343,6 +343,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
 			// Shipping Method Rate
+			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
+			shippingMethodRateHandlingFeeType = {fieldType="select",defaultValue="amount"},
+			shippingMethodRateHandlingFeeAmount = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateAdjustmentType = {fieldType="select", defaultValue="increasePercentage"},
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
@@ -568,6 +571,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
+			case "ShippingMethodRateHandlingFeeType" :
+				return [{name='Amount', value='amount'}, {name='Percentage', value='percentage'}];
 			case "shippingMethodRateAdjustmentType" :
 				return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
 			case "skuCurrency" :
