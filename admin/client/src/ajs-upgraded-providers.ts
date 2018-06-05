@@ -49,7 +49,7 @@ export function injectorFactory(i:any) {
 }
 
 export function windowFactory(i:any) {
-    return i.get('$injector');    
+    return i.get('$window');    
 }
 
 export function rootScopeFactory(i:any) {
