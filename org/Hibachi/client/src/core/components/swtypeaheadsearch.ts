@@ -216,11 +216,8 @@ class SWTypeaheadSearchController {
     }
     
 
-	public search = (search:string)=>{
-	    if(!search.length){
-	        this.closeThis();
-	        return;
-	    }
+	public search = (search:string="")=>{
+	  
         this.rSearch(search);
 
         if(this._timeoutPromise){
