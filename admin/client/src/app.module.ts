@@ -9,7 +9,7 @@ import {slatwalladminmodule} from './slatwall/slatwalladmin.module';
 import {AlertModule} from "../../../org/Hibachi/client/src/alert/alert.module";
 import {CardModule} from "../../../org/Hibachi/client/src/card/card.module";
 import {CollectionModule} from "../../../org/Hibachi/client/src/collection/collection.module";
-import {CoreModule}  from  "../../../org/Hibachi/client/src/core/core.module";
+import {CoreModule,coremodule}  from  "../../../org/Hibachi/client/src/core/core.module";
 import {DialogModule} from "../../../org/Hibachi/client/src/dialog/dialog.module";
 import {EntityModule} from "../../../org/Hibachi/client/src/entity/entity.module";
 import {FormModule} from "../../../org/Hibachi/client/src/form/form.module";
@@ -39,7 +39,10 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
 
 @NgModule({
   providers: [
-    
+    AppProvider,
+    AppConfig,
+    ResourceBundles,
+    AttributeMetaData,
     parseProvider,
     logProvider,
     filterProvider,
@@ -90,10 +93,21 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
   ]
 })
 export class AppModule {
-  constructor(private upgrade: UpgradeModule, private appProvider:AppProvider,private appConfig:AppConfig) { }
+  constructor(
+    private upgrade: UpgradeModule, 
+    private appProvider:AppProvider,
+    private appConfig:AppConfig,
+    private resourceBundles:ResourceBundles,
+    private attributeMetaData:AttributeMetaData
+  ) { }
   ngDoBootstrap() {
-    console.log(this.appProvider);
+    console.log('bootstrap',this.appProvider);
     console.log(this.appConfig);
+    console.log(this.resourceBundles);
+    console.log(this.attributeMetaData);
+     coremodule.constant('appConfig',this.appConfig)
+     coremodule.constant('resourceBundles',this.resourceBundles)
+     coremodule.constant('attributeMetaData',this.attributeMetaData)
      
      
      this.upgrade.bootstrap(document.body,[slatwalladminmodule.name]);

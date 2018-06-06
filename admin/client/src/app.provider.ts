@@ -5,6 +5,9 @@ declare var hibachiConfig:any;
 var md5 = require('md5');
 @Injectable()
 export class AppConfig {
+  public debugFlag:boolean;
+  public modelConfig:any={};
+  public applicationKey:string="";
   constructor(){
   }
 }
