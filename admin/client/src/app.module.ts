@@ -1,4 +1,4 @@
-import {NgModule, APP_INITIALIZER, Injectable} from '@angular/core';
+import {NgModule, Injectable} from '@angular/core';
 
 import { HttpClientModule } from "@angular/common/http";
 import {BrowserModule} from '@angular/platform-browser';
@@ -34,18 +34,12 @@ import {ProductBundleModule} from "./productbundle/productbundle.module";
 import {SkuModule} from "./sku/sku.module";
 import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
 
-import {AppProvider} from "./app.provider";
+import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.provider";
 
-export function startupServiceFactory(appProvider: AppProvider): Function {
-  return () => {
-    appProvider.fetchData()
-  };
-}
 
 @NgModule({
   providers: [
-    AppProvider,
-    { provide: APP_INITIALIZER, useFactory: startupServiceFactory, deps: [AppProvider], multi: true },
+    
     parseProvider,
     logProvider,
     filterProvider,
@@ -96,9 +90,10 @@ export function startupServiceFactory(appProvider: AppProvider): Function {
   ]
 })
 export class AppModule {
-  constructor(private upgrade: UpgradeModule, private appProvider:AppProvider) { }
+  constructor(private upgrade: UpgradeModule, private appProvider:AppProvider,private appConfig:AppConfig) { }
   ngDoBootstrap() {
-    
+    console.log(this.appProvider);
+    console.log(this.appConfig);
      
      
      this.upgrade.bootstrap(document.body,[slatwalladminmodule.name]);

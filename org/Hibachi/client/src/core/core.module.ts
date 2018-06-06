@@ -90,19 +90,34 @@ import {dialogmodule} from "../dialog/dialog.module";
 import {AlertModule} from '../alert/alert.module';
 import {DialogModule} from '../dialog/dialog.module';
 
-import {NgModule,Inject} from '@angular/core';
+import {NgModule,Inject,APP_INITIALIZER} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 
 import {BaseObject} from "./model/baseobject";
-import {AppProvider} from "../../../../../admin/client/src/app.provider";
+import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "../../../../../admin/client/src/app.provider";
 
+export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConfig,resourceBundles:ResourceBundles,attributeMetaData:AttributeMetaData): Function {
+  return () => {
+    appProvider.fetchData().then(()=>{
+      appConfig = appProvider.appConfig;
+      resourceBundles = appProvider._resourceBundle;
+      attributeMetaData = appProvider.attributeMetaData;
+      console.log('testhere',appConfig);
+    })
+    
+  };
+}
 
 @NgModule({
     declarations: [],
     providers: [
         AppProvider,
+        AppConfig,
+        ResourceBundles,
+        AttributeMetaData,
+        { provide: APP_INITIALIZER, useFactory: startupServiceFactory, deps: [AppProvider,AppConfig,ResourceBundles,AttributeMetaData], multi: true },
         LocalStorageService,
         CacheService,
         DraggableService,
@@ -133,7 +148,9 @@ import {AppProvider} from "../../../../../admin/client/src/app.provider";
 })
 
 export class CoreModule{
-    constructor(private appProvider:AppProvider) {
+    constructor(private appConfig:AppConfig,private appProvider:AppProvider) {
+        console.log('trst',appConfig);
+        console.log('trst',appProvider);
     }    
 }
 
