@@ -3,10 +3,23 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 
 declare var hibachiConfig:any;
 var md5 = require('md5');
-
 @Injectable()
 export class AppConfig {
-  constructor() {
+  public debugFlag:boolean;
+  public modelConfig:any={};
+  public applicationKey:string="";
+  constructor(){
+  }
+}
+@Injectable()
+export class ResourceBundles {
+  constructor(){
+  }
+}
+
+@Injectable()
+export class AttributeMetaData {
+  constructor(){
   }
 }
 

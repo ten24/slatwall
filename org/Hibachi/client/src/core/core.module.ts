@@ -90,19 +90,41 @@ import {dialogmodule} from "../dialog/dialog.module";
 import {AlertModule} from '../alert/alert.module';
 import {DialogModule} from '../dialog/dialog.module';
 
-import {NgModule,Inject} from '@angular/core';
+import {NgModule,Inject,APP_INITIALIZER} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 
 import {BaseObject} from "./model/baseobject";
-import {AppProvider} from "../../../../../admin/client/src/app.provider";
+import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "../../../../../admin/client/src/app.provider";
 
+export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConfig,resourceBundles:ResourceBundles,attributeMetaData:AttributeMetaData): Function {
+  return () => {
+    appProvider.fetchData().then(()=>{
+        for(var key in appProvider.appConfig){
+            appConfig[key] = appProvider.appConfig[key];
+        }
+        for(var key in appProvider._resourceBundle){
+            resourceBundles[key] = appProvider._resourceBundle[key];
+        }
+        if(appProvider.attributeMeta){
+            for(var key in appProvider.attributeMetaData){
+                attributeMetaData[key] = appProvider.attributeMetaData[key];
+            }
+        }
+    })
+    
+  };
+}
 
 @NgModule({
     declarations: [],
     providers: [
         AppProvider,
+        AppConfig,
+        ResourceBundles,
+        AttributeMetaData,
+        { provide: APP_INITIALIZER, useFactory: startupServiceFactory, deps: [AppProvider,AppConfig,ResourceBundles,AttributeMetaData], multi: true },
         LocalStorageService,
         CacheService,
         DraggableService,
@@ -133,7 +155,9 @@ import {AppProvider} from "../../../../../admin/client/src/app.provider";
 })
 
 export class CoreModule{
-    constructor(private appProvider:AppProvider) {
+    constructor(public appConfig:AppConfig,private appProvider:AppProvider) {
+        console.log('trst',appConfig);
+        console.log('trst',appProvider);
     }    
 }
 
@@ -151,7 +175,7 @@ var coremodule = angular.module('hibachi.core',[
 ])
 .config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
     
-    console.log('adsf',appConfig);
+    
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
@@ -243,9 +267,6 @@ var coremodule = angular.module('hibachi.core',[
 }])
 .constant('hibachiPathBuilder', new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
-.constant('AppProvider',downgradeInjectable(AppProvider))
-.constant('resourceBundles',{})
-.constant('attributeMetaData',{})
 //services
 .service('cacheService', downgradeInjectable(CacheService))
 .service('publicService',PublicService)
