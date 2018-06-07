@@ -182,7 +182,7 @@ Notes:
 			
 			var QDOOHashMap = {};
 			
-			//This variable willstore the total QDOO and QOO by skuID
+			//This variable will store the total QDOO and QOO by skuID
 			var skuTotalsHashMap = {};
 			
 			for(var i=1;i <= arrayLen(QDOO);i++){
