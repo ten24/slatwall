@@ -267,39 +267,6 @@ Notes:
 	<cffunction name="getMetaFolderExistsFlag">
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
-	<cfscript>
-		 public boolean function updateEntitiesWithCustomProperties(){
-				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
-				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
-
-				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
-				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
-				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
-				var directories = ArrayToList(directoryList);
-
-				//find which items have an override in the custom folder
-				var matches = 0;
-				var matchArray = [];
-				for (var fileName in directoryListCustom){
-
-					var result = ListFind(ArrayToList(directoryListByName), fileName);
-					if (result >= 1){
-						matches+=1;
-						ArrayAppend(matchArray, fileName);
-					}
-				}
-				if (matches <= 0){
-					return true;
-				}
-
-			//iterate over overrides and merge them
-			for (var match in matchArray) {
-				var results = mergeProperties("#match#");
-				filewrite(path & '/#match#', results);
-			}
-			return true;
-		}
-	</cfscript>
 	
 	<cffunction name="migrateAttributeToCustomProperty" returntype="void">
 		<cfargument name="entityName" type="string" required="true"/>
@@ -360,6 +327,68 @@ Notes:
 
 	<cfscript>
 		
+		public boolean function updateEntitiesWithCustomProperties(){
+				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
+				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
+
+				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
+				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
+				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
+				var directories = ArrayToList(directoryList);
+
+				//find which items have an override in the custom folder or attributes to be copied
+				var attributeDataQuery = getSlatwallScope().getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
+
+				var matches = 0;
+				var matchArray = [];
+				var queryService = new query();
+				var entityNameToAttributeDataQueryHash = {};
+
+				for (var fileName in directoryListByName){
+
+					var entityName = listFirst(fileName,".");
+					queryService.setName("queryAttributeDataQuery");
+					queryService.setDBType("query");
+					queryService.setAttributes(sourceQuery=attributeDataQuery);
+					queryService.clearParams();
+					queryService.addParam(name="entityNameParam",value="#entityName#",cfsqltype="cf_sql_varchar");
+					var attributeDataQueryByEntity = queryService.execute(sql="SELECT * from sourceQuery where attributeSetObject = :entityNameParam").getResult();
+					if(attributeDataQueryByEntity.recordCount >= 1){
+						matches+=1;
+						entityNameToAttributeDataQueryHash[entityName] = attributeDataQueryByEntity;
+						ArrayAppend(matchArray,fileName);
+					}
+				}
+
+				for (var fileName in directoryListCustom){
+
+					var result = ListFind(ArrayToList(directoryListByName), fileName);
+
+					if (result >= 1){
+						matches+=1;
+						if(!ArrayFind(matchArray,fileName)){
+							ArrayAppend(matchArray, fileName);
+						}
+					}
+				}
+				if (matches <= 0){
+					return true;
+				}
+
+			//iterate over overrides and merge them
+			for (var match in matchArray) {
+				var entityName = listFirst(match,".");
+				if(structKeyExists(entityNameToAttributeDataQueryHash,entityName)){
+					var results = mergeProperties("#match#",entityNameToAttributeDataQueryHash[entityName]);
+					filewrite(path & '/#match#', results);
+				} else {
+					var results = mergeProperties("#match#");
+					filewrite(path & '/#match#', results);
+				}
+			}
+			return true;
+		}
+
 		public void function checkIfCustomPropertiesExistInBase(required any customMeta, required any baseMeta){
 			// check duplicate properties and if there is a duplicate then write it to log
 			if(structKeyExists(arguments.customMeta,'properties')){
@@ -376,7 +405,19 @@ Notes:
 			}
 		}
 		
-		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false){
+		public string function mergeAttributesIntoPropertyString(required any coreEntityParser, required string propertyString, required string entityName, query attributeDataQueryByEntity){
+			var returnString = arguments.propertyString;
+			for(var attributeData in arguments.attributeDataQueryByEntity){
+				var attributePropertyString = arguments.coreEntityParser.getPropertyStringByAttributeData(attributeData);
+				returnString = returnString & attributePropertyString;
+			}
+			return returnString;
+		}
+
+		public any function mergeEntityParsers(required any coreEntityParser, required any customEntityParser, boolean purgeCustomProperties=false, query attributeDataQueryByEntity){
+
+			var entityName = arguments.customEntityParser.getEntityName();
+
 			var conditionalLineBreak = variables.conditionLineBreak;
 			
 			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
@@ -384,7 +425,15 @@ Notes:
 			}
 			var newContent = "";
 			//add properties
-			if(len(arguments.customEntityParser.getPropertyString())){
+
+			var propertyString = '';
+			if(!isNull(arguments.customEntityParser.getFilePath())){
+				PropertyString = arguments.customEntityParser.getPropertyString();
+			}
+			if(!isNull(arguments.attributeDataQueryByEntity)){
+				propertyString = mergeAttributesIntoPropertyString(arguments.coreEntityParser,propertyString,entityName,arguments.attributeDataQueryByEntity);
+			}
+			if(len(PropertyString)){
 				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
 					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
 				}
@@ -393,15 +442,15 @@ Notes:
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
 					
-					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS arguments.customEntityParser.getPropertyString()){
+					if(!arguments.coreEntityParser.getCustomPropertyContent() CONTAINS PropertyString){
 						var contentBeforeCustomPropertiesStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentStartPosition()-1);
 						var contentAfterCustomPropertiesStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
-						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&customEntityParser.getPropertyString();
+						var combinedPropertyContent = coreEntityParser.getCustomPropertyContent()&variables.lineBreak&PropertyString;
 						var customPropertyContent = contentBeforeCustomPropertiesStart & combinedPropertyContent & contentAfterCustomPropertiesStart;
 						arguments.coreEntityParser.setFileContent(customPropertyContent);	
 					}
 				}else{
-					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString();
+					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString(PropertyString);
 					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
 									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
 									right(arguments.coreEntityParser.getFileContent(),len(arguments.coreEntityParser.getFileContent()) -arguments.coreEntityParser.getPropertyEndPos())
@@ -410,7 +459,11 @@ Notes:
 				} 
 			}
 			//add functions
-			if(len(arguments.customEntityParser.getFunctionString())){
+			var functionString = '';
+			if(!isNull(arguments.customEntityParser.getFilePath())){
+				functionString = arguments.customEntityParser.getFunctionString();
+			}
+			if(len(functionString)){
 				if(arguments.purgeCustomProperties && arguments.coreEntityParser.hasCustomFunctions()){
 					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContent(),''));	
 				}	
@@ -418,7 +471,7 @@ Notes:
 				if(arguments.coreEntityParser.hasCustomFunctions()){
 					var customFunctionStartPos = arguments.coreEntityParser.getCustomFunctionStartPosition();
 					var customFunctionEndPos = arguments.coreEntityParser.getCustomFunctionEndPosition();
-					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS arguments.customEntityParser.getFunctionString()){
+					if(!arguments.coreEntityParser.getCustomFunctionContent() CONTAINS functionString){
 						var contentBeforeCustomFunctionsStart = left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentStartPosition()-1);
 						var contentAfterCustomFunctionsStart = mid(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomFunctionContentEndPosition(), (len(arguments.coreEntityParser.getFileContent()) - arguments.coreEntityParser.getCustomPropertyContentEndPosition())+1);
 						var combinedFunctionContent = coreEntityParser.getCustomFunctionContent()&variables.lineBreak&customEntityParser.getFunctionString();
@@ -434,18 +487,23 @@ Notes:
 			}
 		}
 	
-		public any function mergeProperties(string filename){ 
+		public any function mergeProperties(string filename,query attributeDataQueryByEntity){
 	
-		
+			var entityName = listFirst(filename,".");
+
 			var customEntityParser = getTransient('HibachiEntityParser');
-			customEntityParser.setFilePath("custom/model/entity/#arguments.fileName#");
+			customEntityParser.setFilePath("custom/model/entity/#arguments.filename#");
+			customEntityParser.setEntityName(entityName);
 			
 			//declared file paths
 			var coreEntityParser = getTransient('HibachiEntityParser');
-			coreEntityParser.setFilePath("model/entity/#arguments.fileName#");
-
+			coreEntityParser.setFilePath("model/entity/#arguments.filename#");
+			coreEntityParser.setEntityName(entityName);
+			if(!isNull(arguments.attributeDataQueryByEntity)){
+				mergeEntityParsers(coreEntityParser,customEntityParser,true,arguments.attributeDataQueryByEntity);
+			} else {
 			mergeEntityParsers(coreEntityParser,customEntityParser,true);
-
+			}
 			return coreEntityParser.getFileContent();
 		
 		}

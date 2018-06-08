@@ -87,4 +87,33 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name = "getAttributeDataQueryByCustomPropertyFlag" returnType = "query">
+		<cfquery name = "attributeDataQuery">
+				SELECT
+					att.attributeCode, att.attributeInputType, att.relatedObject, att.typeSetID, attset.attributeSetObject
+				FROM
+					SwAttribute att
+				INNER JOIN
+					SwAttributeSet attset ON att.attributeSetID = attset.attributeSetID
+				WHERE
+					att.customPropertyFlag = 1 AND att.activeFlag = 1 AND attset.activeFlag = 1
+		<!---	UNION
+				SELECT
+					att.attributeCode, 'inverseObjectMultiselect' attributeInputType , att.relatedObject object, attset.attributeSetObject baseObject
+				FROM
+					SwAttribute att
+				INNER JOIN
+					SwAttributeSet attset ON att.attributeSetID = attset.attributeSetID
+				WHERE
+					att.relatedObject is not null
+				AND
+					att.customPropertyFlag = 1
+				AND
+					att.activeFlag = 1
+				AND
+					attset.activeFlag = 1 --->
+		</cfquery>
+		<cfreturn attributeDataQuery/>
+	</cffunction>
+
 </cfcomponent>

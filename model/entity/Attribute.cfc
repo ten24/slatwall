@@ -67,6 +67,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="decryptValueInAdminFlag" ormtype="boolean";
 	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
 	property name="maxFileSize" hb_populateEnabled="public" ormtype="integer";
+	property name="customPropertyFlag" ormtype="boolean" default="false";
+
 	property name="relatedObjectCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this attribute.  For Example: http://www.myslatwallsite.com/att/my-url-title/ where att is the global attribute url key, and my-url-title is the urlTitle of this attribtue";
 	// Calculated Properties
@@ -202,11 +204,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			if(!isNull(getAttributeInputType())) {
 				variables.formFieldType = getAttributeInputType();
 			}
-			if(variables.formFieldType eq 'typeSelect') {
+			if(variables.formFieldType == 'typeSelect') {
 				variables.formFieldType = 'select';
-			} else if(variables.formFieldType eq 'relatedObjectSelect') {
+			} else if(variables.formFieldType == 'relatedObjectSelect') {
 				variables.formFieldType = 'listingSelect';
-			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
+			} else if (variables.formFieldType == 'relatedObjectMultiselect') {
 				variables.formFieldType = 'listingMultiselect';
 			}
 		}
