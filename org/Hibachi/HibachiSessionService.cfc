@@ -207,6 +207,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
+	public any function getSessionBySessionCookieNPSID(){
+		return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
+	}
+	
 	public void function persistSession(boolean updateLoginCookies=false) {
 	
 		// Save the session

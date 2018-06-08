@@ -53,12 +53,7 @@
 	<cfscript>
 		// Helper method to get the Slatwall Application
 		public any function getSlatwallApplication() {
-			if(!structKeyExists(variables, "slatwallApplication")) {
-				variables.slatwallApplication = createObject("component", "Slatwall.Application");
-				variables.slatwallApplication.onApplicationStart();
-				variables.slatwallApplication.verifyApplication(true,true);
-				variables.slatwallApplication.bootstrap();
-			}
+			variables.slatwallApplication = createObject("component", "Slatwall.Application");
 			return variables.slatwallApplication;
 		}
 		

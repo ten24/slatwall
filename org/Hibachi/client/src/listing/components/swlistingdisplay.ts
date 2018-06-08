@@ -127,6 +127,11 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
         }
+        
+        
+        if(angular.isUndefined(this.showFilters)){
+           this.showFilters = true;
+        }
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
@@ -732,6 +737,7 @@ class SWListingDisplay implements ng.IDirective{
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showFilters:"<?",
             showSimpleListingControls:"<?",
             showPrintOptions:"<?",
 
