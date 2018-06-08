@@ -279,7 +279,7 @@ component extends="framework.one" {
 		super.onApplicationStart();
 	}
 
-	public void function setupGlobalRequest(boolean noredirect=false)) {
+	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
