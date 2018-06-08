@@ -7,6 +7,7 @@ import {Cart} from "./cart";
 import {OrderItem} from "./orderitem";
 import {OrderPayment} from "./orderpayment";
 import {Sku} from "./sku";
+import {AccountAddress} from "./accountaddress";
 
 
 export {
@@ -15,5 +16,6 @@ export {
     Cart,
     OrderItem,
     OrderPayment,
-    Sku
+    Sku,
+    AccountAddress
 }

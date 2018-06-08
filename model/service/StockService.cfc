@@ -380,13 +380,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			for(var i=1; i <= arrayLen(arguments.stockAdjustment.getStockAdjustmentItems()); i++) {
 				var stockAdjustmentItem = arguments.stockAdjustment.getStockAdjustmentItems()[i];
 				var stockReceiverItem = this.newStockReceiverItem();
+				var stock = stockAdjustmentItem.getToStock();
 				stockReceiverItem.setStockReceiver( stockReceiver );
 				stockReceiverItem.setStockAdjustmentItem( stockAdjustmentItem );
 				stockReceiverItem.setQuantity(stockAdjustmentItem.getQuantity());
 				stockReceiverItem.setCost(stockAdjustmentItem.getCost());
 				stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
-				stockReceiverItem.setStock(stockAdjustmentItem.getToStock());
-				getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock());
+				stockReceiverItem.setStock(stock);
+				getHibachiScope().addModifiedEntity(stock);
+				getHibachiScope().addModifiedEntity(stock.getSkuLocationQuantity());
 			}
 		
 			this.saveStockReceiver(stockReceiver);
@@ -402,13 +404,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			for(var i=1; i <= arrayLen(arguments.stockAdjustment.getStockAdjustmentItems()); i++) {
 				var stockAdjustmentItem = arguments.stockAdjustment.getStockAdjustmentItems()[i];
 				var stockAdjustmentDeliveryItem = this.newStockAdjustmentDeliveryItem();
+				var stock = stockAdjustmentItem.getFromStock();
 				stockAdjustmentDeliveryItem.setStockAdjustmentDelivery(stockAdjustmentDelivery);
 				stockAdjustmentDeliveryItem.setStockAdjustmentItem(stockAdjustmentItem);
 				stockAdjustmentDeliveryItem.setQuantity(stockAdjustmentItem.getQuantity());
-				stockAdjustmentDeliveryItem.setStock(stockAdjustmentItem.getFromStock());
+				stockAdjustmentDeliveryItem.setStock(stock);
 				stockAdjustmentDeliveryItem.setCost(stockAdjustmentItem.getCost());
 				stockAdjustmentDeliveryItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
-				getHibachiScope().addModifiedEntity(stockAdjustmentItem.getFromStock());
+				getHibachiScope().addModifiedEntity(stock);
+				getHibachiScope().addModifiedEntity(stock.getSkuLocationQuantity());
 			}
 
 			this.saveStockAdjustmentDelivery(stockAdjustmentDelivery);
@@ -444,6 +448,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					stockReceiverItem.setCurrencyCode(stockAdjustmentItem.getCurrencyCode());
 					stockReceiverItem.setStock( stockAdjustmentItem.getToStock() );
 					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock());
+					getHibachiScope().addModifiedEntity(stockAdjustmentItem.getToStock().getSkuLocationQuantity());
 
 				// If this is Out, create delivery
 				} else if (!isNull(stockAdjustmentItem.getFromStock())) {
@@ -683,6 +688,14 @@ component extends="HibachiService" accessors="true" output="false" {
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Status Methods ===========================
+
+	public boolean function stockHasLeafLocation(required any stock){
+		var location = arguments.stock.getLocation();
+		if(isNull(location)){
+			return false;
+		}
+		return !location.hasChildren();
+	}
 
 	// ======================  END: Status Methods ============================
 

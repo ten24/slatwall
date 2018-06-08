@@ -862,7 +862,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else if( !isNull(pc.getMaximumUseCount()) && pc.getMaximumUseCount() <= getPromotionService().getPromotionCodeUseCount(pc) ) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.overMaximumUseCount'), true);
 		//If promo site does not match order site, display incorrect site message
-		} else if( !isNull(pc.getPromotion().getSite()) && pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() ) {
+		} else if( 
+			!isNull(pc.getPromotion().getSite())
+			&& !isNull(arguments.order.getOrderCreatedSite())
+			&& pc.getPromotion().getSite().getSiteID() != arguments.order.getOrderCreatedSite().getSiteID() 
+		) {
 			arguments.processObject.addError("promotionCode", rbKey('validate.promotionCode.incorrectSite'), true);
 		} else {
 			//check if whether the promo has been added already, if not then add it and update the ordr amounts
@@ -896,6 +900,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 				}
 			}
+		}
+				
+		for(var orderItem in arguments.order.getOrderItems()){
+			getHibachiScope().addModifiedEntity(orderItem.getStock());
+			getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 		}
 
 		// Change the status
@@ -1588,6 +1597,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!isNull(orderItem.getStock())){
 										//via cascade calculate stock should update sku then product 
 										getHibachiScope().addModifiedEntity(orderItem.getStock());
+										getHibachiScope().addModifiedEntity(orderItem.getStock().getSkuLocationQuantity());
 										getHibachiScope().flushORMSession();
 									}else{
 										//via cascade calculate stock should update product 
@@ -1908,18 +1918,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
 
-			// Loop over the orderItems to see if the skuPrice Changed
+			
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(var orderItem in arguments.order.getOrderItems()){
-					var skuPrice = val(orderItem.getSkuPrice());
-					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
- 					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
- 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
- 							orderItem.setPrice(SkuPriceByCurrencyCode);
- 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
- 						}
+				//quote logic should freeze the price based on the expiration therefore short circuiting the logic
+				if(
+ 					!arguments.order.getQuoteFlag() 
+ 					|| (
+ 						arguments.order.getQuoteFlag() && arguments.order.isQuotePriceExpired()
+ 					)
+ 				){
+ 					// Loop over the orderItems to see if the skuPrice Changed
+					for(var orderItem in arguments.order.getOrderItems()){
+						var skuPrice = val(orderItem.getSkuPrice());
+						var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode(), orderItem.getQuantity()));
+	 					
+	 					if(
+	 						listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode
+	 					){
+	 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
+	 							orderItem.setPrice(SkuPriceByCurrencyCode);
+	 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
+	 						}
+						}
 					}
-				}
+ 				}
 			}
 
 			// First Re-Calculate the 'amounts' base on price groups
@@ -2043,6 +2065,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return arguments.orderDelivery;
+	}
+	
+	private any function generateInvoiceNumber(required any processObject){
+		var orderDeliveryCollectionList = this.getOrderDeliveryCollectionList();
+
+		orderDeliveryCollectionList.addFilter("order.orderID", arguments.processObject.getOrder().getOrderID());
+		
+		var orderDeliveriesCount = orderDeliveryCollectionList.getRecordsCount();
+		var invoiceNumber = "#arguments.processObject.getOrder().getOrderNumber()#-#orderDeliveriesCount#";
+		
+		return invoiceNumber;
 	}
 
 	// Process: Order Delivery
@@ -2238,6 +2271,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if (!arguments.processObject.getOrderFulfillment().hasErrors()){
 				ormFlush();
 			}
+			
+			// generate invoice number for this order delivery
+			arguments.orderDelivery.setInvoiceNumber(generateInvoiceNumber(arguments.processObject));
 			
 			// Update the orderFulfillmentStatus
 			if (arguments.processObject.getOrderFulfillment().getQuantityUnDelivered() == 0) {
@@ -3064,7 +3100,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.order = save(entity=arguments.order, data=arguments.data, context=arguments.context);
-
+		
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 

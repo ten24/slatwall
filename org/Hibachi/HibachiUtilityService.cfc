@@ -267,22 +267,26 @@
 			return returnTitle;
 		}
 		
-		public string function createUniqueProperty(required string titleString, required string entityName, required string propertyName){
+		public string function createUniqueProperty(required string propertyValue, required string entityName, required string propertyName, boolean requiresCount = false){
 			var addon = 0;
 
-			var urlTitle = createSEOString(arguments.titleString);
+			arguments.propertyValue = createSEOString(arguments.propertyValue);
+			
+			var returnValue = arguments.propertyValue;
+			
+			if (requiresCount) {
+				returnValue = '#returnValue#-1';
+			}
 
-			var returnTitle = urlTitle;
-
-			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+			var unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 
 			while(!unique) {
 				addon++;
-				returnTitle = "#urlTitle#-#addon#";
-				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnTitle);
+				returnValue = "#arguments.propertyValue#-#addon#";
+				unique = getHibachiDAO().verifyUniquePropertyValue(entityName=arguments.entityName, propertyName=arguments.propertyName, value=returnValue);
 			}
 
-			return returnTitle;
+			return returnValue;
 		}
 
   		public string function generateRandomID( numeric numCharacters = 8){
@@ -696,9 +700,21 @@
 			sanitizedString = sanitizeForAngular(sanitizedString);
 			return sanitizedString;
 		}
+		
+		public string function hibachiEncodeForXML(required string xmlString){
+			arguments.xmlString = encodeForXML(arguments.xmlString);
+			arguments.xmlString = ReReplace(arguments.xmlString, '&', '&amp;', 'all');
+			arguments.xmlString = ReReplace(arguments.xmlString, '<', '&lt;', 'all');
+			arguments.xmlString = ReReplace(arguments.xmlString, '>', '&rt;', 'all');
+			return arguments.xmlString;
+		}
 
 		public string function sanitizeForAngular(required string html){
-			return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+			if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
+				return ReReplace(arguments.html,'{',chr(123)&chr(002),'all');
+			}else{
+				return ReReplace(ReReplace(arguments.html,'&##x7b;',chr(123)&chr(002),'all'),'&##x7d;','}','all');
+			}
 		}
 
 		public string function decryptValue(required string value, string salt="") {
@@ -1021,7 +1037,7 @@
 				if(i mod 1000 EQ 0){
 					fileWriteLine(dataFile,buffer.toString());
 					buffer.setLength(0);
-				}else{
+				}else if (i != arguments.queryData.recordcount){ 
 					buffer.append(JavaCast('string', newLine));
 				}
 			}

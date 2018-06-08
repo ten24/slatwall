@@ -224,19 +224,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getSubscriptionOrderItemName() {
-		if( hasSubscriptionOrderItems() ) {
+		if( hasSubscriptionOrderItem() ) {
 			if( !isnull( getInitialProduct() ) ){
 				return getInitialProduct().getProductName();
 			}
 		}
 		return "";
-	}
-
-	public any function hasSubscriptionOrderItems(){
-		if ( arrayLen( getSubscriptionOrderItems() ) ) {
-			return true;
-		}
-		return false;
 	}
 
 	public any function getInitialSku(){
@@ -256,7 +249,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getInitialProduct(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItem() ){
 			var initialSku = getInitialSku();
 
 			if(!isNull(initialSku)){
@@ -266,28 +259,28 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getInitialOrder(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItem() ){
 			return getInitialOrderItem().getOrder();
 		}
 
 	}
 
 	public any function getMostRecentSubscriptionOrderItem(){
-		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = this.getSubscriptionOrderItemSmartList();
+		if( hasSubscriptionOrderItem() ){
+			var subscriptionSmartList = this.getSubscriptionOrderItemsSmartList();
 			subscriptionSmartList.addOrder("createdDateTime|DESC");
 			return subscriptionSmartList.getFirstRecord();
 		}
 	}
 
 	public any function getMostRecentOrderItem(){
-		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
+		if( hasSubscriptionOrderItem() ){
 			return getMostRecentSubscriptionOrderItem().getOrderItem();
 		}
 	}
 
 	public any function getMostRecentOrder(){
-		if( hasSubscriptionOrderItems() && getSubscriptionOrderItemsCount() > 1){
+		if( hasSubscriptionOrderItem() ){
 			return getMostRecentOrderItem().getOrder();
 		}
 	}

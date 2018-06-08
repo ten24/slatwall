@@ -878,7 +878,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(structKeyExists(arguments.data, "listPrice") && isNumeric(arguments.data.listPrice) && arguments.data.listPrice > 0) {
 						newSku.setListPrice(arguments.data.listPrice);
 					}
-					newSku.setSkuCode(arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+					newSku.setSkuCode(arguments.product.getNextSkuCode());
 
 					// Add the Sku to the product, and if the product doesn't have a default, then also set as default
 					arguments.product.addSku(newSku);

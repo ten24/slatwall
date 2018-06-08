@@ -466,24 +466,46 @@ component extends="HibachiService" accessors="true" {
 	public void function addAuditToCommit(any audit) {
 		// Group related audits together by the base object's primary ID
 		var auditStruct = getHibachiScope().getAuditsToCommitStruct();
-		if (len(arguments.audit.baseID) && !structKeyExists(auditStruct, arguments.audit.baseID)) {
-			structInsert(auditStruct, audit.baseID, {});
-		}
-		
-		var auditType = '';
-		if (arguments.audit.auditType == 'create') {
-			auditType = 'create';
-		} else if (listFindNoCase('update,rollback', arguments.audit.auditType)) {
-			auditType = 'update';
-		} else if (arguments.audit.auditType == 'delete') {
-			auditType = 'delete';
-		}
-		
-		if (len(auditType)) {
-			if (!isNull(audit.baseID) && !isNull(auditType) && !isNull(arguments.audit.baseID)){
-			structInsert(auditStruct[audit.baseID], auditType, arguments.audit);
+		if(isObject(arguments.audit)){
+			if (len(arguments.audit.getBaseID()) && !structKeyExists(auditStruct, arguments.audit.getBaseID())) {
+				structInsert(auditStruct, audit.getBaseID(), {});
+			}
+			
+			var auditType = '';
+			if (arguments.audit.getAuditType() == 'create') {
+				auditType = 'create';
+			} else if (listFindNoCase('update,rollback', arguments.audit.getAuditType())) {
+				auditType = 'update';
+			} else if (arguments.audit.getAuditType() == 'delete') {
+				auditType = 'delete';
+			}
+			
+			if (len(auditType)) {
+				if (!isNull(audit.getBaseID()) && !isNull(auditType) && !isNull(arguments.audit.getBaseID())){
+				structInsert(auditStruct[audit.getBaseID()], auditType, arguments.audit);
+				}
+			}
+		}else{
+			if (len(arguments.audit.baseID) && !structKeyExists(auditStruct, arguments.audit.baseID)) {
+				structInsert(auditStruct, audit.baseID, {});
+			}
+			
+			var auditType = '';
+			if (arguments.audit.auditType == 'create') {
+				auditType = 'create';
+			} else if (listFindNoCase('update,rollback', arguments.audit.auditType)) {
+				auditType = 'update';
+			} else if (arguments.audit.auditType == 'delete') {
+				auditType = 'delete';
+			}
+			
+			if (len(auditType)) {
+				if (!isNull(audit.baseID) && !isNull(auditType) && !isNull(arguments.audit.baseID)){
+				structInsert(auditStruct[audit.baseID], auditType, arguments.audit);
+				}
 			}
 		}
+		
 	}
 	
 	public any function getExistingAuditToCommit(string baseID, string auditType) {

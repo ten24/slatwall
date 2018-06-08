@@ -128,6 +128,7 @@ class SWOrderItems{
 						 ,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType
                          ,sku.subscriptionBenefits
 						 ,sku.product.productType.systemCode
+						 ,sku.bundleFlag 
 						 ,sku.options
 						 ,sku.locations
  						 ,sku.subscriptionTerm.subscriptionTermName

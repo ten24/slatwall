@@ -1299,6 +1299,7 @@
 						break;
 				}
 				entityCollectionList.setDisplayProperties(displayProperties);
+				entityCollectionList.setDistinct(true);
 				var excludesList = arguments.propertyIdentifier;
 				entityCollectionList.addFilter(arguments.propertyIdentifier,'NULL','IS NOT');
 				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
