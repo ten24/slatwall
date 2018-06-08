@@ -478,7 +478,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
 		for(var i=1; i <= cachedFiles.recordcount; i++){
-			fileDelete(cachedFiles.Directory[i] & cachedFiles.Name[i]);
+			fileDelete(cachedFiles.Directory[i] & '/' & cachedFiles.Name[i]);
 		}
 	}
 
