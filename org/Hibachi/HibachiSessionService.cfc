@@ -207,9 +207,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
-	public any function getSessionBySessionCookieNPSID(){
-		return ORMExecuteQuery('FROM SlatwallSession where sessionCookieNPSID = :cookievar',{cookievar=cookie["#getApplicationValue('applicationKey')#-NPSID"]},true,{maxresults=1});
-	}
+	public any function getSessionBySessionCookieNPSID(any cookie,boolean isNew=false){
+		var sessionEntity = getDao('accountDAO').getSessionBySessionCookieNPSID();
+		if(isNew && isNull(sessionEntity)){
+			return this.newSession();
+		}
+		return sessionEntity;
+ 	}
 	
 	public void function persistSession(boolean updateLoginCookies=false) {
 	
