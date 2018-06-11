@@ -164,7 +164,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		transaction{
 			//list of productIDs based on the nextDeliveryScheduleDate
 			var productsScheduledForDelivery = getProductsScheduledForDelivery(currentDateTime);
-			
 			//subscription order item data for creating 
 			var subscriptionOrderItemRecords = getSubscriptionOrderItemRecordsByProductsScheduledForDelivery(arguments.currentDateTime,productsScheduledForDelivery);
 			

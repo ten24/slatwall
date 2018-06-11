@@ -2575,9 +2575,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getRecordsCountData(){
 		if(!structkeyExists(variables,'recordsCountData')){
 			getRecordsCount();
-			if(!structkeyExists(variables,'recordsCountData')){
+			/*if(!structkeyExists(variables,'recordsCountData')){
 				variables.recordsCountData['recordsCount'] = 0;	
-			}
+			}*/
 		}
 	
 		return variables.recordsCountData;

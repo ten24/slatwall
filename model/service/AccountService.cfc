@@ -726,7 +726,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	public any function processAccount_forgotPassword( required any account, required any processObject ) {
 		var forgotPasswordAccount = getAccountWithAuthenticationByEmailAddress( processObject.getEmailAddress() );
-
+		
 		if(!isNull(forgotPasswordAccount)) {
 			//check to see if the account is locked
 			if(isNull(forgotPasswordAccount.getLoginLockExpiresDateTime()) || DateCompare(Now(), forgotPasswordAccount.getLoginLockExpiresDateTime()) == 1 ){

@@ -54732,6 +54732,9 @@ var SWListingDisplayController = /** @class */ (function () {
         if (angular.isUndefined(this.showExport)) {
             this.showExport = true;
         }
+        if (angular.isUndefined(this.showFilters)) {
+            this.showFilters = true;
+        }
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
@@ -54888,6 +54891,7 @@ var SWListingDisplay = /** @class */ (function () {
             showToggleDisplayOptions: "<?",
             showSearch: "<?",
             showSearchFilters: "<?",
+            showFilters: "<?",
             showSimpleListingControls: "<?",
             showPrintOptions: "<?",
             /* Basic Action Caller Overrides*/

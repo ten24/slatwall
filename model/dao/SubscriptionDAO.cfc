@@ -192,7 +192,7 @@ Notes:
 				<cfset monthTimeStamp = CreateDateTime(INT(arguments.reportYear),i,1,0,0,0)/>
 				
 				(
-					select count(su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
+					select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
 					FROM SwSubsUsage su 
 					inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
 					inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID
@@ -229,7 +229,7 @@ Notes:
 		<cfargument name="productID" type="string"/>
 		<cfargument name="reportYear" type="string"/>
 		<cfquery name="local.deferredExpiringSubscriptionQuery">
-			select count(su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(su.expirationDate,'%Y-%M') as thisMonth
+			select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(su.expirationDate,'%Y-%M') as thisMonth
 			FROM SwSubsUsage su 
 			inner join SwSubscriptionStatus ss on su.currentSubscriptionStatusID = ss.subscriptionStatusID
 			inner join SwSubscriptionOrderItem soi on su.subscriptionUsageID = soi.subscriptionUsageID

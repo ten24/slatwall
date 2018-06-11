@@ -53,8 +53,8 @@ Notes:
 <cfparam name="rc.subscriptionUsageSmartList" type="any" />
 
 <cfoutput>
-	
-	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,subscriptionOrderItemName,currentStatusType,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
+	<!---TODO:subscriptionOrderItemName--->
+	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,calculatedCurrentStatus.subscriptionStatusType.typeName,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
 	<cfset rc.subscriptionUsageCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
@@ -86,9 +86,19 @@ Notes:
 			]
 		/>
 		<cfset currentMonth = months[rc.reportMonth]/>
-		<cfset filterDate = dateAdd('d',-1,CreateDate(reportYear,rc.reportMonth,1))/>
+		<cfset filterDate = CreateDateTime(INT(rc.reportYear),rc.reportMonth,1,0,0,0)/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+		<!---
+			required string propertyIdentifier,
+		required any value,
+		string comparisonOperator="=",
+		string logicalOperator="AND",
+	    string aggregate="",
+	    string filterGroupAlias="",
+ 		string filterGroupLogicalOperator="AND"
+		--->
+		<cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemID',"NULL","IS NOT")/>
 		
 		<cfset rc.pageTitle = 'Active #rc.pageTitle# for #currentMonth# #rc.reportYear#'/>	
 		
@@ -102,7 +112,6 @@ Notes:
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID',rc.productID,'IN')/>
         </cfif> 
 	</cfif>
-	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false"  />
 	
 	<hb:HibachiListingDisplay 
