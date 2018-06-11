@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Table tableName="SwLedgerAccount">
+<Table tableName="SwLedgerAccount" dependencies="/config/dbdata/SlatwallType.xml.cfm">
 	<Columns>
 		<column name="ledgerAccountID" fieldtype="id" />
 		<column name="ledgerAccountName" update="false"/>
