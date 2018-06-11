@@ -178,7 +178,7 @@ export class AppProvider {
 
       var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
       return new Promise((resolve,reject)=>{
-        this.http.get(urlString).subscribe((response:any) => {
+        this.http.get(urlString).toPromise().then((response:any) => {
             this._resourceBundle[locale] = response;
             resolve(true);
         },(error:any) => {

@@ -101,6 +101,7 @@ export class AppModule {
     private attributeMetaData:AttributeMetaData
   ) { }
   ngDoBootstrap() {
+    setTimeout( () => {
     console.log('bootstrap',this.appProvider);
     console.log(this.appConfig);
     console.log(this.resourceBundles);
@@ -111,5 +112,6 @@ export class AppModule {
      
      
      this.upgrade.bootstrap(document.body,[slatwalladminmodule.name]);
+     }, 200 );
   }
 }
