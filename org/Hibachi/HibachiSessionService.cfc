@@ -207,6 +207,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 	}
 	
+	public any function getSessionBySessionCookieNPSID(any cookie,boolean isNew=false){
+		var sessionEntity = getDao('accountDAO').getSessionBySessionCookieNPSID();
+		if(isNew && isNull(sessionEntity)){
+			return this.newSession();
+		}
+		return sessionEntity;
+ 	}
+	
 	public void function persistSession(boolean updateLoginCookies=false) {
 	
 		// Save the session
