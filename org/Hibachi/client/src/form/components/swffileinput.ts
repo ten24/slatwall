@@ -12,11 +12,9 @@ class SWFFileInput implements ng.IDirective {
 
     // @ngInject
     public link: ng.IDirectiveLinkFn = (scope, element, attrs : any) => {
-        console.log(scope);
         var model = this.$parse(attrs.fileModel);
         element.bind('change', ()=>{
             scope.$apply( ()=>{
-                console.log(model,element);
                 var firstElement : any = element[0];
                 if(firstElement.files != undefined){
                     model.assign(scope,firstElement.files[0]);
