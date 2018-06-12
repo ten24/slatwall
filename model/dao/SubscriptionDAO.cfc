@@ -266,7 +266,6 @@ Notes:
 		<cfargument name="productTypeID" type="string"/>
 		<cfargument name="productID" type="string"/>
 		<cfargument name="reportYear" type="string"/>
-		
 		<cfset currentDateTime = now()/>
 		
 		<cfquery name="local.subscriptionOrderItemQuery">
@@ -300,8 +299,8 @@ Notes:
 			</cfif>
 			
 			<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
-				AND o.orderCloseDateTime >= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),1,1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
-				AND o.orderCloseDateTime <= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),12,31,23,59,59)#" cfsqltype="cf_sql_timestamp"/>
+				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),1,1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
+				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),12,31,23,59,59)#" cfsqltype="cf_sql_timestamp"/>
 			</cfif>
 			group by soi.subscriptionOrderItemID
 		</cfquery>
@@ -312,13 +311,17 @@ Notes:
 					<cfloop query="local.subscriptionOrderItemQuery">
 						<cfset currentRecordsCount++/>	
 							(
-								SELECT DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M') as thisMonth, '#local.subscriptionOrderItemQuery.pricePerDelivery#' as pricePerDelivery,'#local.subscriptionOrderItemQuery.taxPerDelivery#' as taxPerDelivery
+								SELECT DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M') as thisMonth, 
+								'#local.subscriptionOrderItemQuery.pricePerDelivery#' as pricePerDelivery,
+								'#local.subscriptionOrderItemQuery.taxPerDelivery#' as taxPerDelivery
 								FROM swDeliveryScheduleDate dsd
 								inner join swProduct p on p.productID = dsd.productID
 								inner join swSku s on s.productID = p.productID
 								inner join swOrderItem oi on oi.skuID = s.skuID
 								inner join swSubscriptionOrderItem soi on soi.subscriptionOrderItemID = '#local.subscriptionOrderItemQuery.subscriptionOrderItemID#'
+								inner join swsubsusage su on su.subscriptionusageID = soi.subscriptionusageID
 								where dsd.deliveryScheduleDateValue > <cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>
+								and su.expirationDate > dsd.deliveryScheduleDateValue
 								GROUP BY DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M')
 								ORDER BY dsd.deliveryScheduleDateValue ASC
 								limit #local.subscriptionOrderItemQuery.totalItemToDeliver#
