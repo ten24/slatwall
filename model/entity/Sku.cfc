@@ -79,6 +79,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
+	property name="calculatedQOQ" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedLastCountedDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="calculatedOptionsHash" ormtype="string";
@@ -657,7 +658,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 		// Request for calculated quantity
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
 			// If this is a calculated quantity and locationID exists, then delegate
 			if( structKeyExists(arguments, "locationID") ) {
 				
@@ -699,7 +700,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
-			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
