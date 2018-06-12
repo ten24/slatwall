@@ -59,7 +59,10 @@ Notes:
 							recordEditModal=true
 							recordDeleteAction="admin:entity.deleteskubundle"
 							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
-							edit="#rc.edit#">
+							edit="#rc.edit#"
+							sortProperty="sortOrder"
+						    sortContextIDColumn="skuID"
+						    sortContextIDValue="#rc.sku.getSkuID()#">
 							
 		<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
