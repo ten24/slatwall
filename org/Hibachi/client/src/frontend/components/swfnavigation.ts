@@ -5,31 +5,52 @@ class SWFNavigationController{
     //@ngInject
     public slatwall;
     public tabs;
+    public tabTargets;
     public currentTab;
     public accountTabDisabled=false;
     public fulfillmentTabDisabled=true;
     public paymentTabDisabled=true;
     public reviewTabDisabled=true;
+    public accountTabCompleted=false;
+    public fulfillmentTabCompleted=true;
+    public paymentTabCompleted=true;
+    public manualDisable;
+    public actionType;
     
-    private updateNavbar = (orderRequirementsList)=>{
-        if(!orderRequirementsList) orderRequirementsList = ' ';
-        this.accountTabDisabled = orderRequirementsList.indexOf('account') === -1;
-        this.fulfillmentTabDisabled = orderRequirementsList.indexOf('account') > -1;
-        this.paymentTabDisabled = this.fulfillmentTabDisabled || orderRequirementsList.indexOf('fulfillment') > -1;
-        this.reviewTabDisabled = this.paymentTabDisabled || orderRequirementsList.indexOf('payment') > -1;
+    private updateNavbar = (orderRequirementsList, oldList)=>{
+        console.log('updateSlabbar', orderRequirementsList);
+        if(orderRequirementsList != undefined){
+            this.accountTabDisabled = orderRequirementsList.indexOf('account') === -1;
+            this.accountTabCompleted = this.accountTabDisabled;
+            
+            this.fulfillmentTabDisabled = orderRequirementsList.indexOf('account') > -1;
+            this.fulfillmentTabCompleted = orderRequirementsList.indexOf('fulfillment') === -1;
+            
+            this.paymentTabDisabled = this.fulfillmentTabDisabled || orderRequirementsList.indexOf('fulfillment') > -1;
+            this.paymentTabCompleted = orderRequirementsList.indexOf('payment') === -1;
+            
+            this.reviewTabDisabled = this.paymentTabDisabled || orderRequirementsList.indexOf('payment') > -1;
+        }
         
         if(!this.slatwall.account.accountID){
             this.showTab('account');
+        }else if(!oldList && orderRequirementsList){
+            this.selectTab(this.slatwall.account.accountID);
+        }
+        
+        if(this.manualDisable){
+            this.updateDisabledTabs();
         }
     }
     
     private selectTab = (accountID)=>{
+        let orderRequirementsList = this.slatwall.cart.orderRequirementsList;
+        console.log('selectSlab',orderRequirementsList);
         let activeTab = 'review';
-        if(!accountID){
-            let activeTab = 'account';
+        if(!accountID || orderRequirementsList == undefined){
+            activeTab = 'account';
         }
         else{
-            let orderRequirementsList = this.slatwall.cart.orderRequirementsList;
             let sections = ['account','fulfillment','payment'];
             for(let index=sections.length-1; index>=0; index--){
                 let section = sections[index];
@@ -37,7 +58,6 @@ class SWFNavigationController{
                     activeTab = section;
                 }
             }
-            this.updateNavbar(orderRequirementsList);
         }
         if(activeTab.length){
             this.showTab(activeTab);
@@ -46,23 +66,80 @@ class SWFNavigationController{
     
     private showTab(tab){
         this[tab+'TabDisabled'] = false;
+        if(this.manualDisable){
+            this.updateDisabledTab(tab);
+        }
         this.$timeout(()=>{
-            this.tabs[tab].tab('show');
-        })
+            let actionTarget;
+            if(this.actionType == 'collapse'){
+                actionTarget = $(this.tabTargets[tab]);
+            }else{
+                actionTarget = this.tabs[tab];
+            }
+            actionTarget[this.actionType]('show');
+        });
     }
     
-    private updateView = (orderRequirementsList)=>{
-        this.updateNavbar(orderRequirementsList);
-        this.$timeout(()=>{
-            this.selectTab(orderRequirementsList);
-        });
+    private updateDisabledTabs = ()=>{
+        if(this.tabs && !this.tabTargets){
+            this.getTabTargets();
+        }
+        if(this.tabTargets){
+            for(let key in this.tabs){
+                this.updateDisabledTab(key);
+            }
+        }
+    }
+    
+    private updateDisabledTab = (key)=>{
+        if(!this.tabs || !this.tabs[key]){
+            return;
+        }
+        
+        if(!this.tabTargets || !this.tabTargets[key]){
+            this.getTabTarget(key);
+        }
+        
+        if(this[key+'TabDisabled'] && this.tabs[key].attr('href')){
+            this.removeTarget(key);
+        }else if(!this[key+'TabDisabled'] && !this.tabs[key].attr('href')){
+            this.restoreTarget(key);
+        }else{
+        }
+    }
+    
+    private getTabTargets = ()=>{
+        this.tabTargets = {
+            account: this.tabs.account.attr('href'),
+            fulfillment: this.tabs.fulfillment.attr('href'),
+            payment: this.tabs.payment.attr('href'),
+            review: this.tabs.review.attr('href')
+        };
+    }
+    
+    private getTabTarget = (key) =>{
+        this.tabTargets = this.tabTargets || {};
+        this.tabTargets[key] = this.tabs[key].attr('href');
+    }
+    
+    private removeTarget = (key)=>{
+        this.tabs[key].attr('href',null);
+    }
+    
+    private restoreTarget = (key)=>{
+        this.tabs[key].attr('href',this.tabTargets[key]);
     }
     
     constructor(private $rootScope, private $scope, private $timeout){
         this.$rootScope = $rootScope;
+        if(!this.actionType){
+            this.actionType = 'tab';
+        }
         this.slatwall = $rootScope.slatwall;
-        console.log(this.slatwall.cart.orderRequirementsList);
-        this.updateNavbar(this.slatwall.cart.orderRequirementsList);
+        // $scope.$watch('tabs', ()=>{
+        //     this.updateNavbar(this.slatwall.cart.orderRequirementsList);
+        //     this.selectTab();
+        // })
         $scope.$watch('slatwall.cart.orderRequirementsList',this.updateNavbar);
         $scope.$watch('slatwall.account.accountID',this.selectTab);
     }
@@ -88,6 +165,8 @@ class SWFNavigation{
             controller:SWFNavigationController,
             controllerAs:"swfNavigation",
             bindToController: {
+                manualDisable:"=?",
+                actionType:"@?"
             },
             restrict: "A",
             link: function(scope, element, attributes, controller) {

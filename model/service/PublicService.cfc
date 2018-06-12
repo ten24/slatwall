@@ -1621,6 +1621,20 @@ component extends="HibachiService"  accessors="true" output="false"
     	}
     }
     
+    public void function getSkuPriceByQuantity(required any data){
+        if(isNull(arguments.data.skuID)){
+            addErrors(arguments.data, [{'skuID':"Error retrieving price; skuID is required."}]);
+        }
+        if(isNull(arguments.data.quantity) || !isNumeric(arguments.data.quantity)){
+            arguments.data.quantity = 1;
+        }
+        if(isNull(arguments.data.currencyCode)){
+            arguments.data.currencyCode = 'USD';
+        }
+        
+        var sku = getSkuService().getSku(arguments.data.skuID);
+        data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
+    }
     
 }
 
