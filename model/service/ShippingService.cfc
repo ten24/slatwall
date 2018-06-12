@@ -634,6 +634,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 	}
+	
+	public any function associateManualRateAndIntegrations(required any shippingMethodRateID,required any manualRateIntegrationIDs,required any shippingIntegrationMethods){
+		for(var i = 1; i <= listLen(arguments.manualRateIntegrationIDs) ; i++){
+			
+			var integrationID = listGetAt(arguments.manualRateIntegrationIDs,i);
+			var shippingIntegrationMethod = listGetAt(arguments.shippingIntegrationMethods,i);
+			var shippingMethodRate = this.getShippingMethodRateByShippingMethodRateID(arguments.shippingMethodRateID,true);
+			shippingMethodRate = this.saveShippingMethodRate(shippingMethodRate);
+			arguments.shippingMethodRateID = shippingMethodRate.getShippingMethodRateID();
+			var shippingIntegration = getService('integrationService').getIntegrationByIntegrationID(integrationID);
+			var shippingMethodRateIntegrationMethod = this.getShippingMethodRateIntegrationMethodByShippingIntegrationIDAndShippingMethodRateID(integrationID,shippingMethodRate.getShippingMethodRateID(),true);
+			shippingMethodRateIntegrationMethod.setShippingIntegration(shippingIntegration);
+			if(shippingMethodRateIntegrationMethod.isNew()){
+				var shippingMethodRate = this.getShippingMethodRateByShippingMethodRateID(arguments.shippingMethodRateID);
+			}
+			shippingMethodRateIntegrationMethod.setShippingMethodRate(shippingMethodRate);
+			shippingMethodRateIntegrationMethod.showErrorsAndMessages();
+			if(shippingIntegrationMethod == 'none'){
+				shippingIntegrationMethod = "";
+			}
+			shippingMethodRateIntegrationMethod.setShippingIntegrationMethod(shippingIntegrationMethod);
+			shippingMethodRate.addManualRateIntegrationMethod(shippingMethodRateIntegrationMethod);
+			this.saveShippingMethodRateIntegrationMethod(shippingMethodRateIntegrationMethod);
+			this.saveShippingMethodRate(shippingMethodRate);
+			ormflush();
+		}
+	}
 
 	public any function getShippingMethodRateIntegrationMethodByShippingIntegrationIDAndShippingMethodRateID(shippingIntegrationID,shippingMethodRateID,returnNewFlag=false){
 		if( (isNull(shippingIntegrationID) || isNull(shippingMethodRateID)) && returnNewFlag){

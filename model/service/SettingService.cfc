@@ -343,6 +343,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
 			// Shipping Method Rate
+			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
 			shippingMethodRateHandlingFeeType = {fieldType="select",defaultValue="amount"},
 			shippingMethodRateHandlingFeeAmount = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},

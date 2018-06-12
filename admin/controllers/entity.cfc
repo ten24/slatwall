@@ -490,30 +490,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function saveShippingMethodRate(required struct rc){
 		if(structKeyExists(rc,'manualRateIntegrationIDs') &&  structKeyExists(rc,'shippingIntegrationMethods')){
-			for(var i = 1; i <= listLen(rc.manualRateIntegrationIDs) ; i++){
-				
-				var integrationID = listGetAt(rc.manualRateIntegrationIDs,i);
-				var shippingIntegrationMethod = listGetAt(rc.shippingIntegrationMethods,i);
-				var shippingMethodRate = getService('shippingService').getShippingMethodRateByShippingMethodRateID(rc.shippingMethodRateID,true);
-				shippingMethodRate = getService('shippingService').saveShippingMethodRate(shippingMethodRate);
-				rc.shippingMethodRateID = shippingMethodRate.getShippingMethodRateID();
-				var shippingIntegration = getService('integrationService').getIntegrationByIntegrationID(integrationID);
-				var shippingMethodRateIntegrationMethod = getService('shippingService').getShippingMethodRateIntegrationMethodByShippingIntegrationIDAndShippingMethodRateID(integrationID,shippingMethodRate.getShippingMethodRateID(),true);
-				shippingMethodRateIntegrationMethod.setShippingIntegration(shippingIntegration);
-				if(shippingMethodRateIntegrationMethod.isNew()){
-					var shippingMethodRate = getService('shippingService').getShippingMethodRateByShippingMethodRateID(rc.shippingMethodRateID);
-				}
-				shippingMethodRateIntegrationMethod.setShippingMethodRate(shippingMethodRate);
-				shippingMethodRateIntegrationMethod.showErrorsAndMessages();
-				if(shippingIntegrationMethod == 'none'){
-					shippingIntegrationMethod = "";
-				}
-				shippingMethodRateIntegrationMethod.setShippingIntegrationMethod(shippingIntegrationMethod);
-				shippingMethodRate.addManualRateIntegrationMethod(shippingMethodRateIntegrationMethod);
-				getService('shippingService').saveShippingMethodRateIntegrationMethod(shippingMethodRateIntegrationMethod);
-				getService('shippingService').saveShippingMethodRate(shippingMethodRate);
-				ormflush();
-			}			
+			getService("ShippingService").associateManualRateAndIntegrations(rc.shippingMethodRateID,rc.manualRateIntegrationIDs,rc.shippingIntegrationMethods);
 		}
 		super.genericSaveMethod('ShippingMethodRate',rc);
 	}
