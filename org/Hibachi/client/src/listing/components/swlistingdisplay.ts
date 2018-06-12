@@ -482,7 +482,11 @@ class SWListingDisplayController{
         $(`.sw-${show}`).show();
     }
     public hasNumerical=()=>{
+        
         // Iterate over columns, find out if we have any numericals and return
+        if (!Array.isArray(this.columns) || this.columns.length == 0){
+            return false;
+        }
         return this.columns.reduce((totalNumericalCols, col) => {
             return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
         });
