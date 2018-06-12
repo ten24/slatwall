@@ -90,17 +90,41 @@ import {dialogmodule} from "../dialog/dialog.module";
 import {AlertModule} from '../alert/alert.module';
 import {DialogModule} from '../dialog/dialog.module';
 
-import {NgModule} from '@angular/core';
+import {NgModule,Inject,APP_INITIALIZER} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {UpgradeModule,downgradeInjectable} from '@angular/upgrade/static';
 
 
 import {BaseObject} from "./model/baseobject";
+import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "../../../../../admin/client/src/app.provider";
 
+export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConfig,resourceBundles:ResourceBundles,attributeMetaData:AttributeMetaData): Function {
+  return () => {
+    appProvider.fetchData().then(()=>{
+        for(var key in appProvider.appConfig){
+            appConfig[key] = appProvider.appConfig[key];
+        }
+        for(var key in appProvider._resourceBundle){
+            resourceBundles[key] = appProvider._resourceBundle[key];
+        }
+        if(appProvider.attributeMetaData){
+            for(var key in appProvider.attributeMetaData){
+                attributeMetaData[key] = appProvider.attributeMetaData[key];
+            }
+        }
+    })
+    
+  };
+}
 
 @NgModule({
     declarations: [],
     providers: [
+        AppProvider,
+        AppConfig,
+        ResourceBundles,
+        AttributeMetaData,
+        { provide: APP_INITIALIZER, useFactory: startupServiceFactory, deps: [AppProvider,AppConfig,ResourceBundles,AttributeMetaData], multi: true },
         LocalStorageService,
         CacheService,
         DraggableService,
@@ -121,7 +145,9 @@ import {BaseObject} from "./model/baseobject";
         TypeaheadService,
         EntityService,
         CartService,
-        OrderService
+        OrderService,
+        AccountService,
+        SkuService
     ],  
     imports: [
         AlertModule,
@@ -133,8 +159,9 @@ import {BaseObject} from "./model/baseobject";
 })
 
 export class CoreModule{
-    constructor() {
-        
+    constructor(public appConfig:AppConfig,private appProvider:AppProvider) {
+        console.log('trst',appConfig);
+        console.log('trst',appProvider);
     }    
 }
 
@@ -151,6 +178,8 @@ var coremodule = angular.module('hibachi.core',[
   dialogmodule.name
 ])
 .config(['$compileProvider','$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($compileProvider,$httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+    
+    
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 
@@ -261,11 +290,11 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',downgradeInjectable(HibachiScope))
 .service('scopeService',downgradeInjectable(ScopeService))
-.service('skuService', SkuService)
+.service('skuService',downgradeInjectable(SkuService))
 .service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',downgradeInjectable(RequestService))
-.service('accountService',AccountService)
 .service('orderService',downgradeInjectable(OrderService))
+.service('accountService',downgradeInjectable(AccountService))
 .service('orderPaymentService',OrderPaymentService)
 .service('cartService',downgradeInjectable(CartService))
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
@@ -319,6 +348,8 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swOrderByControls', SWOrderByControls.Factory())
+
+
 ;
 export{
 	coremodule

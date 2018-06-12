@@ -11,7 +11,6 @@ var PATHS = {
 var appConfig = {
     context:PATHS.app,
     entry: {
-        app:['./bootstrap.ts'],
          vendor: ["shim.min.js","zone.js","date", "angular", 'reflect-metadata', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
          'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker'],
 

@@ -1,6 +1,4 @@
 //{
-/// <reference path="../src/basebootstrap.ts" />
-/// <reference path="../src/bootstrap.ts" />
 /// <reference path="../src/alert/alert.module.ts" />
 /// <reference path="../src/card/card.module.ts" />
 /// <reference path="../src/collection/collection.module.ts" />
