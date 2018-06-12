@@ -1157,7 +1157,7 @@ component extends="HibachiService"  accessors="true" output="false"
             // Insure that all items in the cart are within their max constraint
      	    	if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
     	 	        cart = getService("OrderService").processOrder(cart, 'forceItemQuantityUpdate');
-    	 	    }
+    	 	    } 
     	 	    
     	 	    if(!cart.hasErrors()) {
               getService("OrderService").saveOrder(cart);
@@ -1325,6 +1325,10 @@ component extends="HibachiService"  accessors="true" output="false"
         }
 
         if (structKeyExists(data, 'accountAddressID')) {
+            var paymentMethod = this.getPaymentMethod(data.newOrderPayment.paymentMethod.paymentMethodID);
+            if(!isNull(paymentMethod) && paymentMethod.getPaymentMethodType() == 'termPayment'){
+                data.newOrderPayment.termPaymentAccount.accountID = getHibachiScope().getAccount().getAccountID();
+            }
             var accountAddress = getService('addressService').getAccountAddress(data.accountAddressID);
             var addOrderPayment = getService('OrderService').processOrder(order, arguments.data, 'addOrderPayment');
             for (var payment in addOrderPayment.getOrderPayments()) {
@@ -1621,6 +1625,20 @@ component extends="HibachiService"  accessors="true" output="false"
     	}
     }
     
+    public void function getSkuPriceByQuantity(required any data){
+        if(isNull(arguments.data.skuID)){
+            addErrors(arguments.data, [{'skuID':"Error retrieving price; skuID is required."}]);
+        }
+        if(isNull(arguments.data.quantity) || !isNumeric(arguments.data.quantity)){
+            arguments.data.quantity = 1;
+        }
+        if(isNull(arguments.data.currencyCode)){
+            arguments.data.currencyCode = 'USD';
+        }
+        
+        var sku = getSkuService().getSku(arguments.data.skuID);
+        data['ajaxResponse']['price'] = sku.getPriceByCurrencyCode(arguments.data.currencyCode, arguments.data.quantity);
+    }
     
 }
 
