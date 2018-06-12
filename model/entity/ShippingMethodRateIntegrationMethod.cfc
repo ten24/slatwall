@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,19 +45,19 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+    This entity will allow manual shipping rates to still be associated with a shipping integration and
+    a shipping integration method. This way, users can set their own shipping rates manually, but still benefit from
+    shipping integration functionalities such as getting tracking numbers, etc..
 
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentType" />
-		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentAmount" />
-		<swa:SlatwallSetting settingName="shippingMethodRateMinimumAmount" />
-		<swa:SlatwallSetting settingName="shippingMethodRateMaximumAmount" />
-	    <swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeFlag" />
-		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeType" />
-		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeAmount" />
-		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeePercentage" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+*/
+component entityname="SlatwallShippingMethodRateIntegrationMethod" table="SwShipMethodRateIntegrationMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="shippingService" {
+    property name="shipMethodRateIntegrationMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+    property name="shippingIntegrationMethod" ormtype="string";
+    property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
+	property name="shippingMethodRate" cfc="ShippingMethodRate" fieldtype="many-to-one" fkcolumn="shippingMethodRateID";
+
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+
+}

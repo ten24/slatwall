@@ -57,5 +57,9 @@ Notes:
 		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentAmount" settingObject="#rc.shippingMethodRate#" />
 		<swa:SlatwallSetting settingName="shippingMethodRateMinimumAmount" settingObject="#rc.shippingMethodRate#" />
 		<swa:SlatwallSetting settingName="shippingMethodRateMaximumAmount" settingObject="#rc.shippingMethodRate#" />
+    	<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeFlag" settingObject="#rc.shippingMethodRate#"  />
+		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeType" settingObject="#rc.shippingMethodRate#"  />
+		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeeAmount" settingObject="#rc.shippingMethodRate#"  />
+		<swa:SlatwallSetting settingName="shippingMethodRateHandlingFeePercentage" settingObject="#rc.shippingMethodRate#"  />
 	</swa:SlatwallSettingTable>
 </cfoutput>

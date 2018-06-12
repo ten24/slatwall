@@ -314,11 +314,11 @@ Notes:
 										</cfif>
 
 										</hb:HibachiDisplayToggle>
-
+										
 									</hb:HibachiDisplayToggle>
-
-
-
+									<cfif $.slatwall.setting('globalAllowThirdPartyShippingAccount')>
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="thirdPartyShippingAccountIdentifier" edit="#rc.edit#">
+									</cfif>
 								</hb:HibachiDisplayToggle>
 							<cfelse>
 								<!--- Order Return --->
