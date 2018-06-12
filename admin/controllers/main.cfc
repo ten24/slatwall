@@ -175,9 +175,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(rc.process) {
 			logHibachi("Update Called", true);
 			if(rc.branchType eq "custom"){
-				getUpdateService().update(branch=rc.customBranch);
+				getUpdateService().update(branch=rc.customBranch, branchType=rc.branchType);
 			}else{
-				getUpdateService().update(branch=rc.updateBranch);
+				getUpdateService().update(branch=rc.updateBranch, branchType=rc.branchType);
 			}
 			
 

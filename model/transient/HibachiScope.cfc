@@ -464,10 +464,36 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return data;
 	}
 
+	public string function getSignedS3URL( required string path, numeric minutesValid = 15) {
+ 		try{
+ 			return getService("hibachiUtilityService").getSignedS3ObjectLink(
+ 				bucketName=setting("globalS3Bucket"),
+ 				keyName=replace(arguments.path,'s3://',''),
+ 				awsAccessKeyId=setting("globalS3AccessKey"),
+ 				awsSecretAccessKey=setting("globalS3SecretAccessKey"),
+ 				minutesValid=arguments.minutesValid
+ 			);
+ 		}catch(any e){
+ 			return '';
+ 		}
+ 	}
+
 	// =================== Image Access ===========================
 	
 	public string function getBaseImageURL() {
-		return getURLFromPath(setting('globalAssetsImageFolderPath'));
+		if(!structKeyExists(variables, 'baseImageURL')){
+			var globalAssetsImageFolderPath = setting('globalAssetsImageFolderPath');
+			//if is a s3 path, pass it over
+			if(left(globalAssetsImageFolderPath, 5) == 's3://'){
+				variables.baseImageURL = globalAssetsImageFolderPath;
+			}else{
+				//otherwise get the url path based on system directory
+				variables.baseImageURL = getURLFromPath(globalAssetsImageFolderPath);
+			}
+
+		}
+		return variables.baseImageURL;
+
 	}
 	
 	public string function getResizedImage() {

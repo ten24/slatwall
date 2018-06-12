@@ -44850,10 +44850,7 @@ var SWTypeaheadSearchController = /** @class */ (function () {
             });
         };
         this.search = function (search) {
-            if (!search.length) {
-                _this.closeThis();
-                return;
-            }
+            if (search === void 0) { search = ""; }
             _this.rSearch(search);
             if (_this._timeoutPromise) {
                 _this.$timeout.cancel(_this._timeoutPromise);
@@ -54264,6 +54261,9 @@ var SWListingDisplayController = /** @class */ (function () {
         };
         this.hasNumerical = function () {
             // Iterate over columns, find out if we have any numericals and return
+            if (!Array.isArray(_this.columns) || _this.columns.length == 0) {
+                return false;
+            }
             return _this.columns.reduce(function (totalNumericalCols, col) {
                 return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
             });

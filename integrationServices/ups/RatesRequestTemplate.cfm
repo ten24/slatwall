@@ -92,36 +92,24 @@
         "ShipmentWeight": { "Weight": "#arguments.requestBean.getTotalWeight( unitCode='lb' )#" },
         <!--- Set the total weight to a variable --->
 		<cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
+		"Package":[
 		<cfif local.totalWeight gt 150>
 			<cfset local.finalWeight = local.totalWeight MOD 150>
 			<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
 				
-			  "Package": {
+			  {
 			    "PackagingType": { "Code": "02" },
 			    "PackageWeight": {
 			      "Weight": "150",
 			      "UnitOfMeasurement": { "Code": "LBS" }
 			    }
-			  }
+			  }<cfif count LT round(abs(local.totalWeight / 150))>,</cfif>
 					
 			</cfloop>
-			<cfif local.finalWeight gt 0>
-				
-			  "Package": {
-			    "PackagingType": { "Code": "02" },
-				"PackageWeight": {
-					<cfif local.finalWeight lt 1>
-						"Weight":"1",
-					<cfelse>
-						"Weight":"#local.finalWeight#",
-					</cfif>
-					"UnitOfMeasurement": { "Code": "LBS" }
-				}
-							
-			</cfif>
+			]
 		<cfelse>
 			
-		  "Package": {
+		  {
 		    "PackagingType": { "Code": "02" },
 			"PackageWeight":{
 				<cfif arguments.requestBean.getTotalWeight( unitCode='lb' ) lt 1>
@@ -130,9 +118,9 @@
 					"Weight":"#arguments.requestBean.getTotalWeight( unitCode='lb' )#",	
 				</cfif>
 				"UnitOfMeasurement": { "Code": "LBS" }
-			}
+			  }
 		  }
-			
+		]
 		</cfif>
       }
     }

@@ -84,7 +84,7 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	public string function getImageExtension() {
 		return listLast(getImageFile(), ".");
 	}
-	
+	// Gets the HTTP URL Path to the image, not the local path
 	public string function getImagePath() {
 		return "#getHibachiScope().getBaseImageURL()#/#getDirectory()#/#getImageFile()#";
 	}
@@ -194,6 +194,15 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 			arrayDeleteAt(arguments.promotion.getPromotionImages(), index);
 		}
 		structDelete(variables, "promotion");
+	}
+	
+	public array function getImageTypeOptions(){
+		var imageTypeOptionsCollectionList = getService('typeService').getTypeCollectionList();
+		//image Types as parent
+		imageTypeOptionsCollectionList.addFilter('typeIDPath','444df2ce9c74fa886435c08706d343db%','LIKE');
+		imageTypeOptionsCollectionList.setDisplayProperties('typeName|name,typeID|value');
+		imageTypeOptionsCollectionList.addOrderBy('typeName');
+		return imageTypeOptionsCollectionList.getRecords();
 	}
 	
 	// Attribute Values (one-to-many)
