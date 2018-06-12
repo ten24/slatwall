@@ -558,6 +558,14 @@ component extends="HibachiService"  accessors="true" output="false"
             var savedAddress = getService('AddressService').saveAddress(shippingAddress, data, "full");
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
+                if(structKeyExists(arguments.data, 'orderID')){
+                    var order = this.getOrder(arguments.data.orderID);
+                    if(isNull(order) || order.getaccount().getAccountID() != getHibachiScope().getAccount().getAccountID() ){
+                        this.addErrors(data, 'Could not find Order');
+                        getHibachiScope().addActionResult( "public:cart.addShippingAddress", true);
+                        return;
+                    }
+                }
                 var order = getHibachiScope().cart();
                 order.setShippingAddress(savedAddress);
                 for(var fulfillment in order.getOrderFulfillments()){
@@ -607,6 +615,14 @@ component extends="HibachiService"  accessors="true" output="false"
         var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
         if (!isNull(accountAddress) && !accountAddress.hasErrors()){
             //save the address at the order level.
+            if(structKeyExists(arguments.data, 'orderID')){
+                var order = this.getOrder(arguments.data.orderID);
+                if(isNull(order) || order.getaccount().getAccountID() != getHibachiScope().getAccount().getAccountID() ){
+                    this.addErrors(data, 'Could not find Order');
+                    getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", true);
+                    return;
+                }
+            }
             var order = getHibachiScope().getCart();
             for(var fulfillment in order.getOrderFulfillments()){
               if(structKeyExists(data,'fulfillmentID') && fulfillment.getOrderFulfillmentID() == data.fulfillmentID){
