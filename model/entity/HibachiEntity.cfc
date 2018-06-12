@@ -303,8 +303,12 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 				){
 
 					if(arguments.value != "") {
-
-						invokeMethod("set#arguments.attribute#", {1=arguments.value});
+						if(structkeyExists(propertyStruct, 'fieldtype') && lcase(propertyStruct.fieldtype) == 'many-to-one'){
+							var relatedObject = getService("hibachiService").invokeMethod("get#propertyStruct.cfc#", {1=arguments.value});
+							invokeMethod("set#arguments.attribute#", {1=relatedObject});
+						}else{
+							invokeMethod("set#arguments.attribute#", {1=arguments.value});
+						}
 
 					} else {
 						var thisMethod = this["set" & arguments.attribute];
