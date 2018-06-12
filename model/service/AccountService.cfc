@@ -1401,6 +1401,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		// If the paymentTransaction has errors, then add those errors to the accountPayment itself
 		if(paymentTransaction.hasError('runTransaction')) {
 			arguments.accountPaymentMethod.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
+		}else if(paymentTransaction.hasErrors()){
+			arguments.accountPaymentMethod.addErrors(paymentTransaction.getErrors());
 		}
 
 		return arguments.accountPaymentMethod;
