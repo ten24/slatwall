@@ -57,6 +57,7 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	
 	// Related Object Properties (many-to-many)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwImageOption" fkcolumn="imageID" inversejoincolumn="optionID"; 
+	property name="assignedSkus" singularname="assignedSku" cfc="Sku" fieldtype="many-to-many" linktable="SwAlternateImageSku" fkcolumn="imageID" inversejoincolumn="skuID" inverse="true";
 
 	// Related entity properties (many-to-one)
 	property name="imageType" cfc="Type" fieldtype="many-to-one" fkcolumn="imageTypeID" hb_optionsSmartListData="f:parentType.systemCode=imageType";
@@ -76,6 +77,36 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	property name="calculatedAssignedSkuCodeList" ormtype="string" length="8000";
+	property name="calculatedAssignedSkuIDList" ormtype="string" length="8000";
+	
+	property name="assignedSkuCodeList" persistent="false";
+	property name="assignedSkuIDList" persistent="false";
+	
+	public string function getAssignedSkuCodeList(){
+		var assignedSkuCodeList = '';
+		var skuCollectionList = getService('SkuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedAlternateImages.imageID',getImageID());
+		var skus = skuCollectionList.getRecords();
+		for(var sku in skus){
+			assignedSkuCodeList = listAppend(assignedSkuCodeList,sku.skuCode);
+		}
+		variables.assignedSkuCodeList = assignedSkuCodeList;
+		return assignedSkuCodeList;
+	}
+	
+	public string function getAssignedSkuIDList(){
+		var assignedSkuIDList = '';
+		var skuCollectionList = getService('SkuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedAlternateImages.imageID',getImageID());
+		var skus = skuCollectionList.getRecords();
+		for(var sku in skus){
+			assignedSkuIDList = listAppend(assignedSkuIDList,sku.skuID);
+		}
+		variables.assignedSkuIDList = assignedSkuIDList;
+		return assignedSkuIDList;
+	}
 	
 	public string function getImageFileUploadDirectory() {
 		return setting('globalAssetsImageFolderPath') & "/" & getDirectory();
@@ -211,6 +242,14 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeImage( this );
+	}
+	
+	// Skus (many-to-many - inverse)
+	public void function addAssignedSku(required any sku) {
+		arguments.sku.addAssignedAlternateImage( this );
+	}
+	public void function removeAssignedSku(required any sku) {
+		arguments.sku.removeAssignedAlternateImage( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================

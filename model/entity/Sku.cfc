@@ -116,6 +116,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="skuID" inversejoincolumn="locationConfigurationID";
+	property name="assignedAlternateImages" singularname="assignedAlternateImage" cfc="Image" type="array" fieldtype="many-to-many" linktable="SwAlternateImageSku" fkcolumn="skuID" inversejoincolumn="imageID";
 
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -1533,6 +1534,26 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var thatIndex = arrayFind(arguments.accessContent.getSkus(), this);
 		if(thatIndex > 0) {
 			arrayDeleteAt(arguments.accessContent.getSkus(), thatIndex);
+		}
+	}
+	
+		// Assigned Alternate Images (many-to-many - owner)
+	public void function addAssignedAlternateImage(required any image) {
+		if(isNew() or !hasAssignedAlternateImage(arguments.image)) {
+			arrayAppend(variables.assignedAlternateImages, arguments.image);
+		}
+		if(arguments.image.isNew() or !arguments.image.hasAssignedSku( this )) {
+			arrayAppend(arguments.image.getAssignedSkus(), this);
+		}
+	}
+	public void function removeAssignedAlternateImage(required any image) {
+		var thisIndex = arrayFind(variables.assignedAlternateImages, arguments.image);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.assignedAlternateImages, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.image.getAssignedSkus(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.image.getAssignedSkus(), thatIndex);
 		}
 	}
 
