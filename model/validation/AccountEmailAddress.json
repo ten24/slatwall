@@ -1,7 +1,6 @@
 {
 	"conditions":{
 	    "requiresNotInUse":{
-	        "primaryFlag":{"eq":true},
 	        "account.nonIntegrationAuthenticationExistsFlag":{"eq":true}
 	    }
 	},
