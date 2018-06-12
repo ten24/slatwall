@@ -1593,7 +1593,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Flush again to really lock in that order status change
 								getHibachiDAO().flushORMSession();
 								
-								for(var orderItem in order.getOrderItems()){
+								for(var orderItem in arguments.order.getOrderItems()){
 									if(!isNull(orderItem.getStock())){
 										//via cascade calculate stock should update sku then product 
 										getHibachiScope().addModifiedEntity(orderItem.getStock());

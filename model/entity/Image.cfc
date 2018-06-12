@@ -84,7 +84,7 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	public string function getImageExtension() {
 		return listLast(getImageFile(), ".");
 	}
-	
+	// Gets the HTTP URL Path to the image, not the local path
 	public string function getImagePath() {
 		return "#getHibachiScope().getBaseImageURL()#/#getDirectory()#/#getImageFile()#";
 	}

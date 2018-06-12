@@ -250,7 +250,12 @@ component extends="framework.one" {
             }
         }
 	}
-
+	public string function getBaseURL() {
+		if(len(variables.framework.baseURL) && variables.framework.baseURL == '/Slatwall'){
+			return variables.framework.baseURL&'/';
+		}
+        return variables.framework.baseURL;
+    }
 
 	public any function bootstrap() {
 		
