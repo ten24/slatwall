@@ -101,7 +101,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuCosts" singularname="skuCost" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuCost" cascade="all-delete-orphan";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
-	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
+	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" orderBy="sortOrder";
 	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";

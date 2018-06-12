@@ -41,7 +41,7 @@ component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBu
 	// Persistent Properties
 	property name="skuBundleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="bundledQuantity" ormtype="integer";
-	
+	property name="sortOrder" ormtype="integer" sortContext="sku";
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
