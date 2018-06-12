@@ -1121,6 +1121,17 @@ component extends="HibachiService"  accessors="true" output="false"
         }
     }
     
+    /* @http-context updateOrderNotes
+     * @description Set shipping instructions for order
+     * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     */
+    public void function updateOrderNotes(required any data) {
+        param name="arguments.data.orderNotes" default="";
+        var cart = getHibachiScope().getCart();
+        cart.setOrderNotes(arguments.data.orderNotes);
+        getHibachiScope().addActionResult( "public:cart.updateOrderNotes", cart.hasErrors() );
+    }
+    
     /** 
      * @http-context updateOrderItemQuantity
      * @description Update Order Item on an Order

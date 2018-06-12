@@ -76,6 +76,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="contactPersonName" type="string" default="";
 	property name="contactCompany" type="string" default="";
 	property name="contactPhoneNumber" type="string" default="";
+	property name="thirdPartyShippingAccountIdentifier" type="string" default="";
 
 	property name="shippingItemRequestBeans" type="array";
 
@@ -117,6 +118,13 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		populateShipToWithOrderFulfillment( arguments.orderFulfillment );
 		populateContactWithOrderFulfillment( arguments.orderFulfillment );
 		populateShippingMethodRateNameFromOrderFulfillment(arguments.orderFulfillment);
+		populateThirdPartyBillingInformationFromOrderFulfillment(arguments.orderFulfillment);
+	}
+
+	public void function populateThirdPartyBillingInformationFromOrderFulfillment(required any orderFulfillment){
+		if(!isNull(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier())){
+			setThirdPartyShippingAccountIdentifier(arguments.orderFulfillment.getThirdPartyShippingAccountIdentifier());
+		}
 	}
 
 	public void function populateContactWithOrderFulfillment(required any orderFulfillment){
@@ -166,6 +174,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		if(!isNull(arguments.address.getCountry())){
 			setShipToCountry(arguments.address.getCountry().getCountryName()); 
 		} 
+		if(!isNull(arguments.address.getPhoneNumber())){
+			setShipToPhoneNumber(arguments.address.getPhoneNumber());
+		}
 	}
 
 	public void function populateShipFromWithAddress(required any address) {
@@ -204,8 +215,25 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	public void function populateShippingMethodRateNameFromOrderFulfillment( required any orderFulfillment ){
 		var name = "STANDARD_OVERNIGHT";
-		if (!isNull(orderFulfillment) && !isNull(orderFulfillment.getShippingMethodRate()) && !isNull(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod()) && len(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod())){
+		if (
+			!isNull(orderFulfillment)
+			&& !isNull(orderFulfillment.getShippingMethodRate())
+			&& !isNull(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod())
+			&& len(orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod())
+		){
 			name = orderFulfillment.getShippingMethodRate().getShippingIntegrationMethod();
+		}
+		else if(
+				!isNull(orderFulfillment.getShippingIntegration())
+				&& !isNull(orderFulfillment.getShippingMethodRate())
+		){
+			shipMethodRateIntegrationMethod = getService('ShippingService').getShippingMethodRateIntegrationMethodByShippingIntegrationIDAndShippingMethodRateID(
+																			orderFulfillment.getShippingIntegration().getintegrationID(),
+																			orderFulfillment.getShippingMethodRate().getShippingMethodRateID()
+																			);
+			if(!isNull(shipMethodRateIntegrationMethod)){
+				name = shipMethodRateIntegrationMethod.getShippingIntegrationMethod();
+			}
 		}
 		this.setShippingIntegrationMethod(name);
 	}
