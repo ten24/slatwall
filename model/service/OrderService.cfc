@@ -1593,7 +1593,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							orderItem.setParentOrderItem( parentItem );
 
 							// Add an error to the order so that this process fails
-							argument.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
+							arguments.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
 						}
 					}
 
