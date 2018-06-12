@@ -107,7 +107,7 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         for(var key in appProvider._resourceBundle){
             resourceBundles[key] = appProvider._resourceBundle[key];
         }
-        if(appProvider.attributeMeta){
+        if(appProvider.attributeMetaData){
             for(var key in appProvider.attributeMetaData){
                 attributeMetaData[key] = appProvider.attributeMetaData[key];
             }
@@ -144,6 +144,10 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         $Hibachi,
         TypeaheadService,
         EntityService,
+        CartService,
+        OrderService,
+        AccountService,
+        SkuService
     ],  
     imports: [
         AlertModule,
@@ -286,13 +290,13 @@ var coremodule = angular.module('hibachi.core',[
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',downgradeInjectable(HibachiScope))
 .service('scopeService',downgradeInjectable(ScopeService))
-.service('skuService', SkuService)
+.service('skuService',downgradeInjectable(SkuService))
 .service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',downgradeInjectable(RequestService))
-.service('accountService',AccountService)
-.service('orderService',OrderService)
+.service('orderService',downgradeInjectable(OrderService))
+.service('accountService',downgradeInjectable(AccountService))
 .service('orderPaymentService',OrderPaymentService)
-.service('cartService',CartService)
+.service('cartService',downgradeInjectable(CartService))
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
 .service('entityService',downgradeInjectable(EntityService))
 //controllers

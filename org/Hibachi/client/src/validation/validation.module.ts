@@ -31,7 +31,9 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+        ValidationService
+    ],
 	imports : [
 		CoreModule,
 		CommonModule,
@@ -65,7 +67,7 @@ var validationmodule = angular.module('hibachi.validation', [coremodule.name])
 .directive("swvalidationunique",SWValidationUnique.Factory())
 .directive("swvalidationuniqueornull",SWValidationUniqueOrNull.Factory())
 //services
-.service("validationService",ValidationService)
+.service("validationService",downgradeInjectable(ValidationService))
 ;
 
 export{
