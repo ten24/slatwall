@@ -133,7 +133,7 @@ Notes:
 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 			</cfif>
 			<cfif structKeyExists(fdAttributes, 'valueLink') AND left(fdAttributes.valueLink, 5) EQ 's3://'>
-				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromS3(fdAttributes.valueLink)#" />
+ 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getSignedS3URL(fdAttributes.valueLink)#" />
 			</cfif>
 
 
