@@ -909,7 +909,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
-
+		arguments.order.setOrderCanceledDateTime(now());
+		
 		return arguments.order;
 	}
 
