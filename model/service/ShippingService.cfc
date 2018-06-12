@@ -300,7 +300,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public numeric function getChargeAmountByRatePercentage (required any orderFulfillment,required numeric percentage){
 		var chargeAmount = 0;
-		for(item in orderFulfillment.getOrderFulfillmentItems()){
+		for(var item in orderFulfillment.getOrderFulfillmentItems()){
 			chargeAmount += val(getService('HibachiUtilityService').precisionCalculate(item.getItemTotal() * (percentage / 100)));
 		}
 		return chargeAmount;
