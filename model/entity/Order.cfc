@@ -724,16 +724,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPayment() {
-		var returnOrderPayment = javaCast("null", "");
 		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
-				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
-					returnOrderPayment = orderPayment;
-				}
-			}
-		}
-		if(!isNull(returnOrderPayment)) {
-			return returnOrderPayment;
+			if(orderPayment.getDynamicAmountFlag()
+			   && orderPayment.getStatusCode() == 'opstActive'
+			   && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+				return orderPayment;
+			} 
 		}
 	}
 
