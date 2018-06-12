@@ -196,6 +196,15 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 		structDelete(variables, "promotion");
 	}
 	
+	public array function getImageTypeOptions(){
+		var imageTypeOptionsCollectionList = getService('typeService').getTypeCollectionList();
+		//image Types as parent
+		imageTypeOptionsCollectionList.addFilter('typeIDPath','444df2ce9c74fa886435c08706d343db%','LIKE');
+		imageTypeOptionsCollectionList.setDisplayProperties('typeName|name,typeID|value');
+		imageTypeOptionsCollectionList.addOrderBy('typeName');
+		return imageTypeOptionsCollectionList.getRecords();
+	}
+	
 	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setImage( this );
