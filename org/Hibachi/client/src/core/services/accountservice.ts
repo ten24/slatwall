@@ -2,20 +2,21 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 import {Account} from "../model/entity/account";
 import {BaseEntityService} from "./baseentityservice";
-class AccountService extends BaseEntityService{
+import {Injectable,Inject} from '@angular/core';
+import {$Hibachi} from './hibachiservice';
+import {UtilityService} from './utilityservice';
+
+@Injectable()
+export class AccountService extends BaseEntityService{
     public entity:any;
 
-    //@ngInject
     constructor(
-        public $injector:ng.auto.IInjectorService,
-        public $hibachi,
-        public utilityService
+        @Inject("$injector") public $injector:ng.auto.IInjectorService,
+        public $hibachi : $Hibachi,
+        public utilityService : UtilityService
     ){
         super($injector,$hibachi,utilityService,'Account');
 
     }
 
-}
-export {
-    AccountService
 }
