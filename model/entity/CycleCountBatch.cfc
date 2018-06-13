@@ -79,7 +79,9 @@ component entityname="SlatwallCycleCountBatch" table="SwCycleCountBatch" output=
 	
 	// ============ START: Non-Persistent Property Methods =================
 	public string function getStatusCode() {
-		return getCycleCountBatchStatusType().getSystemCode();
+		if ( !isNull(getCycleCountBatchStatusType()) ){
+			return getCycleCountBatchStatusType().getSystemCode();
+		}
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
