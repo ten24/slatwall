@@ -1242,6 +1242,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return getQuantity(argumentCollection=params);
 	}
+	
+	public any function getQOQ(string locationID) {
+		if ( structKeyExists(arguments, 'locationID') ){
+			return getQuantity(quantityType="QOQ", locationID=arguments.locationID );
+		}	
+		return getQuantity("QOQ");
+	}
 
 	/**
 	* @Suppress
