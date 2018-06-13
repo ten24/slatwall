@@ -44,8 +44,8 @@ class SWTypeaheadSearchController {
     public dropdownOpen:boolean;
     public searchEndpoint;
     public titleText;
-    public loading:boolean;
-    public searchOnLoad:boolean;
+     public loading:boolean;
+     public searchOnLoad:boolean;
 
     private _timeoutPromise;
     
