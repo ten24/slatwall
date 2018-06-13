@@ -52,7 +52,9 @@ import { downgradeComponent } from '@angular/upgrade/static';
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+        SlatwallPathBuilder
+    ],
 	imports : [
         HibachiModule,
         EntityModule,
