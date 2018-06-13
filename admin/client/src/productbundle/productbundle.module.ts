@@ -23,7 +23,9 @@ import {SWProductBundleCollectionFilterItemTypeahead} from "./components/swprodu
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+        ProductBundleService
+    ],
 	imports : [
 		CoreModule,
 		CommonModule,
@@ -43,7 +45,7 @@ var productbundlemodule = angular.module('hibachi.productbundle',[coremodule.nam
 //constants
 .constant('productBundlePartialsPath','productbundle/components/')
 //services
-.service('productBundleService',ProductBundleService)
+.service('productBundleService',downgradeInjectable(ProductBundleService))
 //controllers
 .controller('create-bundle-controller',CreateBundleController)
 //directives
