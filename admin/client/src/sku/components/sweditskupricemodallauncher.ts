@@ -1,11 +1,10 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWAddSkuPriceModalLauncherController{
+class SWEditSkuPriceModalLauncherController{
     
     public pageRecord:any; 
     public sku:any;
     public priceGroup:any;
-    public priceGroupId;String;
     public skuId:string; 
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
@@ -32,12 +31,60 @@ class SWAddSkuPriceModalLauncherController{
         private listingService,
         private observerService, 
         private skuPriceService,
-        private utilityService
+        private utilityService,
+        private scopeService,
+        private $scope
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
-        this.formName = "addSkuPrice" + this.utilityService.createID(16);
-        this.skuPrice = this.entityService.newEntity('SkuPrice'); 
-    }    
+        this.formName = "editSkuPrice" + this.utilityService.createID(16);
+        //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
+        let currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
+        if(angular.isDefined(currentScope.pageRecord)){ 
+            this.pageRecord = currentScope.pageRecord;
+            //sku record case
+            if(angular.isDefined(currentScope.pageRecord["sku_skuID"]) && angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
+                let skuData = {
+                    skuID:currentScope.pageRecord["sku_skuID"],
+                    skuCode:currentScope.pageRecord["sku_skuCode"],
+                    calculatedSkuDefinition:currentScope.pageRecord["sku_calculatedSkuDefinition"]
+                }
+                
+                let skuPriceData = {
+                    skuPriceID:currentScope.pageRecord.skuPriceID,
+                    minQuantity:currentScope.pageRecord.minQuantity,
+                    maxQuantity:currentScope.pageRecord.maxQuantity,
+                    currencyCode:currentScope.pageRecord.currencyCode, 
+                    price:currentScope.pageRecord.price
+                }
+                
+                let priceGroupData = {
+                    priceGroupID:currentScope.pageRecord["priceGroup_priceGroupID"],
+                    priceGroupCode:currentScope.pageRecord["priceGroup_priceGroupCode"]
+                }
+                
+                this.sku = this.$hibachi.populateEntity('Sku',skuData);
+                this.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
+                this.priceGroup = this.$hibachi.populateEntity('PriceGroup',priceGroupData);
+                this.skuPrice.$$setSku(this.sku);
+                this.skuPrice.$$setPriceGroup(this.priceGroup);
+                this.currencyCodeOptions = ["USD"]; //hard-coded for now
+            } else {
+                return;
+            }
+        } else{ 
+            throw("swEditSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
+        } 
+        let listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
+        if(angular.isDefined(listingScope.swListingDisplay)){ 
+            this.listingID = listingScope.swListingDisplay.tableID;
+            this.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
+            this.defaultCurrencyOnly = true;
+            this.observerService.attach(this.updateCurrencyCodeSelector, this.selectCurrencyCodeEventName);
+        } else {
+            throw("swEditSkuPriceModalLauncher couldn't find listing scope");
+        }
+         this.initData();
+    }
     
     public updateCurrencyCodeSelector = (args) =>{
         if(args != 'All'){
@@ -51,9 +98,6 @@ class SWAddSkuPriceModalLauncherController{
 
     public initData = () =>{
         //these are populated in the link function initially
-        this.skuPrice = this.entityService.newEntity('SkuPrice'); 
-        this.skuPrice.$$setSku(this.sku);
-        this.skuPrice.$$setPriceGroup(this.priceGroup);
         if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
         }
@@ -85,10 +129,7 @@ class SWAddSkuPriceModalLauncherController{
         var savePromise = this.skuPrice.$$save();
       
         savePromise.then(
-            (response)=>{
-               if(firstSkuPriceForSku){
-                    this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
-               }
+            (response)=>{ 
                this.saveSuccess = true; 
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 
@@ -105,24 +146,20 @@ class SWAddSkuPriceModalLauncherController{
                             var skuPageRecord = pageRecords[i];
                             var index = i + 1; 
                             while(index < pageRecords.length && angular.isUndefined(pageRecords[index].skuID)){
-                                //if there is a place in the listing to insert the new sku price lets insert it
-                                if( 
-                                    ( pageRecords[index].minQuantity <= this.skuPrice.data.minQuantity ) &&
-                                    (   index + 1 < pageRecords.length && (
-                                        pageRecords[index+1].minQuantity >= this.skuPrice.data.minQuantity ||
-                                        angular.isDefined(pageRecords[index+1].skuID) ) 
-                                    ) || index + 1 == pageRecords.length
-                                ){
+                                //let's find and update the sku price
+                                if(pageRecords[index].skuPriceID === this.skuPrice.skuPriceID){
                                     this.skuPrice.data.eligibleCurrencyCodeList = this.currencyCodeOptions.join(",");
                                     //spoof the page record
-                                    var skuPriceForListing = {}; 
+                                    var skuPriceForListing:any = {}; 
                                     for(var key in this.skuPrice.data){
                                         skuPriceForListing[key] =  this.skuPrice.data[key];
                                     }
                                     skuPriceForListing["sku_skuID"] = this.sku.skuID;
                                     skuPriceForListing["sku_skuCode"] = this.sku.skuCode;
-                                    skuPriceForListing["sku_skuDefinition"] = this.sku.skuDefinition;
-                                    pageRecords.splice(index+1,0,skuPriceForListing);
+                                    skuPriceForListing["sku_calculatedSkuDefinition"] = this.sku.calculatedSkuDefinition;
+                                    skuPriceForListing["priceGroup_priceGroupCode"] = skuPriceForListing.selectedpriceGroup.priceGroupCode;
+                                    skuPriceForListing["priceGroup_priceGroupID"] = skuPriceForListing.selectedpriceGroup.priceGroupID;
+                                    pageRecords[index] = skuPriceForListing;
                                     break; 
                                 }  
                                 index++; 
@@ -147,9 +184,9 @@ class SWAddSkuPriceModalLauncherController{
                 this.formService.resetForm(this.formName);
                 this.initData();
 
-                // if(firstSkuPriceForSku){
-                //     this.listingService.getCollection(this.listingID); 
-                // }
+                if(firstSkuPriceForSku){
+                    this.listingService.getCollection(this.listingID); 
+                }
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
             }
         });
@@ -157,7 +194,7 @@ class SWAddSkuPriceModalLauncherController{
     }
 }
 
-class SWAddSkuPriceModalLauncher implements ng.IDirective{
+class SWEditSkuPriceModalLauncher implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {}; 
@@ -174,8 +211,8 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         defaultCurrencyOnly:"=?",
         disableAllFieldsButPrice:"=?"
     };
-    public controller = SWAddSkuPriceModalLauncherController;
-    public controllerAs="swAddSkuPriceModalLauncher";
+    public controller = SWEditSkuPriceModalLauncherController;
+    public controllerAs="swEditSkuPriceModalLauncher";
    
    
     public static Factory(){
@@ -187,7 +224,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
             collectionConfigService,
             skuPartialsPath,
             slatwallPathBuilder
-        )=> new SWAddSkuPriceModalLauncher(
+        )=> new SWEditSkuPriceModalLauncher(
             $hibachi, 
             entityService,
             observerService,
@@ -216,56 +253,19 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
         private skuPartialsPath,
         private slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"addskupricemodallauncher.html";
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"editskupricemodallauncher.html";
     }
     
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-                if(angular.isDefined(currentScope.pageRecord)){ 
-                    $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord;
-                    
-                    //sku record case
-                    if(angular.isDefined(currentScope.pageRecord.skuID)){    
-
-                        var skuData = {
-                            skuID:currentScope.pageRecord.skuID,
-                            skuCode:currentScope.pageRecord.skuCode,
-                            skuDescription:currentScope.pageRecord.skuDescription,
-                            eligibleCurrencyCodeList:currentScope.pageRecord.eligibleCurrencyCodeList,
-                            imagePath:currentScope.pageRecord.imagePath
-                        }
-                        
-                        $scope.swAddSkuPriceModalLauncher.currencyCodeOptions = currentScope.pageRecord.eligibleCurrencyCodeList.split(",");
-                        $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku',skuData);
-                        $scope.swAddSkuPriceModalLauncher.priceGroup = this.$hibachi.newEntity('PriceGroup');
-                        $scope.swAddSkuPriceModalLauncher.skuPrice = this.entityService.newEntity('SkuPrice');
-                        $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
-                    
-
-                    }
-                } else{ 
-                    throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-                } 
-                var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-                if(angular.isDefined(listingScope.swListingDisplay)){ 
-                    $scope.swAddSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
-                    $scope.swAddSkuPriceModalLauncher.selectCurrencyCodeEventName = "currencyCodeSelect" + listingScope.swListingDisplay.baseEntityId; 
-                    this.observerService.attach($scope.swAddSkuPriceModalLauncher.updateCurrencyCodeSelector, $scope.swAddSkuPriceModalLauncher.selectCurrencyCodeEventName);
-                } else {
-                    throw("swAddSkuPriceModalLauncher couldn't find listing scope");
-                }
-                 $scope.swAddSkuPriceModalLauncher.initData();
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-
             }
         };
     }
 }
 export{
-    SWAddSkuPriceModalLauncher,
-    SWAddSkuPriceModalLauncherController
+    SWEditSkuPriceModalLauncher,
+    SWEditSkuPriceModalLauncherController
 }
