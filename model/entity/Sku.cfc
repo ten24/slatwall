@@ -675,7 +675,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					var totalQuantity = 0;
 					
 					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService("locationService").getLocation(locations[i].value);
+						var location = getService("locationService").getLocation(locations[i]['value']);
 						
 						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
 							var stock = getService("stockService").getStockBySkuAndLocation(this, location);
