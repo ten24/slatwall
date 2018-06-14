@@ -1335,7 +1335,7 @@ component extends="HibachiService"  accessors="true" output="false"
             var order = getHibachiScope().getCart();
         }
 
-        if (structKeyExists(data, 'accountAddressID')) {
+        if (structKeyExists(data, 'accountAddressID') && len(data.accountAddressID)) {
             var paymentMethod = this.getPaymentMethod(data.newOrderPayment.paymentMethod.paymentMethodID);
             if(!isNull(paymentMethod) && paymentMethod.getPaymentMethodType() == 'termPayment'){
                 data.newOrderPayment.termPaymentAccount.accountID = getHibachiScope().getAccount().getAccountID();
