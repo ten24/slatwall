@@ -760,10 +760,11 @@ Notes:
 	<cffunction name="getQOQ">
 		<cfargument type="string" required="true" name="skuID" />
 		<cfargument type="string" name="locationID" />
-		<cfset locationIDExists = structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID) />
+		<cfset locationIDExists = structKeyExists(arguments,'locationID') AND NOT isNull(arguments.locationID) AND len(arguments.locationID) />
 		<cfquery name="local.query">
-			SELECT COALESCE( SUM ( oi.quantity ),0 ) FROM swOrderItem oi
-			LEFT JOIN swOrder ON oi.orderID = o.orderID
+			SELECT COALESCE( SUM(oi.quantity) ,0) as QOQ FROM swOrderItem oi
+			LEFT JOIN swOrder o 
+			ON oi.orderID = o.orderID
 			<cfif locationIDExists >
 				LEFT JOIN swStock st ON st.skuID = oi.skuID
 				LEFT JOIN swLocation l on st.locationID = l.locationID
@@ -775,9 +776,11 @@ Notes:
 			AND
 				oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
 			<cfif locationIDExists>
-				l.locationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.locationID#" />
+				AND l.locationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.locationID#" />
 			</cfif>
 		</cfquery>
+		
+		<cfreturn local.query.qoq />
 	</cffunction>
 
 </cfcomponent>

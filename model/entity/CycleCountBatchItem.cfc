@@ -74,11 +74,16 @@ component entityname="SlatwallCycleCountBatchItem" table="SwCycleCountBatchItem"
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="batchStatusCode" persistent="false";
 
 	//Derived Properties
 
 	// ============ START: Non-Persistent Property Methods =================
-
+	public string function getBatchStatusCode() {
+		return getCycleCountBatch().getCycleCountBatchStatusType().getSystemCode();
+	}
+	
+	
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
