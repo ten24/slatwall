@@ -194,8 +194,8 @@ Notes:
 				}
 				
 				if ( !structKeyExists(skuTotalsHashMap, "#QDOO[i]['skuID']#") ){
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0
+					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0;
+					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0;
 				}
 				
 				skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] += QDOO[i]['QDOO'];
