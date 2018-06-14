@@ -263,6 +263,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	   arguments.fulfillmentBatchItem.removeStock(this);
 	}
 	
+	public void function updateCalculatedProperties(boolean runAgain=false) {
+ 		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
+ 			super.updateCalculatedProperties(argumentCollection=arguments);
+			ormflush();
+ 			getService("stockService").processStock(this, "updateInventoryCalculationsForLocations");
+ 		}
+ 	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
