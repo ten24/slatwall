@@ -185,7 +185,11 @@ class SWListingReportController {
         }
     };
     
-    public updatePeriod = (updateFilters:boolean=true)=>{
+    public removeFilterGroupDates=(){
+        this.collectionConfig.filterGroups = [{filterGroup:[]}];
+    }
+    
+    public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
         
         if(
@@ -212,11 +216,11 @@ class SWListingReportController {
             
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-            if(updateFilters){
-                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
-                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-            }
+                
+            this.removeFilterGroupDates();
+            this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+            this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                
             this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
             this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
             

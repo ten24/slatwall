@@ -86988,9 +86988,11 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
         };
-        this.updatePeriod = function (updateFilters) {
+        this.removeFilterGroupDates = function () {
+            _this.collectionConfig.filterGroups = [{ filterGroup: [] }];
+        };
+        this.updatePeriod = function () {
             //if we have all the info we need then we can make a report
-            if (updateFilters === void 0) { updateFilters = true; }
             if (_this.selectedPeriodColumn
                 && _this.selectedPeriodInterval
                 && _this.startDate
@@ -87012,11 +87014,9 @@ var SWListingReportController = /** @class */ (function () {
                 _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
                 _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                 _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
-                if (updateFilters) {
-                    _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-                    _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
-                    _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
-                }
+                _this.removeFilterGroupDates();
+                _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
+                _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
                 _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
                 _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
                 _this.reportCollectionConfig.getEntity().then(function (reportingData) {
