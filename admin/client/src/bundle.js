@@ -86876,6 +86876,12 @@ var SWListingReportController = /** @class */ (function () {
         this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
         this.$onInit = function () {
         };
+        this.updateReportFromListing = function (params) {
+            if (params.collectionConfig) {
+                _this.collectionConfig = params.collectionConfig;
+                _this.updatePeriod();
+            }
+        };
         this.saveReportCollection = function (collectionName) {
             if (collectionName) {
                 _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
@@ -86978,7 +86984,7 @@ var SWListingReportController = /** @class */ (function () {
             _this.selectedPeriodColumn = _this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
             _this.clearPeriodColumn(collectionData);
             _this.reportCollectionConfig = _this.collectionConfig.loadJson(angular.toJson(collectionData));
-            _this.updatePeriod(false);
+            _this.updatePeriod();
         };
         this.clearPeriodColumn = function (collectionData) {
             for (var i in collectionData.columns) {
@@ -86989,7 +86995,12 @@ var SWListingReportController = /** @class */ (function () {
             }
         };
         this.removeFilterGroupDates = function () {
-            _this.collectionConfig.filterGroups = [{ filterGroup: [] }];
+            console.log(_this.collectionConfig.filterGroups);
+            for (var i in _this.collectionConfig.filterGroups[0].filterGroup) {
+                if (_this.collectionConfig.filterGroups[0].filterGroup[i].isHidden) {
+                    _this.collectionConfig.filterGroups[0].filterGroup.splice(i, 1);
+                }
+            }
         };
         this.updatePeriod = function () {
             //if we have all the info we need then we can make a report
@@ -87117,6 +87128,7 @@ var SWListingReportController = /** @class */ (function () {
             _this.getPeriodColumns();
             _this.getPersistedReports();
         });
+        this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
     }
     return SWListingReportController;
 }());

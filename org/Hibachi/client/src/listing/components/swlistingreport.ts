@@ -46,9 +46,17 @@ class SWListingReportController {
             this.getPersistedReports();
             
         });
+        this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
     }
     
     public $onInit=()=>{
+    }
+    
+    public updateReportFromListing=(params)=>{
+        if(params.collectionConfig){
+            this.collectionConfig = params.collectionConfig;   
+            this.updatePeriod();
+        }
     }
     
     public saveReportCollection = (collectionName?)=>{
@@ -173,7 +181,7 @@ class SWListingReportController {
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
         
-        this.updatePeriod(false);
+        this.updatePeriod();
     }
     
     public clearPeriodColumn = (collectionData)=>{
@@ -186,7 +194,12 @@ class SWListingReportController {
     };
     
     public removeFilterGroupDates=(){
-        this.collectionConfig.filterGroups = [{filterGroup:[]}];
+        console.log(this.collectionConfig.filterGroups);
+        for(var i in this.collectionConfig.filterGroups[0].filterGroup){
+            if(this.collectionConfig.filterGroups[0].filterGroup[i].isHidden){
+                this.collectionConfig.filterGroups[0].filterGroup.splice(i,1);
+            }
+        }
     }
     
     public updatePeriod = ()=>{
