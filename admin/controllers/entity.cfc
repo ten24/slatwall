@@ -547,4 +547,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		renderOrRedirectSuccess( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
 	}
+	
+	public void function deleteImage(required struct rc){
+		if(structKeyExists(rc,"optionID") && !isNull(rc.optionID) && len(rc.optionID)){
+			getOptionService().removeDefaultImageFromOption(rc.optionID,rc.imageID);
+		}
+		genericDeleteMethod(entityName="image", rc=arguments.rc);
+	}
 }
