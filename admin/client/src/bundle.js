@@ -87004,6 +87004,12 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.startDate
                 && _this.endDate) {
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
+                for (var i in _this.reportCollectionConfig.columns) {
+                    var column = _this.reportCollectionConfig.columns[i];
+                    if (column.aggregate) {
+                        column.isMetric = true;
+                    }
+                }
                 _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                 _this.reportCollectionConfig.setReportFlag(true);
                 _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });

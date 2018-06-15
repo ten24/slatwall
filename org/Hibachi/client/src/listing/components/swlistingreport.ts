@@ -203,6 +203,12 @@ class SWListingReportController {
         ){
             
             this.reportCollectionConfig = this.getReportCollectionConfig();
+            for(var i in this.reportCollectionConfig.columns){
+                var column = this.reportCollectionConfig.columns[i];
+                if(column.aggregate){
+                    column.isMetric = true;
+                }
+            }
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
             this.reportCollectionConfig.setReportFlag(true);
             this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
