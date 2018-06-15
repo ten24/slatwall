@@ -263,11 +263,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     	return variables.subscriptionSkuSmartList;
     }
 
-	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
+	public array function getSkus(boolean sorted=false, boolean fetchOptions=false, string joinType="inner") {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
         }
-        return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
+        return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions, joinType=arguments.joinType);
     }
 
 	public any function getSkuByID(required string skuID) {

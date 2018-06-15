@@ -96,8 +96,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 
-	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false) {
-		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions);
+	public array function getProductSkus(required any product, required boolean sorted, boolean fetchOptions=false, string joinType="inner") {
+		var skus = getSkuDAO().getProductSkus(product=arguments.product, fetchOptions=arguments.fetchOptions, joinType=arguments.joinType);
 
 		if(arguments.sorted && arrayLen(skus) gt 1 && arrayLen(skus[1].getOptions())) {
 			var sortedSkuIDQuery = getSkuDAO().getSortedProductSkusID( productID = arguments.product.getProductID() );
