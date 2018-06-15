@@ -86878,16 +86878,20 @@ var SWListingReportController = /** @class */ (function () {
         };
         this.saveReportCollection = function (collectionName) {
             if (collectionName) {
+                _this.collectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
+                _this.selectedPeriodColumn.isPeriod = true;
+                _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
                 var serializedJSONData = {
-                    'collectionConfig': _this.reportCollectionConfig.collectionConfigString,
+                    'collectionID': _this.collectionConfig.collectionID || "",
+                    'collectionConfig': _this.collectionConfig.collectionConfigString,
                     'collectionName': collectionName,
-                    'collectionObject': _this.reportCollectionConfig.baseEntityName,
+                    'collectionObject': _this.collectionConfig.baseEntityName,
                     'accountOwner': {
                         'accountID': _this.$rootScope.slatwall.account.accountID
                     },
                     'reportFlag': 1
                 };
-                _this.$hibachi.saveEntity('Collection', _this.reportCollectionConfig.collectionID || "", {
+                _this.$hibachi.saveEntity('Collection', _this.collectionConfig.collectionID || "", {
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
                 }, 'save').then(function (data) {
@@ -86954,41 +86958,27 @@ var SWListingReportController = /** @class */ (function () {
             var reportCollectionConfig = _this.collectionConfig.clone();
             return reportCollectionConfig;
         };
-        /*public selectReport = (selectedReport)=>{
+        this.selectReport = function (selectedReport) {
             //populate inputs based on the collection
             var collectionData = angular.fromJson(selectedReport.collectionConfig);
-           
-            this.selectedPeriodInterval = {value:collectionData.periodInterval};
-            for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
+            collectionData.collectionID = selectedReport.collectionID;
+            _this.selectedPeriodInterval = { value: collectionData.periodInterval };
+            for (var i = collectionData.filterGroups[0].filterGroup.length - 1; i >= 0; i--) {
                 var filterGroup = collectionData.filterGroups[0].filterGroup[i];
-                
-                if(filterGroup.hidden){
-                    if(filterGroup.comparisonOperator == '>='){
-                        this.startDate = filterGroup.value;
-                    }else if(filterGroup.comparisonOperator == '<='){
-                        this.endDate = filterGroup.value;
+                if (filterGroup.hidden) {
+                    if (filterGroup.comparisonOperator == '>=') {
+                        _this.startDate = filterGroup.value;
                     }
-                    collectionData.filterGroups[0].filterGroup.splice(i,1);
-                    if(collectionData.filterGroups[0].filterGroup.length == 0){
-                        delete collectionData.filterGroups[0].filterGroup;
-                        delete collectionData.filterGroups[0].logicalOperator;
+                    else if (filterGroup.comparisonOperator == '<=') {
+                        _this.endDate = filterGroup.value;
                     }
                 }
             }
-            
-            this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
-            this.clearPeriodColumn(collectionData);
-            this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
-            //hacking around validate filter not dealing with cleaning up empty filtergroups
-            if(
-                !this.reportCollectionConfig.filterGroups[0].filterGroup[0].filterGroup.length
-            ){
-                delete this.reportCollectionConfig.filterGroups[0].filterGroup[0].filterGroup;
-                delete this.reportCollectionConfig.filterGroups[0].filterGroup[0].logicalOperator;
-            }
-            
-            this.updatePeriod();
-        }*/
+            _this.selectedPeriodColumn = _this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+            _this.clearPeriodColumn(collectionData);
+            _this.reportCollectionConfig = _this.collectionConfig.loadJson(angular.toJson(collectionData));
+            _this.updatePeriod(false);
+        };
         this.clearPeriodColumn = function (collectionData) {
             for (var i in collectionData.columns) {
                 var column = collectionData.columns[i];
@@ -86997,8 +86987,9 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
         };
-        this.updatePeriod = function () {
+        this.updatePeriod = function (updateFilters) {
             //if we have all the info we need then we can make a report
+            if (updateFilters === void 0) { updateFilters = true; }
             if (_this.selectedPeriodColumn
                 && _this.selectedPeriodInterval
                 && _this.startDate
@@ -87009,6 +87000,9 @@ var SWListingReportController = /** @class */ (function () {
                     if (column.aggregate) {
                         column.isMetric = true;
                     }
+                    else {
+                        column.isVisible = false;
+                    }
                 }
                 _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
                 _this.reportCollectionConfig.setReportFlag(true);
@@ -87017,9 +87011,11 @@ var SWListingReportController = /** @class */ (function () {
                 _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
                 _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                 _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
-                _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-                _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
-                _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
+                if (updateFilters) {
+                    _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                    _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
+                    _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
+                }
                 _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
                 _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
                 _this.reportCollectionConfig.getEntity().then(function (reportingData) {

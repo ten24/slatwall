@@ -53,10 +53,14 @@ class SWListingReportController {
     
     public saveReportCollection = (collectionName?)=>{
         if(collectionName){
+            this.collectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+            this.selectedPeriodColumn.isPeriod = true;
+            this.collectionConfig.columns.push(this.selectedPeriodColumn);
             var serializedJSONData={
-                'collectionConfig':this.reportCollectionConfig.collectionConfigString,
+                'collectionID':this.collectionConfig.collectionID || "",
+                'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionName':collectionName,
-                'collectionObject':this.reportCollectionConfig.baseEntityName,
+                'collectionObject':this.collectionConfig.baseEntityName,
                 'accountOwner':{
                     'accountID':this.$rootScope.slatwall.account.accountID
                 },
@@ -65,7 +69,7 @@ class SWListingReportController {
             
             this.$hibachi.saveEntity(
                 'Collection',
-                this.reportCollectionConfig.collectionID || "",
+                this.collectionConfig.collectionID || "",
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
@@ -147,10 +151,10 @@ class SWListingReportController {
         return reportCollectionConfig;
     }
     
-    /*public selectReport = (selectedReport)=>{
+    public selectReport = (selectedReport)=>{
         //populate inputs based on the collection
         var collectionData = angular.fromJson(selectedReport.collectionConfig);
-       
+        collectionData.collectionID = selectedReport.collectionID;
         this.selectedPeriodInterval = {value:collectionData.periodInterval};
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
@@ -161,27 +165,15 @@ class SWListingReportController {
                 }else if(filterGroup.comparisonOperator == '<='){
                     this.endDate = filterGroup.value;
                 }
-                collectionData.filterGroups[0].filterGroup.splice(i,1);
-                if(collectionData.filterGroups[0].filterGroup.length == 0){
-                    delete collectionData.filterGroups[0].filterGroup;
-                    delete collectionData.filterGroups[0].logicalOperator;
-                }
             }
         }
         
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
-        //hacking around validate filter not dealing with cleaning up empty filtergroups
-        if(
-            !this.reportCollectionConfig.filterGroups[0].filterGroup[0].filterGroup.length
-        ){
-            delete this.reportCollectionConfig.filterGroups[0].filterGroup[0].filterGroup;
-            delete this.reportCollectionConfig.filterGroups[0].filterGroup[0].logicalOperator;
-        }
         
-        this.updatePeriod();
-    }*/
+        this.updatePeriod(false);
+    }
     
     public clearPeriodColumn = (collectionData)=>{
         for(var i in collectionData.columns){
@@ -192,7 +184,7 @@ class SWListingReportController {
         }
     };
     
-    public updatePeriod = ()=>{
+    public updatePeriod = (updateFilters:boolean=true)=>{
         //if we have all the info we need then we can make a report
         
         if(
@@ -207,6 +199,8 @@ class SWListingReportController {
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate){
                     column.isMetric = true;
+                }else{
+                    column.isVisible = false;
                 }
             }
             this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
@@ -217,11 +211,11 @@ class SWListingReportController {
             
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-            
-            this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-            this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
-            this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
-            
+            if(updateFilters){
+                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+            }
             this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
             this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
             
