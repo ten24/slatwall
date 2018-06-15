@@ -151,6 +151,9 @@ component extends="HibachiService" output="false" accessors="true" {
 
 			//Attribute
 			attributeDisplayTemplate = {fieldType="select"},
+			attributeHTMLTitleString = {fieldType="text", defaultValue="${attributeName}"},
+			attributeMetaDescriptionString = {fieldType="textarea", defaultValue="${attributeName}"},
+			attributeMetaKeywordsString = {fieldType="textarea", defaultValue="${attributeName}"},
 
 			// Brand
 			brandDisplayTemplate = {fieldType="select"},
@@ -174,6 +177,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			//Category
 			categoryDisplayTemplate = {fieldType="select"},
+			categoryHTMLTitleString = {fieldType="text", defaultValue="${categoryName}"},
+			categoryMetaDescriptionString = {fieldType="textarea", defaultValue="${categoryName}"},
+			categoryMetaKeywordsString = {fieldType="textarea", defaultValue="${categoryName}"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue=""},
@@ -209,10 +215,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Global
 			globalInspectRestrictionDisplays={fieldType="yesno",defaultValue=0},
 			globalAllowCustomBranchUpdates={fieldType="yesno",defaultValue=0},
+			globalAllowThirdPartyShippingAccount={fieldType="yesno",defaultValue=0},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAPIDirtyRead = {fieldtype="yesno", defaultValue=1},
 			globalAPIPageShowLimit = {fieldtype="text", defaultValue=250},
+			globalAssetsImageBaseURL = {fieldType="text", defaultValue=''},
 			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
 			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
 			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
@@ -262,7 +270,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalS3SecretAccessKey = {fieldtype="password", encryptValue=true},
 			globalWhiteListedEmailDomains = {fieldtype="text"},
 			globalTestingEmailDomain = {fieldtype="text"},
-
+			globalQuotePriceFreezeExpiration = {fieldtype="text", defaultValue="90", validate={dataType="numeric", required=true}},
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
@@ -335,6 +344,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 
 			// Shipping Method Rate
+			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
+			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},
+			shippingMethodRateHandlingFeeType = {fieldType="select",defaultValue="amount"},
+			shippingMethodRateHandlingFeeAmount = {fieldType="text", formatType="currency",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateAdjustmentType = {fieldType="select", defaultValue="increasePercentage"},
 			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
 			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
@@ -560,6 +573,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
+			case "ShippingMethodRateHandlingFeeType" :
+				return [{name='Amount', value='amount'}, {name='Percentage', value='percentage'}];
 			case "shippingMethodRateAdjustmentType" :
 				return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
 			case "skuCurrency" :

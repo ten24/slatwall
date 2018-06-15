@@ -58,7 +58,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
+	property name="quotePriceExpiration" ormtype="timestamp";
+	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
+	property name="orderCanceledDateTime" ormtype="timestamp";
+	property name="orderNotes" ormtype="text";
+	
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
 	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
@@ -600,6 +605,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentChargeTotal() {
 		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
+				if(getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')){
+					fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getHandlingFee());
+				}
+				continue;
+			}
 			fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
 		return fulfillmentChargeTotal;
@@ -722,16 +733,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPayment() {
-		var returnOrderPayment = javaCast("null", "");
 		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
-				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
-					returnOrderPayment = orderPayment;
-				}
-			}
-		}
-		if(!isNull(returnOrderPayment)) {
-			return returnOrderPayment;
+			if(orderPayment.getDynamicAmountFlag()
+			   && orderPayment.getStatusCode() == 'opstActive'
+			   && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+				return orderPayment;
+			} 
 		}
 	}
 
@@ -1391,6 +1398,48 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ============== START: Overridden Implicet Getters ===================
+	
+	public boolean function getQuoteFlag(){
+		if(!structKeyExists(variables,'quoteFlag')){
+			variables.quoteFlag = false;
+		}
+		return variables.quoteFlag;
+	}
+	
+	public void function setQuoteFlag(boolean quoteFlag=false){
+		//if the quoteFlag was previously false and is being set to true then we should reset the quote price expiration
+		if(!getQuoteFlag() && arguments.quoteFlag){
+			setQuotePriceExpiration(generateQuotePriceExpiration());
+		}
+		variables.quoteFlag = arguments.quoteFlag;
+	}
+	
+	public any function generateQuotePriceExpiration(string datePart="d"){
+		var generatedQuotePriceExpiration = dateAdd(arguments.datePart,setting('globalQuotePriceFreezeExpiration'),now());
+		return generatedQuotePriceExpiration;
+	}
+
+	public any function getQuotePriceExpiration(){
+		if(!structKeyExists(variables,'quotePriceExpiration')){
+			//snap shot expiration by setting
+			variables.quotePriceExpiration = generateQuotePriceExpiration();
+		}
+		if(structKeyExists(variables,'quotePriceExpiration')){
+			return variables.quotePriceExpiration;
+		}
+	}
+	
+	public boolean function isQuotePriceExpired(){
+		var isQuotePriceExpired = now() > getQuotePriceExpiration();
+		
+		if(isQuotePriceExpired){
+			//if quote price is expired then it is no longer a quote and is instead an abandoned cart
+			structDelete(variables,'quoteFlag');
+			structDelete(variables,'quotePriceExpiration');
+		}
+		
+		return isQuotePriceExpired;
+	}
 
 	public any function getBillingAddress() {
 		if(structKeyExists(variables, "billingAddress")) {
@@ -1587,6 +1636,4 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
-
-	
 }

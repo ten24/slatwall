@@ -1,5 +1,6 @@
 component extends="framework.one" {
-	// ======= START: ENVIORNMENT CONFIGURATION =======
+	
+	// ======= START: ENVIRONMENT CONFIGURATION =======
 
 	// =============== configApplication
 
@@ -131,6 +132,10 @@ component extends="framework.one" {
 		}
 		return 'production';
 	}
+	
+	private struct function getFw1App() {
+    	return application[variables.framework.applicationKey];
+    }
 
 	// =============== configMappings
 
@@ -219,7 +224,7 @@ component extends="framework.one" {
 		fileWrite("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm", variables.preupdate.preUpdatesRun);
 	}
 	// ==================== END: PRE UPDATE SCRIPTS ======================
-	// =======  END: ENVIORNMENT CONFIGURATION  =======
+	// =======  END: ENVIRONMENT CONFIGURATION  =======
 	
 	public void function setupApplication() {
 		
@@ -245,13 +250,18 @@ component extends="framework.one" {
             }
         }
 	}
-
+	public string function getBaseURL() {
+		if(len(variables.framework.baseURL) && variables.framework.baseURL == '/Slatwall'){
+			return variables.framework.baseURL&'/';
+		}
+        return variables.framework.baseURL;
+    }
 
 	public any function bootstrap() {
 		
-		
-		setupGlobalRequest();
-
+		setupRequestDefaults();
+ 		createHibachiScope();
+		setupGlobalRequest(noredirect=true);
 		// Announce the applicatoinRequest event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationBootstrapRequestStart");
 
@@ -274,12 +284,12 @@ component extends="framework.one" {
 		super.onApplicationStart();
 	}
 
-	public void function setupGlobalRequest() {
+	public void function setupGlobalRequest(boolean noredirect=false) {
 		createHibachiScope();
 		var httpRequestData = GetHttpRequestData();
         getHibachiScope().setIsAwsInstance(variables.framework.isAwsInstance);
 		// Verify that the application is setup
-		verifyApplicationSetup();
+		verifyApplicationSetup(noredirect=arguments.noredirect);
 
 			if(!variables.framework.hibachi.isApplicationStart && variables.framework.hibachi.useServerInstanceCacheControl){
 			if(getHibachiScope().getService('hibachiCacheService').isServerInstanceCacheExpired(getHibachiScope().getServerInstanceIPAddress())){
@@ -886,7 +896,6 @@ component extends="framework.one" {
 				request.context.apiResponse.content["messages"] = request.context.messages;
 			}else{
 				for(var message in request.context.messages){
-					request.context.apiResponse.content["messages"];
 					arrayAppend(request.context.apiResponse.content["messages"],message);
 				}
 
@@ -1137,6 +1146,9 @@ component extends="framework.one" {
 
 	// @hint private helper method
 	public any function getHibachiScope() {
+		if(!structKeyExists(request,"#variables.framework.applicationKey#Scope")){
+			createHibachiScope();
+		}
 		return request["#variables.framework.applicationKey#Scope"];
 	}
 

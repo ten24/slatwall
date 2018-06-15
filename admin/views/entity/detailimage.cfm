@@ -86,6 +86,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.image#">
 			<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/image" />
 			<cfif not isNull(rc.image.getProduct())>
+				<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/skus" />
 				<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/options" />
 			</cfif>
 			<!--- Custom Attributes --->

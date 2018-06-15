@@ -55,6 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService("skuService").newSku();
 	}
 	
+
+	
 	/**
 	* @test
 	*/
@@ -465,6 +467,46 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		//@Suppress See other currencyCode types tests in getCurrencyDetailsTest()
 	}
+	
+	/**
+	* @test
+	*/
+	public void function getPriceByCurrencyCodeTest_withPriceGroup() {
+		var priceGroupData = {
+			priceGroupID="",
+			priceGroupName="testPriceGroup"
+		};
+		var priceGroup = createPersistedTestEntity('PriceGroup',priceGroupData);
+		
+		//Testing the default currencyCode in SKU
+		var skuData = {
+			skuID = "",
+			price = 100
+		};
+		var mockSku = createPersistedTestEntity('Sku', skuData);
+		
+		var skuPriceData = {
+			skuPriceID="",
+			minQuantity=5,
+			maxQuantity=10,
+			price="50",
+			currencyCode="USD",
+			sku={
+				skuID=mockSku.getSkuID()
+			},
+			priceGroup={
+				priceGroupID=priceGroup.getPriceGroupID()
+			}
+		};
+		var skuPrice = createPersistedTestEntity('SkuPrice',skuPriceData);
+		assert(!isNull(skuPrice.getPriceGroup()));
+		assert(!isNull(skuPrice.getSku()));
+		
+		var result = mockSku.getPriceByCurrencyCode('USD',7,[priceGroup]);
+		assertEquals(50, result);
+		
+		
+	}
 		
 	/**
 	* @test
@@ -567,69 +609,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(200, result);
 	}
 	
-	public void function getCurrentAssetValueTest(){
-		var productData = {
-			productID=""
-		};
-		var product = createPersistedTestEntity('Product',productData);
-		
-		var skuData = {
-			skuID="",
-			product={
-				productID=product.getProductID()
-			}
-		};
-		var sku = createPersistedTestEntity('Sku',skuData);
-		
-		var stockData = {
-			stockID="",
-			sku={
-				skuID=sku.getSkuID()
-			},
-			currencyCode="USD"
-		};
-		var stock = createPersistedTestEntity('Stock',stockData);
-		arrayAppend(sku.getStocks(),stock);
-		
-		var inventoryData = {
-			inventoryID="",
-			cost=25.00,
-			quantityIn=5,
-			stock={
-				stockID=stock.getStockID()
-			},
-			currencyCode="USD"
-		};
-		var inventory = createPersistedTestEntity('inventory',inventoryData);	
-		stock.addInventory(inventory);
-		//2nd set of data to product
-		
-		var stockData2 = {
-			stockID="",
-			sku={
-				skuID=sku.getSkuID()
-			},
-			currencyCode="USD"
-		};
-		var stock2 = createPersistedTestEntity('Stock',stockData2);
-		arrayAppend(sku.getStocks(),stock2);
-		
-		var inventoryData2 = {
-			inventoryID="",
-			cost=100.00,
-			quantityIn=7,
-			stock={
-				stockID=stock2.getStockID()
-			},
-			currencyCode="USD"
-		};
-		var inventory2 = createPersistedTestEntity('inventory',inventoryData2);	
-		stock2.addInventory(inventory2);
-		
-		assertEquals(sku.getQOH(),12,'(5+7)=12');		
-		assertEquals(sku.getAverageCost('USD'),68.75);
-		assertEquals(sku.getCurrentAssetValue("USD"),825);
-	}
+	
 }
 
 

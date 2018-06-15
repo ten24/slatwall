@@ -29,15 +29,15 @@
         <hr >
     </div>
     <!-- REPORT COLLECTIONS -->
-    <span class="input-group-btn s-action" ng-click="swListingSearch.toggleReportingCollection()"
-        >
+    <a class="input-group-btn s-action" ng-if="swListingSearch.swListingDisplay.reportAction" href="swListingSearch.swListingDisplay.reportAction"
+    >
         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
         >
             <i class="fa fa-book"></i>
         </button>
         
-    </span>
+    </a>
     <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">

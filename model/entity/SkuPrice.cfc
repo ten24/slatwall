@@ -90,6 +90,12 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
  		return true; 
  	} 
  	
+ 	public any function getPriceGroupOptions(){
+		var options = getPropertyOptions("priceGroup");
+		arrayAppend(options, {"name"=rbKey('define.none'), "value"=''});
+		return options;
+ 	}
+ 	
  	public string function getSimpleRepresentation() {
 		if(
 			!isNull(getSku()) 

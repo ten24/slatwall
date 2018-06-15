@@ -201,7 +201,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.orderPaymentOptions = [];
 			var previousOrderPayments = getSubscriptionUsage().getUniquePreviousSubscriptionOrderPayments();
 			for(var orderPayment in previousOrderPayments) {
-				arrayAppend(variables.orderPaymentOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
+				if(!orderPayment.getPaymentMethodType() == 'termPayment'){
+					arrayAppend(variables.orderPaymentOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
+				}
 			}
 		}
 		return variables.orderPaymentOptions;
@@ -218,6 +220,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return variables.accountPaymentMethodOptions;
+    }
+    
+    public array function getPaymentTermIDOptions(){
+    	if(!structKeyExists(variables, "paymentTermIDOptions")){
+    		variables.paymentTermIDOptions = [];
+    		
+    		var paymentTermCollection = getService('HibachiService').getPaymentTermCollectionList();
+    		paymentTermCollection.setDisplayProperties('paymentTermID|value,paymentTermName|name');
+    		variables.paymentTermIDOptions = paymentTermCollection.getRecords();
+    	}
+    	return variables.paymentTermIDOptions;
     }
 
 }

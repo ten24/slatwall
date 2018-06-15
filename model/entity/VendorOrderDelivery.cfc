@@ -66,6 +66,11 @@ component entityname="SlatwallVendorOrderDelivery" table="SwVendorOrderDelivery"
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	
+	public boolean function getLocationIsLeafNode(){
+		return  !getLocation().hasChildren();
+	}
 
 	// Non persistent properties
 	// ============ START: Non-Persistent Property Methods =================

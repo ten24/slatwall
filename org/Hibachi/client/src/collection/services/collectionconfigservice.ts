@@ -161,6 +161,10 @@ class CollectionConfig {
 
         this.baseEntityAlias = jsonCollection.baseEntityAlias;
         this.baseEntityName = jsonCollection.baseEntityName;
+        this.collection = this.$hibachi.getEntityExample(this.baseEntityName);
+        if(angular.isUndefined(this.baseEntityAlias)){
+            this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
+        }
         if(angular.isDefined(jsonCollection.filterGroups)){
             this.validateFilter(jsonCollection.filterGroups);
             this.filterGroups = jsonCollection.filterGroups;
@@ -283,9 +287,7 @@ class CollectionConfig {
         var _propertyIdentifier = '',
             propertyIdentifierParts = propertyIdentifier.split('.'),
             current_collection = this.collection;
-
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
-
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
@@ -634,15 +636,27 @@ class CollectionConfig {
         }
         return group;
     }
+    
+    public removeFilterGroupByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
+        var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias,filterGroupLogicalOperator);
+        if(filterGroupIndex != -1){
+            this.filterGroups[0].filterGroup.splice(filterGroupIndex,1);  
+        }
+    };
 
     public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
-        if(!this.filterGroups){
-            this.filterGroups = [{filterGroup:[]}];
+        try{
+            if(!this.filterGroups){
+                this.filterGroups = [{filterGroup:[]}];
+            }
+            if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
+                this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
+            }
+            return this.filterGroupAliasMap[filterGroupAlias];
+        }catch(e){
+            console.log('getFilterGroupIndexByFilterGroupAlias not found');
+            return -1;
         }
-        if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
-            this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
-        }
-        return this.filterGroupAliasMap[filterGroupAlias];
     };
 
     public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator?:string):number =>{
@@ -901,6 +915,7 @@ class CollectionConfig {
     };
 
     private validateFilter = (filter, currentGroup?)=>{
+        
         if(angular.isUndefined(currentGroup)){
             currentGroup = filter;
         }
@@ -917,6 +932,7 @@ class CollectionConfig {
                     && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)
                 ) 
             ){
+                
                 var index = currentGroup.indexOf(filter);
                 if(index > -1) {
                     this.notify('filterItemAction', {

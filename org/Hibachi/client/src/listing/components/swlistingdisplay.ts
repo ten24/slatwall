@@ -67,6 +67,7 @@ class SWListingDisplayController{
     public recordEditAction:string;
     public recordDeleteAction:string;
     public recordProcessButtonDisplayFlag:boolean;
+    public reportAction:string;
     public searching:boolean = false;
     public searchText;
 
@@ -76,7 +77,7 @@ class SWListingDisplayController{
     public showExport:boolean;
     public showPrintOptions:boolean; 
     public showSearch:boolean;
-    public showReport:boolean=false;
+    public showReport:boolean;
     public showSearchFilters = false;
     public showTopPagination:boolean;
     public showFilters:boolean;
@@ -125,8 +126,15 @@ class SWListingDisplayController{
             this.usingPersonalCollection=false;
         }
         
+        console.log('showReport',this.showReport);
+        
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
+        }
+        
+        
+        if(angular.isUndefined(this.showFilters)){
+           this.showFilters = true;
         }
 
         //promises to determine which set of logic will run
@@ -181,10 +189,6 @@ class SWListingDisplayController{
 
     }
     
-    public toggleReportingCollection = () =>{
-        this.showReport = !this.showReport;
-        
-    }
 
     public processCollection = () =>{
 
@@ -200,13 +204,11 @@ class SWListingDisplayController{
         }
 
         this.listingService.setListingState(this.tableID, this);
-        this.observerService.attach(this.toggleReportingCollection,'toggleReportingCollection',this.tableID);
 
         //this is performed after the listing state is set above to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
 
         this.hasCollectionPromise = angular.isDefined(this.collectionPromise);
-
         if(this.multiSlot){
             this.singleCollectionPromise.then(()=>{
                 this.multipleCollectionDeffered.reject();
@@ -229,9 +231,8 @@ class SWListingDisplayController{
                     }
 
                     this.paginator.getCollection = this.getCollection;
-
                     this.observerService.attach(this.getCollectionObserver,'getCollection',this.tableID);
-
+                    
                 }
             );
         }else if(this.multiSlot == false){
@@ -251,7 +252,7 @@ class SWListingDisplayController{
         }
         this.observerService.attach(this.getCollectionByPagination,'swPaginationAction',this.tableID);
     }
-
+    
     public getCollectionByPagination = (state) =>{
         if(state.type){
             switch(state.type){
@@ -294,7 +295,12 @@ class SWListingDisplayController{
     }
 
     private getCollectionObserver=(param)=> {
-        this.collectionConfig.loadJson(param.collectionConfig);
+        if(angular.isString(param.collectionConfig)){
+            this.collectionConfig.loadJson(param.collectionConfig);
+        }else{
+            this.collectionConfig = param.collectionConfig;
+        }
+        
         this.collectionData = undefined;
         this.$timeout(
             ()=>{
@@ -369,6 +375,9 @@ class SWListingDisplayController{
         }
         if(angular.isUndefined(this.showOrderBy)){
             this.showOrderBy = true;
+        }
+        if(angular.isUndefined(this.showReport)){
+            this.showReport = false;
         }
         if(angular.isUndefined(this.showPrintOptions)){
             this.showPrintOptions = false; 
@@ -484,6 +493,7 @@ class SWListingDisplayController{
         $(`.sw-${show}`).show();
     }
     public hasNumerical=()=>{
+        
         // Iterate over columns, find out if we have any numericals and return
         if(this.columns.length){
             return this.columns.reduce((totalNumericalCols, col) => {
@@ -685,6 +695,7 @@ class SWListingDisplay implements ng.IDirective{
             recordAddDisabled:"<?",
 
             recordProcessesConfig:"<?",
+            reportAction:"@?",
             /* record processes config is an array of actions. Example:
             [
             {
@@ -741,8 +752,10 @@ class SWListingDisplay implements ng.IDirective{
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showFilters:"<?",
             showSimpleListingControls:"<?",
             showPrintOptions:"<?",
+            showReport:"<?",
 
             /* Basic Action Caller Overrides*/
             createModal:"<?",

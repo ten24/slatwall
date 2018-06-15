@@ -487,6 +487,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			super.genericEditMethod(entityName="StockAdjustment", rc=arguments.rc);
 		}
 	}
+	
+	public void function saveShippingMethodRate(required struct rc){
+		if(structKeyExists(rc,'manualRateIntegrationIDs') &&  structKeyExists(rc,'shippingIntegrationMethods')){
+			getService("ShippingService").associateManualRateAndIntegrations(rc.shippingMethodRateID,rc.manualRateIntegrationIDs,rc.shippingIntegrationMethods);
+		}
+		super.genericSaveMethod('ShippingMethodRate',rc);
+	}
 
 	// Task
 	public void function saveTask(required struct rc){

@@ -116,6 +116,8 @@ Notes:
 					<!--- Term Payment Details --->
 					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
 						<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" property="purchaseOrderNumber" fieldname="newOrderPayment.purchaseOrderNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" property="paymentTerm" fieldname="newOrderPayment.paymentTerm.paymentTermID" valueoptions="#rc.processObject.getPaymentTermIDOptions()#" edit="#rc.edit#">
 						<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getAccount()#" property="termAccountBalance" edit="false">
 						<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getAccount()#" property="termAccountAvailableCredit" edit="false">
 					</hb:HibachiDisplayToggle>
@@ -137,7 +139,7 @@ Notes:
 					<!--- Billing Address --->
 					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 						<h5>#$.slatwall.rbKey('entity.orderPayment.billingAddress')#</h5>
-						<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewOrderPayment().getBillingAddress()#" filedNamePrefix="newOrderPayment.billingAddresss." edit="#rc.edit#" />
+						<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewOrderPayment().getBillingAddress()#" fieldNamePrefix="newOrderPayment.billingAddress." edit="#rc.edit#" />
 					</hb:HibachiDisplayToggle>
 					
 					<!--- Save Order Payment as Account Payment Method --->

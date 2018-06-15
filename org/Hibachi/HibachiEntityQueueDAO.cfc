@@ -49,9 +49,8 @@ Notes:
 component extends="HibachiDAO" persistent="false" accessors="true" output="false" {
 
 	public array function getEntityQueueByBaseObjectAndBaseIDAndEntityQueueTypeAndIntegrationAndEntityQueueData(required string baseObject, required string baseID, required string entityQueueType, any integration, string entityQueueData){
-		var hql = 'SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType 
+		var hql = 'SELECT eq FROM #getApplicationValue('applicationKey')#EntityQueue eq where eq.baseID=:baseID AND baseObject=:baseObject AND entityQueueType=:entityQueueType ';
 		var params = {baseID=arguments.baseID,baseObject=arguments.baseObject,entityQueueType=arguments.entityQueueType};
-				 ';
 		if(structKeyExists(arguments,'integration')){
 			hql &= ' AND integration=:integration ';
 			params.integration = arguments.integration;
@@ -65,6 +64,18 @@ component extends="HibachiDAO" persistent="false" accessors="true" output="false
 			hql,
 			params
 		);
+	}
+	
+	public void function insertEntityQueue(required string entityID, required string entityName, required string entityQueueType){
+		var queryService = new query();
+		var sql = "INSERT INTO SwEntityQueue (entityQueueID,entityQueueType,baseObject,baseID,createdDateTime,createdByAccountID,modifiedByAccountID,modifiedDateTime)
+			VALUES ('#createHibachiUUID()#','#arguments.entityQueueType#','#arguments.entityName#','#arguments.entityID#',:createdDateTime,'#getHibachiScope().getAccount().getAccountID()#',
+				'#getHibachiScope().getAccount().getAccountID()#',:modifiedDatetime
+			)
+		";
+		queryService.addParam(name='createdDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.addParam(name='modifiedDateTime',value='#now()#',CFSQLTYPE="CF_SQL_TIMESTAMP");
+		queryService.execute(sql=sql);
 	}
 	
 	public void function addEntityToQueue(required any entity,required entityQueueType){

@@ -160,6 +160,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getDao('productDao').getCurrentMargin(this.getProductID());
 	}
 	
+	public any function getSkuBundleCollectionList(){
+		var skuCollectionList = getService('skuService').getSkuCollectionList();
+		skuCollectionList.addFilter('assignedSkuBundles.sku.skuID',getDefaultSku().getSkuID());
+		return skuCollectionList;
+	}
+	
 
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
@@ -246,7 +252,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return count;
 	}
-
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
@@ -427,7 +432,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
-		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory,calculatedAssignedSkuCodeList,calculatedAssignedSkuIDList');
 		
 		var productImagesRecords = productImagesCollectionList.getRecords();
 		var productImagesRecordsCount = arrayLen(productImagesRecords);
@@ -440,6 +445,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.originalFilename = productImageData['imageFile'];
 				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
+				thisImage.assignedSkuCodeList = productImageData['calculatedAssignedSkuCodeList'];
+				thisImage.assignedSkuIDList = productImageData['calculatedAssignedSkuIDList'];
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();
 				thisImage.name = "";
@@ -547,9 +554,28 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSkusBySelectedOptions(string selectedOptions="") {
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
-
+	
+	public any function getAvailableSkuOptions(string selectedOptionIDList="", string locationID){
+		var query = getDAO('ProductDAO').getAvailableSkuOptions(
+			productID=this.getProductID(),
+			skuOptionIdArray=listToArray(arguments.selectedOptionIDLIst),
+			arguments=arguments);
+			
+		//We got a raw query object from the DAO method with one row for every available sku and its options, so some
+		//might be duplicated
+		
+		var availableOptionIDs = '';
+		for(var row in local.query){ //for every sku
+			for(var optionID in row.optionIDs){
+			//add options to the list
+				availableOptionIDs = listAppend(availableOptionIDs,optionID);
+			}
+		}
+		return listRemoveDuplicates(availableOptionIDs);
+	}
+	
 	public any function getSkuOptionDetails(string selectedOptionIDList="", boolean activeFlag=true, boolean publishedFlag=true, string locationID ) {
-
+		
 		// Setup return structure
 		var skuOptionDetails = {};
 
@@ -597,9 +623,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					selectedOptionGroupsByOptionID[ optionData['optionID'] ] = optionData['optionGroup_optionGroupID'];
 				}
 			}
-			if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
-				break;
-			}
+			// if(structCount(selectedOptionGroupsByOptionID) == listLen(arguments.selectedOptionIDList)) {
+			// 	break;
+			// }
 		}
 
 		var skuOptionIDArray = [];
@@ -907,19 +933,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.brandOptions;
 	}
 
-	public string function getNextSkuCodeCount() {
-		var highestResult = 0;
+	public string function getNextSkuCode() {
+	
+		return getService('HibachiUtilityService').createUniqueProperty(propertyValue=getProductCode(), entityName='#getApplicationValue("applicationKey")#Sku', propertyName='skuCode', requiresCount=true );
 
-		for(var sku in getSkus()) {
-			if(!isNull(sku.getSkuCode())) {
-				var thisCount = listLast(sku.getSkuCode(),"-");
-				if(isNumeric(thisCount) && thisCount > highestResult) {
-					highestResult = thisCount;
-				}
-			}
-		}
-
-		return highestResult+1;
 	}
 
 	public string function getTitle() {

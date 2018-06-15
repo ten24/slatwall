@@ -60,6 +60,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
 		<swa:SlatwallSetting settingName="globalAuditCommitMode" />
 		<swa:SlatwallSetting settingName="globalAssetsImageFolderPath" />
+		<swa:SlatwallSetting settingName="globalAssetsImageBaseURL" />
 		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
 		<swa:SlatwallSetting settingName="globalMissingImagePath" />
 		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
@@ -78,6 +79,6 @@ Notes:
 		<swa:SlatwallSetting settingName="globalCopyCartToNewSessionOnLogout" />
         <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
         <swa:SlatwallSetting settingName="globalMaximumFulfillmentsPerOrder" />
+        <swa:SlatwallSetting settingName="globalAllowThirdPartyShippingAccount" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
-

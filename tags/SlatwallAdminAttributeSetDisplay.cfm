@@ -115,6 +115,15 @@ Notes:
 				<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
 			</cfif>
 		</cfif>
+		
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'typeSelect' and len(fdAttributes.value)>
+			<cfset typeObject="#attributes.hibachiScope.getService('TypeService').getType(fdAttributes.value)#" />
+			<cfif !isNull(typeObject)>
+				<cfset fdAttributes.valueLink = "?slatAction=entity.detailtype&typeID=#fdAttributes.value#" />
+				<cfset fdAttributes.value= typeObject.getTypeName() />
+				
+			</cfif>
+		</cfif>
 
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
@@ -124,7 +133,7 @@ Notes:
 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 			</cfif>
 			<cfif structKeyExists(fdAttributes, 'valueLink') AND left(fdAttributes.valueLink, 5) EQ 's3://'>
-				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromS3(fdAttributes.valueLink)#" />
+ 				<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getSignedS3URL(fdAttributes.valueLink)#" />
 			</cfif>
 
 

@@ -245,6 +245,11 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function authenticateCollectionPropertyIdentifierCrudByAccount(required crudType, required any collection, required string propertyIdentifier, required any account){
+		// Check if the user is a super admin, if true no need to worry about security
+		if( arguments.account.getSuperUserFlag() ) {
+			return true;
+		}
+
 		var cacheKey = "authenticateCollectionPropertyIdentifier_" & hash("#arguments.crudType##arguments.collection.getCollectionConfigStruct()['baseEntityName']##arguments.propertyIdentifier##arguments.account.getPermissionGroupCacheKey()#",'md5');;
 		if(!getService('HibachiCacheService').hasCachedValue(cacheKey)){
 			var propertyIdentifierWithoutAlias = getService('hibachiCollectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);

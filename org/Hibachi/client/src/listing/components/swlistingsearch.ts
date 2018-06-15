@@ -98,13 +98,6 @@ class SWListingSearchController {
         window.location.reload();
     }
     
-    public toggleReportingCollection=()=>{
-        this.observerService.notifyById(
-            'toggleReportingCollection',
-            this.swListingControls.swListingDisplay.tableID,
-            {}
-        );
-    }
 
     public savePersonalCollection=(collectionName?)=>{
         if(this.localStorageService.hasItem('selectedPersonalCollection') && this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()] && (angular.isUndefined(this.personalCollectionIdentifier) || (angular.isDefined(this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription']) && this.localStorageService.getItem('selectedPersonalCollection')[this.swListingDisplay.collectionConfig.baseEntityName.toLowerCase()]['collectionDescription'] == this.personalCollectionIdentifier))){

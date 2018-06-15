@@ -190,9 +190,10 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	
 	public numeric function getQuantityDelivered() {
 		var quantityDelivered = 0;
-
-		for( var i=1; i<=arrayLen(getVendorOrderDeliveryItems()); i++){
-			quantityDelivered += getVendorOrderDeliveryItems()[1].getQuantity();
+		var vendorOrderDeliveryItems = getVendorOrderDeliveryItems();
+		
+		for( var i=1; i<=arrayLen(vendorOrderDeliveryItems); i++){
+			quantityDelivered += vendorOrderDeliveryItems[i].getQuantity();
 		}
 
 		return quantityDelivered;

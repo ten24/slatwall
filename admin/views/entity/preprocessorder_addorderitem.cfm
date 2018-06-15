@@ -283,10 +283,19 @@ Notes:
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
-
+										<cfset fieldAttributes = "ng-model=""shippingAccountAddressID"" ng-init=""shippingAccountAddressID = '#defaultValue#'""" />
 										<!--- Account Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
-									</cfif>
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" fieldAttributes="#fieldAttributes#"  />
+											
+										</cfif>
+										<!---Existing Addresses--->
+										<cfloop array="#rc.processObject.getShippingAccountAddresses()#" index="accountAddress">
+											<span ng-if="shippingAccountAddressID == '#accountAddress.getAccountAddressID()#'">
+												<!--- Address Display --->
+												<swa:SlatwallAdminAddressDisplay address="#accountAddress.getAddress()#" fieldNamePrefix="shippingAddress." />
+											</span>
+										</cfloop>
+										<span ng-if="shippingAccountAddressID == ''">
 
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
@@ -305,11 +314,11 @@ Notes:
 										</cfif>
 
 										</hb:HibachiDisplayToggle>
-
+										
 									</hb:HibachiDisplayToggle>
-
-
-
+									<cfif $.slatwall.setting('globalAllowThirdPartyShippingAccount')>
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="thirdPartyShippingAccountIdentifier" edit="#rc.edit#">
+									</cfif>
 								</hb:HibachiDisplayToggle>
 							<cfelse>
 								<!--- Order Return --->

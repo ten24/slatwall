@@ -20,18 +20,22 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			&& !listFind('ShortReference,Session,PermissionGroup,Permission,Integration',getClassName())
 			&& !getHibachiScope().getAccount().getSuperUserFlag()
 		){
-			var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
-			var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
-			var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
-			entityCollectionList.setDisplayProperties(primaryIDName);
-			entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
-			entityCollectionList.setCheckDORPermissions(true);
+			try{
+				var entityCollectionList = getService('HibachiCollectionService').invokeMethod('get#this.getClassName()#CollectionList');
+				var entityService = getService('HibachiService').getServiceByEntityName( entityName=getClassName() );
+				var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
+				entityCollectionList.setDisplayProperties(primaryIDName);
+				entityCollectionList.addFilter(primaryIDName,getPrimaryIDValue());
+				entityCollectionList.setCheckDORPermissions(true);
 
-			var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
-			//if the collection returns a record then 
-			if(!entityCollectionRecordsCount){
-				throwNoAccess();				
-			}
+				var entityCollectionRecordsCount = entityCollectionList.getRecordsCount();
+				//if the collection returns a record then 
+				if(!entityCollectionRecordsCount){
+					throwNoAccess();				
+				}
+			}catch(any e){
+				writedump(var=e);abort;
+ 			}
 		}
 	}
 	
@@ -1197,10 +1201,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return defaultProperties;
 	}
 
+	public void function preDelete(any entity){
+		// Loop over all properties
+        for(var property in getProperties()) {
+            if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+                getHibachiScope().addModifiedEntity(variables[ property.name ]);
+            }
+        }
+	}
 
 	/*
-	public void function preDelete(any entity){
-	}
 
 	public void function preLoad(any entity){
 	}

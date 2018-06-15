@@ -105,7 +105,7 @@ component extends="HibachiService" accessors="true" {
 
 			var newSku = getSkuService().newSku();
 			newSku.setProduct( arguments.processObject.getProduct() );
-			newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+			newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
 			newSku.setSkuName( arguments.processObject.getSkuName() );
 			newSku.setPrice( arguments.processObject.getPrice() );
 			newSku.setEventStartDateTime( arguments.startDateTime );
@@ -176,7 +176,7 @@ component extends="HibachiService" accessors="true" {
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
 				var newSku = getSkuService().newSku();
 				newSku.setProduct( arguments.processObject.getProduct() );
-				newSku.setSkuCode( newSku.getProduct().getProductCode() & "-#newSku.getProduct().getNextSkuCodeCount()#");
+				newSku.setSkuCode( newSku.getProduct().getNextSkuCode());
 				newSku.setSkuName( arguments.processObject.getSkuName() );
 				newSku.setPrice( arguments.processObject.getPrice() );
 				newSku.setEventStartDateTime( createODBCDateTime(arguments.startDateTime) );
@@ -562,7 +562,7 @@ component extends="HibachiService" accessors="true" {
 	
 					// Set up new bundle data
 					var newBundleData = {
-						skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
+						skuCode = product.getNextSkuCode(),
 						price = 0,
 						skus = skus
 					};
@@ -685,7 +685,7 @@ component extends="HibachiService" accessors="true" {
 		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
 			newSku.setListPrice( arguments.processObject.getListPrice() );
 		}
-		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");
+		newSku.setSkuCode( arguments.product.getNextSkuCode());
 		newSku.setSubscriptionTerm( newSubscriptionTerm );
 		for(var b=1; b <= listLen( arguments.processObject.getSubscriptionBenefits() ); b++) {
 			newSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
@@ -845,6 +845,8 @@ component extends="HibachiService" accessors="true" {
 							}
 						}
 					}
+					
+					
 				}
 
 			// If no options were passed in we will just create a single sku
@@ -925,9 +927,16 @@ component extends="HibachiService" accessors="true" {
 
 	public any function processProduct_deleteDefaultImage(required any product, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
-			if(fileExists(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#')) {
-				fileDelete(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#');
+			var imageBasePath = getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/';
+
+			if(getHibachiUtilityService().isS3Path(imageBasePath)){
+				imageBasePath = getHibachiUtilityService().formatS3Path(imageBasePath);
 			}
+
+			if(fileExists(imageBasePath&arguments.data.imageFile)) {
+				fileDelete(imageBasePath&arguments.data.imageFile);
+			}
+			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
 		}
 
 		return arguments.product;
@@ -1026,6 +1035,11 @@ component extends="HibachiService" accessors="true" {
 			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
 			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
+
+			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
+				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
+			}
+
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
 			// If the directory where this file is going doesn't exists, then create it
@@ -1039,7 +1053,11 @@ component extends="HibachiService" accessors="true" {
  			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
+ 				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
  				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
+ 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
+ 				}
  			}
 
 		} catch(any e) {

@@ -66,6 +66,7 @@ Notes:
 							  recorddetailaction="admin:entity.detailcyclecountbatch">
 	
 		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchDate" />
+		<hb:HibachiListingColumn propertyidentifier="cycleCountBatchStatusType.typeName" title="Batch Status" />
 		<hb:HibachiListingColumn propertyidentifier="physical.physicalStatusType.typeName" title="Physical Status" />
 	</hb:HibachiListingDisplay>
 

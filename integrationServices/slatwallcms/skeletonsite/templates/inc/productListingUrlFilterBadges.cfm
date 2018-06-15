@@ -19,6 +19,10 @@
 		<!--- let's split them, since we want one badge for each value ---->
 		<cfset local.values = listToArray(local.queryValuesSeparatedWithCommas) />
 		<cfloop array="#local.values#" index="local.value">
+			
+			<!---- let's create a unique id to use in the <a> tag and keep track of it---->
+			<cfset local.badgeID = rereplace(createUUID(),'-','','all') />
+			
 			<!---- save unformatted value so we can use it to remove the filter from the url later ----> 
 			<cfset local.unformattedValue = local.value />
 			
@@ -36,22 +40,23 @@
 					<cfset local.groupOfNumbers[2] = dollarFormat(local.groupOfNumbers[2]) />
 					<cfset local.value = arrayToList(local.groupOfNumbers,' to ') />
 				</cfif>
-			<!---- in the case of a many-to-many, value will be an ID. Let's find the entity 
-			and get its simple representation instead ---->
+			<!---- in the case of a many-to-many, value will be an ID. 
+			Let's capture the name from the checkbox ---->
 			<cfelseif isValid("regex", local.value, "^[a-f0-9]{32}$")>
-				  	<cfset local.propertyIdentifierList = listGetAt(local.queryParam,2,':') />
-					<cfset local.propertyIdentifier = listLast(local.propertyIdentifierList,'.') />
-					<cfset local.entityName = replace(local.propertyIdentifier,'ID','') />
-					<cfset local.currentEntity = $.slatwall.getEntity(local.entityName,value) />
-					<cfif NOT isNull(local.currentEntity)>
-						<cfset local.value = local.currentEntity.getSimpleRepresentation() />
-					<cfelse>
-					<!----- Undesired value, let's just quit here ---->
-					<cfcontinue>
-					</cfif>
+			<script>
+				//we'll only do this after DOM is rendered
+				$(document).ready(function() {
+					//the input checkbox in tags/tagtemplates/filterCountDisplay.cfm has a data-identifer attribute as the id
+	    			var optionName = $('input[data-identifier="#local.value#"]').data('option-name');
+					//let's set the badge's text to the same from the label. The <a> badge ID is set below
+					$('###local.badgeID#-badge').text(optionName);
+				});
+			</script>
+			<!--- let's make this input empty, because it'll display for a second before the whole DOM renders ---->
+			<cfset local.value = '' />
 			</cfif>
 			<!--- function removes existing query param if you pass it in --->
-			<a href="#$.slatwall.getService('hibachiCollectionService').buildURL( '#local.queryParam#=#local.unformattedValue#' )#" class="badge badge-secondary"> #$.slatwall.getService('hibachiUtilityService').hibachiHTMLEditFormat(local.value)# &times;</a>
+			<a id="#local.badgeID#-badge" href="#$.slatwall.getService('hibachiCollectionService').buildURL( '#local.queryParam#=#local.unformattedValue#' )#" class="badge badge-secondary"> #$.slatwall.getService('hibachiUtilityService').hibachiHTMLEditFormat(local.value)# &times;</a>
 		</cfloop>
 	  	</cfif>
 </cfloop>

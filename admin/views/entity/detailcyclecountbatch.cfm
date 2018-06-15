@@ -63,7 +63,7 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.cyclecountbatch#">
 			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/cycleCountBatchItems" open="true" text="#$.slatwall.rbKey('entity.CycleCountBatchItem_plural')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/cyclecountbatchtabs/cyclecountbatchitems" open="true" text="#$.slatwall.rbKey('entity.CycleCountBatchItem_plural')#" showOnCreateFlag=true />
 
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.cyclecountbatch#" />

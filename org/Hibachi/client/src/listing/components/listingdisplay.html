@@ -1,7 +1,8 @@
 <!-- Reporting Display Begin -->
-<span ng-if="swListingDisplay.showReport">
+<span ng-if="swListingDisplay.showReport && swListingDisplay.tableID">
     <sw-listing-report
         collection-config="swListingDisplay.collectionConfig"
+        table-Id="{{swListingDisplay.tableID}}"
     >
     </sw-listing-report>
 </span>
@@ -29,6 +30,7 @@
                     data-show-filters="swListingDisplay.showFilters"
                     data-show-export="swListingDisplay.showExport"
                     data-show-toggle-search="swListingDisplay.showSearch"
+                    data-show-toggle-filters="swListingDisplay.showFilters"
                     data-show-print-options="swListingDisplay.showPrintOptions"
                     data-show-toggle-display-options="swListingDisplay.showToggleDisplayOptions"
                     data-simple="swListingDisplay.showSimpleListingControls"
