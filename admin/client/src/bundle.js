@@ -86882,7 +86882,6 @@ var SWListingReportController = /** @class */ (function () {
                 _this.selectedPeriodColumn.isPeriod = true;
                 _this.collectionConfig.columns.push(_this.selectedPeriodColumn);
                 var serializedJSONData = {
-                    'collectionID': _this.collectionConfig.collectionID || "",
                     'collectionConfig': _this.collectionConfig.collectionConfigString,
                     'collectionName': collectionName,
                     'collectionObject': _this.collectionConfig.baseEntityName,
@@ -86891,7 +86890,7 @@ var SWListingReportController = /** @class */ (function () {
                     },
                     'reportFlag': 1
                 };
-                _this.$hibachi.saveEntity('Collection', _this.collectionConfig.collectionID || "", {
+                _this.$hibachi.saveEntity('Collection', _this.selectedCollectionID || "", {
                     'serializedJSONData': angular.toJson(serializedJSONData),
                     'propertyIdentifiersList': 'collectionID,collectionName,collectionObject,collectionConfig'
                 }, 'save').then(function (data) {
@@ -86902,6 +86901,7 @@ var SWListingReportController = /** @class */ (function () {
                         collectionName: data.data.collectionName,
                         collectionConfig: data.data.collectionConfig
                     };
+                    _this.selectedCollectionID = data.data.collectionID;
                     _this.collectionNameSaveIsOpen = false;
                 });
                 return;
@@ -86961,7 +86961,8 @@ var SWListingReportController = /** @class */ (function () {
         this.selectReport = function (selectedReport) {
             //populate inputs based on the collection
             var collectionData = angular.fromJson(selectedReport.collectionConfig);
-            collectionData.collectionID = selectedReport.collectionID;
+            _this.selectedCollectionID = selectedReport.collectionID;
+            _this.collectionName = selectedReport.collectionName;
             _this.selectedPeriodInterval = { value: collectionData.periodInterval };
             for (var i = collectionData.filterGroups[0].filterGroup.length - 1; i >= 0; i--) {
                 var filterGroup = collectionData.filterGroups[0].filterGroup[i];

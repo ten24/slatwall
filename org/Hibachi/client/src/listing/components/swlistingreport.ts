@@ -57,7 +57,6 @@ class SWListingReportController {
             this.selectedPeriodColumn.isPeriod = true;
             this.collectionConfig.columns.push(this.selectedPeriodColumn);
             var serializedJSONData={
-                'collectionID':this.collectionConfig.collectionID || "",
                 'collectionConfig':this.collectionConfig.collectionConfigString,
                 'collectionName':collectionName,
                 'collectionObject':this.collectionConfig.baseEntityName,
@@ -69,7 +68,7 @@ class SWListingReportController {
             
             this.$hibachi.saveEntity(
                 'Collection',
-                this.collectionConfig.collectionID || "",
+                this.selectedCollectionID || "",
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionConfig'
@@ -83,7 +82,7 @@ class SWListingReportController {
                     collectionName:data.data.collectionName,
                     collectionConfig:data.data.collectionConfig
                 };
-                
+                this.selectedCollectionID = data.data.collectionID;
                 this.collectionNameSaveIsOpen = false;
             });
             return;
@@ -154,7 +153,9 @@ class SWListingReportController {
     public selectReport = (selectedReport)=>{
         //populate inputs based on the collection
         var collectionData = angular.fromJson(selectedReport.collectionConfig);
-        collectionData.collectionID = selectedReport.collectionID;
+        this.selectedCollectionID = selectedReport.collectionID;
+        this.collectionName=selectedReport.collectionName;
+        
         this.selectedPeriodInterval = {value:collectionData.periodInterval};
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
