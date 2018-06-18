@@ -170,12 +170,18 @@ class SWListingReportController {
         for(var i=collectionData.filterGroups[0].filterGroup.length-1;i>=0;i--){
             var filterGroup = collectionData.filterGroups[0].filterGroup[i];
             
-            if(filterGroup.hidden){
-                if(filterGroup.comparisonOperator == '>='){
-                    this.startDate = filterGroup.value;
-                }else if(filterGroup.comparisonOperator == '<='){
-                    this.endDate = filterGroup.value;
+            if(filterGroup.filterGroupAlias && filterGroup.filterGroupAlias == 'dates'){
+                var datesFilterGroup = filterGroup;
+                for(var j in datesFilterGroup.filterGroup){
+                    var filter = datesFilterGroup.filterGroup[j];
+                    console.log('filter',filter);
+                    if(filter.comparisonOperator == '>='){
+                        this.startDate = filter.value;
+                    }else if(filter.comparisonOperator == '<='){
+                        this.endDate = filter.value;
+                    }
                 }
+                
             }
         }
         
