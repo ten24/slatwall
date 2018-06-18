@@ -147,7 +147,8 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         CartService,
         OrderService,
         AccountService,
-        SkuService
+        SkuService,
+        OrderPaymentService
     ],  
     imports: [
         AlertModule,
@@ -295,7 +296,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('requestService',downgradeInjectable(RequestService))
 .service('orderService',downgradeInjectable(OrderService))
 .service('accountService',downgradeInjectable(AccountService))
-.service('orderPaymentService',OrderPaymentService)
+.service('orderPaymentService',downgradeInjectable(OrderPaymentService))
 .service('cartService',downgradeInjectable(CartService))
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
 .service('entityService',downgradeInjectable(EntityService))
