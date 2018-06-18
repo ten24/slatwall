@@ -192,6 +192,13 @@
 					attributeKeyLocation = listFindNoCase($.event('path'), $.slatwall.setting('globalURLKeyAttribute'), "/");
 					if(attributeKeyLocation < listLen($.event('path'),"/")) {
 						$.slatwall.setRouteEntity("attribute", $.slatwall.getService("attributeService").getAttributeByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 1, "/"), true) );
+						if(len(listGetAt($.event('path'), attributeKeyLocation + 2, "/"))){
+							if(!isNull($.slatwall.getService("attributeService").getAttributeOptionByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 2, "/")))){
+								$.slatwall.setRouteEntity("attributeOption", $.slatwall.getService("attributeService").getAttributeOptionByURLTitle(listGetAt($.event('path'), attributeKeyLocation + 2, "/"), true) );
+							} else {
+								$.slatwall.setRouteEntity("attributeOption", $.slatwall.getService("attributeService").getAttributeOptionByAttributeOptionValue(listGetAt($.event('path'), attributeKeyLocation + 2, "/"), true) );
+							}
+						}
 					}
 				}
 				
