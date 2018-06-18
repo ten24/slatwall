@@ -655,9 +655,9 @@ class CollectionConfig {
             }
         }
         var newFilterGroup = {"filterGroup": []};
-        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0 && this.filterGroups[0].filterGroup.length > 1){
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0 && this.filterGroups[0].filterGroup.length > 0){
             newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
-        }else if (this.filterGroups[0].filterGroup.length > 1){
+        }else if (this.filterGroups[0].filterGroup.length > 0){
             newFilterGroup["logicalOperator"] = "AND";
         }
         newFilterGroup['filterGroupAlias'] = filterGroupAlias;

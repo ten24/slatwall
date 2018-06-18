@@ -72596,10 +72596,10 @@ var CollectionConfig = /** @class */ (function () {
                 }
             }
             var newFilterGroup = { "filterGroup": [] };
-            if (angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0 && _this.filterGroups[0].filterGroup.length > 1) {
+            if (angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0 && _this.filterGroups[0].filterGroup.length > 0) {
                 newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
             }
-            else if (_this.filterGroups[0].filterGroup.length > 1) {
+            else if (_this.filterGroups[0].filterGroup.length > 0) {
                 newFilterGroup["logicalOperator"] = "AND";
             }
             newFilterGroup['filterGroupAlias'] = filterGroupAlias;
