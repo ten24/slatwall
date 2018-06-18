@@ -84,6 +84,7 @@ Notes:
 			</tr>
 		</cfif>
 		</tbody>
-	</table>	
+	</table>
+	<hb:HibachiActionCaller action="admin:entity.exportPhysical" queryString="physicalID=#rc.physical.getPhysicalID()#" type="link" class="btn btn-default" icon="export" modal="false" />
 </cfoutput>
 
