@@ -31,6 +31,7 @@ import {UpgradeModule, downgradeInjectable} from '@angular/upgrade/static';
 	providers : [
 		ScheduleService,
 		WorkflowConditionService
+
 	],
 	imports : [
 		CommonModule,
