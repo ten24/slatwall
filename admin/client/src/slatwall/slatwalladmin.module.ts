@@ -103,6 +103,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 .config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
      ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,slatwallPathBuilder,appConfig) =>
   {
+      console.log('test');
       //configure partials path properties
      slatwallPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
      slatwallPathBuilder.setBasePartialsPath('/admin/client/src/');

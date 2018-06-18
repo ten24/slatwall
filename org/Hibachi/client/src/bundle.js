@@ -221,9 +221,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_observable_merge___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_observable_merge__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_operator_share__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_operator_share___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_operator_share__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Subject__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Subject__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_Subject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_Subject__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_Subscription__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_Subscription__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_Subscription___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_Subscription__);
 /**
  * @license Angular v5.2.10
@@ -6794,7 +6794,7 @@ var SystemJsNgModuleLoader = /** @class */ (function () {
         if (exportName === undefined) {
             exportName = 'default';
         }
-        return __webpack_require__(36)(module)
+        return __webpack_require__(37)(module)
             .then(function (module) { return module[exportName]; })
             .then(function (type) { return checkNotEmpty(type, module, exportName); })
             .then(function (type) { return _this._compiler.compileModuleAsync(type); });
@@ -6814,7 +6814,7 @@ var SystemJsNgModuleLoader = /** @class */ (function () {
             exportName = 'default';
             factoryClassSuffix = '';
         }
-        return __webpack_require__(36)(this._config.factoryPathPrefix + module + this._config.factoryPathSuffix)
+        return __webpack_require__(37)(this._config.factoryPathPrefix + module + this._config.factoryPathSuffix)
             .then(function (module) { return module[exportName + factoryClassSuffix]; })
             .then(function (factory) { return checkNotEmpty(factory, module, exportName); });
     };
@@ -19563,7 +19563,7 @@ function transition$$1(stateChangeExpr, steps) {
 
 //# sourceMappingURL=core.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(13)))
 
 /***/ }),
 /* 1 */
@@ -26584,9 +26584,9 @@ var publicservice_1 = __webpack_require__(79);
 var accountservice_1 = __webpack_require__(80);
 var cartservice_1 = __webpack_require__(93);
 var draggableservice_1 = __webpack_require__(94);
-var utilityservice_1 = __webpack_require__(11);
+var utilityservice_1 = __webpack_require__(9);
 var selectionservice_1 = __webpack_require__(95);
-var observerservice_1 = __webpack_require__(16);
+var observerservice_1 = __webpack_require__(8);
 var orderservice_1 = __webpack_require__(96);
 var orderpaymentservice_1 = __webpack_require__(97);
 var formservice_1 = __webpack_require__(43);
@@ -26595,9 +26595,9 @@ var expandableservice_1 = __webpack_require__(99);
 var metadataservice_1 = __webpack_require__(100);
 var rbkeyservice_1 = __webpack_require__(44);
 var typeaheadservice_1 = __webpack_require__(101);
-var hibachiservice_1 = __webpack_require__(39);
+var hibachiservice_1 = __webpack_require__(26);
 var historyservice_1 = __webpack_require__(42);
-var localstorageservice_1 = __webpack_require__(37);
+var localstorageservice_1 = __webpack_require__(38);
 var hibachiservicedecorator_1 = __webpack_require__(118);
 var hibachiscope_1 = __webpack_require__(119);
 var requestservice_1 = __webpack_require__(40);
@@ -26655,9 +26655,9 @@ var swprocesscaller_1 = __webpack_require__(168);
 var swsortable_1 = __webpack_require__(169);
 var sworderbycontrols_1 = __webpack_require__(170);
 //modules
-var alert_module_1 = __webpack_require__(8);
+var alert_module_1 = __webpack_require__(10);
 var dialog_module_1 = __webpack_require__(17);
-var alert_module_2 = __webpack_require__(8);
+var alert_module_2 = __webpack_require__(10);
 var dialog_module_2 = __webpack_require__(17);
 var core_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(2);
@@ -26681,10 +26681,13 @@ var CoreModule = /** @class */ (function () {
                 metadataservice_1.MetaDataService,
                 observerservice_1.ObserverService,
                 formservice_1.FormService,
+                selectionservice_1.SelectionService,
                 rbkeyservice_1.RbKeyService,
                 requestservice_1.RequestService,
                 hibachiscope_1.HibachiScope,
-                hibachiservice_1.$Hibachi
+                hibachiservice_1.$Hibachi,
+                typeaheadservice_1.TypeaheadService,
+                entityservice_1.EntityService
             ],
             imports: [
                 alert_module_2.AlertModule,
@@ -26803,7 +26806,7 @@ var coremodule = angular.module('hibachi.core', [
     .service('cacheService', static_1.downgradeInjectable(cacheservice_1.CacheService))
     .service('publicService', publicservice_1.PublicService)
     .service('utilityService', static_1.downgradeInjectable(utilityservice_1.UtilityService))
-    .service('selectionService', selectionservice_1.SelectionService)
+    .service('selectionService', static_1.downgradeInjectable(selectionservice_1.SelectionService))
     .service('observerService', static_1.downgradeInjectable(observerservice_1.ObserverService))
     .service('draggableService', static_1.downgradeInjectable(draggableservice_1.DraggableService))
     .service('expandableService', static_1.downgradeInjectable(expandableservice_1.ExpandableService))
@@ -26812,7 +26815,7 @@ var coremodule = angular.module('hibachi.core', [
     .service('historyService', static_1.downgradeInjectable(historyservice_1.HistoryService))
     .service('metadataService', static_1.downgradeInjectable(metadataservice_1.MetaDataService))
     .service('rbkeyService', static_1.downgradeInjectable(rbkeyservice_1.RbKeyService))
-    .service('typeaheadService', typeaheadservice_1.TypeaheadService)
+    .service('typeaheadService', static_1.downgradeInjectable(typeaheadservice_1.TypeaheadService))
     .service('$hibachi', static_1.downgradeInjectable(hibachiservice_1.$Hibachi))
     .decorator('$hibachi', hibachiservicedecorator_1.HibachiServiceDecorator)
     .service('hibachiInterceptor', hibachiinterceptor_1.HibachiInterceptor.Factory())
@@ -26826,7 +26829,7 @@ var coremodule = angular.module('hibachi.core', [
     .service('orderPaymentService', orderpaymentservice_1.OrderPaymentService)
     .service('cartService', cartservice_1.CartService)
     .service('hibachiValidationService', static_1.downgradeInjectable(hibachivalidationservice_1.HibachiValidationService))
-    .service('entityService', entityservice_1.EntityService)
+    .service('entityService', static_1.downgradeInjectable(entityservice_1.EntityService))
     //controllers
     .controller('globalSearch', globalsearch_1.GlobalSearchController)
     //filters
@@ -28465,9 +28468,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var isFunction_1 = __webpack_require__(27);
-var Subscription_1 = __webpack_require__(9);
-var Observer_1 = __webpack_require__(31);
+var isFunction_1 = __webpack_require__(28);
+var Subscription_1 = __webpack_require__(11);
+var Observer_1 = __webpack_require__(32);
 var rxSubscriber_1 = __webpack_require__(20);
 /**
  * Implements the {@link Observer} interface and extends the
@@ -28762,11 +28765,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-var baseobject_1 = __webpack_require__(38);
+var baseobject_1 = __webpack_require__(39);
 var Entities = __webpack_require__(81);
 var Processes = __webpack_require__(88);
-var hibachiservice_1 = __webpack_require__(39);
-var utilityservice_1 = __webpack_require__(11);
+var hibachiservice_1 = __webpack_require__(26);
+var utilityservice_1 = __webpack_require__(9);
 var core_1 = __webpack_require__(0);
 var BaseEntityService = /** @class */ (function (_super) {
     __extends(BaseEntityService, _super);
@@ -28862,7 +28865,7 @@ exports.root = _root;
     }
 })();
 //# sourceMappingURL=root.js.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)))
 
 /***/ }),
 /* 8 */
@@ -28870,263 +28873,16 @@ exports.root = _root;
 
 "use strict";
 
-/// <reference path='../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../typings/tsd.d.ts' />
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-//modules
-var core_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(2);
-var static_1 = __webpack_require__(4);
-//controllers
-var alertcontroller_1 = __webpack_require__(172);
-//services
-var alertservice_1 = __webpack_require__(173);
-var AlertModule = /** @class */ (function () {
-    function AlertModule() {
-    }
-    AlertModule = __decorate([
-        core_1.NgModule({
-            declarations: [],
-            providers: [
-                // Register an Angular provider whose value is the "upgraded" AngularJS service
-                alertservice_1.AlertService
-            ],
-            // All components that are to be "downgraded" must be declared as `entryComponents`
-            // We must import `UpgradeModule` to get access to the AngularJS core services
-            imports: [
-                common_1.CommonModule,
-                static_1.UpgradeModule
-            ]
-        }),
-        __metadata("design:paramtypes", [])
-    ], AlertModule);
-    return AlertModule;
-}());
-exports.AlertModule = AlertModule;
-var alertmodule = angular.module('hibachi.alert', [])
-    //controllers
-    .controller('alertController', alertcontroller_1.AlertController)
-    //services
-    .service('alertService', static_1.downgradeInjectable(alertservice_1.AlertService));
-exports.alertmodule = alertmodule;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var isArray_1 = __webpack_require__(28);
-var isObject_1 = __webpack_require__(29);
-var isFunction_1 = __webpack_require__(27);
-var tryCatch_1 = __webpack_require__(63);
-var errorObject_1 = __webpack_require__(30);
-var UnsubscriptionError_1 = __webpack_require__(64);
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
- * Represents a disposable resource, such as the execution of an Observable. A
- * Subscription has one important method, `unsubscribe`, that takes no argument
- * and just disposes the resource held by the subscription.
+ * @ngdoc service
+ * @name sdt.models:ObserverService
+ * @description
+ * # ObserverService
+ * Manages all events inside the application
  *
- * Additionally, subscriptions may be grouped together through the `add()`
- * method, which will attach a child Subscription to the current Subscription.
- * When a Subscription is unsubscribed, all its children (and its grandchildren)
- * will be unsubscribed as well.
- *
- * @class Subscription
  */
-var Subscription = (function () {
-    /**
-     * @param {function(): void} [unsubscribe] A function describing how to
-     * perform the disposal of resources when the `unsubscribe` method is called.
-     */
-    function Subscription(unsubscribe) {
-        /**
-         * A flag to indicate whether this Subscription has already been unsubscribed.
-         * @type {boolean}
-         */
-        this.closed = false;
-        this._parent = null;
-        this._parents = null;
-        this._subscriptions = null;
-        if (unsubscribe) {
-            this._unsubscribe = unsubscribe;
-        }
-    }
-    /**
-     * Disposes the resources held by the subscription. May, for instance, cancel
-     * an ongoing Observable execution or cancel any other type of work that
-     * started when the Subscription was created.
-     * @return {void}
-     */
-    Subscription.prototype.unsubscribe = function () {
-        var hasErrors = false;
-        var errors;
-        if (this.closed) {
-            return;
-        }
-        var _a = this, _parent = _a._parent, _parents = _a._parents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
-        this.closed = true;
-        this._parent = null;
-        this._parents = null;
-        // null out _subscriptions first so any child subscriptions that attempt
-        // to remove themselves from this subscription will noop
-        this._subscriptions = null;
-        var index = -1;
-        var len = _parents ? _parents.length : 0;
-        // if this._parent is null, then so is this._parents, and we
-        // don't have to remove ourselves from any parent subscriptions.
-        while (_parent) {
-            _parent.remove(this);
-            // if this._parents is null or index >= len,
-            // then _parent is set to null, and the loop exits
-            _parent = ++index < len && _parents[index] || null;
-        }
-        if (isFunction_1.isFunction(_unsubscribe)) {
-            var trial = tryCatch_1.tryCatch(_unsubscribe).call(this);
-            if (trial === errorObject_1.errorObject) {
-                hasErrors = true;
-                errors = errors || (errorObject_1.errorObject.e instanceof UnsubscriptionError_1.UnsubscriptionError ?
-                    flattenUnsubscriptionErrors(errorObject_1.errorObject.e.errors) : [errorObject_1.errorObject.e]);
-            }
-        }
-        if (isArray_1.isArray(_subscriptions)) {
-            index = -1;
-            len = _subscriptions.length;
-            while (++index < len) {
-                var sub = _subscriptions[index];
-                if (isObject_1.isObject(sub)) {
-                    var trial = tryCatch_1.tryCatch(sub.unsubscribe).call(sub);
-                    if (trial === errorObject_1.errorObject) {
-                        hasErrors = true;
-                        errors = errors || [];
-                        var err = errorObject_1.errorObject.e;
-                        if (err instanceof UnsubscriptionError_1.UnsubscriptionError) {
-                            errors = errors.concat(flattenUnsubscriptionErrors(err.errors));
-                        }
-                        else {
-                            errors.push(err);
-                        }
-                    }
-                }
-            }
-        }
-        if (hasErrors) {
-            throw new UnsubscriptionError_1.UnsubscriptionError(errors);
-        }
-    };
-    /**
-     * Adds a tear down to be called during the unsubscribe() of this
-     * Subscription.
-     *
-     * If the tear down being added is a subscription that is already
-     * unsubscribed, is the same reference `add` is being called on, or is
-     * `Subscription.EMPTY`, it will not be added.
-     *
-     * If this subscription is already in an `closed` state, the passed
-     * tear down logic will be executed immediately.
-     *
-     * @param {TeardownLogic} teardown The additional logic to execute on
-     * teardown.
-     * @return {Subscription} Returns the Subscription used or created to be
-     * added to the inner subscriptions list. This Subscription can be used with
-     * `remove()` to remove the passed teardown logic from the inner subscriptions
-     * list.
-     */
-    Subscription.prototype.add = function (teardown) {
-        if (!teardown || (teardown === Subscription.EMPTY)) {
-            return Subscription.EMPTY;
-        }
-        if (teardown === this) {
-            return this;
-        }
-        var subscription = teardown;
-        switch (typeof teardown) {
-            case 'function':
-                subscription = new Subscription(teardown);
-            case 'object':
-                if (subscription.closed || typeof subscription.unsubscribe !== 'function') {
-                    return subscription;
-                }
-                else if (this.closed) {
-                    subscription.unsubscribe();
-                    return subscription;
-                }
-                else if (typeof subscription._addParent !== 'function' /* quack quack */) {
-                    var tmp = subscription;
-                    subscription = new Subscription();
-                    subscription._subscriptions = [tmp];
-                }
-                break;
-            default:
-                throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
-        }
-        var subscriptions = this._subscriptions || (this._subscriptions = []);
-        subscriptions.push(subscription);
-        subscription._addParent(this);
-        return subscription;
-    };
-    /**
-     * Removes a Subscription from the internal list of subscriptions that will
-     * unsubscribe during the unsubscribe process of this Subscription.
-     * @param {Subscription} subscription The subscription to remove.
-     * @return {void}
-     */
-    Subscription.prototype.remove = function (subscription) {
-        var subscriptions = this._subscriptions;
-        if (subscriptions) {
-            var subscriptionIndex = subscriptions.indexOf(subscription);
-            if (subscriptionIndex !== -1) {
-                subscriptions.splice(subscriptionIndex, 1);
-            }
-        }
-    };
-    Subscription.prototype._addParent = function (parent) {
-        var _a = this, _parent = _a._parent, _parents = _a._parents;
-        if (!_parent || _parent === parent) {
-            // If we don't have a parent, or the new parent is the same as the
-            // current parent, then set this._parent to the new parent.
-            this._parent = parent;
-        }
-        else if (!_parents) {
-            // If there's already one parent, but not multiple, allocate an Array to
-            // store the rest of the parent Subscriptions.
-            this._parents = [parent];
-        }
-        else if (_parents.indexOf(parent) === -1) {
-            // Only add the new parent to the _parents list if it's not already there.
-            _parents.push(parent);
-        }
-    };
-    Subscription.EMPTY = (function (empty) {
-        empty.closed = true;
-        return empty;
-    }(new Subscription()));
-    return Subscription;
-}());
-exports.Subscription = Subscription;
-function flattenUnsubscriptionErrors(errors) {
-    return errors.reduce(function (errs, err) { return errs.concat((err instanceof UnsubscriptionError_1.UnsubscriptionError) ? err.errors : err); }, []);
-}
-//# sourceMappingURL=Subscription.js.map
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -29137,20 +28893,176 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var basetransient_1 = __webpack_require__(25);
-var BaseEntity = /** @class */ (function (_super) {
-    __extends(BaseEntity, _super);
-    function BaseEntity($injector) {
-        return _super.call(this, $injector) || this;
+var baseservice_1 = __webpack_require__(27);
+var utilityservice_1 = __webpack_require__(9);
+var historyservice_1 = __webpack_require__(42);
+var core_1 = __webpack_require__(0);
+var ObserverService = /** @class */ (function (_super) {
+    __extends(ObserverService, _super);
+    function ObserverService($timeout, historyService, utilityService) {
+        var _this = 
+        /**
+         * @ngdoc property
+         * @name ObserverService#observers
+         * @propertyOf sdt.models:ObserverService
+         * @description object to store all observers in
+         * @returns {object} object
+         */
+        _super.call(this) || this;
+        _this.historyService = historyService;
+        _this.utilityService = utilityService;
+        _this.$timeout = $timeout;
+        _this.observers = {};
+        return _this;
     }
-    return BaseEntity;
-}(basetransient_1.BaseTransient));
-exports.BaseEntity = BaseEntity;
+    /* Declare methods */
+    /**
+     * @ngdoc method
+     * @name ObserverService#attach
+     * @methodOf sdt.models:ObserverService
+     * @param {function} callback the callback function to fire
+     * @param {string} event name of the event
+     * @param {string} id unique id for the object that is listening i.e. namespace
+     * @description adds events listeners
+     */
+    ObserverService.prototype.attach = function (callback, event, id) {
+        if (!id) {
+            id = this.utilityService.createID();
+        }
+        event = event.toLowerCase();
+        id = id.toLowerCase();
+        if (!this.observers[event]) {
+            this.observers[event] = {};
+        }
+        if (!this.observers[event][id])
+            this.observers[event][id] = [];
+        this.observers[event][id].push(callback);
+    };
+    ;
+    /**
+     * @ngdoc method
+     * @name ObserverService#detachById
+     * @methodOf sdt.models:ObserverService
+     * @param {string} id unique id for the object that is listening i.e. namespace
+     * @description removes all events for a specific id from the observers object
+     */
+    ObserverService.prototype.detachById = function (id) {
+        id = id.toLowerCase();
+        for (var event in this.observers) {
+            this.detachByEventAndId(event, id);
+        }
+    };
+    ;
+    /**
+     * @ngdoc method
+     * @name ObserverService#detachById
+     * @methodOf sdt.models:ObserverService
+     * @param {string} event name of the event
+     * @description removes removes all the event from the observer object
+     */
+    ObserverService.prototype.detachByEvent = function (event) {
+        event = event.toLowerCase();
+        if (event in this.observers) {
+            delete this.observers[event];
+        }
+    };
+    ;
+    /**
+     * @ngdoc method
+     * @name ObserverService#detachByEventAndId
+     * @methodOf sdt.models:ObserverService
+     * @param {string} event name of the event
+     * @param {string} id unique id for the object that is listening i.e. namespace
+     * @description removes removes all callbacks for an id in a specific event from the observer object
+     */
+    ObserverService.prototype.detachByEventAndId = function (event, id) {
+        event = event.toLowerCase();
+        id = id.toLowerCase();
+        if (event in this.observers) {
+            if (id in this.observers[event]) {
+                delete this.observers[event][id];
+            }
+        }
+    };
+    ;
+    /**
+     * @ngdoc method
+     * @name ObserverService#notify
+     * @methodOf sdt.models:ObserverService
+     * @param {string} event name of the event
+     * @param {string|object|Array|number} parameters pass whatever your listener is expecting
+     * @description notifies all observers of a specific event
+     */
+    ObserverService.prototype.notify = function (event, parameters) {
+        var _this = this;
+        console.warn(event, parameters);
+        event = event.toLowerCase();
+        return this.$timeout(function () {
+            for (var id in _this.observers[event]) {
+                for (var _i = 0, _a = _this.observers[event][id]; _i < _a.length; _i++) {
+                    var callback = _a[_i];
+                    callback(parameters);
+                }
+            }
+        });
+    };
+    ;
+    /**
+     * @ngdoc method
+     * @name ObserverService#notifyById
+     * @methodOf sdt.models:ObserverService
+     * @param {string} event name of the event
+     * @param {string} eventId unique id for the object that is listening i.e. namespace
+     * @param {string|object|Array|number} parameters pass whatever your listener is expecting
+     * @description notifies observers of a specific event by id
+     */
+    ObserverService.prototype.notifyById = function (event, eventId, parameters) {
+        var _this = this;
+        console.warn(event, eventId, parameters);
+        event = event.toLowerCase();
+        eventId = eventId.toLowerCase();
+        return this.$timeout(function () {
+            for (var id in _this.observers[event]) {
+                if (id != eventId)
+                    continue;
+                angular.forEach(_this.observers[event][id], function (callback) {
+                    callback(parameters);
+                });
+            }
+        });
+    };
+    ObserverService.prototype.notifyAndRecord = function (event, parameters) {
+        var _this = this;
+        return this.notify(event, parameters).then(function () {
+            _this.historyService.recordHistory(event, parameters, true);
+        });
+    };
+    ObserverService = __decorate([
+        core_1.Injectable(),
+        __param(0, core_1.Inject('$timeout')),
+        __metadata("design:paramtypes", [Object, historyservice_1.HistoryService,
+            utilityservice_1.UtilityService])
+    ], ObserverService);
+    return ObserverService;
+}(baseservice_1.BaseService));
+exports.ObserverService = ObserverService;
 
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29181,7 +29093,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
-var baseservice_1 = __webpack_require__(26);
+var baseservice_1 = __webpack_require__(27);
 //import { Parse } from "../../../../../../admin/client/src/ajs-upgraded-providers";
 var core_1 = __webpack_require__(0);
 var UtilityService = /** @class */ (function (_super) {
@@ -29662,8 +29574,293 @@ exports.UtilityService = UtilityService;
 
 
 /***/ }),
-/* 12 */,
-/* 13 */
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+//modules
+var core_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(2);
+var static_1 = __webpack_require__(4);
+//controllers
+var alertcontroller_1 = __webpack_require__(172);
+//services
+var alertservice_1 = __webpack_require__(173);
+var AlertModule = /** @class */ (function () {
+    function AlertModule() {
+    }
+    AlertModule = __decorate([
+        core_1.NgModule({
+            declarations: [],
+            providers: [
+                // Register an Angular provider whose value is the "upgraded" AngularJS service
+                alertservice_1.AlertService
+            ],
+            // All components that are to be "downgraded" must be declared as `entryComponents`
+            // We must import `UpgradeModule` to get access to the AngularJS core services
+            imports: [
+                common_1.CommonModule,
+                static_1.UpgradeModule
+            ]
+        }),
+        __metadata("design:paramtypes", [])
+    ], AlertModule);
+    return AlertModule;
+}());
+exports.AlertModule = AlertModule;
+var alertmodule = angular.module('hibachi.alert', [])
+    //controllers
+    .controller('alertController', alertcontroller_1.AlertController)
+    //services
+    .service('alertService', static_1.downgradeInjectable(alertservice_1.AlertService));
+exports.alertmodule = alertmodule;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var isArray_1 = __webpack_require__(29);
+var isObject_1 = __webpack_require__(30);
+var isFunction_1 = __webpack_require__(28);
+var tryCatch_1 = __webpack_require__(63);
+var errorObject_1 = __webpack_require__(31);
+var UnsubscriptionError_1 = __webpack_require__(64);
+/**
+ * Represents a disposable resource, such as the execution of an Observable. A
+ * Subscription has one important method, `unsubscribe`, that takes no argument
+ * and just disposes the resource held by the subscription.
+ *
+ * Additionally, subscriptions may be grouped together through the `add()`
+ * method, which will attach a child Subscription to the current Subscription.
+ * When a Subscription is unsubscribed, all its children (and its grandchildren)
+ * will be unsubscribed as well.
+ *
+ * @class Subscription
+ */
+var Subscription = (function () {
+    /**
+     * @param {function(): void} [unsubscribe] A function describing how to
+     * perform the disposal of resources when the `unsubscribe` method is called.
+     */
+    function Subscription(unsubscribe) {
+        /**
+         * A flag to indicate whether this Subscription has already been unsubscribed.
+         * @type {boolean}
+         */
+        this.closed = false;
+        this._parent = null;
+        this._parents = null;
+        this._subscriptions = null;
+        if (unsubscribe) {
+            this._unsubscribe = unsubscribe;
+        }
+    }
+    /**
+     * Disposes the resources held by the subscription. May, for instance, cancel
+     * an ongoing Observable execution or cancel any other type of work that
+     * started when the Subscription was created.
+     * @return {void}
+     */
+    Subscription.prototype.unsubscribe = function () {
+        var hasErrors = false;
+        var errors;
+        if (this.closed) {
+            return;
+        }
+        var _a = this, _parent = _a._parent, _parents = _a._parents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
+        this.closed = true;
+        this._parent = null;
+        this._parents = null;
+        // null out _subscriptions first so any child subscriptions that attempt
+        // to remove themselves from this subscription will noop
+        this._subscriptions = null;
+        var index = -1;
+        var len = _parents ? _parents.length : 0;
+        // if this._parent is null, then so is this._parents, and we
+        // don't have to remove ourselves from any parent subscriptions.
+        while (_parent) {
+            _parent.remove(this);
+            // if this._parents is null or index >= len,
+            // then _parent is set to null, and the loop exits
+            _parent = ++index < len && _parents[index] || null;
+        }
+        if (isFunction_1.isFunction(_unsubscribe)) {
+            var trial = tryCatch_1.tryCatch(_unsubscribe).call(this);
+            if (trial === errorObject_1.errorObject) {
+                hasErrors = true;
+                errors = errors || (errorObject_1.errorObject.e instanceof UnsubscriptionError_1.UnsubscriptionError ?
+                    flattenUnsubscriptionErrors(errorObject_1.errorObject.e.errors) : [errorObject_1.errorObject.e]);
+            }
+        }
+        if (isArray_1.isArray(_subscriptions)) {
+            index = -1;
+            len = _subscriptions.length;
+            while (++index < len) {
+                var sub = _subscriptions[index];
+                if (isObject_1.isObject(sub)) {
+                    var trial = tryCatch_1.tryCatch(sub.unsubscribe).call(sub);
+                    if (trial === errorObject_1.errorObject) {
+                        hasErrors = true;
+                        errors = errors || [];
+                        var err = errorObject_1.errorObject.e;
+                        if (err instanceof UnsubscriptionError_1.UnsubscriptionError) {
+                            errors = errors.concat(flattenUnsubscriptionErrors(err.errors));
+                        }
+                        else {
+                            errors.push(err);
+                        }
+                    }
+                }
+            }
+        }
+        if (hasErrors) {
+            throw new UnsubscriptionError_1.UnsubscriptionError(errors);
+        }
+    };
+    /**
+     * Adds a tear down to be called during the unsubscribe() of this
+     * Subscription.
+     *
+     * If the tear down being added is a subscription that is already
+     * unsubscribed, is the same reference `add` is being called on, or is
+     * `Subscription.EMPTY`, it will not be added.
+     *
+     * If this subscription is already in an `closed` state, the passed
+     * tear down logic will be executed immediately.
+     *
+     * @param {TeardownLogic} teardown The additional logic to execute on
+     * teardown.
+     * @return {Subscription} Returns the Subscription used or created to be
+     * added to the inner subscriptions list. This Subscription can be used with
+     * `remove()` to remove the passed teardown logic from the inner subscriptions
+     * list.
+     */
+    Subscription.prototype.add = function (teardown) {
+        if (!teardown || (teardown === Subscription.EMPTY)) {
+            return Subscription.EMPTY;
+        }
+        if (teardown === this) {
+            return this;
+        }
+        var subscription = teardown;
+        switch (typeof teardown) {
+            case 'function':
+                subscription = new Subscription(teardown);
+            case 'object':
+                if (subscription.closed || typeof subscription.unsubscribe !== 'function') {
+                    return subscription;
+                }
+                else if (this.closed) {
+                    subscription.unsubscribe();
+                    return subscription;
+                }
+                else if (typeof subscription._addParent !== 'function' /* quack quack */) {
+                    var tmp = subscription;
+                    subscription = new Subscription();
+                    subscription._subscriptions = [tmp];
+                }
+                break;
+            default:
+                throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
+        }
+        var subscriptions = this._subscriptions || (this._subscriptions = []);
+        subscriptions.push(subscription);
+        subscription._addParent(this);
+        return subscription;
+    };
+    /**
+     * Removes a Subscription from the internal list of subscriptions that will
+     * unsubscribe during the unsubscribe process of this Subscription.
+     * @param {Subscription} subscription The subscription to remove.
+     * @return {void}
+     */
+    Subscription.prototype.remove = function (subscription) {
+        var subscriptions = this._subscriptions;
+        if (subscriptions) {
+            var subscriptionIndex = subscriptions.indexOf(subscription);
+            if (subscriptionIndex !== -1) {
+                subscriptions.splice(subscriptionIndex, 1);
+            }
+        }
+    };
+    Subscription.prototype._addParent = function (parent) {
+        var _a = this, _parent = _a._parent, _parents = _a._parents;
+        if (!_parent || _parent === parent) {
+            // If we don't have a parent, or the new parent is the same as the
+            // current parent, then set this._parent to the new parent.
+            this._parent = parent;
+        }
+        else if (!_parents) {
+            // If there's already one parent, but not multiple, allocate an Array to
+            // store the rest of the parent Subscriptions.
+            this._parents = [parent];
+        }
+        else if (_parents.indexOf(parent) === -1) {
+            // Only add the new parent to the _parents list if it's not already there.
+            _parents.push(parent);
+        }
+    };
+    Subscription.EMPTY = (function (empty) {
+        empty.closed = true;
+        return empty;
+    }(new Subscription()));
+    return Subscription;
+}());
+exports.Subscription = Subscription;
+function flattenUnsubscriptionErrors(errors) {
+    return errors.reduce(function (errs, err) { return errs.concat((err instanceof UnsubscriptionError_1.UnsubscriptionError) ? err.errors : err); }, []);
+}
+//# sourceMappingURL=Subscription.js.map
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var basetransient_1 = __webpack_require__(25);
+var BaseEntity = /** @class */ (function (_super) {
+    __extends(BaseEntity, _super);
+    function BaseEntity($injector) {
+        return _super.call(this, $injector) || this;
+    }
+    return BaseEntity;
+}(basetransient_1.BaseTransient));
+exports.BaseEntity = BaseEntity;
+
+
+/***/ }),
+/* 13 */,
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29676,7 +29873,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var Observable_1 = __webpack_require__(1);
 var ScalarObservable_1 = __webpack_require__(22);
 var EmptyObservable_1 = __webpack_require__(23);
-var isScheduler_1 = __webpack_require__(14);
+var isScheduler_1 = __webpack_require__(15);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -29791,7 +29988,7 @@ exports.ArrayObservable = ArrayObservable;
 //# sourceMappingURL=ArrayObservable.js.map
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29803,7 +30000,7 @@ exports.isScheduler = isScheduler;
 //# sourceMappingURL=isScheduler.js.map
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29815,7 +30012,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(1);
 var Subscriber_1 = __webpack_require__(5);
-var Subscription_1 = __webpack_require__(9);
+var Subscription_1 = __webpack_require__(11);
 var ObjectUnsubscribedError_1 = __webpack_require__(77);
 var SubjectSubscription_1 = __webpack_require__(78);
 var rxSubscriber_1 = __webpack_require__(20);
@@ -29975,200 +30172,6 @@ var AnonymousSubject = (function (_super) {
 }(Subject));
 exports.AnonymousSubject = AnonymousSubject;
 //# sourceMappingURL=Subject.js.map
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-/**
- * @ngdoc service
- * @name sdt.models:ObserverService
- * @description
- * # ObserverService
- * Manages all events inside the application
- *
- */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var baseservice_1 = __webpack_require__(26);
-var utilityservice_1 = __webpack_require__(11);
-var historyservice_1 = __webpack_require__(42);
-var core_1 = __webpack_require__(0);
-var ObserverService = /** @class */ (function (_super) {
-    __extends(ObserverService, _super);
-    function ObserverService($timeout, historyService, utilityService) {
-        var _this = 
-        /**
-         * @ngdoc property
-         * @name ObserverService#observers
-         * @propertyOf sdt.models:ObserverService
-         * @description object to store all observers in
-         * @returns {object} object
-         */
-        _super.call(this) || this;
-        _this.historyService = historyService;
-        _this.utilityService = utilityService;
-        _this.$timeout = $timeout;
-        _this.observers = {};
-        return _this;
-    }
-    /* Declare methods */
-    /**
-     * @ngdoc method
-     * @name ObserverService#attach
-     * @methodOf sdt.models:ObserverService
-     * @param {function} callback the callback function to fire
-     * @param {string} event name of the event
-     * @param {string} id unique id for the object that is listening i.e. namespace
-     * @description adds events listeners
-     */
-    ObserverService.prototype.attach = function (callback, event, id) {
-        if (!id) {
-            id = this.utilityService.createID();
-        }
-        event = event.toLowerCase();
-        id = id.toLowerCase();
-        if (!this.observers[event]) {
-            this.observers[event] = {};
-        }
-        if (!this.observers[event][id])
-            this.observers[event][id] = [];
-        this.observers[event][id].push(callback);
-    };
-    ;
-    /**
-     * @ngdoc method
-     * @name ObserverService#detachById
-     * @methodOf sdt.models:ObserverService
-     * @param {string} id unique id for the object that is listening i.e. namespace
-     * @description removes all events for a specific id from the observers object
-     */
-    ObserverService.prototype.detachById = function (id) {
-        id = id.toLowerCase();
-        for (var event in this.observers) {
-            this.detachByEventAndId(event, id);
-        }
-    };
-    ;
-    /**
-     * @ngdoc method
-     * @name ObserverService#detachById
-     * @methodOf sdt.models:ObserverService
-     * @param {string} event name of the event
-     * @description removes removes all the event from the observer object
-     */
-    ObserverService.prototype.detachByEvent = function (event) {
-        event = event.toLowerCase();
-        if (event in this.observers) {
-            delete this.observers[event];
-        }
-    };
-    ;
-    /**
-     * @ngdoc method
-     * @name ObserverService#detachByEventAndId
-     * @methodOf sdt.models:ObserverService
-     * @param {string} event name of the event
-     * @param {string} id unique id for the object that is listening i.e. namespace
-     * @description removes removes all callbacks for an id in a specific event from the observer object
-     */
-    ObserverService.prototype.detachByEventAndId = function (event, id) {
-        event = event.toLowerCase();
-        id = id.toLowerCase();
-        if (event in this.observers) {
-            if (id in this.observers[event]) {
-                delete this.observers[event][id];
-            }
-        }
-    };
-    ;
-    /**
-     * @ngdoc method
-     * @name ObserverService#notify
-     * @methodOf sdt.models:ObserverService
-     * @param {string} event name of the event
-     * @param {string|object|Array|number} parameters pass whatever your listener is expecting
-     * @description notifies all observers of a specific event
-     */
-    ObserverService.prototype.notify = function (event, parameters) {
-        var _this = this;
-        console.warn(event, parameters);
-        event = event.toLowerCase();
-        return this.$timeout(function () {
-            for (var id in _this.observers[event]) {
-                for (var _i = 0, _a = _this.observers[event][id]; _i < _a.length; _i++) {
-                    var callback = _a[_i];
-                    callback(parameters);
-                }
-            }
-        });
-    };
-    ;
-    /**
-     * @ngdoc method
-     * @name ObserverService#notifyById
-     * @methodOf sdt.models:ObserverService
-     * @param {string} event name of the event
-     * @param {string} eventId unique id for the object that is listening i.e. namespace
-     * @param {string|object|Array|number} parameters pass whatever your listener is expecting
-     * @description notifies observers of a specific event by id
-     */
-    ObserverService.prototype.notifyById = function (event, eventId, parameters) {
-        var _this = this;
-        console.warn(event, eventId, parameters);
-        event = event.toLowerCase();
-        eventId = eventId.toLowerCase();
-        return this.$timeout(function () {
-            for (var id in _this.observers[event]) {
-                if (id != eventId)
-                    continue;
-                angular.forEach(_this.observers[event][id], function (callback) {
-                    callback(parameters);
-                });
-            }
-        });
-    };
-    ObserverService.prototype.notifyAndRecord = function (event, parameters) {
-        var _this = this;
-        return this.notify(event, parameters).then(function () {
-            _this.historyService.recordHistory(event, parameters, true);
-        });
-    };
-    ObserverService = __decorate([
-        core_1.Injectable(),
-        __param(0, core_1.Inject('$timeout')),
-        __metadata("design:paramtypes", [Object, historyservice_1.HistoryService,
-            utilityservice_1.UtilityService])
-    ], ObserverService);
-    return ObserverService;
-}(baseservice_1.BaseService));
-exports.ObserverService = ObserverService;
-
 
 /***/ }),
 /* 17 */
@@ -30810,7 +30813,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseobject_1 = __webpack_require__(38);
+var baseobject_1 = __webpack_require__(39);
 var BaseTransient = /** @class */ (function (_super) {
     __extends(BaseTransient, _super);
     function BaseTransient($injector) {
@@ -30983,363 +30986,6 @@ exports.BaseTransient = BaseTransient;
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseService = /** @class */ (function () {
-    function BaseService() {
-    }
-    return BaseService;
-}());
-exports.BaseService = BaseService;
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function isFunction(x) {
-    return typeof x === 'function';
-}
-exports.isFunction = isFunction;
-//# sourceMappingURL=isFunction.js.map
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.isArray = Array.isArray || (function (x) { return x && typeof x.length === 'number'; });
-//# sourceMappingURL=isArray.js.map
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function isObject(x) {
-    return x != null && typeof x === 'object';
-}
-exports.isObject = isObject;
-//# sourceMappingURL=isObject.js.map
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// typeof any so that it we don't have to cast when comparing a result to the error object
-exports.errorObject = { e: {} };
-//# sourceMappingURL=errorObject.js.map
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.empty = {
-    closed: true,
-    next: function (value) { },
-    error: function (err) { throw err; },
-    complete: function () { }
-};
-//# sourceMappingURL=Observer.js.map
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var mergeMap_1 = __webpack_require__(68);
-var identity_1 = __webpack_require__(72);
-/**
- * Converts a higher-order Observable into a first-order Observable which
- * concurrently delivers all values that are emitted on the inner Observables.
- *
- * <span class="informal">Flattens an Observable-of-Observables.</span>
- *
- * <img src="./img/mergeAll.png" width="100%">
- *
- * `mergeAll` subscribes to an Observable that emits Observables, also known as
- * a higher-order Observable. Each time it observes one of these emitted inner
- * Observables, it subscribes to that and delivers all the values from the
- * inner Observable on the output Observable. The output Observable only
- * completes once all inner Observables have completed. Any error delivered by
- * a inner Observable will be immediately emitted on the output Observable.
- *
- * @example <caption>Spawn a new interval Observable for each click event, and blend their outputs as one Observable</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000));
- * var firstOrder = higherOrder.mergeAll();
- * firstOrder.subscribe(x => console.log(x));
- *
- * @example <caption>Count from 0 to 9 every second for each click, but only allow 2 concurrent timers</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000).take(10));
- * var firstOrder = higherOrder.mergeAll(2);
- * firstOrder.subscribe(x => console.log(x));
- *
- * @see {@link combineAll}
- * @see {@link concatAll}
- * @see {@link exhaust}
- * @see {@link merge}
- * @see {@link mergeMap}
- * @see {@link mergeMapTo}
- * @see {@link mergeScan}
- * @see {@link switch}
- * @see {@link zipAll}
- *
- * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of inner
- * Observables being subscribed to concurrently.
- * @return {Observable} An Observable that emits values coming from all the
- * inner Observables emitted by the source Observable.
- * @method mergeAll
- * @owner Observable
- */
-function mergeAll(concurrent) {
-    if (concurrent === void 0) { concurrent = Number.POSITIVE_INFINITY; }
-    return mergeMap_1.mergeMap(identity_1.identity, null, concurrent);
-}
-exports.mergeAll = mergeAll;
-//# sourceMappingURL=mergeAll.js.map
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; });
-//# sourceMappingURL=isArrayLike.js.map
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function isPromise(value) {
-    return value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
-}
-exports.isPromise = isPromise;
-//# sourceMappingURL=isPromise.js.map
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var Subscriber_1 = __webpack_require__(5);
-function refCount() {
-    return function refCountOperatorFunction(source) {
-        return source.lift(new RefCountOperator(source));
-    };
-}
-exports.refCount = refCount;
-var RefCountOperator = (function () {
-    function RefCountOperator(connectable) {
-        this.connectable = connectable;
-    }
-    RefCountOperator.prototype.call = function (subscriber, source) {
-        var connectable = this.connectable;
-        connectable._refCount++;
-        var refCounter = new RefCountSubscriber(subscriber, connectable);
-        var subscription = source.subscribe(refCounter);
-        if (!refCounter.closed) {
-            refCounter.connection = connectable.connect();
-        }
-        return subscription;
-    };
-    return RefCountOperator;
-}());
-var RefCountSubscriber = (function (_super) {
-    __extends(RefCountSubscriber, _super);
-    function RefCountSubscriber(destination, connectable) {
-        _super.call(this, destination);
-        this.connectable = connectable;
-    }
-    /** @deprecated internal use only */ RefCountSubscriber.prototype._unsubscribe = function () {
-        var connectable = this.connectable;
-        if (!connectable) {
-            this.connection = null;
-            return;
-        }
-        this.connectable = null;
-        var refCount = connectable._refCount;
-        if (refCount <= 0) {
-            this.connection = null;
-            return;
-        }
-        connectable._refCount = refCount - 1;
-        if (refCount > 1) {
-            this.connection = null;
-            return;
-        }
-        ///
-        // Compare the local RefCountSubscriber's connection Subscription to the
-        // connection Subscription on the shared ConnectableObservable. In cases
-        // where the ConnectableObservable source synchronously emits values, and
-        // the RefCountSubscriber's downstream Observers synchronously unsubscribe,
-        // execution continues to here before the RefCountOperator has a chance to
-        // supply the RefCountSubscriber with the shared connection Subscription.
-        // For example:
-        // ```
-        // Observable.range(0, 10)
-        //   .publish()
-        //   .refCount()
-        //   .take(5)
-        //   .subscribe();
-        // ```
-        // In order to account for this case, RefCountSubscriber should only dispose
-        // the ConnectableObservable's shared connection Subscription if the
-        // connection Subscription exists, *and* either:
-        //   a. RefCountSubscriber doesn't have a reference to the shared connection
-        //      Subscription yet, or,
-        //   b. RefCountSubscriber's connection Subscription reference is identical
-        //      to the shared connection Subscription
-        ///
-        var connection = this.connection;
-        var sharedConnection = connectable._connection;
-        this.connection = null;
-        if (sharedConnection && (!connection || sharedConnection === connection)) {
-            sharedConnection.unsubscribe();
-        }
-    };
-    return RefCountSubscriber;
-}(Subscriber_1.Subscriber));
-//# sourceMappingURL=refCount.js.map
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-function webpackEmptyAsyncContext(req) {
-	// Here Promise.resolve().then() is used instead of new Promise() to prevent
-	// uncatched exception popping up in devtools
-	return Promise.resolve().then(function() {
-		throw new Error("Cannot find module '" + req + "'.");
-	});
-}
-webpackEmptyAsyncContext.keys = function() { return []; };
-webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
-module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 36;
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-var core_1 = __webpack_require__(0);
-var LocalStorageService = /** @class */ (function () {
-    //@ngInject
-    function LocalStorageService() {
-    }
-    LocalStorageService.prototype.hasItem = function (key) {
-        //try catch to handle safari in private mode which does not allow localstorage
-        try {
-            return (window.localStorage.getItem(key)
-                && window.localStorage.getItem(key) !== null
-                && window.localStorage.getItem(key) !== "undefined");
-        }
-        catch (e) {
-            return false;
-        }
-    };
-    LocalStorageService.prototype.getItem = function (key) {
-        var value = window.localStorage.getItem(key);
-        if (value.charAt(0) === '{' || value.charAt(0) === '[') {
-            value = angular.fromJson(value);
-        }
-        return value;
-    };
-    LocalStorageService.prototype.setItem = function (key, data) {
-        //try catch to handle safari in private mode which does not allow localstorage
-        try {
-            if (angular.isObject(data) || angular.isArray(data)) {
-                data = angular.toJson(data);
-            }
-            window.localStorage.setItem(key, data);
-        }
-        catch (e) {
-        }
-    };
-    LocalStorageService = __decorate([
-        core_1.Injectable(),
-        __metadata("design:paramtypes", [])
-    ], LocalStorageService);
-    return LocalStorageService;
-}());
-exports.LocalStorageService = LocalStorageService;
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
-Object.defineProperty(exports, "__esModule", { value: true });
-var BaseObject = /** @class */ (function () {
-    //@ngInject
-    function BaseObject($injector) {
-        var _this = this;
-        this.getService = function (serviceName) {
-            //return;
-            if (_this.$injector.has(serviceName)) {
-                //returns a generic service
-                return _this.$injector.get(serviceName);
-            }
-        };
-        this.getHibachiScope = function () {
-            return _this.getService('publicService');
-        };
-        this.getAppConfig = function () {
-            return _this.getService('appConfig');
-        };
-        this.$injector = $injector;
-        var constructorString = this.constructor.toString();
-        this.className = constructorString.match(/\w+/g)[1];
-    }
-    return BaseObject;
-}());
-exports.BaseObject = BaseObject;
-
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -31365,7 +31011,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(0);
 var requestservice_1 = __webpack_require__(40);
-var utilityservice_1 = __webpack_require__(11);
+var utilityservice_1 = __webpack_require__(9);
 var formservice_1 = __webpack_require__(43);
 var rbkeyservice_1 = __webpack_require__(44);
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
@@ -31812,6 +31458,363 @@ exports.$Hibachi = $Hibachi;
 
 
 /***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseService = /** @class */ (function () {
+    function BaseService() {
+    }
+    return BaseService;
+}());
+exports.BaseService = BaseService;
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function isFunction(x) {
+    return typeof x === 'function';
+}
+exports.isFunction = isFunction;
+//# sourceMappingURL=isFunction.js.map
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.isArray = Array.isArray || (function (x) { return x && typeof x.length === 'number'; });
+//# sourceMappingURL=isArray.js.map
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function isObject(x) {
+    return x != null && typeof x === 'object';
+}
+exports.isObject = isObject;
+//# sourceMappingURL=isObject.js.map
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// typeof any so that it we don't have to cast when comparing a result to the error object
+exports.errorObject = { e: {} };
+//# sourceMappingURL=errorObject.js.map
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.empty = {
+    closed: true,
+    next: function (value) { },
+    error: function (err) { throw err; },
+    complete: function () { }
+};
+//# sourceMappingURL=Observer.js.map
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var mergeMap_1 = __webpack_require__(68);
+var identity_1 = __webpack_require__(72);
+/**
+ * Converts a higher-order Observable into a first-order Observable which
+ * concurrently delivers all values that are emitted on the inner Observables.
+ *
+ * <span class="informal">Flattens an Observable-of-Observables.</span>
+ *
+ * <img src="./img/mergeAll.png" width="100%">
+ *
+ * `mergeAll` subscribes to an Observable that emits Observables, also known as
+ * a higher-order Observable. Each time it observes one of these emitted inner
+ * Observables, it subscribes to that and delivers all the values from the
+ * inner Observable on the output Observable. The output Observable only
+ * completes once all inner Observables have completed. Any error delivered by
+ * a inner Observable will be immediately emitted on the output Observable.
+ *
+ * @example <caption>Spawn a new interval Observable for each click event, and blend their outputs as one Observable</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000));
+ * var firstOrder = higherOrder.mergeAll();
+ * firstOrder.subscribe(x => console.log(x));
+ *
+ * @example <caption>Count from 0 to 9 every second for each click, but only allow 2 concurrent timers</caption>
+ * var clicks = Rx.Observable.fromEvent(document, 'click');
+ * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000).take(10));
+ * var firstOrder = higherOrder.mergeAll(2);
+ * firstOrder.subscribe(x => console.log(x));
+ *
+ * @see {@link combineAll}
+ * @see {@link concatAll}
+ * @see {@link exhaust}
+ * @see {@link merge}
+ * @see {@link mergeMap}
+ * @see {@link mergeMapTo}
+ * @see {@link mergeScan}
+ * @see {@link switch}
+ * @see {@link zipAll}
+ *
+ * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of inner
+ * Observables being subscribed to concurrently.
+ * @return {Observable} An Observable that emits values coming from all the
+ * inner Observables emitted by the source Observable.
+ * @method mergeAll
+ * @owner Observable
+ */
+function mergeAll(concurrent) {
+    if (concurrent === void 0) { concurrent = Number.POSITIVE_INFINITY; }
+    return mergeMap_1.mergeMap(identity_1.identity, null, concurrent);
+}
+exports.mergeAll = mergeAll;
+//# sourceMappingURL=mergeAll.js.map
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; });
+//# sourceMappingURL=isArrayLike.js.map
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function isPromise(value) {
+    return value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
+}
+exports.isPromise = isPromise;
+//# sourceMappingURL=isPromise.js.map
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Subscriber_1 = __webpack_require__(5);
+function refCount() {
+    return function refCountOperatorFunction(source) {
+        return source.lift(new RefCountOperator(source));
+    };
+}
+exports.refCount = refCount;
+var RefCountOperator = (function () {
+    function RefCountOperator(connectable) {
+        this.connectable = connectable;
+    }
+    RefCountOperator.prototype.call = function (subscriber, source) {
+        var connectable = this.connectable;
+        connectable._refCount++;
+        var refCounter = new RefCountSubscriber(subscriber, connectable);
+        var subscription = source.subscribe(refCounter);
+        if (!refCounter.closed) {
+            refCounter.connection = connectable.connect();
+        }
+        return subscription;
+    };
+    return RefCountOperator;
+}());
+var RefCountSubscriber = (function (_super) {
+    __extends(RefCountSubscriber, _super);
+    function RefCountSubscriber(destination, connectable) {
+        _super.call(this, destination);
+        this.connectable = connectable;
+    }
+    /** @deprecated internal use only */ RefCountSubscriber.prototype._unsubscribe = function () {
+        var connectable = this.connectable;
+        if (!connectable) {
+            this.connection = null;
+            return;
+        }
+        this.connectable = null;
+        var refCount = connectable._refCount;
+        if (refCount <= 0) {
+            this.connection = null;
+            return;
+        }
+        connectable._refCount = refCount - 1;
+        if (refCount > 1) {
+            this.connection = null;
+            return;
+        }
+        ///
+        // Compare the local RefCountSubscriber's connection Subscription to the
+        // connection Subscription on the shared ConnectableObservable. In cases
+        // where the ConnectableObservable source synchronously emits values, and
+        // the RefCountSubscriber's downstream Observers synchronously unsubscribe,
+        // execution continues to here before the RefCountOperator has a chance to
+        // supply the RefCountSubscriber with the shared connection Subscription.
+        // For example:
+        // ```
+        // Observable.range(0, 10)
+        //   .publish()
+        //   .refCount()
+        //   .take(5)
+        //   .subscribe();
+        // ```
+        // In order to account for this case, RefCountSubscriber should only dispose
+        // the ConnectableObservable's shared connection Subscription if the
+        // connection Subscription exists, *and* either:
+        //   a. RefCountSubscriber doesn't have a reference to the shared connection
+        //      Subscription yet, or,
+        //   b. RefCountSubscriber's connection Subscription reference is identical
+        //      to the shared connection Subscription
+        ///
+        var connection = this.connection;
+        var sharedConnection = connectable._connection;
+        this.connection = null;
+        if (sharedConnection && (!connection || sharedConnection === connection)) {
+            sharedConnection.unsubscribe();
+        }
+    };
+    return RefCountSubscriber;
+}(Subscriber_1.Subscriber));
+//# sourceMappingURL=refCount.js.map
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 37;
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+var core_1 = __webpack_require__(0);
+var LocalStorageService = /** @class */ (function () {
+    //@ngInject
+    function LocalStorageService() {
+    }
+    LocalStorageService.prototype.hasItem = function (key) {
+        //try catch to handle safari in private mode which does not allow localstorage
+        try {
+            return (window.localStorage.getItem(key)
+                && window.localStorage.getItem(key) !== null
+                && window.localStorage.getItem(key) !== "undefined");
+        }
+        catch (e) {
+            return false;
+        }
+    };
+    LocalStorageService.prototype.getItem = function (key) {
+        var value = window.localStorage.getItem(key);
+        if (value.charAt(0) === '{' || value.charAt(0) === '[') {
+            value = angular.fromJson(value);
+        }
+        return value;
+    };
+    LocalStorageService.prototype.setItem = function (key, data) {
+        //try catch to handle safari in private mode which does not allow localstorage
+        try {
+            if (angular.isObject(data) || angular.isArray(data)) {
+                data = angular.toJson(data);
+            }
+            window.localStorage.setItem(key, data);
+        }
+        catch (e) {
+        }
+    };
+    LocalStorageService = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [])
+    ], LocalStorageService);
+    return LocalStorageService;
+}());
+exports.LocalStorageService = LocalStorageService;
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseObject = /** @class */ (function () {
+    //@ngInject
+    function BaseObject($injector) {
+        var _this = this;
+        this.getService = function (serviceName) {
+            //return;
+            if (_this.$injector.has(serviceName)) {
+                //returns a generic service
+                return _this.$injector.get(serviceName);
+            }
+        };
+        this.getHibachiScope = function () {
+            return _this.getService('publicService');
+        };
+        this.getAppConfig = function () {
+            return _this.getService('appConfig');
+        };
+        this.$injector = $injector;
+        var constructorString = this.constructor.toString();
+        this.className = constructorString.match(/\w+/g)[1];
+    }
+    return BaseObject;
+}());
+exports.BaseObject = BaseObject;
+
+
+/***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -31835,7 +31838,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(0);
 var adminrequest_1 = __webpack_require__(91);
 var publicrequest_1 = __webpack_require__(92);
-var observerservice_1 = __webpack_require__(16);
+var observerservice_1 = __webpack_require__(8);
 var RequestService = /** @class */ (function () {
     //@ngInject
     function RequestService($injector, 
@@ -32306,7 +32309,7 @@ exports.RbKeyService = RbKeyService;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Subject_1 = __webpack_require__(15);
+var Subject_1 = __webpack_require__(16);
 __webpack_require__(102);
 __webpack_require__(115);
 var IStore = /** @class */ (function () {
@@ -33882,7 +33885,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var core_1 = __webpack_require__(0);
-var localstorageservice_1 = __webpack_require__(37);
+var localstorageservice_1 = __webpack_require__(38);
 var CacheService = /** @class */ (function () {
     //@ngInject
     function CacheService(localStorageService) {
@@ -33975,7 +33978,7 @@ exports.CacheService = CacheService;
 
 var Subscriber_1 = __webpack_require__(5);
 var rxSubscriber_1 = __webpack_require__(20);
-var Observer_1 = __webpack_require__(31);
+var Observer_1 = __webpack_require__(32);
 function toSubscriber(nextOrObserver, error, complete) {
     if (nextOrObserver) {
         if (nextOrObserver instanceof Subscriber_1.Subscriber) {
@@ -33999,7 +34002,7 @@ exports.toSubscriber = toSubscriber;
 
 "use strict";
 
-var errorObject_1 = __webpack_require__(30);
+var errorObject_1 = __webpack_require__(31);
 var tryCatchTarget;
 function tryCatcher() {
     try {
@@ -34098,9 +34101,9 @@ exports.noop = noop;
 "use strict";
 
 var Observable_1 = __webpack_require__(1);
-var ArrayObservable_1 = __webpack_require__(13);
-var isScheduler_1 = __webpack_require__(14);
-var mergeAll_1 = __webpack_require__(32);
+var ArrayObservable_1 = __webpack_require__(14);
+var isScheduler_1 = __webpack_require__(15);
+var mergeAll_1 = __webpack_require__(33);
 /* tslint:enable:max-line-length */
 /**
  * Creates an output Observable which concurrently emits all values from every
@@ -34373,9 +34376,9 @@ exports.MergeMapSubscriber = MergeMapSubscriber;
 "use strict";
 
 var root_1 = __webpack_require__(7);
-var isArrayLike_1 = __webpack_require__(33);
-var isPromise_1 = __webpack_require__(34);
-var isObject_1 = __webpack_require__(29);
+var isArrayLike_1 = __webpack_require__(34);
+var isPromise_1 = __webpack_require__(35);
+var isObject_1 = __webpack_require__(30);
 var Observable_1 = __webpack_require__(1);
 var iterator_1 = __webpack_require__(24);
 var InnerSubscriber_1 = __webpack_require__(70);
@@ -34578,8 +34581,8 @@ exports.share = share;
 "use strict";
 
 var multicast_1 = __webpack_require__(75);
-var refCount_1 = __webpack_require__(35);
-var Subject_1 = __webpack_require__(15);
+var refCount_1 = __webpack_require__(36);
+var Subject_1 = __webpack_require__(16);
 function shareSubjectFactory() {
     return new Subject_1.Subject();
 }
@@ -34678,11 +34681,11 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Subject_1 = __webpack_require__(15);
+var Subject_1 = __webpack_require__(16);
 var Observable_1 = __webpack_require__(1);
 var Subscriber_1 = __webpack_require__(5);
-var Subscription_1 = __webpack_require__(9);
-var refCount_1 = __webpack_require__(35);
+var Subscription_1 = __webpack_require__(11);
+var refCount_1 = __webpack_require__(36);
 /**
  * @class ConnectableObservable<T>
  */
@@ -34888,7 +34891,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Subscription_1 = __webpack_require__(9);
+var Subscription_1 = __webpack_require__(11);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -36389,7 +36392,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseentity_1 = __webpack_require__(10);
+var baseentity_1 = __webpack_require__(12);
 var Account = /** @class */ (function (_super) {
     __extends(Account, _super);
     function Account($injector) {
@@ -36427,7 +36430,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseentity_1 = __webpack_require__(10);
+var baseentity_1 = __webpack_require__(12);
 var Address = /** @class */ (function (_super) {
     __extends(Address, _super);
     function Address($injector) {
@@ -36457,7 +36460,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseentity_1 = __webpack_require__(10);
+var baseentity_1 = __webpack_require__(12);
 var Cart = /** @class */ (function (_super) {
     __extends(Cart, _super);
     //deprecated
@@ -36515,7 +36518,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
-var baseentity_1 = __webpack_require__(10);
+var baseentity_1 = __webpack_require__(12);
 var OrderItem = /** @class */ (function (_super) {
     __extends(OrderItem, _super);
     function OrderItem($injector) {
@@ -36562,7 +36565,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseentity_1 = __webpack_require__(10);
+var baseentity_1 = __webpack_require__(12);
 var Sku = /** @class */ (function (_super) {
     __extends(Sku, _super);
     function Sku($injector) {
@@ -36858,105 +36861,131 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseservice_1 = __webpack_require__(26);
+var baseservice_1 = __webpack_require__(27);
+var core_1 = __webpack_require__(0);
+var observerservice_1 = __webpack_require__(8);
 var SelectionService = /** @class */ (function (_super) {
     __extends(SelectionService, _super);
-    //@ngInject
     function SelectionService(observerService) {
         var _this = _super.call(this) || this;
         _this.observerService = observerService;
         _this._selection = {};
-        /* add current selectionid to main selection object*/
-        _this.createSelections = function (selectionid) {
-            _this._selection[selectionid] = {
-                allSelected: false,
-                ids: []
-            };
-        };
-        _this.radioSelection = function (selectionid, selection) {
-            _this.createSelections(selectionid);
-            _this._selection[selectionid].ids.push(selection);
-            _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
-        };
-        _this.addSelection = function (selectionid, selection) {
-            /*if allSelected flag is true addSelection will remove selection*/
-            if (_this.isAllSelected(selectionid)) {
-                var index = _this._selection[selectionid].ids.indexOf(selection);
-                if (index > -1) {
-                    _this._selection[selectionid].ids.splice(index, 1);
-                    _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
-                }
-            }
-            else if (!_this.hasSelection(selectionid, selection)) {
-                _this._selection[selectionid].ids.push(selection);
-                _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
-            }
-            console.info(_this._selection[selectionid]);
-        };
-        _this.setSelection = function (selectionid, selections) {
-            if (angular.isUndefined(_this._selection[selectionid])) {
-                _this.createSelections(selectionid);
-            }
-            _this._selection[selectionid].ids = selections;
-        };
-        _this.removeSelection = function (selectionid, selection) {
-            if (angular.isUndefined(_this._selection[selectionid])) {
-                return;
-            }
-            if (!_this.isAllSelected(selectionid)) {
-                var index = _this._selection[selectionid].ids.indexOf(selection);
-                if (index > -1) {
-                    _this._selection[selectionid].ids.splice(index, 1);
-                    _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'uncheck', selectionid: selectionid, selection: selection });
-                }
-                /*if allSelected flag is true removeSelection will add selection*/
-            }
-            else if (!_this.hasSelection(selectionid, selection)) {
-                _this._selection[selectionid].ids.push(selection);
-                _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'uncheck', selectionid: selectionid, selection: selection });
-            }
-            console.info(_this._selection[selectionid]);
-        };
-        _this.hasSelection = function (selectionid, selection) {
-            if (angular.isUndefined(_this._selection[selectionid])) {
-                return false;
-            }
-            return _this._selection[selectionid].ids.indexOf(selection) > -1;
-        };
-        _this.getSelections = function (selectionid) {
-            if (angular.isUndefined(_this._selection[selectionid])) {
-                _this.createSelections(selectionid);
-            }
-            return _this._selection[selectionid].ids;
-        };
-        _this.getSelectionCount = function (selectionid) {
-            if (angular.isUndefined(_this._selection[selectionid])) {
-                _this.createSelections(selectionid);
-            }
-            return _this._selection[selectionid].ids.length;
-        };
-        _this.clearSelection = function (selectionid) {
-            _this.createSelections(selectionid);
-            _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'clear' });
-            console.info(_this._selection[selectionid]);
-        };
-        _this.selectAll = function (selectionid) {
-            _this._selection[selectionid] = {
-                allSelected: true,
-                ids: []
-            };
-            _this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'selectAll' });
-            console.info(_this._selection[selectionid]);
-        };
-        _this.isAllSelected = function (selectionid) {
-            if (angular.isUndefined(_this._selection[selectionid])) {
-                _this.createSelections(selectionid);
-            }
-            return _this._selection[selectionid].allSelected;
-        };
         return _this;
     }
+    /* add current selectionid to main selection object*/
+    SelectionService.prototype.createSelections = function (selectionid) {
+        this._selection[selectionid] = {
+            allSelected: false,
+            ids: []
+        };
+    };
+    ;
+    SelectionService.prototype.radioSelection = function (selectionid, selection) {
+        this.createSelections(selectionid);
+        this._selection[selectionid].ids.push(selection);
+        this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
+        this.getSelections(selectionid);
+        this.getSelectionCount(selectionid);
+    };
+    ;
+    SelectionService.prototype.addSelection = function (selectionid, selection) {
+        /*if allSelected flag is true addSelection will remove selection*/
+        if (this.isAllSelected(selectionid)) {
+            var index = this._selection[selectionid].ids.indexOf(selection);
+            if (index > -1) {
+                this._selection[selectionid].ids.splice(index, 1);
+                this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
+            }
+        }
+        else if (!this.hasSelection(selectionid, selection)) {
+            this._selection[selectionid].ids.push(selection);
+            this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'check', selectionid: selectionid, selection: selection });
+        }
+        console.info(this._selection[selectionid]);
+    };
+    ;
+    SelectionService.prototype.setSelection = function (selectionid, selections) {
+        if (angular.isUndefined(this._selection[selectionid])) {
+            this.createSelections(selectionid);
+        }
+        this._selection[selectionid].ids = selections;
+    };
+    ;
+    SelectionService.prototype.removeSelection = function (selectionid, selection) {
+        if (angular.isUndefined(this._selection[selectionid])) {
+            return;
+        }
+        if (!this.isAllSelected(selectionid)) {
+            var index = this._selection[selectionid].ids.indexOf(selection);
+            if (index > -1) {
+                this._selection[selectionid].ids.splice(index, 1);
+                this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'uncheck', selectionid: selectionid, selection: selection });
+            }
+            /*if allSelected flag is true removeSelection will add selection*/
+        }
+        else if (!this.hasSelection(selectionid, selection)) {
+            this._selection[selectionid].ids.push(selection);
+            this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'uncheck', selectionid: selectionid, selection: selection });
+        }
+        console.info(this._selection[selectionid]);
+    };
+    ;
+    SelectionService.prototype.hasSelection = function (selectionid, selection) {
+        if (angular.isUndefined(this._selection[selectionid])) {
+            return false;
+        }
+        return this._selection[selectionid].ids.indexOf(selection) > -1;
+    };
+    ;
+    SelectionService.prototype.getSelections = function (selectionid) {
+        if (angular.isUndefined(this._selection[selectionid])) {
+            this.createSelections(selectionid);
+        }
+        return this._selection[selectionid].ids;
+    };
+    ;
+    SelectionService.prototype.getSelectionCount = function (selectionid) {
+        if (angular.isUndefined(this._selection[selectionid])) {
+            this.createSelections(selectionid);
+        }
+        return this._selection[selectionid].ids.length;
+    };
+    ;
+    SelectionService.prototype.clearSelection = function (selectionid) {
+        this.createSelections(selectionid);
+        this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'clear' });
+        console.info(this._selection[selectionid]);
+    };
+    ;
+    SelectionService.prototype.selectAll = function (selectionid) {
+        this._selection[selectionid] = {
+            allSelected: true,
+            ids: []
+        };
+        this.observerService.notify('swSelectionToggleSelection' + selectionid, { action: 'selectAll' });
+        console.info(this._selection[selectionid]);
+    };
+    ;
+    SelectionService.prototype.isAllSelected = function (selectionid) {
+        if (angular.isUndefined(this._selection[selectionid])) {
+            this.createSelections(selectionid);
+        }
+        return this._selection[selectionid].allSelected;
+    };
+    SelectionService = __decorate([
+        core_1.Injectable(),
+        __metadata("design:paramtypes", [observerservice_1.ObserverService])
+    ], SelectionService);
     return SelectionService;
 }(baseservice_1.BaseService));
 exports.SelectionService = SelectionService;
@@ -37350,12 +37379,25 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var TypeaheadStore = __webpack_require__(45);
+var core_1 = __webpack_require__(0);
+var observerservice_1 = __webpack_require__(8);
 var TypeaheadService = /** @class */ (function () {
     //@ngInject
     function TypeaheadService($timeout, observerService) {
-        var _this = this;
         this.$timeout = $timeout;
         this.observerService = observerService;
         this.typeaheadData = {};
@@ -37365,206 +37407,213 @@ var TypeaheadService = /** @class */ (function () {
         this.state = {
             typeaheadInstances: this.typeaheadStates
         };
-        /**
-         * The reducer is responsible for modifying the state of the state object into a new state.
-         */
-        this.typeaheadStateReducer = function (state, action) {
-            switch (action.type) {
-                case 'TYPEAHEAD_QUERY':
-                    //modify the state.
-                    return __assign({}, state, { action: action });
-                case 'TYPEAHEAD_USER_SELECTION':
-                    //passthrough - no state change. anyone subscribed can handle this.
-                    return __assign({}, state, { action: action });
-                default:
-                    return state;
-            }
-        };
-        this.getTypeaheadSelectionUpdateEvent = function (key) {
-            return "typeaheadSelectionUpdated" + key;
-        };
-        this.attachTypeaheadSelectionUpdateEvent = function (key, callback) {
-            _this.observerService.attach(callback, _this.getTypeaheadSelectionUpdateEvent(key));
-        };
-        this.notifyTypeaheadSelectionUpdateEvent = function (key, data) {
-            _this.observerService.notify(_this.getTypeaheadSelectionUpdateEvent(key), data);
-        };
-        this.setTypeaheadState = function (key, state) {
-            _this.typeaheadStates[key] = state;
-        };
-        this.getTypeaheadState = function (key) {
-            return _this.typeaheadStates[key];
-        };
-        this.getTypeaheadPrimaryIDPropertyName = function (key) {
-            return _this.getTypeaheadState(key).primaryIDPropertyName;
-        };
-        this.getIndexOfSelection = function (key, data) {
-            for (var j = 0; j < _this.getData(key).length; j++) {
-                if (angular.isDefined(data[_this.getTypeaheadPrimaryIDPropertyName(key)]) &&
-                    data[_this.getTypeaheadPrimaryIDPropertyName(key)] == _this.getData(key)[j][_this.getTypeaheadPrimaryIDPropertyName(key)]) {
-                    return j;
-                }
-                else if (_this.checkAgainstFallbackProperties(key, _this.getData(key)[j], data)) {
-                    return j;
-                }
-            }
-            return -1;
-        };
-        this.addSelection = function (key, data) {
-            if (angular.isUndefined(_this.typeaheadData[key])) {
-                _this.typeaheadData[key] = [];
-            }
-            _this.typeaheadData[key].push(data);
-            _this.notifyTypeaheadSelectionUpdateEvent(key, data);
-        };
-        this.removeSelection = function (key, index, data) {
-            if (angular.isUndefined(index) &&
-                angular.isDefined(data)) {
-                index = _this.getIndexOfSelection(key, data);
-            }
-            if (angular.isDefined(index) &&
-                angular.isDefined(_this.typeaheadData[key]) &&
-                index != -1) {
-                _this.updateSelections(key);
-                var removedItem = _this.typeaheadData[key].splice(index, 1)[0]; //this will always be an array of 1 element
-                _this.notifyTypeaheadSelectionUpdateEvent(key, removedItem);
-                return removedItem;
-            }
-        };
-        this.initializeSelections = function (key, selectedCollectionConfig) {
-            selectedCollectionConfig.setAllRecords(true);
-            _this.typeaheadPromises[key] = selectedCollectionConfig.getEntity();
-            _this.typeaheadPromises[key].then(function (data) {
-                for (var j = 0; j < data.records.length; j++) {
-                    _this.addSelection(key, data.records[j]);
-                }
-            }, function (reason) {
-                throw ("typeaheadservice had trouble intializing selections for " + key + " because " + reason);
-            });
-        };
-        this.updateSelections = function (key) {
-            if (angular.isDefined(_this.getData(key)) && _this.getData(key).length) {
-                for (var j = 0; j < _this.getTypeaheadState(key).results.length; j++) {
-                    for (var i = 0; i < _this.getData(key).length; i++) {
-                        if (_this.getData(key)[i][_this.getTypeaheadPrimaryIDPropertyName(key)] == _this.getTypeaheadState(key).results[j][_this.getTypeaheadPrimaryIDPropertyName(key)]) {
-                            _this.markResultSelected(_this.getTypeaheadState(key).results[j], i);
-                            break;
-                        }
-                        var found = _this.checkAgainstFallbackProperties(key, _this.getData(key)[i], _this.getTypeaheadState(key).results[j], i);
-                        if (found) {
-                            break;
-                        }
-                    }
-                }
-            }
-        };
-        this.markResultSelected = function (result, index) {
-            result.selected = true;
-            result.selectedIndex = index;
-        };
-        this.checkAgainstFallbackProperties = function (key, selection, result, selectionIndex) {
-            var resultPrimaryID = result[_this.getTypeaheadPrimaryIDPropertyName(key)];
-            //is there a singular property to compare against
-            if (angular.isDefined(_this.getTypeaheadState(key).propertyToCompare) &&
-                _this.getTypeaheadState(key).propertyToCompare.length) {
-                if (angular.isDefined(selection[_this.getTypeaheadState(key).propertyToCompare]) &&
-                    selection[_this.getTypeaheadState(key).propertyToCompare] == resultPrimaryID) {
-                    if (angular.isDefined(selectionIndex)) {
-                        _this.markResultSelected(result, selectionIndex);
-                    }
-                    return true;
-                }
-                if (angular.isDefined(selection[_this.getTypeaheadState(key).propertyToCompare]) &&
-                    angular.isDefined(result[_this.getTypeaheadState(key).propertyToCompare]) &&
-                    selection[_this.getTypeaheadState(key).propertyToCompare] == result[_this.getTypeaheadState(key).propertyToCompare]) {
-                    if (angular.isDefined(selectionIndex)) {
-                        _this.markResultSelected(result, selectionIndex);
-                    }
-                    return true;
-                }
-            }
-            //check the defined fallback properties to see if theres a match
-            if (_this.getTypeaheadState(key).fallbackPropertyArray.length > 0) {
-                for (var j = 0; j < _this.getTypeaheadState(key).fallbackPropertyArray.length; j++) {
-                    var property = _this.getTypeaheadState(key).fallbackPropertyArray[j];
-                    if (angular.isDefined(selection[property])) {
-                        if (selection[property] == resultPrimaryID) {
-                            if (angular.isDefined(selectionIndex)) {
-                                _this.markResultSelected(result, selectionIndex);
-                            }
-                            return true;
-                        }
-                        if (angular.isDefined(result[property]) &&
-                            selection[property] == result[property]) {
-                            if (angular.isDefined(selectionIndex)) {
-                                _this.markResultSelected(result, selectionIndex);
-                            }
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        };
-        this.updateSelectionList = function (key) {
-            var selectionIDArray = [];
-            if (angular.isDefined(_this.getData(key))) {
-                for (var j = 0; j < _this.getData(key).length; j++) {
-                    var selection = _this.getData(key)[j];
-                    var primaryID = selection[_this.getTypeaheadPrimaryIDPropertyName(key)];
-                    if (angular.isDefined(primaryID)) {
-                        selectionIDArray.push(primaryID);
-                    }
-                    else if (angular.isDefined(_this.getTypeaheadState(key).propertyToCompare) &&
-                        angular.isDefined(selection[_this.getTypeaheadState(key).propertyToCompare])) {
-                        selectionIDArray.push(selection[_this.getTypeaheadState(key).propertyToCompare]);
-                    }
-                    else if (angular.isDefined(_this.getTypeaheadState(key).fallbackPropertyArray)) {
-                        var fallbackPropertyArray = _this.getTypeaheadState(key).fallbackPropertyArray;
-                        for (var i = 0; i < fallbackPropertyArray.length; i++) {
-                            var fallbackProperty = fallbackPropertyArray[i];
-                            if (angular.isDefined(selection[fallbackProperty])) {
-                                selectionIDArray.push(selection[fallbackProperty]);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            return selectionIDArray.join(",");
-        };
-        this.getData = function (key) {
-            if (key in _this.typeaheadPromises) {
-                //wait until it's been intialized
-                _this.typeaheadPromises[key].then().finally(function () {
-                    return _this.typeaheadData[key] || [];
-                });
-                delete _this.typeaheadPromises[key];
-            }
-            else {
-                return _this.typeaheadData[key] || [];
-            }
-        };
-        //strips out dangerous directives that cause infinite compile errors 
-        // - this probably belongs in a different service but is used for typeahead only at the moment
-        this.stripTranscludedContent = function (transcludedContent) {
-            for (var i = 0; i < transcludedContent.length; i++) {
-                if (angular.isDefined(transcludedContent[i].localName) &&
-                    transcludedContent[i].localName == 'ng-transclude') {
-                    transcludedContent = transcludedContent.children();
-                }
-            }
-            //prevent collection config from being recompiled
-            for (var i = 0; i < transcludedContent.length; i++) {
-                if (angular.isDefined(transcludedContent[i].localName) &&
-                    transcludedContent[i].localName == 'sw-collection-config') {
-                    transcludedContent.splice(i, 1);
-                }
-            }
-            return transcludedContent;
-        };
         this.typeaheadStore = new TypeaheadStore.IStore(this.state, this.typeaheadStateReducer); //.combineLatest(this.loggerEpic)
     }
+    /**
+     * The reducer is responsible for modifying the state of the state object into a new state.
+     */
+    TypeaheadService.prototype.typeaheadStateReducer = function (state, action) {
+        switch (action.type) {
+            case 'TYPEAHEAD_QUERY':
+                //modify the state.
+                return __assign({}, state, { action: action });
+            case 'TYPEAHEAD_USER_SELECTION':
+                //passthrough - no state change. anyone subscribed can handle this.
+                return __assign({}, state, { action: action });
+            default:
+                return state;
+        }
+    };
+    TypeaheadService.prototype.getTypeaheadSelectionUpdateEvent = function (key) {
+        return "typeaheadSelectionUpdated" + key;
+    };
+    TypeaheadService.prototype.attachTypeaheadSelectionUpdateEvent = function (key, callback) {
+        this.observerService.attach(callback, this.getTypeaheadSelectionUpdateEvent(key));
+    };
+    TypeaheadService.prototype.notifyTypeaheadSelectionUpdateEvent = function (key, data) {
+        this.observerService.notify(this.getTypeaheadSelectionUpdateEvent(key), data);
+    };
+    TypeaheadService.prototype.setTypeaheadState = function (key, state) {
+        this.typeaheadStates[key] = state;
+    };
+    TypeaheadService.prototype.getTypeaheadState = function (key) {
+        return this.typeaheadStates[key];
+    };
+    TypeaheadService.prototype.getTypeaheadPrimaryIDPropertyName = function (key) {
+        return this.getTypeaheadState(key).primaryIDPropertyName;
+    };
+    TypeaheadService.prototype.getIndexOfSelection = function (key, data) {
+        for (var j = 0; j < this.getData(key).length; j++) {
+            if (angular.isDefined(data[this.getTypeaheadPrimaryIDPropertyName(key)]) &&
+                data[this.getTypeaheadPrimaryIDPropertyName(key)] == this.getData(key)[j][this.getTypeaheadPrimaryIDPropertyName(key)]) {
+                return j;
+            }
+            else if (this.checkAgainstFallbackProperties(key, this.getData(key)[j], data)) {
+                return j;
+            }
+        }
+        return -1;
+    };
+    TypeaheadService.prototype.addSelection = function (key, data) {
+        if (angular.isUndefined(this.typeaheadData[key])) {
+            this.typeaheadData[key] = [];
+        }
+        this.typeaheadData[key].push(data);
+        this.notifyTypeaheadSelectionUpdateEvent(key, data);
+    };
+    TypeaheadService.prototype.removeSelection = function (key, index, data) {
+        if (angular.isUndefined(index) &&
+            angular.isDefined(data)) {
+            index = this.getIndexOfSelection(key, data);
+        }
+        if (angular.isDefined(index) &&
+            angular.isDefined(this.typeaheadData[key]) &&
+            index != -1) {
+            this.updateSelections(key);
+            var removedItem = this.typeaheadData[key].splice(index, 1)[0]; //this will always be an array of 1 element
+            this.notifyTypeaheadSelectionUpdateEvent(key, removedItem);
+            return removedItem;
+        }
+    };
+    TypeaheadService.prototype.initializeSelections = function (key, selectedCollectionConfig) {
+        var _this = this;
+        selectedCollectionConfig.setAllRecords(true);
+        this.typeaheadPromises[key] = selectedCollectionConfig.getEntity();
+        this.typeaheadPromises[key].then(function (data) {
+            for (var j = 0; j < data.records.length; j++) {
+                _this.addSelection(key, data.records[j]);
+            }
+        }, function (reason) {
+            throw ("typeaheadservice had trouble intializing selections for " + key + " because " + reason);
+        });
+    };
+    TypeaheadService.prototype.updateSelections = function (key) {
+        if (angular.isDefined(this.getData(key)) && this.getData(key).length) {
+            for (var j = 0; j < this.getTypeaheadState(key).results.length; j++) {
+                for (var i = 0; i < this.getData(key).length; i++) {
+                    if (this.getData(key)[i][this.getTypeaheadPrimaryIDPropertyName(key)] == this.getTypeaheadState(key).results[j][this.getTypeaheadPrimaryIDPropertyName(key)]) {
+                        this.markResultSelected(this.getTypeaheadState(key).results[j], i);
+                        break;
+                    }
+                    var found = this.checkAgainstFallbackProperties(key, this.getData(key)[i], this.getTypeaheadState(key).results[j], i);
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+        }
+    };
+    TypeaheadService.prototype.markResultSelected = function (result, index) {
+        result.selected = true;
+        result.selectedIndex = index;
+    };
+    TypeaheadService.prototype.checkAgainstFallbackProperties = function (key, selection, result, selectionIndex) {
+        var resultPrimaryID = result[this.getTypeaheadPrimaryIDPropertyName(key)];
+        //is there a singular property to compare against
+        if (angular.isDefined(this.getTypeaheadState(key).propertyToCompare) &&
+            this.getTypeaheadState(key).propertyToCompare.length) {
+            if (angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare]) &&
+                selection[this.getTypeaheadState(key).propertyToCompare] == resultPrimaryID) {
+                if (angular.isDefined(selectionIndex)) {
+                    this.markResultSelected(result, selectionIndex);
+                }
+                return true;
+            }
+            if (angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare]) &&
+                angular.isDefined(result[this.getTypeaheadState(key).propertyToCompare]) &&
+                selection[this.getTypeaheadState(key).propertyToCompare] == result[this.getTypeaheadState(key).propertyToCompare]) {
+                if (angular.isDefined(selectionIndex)) {
+                    this.markResultSelected(result, selectionIndex);
+                }
+                return true;
+            }
+        }
+        //check the defined fallback properties to see if theres a match
+        if (this.getTypeaheadState(key).fallbackPropertyArray.length > 0) {
+            for (var j = 0; j < this.getTypeaheadState(key).fallbackPropertyArray.length; j++) {
+                var property = this.getTypeaheadState(key).fallbackPropertyArray[j];
+                if (angular.isDefined(selection[property])) {
+                    if (selection[property] == resultPrimaryID) {
+                        if (angular.isDefined(selectionIndex)) {
+                            this.markResultSelected(result, selectionIndex);
+                        }
+                        return true;
+                    }
+                    if (angular.isDefined(result[property]) &&
+                        selection[property] == result[property]) {
+                        if (angular.isDefined(selectionIndex)) {
+                            this.markResultSelected(result, selectionIndex);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    };
+    TypeaheadService.prototype.updateSelectionList = function (key) {
+        var selectionIDArray = [];
+        if (angular.isDefined(this.getData(key))) {
+            for (var j = 0; j < this.getData(key).length; j++) {
+                var selection = this.getData(key)[j];
+                var primaryID = selection[this.getTypeaheadPrimaryIDPropertyName(key)];
+                if (angular.isDefined(primaryID)) {
+                    selectionIDArray.push(primaryID);
+                }
+                else if (angular.isDefined(this.getTypeaheadState(key).propertyToCompare) &&
+                    angular.isDefined(selection[this.getTypeaheadState(key).propertyToCompare])) {
+                    selectionIDArray.push(selection[this.getTypeaheadState(key).propertyToCompare]);
+                }
+                else if (angular.isDefined(this.getTypeaheadState(key).fallbackPropertyArray)) {
+                    var fallbackPropertyArray = this.getTypeaheadState(key).fallbackPropertyArray;
+                    for (var i = 0; i < fallbackPropertyArray.length; i++) {
+                        var fallbackProperty = fallbackPropertyArray[i];
+                        if (angular.isDefined(selection[fallbackProperty])) {
+                            selectionIDArray.push(selection[fallbackProperty]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return selectionIDArray.join(",");
+    };
+    TypeaheadService.prototype.getData = function (key) {
+        var _this = this;
+        if (key in this.typeaheadPromises) {
+            //wait until it's been intialized
+            this.typeaheadPromises[key].then().finally(function () {
+                return _this.typeaheadData[key] || [];
+            });
+            delete this.typeaheadPromises[key];
+        }
+        else {
+            return this.typeaheadData[key] || [];
+        }
+    };
+    //strips out dangerous directives that cause infinite compile errors 
+    // - this probably belongs in a different service but is used for typeahead only at the moment
+    TypeaheadService.prototype.stripTranscludedContent = function (transcludedContent) {
+        for (var i = 0; i < transcludedContent.length; i++) {
+            if (angular.isDefined(transcludedContent[i].localName) &&
+                transcludedContent[i].localName == 'ng-transclude') {
+                transcludedContent = transcludedContent.children();
+            }
+        }
+        //prevent collection config from being recompiled
+        for (var i = 0; i < transcludedContent.length; i++) {
+            if (angular.isDefined(transcludedContent[i].localName) &&
+                transcludedContent[i].localName == 'sw-collection-config') {
+                transcludedContent.splice(i, 1);
+            }
+        }
+        return transcludedContent;
+    };
+    TypeaheadService = __decorate([
+        core_1.Injectable(),
+        __param(0, core_1.Inject("$timeout")),
+        __metadata("design:paramtypes", [Object, observerservice_1.ObserverService])
+    ], TypeaheadService);
     return TypeaheadService;
 }());
 exports.TypeaheadService = TypeaheadService;
@@ -37619,11 +37668,11 @@ exports.startWith = startWith;
 
 "use strict";
 
-var ArrayObservable_1 = __webpack_require__(13);
+var ArrayObservable_1 = __webpack_require__(14);
 var ScalarObservable_1 = __webpack_require__(22);
 var EmptyObservable_1 = __webpack_require__(23);
 var concat_1 = __webpack_require__(105);
-var isScheduler_1 = __webpack_require__(14);
+var isScheduler_1 = __webpack_require__(15);
 /* tslint:enable:max-line-length */
 /**
  * Returns an Observable that emits the items you specify as arguments before it begins to emit
@@ -37673,7 +37722,7 @@ exports.startWith = startWith;
 
 "use strict";
 
-var isScheduler_1 = __webpack_require__(14);
+var isScheduler_1 = __webpack_require__(15);
 var of_1 = __webpack_require__(106);
 var from_1 = __webpack_require__(107);
 var concatAll_1 = __webpack_require__(114);
@@ -37790,7 +37839,7 @@ exports.concat = concat;
 
 "use strict";
 
-var ArrayObservable_1 = __webpack_require__(13);
+var ArrayObservable_1 = __webpack_require__(14);
 exports.of = ArrayObservable_1.ArrayObservable.of;
 //# sourceMappingURL=of.js.map
 
@@ -37815,12 +37864,12 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var isArray_1 = __webpack_require__(28);
-var isArrayLike_1 = __webpack_require__(33);
-var isPromise_1 = __webpack_require__(34);
+var isArray_1 = __webpack_require__(29);
+var isArrayLike_1 = __webpack_require__(34);
+var isPromise_1 = __webpack_require__(35);
 var PromiseObservable_1 = __webpack_require__(109);
 var IteratorObservable_1 = __webpack_require__(110);
-var ArrayObservable_1 = __webpack_require__(13);
+var ArrayObservable_1 = __webpack_require__(14);
 var ArrayLikeObservable_1 = __webpack_require__(111);
 var iterator_1 = __webpack_require__(24);
 var Observable_1 = __webpack_require__(1);
@@ -38564,7 +38613,7 @@ exports.Notification = Notification;
 
 "use strict";
 
-var mergeAll_1 = __webpack_require__(32);
+var mergeAll_1 = __webpack_require__(33);
 /**
  * Converts a higher-order Observable into a first-order Observable by
  * concatenating the inner Observables in order.
@@ -40056,10 +40105,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 var baseentityservice_1 = __webpack_require__(6);
+var core_1 = __webpack_require__(0);
+var hibachiservice_1 = __webpack_require__(26);
+var utilityservice_1 = __webpack_require__(9);
 var EntityService = /** @class */ (function (_super) {
     __extends(EntityService, _super);
     //@ngInject
@@ -40070,6 +40134,12 @@ var EntityService = /** @class */ (function (_super) {
         _this.utilityService = utilityService;
         return _this;
     }
+    EntityService = __decorate([
+        core_1.Injectable(),
+        __param(0, core_1.Inject("$injector")),
+        __metadata("design:paramtypes", [Object, hibachiservice_1.$Hibachi,
+            utilityservice_1.UtilityService])
+    ], EntityService);
     return EntityService;
 }(baseentityservice_1.BaseEntityService));
 exports.EntityService = EntityService;
@@ -49948,7 +50018,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //import alertmodule = require('./alert/alert.module');
-var alert_module_1 = __webpack_require__(8);
+var alert_module_1 = __webpack_require__(10);
 var card_module_1 = __webpack_require__(48);
 var collection_module_1 = __webpack_require__(18);
 var listing_module_1 = __webpack_require__(49);
@@ -49958,7 +50028,7 @@ var pagination_module_1 = __webpack_require__(51);
 var form_module_1 = __webpack_require__(52);
 var validation_module_1 = __webpack_require__(54);
 var workflow_module_1 = __webpack_require__(55);
-var alert_module_2 = __webpack_require__(8);
+var alert_module_2 = __webpack_require__(10);
 var card_module_2 = __webpack_require__(48);
 var collection_module_2 = __webpack_require__(18);
 var listing_module_2 = __webpack_require__(49);
@@ -58531,8 +58601,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="../../../typings/tsd.d.ts" />
 /// <reference path="../../../typings/hibachiTypescript.d.ts" />
 /*collection service is used to maintain the state of the ui*/
-var observerservice_1 = __webpack_require__(16);
-var utilityservice_1 = __webpack_require__(11);
+var observerservice_1 = __webpack_require__(8);
+var utilityservice_1 = __webpack_require__(9);
 var core_1 = __webpack_require__(0);
 var Pagination = /** @class */ (function () {
     function Pagination(observerService, uuid) {
@@ -58816,7 +58886,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(0);
-var observerservice_1 = __webpack_require__(16);
+var observerservice_1 = __webpack_require__(8);
 var FileService = /** @class */ (function () {
     function FileService($q, observerService) {
         this.observerService = observerService;
@@ -63243,8 +63313,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 //modules
-var alert_module_1 = __webpack_require__(8);
-var alert_module_2 = __webpack_require__(8);
+var alert_module_1 = __webpack_require__(10);
+var alert_module_2 = __webpack_require__(10);
 var core_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(2);
 var static_1 = __webpack_require__(4);
