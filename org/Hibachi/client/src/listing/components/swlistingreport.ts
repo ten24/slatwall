@@ -2,6 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 import { Chart, ChartData, Point } from 'chart.js';
 class SWListingReportController {
+    public selectedCollectionID:string;
+    public collectionName:string;
     public tableId:string;
     public periodColumns:any;
     public collectionConfig:any;
@@ -193,18 +195,10 @@ class SWListingReportController {
         }
     };
     
-    public removeFilterGroupDates=(){
-        console.log(this.collectionConfig.filterGroups);
-        for(var i in this.collectionConfig.filterGroups[0].filterGroup){
-            if(this.collectionConfig.filterGroups[0].filterGroup[i].isHidden){
-                this.collectionConfig.filterGroups[0].filterGroup.splice(i,1);
-            }
-        }
-    }
+    
     
     public updatePeriod = ()=>{
         //if we have all the info we need then we can make a report
-        
         if(
             this.selectedPeriodColumn 
             && this.selectedPeriodInterval
@@ -230,7 +224,7 @@ class SWListingReportController {
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
             this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
                 
-            this.removeFilterGroupDates();
+            this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
             this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
             this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
                 

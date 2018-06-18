@@ -439,13 +439,10 @@ class CollectionConfig {
         return this;
     };
 
-
     public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
         this.addDisplayProperty(propertyIdentifier, title, options);
         return this;
     };
-    
-   
 
     public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias?:string,options?)=>{
         if(angular.isUndefined(aggregateAlias)){
@@ -500,8 +497,7 @@ class CollectionConfig {
         isOnlyKeywordFilter=false,
         filterGroupAlias? : string,
         filterGroupLogicalOperator:string='AND'
-        )
-        :CollectionConfig =>{
+    ):CollectionConfig =>{
         if(!this.filterGroups[0].filterGroup.length){
             logicalOperator = undefined;
         }
@@ -513,24 +509,19 @@ class CollectionConfig {
 		
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
         var filterGroupIndex = 0;
+        var filterGroup = this.filterGroups[0].filterGroup;
         if(filterGroupAlias){
-            filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias,filterGroupLogicalOperator);
+            filterGroup = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
+            this.filterGroupAliasMap[filterGroupAlias] = this.filterGroups[0].filterGroup.length-1;
+            filterGroupIndex = this.filterGroups[0].filterGroup.length-1;
+        }
+        if(filterGroup.filterGroup){
+            filterGroup.filterGroup.push(filter);
+        }else{
+            
+            filterGroup.push(filter);
         }
         
-        if(!isOnlyKeywordFilter){
-            if(filterGroupIndex == 0){
-                this.filterGroups[filterGroupIndex].filterGroup.push(filter);
-            }else{
-                this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
-            }
-        }
-        if(isKeywordFilter){
-            if(filterGroupIndex == 0){
-                this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
-            }else{
-                //this.keywordFilterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
-            }
-        }
         this.notify('collectionConfigUpdated', {
             collectionConfig: this
         });
@@ -637,37 +628,41 @@ class CollectionConfig {
         return group;
     }
     
-    public removeFilterGroupByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
-        var filterGroupIndex = this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias,filterGroupLogicalOperator);
-        if(filterGroupIndex != -1){
-            this.filterGroups[0].filterGroup.splice(filterGroupIndex,1);  
+    public removeFilterGroupByFilterGroupAlias = ( filterGroupAlias:string):any =>{
+        
+        for(var i in this.filterGroups[0].filterGroup){
+            if(
+                this.filterGroups[0].filterGroup[i].filterGroupAlias 
+                && this.filterGroups[0].filterGroup[i].filterGroupAlias == filterGroupAlias
+            ){
+                this.filterGroups[0].filterGroup.splice(i,1);  
+                break
+            }
         }
     };
 
     public getFilterGroupIndexByFilterGroupAlias = ( filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
-        try{
-            if(!this.filterGroups){
-                this.filterGroups = [{filterGroup:[]}];
-            }
-            if(this.filterGroupAliasMap[filterGroupAlias] == undefined){
-                this.filterGroupAliasMap[filterGroupAlias] = this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
-            }
-            return this.filterGroupAliasMap[filterGroupAlias];
-        }catch(e){
-            console.log('getFilterGroupIndexByFilterGroupAlias not found');
-            return -1;
+        if(!this.filterGroups){
+            this.filterGroups = [{filterGroup:[]}];
         }
+        return this.filterGroupAliasMap[filterGroupAlias];
     };
 
-    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator?:string):number =>{
+    public addFilterGroupWithAlias = (filterGroupAlias:string, filterGroupLogicalOperator?:string):any =>{
+        for(var i in this.filterGroups[0].filterGroup){
+            if(this.filterGroups[0].filterGroup[i].filterGroupAlias){
+                return this.filterGroups[0].filterGroup[i];
+            }
+        }
         var newFilterGroup = {"filterGroup": []};
-        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0){
+        if(angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0 && this.filterGroups[0].filterGroup.length > 1){
             newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
-        }else if (this.filterGroups[0].filterGroup.length){
+        }else if (this.filterGroups[0].filterGroup.length > 1){
             newFilterGroup["logicalOperator"] = "AND";
         }
+        newFilterGroup['filterGroupAlias'] = filterGroupAlias;
         this.filterGroups[0].filterGroup.push(newFilterGroup);
-        return this.filterGroups[0].filterGroup.length-1;
+        return newFilterGroup;
     };
 
     public upsertFilterGroup = (filterGroupName:string, filterGroup:any):CollectionConfig=>{

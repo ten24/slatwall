@@ -72492,24 +72492,17 @@ var CollectionConfig = /** @class */ (function () {
             //create filter
             var filter = _this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
             var filterGroupIndex = 0;
+            var filterGroup = _this.filterGroups[0].filterGroup;
             if (filterGroupAlias) {
-                filterGroupIndex = _this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias, filterGroupLogicalOperator);
+                filterGroup = _this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
+                _this.filterGroupAliasMap[filterGroupAlias] = _this.filterGroups[0].filterGroup.length - 1;
+                filterGroupIndex = _this.filterGroups[0].filterGroup.length - 1;
             }
-            if (!isOnlyKeywordFilter) {
-                if (filterGroupIndex == 0) {
-                    _this.filterGroups[filterGroupIndex].filterGroup.push(filter);
-                }
-                else {
-                    _this.filterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
-                }
+            if (filterGroup.filterGroup) {
+                filterGroup.filterGroup.push(filter);
             }
-            if (isKeywordFilter) {
-                if (filterGroupIndex == 0) {
-                    _this.keywordFilterGroups[filterGroupIndex].filterGroup.push(filter);
-                }
-                else {
-                    //this.keywordFilterGroups[0].filterGroup[filterGroupIndex].filterGroup.push(filter);
-                }
+            else {
+                filterGroup.push(filter);
             }
             _this.notify('collectionConfigUpdated', {
                 collectionConfig: _this
@@ -72581,37 +72574,37 @@ var CollectionConfig = /** @class */ (function () {
             }
             return group;
         };
-        this.removeFilterGroupByFilterGroupAlias = function (filterGroupAlias, filterGroupLogicalOperator) {
-            var filterGroupIndex = _this.getFilterGroupIndexByFilterGroupAlias(filterGroupAlias, filterGroupLogicalOperator);
-            if (filterGroupIndex != -1) {
-                _this.filterGroups[0].filterGroup.splice(filterGroupIndex, 1);
+        this.removeFilterGroupByFilterGroupAlias = function (filterGroupAlias) {
+            for (var i in _this.filterGroups[0].filterGroup) {
+                if (_this.filterGroups[0].filterGroup[i].filterGroupAlias
+                    && _this.filterGroups[0].filterGroup[i].filterGroupAlias == filterGroupAlias) {
+                    _this.filterGroups[0].filterGroup.splice(i, 1);
+                    break;
+                }
             }
         };
         this.getFilterGroupIndexByFilterGroupAlias = function (filterGroupAlias, filterGroupLogicalOperator) {
-            try {
-                if (!_this.filterGroups) {
-                    _this.filterGroups = [{ filterGroup: [] }];
-                }
-                if (_this.filterGroupAliasMap[filterGroupAlias] == undefined) {
-                    _this.filterGroupAliasMap[filterGroupAlias] = _this.addFilterGroupWithAlias(filterGroupAlias, filterGroupLogicalOperator);
-                }
-                return _this.filterGroupAliasMap[filterGroupAlias];
+            if (!_this.filterGroups) {
+                _this.filterGroups = [{ filterGroup: [] }];
             }
-            catch (e) {
-                console.log('getFilterGroupIndexByFilterGroupAlias not found');
-                return -1;
-            }
+            return _this.filterGroupAliasMap[filterGroupAlias];
         };
         this.addFilterGroupWithAlias = function (filterGroupAlias, filterGroupLogicalOperator) {
+            for (var i in _this.filterGroups[0].filterGroup) {
+                if (_this.filterGroups[0].filterGroup[i].filterGroupAlias) {
+                    return _this.filterGroups[0].filterGroup[i];
+                }
+            }
             var newFilterGroup = { "filterGroup": [] };
-            if (angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0) {
+            if (angular.isDefined(filterGroupLogicalOperator) && filterGroupLogicalOperator.length > 0 && _this.filterGroups[0].filterGroup.length > 1) {
                 newFilterGroup["logicalOperator"] = filterGroupLogicalOperator;
             }
-            else if (_this.filterGroups[0].filterGroup.length) {
+            else if (_this.filterGroups[0].filterGroup.length > 1) {
                 newFilterGroup["logicalOperator"] = "AND";
             }
+            newFilterGroup['filterGroupAlias'] = filterGroupAlias;
             _this.filterGroups[0].filterGroup.push(newFilterGroup);
-            return _this.filterGroups[0].filterGroup.length - 1;
+            return newFilterGroup;
         };
         this.upsertFilterGroup = function (filterGroupName, filterGroup) {
             var filterGroupIndex = _this.getFilterGroupIndexByFilterGroupAlias(filterGroupName);
@@ -86994,14 +86987,6 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
         };
-        this.removeFilterGroupDates = function () {
-            console.log(_this.collectionConfig.filterGroups);
-            for (var i in _this.collectionConfig.filterGroups[0].filterGroup) {
-                if (_this.collectionConfig.filterGroups[0].filterGroup[i].isHidden) {
-                    _this.collectionConfig.filterGroups[0].filterGroup.splice(i, 1);
-                }
-            }
-        };
         this.updatePeriod = function () {
             //if we have all the info we need then we can make a report
             if (_this.selectedPeriodColumn
@@ -87025,7 +87010,7 @@ var SWListingReportController = /** @class */ (function () {
                 _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
                 _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                 _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
-                _this.removeFilterGroupDates();
+                _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                 _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                 _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
                 _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
