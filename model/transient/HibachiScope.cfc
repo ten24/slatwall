@@ -279,6 +279,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		arguments.entityName = lcase(arguments.entityName);
 		if (!structKeyExists(variables.routeEntity, "#arguments.entityName#")) {
 			variables.routeEntity[arguments.entityName] = arguments.entity;
+			variables[arguments.entityName] = arguments.entity;
 		}
 	}
 	

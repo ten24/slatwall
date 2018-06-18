@@ -103,6 +103,9 @@ Notes:
 		<cfif attribute.getAttributeInputType() EQ "date">
 			<cfset fdAttributes.value = DateFormat(fdAttributes.value,"mmm dd, yyyy")>
 		</cfif>
+		<cfif attribute.getAttributeInputType() EQ "dateTime">
+			<cfset fdAttributes.value = DateTimeFormat(fdAttributes.value,"mmm dd, yyyy hh:nn tt")>
+		</cfif>
 		<!---Setup Value Options --->
 		<cfif attributes.edit>
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
