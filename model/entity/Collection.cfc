@@ -3687,8 +3687,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function setCollectionConfigStruct(required struct collectionConfigStruct){
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
 		if(structKeyExists(arguments.collectionConfigStruct,'filterGroups')){
-			for(var filter in variables.collectionConfigStruct['filterGroups'][1].filterGroup){
-				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+			convertFilterGroupPropertyIdentifiers(arguments.collectionConfigStruct['filterGroups'][1]); 	
+		}
+	}
+
+	private void function convertFilterGroupPropertyIdentifiers(required struct filterGroupConfig){
+		if(structKeyExists(arguments.filterGroupConfig, 'filterGroup')){
+			for(var filter in filterGroupConfig.filterGroup){
+				if(structKeyExists(filter, 'propertyIdentifier')){ 
+					var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+				} else if(structKeyExists(filter, 'filterGroup')) { 
+					convertFilterGroupPropertyIdentifiers(filter); 	
+				} 
 			}
 		}
 	}
