@@ -23,7 +23,7 @@ jobs:
       #    command: cd meta/docker/slatwall-ci && docker-compose exec slatwallweb ant -f /var/www/meta/tests/build.xml run-junit -Dslatwall.outputfile "results" -Dtest.directory "meta.tests.unit";
       #    no_output_timeout: 1800s
       - run:
-        command: http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/tests.xml
+        command: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/tests.xml
       - store_test_results:
           path: /tmp/circleci-test-results
       # Save artifacts
