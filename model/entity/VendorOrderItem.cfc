@@ -97,7 +97,10 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	
 	public numeric function getPrice(){
 		if( !structKeyExists(variables,"price") ){
-			if(getCurrencyCode() == getSku().getCurrencyCode()){
+			if( !isNull(getCurrencyCode()) && 
+				!isNull(getSku().getCurrencyCode()) && 
+				getCurrencyCode() == getSku().getCurrencyCode()
+			){
 				variables.price = !isNull(getSku().getPrice()) ? getSku().getPrice() : 0; 
 			}else{
 				var skuPrice = getSku().getLivePriceByCurrencyCode(getCurrencyCode());

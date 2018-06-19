@@ -88,15 +88,30 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var vendorOrderItemData = {
 			vendorOrderItemID="",
+			sku={
+				skuID=sku.getSkuID()
+			},
 			stock={
 				stockid=stock.getStockID()
 			}
 		};
 		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
 		
-		
+		var vendorData = {
+			vendorID='',
+			products=[
+				{
+					productID=product.getProductID()
+				}
+			]
+		};
+		var vendor = createPersistedTestEntity('vendor',vendorData);
+	
 		var vendorOrderData = {
 			vendorOrderID="",
+			vendor={
+				vendorID=vendor.getVendorID()
+			},
 			vendorOrderItems=[
 				{
 					quantity=5,
