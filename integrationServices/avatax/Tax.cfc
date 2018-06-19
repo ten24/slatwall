@@ -141,6 +141,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		
 		// Loop over each unique tax address
 		var addressIndex = 1;
+		var referenceObjectTypeHashMap = {};
+
 		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
 			addressIndex ++;
@@ -185,6 +187,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					}
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
+					
+					StructInsert(referenceObjectTypeHashMap, item.getOrderItemID(), 'OrderItem');
 
 					
 				}else if (item.getReferenceObjectType() == 'OrderFulfillment' && item.getOrderFulfillment().hasOrderFulfillmentItem()){
@@ -199,6 +203,8 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 					itemData.Amount = item.getPrice();
 					
 					arrayAppend(requestDataStruct.Lines, itemData);
+					
+					StructInsert(referenceObjectTypeHashMap, item.getOrderFulfillmentID(), 'OrderFulfillment');
 
 				}
 			}
@@ -231,7 +237,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		if (IsJSON(responseData.FileContent)){
 			
 			var fileContent = DeserializeJSON(responseData.FileContent);
-
+			
 			if (fileContent.resultCode == 'Error'){
 				responseBean.setData(fileContent.messages);
 			}
@@ -251,18 +257,16 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 						// Loop over the details of that taxAmount
 						for(var taxDetail in taxLine.TaxDetails) {
 							// For each detail make sure that it is applied to this item
-							if(taxDetail.Tax > 0) {
-								
-								// Add the details of the taxes charged
+							if(taxDetail.Tax > 0 && structKeyExists(referenceObjectTypeHashMap, taxLine.LineNo )) {
 								responseBean.addTaxRateItem(
-									orderItemId = taxLine.LineNo,
+									referenceObjectID = taxLine.LineNo,
 									taxAmount = taxDetail.Tax, 
 									taxRate = taxDetail.Rate * 100,
 									taxJurisdictionName=taxDetail.JurisName,
 									taxJurisdictionType=taxDetail.JurisType,
-									taxImpositionName=taxDetail.TaxName
+									taxImpositionName=taxDetail.TaxName,
+									referenceObjectType = referenceObjectTypeHashMap['#taxLine.LineNo#']
 								);
-									
 							}
 						}
 					}
@@ -271,7 +275,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		}else{
 			responseBean.setData(responseData.Responseheader.Explanation);
 		}
-		
+
 		return responseBean;
 	}
 	
