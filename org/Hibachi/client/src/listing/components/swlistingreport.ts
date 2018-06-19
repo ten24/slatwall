@@ -119,7 +119,7 @@ class SWListingReportController {
         this.compareReportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDateCompare,'<=','AND',true,true,false,'dates');
         
         this.compareReportCollectionConfig.getEntity().then((reportingData)=>{
-           this.compareReportingData = reportingData;
+           /*this.compareReportingData = reportingData;
            this.compareReportingData.records.forEach(element=>{
                if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
                   this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
@@ -128,7 +128,7 @@ class SWListingReportController {
 			this.reportCollectionConfig.columns.forEach(column=>{
 			    if(column.isMetric){
 			        let color = this.random_rgba();
-			        let title = `${column.title} (${this.startDateCompare.toDateString()} - ${this.endDateCompare.toDateString()})`;
+			        let title = `${column.title} (${this.startDateCompare.toDateString()} - ${new Date(this.endDateCompare).toDateString()})`;
 			        let metrics = [];
 			        this.compareReportingData.records.forEach(element=>{
 			             metrics.push(
@@ -150,7 +150,9 @@ class SWListingReportController {
 			        );
 			    }
 			});
-			this.chart.update();
+			this.chart.update();*/
+			var ctx = $("#myChartCompare");
+			this.renderReport(reportingData,ctx)
         });
     }
     
@@ -238,14 +240,20 @@ class SWListingReportController {
             this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
             
             this.reportCollectionConfig.getEntity().then((reportingData)=>{
-    			this.renderReport(reportingData);
+                var ctx = $("#myChart");
+    			this.renderReport(reportingData,ctx);
+    			if(this.startDateCompare){
+                    var diff = Math.abs(this.endDate - this.startDate);
+                    this.endDateCompare = new Date(this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
+                    this.updateComparePeriod();
+                }
             });
+            
         }
     }
 
-    public renderReport=(reportingData)=>{
+    public renderReport=(reportingData,ctx)=>{
         this.reportingData = reportingData;
-        var ctx = $("#myChart");
 		var dates = [];
 		var datasets = [];
 		this.reportingData.records.forEach(element=>{
@@ -303,9 +311,6 @@ class SWListingReportController {
             }
         });
         this.chart.draw();
-        if(this.endDateCompare && this.startDateCompare){
-            this.updateComparePeriod();
-        }
     }
     
     public getPeriodColumns=()=>{

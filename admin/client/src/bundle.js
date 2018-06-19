@@ -86922,34 +86922,40 @@ var SWListingReportController = /** @class */ (function () {
             _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDateCompare, '>=', 'AND', true, true, false, 'dates');
             _this.compareReportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDateCompare, '<=', 'AND', true, true, false, 'dates');
             _this.compareReportCollectionConfig.getEntity().then(function (reportingData) {
-                _this.compareReportingData = reportingData;
-                _this.compareReportingData.records.forEach(function (element) {
-                    if (!_this.chart.data.labels.includes(element[_this.selectedPeriodColumn.name])) {
-                        _this.chart.data.labels.push(element[_this.selectedPeriodColumn.name]);
+                /*this.compareReportingData = reportingData;
+                this.compareReportingData.records.forEach(element=>{
+                    if(!this.chart.data.labels.includes(element[this.selectedPeriodColumn.name])){
+                       this.chart.data.labels.push(element[this.selectedPeriodColumn.name]);
                     }
                 });
-                _this.reportCollectionConfig.columns.forEach(function (column) {
-                    if (column.isMetric) {
-                        var color = _this.random_rgba();
-                        var title = column.title + " (" + _this.startDateCompare.toDateString() + " - " + _this.endDateCompare.toDateString() + ")";
-                        var metrics_1 = [];
-                        _this.compareReportingData.records.forEach(function (element) {
-                            metrics_1.push({
-                                y: element[column.aggregate.aggregateAlias],
-                                x: element[_this.selectedPeriodColumn.name]
-                            });
-                        });
-                        _this.chart.data.datasets.push({
-                            label: title,
-                            data: metrics_1,
-                            backgroundColor: color,
-                            borderColor: color,
-                            borderWidth: 2,
-                            fill: false
-                        });
-                    }
-                });
-                _this.chart.update();
+                 this.reportCollectionConfig.columns.forEach(column=>{
+                     if(column.isMetric){
+                         let color = this.random_rgba();
+                         let title = `${column.title} (${this.startDateCompare.toDateString()} - ${new Date(this.endDateCompare).toDateString()})`;
+                         let metrics = [];
+                         this.compareReportingData.records.forEach(element=>{
+                              metrics.push(
+                                     {
+                                         y:element[column.aggregate.aggregateAlias],
+                                         x:element[this.selectedPeriodColumn.name]
+                                     }
+                           )
+                         });
+                         this.chart.data.datasets.push(
+                             {
+                             label:title,
+                             data:metrics,
+                             backgroundColor:color,
+                             borderColor:color,
+                             borderWidth: 2,
+                             fill:false
+                             }
+                         );
+                     }
+                 });
+                 this.chart.update();*/
+                var ctx = $("#myChartCompare");
+                _this.renderReport(reportingData, ctx);
             });
         };
         //decides if report comes from persisted collection or transient
@@ -87021,13 +87027,18 @@ var SWListingReportController = /** @class */ (function () {
                 _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
                 _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
                 _this.reportCollectionConfig.getEntity().then(function (reportingData) {
-                    _this.renderReport(reportingData);
+                    var ctx = $("#myChart");
+                    _this.renderReport(reportingData, ctx);
+                    if (_this.startDateCompare) {
+                        var diff = Math.abs(_this.endDate - _this.startDate);
+                        _this.endDateCompare = new Date(_this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
+                        _this.updateComparePeriod();
+                    }
                 });
             }
         };
-        this.renderReport = function (reportingData) {
+        this.renderReport = function (reportingData, ctx) {
             _this.reportingData = reportingData;
-            var ctx = $("#myChart");
             var dates = [];
             var datasets = [];
             _this.reportingData.records.forEach(function (element) {
@@ -87037,16 +87048,16 @@ var SWListingReportController = /** @class */ (function () {
                 if (column.isMetric) {
                     var color = _this.random_rgba();
                     var title = column.title + " (" + (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate) + ")";
-                    var metrics_2 = [];
+                    var metrics_1 = [];
                     _this.reportingData.records.forEach(function (element) {
-                        metrics_2.push({
+                        metrics_1.push({
                             y: element[column.aggregate.aggregateAlias],
                             x: element[_this.selectedPeriodColumn.name]
                         });
                     });
                     datasets.push({
                         label: title,
-                        data: metrics_2,
+                        data: metrics_1,
                         backgroundColor: color,
                         borderColor: color,
                         borderWidth: 2,
@@ -87080,9 +87091,6 @@ var SWListingReportController = /** @class */ (function () {
                 }
             });
             _this.chart.draw();
-            if (_this.endDateCompare && _this.startDateCompare) {
-                _this.updateComparePeriod();
-            }
         };
         this.getPeriodColumns = function () {
             var rootColumns = {};
