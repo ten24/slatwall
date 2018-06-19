@@ -88,7 +88,7 @@ Notes:
 	</cffunction>
 	
 	<cffunction name = "getAttributeDataQueryByCustomPropertyFlag" returnType = "query">
-		<cfquery name = "attributeDataQuery">
+		<cfquery name = "local.attributeDataQuery">
 				SELECT
 					att.attributeCode, att.attributeInputType, att.relatedObject, att.typeSetID, attset.attributeSetObject
 				FROM
@@ -99,7 +99,7 @@ Notes:
 					att.customPropertyFlag = 1 AND att.activeFlag = 1 AND attset.activeFlag = 1
 		
 		</cfquery>
-		<cfreturn attributeDataQuery/>
+		<cfreturn local.attributeDataQuery/>
 	</cffunction>
 
 </cfcomponent>
