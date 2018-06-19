@@ -14,7 +14,8 @@ jobs:
       - run: mkdir $CIRCLE_TEST_REPORTS/transient
       - run: mkdir $CIRCLE_TEST_REPORTS/service
       - run: mkdir $CIRCLE_TEST_REPORTS/process
-      - run: mkdir $CIRCLE_TEST_REPORTS/dao      
+      - run: mkdir $CIRCLE_TEST_REPORTS/dao    
+      - run: npm install -g junit-merge
       - run: docker-compose --verbose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
       - run: sudo mkdir -p meta/tests/testresults/xml/integration
       - run: sudo chmod -R 777 meta/tests/testresults
@@ -34,6 +35,7 @@ jobs:
       - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fservice\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/service/results.xml
       - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Ftransient\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/transient/results.xml
       - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fdao\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/dao/results.xml
+      - run: junit-merge -o /tmp/circleci-test-results/results.xml core.xml entity.xml process.xml transient.xml dao.xml service.xml
       - store_test_results:
           path: /tmp/circleci-test-results
       # Save artifacts
