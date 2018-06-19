@@ -58,10 +58,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* 
 	*/
 	public void function createInventoryByStockReceiverItemTest(){
-		var vendorOrderItemData = {
-			vendorOrderItemID=""
-		};
-		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
 		
 		var productData = {
 			productID="",
@@ -79,6 +75,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var sku = createPersistedTestEntity('sku',skuData);
+
+		var vendorOrderItemData = {
+			vendorOrderItemID="",
+			sku={
+				skuID=sku.getSkuID()
+			}
+		};
+		var vendorOrderItem = createPersistedTestEntity('vendorOrderItem',vendorOrderItemData);
 		
 		var settingData = {
 			settingID="",
