@@ -70,7 +70,8 @@ class SWDisplayItemAggregate{
 
 
                 scope.$watch('selectedProperty', function(selectedProperty) {
-                    if(angular.isDefined(selectedProperty)){
+                     console.log(selectedProperty,'test');
+                    if(angular.isDefined(selectedProperty) && !selectedProperty.ormtype){
                         if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
                             var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
                             filterPropertiesPromise.then(function(value){

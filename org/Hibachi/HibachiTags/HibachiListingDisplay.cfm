@@ -17,6 +17,8 @@
 	<cfparam name="attributes.showSimpleListingControls" type="boolean" default="true"/>
 	<cfparam name="attributes.showExport" type="boolean" default="true"/>
 	<cfparam name="attributes.showSearch" type="boolean" default="true"/>
+	<cfparam name="attributes.showReport" type="boolean" default="false"/>
+	<cfparam name="attributes.reportAction" type="string" default="" />
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
@@ -115,6 +117,8 @@
 				record-edit-action="#attributes.recordEditAction#"
 				record-detail-action="#attributes.recordDetailAction#"
 				record-detail-modal="#attributes.recordDetailModal#"
+				report-action="#attributes.reportAction#"
+				show-report="#attributes.showReport#"
 				data-is-angular-route="false"
 				data-angular-links="false"
 				data-show-simple-listing-controls="#attributes.showSimpleListingControls#"

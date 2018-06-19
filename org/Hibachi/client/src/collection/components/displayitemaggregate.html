@@ -5,7 +5,7 @@
         <h4>Options</h4>
 
         <!--- Filter Criteria Start --->
-        <form data-sw-loading="propertiesList[selectedProperty.propertyIdentifier].data">
+        <form data-sw-loading="propertiesList[selectedProperty.propertyIdentifier].data || selectedProperty.ormtype">
             <div class="s-filter-group-item">
 
                 <div class="s-options-group">
@@ -27,10 +27,11 @@
 		          					| aggregateFilter
 		          					"
                             class="form-control input-sm"
-                            data-ng-if="aggregate.selectedAggregate == 'sum' || 
+                            data-ng-if="!selectedProperty.ormtype && (
+                                        aggregate.selectedAggregate == 'sum' || 
                                         aggregate.selectedAggregate == 'average' ||
                                         aggregate.selectedAggregate == 'min' ||
-                                        aggregate.selectedAggregate == 'max' ">
+                                        aggregate.selectedAggregate == 'max' )">
                         <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
                     </select>
                 </div>

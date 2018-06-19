@@ -301,7 +301,22 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(arguments.constraintValue == false) {
 			return true;
 		}
-		if(!isNull(propertyValue) && (isObject(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue)) || (isStruct(propertyValue) && structCount(propertyValue)) || (isSimpleValue(propertyValue) && len(trim(propertyValue))))) {
+		if(
+			!isNull(propertyValue) 
+			&& (
+				isObject(propertyValue) 
+				|| (
+					isArray(propertyValue) 
+					&& arrayLen(propertyValue)
+				) || (
+					isStruct(propertyValue) 
+					&& structCount(propertyValue)
+				) || (
+					isSimpleValue(propertyValue) 
+					&& len(trim(propertyValue))
+				)
+			)
+		) {
 			return true;
 		}
 		return false;

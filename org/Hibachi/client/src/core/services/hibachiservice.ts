@@ -277,6 +277,8 @@ class HibachiService{
 			params.allRecords = options.allRecords || false;
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
+			params.isReport = options.isReport || false;
+			params.periodInterval = options.periodInterval || "";
 			var urlString = this.getUrlWithActionPrefix()+ apiSubsystemName + ':' +'main.get&entityName='+entityName;
 		}
 

@@ -13,7 +13,7 @@ var appConfig = {
     entry: {
         app:['./bootstrap.ts'],
          vendor: ["date", "angular", 'angular-lazy-bootstrap', 'ui.bootstrap', 'angular-resource', 'angular-cookies', 'angular-route',
-         'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker'],
+         'angular-animate','angular-sanitize','metismenu','angularjs-datetime-picker','jquery-typewatch','jquery-timepicker','Chart'],
     },
     watch:true,
     output: {
@@ -38,7 +38,8 @@ var appConfig = {
             'metismenu':'../lib/metismenu/metismenu.js',
             'angularjs-datetime-picker':'../lib/angularjs-datetime-picker/angularjs-datetime-picker.js',
             'jquery-typewatch':'../../HibachiAssets/js/jquery-typewatch-2.0.js',
-            'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js'
+            'jquery-timepicker':'../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js',
+            'Chart':'../lib/chart.js/Chart.min.js'
         },
     },
     module: {

@@ -142,6 +142,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	// Image File Methods
 	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
 		var resizedImagePath = "";
+		
 		// If the image can't be found default to a missing image
 		if(!fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath))) {
 			
