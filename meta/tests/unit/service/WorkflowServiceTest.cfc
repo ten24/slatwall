@@ -146,7 +146,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		         "filterGroup":[
 		            {
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -164,7 +164,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"AND",
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -182,7 +182,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            {
 		            	"logicalOperator":"OR",
 		               "displayPropertyIdentifier":"Active",
-		               "propertyIdentifier":"Product.activeFlag",
+		               "propertyIdentifier":"_product.activeFlag",
 		               "comparisonOperator":"eq",
 		               "breadCrumbs":[
 		                  {
@@ -202,7 +202,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		            	"filterGroup":[
 			            	 {
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -220,7 +220,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				            {
 				            	"logicalOperator":"AND",
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -238,7 +238,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				            {
 				            	"logicalOperator":"OR",
 				               "displayPropertyIdentifier":"Active",
-				               "propertyIdentifier":"Product.activeFlag",
+				               "propertyIdentifier":"_product.activeFlag",
 				               "comparisonOperator":"eq",
 				               "breadCrumbs":[
 				                  {
@@ -261,6 +261,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		   "baseEntityAlias":"Product",
 		   "baseEntityName":"Product"
 		}';
+		addToDebug(workflowTasksConditionsConfig);
+
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
 			MakePublic(variables.service,'getWorkflowConditionGroupsString');
