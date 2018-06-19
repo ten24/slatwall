@@ -108,6 +108,14 @@ class SWListingReportController {
     
     public updateComparePeriod = ()=>{
         this.compareReportCollectionConfig = this.collectionConfig.clone();
+        for(var i in this.compareReportCollectionConfig.columns){
+            var column = this.compareReportCollectionConfig.columns[i];
+            if(column.aggregate){
+                column.isMetric = true;
+            }else{
+                column.isVisible = false;
+            }
+        }
         this.compareReportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
         this.compareReportCollectionConfig.setReportFlag(true);
         this.compareReportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
@@ -257,8 +265,9 @@ class SWListingReportController {
 		var dates = [];
 		var datasets = [];
 		this.reportingData.records.forEach(element=>{
-		    dates.push(element[this.selectedPeriodColumn.propertyIdentifier.split('.')[1]])
+		    dates.push(element[this.selectedPeriodColumn.propertyIdentifier.split('.')[1]]);
 		});
+		console.log('dates',dates);
 		
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
@@ -285,11 +294,13 @@ class SWListingReportController {
 		        );
 		    }
 		});
+		console.log(datasets);
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: dates,
-                datasets:datasets
+                datasets:datasets,
+                spanGaps:true
             },
             options: {
                 events:[],

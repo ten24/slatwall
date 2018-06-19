@@ -2573,7 +2573,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
 									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
-								}
+								} 
 							}
 
 							if( getDirtyReadFlag() ) {
@@ -2592,7 +2592,39 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				writelog(file="collection",text="HQL:#HQL#");
 			}*/
 		}
-
+		//backfill missing data intervals
+		if(isReport()){
+			if(arraylen(variables.records)){
+				var pid = listRest(getPeriodColumn().propertyIdentifier,'.');
+				var minValue = variables.records[1][pid];
+				var maxValue = variables.records[arraylen(variables.records)][pid];
+				var diff = dateDiff(getPeriodIntervalDateDiffFormat(),minValue,maxValue);
+				
+				var dateLookup = {};
+				for(var i =1; i < arraylen(variables.records);i++){
+					var record = variables.records[i];
+					dateLookup[record[pid]] = i;
+				}
+				var reportRecords = [];
+				for(var k = 0; k < diff;k++){
+					var currentDate = DateFormat(DateAdd(getPeriodIntervalDateDiffFormat(),k,minValue),'yyyy-mm-dd');
+					if(structKeyExists(dateLookup,currentDate)){
+						arrayAppend(reportRecords,variables.records[dateLookup[currentDate]]);
+					}else{
+						var reportRecord = {};
+						for(var key in variables.records[1]){
+							reportRecord[key] = 0;
+						}
+						reportRecord[pid] = currentDate;
+						arrayAppend(reportRecords,reportRecord);
+					}
+				
+				}
+				return reportRecords;
+			}
+			
+			
+		}
 
 		return variables.records;
 	}
@@ -3008,6 +3040,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getTotalSumAggregates(){
 		variables.totalSumAggregates;
+	}
+	
+	private string function getPeriodIntervalDateDiffFormat(){
+		switch(getCollectionConfigStruct().periodInterval){
+			case 'hour':
+				return 'h';
+			case 'day':
+				return 'd';
+			case 'week':
+				return 'ww';
+			case 'month':
+				return 'm';
+			case 'year':
+				return 'yyyy';
+		}
 	}
 
 	private string function getPeriodIntervalFormat(required string periodInterval){

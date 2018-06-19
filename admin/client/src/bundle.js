@@ -86913,6 +86913,15 @@ var SWListingReportController = /** @class */ (function () {
         };
         this.updateComparePeriod = function () {
             _this.compareReportCollectionConfig = _this.collectionConfig.clone();
+            for (var i in _this.compareReportCollectionConfig.columns) {
+                var column = _this.compareReportCollectionConfig.columns[i];
+                if (column.aggregate) {
+                    column.isMetric = true;
+                }
+                else {
+                    column.isVisible = false;
+                }
+            }
             _this.compareReportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
             _this.compareReportCollectionConfig.setReportFlag(true);
             _this.compareReportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
@@ -87044,6 +87053,7 @@ var SWListingReportController = /** @class */ (function () {
             _this.reportingData.records.forEach(function (element) {
                 dates.push(element[_this.selectedPeriodColumn.propertyIdentifier.split('.')[1]]);
             });
+            console.log('dates', dates);
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
                     var color = _this.random_rgba();
@@ -87065,11 +87075,13 @@ var SWListingReportController = /** @class */ (function () {
                     });
                 }
             });
+            console.log(datasets);
             _this.chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: dates,
-                    datasets: datasets
+                    datasets: datasets,
+                    spanGaps: true
                 },
                 options: {
                     events: [],
