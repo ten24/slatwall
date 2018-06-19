@@ -107,7 +107,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode'),
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ) + 9500000,
+			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 			DocDate = dateFormat(now(),'yyyy-mm-dd'),
 			DocType = docType,
 			CustomerUsageType= usageType,
@@ -283,7 +283,7 @@ component accessors="true" output="false" displayname="Avatax" implements="Slatw
 		var requestDataStruct = {
 			Client = "a0o33000003xVEI",
 			companyCode = setting('companyCode'),
-			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ) + 9500000,
+			DocCode = arguments.requestBean.getOrder().getShortReferenceID( true ),
 			CancelCode = 'DocDeleted',
 			DocType = 'SalesInvoice'
 		};
