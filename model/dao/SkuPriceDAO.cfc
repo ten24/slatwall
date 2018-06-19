@@ -97,7 +97,7 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			
 		};
 		if(len(priceGroupString)){
-			params.priceGroups=arguments.priceGroups;
+			params['priceGroups']=arguments.priceGroups;
 		}
 		return  ormExecuteQuery( hql,
 			params
