@@ -93,9 +93,9 @@ Notes:
 					<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/options" />
 				</cfif>
 			<cfelseif rc.qualifierType eq "fulfillment">
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingMethods" />
-				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentmethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingmethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingaddresszones" />
 			</cfif>
 		</hb:HibachiEntityDetailGroup>
 		

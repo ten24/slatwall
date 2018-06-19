@@ -131,7 +131,9 @@
 			if(getService('hibachiUtilityService').isInThread()){
 				// Loop over the modifiedEntities to call updateCalculatedProperties
 		    	for(var entity in modifiedEntities){
-		    		entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
+		    		if(getService('HibachiService').getEntityHasCalculatedPropertiesByEntityName(entity.getClassName())){
+		    			entity.updateCalculatedProperties(runAgain=arguments.runCalculatedPropertiesAgain);
+		    		}
 		    	}
 	
 		    	// flush again to persist any changes done during ORM Event handler

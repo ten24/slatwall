@@ -44,6 +44,8 @@ class SWTypeaheadSearchController {
     public dropdownOpen:boolean;
     public searchEndpoint;
     public titleText;
+    public loading:boolean;
+    public searchOnLoad:boolean;
 
     private _timeoutPromise;
     
@@ -81,10 +83,16 @@ class SWTypeaheadSearchController {
         if( angular.isUndefined(this.multiselectMode)){
             this.multiselectMode = false; 
         }
+        
+        if( angular.isUndefined(this.searchOnLoad)){
+            this.searchOnLoad = true; 
+        }
 
         if( angular.isUndefined(this.searchText) || this.searchText == null){
             this.searchText = "";
-        } else {
+        
+        } else if( this.searchOnLoad ){
+    
             this.search(this.searchText);
         }
 
@@ -191,8 +199,9 @@ class SWTypeaheadSearchController {
 
     public toggleOptions = () =>{
         if(this.hideSearch && (!this.searchText || !this.searchText.length)){
-            this.search(this.searchText);
+            this.search(this.searchText, true);
         }
+        
         this.hideSearch = !this.hideSearch;
         
     };
@@ -216,18 +225,23 @@ class SWTypeaheadSearchController {
     }
     
 
-	public search = (search:string)=>{
-	    if(!search.length){
-	        this.closeThis();
-	        return;
-	    }
+	public search = (search:string='',allowEmptyKeyword=false)=>{
+	    
+	    
+	    if(!search.length && !allowEmptyKeyword){
+ 	        this.closeThis();
+ 	        return;
+ 	    }
+ 	    
         this.rSearch(search);
-
+    
         if(this._timeoutPromise){
 
             this.$timeout.cancel(this._timeoutPromise);
+            this.loading = false;
         }
         
+        this.loading = true;
         this.collectionConfig.setKeywords(search);
         
         if(angular.isDefined(this.filterGroupsConfig)){
@@ -262,6 +276,7 @@ class SWTypeaheadSearchController {
             }).finally(()=>{
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
+                this.loading = false;
             });
 
         }, 500);
@@ -368,6 +383,7 @@ class SWTypeaheadSearch implements ng.IDirective{
         propertyToCompare:"@?",
         fallbackPropertiesToCompare:"@?",
         searchText:"=?",
+        searchOnLoad:"=?",
         results:"=?",
         addFunction:"&?",
         removeFunction:"&?",

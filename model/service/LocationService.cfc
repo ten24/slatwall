@@ -115,11 +115,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var locAndChildren = [];
 		var smartList = this.getLocationSmartList();
 		smartList.addLikeFilter( "locationIDPath", "%#arguments.locationID#%" );
-		var locations = smartList.getRecords();
-		for(var i=1;i<=arrayLen(locations);i++) {
-			arrayAppend(locAndChildren, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
-		}
-		return locAndChildren;
+		smartlist.addSelect('calculatedLocationPathName','name');
+		smartlist.addSelect('locationID','value');
+		return smartList.getRecords();
 	}
 	
 	// ===================== START: Logical Methods ===========================

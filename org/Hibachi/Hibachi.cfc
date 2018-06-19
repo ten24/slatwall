@@ -896,7 +896,6 @@ component extends="framework.one" {
 				request.context.apiResponse.content["messages"] = request.context.messages;
 			}else{
 				for(var message in request.context.messages){
-					request.context.apiResponse.content["messages"];
 					arrayAppend(request.context.apiResponse.content["messages"],message);
 				}
 

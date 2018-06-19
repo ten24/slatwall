@@ -66,6 +66,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
+	property name="calculatedQOQ" ormtype="float";
 	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
@@ -128,7 +129,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		if( !structKeyExists(variables, arguments.quantityType) ) {
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
-			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -261,6 +262,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public void function removeFulfillmentBatchItem(required any fulfillmentBatchItem) {
 	   arguments.fulfillmentBatchItem.removeStock(this);
 	}
+	
+	public void function updateCalculatedProperties(boolean runAgain=false) {
+ 		if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runAgain) {
+ 			super.updateCalculatedProperties(argumentCollection=arguments);
+			ormflush();
+ 			getService("stockService").processStock(this, "updateInventoryCalculationsForLocations");
+ 		}
+ 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

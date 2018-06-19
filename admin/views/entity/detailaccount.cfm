@@ -88,6 +88,9 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" modal="true" type="list" />
 			<li class="divider"></li>
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="clone" queryString="sRedirectAction=admin:entity.detailAccount" type="list" modal="true" hideDisabled="false" />
+			<!--- Allow the user to merge any two accounts into one. --->
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="mergeAccount" queryString="sRedirectAction=admin:entity.detailAccount" type="list" modal="true" hideDisabled="false" />
+			
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.account#">
