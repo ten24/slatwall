@@ -43,7 +43,7 @@ if( url.opt_run ){
 					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );break;
 				}
 				case "junit":  {
-					writeoutput(results);abort;
+					writeOutput( "<textarea name='tb-results-data' id='tb-results-data' rows='20' cols='100'>#results#</textarea>" );abort;
 					xmlReport = xmlParse( results );
 					
 					
