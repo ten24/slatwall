@@ -9,6 +9,12 @@ jobs:
     steps: 
       - checkout
       - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+      - run: mkdir $CIRCLE_TEST_REPORTS/core
+      - run: mkdir $CIRCLE_TEST_REPORTS/entity
+      - run: mkdir $CIRCLE_TEST_REPORTS/transient
+      - run: mkdir $CIRCLE_TEST_REPORTS/service
+      - run: mkdir $CIRCLE_TEST_REPORTS/process
+      - run: mkdir $CIRCLE_TEST_REPORTS/dao      
       - run: docker-compose --verbose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
       - run: sudo mkdir -p meta/tests/testresults/xml/integration
       - run: sudo chmod -R 777 meta/tests/testresults
