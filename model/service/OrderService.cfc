@@ -3546,7 +3546,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var thisOption = {};
 			if(arguments.orderFulfillment.hasHandlingFeeApplied()){
-				thisOption['name'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodName()
+				thisOption['name'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodName();
 			}else{
 				thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
 			}
