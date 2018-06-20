@@ -528,9 +528,9 @@
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 					<cfelse>
 						<cfif arguments.insertData[ listGetAt(keyList, i) ].dataType eq "decimal">
-							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+							<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
 						<cfelse>
-							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+							<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
 						</cfif>
 					</cfif>
 					<cfif listLen(keyList) gt i>,</cfif>
