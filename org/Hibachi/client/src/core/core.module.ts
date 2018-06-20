@@ -287,7 +287,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('rbkeyService',downgradeInjectable(RbKeyService))
 .service('typeaheadService', downgradeInjectable(TypeaheadService))
 .service('$hibachi',downgradeInjectable($Hibachi))
-.decorator('$hibachi',HibachiServiceDecorator)
+//.decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',downgradeInjectable(HibachiScope))
 .service('scopeService',downgradeInjectable(ScopeService))
