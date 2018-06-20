@@ -491,6 +491,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         if(
                         	!isNull(arguments.paymentTransaction.getPayment().getPaymentMethod())
                         	&& listFindNoCase("giftCard", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType())
+                        	&& !isNull(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted())
                         ){
                             var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted()));
 
@@ -543,6 +544,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             }
 
                         } else {
+                        	
+                        	var orderPaymentProcessObject = arguments.paymentTransaction.getPayment().getOrder().getProcessObject('addOrderPayment');
 		
                             // Setup amountReceived
                             if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
@@ -553,6 +556,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
                                 arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
                             }
+                            
+                            if(orderPaymentProcessObject.hasErrors()) {
+								// add errors to the paymentTransaction
+								arguments.paymentTransaction.addError('runTransaction', orderPaymentProcessObject.getErrors(), true);
+							}
+                            arguments.paymentTransaction.setTransactionSuccessFlag( false );
                         }
                         arguments.paymentTransaction.setTransactionSuccessFlag( true );
 

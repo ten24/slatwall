@@ -44,6 +44,7 @@ class SWFAddressFormController extends SWFFormController{
         this.submitForm().then(result=>{
             if(result && result.successfulActions.length){
                 console.log(this.ngModel);
+                this.slatwall.editingAddress = null;
                 this.$timeout(()=>{
                     this.ngModel.$setViewValue(null);
                     this.ngModel.$commitViewValue();

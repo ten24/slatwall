@@ -482,6 +482,7 @@ class SWListingDisplayController{
         $(`.sw-${show}`).show();
     }
     public hasNumerical=()=>{
+        
         // Iterate over columns, find out if we have any numericals and return
         if(this.columns.length){
             return this.columns.reduce((totalNumericalCols, col) => {

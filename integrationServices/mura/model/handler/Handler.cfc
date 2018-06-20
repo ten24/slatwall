@@ -68,7 +68,7 @@
 		// For admin request end, we call the endLifecycle
 		public void function verifySlatwallRequest( required any $ ) {
 			if(!structKeyExists(request, "slatwallScope")) {
-				getSlatwallApplication().setupGlobalRequest();	
+				getSlatwallApplication().bootstrap();
 			}
 			if(!structKeyExists(arguments.$, "slatwall")) {
 				$.setCustomMuraScopeKey("slatwall", request.slatwallScope);	

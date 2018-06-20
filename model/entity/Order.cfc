@@ -61,6 +61,9 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quotePriceExpiration" ormtype="timestamp";
 	property name="quoteFlag" ormtype="boolean" default="0";
 	property name="testOrderFlag" ormtype="boolean";
+	property name="orderCanceledDateTime" ormtype="timestamp";
+	property name="orderNotes" ormtype="text";
+	
 	//used to check whether tax calculations should be run again
 	property name="taxRateCacheKey" ormtype="string" hb_auditable="false";
 	property name="promotionCacheKey" ormtype="string" hb_auditable="false";
@@ -602,6 +605,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getFulfillmentChargeTotal() {
 		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
+			if(!isNull(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier()) && len(getOrderFulfillments()[i].getThirdPartyShippingAccountIdentifier())){
+				if(getOrderFulfillments()[i].getShippingMethodRate().setting('shippingMethodRateHandlingFeeFlag')){
+					fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getHandlingFee());
+				}
+				continue;
+			}
 			fulfillmentChargeTotal = getService('HibachiUtilityService').precisionCalculate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
 		return fulfillmentChargeTotal;
@@ -724,16 +733,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public any function getDynamicChargeOrderPayment() {
-		var returnOrderPayment = javaCast("null", "");
 		for(var orderPayment in getOrderPayments()) {
-			if(orderPayment.getStatusCode() eq "opstActive" && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge' && orderPayment.getDynamicAmountFlag()) {
-				if(!orderPayment.getNewFlag() || isNull(returnOrderPayment)) {
-					returnOrderPayment = orderPayment;
-				}
-			}
-		}
-		if(!isNull(returnOrderPayment)) {
-			return returnOrderPayment;
+			if(orderPayment.getDynamicAmountFlag()
+			   && orderPayment.getStatusCode() == 'opstActive'
+			   && orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+				return orderPayment;
+			} 
 		}
 	}
 
@@ -1631,6 +1636,4 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ===================  END:  ORM Event Hooks  =========================
-
-	
 }

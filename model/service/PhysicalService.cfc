@@ -276,8 +276,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		var locationPhysicalCounts = {};
 		newPhysical.setPhysicalName(arguments.processObject.getPhysicalName());
 		newPhysical.setCycleCountBatch(arguments.cycleCountBatch);
+			
 		for(var cycleCountBatchItem in arguments.cycleCountBatch.getCycleCountBatchItems()) {
 			if(cycleCountBatchItem.getQuantity() != '') {
+				
 				if(!newPhysical.hasLocation(cycleCountBatchItem.getStock().getLocation())) {
 					newPhysical.addLocation(cycleCountBatchItem.getStock().getLocation());
 					// create Physical Count
@@ -300,6 +302,10 @@ component extends="HibachiService" accessors="true" output="false" {
 				newPhysicalCountItem.setCountPostDateTime(arguments.processObject.getCountPostDateTime());
 				newPhysicalCountItem.setCycleCountBatchItem(cycleCountBatchItem);
 				newPhysicalCountItem = this.savePhysicalCountItem(newPhysicalCountItem);
+				
+				// save the physical to prevent the object references an unsaved transient instance
+				newPhysical = this.savePhysical(newPhysical);
+				
 				cycleCountBatchItem.getStock().getSku().updateCalculatedProperties(true);
 			}
 		}
@@ -308,7 +314,8 @@ component extends="HibachiService" accessors="true" output="false" {
 			arguments.cycleCountBatch.addErrors(newPhysical.getErrors());
 		} else {
 			arguments.cycleCountBatch.setPhysical(newPhysical);
-
+			arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstClosed'));
+			
 			// Process Physical
 			this.processPhysical(newPhysical, {}, 'commit'); 
 		}
@@ -340,6 +347,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public any function saveCycleCountBatch(required any cycleCountBatch, required struct data) {
+		arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstOpen'));
+		
 		if(!arrayLen(arguments.cycleCountBatch.getCycleCountBatchItems())) {
 			var cycleCountGroupSmartList = getService('physicalService').getCycleCountGroupSmartList();
 			cycleCountGroupSmartList.addFilter('activeFlag',1);

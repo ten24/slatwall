@@ -288,6 +288,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, replaceTemplateStruct);
+			errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, arguments.object,false,true);
+			
 			arguments.errorBean.addError(arguments.propertyIdentifier, errorMessage);
 		}
 	}

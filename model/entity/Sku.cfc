@@ -80,6 +80,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="float";
 	property name="calculatedQOH" ormtype="float";
+	property name="calculatedQOQ" ormtype="float";
 	property name="calculatedSkuDefinition" ormtype="string";
 	property name="calculatedLastCountedDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="calculatedOptionsHash" ormtype="string";
@@ -102,7 +103,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuCosts" singularname="skuCost" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuCost" cascade="all-delete-orphan";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
-	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
+	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" orderBy="sortOrder";
 	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
@@ -118,6 +119,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="subscriptionBenefits" singularname="subscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="renewalSubscriptionBenefits" singularname="renewalSubscriptionBenefit" cfc="SubscriptionBenefit" type="array" fieldtype="many-to-many" linktable="SwSkuRenewalSubsBenefit" fkcolumn="skuID" inversejoincolumn="subscriptionBenefitID";
 	property name="locationConfigurations" singularname="locationConfiguration" cfc="LocationConfiguration" type="array" fieldtype="many-to-many" linktable="SwSkuLocationConfiguration" fkcolumn="skuID" inversejoincolumn="locationConfigurationID";
+	property name="assignedAlternateImages" singularname="assignedAlternateImage" cfc="Image" type="array" fieldtype="many-to-many" linktable="SwAlternateImageSku" fkcolumn="skuID" inversejoincolumn="imageID";
 
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardSku" fkcolumn="skuID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -658,7 +660,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 		// Request for calculated quantity
-		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
+		if( listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType) ) {
 			// If this is a calculated quantity and locationID exists, then delegate
 			if( structKeyExists(arguments, "locationID") ) {
 				
@@ -675,7 +677,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					var totalQuantity = 0;
 					
 					for(var i=1;i<=arraylen(locations);i++) {
-						var location = getService("locationService").getLocation(locations[i].value);
+						var location = getService("locationService").getLocation(locations[i]['value']);
 						
 						if ( arguments.quantityType != 'QATS' || ( arguments.quantityType == 'QATS' && ( !location.setting('locationExcludeFromQATS') && !location.hasChildLocation() )) ){
 							var stock = getService("stockService").getStockBySkuAndLocation(this, location);
@@ -700,7 +702,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA,QDOO", arguments.quantityType)) {
 				arguments.skuID = this.getSkuID();
 				return getProduct().getQuantity(argumentCollection=arguments);
-			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
+			} else if(listFindNoCase("MQATSBOM,QC,QE,QNC,QATS,QIATS,QOQ", arguments.quantityType)) {
 				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
@@ -1242,6 +1244,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return getQuantity(argumentCollection=params);
 	}
+	
+	public any function getQOQ(string locationID) {
+		if ( structKeyExists(arguments, 'locationID') ){
+			return getQuantity(quantityType="QOQ", locationID=arguments.locationID );
+		}	
+		return getQuantity("QOQ");
+	}
 
 	/**
 	* @Suppress
@@ -1535,6 +1544,26 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var thatIndex = arrayFind(arguments.accessContent.getSkus(), this);
 		if(thatIndex > 0) {
 			arrayDeleteAt(arguments.accessContent.getSkus(), thatIndex);
+		}
+	}
+	
+		// Assigned Alternate Images (many-to-many - owner)
+	public void function addAssignedAlternateImage(required any image) {
+		if(isNew() or !hasAssignedAlternateImage(arguments.image)) {
+			arrayAppend(variables.assignedAlternateImages, arguments.image);
+		}
+		if(arguments.image.isNew() or !arguments.image.hasAssignedSku( this )) {
+			arrayAppend(arguments.image.getAssignedSkus(), this);
+		}
+	}
+	public void function removeAssignedAlternateImage(required any image) {
+		var thisIndex = arrayFind(variables.assignedAlternateImages, arguments.image);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.assignedAlternateImages, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.image.getAssignedSkus(), this);
+		if(thatIndex > 0) {
+			arrayDeleteAt(arguments.image.getAssignedSkus(), thatIndex);
 		}
 	}
 

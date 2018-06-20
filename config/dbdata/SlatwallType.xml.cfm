@@ -169,6 +169,11 @@
 		<Record typeID="a54668fef238c6cd354e1d9b371700ea" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fef238c6cd354e1d9b371700ea" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Expense" systemCode="latExpense" sortOrder="1" />
 		<Record typeID="a54668fbcafa5275c59482d98a1497bd" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bd" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Revenue" systemCode="latRevenue" sortOrder="1" />
 		<Record typeID="a54668fbcafa5275c59482d98a1497bc" typeIDPath="a5380924cb4a3d53eb096ed36bf5b825,a54668fbcafa5275c59482d98a1497bc" parentTypeID="a5380924cb4a3d53eb096ed36bf5b825" typeName="Liability" systemCode="latLiability" sortOrder="1" />
+		
+		<Record typeID="7e8942b36f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002" parentTypeID="NULL" typeName="Cycle Count Batch Status Type" systemCode="cycleCountBatchStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="b453ca526f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b453ca526f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Open" systemCode="ccbstOpen" sortOrder="1" />
+		<Record typeID="b9f3b9626f4b11e895c20242ac120002" typeIDPath="7e8942b36f4b11e895c20242ac120002,b9f3b9626f4b11e895c20242ac120002" parentTypeID="7e8942b36f4b11e895c20242ac120002" typeName="Closed" systemCode="ccbstClosed" sortOrder="2" />
+		
 	</Records>
 </Table>
 

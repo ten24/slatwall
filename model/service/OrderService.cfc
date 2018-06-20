@@ -312,7 +312,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Setup 'Shipping' Values
 					if(orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
-
+						
+						
+						if(!isNull(arguments.processObject.getThirdPartyShippingAccountIdentifier()) && len(arguments.processObject.getThirdPartyShippingAccountIdentifier())){
+							orderFulfillment.setThirdPartyShippingAccountIdentifier(arguments.processObject.getThirdPartyShippingAccountIdentifier());
+						} 
 						// Check for an accountAddress
 						if(len(arguments.processObject.getShippingAccountAddressID())) {
 
@@ -983,7 +987,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
-
+		arguments.order.setOrderCanceledDateTime(now());
+		
 		return arguments.order;
 	}
 
@@ -1692,7 +1697,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								// Flush again to really lock in that order status change
 								getHibachiDAO().flushORMSession();
 								
-								for(var orderItem in order.getOrderItems()){
+								for(var orderItem in arguments.order.getOrderItems()){
 									if(!isNull(orderItem.getStock())){
 										//via cascade calculate stock should update sku then product 
 										getHibachiScope().addModifiedEntity(orderItem.getStock());
@@ -1822,7 +1827,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							orderItem.setParentOrderItem( parentItem );
 
 							// Add an error to the order so that this process fails
-							argument.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
+							arguments.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
 						}
 					}
 

@@ -529,16 +529,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// determine renewal sku
 			if(!isNull(arguments.subscriptionUsage.getRenewalSku())){
-				var renewalSkuID = arguments.subscriptionUsage.getRenewalSku().getSkuID();
+				var renewalSku = arguments.subscriptionUsage.getRenewalSku();
 			} else if(!isNull(arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku())) {
-				var renewalSkuID = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku().getSkuID();
+				var renewalSku = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku();
 			} else {
-				var renewalSkuID = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID();
+				var renewalSku = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku();
+			}
+
+			//Suspend the Subscription if Renewal Sku/Product is inactive
+			if(isNull(renewalSku) || !renewalSku.getActiveFlag() || !renewalSku.getProduct().getActiveFlag()){
+				return this.processSubscriptionUsage(arguments.subscriptionUsage, {}, 'updateStatus');
 			}
 
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=renewalSkuID,
+				skuID=renewalSku.getSkuID(),
 				currencyCode=arguments.subscriptionUsage.getInitialOrder().getCurrencyCode()
 			};
 

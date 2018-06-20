@@ -54,6 +54,7 @@ Notes:
 component persistent="false" extends="HibachiService" output="false" accessors="true" {
 
 	property name="hibachiTagService" type="any";
+	property name="hibachiUtilityService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 	property name="siteService" type="any";
@@ -85,6 +86,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
      * skuIDList = "8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5"
      * ...should return three paths.
      */
+     
     public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
 
         if(arguments.profileName == "medium"){
@@ -141,7 +143,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
 		var resizedImagePath = "";
 		// If the image can't be found default to a missing image
-		if(!fileExists(expandPath(arguments.imagePath))) {
+		if(!fileExists(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath))) {
 			
 			//look if the path was supplied
 			if(structKeyExists(arguments, "missingImagePath") && fileExists(expandPath(arguments.missingImagePath))) {
@@ -234,7 +236,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			// Figure out the image extension
 			var imageExt = listLast(arguments.imagePath,".");
 
-			var cacheDirectory = replaceNoCase(replaceNoCase(expandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
+			var cacheDirectory = replaceNoCase(replaceNoCase(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath), '\', '/', 'all'), listLast(arguments.imagePath, "/"), "cache/");
 
 			if(!directoryExists(cacheDirectory)) {
 				directoryCreate(cacheDirectory);
@@ -243,23 +245,24 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 			var resizedImagePath = replaceNoCase(replaceNoCase(arguments.imagePath, listLast(arguments.imagePath, "/\"), "cache/#listLast(arguments.imagePath, "/\")#"),".#imageExt#","#imageNameSuffix#.#imageExt#");
 
 			// Make sure that if a cached images exists that it is newer than the original
-			if(fileExists(expandPath(resizedImagePath))) {
+			if(fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {
 
-				var originalFileObject = createObject("java","java.io.File").init(expandPath(arguments.imagePath));
-				var resizedFileObject = createObject("java","java.io.File").init(expandPath(resizedImagePath));
+				var originalFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
+				var resizedFileObject = GetFileInfo(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
 
-				if(originalFileObject.lastModified() > resizedFileObject.lastModified()) {
-					fileDelete(expandPath(resizedImagePath));
+
+				if(originalFileObject.lastModified > resizedFileObject.lastModified) {
+					fileDelete(getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
 				}
 			}
 
-			if(!fileExists(expandPath(resizedImagePath))) {
+			if(!fileExists(getHibachiUtilityService().hibachiExpandPath(resizedImagePath))) {
 
 				// wrap image functions in a try-catch in case the image uploaded is "problematic" for CF to work with
 				try{
 
 					// Read the Image
-					var img = imageRead(expandPath(arguments.imagePath));
+					var img = imageRead(getHibachiUtilityService().hibachiExpandPath(arguments.imagePath));
 
 					// If the method is scale
 					if(listFindNoCase("scale", arguments.resizeMethod)) {
@@ -351,12 +354,24 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 
 
 					// Write the image to the disk
-					imageWrite(img,expandPath(resizedImagePath));
+					imageWrite(img,getHibachiUtilityService().hibachiExpandPath(resizedImagePath));
+					//Give public permission to s3 object
+					if(getHibachiUtilityService().isS3Path(resizedImagePath)){
+						StoreSetACL(getHibachiUtilityService().hibachiExpandPath(resizedImagePath), [{group="all", permission="read"}]);
+					}
 				} catch(any e) {
 					// log the error
 					logHibachiException(e);
 				}
 			}
+		}
+
+		if(getHibachiUtilityService().isS3Path(resizedImagePath)){
+			var globalAssetsImageBaseURL = getHibachiScope().setting('globalAssetsImageBaseURL');
+			if(!len(globalAssetsImageBaseURL)){
+				globalAssetsImageBaseURL = 'https://s3.amazonaws.com';
+			}
+			resizedImagePath = globalAssetsImageBaseURL & '/' & listLast(resizedImagePath, '@');
 		}
 		return resizedImagePath;
 	}
@@ -425,31 +440,46 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 		var deleteOK = super.delete(arguments.image);
 		if(deleteOK){
 			var imageFullPath = getProductImagePathByImageFile(filename);
+
+
+			if(getHibachiUtilityService().isS3Path(imageFullPath)){
+				imageFullPath = getHibachiUtilityService().formatS3Path(imageFullPath);
+			}
+
 			if(fileExists(imageFullPath)) {
 				fileDelete(imageFullPath);
 			}
-			clearImageCache("#getHibachiScope().getBaseImageURL()#/product/default",filename);
+			clearImageCache("#getHibachiScope().getBaseImageURL()#/product",filename);
 		}
 		return deleteOK;
 	}
 
 
 	public void function clearImageCache(string directoryPath, string imageName){
+		if(getHibachiUtilityService().isS3Path(arguments.directoryPath)){
+			var cacheFolder = getHibachiUtilityService().formatS3Path(arguments.directoryPath) & "/cache/";
+			var searchFor = '%/cache/#listgetat(arguments.imageName,1,'.')#%';
+			var fileColumnName = 'name';
+		}else{
 		var cacheFolder = expandpath(arguments.directoryPath & "/cache/");
+			var searchFor = '#listgetat(arguments.imageName,1,'.')#%';
+			var fileColumnName = 'filename';
+		}
+
 
 		var files = DirectoryList(cacheFolder,false,'query');
 
 		cachedFiles = new Query();
 	    cachedFiles.setDBType('query');
 	    cachedFiles.setAttributes(rs=files);
-	    cachedFiles.addParam(name='filename', value='#listgetat(arguments.imageName,1,'.')#%', cfsqltype='cf_sql_varchar');
+
+	    cachedFiles.addParam(name='filename', value='#searchFor#', cfsqltype='cf_sql_varchar');
 	    cachedFiles.setSQL('SELECT * FROM rs where NAME like :filename');
 	    cachedFiles = cachedFiles.execute().getResult();
 
-		for(i=1; i <= cachedFiles.recordcount; i++){
-			if(fileExists(cachedFiles.directory[i] & '/' & cachedFiles.name)) {
-				fileDelete(cachedFiles.directory[i] & '/' & cachedFiles.name);
-			}
+
+		for(var i=1; i <= cachedFiles.recordcount; i++){
+			fileDelete(cachedFiles.Directory[i] & '/' & cachedFiles.Name[i]);
 		}
 	}
 

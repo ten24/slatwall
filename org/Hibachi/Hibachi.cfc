@@ -250,7 +250,12 @@ component extends="framework.one" {
             }
         }
 	}
-
+	public string function getBaseURL() {
+		if(len(variables.framework.baseURL) && variables.framework.baseURL == '/Slatwall'){
+			return variables.framework.baseURL&'/';
+		}
+        return variables.framework.baseURL;
+    }
 
 	public any function bootstrap() {
 		
@@ -891,7 +896,6 @@ component extends="framework.one" {
 				request.context.apiResponse.content["messages"] = request.context.messages;
 			}else{
 				for(var message in request.context.messages){
-					request.context.apiResponse.content["messages"];
 					arrayAppend(request.context.apiResponse.content["messages"],message);
 				}
 

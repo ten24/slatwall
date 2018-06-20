@@ -412,26 +412,32 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					// Get the upload directory for the current property
 					var uploadDirectory = this.invokeMethod("get#currentProperty.name#UploadDirectory");
 
-					// If the directory where this file is going doesn't exists, then create it
+					// Handle s3 upload
 					if(left(uploadDirectory, 5) == 's3://'){
 
 						var uploadData = fileUpload(getVirtualFileSystemPath(), currentProperty.name, currentProperty.hb_fileAcceptMIMEType, 'makeUnique' );
 
 						uploadDirectory = replace(uploadDirectory,'s3://','');
-						var bucket = listLast(uploadDirectory, '@');
-						var loginPart = listFirst(uploadDirectory, '@');
 
-						getService("hibachiUtilityService").uploadToS3(
-							bucketName=bucket,
+						var newFileName = createUUID() & '.' & uploadData.clientFileExt;
+
+						var uploadResult = getService("hibachiUtilityService").uploadToS3(
+ 							bucketName=uploadDirectory,
 							fileName=uploadData.serverfile,
-							contentType='application/octet-stream',
-							awsAccessKeyId=listFirst(loginPart, ':'),
-							awsSecretAccessKey=listLast(loginPart, ':'),
+							keyName=newFileName,
+ 							contentType='#uploadData.contentType#/#uploadData.contentSubType#',
+ 							awsAccessKeyId=getHibachiScope().setting("globalS3AccessKey"),
+ 							awsSecretAccessKey=getHibachiScope().setting("globalS3SecretAccessKey"),
 							uploadDir=uploadData.serverdirectory
 						);
 
-						_setProperty(currentProperty.name, uploadData.serverfile);
+						if(!uploadResult){
+ 							throw;
+ 						}
+
+						_setProperty(currentProperty.name, newFileName);
 					}else{
+						// If the directory where this file is going doesn't exists, then create it
 						if(!directoryExists(uploadDirectory)) {
 							directoryCreate(uploadDirectory);
 						}

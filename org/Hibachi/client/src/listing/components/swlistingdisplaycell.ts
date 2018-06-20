@@ -88,6 +88,15 @@ class SWListingDisplayCellController{
                     this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
                 }
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
+            }else if([
+                "double", 
+                "float", 
+                "integer", 
+                "long", 
+                "short", 
+                "big_decimal"
+            ].indexOf(this.column.ormtype) != -1){  
+                templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellnumeric.html'; 
             }else if(this.column.aggregate){
                 this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellaggregate.html';

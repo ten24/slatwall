@@ -2870,6 +2870,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like'){
 			var paramID = getParamID();
 
+			// Return empty string if comparison value is not set
+			if(!len(filter.value)){
+				return "";
+			}
+
 			if(structKeyExists(filter,'pattern')){
 				switch(filter.pattern){
 					case '%w%':

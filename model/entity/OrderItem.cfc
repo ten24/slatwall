@@ -293,7 +293,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     }
 
 	public string function getOrderStatusCode(){
-		return getOrder().getStatusCode();
+		if(!isNull(getOrder())){
+			return getOrder().getStatusCode();
+		}
 	}
 
 	public string function getStatus(){

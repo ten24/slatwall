@@ -57,7 +57,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	property name="estimatedShippingDate" ormtype="timestamp";
-	
+	property name="thirdPartyShippingAccountIdentifier" ormtype="string";
+	property name="handlingFee" ormtype="big_decimal" hb_formatType="currency";
 	// Calculated Properties
 	property name="calculatedChargeTaxAmount" ormtype="big_decimal" hb_formatType="currency";
 	//hash of the integrationResponse used to decide if we need to rebuild the shippingMethodOptions
@@ -74,7 +75,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
 	property name="orderFulfillmentInvStatType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentInvStatTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentInvStatType";
 	property name="addressZone" hb_populateEnabled="public" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID";
-
+	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all-delete-orphan" inverse="true";
@@ -295,6 +296,32 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 		return 0;
 	}
+	
+	public any function getShippingIntegrationOptions(){
+		var options = [{name=rbKey("entity.Product.option.select"), value=""}];
+		var integrationCollectionList = getService('IntegrationService').getIntegrationCollectionList();
+		var shippingMethodRate = getShippingMethodRate();
+		if(!isNull(shippingMethodRate)){
+			//let's test if this has a set integration or if it's a manual rate with multiple choices
+			
+			var integration = shippingMethodRate.getShippingIntegration();
+			if(!isNull(integration)){
+				return [{value=integration.getIntegrationID(),name=integration.getIntegrationName()}];
+			}
+			
+			var shippingMethodRateIntegrationMethods = shippingMethodRate.getManualRateIntegrationMethods();
+			var integrationIDsList = '';
+			for(var shipMethodrateIntegrationMethod in shippingMethodRateIntegrationMethods){
+				integrationIDsList = listAppend(integrationIDsList,shipMethodrateIntegrationMethod.getShippingIntegration().getIntegrationID());
+			}
+			integrationCollectionList.addFilter('integrationID',integrationIDsList,'IN');
+			var integrations = integrationCollectionList.getRecords();
+			for(var integration in integrations){
+				arrayAppend(options,{value=integration['integrationID'],name=integration['integrationName']});
+			}	
+		}
+		return options;
+	}
 
     public any function getAccountAddressOptions() {
     	if( !structKeyExists(variables, "accountAddressOptions")) {
@@ -443,9 +470,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	} 
 
 	public any function getShippingIntegration() { 
+		if(structKeyExists(variables,'shippingIntegration')){
+			return variables.shippingIntegration;
+		}
 		if(!isNull(getShippingMethodRate()) && !isNull(getShippingMethodRate().getShippingIntegration())){
-				return getShippingMethodRate().getShippingIntegration(); 
-		} 
+				variables.shippingIntegration = getShippingMethodRate().getShippingIntegration();
+				return variables.shippingIntegration;
+		}
 	}	
 
     public any function getSelectedShippingMethodOption() {
@@ -647,6 +678,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ================== START: Overridden Methods ========================
 
 	public numeric function getFulfillmentCharge() {
+		
 		if(!structKeyExists(variables, "fulfillmentCharge")) {
 			variables.fulfillmentCharge = 0;
 		}
@@ -844,4 +876,3 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// ==================  END:  Deprecated Methods ========================
 }
-
