@@ -463,7 +463,11 @@
  								<cfelseif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR arguments.updateData[ listGetAt(keyList, i) ].value EQ "">
 									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 								<cfelse>
-									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+									<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "decimal">
+										#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+									<cfelse>
+										#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+									</cfif>
 								</cfif>
 								<cfif listLen(keyList) gt i>, </cfif>
 							</cfloop>
@@ -485,7 +489,11 @@
 						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
 							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 						<cfelse>
-							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+							<cfif arguments.updateData[ listGetAt(keyList, i) ].dataType eq "decimal">
+								#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+							<cfelse>
+								#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+							</cfif>
 						</cfif>
 						<cfif listLen(keyList) gt i>, </cfif>
 					</cfloop>
@@ -519,7 +527,11 @@
 					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
 						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
 					<cfelse>
-						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+						<cfif arguments.insertData[ listGetAt(keyList, i) ].dataType eq "decimal">
+							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" scale="2" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+						<cfelse>
+							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+						</cfif>
 					</cfif>
 					<cfif listLen(keyList) gt i>,</cfif>
 				</cfloop>
