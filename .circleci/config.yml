@@ -35,7 +35,7 @@ jobs:
       - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fservice\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/service/results.xml
       - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Ftransient\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/transient/results.xml
       - run: curl http://localhost:80/meta/tests/test-runner/index.cfm\?opt_run\=true\&method\=notRemote\&testSpecs\=\&target\=meta%2Ftests%2Funit%2Fdao\&opt_recurse\=true\&labels\=\&reporter\=JUnit > /tmp/circleci-test-results/dao/results.xml
-      - run: junit-merge -o /tmp/circleci-test-results/results.xml -d /tmp/circleci-test-results/
+      - run: junit-merge -o /tmp/circleci-test-results/results.xml /tmp/circleci-test-results/core/results.xml /tmp/circleci-test-results/entity/results.xml /tmp/circleci-test-results/process/results.xml /tmp/circleci-test-results/transient/results.xml /tmp/circleci-test-results/dao/results.xml /tmp/circleci-test-results/service/results.xml
       - run: verify-junit-xml /tmp/circleci-test-results/results.xml
       - store_test_results:
           path: /tmp/circleci-test-results
