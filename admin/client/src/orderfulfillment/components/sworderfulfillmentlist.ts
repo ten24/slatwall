@@ -595,7 +595,12 @@ class SWOrderFulfillmentListController {
         //Redirect to the created fulfillmentBatch.
         this.addingBatch = false;
         if (result.data && result.data['fulfillmentBatchID']){
-            this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
+            //if url contains /Slatwall use that
+            var slatwall = "";
+            if (this.$window.location.pathname.indexOf("Slatwall") != -1){
+                slatwall = "/Slatwall";
+            }
+            this.$window.location.href = slatwall + "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
         }
     }
 
