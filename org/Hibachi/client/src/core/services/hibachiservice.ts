@@ -503,6 +503,7 @@ export class $Hibachi extends HibachiService {
                 @Inject("$log") $log:any,
                 @Inject("$rootScope") $rootScope:any,
                 @Inject("$location") $location:any,
+                @Inject("$injector") $injector:any,
                 @Inject("$anchorScroll") $anchorScroll:any,
                 requestService : RequestService,
                 utilityService : UtilityService,
@@ -544,7 +545,6 @@ export class $Hibachi extends HibachiService {
             var entities = appConfig.modelConfig.entities,
                 validations = appConfig.modelConfig.validations,
                 defaultValues = appConfig.modelConfig.defaultValues;
-
             angular.forEach(entities,function(entity){
                 if(attributeMetaData && attributeMetaData[entity.className]){
                     var relatedAttributes = attributeMetaData[entity.className];
@@ -593,9 +593,8 @@ export class $Hibachi extends HibachiService {
 
                     var entityName = entity.className;
                     var serviceName = entityName.charAt(0).toLowerCase()+entityName.slice(1)+'Service';
-
-                    if(angular.element(document.body).injector().has(serviceName)){
-                        var entityService = angular.element(document.body).injector().get(serviceName);
+                    if($injector.has(serviceName)){
+                        var entityService = $injector.get(serviceName);
                         
                         if(entityService['new'+entity.className]){
                             return entityService['new'+entity.className]();
