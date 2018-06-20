@@ -185,12 +185,21 @@ Notes:
 		<cfargument name="subscriptionTypeSystemCode" type="string"/>
 		<cfargument name="productTypeID" type="string"/>
 		<cfargument name="productID" type="string"/>
-		<cfargument name="reportYear" type="string"/>
+		<cfargument name="minDate" type="date"/>
+		<cfargument name="maxDate" type="date"/>
 		
 		<cfquery name="local.deferredActiveSubscriptionQuery">
-			<cfloop from="1" to="12" index="i">
-				<cfset monthTimeStamp = CreateDateTime(INT(arguments.reportYear),i,1,0,0,0)/>
+			
+			<cfset var from = Month(arguments.minDate)-1/>
+			<cfset var diff = DateDiff('m',arguments.minDate,arguments.maxDate)/>
+			<cfset var to = from + diff/>
+			<cfset var startYear = Year(arguments.minDate)/>
+			<cfloop from="#from#" to="#to#" index="i">
+				<cfif i % 12 eq 1>
+					<cfset startYear++/>
+				</cfif>
 				
+				<cfset monthTimeStamp = CreateDateTime(startYear,i%12+1,1,0,0,0)/>
 				(
 					select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M') as thisMonth
 					FROM SwSubsUsage su 
@@ -213,9 +222,9 @@ Notes:
 					</cfif>
 					
 					AND su.expirationDate >= <cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>
-					group by DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%M')
+					group by DATE_FORMAT(<cfqueryparam value="#monthTimeStamp#" cfsqltype="cf_sql_timestamp"/>,'%Y-%M')
 				)
-				<cfif i neq 12>
+				<cfif i neq to>
 					UNION ALL
 				</cfif>
 			</cfloop>
@@ -227,7 +236,9 @@ Notes:
 		<cfargument name="subscriptionTypeSystemCode" type="string"/>
 		<cfargument name="productTypeID" type="string"/>
 		<cfargument name="productID" type="string"/>
-		<cfargument name="reportYear" type="string"/>
+		<cfargument name="minDate" type="date"/>
+		<cfargument name="maxDate" type="date"/>
+		
 		<cfquery name="local.deferredExpiringSubscriptionQuery">
 			select count(distinct su.subscriptionUsageID) as subscriptionUsageCount,DATE_FORMAT(su.expirationDate,'%Y-%M') as thisMonth
 			FROM SwSubsUsage su 
@@ -250,12 +261,12 @@ Notes:
 				AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 			</cfif>
 			
-			<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
-				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),1,1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
-				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),12,31,23,59,59)#" cfsqltype="cf_sql_timestamp"/>
+			<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
+				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(Year(arguments.minDate),Month(arguments.minDate),Day(arguments.minDate),0,0,0)#" cfsqltype="cf_sql_timestamp"/>
+				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),Day(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
 			</cfif>
 			
-			group by DATE_FORMAT(su.expirationDate,'%M')
+			group by DATE_FORMAT(su.expirationDate,'%Y-%M')
 			
 		</cfquery>
 		<cfreturn local.deferredExpiringSubscriptionQuery/>
@@ -265,8 +276,13 @@ Notes:
 		<cfargument name="subscriptionTypeSystemCode" type="string"/>
 		<cfargument name="productTypeID" type="string"/>
 		<cfargument name="productID" type="string"/>
-		<cfargument name="reportYear" type="string"/>
-		<cfset currentDateTime = now()/>
+		<cfargument name="minDate" type="date"/>
+		<cfargument name="maxDate" type="date"/>
+		
+		<cfif DateCompare(arguments.minDate,now()) neq 1>
+			<cfset arguments.minDate = now()/>
+		</cfif>
+		
 		
 		<cfquery name="local.subscriptionOrderItemQuery">
 			select 
@@ -298,9 +314,9 @@ Notes:
 				AND p.productID IN (<cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_string" list="YES"/>)
 			</cfif>
 			
-			<cfif !isNull(arguments.reportYear) AND len(arguments.reportYear)>
-				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),1,1,0,0,0)#" cfsqltype="cf_sql_timestamp"/>
-				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(INT(arguments.reportYear),12,31,23,59,59)#" cfsqltype="cf_sql_timestamp"/>
+			<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
+				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(Year(arguments.minDate),Month(arguments.minDate),Day(arguments.minDate),0,0,0)#" cfsqltype="cf_sql_timestamp"/>
+				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),Day(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
 			</cfif>
 			group by soi.subscriptionOrderItemID
 		</cfquery>
@@ -320,7 +336,7 @@ Notes:
 								inner join swOrderItem oi on oi.skuID = s.skuID
 								inner join swSubscriptionOrderItem soi on soi.subscriptionOrderItemID = '#local.subscriptionOrderItemQuery.subscriptionOrderItemID#'
 								inner join swsubsusage su on su.subscriptionusageID = soi.subscriptionusageID
-								where dsd.deliveryScheduleDateValue > <cfqueryparam value="#currentDateTime#" cfsqltype="cf_sql_timestamp"/>
+								where dsd.deliveryScheduleDateValue > <cfqueryparam value="#arguments.minDate#" cfsqltype="cf_sql_timestamp"/>
 								and su.expirationDate > dsd.deliveryScheduleDateValue
 								GROUP BY DATE_FORMAT(dsd.deliveryScheduleDateValue,'%Y-%M')
 								ORDER BY dsd.deliveryScheduleDateValue ASC

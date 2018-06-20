@@ -1,10 +1,14 @@
-<script>
+<script type="text/javascript">
 	jQuery(document).ready(function() {
-		var apply = function(){
-			$('#reverecognition').submit(function(){
-			    return false;
-			});
-		}
+		jQuery('body').on('click', '#ApplyBtn', function(e){
+			console.log(e);
+			console.log('apply');
+			e.preventDefault();
+			$('#revrecognition').submit();
+		});
+		jQuery('body').on('click', '#ExportBtn', function(e){
+			e.preventDefault();
+		});
 	});
 	
 </script>
@@ -46,8 +50,8 @@
 			    </div>
                     <div class="col-xl-3 col-md-4">
                         <div class="single-select">
-                            <h4>Year</h4>
-                            <select name="reportYear" class="selectpicker" data-live-search="true" data-width="auto" >
+                            <h4>From Date</h4>
+                            <!---<select name="reportYear" class="selectpicker" data-live-search="true" data-width="auto" >
 				                <cfloop array="#possibleYearsRecords#" index="possibleYearsRecord">
 				                    <option 
 				                    	value="#possibleYearsRecord#"
@@ -55,7 +59,10 @@
 				                    >#possibleYearsRecord#
 				                    </option>
 				                </cfloop>
-				            </select>
+				            </select>--->
+				            <input id="minDate" name="minDate" class="datepicker form-control" value="#dateFormat(rc.minDate,'yyyy-mm-dd')#" />
+				            <h4>To Date</h4>
+				            <input id="maxDate" name="maxDate" class=" datepicker form-control" value="#dateFormat(rc.maxDate,'yyyy-mm-dd')#" />
                         </div>
                     </div>
 		    </div>
@@ -111,7 +118,8 @@
 	        <div id="u123" class="ax_default shape" data-label="Button" style="cursor: pointer;">
 	            <div id="u123_div" class="" tabindex="0"></div>
 	            <div id="u123_text" class="text single-select ">
-	                <button class="btn btn-primary">Apply</button>
+	                <button id="ApplyBtn" type="button" class="btn btn-primary" >Apply</button>
+	                <button id="ExportBtn" type="button" class="btn btn-primary" >Export</button>
 	            </div>
 	        </div>
         </div>

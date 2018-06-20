@@ -62,24 +62,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		string subscriptionTypeSystemCode, 
 		string productTypeID,
 		string productID,
-		string reportYear
+		date minDate,
+		date maxDate
 	){
-		if(!structKeyExists(arguments,'reportYear')||!len(arguments.reportYear)){
-			arguments.reportYear = Year(now());
-		}
+		
 		var deferredRevenueData = getSubscriptionDAO().getDeferredRevenueData(argumentCollection=arguments);
 		var deferredActiveSubscriptionData = getSubscriptionDAO().getDeferredActiveSubscriptionData(argumentCollection=arguments);
 		var deferredExpiringSubscriptionData = getSubscriptionDAO().getDeferredExpiringSubscriptionData(argumentCollection=arguments);
 		
 		var possibleMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-		var startMonth = 1;
-		if(arguments.reportYear == Year(now())){
-			startMonth = Month(now());
-		}
+		var from = Month(arguments.minDate);
+		var diff = DateDiff('m',arguments.minDate,arguments.maxDate);
+		var to = from + diff;
+		var startYear = Year(arguments.minDate);
 		var monthData = {};
+		var dateDiffInMonths = DateDiff('m',arguments.minDate,arguments.maxDate);
 		//look over months in the future
-		for(var i=startMonth;i <= arraylen(possibleMonths);i++){
-			var monthNamePattern = arguments.reportYear&'-'&possibleMonths[i];
+		for(var i=from-1;i <= to;i++){
+			if(i % 12 == 1){
+				startYear++;
+			}
+			
+			var monthNamePattern = startYear&'-'&possibleMonths[i % 12 +1];
 			monthData[monthNamePattern]={};
 			
 			if(!isNull(deferredRevenueData)){

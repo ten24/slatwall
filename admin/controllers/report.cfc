@@ -157,4 +157,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().redirect(action="admin:report.default", queryString="reportName=#report.getClassName()#");
 	}
 	
+	public void function exportreport(required struct rc){
+		if(rc.reportType == 'deferredRevenueReport'){
+		}else if(rc.reportType == 'earnedRevenueReport'){
+		}
+	}
+	
 }
