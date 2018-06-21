@@ -124,7 +124,7 @@ component accessors="true" output="false" extends="HibachiService" {
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 
-		var checksumFilePath = expandPath('/Slatwall/') & 'custom/config/dbDataChecksums.txt.cfm';  
+		var checksumFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#/') & 'custom/config/dbDataChecksums.txt.cfm';  
 	
 		if(!fileExists(checksumFilePath)){
 			fileWrite(checksumFilePath, '');	
