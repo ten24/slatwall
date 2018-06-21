@@ -43,7 +43,7 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <cfset activeSubscriptionQueryString = "?slatAction=entity.listsubscriptionusage&reportYear=#currentYear#&reportMonth=#i#"/>
+                    <cfset activeSubscriptionQueryString = "?slatAction=entity.listsubscriptionusage&reportYear=#currentYear#&reportMonth=#i+1#"/>
                     <cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
                         <cfset activeSubscriptionQueryString &= "&subscriptionType=#rc.subscriptionType#"/>
                     </cfif> 
