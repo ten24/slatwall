@@ -7,7 +7,6 @@
     <cfset slatAction = 'report.deferredRevenueReport'/>
     <!--gets deferred revenue-->
     <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate)/>    
-    
     <cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
     
     <cfset currentMonth = Month(rc.minDate)/>
@@ -82,7 +81,7 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#deferredRevenueData[key].deferredRevenue#</td>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredRevenue,'currency')#</td>
                 </cfloop>
             </tr>
             <tr>
@@ -96,7 +95,7 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#deferredRevenueData[key].deferredTax#</td>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTax,'currency')#</td>
                 </cfloop>
             </tr>
             <tr>
@@ -110,7 +109,7 @@
                         <cfset currentYear++/>
                     </cfif>
                     <cfset key = '#currentYear#-#possibleMonth#'/>
-                    <td>#deferredRevenueData[key].deferredTotal#</td>
+                    <td>#$.slatwall.getService('HibachiUtilityService').formatValue(deferredRevenueData[key].deferredTotal,'currency')#</td>
                 </cfloop>
             </tr>
         </tbody>

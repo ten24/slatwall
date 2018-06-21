@@ -90,23 +90,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var j=1; j <= deferredRevenueData.recordCount;j++){
 					var currentRecord = QueryGetRow(deferredRevenueData,j);
 					if(currentRecord.thisMonth == monthNamePattern){
-						monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue,'currency');
-						monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTax,'currency');
-						monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue+currentRecord.deferredTax,'currency');
+						monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue,'decimal');
+						monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredTax,'decimal');
+						monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(currentRecord.deferredRevenue+currentRecord.deferredTax,'decimal');
 					}
 				}
 			}
 			
 			if(!structKeyExists(monthData[monthNamePattern],'deferredRevenue')){
-				monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(0,'currency');
+				monthData[monthNamePattern]['deferredRevenue'] = getService('hibachiUtilityService').formatValue(0,'decimal');
 			}
 			
 			if(!structKeyExists(monthData[monthNamePattern],'deferredTax')){
-				monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(0,'currency');
+				monthData[monthNamePattern]['deferredTax'] = getService('hibachiUtilityService').formatValue(0,'decimal');
 			}
 			
 			if(!structKeyExists(monthData[monthNamePattern],'deferredTotal')){
-				monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(0,'currency');
+				monthData[monthNamePattern]['deferredTotal'] = getService('hibachiUtilityService').formatValue(0,'decimal');
 			}
 			
 			if(!isNull(deferredActiveSubscriptionData)){

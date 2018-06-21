@@ -1,18 +1,20 @@
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('body').on('click', '#ApplyBtn', function(e){
-			console.log(e);
-			console.log('apply');
-			e.preventDefault();
-			$('#revrecognition').submit();
-		});
-		jQuery('body').on('click', '#ExportBtn', function(e){
-			e.preventDefault();
-		});
-	});
-	
-</script>
 <cfoutput>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('body').on('click', '##ApplyBtn', function(e){
+				e.preventDefault();
+				jQuery("input[name='slatAction']").val('#slatAction#');
+				jQuery('##revrecognition').submit();
+			});
+			jQuery('body').on('click', '##ExportBtn', function(e){
+				e.preventDefault();
+				jQuery("input[name='slatAction']").val('#slatAction#export');
+				jQuery('##revrecognition').submit();
+			});
+		});
+		
+	</script>
+
 	
 	<form id="revrecognition" action="?s=1" method="post">
 		<input type="hidden" name="slatAction" value="#slatAction#"/>
