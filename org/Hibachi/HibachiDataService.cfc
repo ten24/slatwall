@@ -179,8 +179,11 @@ component accessors="true" output="false" extends="HibachiService" {
 			}
 		} while (runPopulation);
 		var insertDataFilePath = expandPath('/#getDao("HibachiDao").getApplicationKey()#') & '/custom/config/' & 'insertedData.txt.cfm';
-		FileWrite(insertDataFilePath, variables.insertedData);
 		
+		if(structKeyExists(variables, 'insertedData')){
+			FileWrite(insertDataFilePath, variables.insertedData);
+		}		
+
 		fileWrite(checksumFilePath, checksumList);		
 
 		return true;
