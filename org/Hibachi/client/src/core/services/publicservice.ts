@@ -453,16 +453,18 @@ export class PublicService {
     }
 
     public getActivePaymentMethods (){
-        let urlString = "/?"+this.appConfig.action+"=admin:ajax.getActivePaymentMethods";
-        
+        let urlString = this.appConfig.baseURL+"?"+this.appConfig.action+"=admin:ajax.getActivePaymentMethods";
+       
         let request = this.requestService.newPublicRequest(urlString);
         request.promise.then((result:any)=>{
-            if (angular.isDefined(result.data.paymentMethods)){
-                this.paymentMethods = result.data.paymentMethods;
+            if(result.data) {
+                if (angular.isDefined(result.data.paymentMethods)){
+                    this.paymentMethods = result.data.paymentMethods;
+                }
             }
         });
         this.requests[request.getAction()]=request;
-    };
+    }
 
     public filterErrors (response){
         if(!response || !response.cart || !response.cart.errors) return;
