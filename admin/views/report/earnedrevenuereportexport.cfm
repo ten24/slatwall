@@ -3,43 +3,7 @@
 <cfparam name="rc.productID" default=""/>
 <cfparam name="rc.minDate" default="#CreateDate(Year(now()),1,1)#"/>
 <cfparam name="rc.maxDate" default="#CreateDate(Year(now()),Month(now()),Day(now()))#"/>
-<!---<cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,rc.minDate,rc.maxDate) />
-
-<cfset possibleMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']/>
-
-<cfset currentMonth = Month(rc.minDate)/>
-<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
-<cfset to = currentMonth + diff/>
-<cfset currentYear = Year(rc.minDate)/>
-
-<cfset colNamesList = 'Headers'/>
-<cfset data = [5]/>
-<!---explicitly written for control of the ordering--->
-<cfset headerRowItems = [
-	'activeSubscriptions',
-	'expiringSubscriptions',
-    'deferredRevenue',
-	'deferredTax',
-	'deferredTotal'
-]/>
-<cfloop from=1 to="#arraylen(headerRowItems)#" index="i">
-    <cfset data[i] = {}/>
-    <cfset data[i]['Headers']=headerRowItems[i]/>
-</cfloop>
-<!---get headers--->
-<!---properly order columns list--->
-<cfloop from="#currentMonth-1#" to="#to-1#" index="i">
-    <cfset possibleMonth = possibleMonths[i%12+1]/>
-    <cfif i%12 eq 1>
-        <cfset currentYear++/>
-    </cfif>
-    <cfset colName = "#possibleMonth##currentYear#"/>
-    <cfset colNamesList = listAppend(colNamesList,colName)/>
-    <cfset deferredRevenueDataForMonth = deferredRevenueData["#currentYear#-#possibleMonth#"]/>
-    <cfloop from=1 to="#arraylen(headerRowItems)#" index="i">
-        <cfset data[i][colName]=deferredRevenueDataForMonth[headerRowItems[i]]/>
-    </cfloop>
-</cfloop>--->
+<
 <cfparam name="showProducts" default="true"/>
 <!---axe the output--->
 <cfsilent>
@@ -49,7 +13,7 @@
 <cfset currentYear = Year(rc.minDate)/>
                 
 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-    <cfif w % 12 eq 1>
+    <cfif w % 12 eq 1 and w neq 1>
         <cfset currentYear++/>
     </cfif>
         #possibleMonths[w%12+1]# - #currentYear#
@@ -84,7 +48,6 @@
     <cfset refunded = []/>
     <cfset refundedTaxAmount = []/>
     <cfset possibleYearTotal = []/>--->
-    <cfdump var="#subscriptionsEarning#">
 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
     <cfset possibleMonth = possibleMonths[i%12+1]/>
     <cfif i%12 eq 1>
@@ -92,12 +55,26 @@
     </cfif>
     <cfset colName = "#possibleMonth##currentYear#"/>
     <cfset colNamesList = listAppend(colNamesList,colName)/>
-    <cfloop list="colNamesList" index="j">
-        
-        
+    
+</cfloop>
+<cfset colNamesArray = listToArray(listRest(colNamesList))/>
+<cfloop from=1 to="#arraylen(colNamesArray)#" index="j">
+    <cfset data[1][colNamesArray[j]] = subscriptionsEarning[j]/>
+    <cfset data[2][colNamesArray[j]] = earned[j]/>
+    <cfset data[3][colNamesArray[j]] = taxAmount[j]/>
+    <cfset data[4][colNamesArray[j]] = refunded[j]/>
+    <cfset data[5][colNamesArray[j]] = refundedTaxAmount[j]/>
+    <cfset data[6][colNamesArray[j]] = possibleYearTotal[j]/>
+</cfloop>
+
+<cfloop from="8" to="#7+arraylen(productsWithDeliveries)#" index="i">
+    <cfset productWithDelivery = productsWithDeliveries[i-7]/>
+    <cfset productName = productWithDelivery['orderitem_sku_product_productName']/>
+    
+    <cfloop from=1 to="#arraylen(colNamesArray)#" index="j">
+        <cfset data[i][colNamesArray[j]] = productsWithDeliveriesMap[productName].earned[j] - productsWithDeliveriesMap[productName].refunded[j]/>
     </cfloop>
 </cfloop>
-<cfdump var="#data#"><cfabort>
 <cfset $.slatwall.getService('hibachiService').export( 
     columns=colNamesList,
     columnNames=colNamesList 

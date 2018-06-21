@@ -22,7 +22,7 @@
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="i">
                     <cfset possibleMonth = possibleMonths[i%12+1]/>
-                    <cfif i%12 eq 1>
+                    <cfif i%12 eq 1 and i neq 1>
                         <cfset currentYear++/>
                     </cfif>
                     <th>

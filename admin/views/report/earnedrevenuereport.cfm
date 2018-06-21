@@ -104,7 +104,7 @@
             <tr>
                 <th></th>
                 <cfloop from="#currentMonth-1#" to="#to-1#" index="w">
-                    <cfif w % 12 eq 1>
+                    <cfif w % 12 eq 1 and w neq 1>
                         <cfset currentYear++/>
                     </cfif>
                     <th>
