@@ -86,9 +86,17 @@ Notes:
 			]
 		/>
 		<cfset currentMonth = months[rc.reportMonth]/>
+		
+		<cfset filterDateMax = CreateDateTime(
+			INT(rc.reportYear),
+			INT(rc.reportMonth),
+			INT(daysInMonth(createDateTime(2000,rc.reportMonth,1,1,1,1))),
+			23,59,59
+		)/>
 		<cfset filterDate = CreateDateTime(INT(rc.reportYear),rc.reportMonth,1,0,0,0)/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('expirationDate',filterDate,'>=')/>
 		<cfset rc.subscriptionUsageCollectionList.addFilter('calculatedCurrentStatus.subscriptionStatusType.systemCode','sstActive')/>
+		
 		<!---
 			required string propertyIdentifier,
 		required any value,
@@ -104,13 +112,21 @@ Notes:
 		
 		<cfif structKeyExists(rc,'subscriptionType') && len(rc.subscriptionType)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.subscriptionOrderItemType.systemCode',rc.subscriptionType,'IN')/>
+    	<cfelse>
+    		<cfset rc.subscriptionType = ""/>
         </cfif> 
         <cfif structKeyExists(rc,'productType') && len(rc.productType)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productType.productTypeID',rc.productType,'IN')/>
+        <cfelse>
+            <cfset rc.productType = ""/>
         </cfif> 
         <cfif structKeyExists(rc,'productID') && len(rc.productID)>
             <cfset rc.subscriptionUsageCollectionList.addFilter('subscriptionOrderItems.orderItem.sku.product.productID',rc.productID,'IN')/>
+        <cfelse>
+            <cfset rc.productID = ""/>
         </cfif> 
+        <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,filterDate,filterDateMax)/>    
+        <cfdump var="#deferredRevenueData#"><cfabort>
 	</cfif>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false"  />
 	
