@@ -243,6 +243,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			case 'wysiwyg':
 				ORMType = 'string';
 				hbFormFieldType = 'wysiwyg';
+				propertyString &= ' length="4000" ';
 				break;
 			case 'file':
 				ORMType = 'string';
