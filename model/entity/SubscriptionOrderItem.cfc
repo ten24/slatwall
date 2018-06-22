@@ -71,7 +71,7 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="deferredRevenue" persistent="false";
+	property name="deferredRevenue" hb_formatType="currency" persistent="false";
 	property name="deferredTaxAmount" persistent="false";
 	
 	//calculatedProperties
@@ -81,8 +81,15 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 	
 	public any function getDeferredRevenue(){
 		var deferredRevenue = 0;
-		
-		deferredRevenue = getService('HibachiUtilityService').precisionCalculate(getPriceEarnedPerItem() * getItemsNotDelivered());
+		var priceEarnedPerItem = 0;
+		if(!isNull(getPriceEarnedPerItem())){
+			priceEarnedPerItem = getPriceEarnedPerItem();
+		}
+		var itemNotDelivered = 0;
+		if(!isNull(getItemsNotDelivered())){
+			itemsNotDelivered = getItemsNotDelivered();
+		}
+		deferredRevenue = getService('HibachiUtilityService').precisionCalculate(priceEarnedPerItem * itemsNotDelivered);
 	
 		return deferredRevenue;
 	}
@@ -113,8 +120,12 @@ component entityname="SlatwallSubscriptionOrderItem" table="SwSubscriptionOrderI
 	
 	public numeric function getPriceEarnedPerItem(){
 		var priceEarnedPerItem = 0;
+		var extendedPriceAfterDiscount = 0;
+		if(!isNull(getOrderItem()) && !isNull(getOrderItem().getCalculatedExtendedPriceAfterDiscount())){
+			extendedPriceAfterDiscount = getOrderItem().getCalculatedExtendedPriceAfterDiscount();
+		}
 		if(getItemsToDeliver() > 0){
-			priceEarnedPerItem = getService('HibachiUtilityService').precisionCalculate(getOrderItem().getCalculatedExtendedPriceAfterDiscount() / getItemsToDeliver());
+			priceEarnedPerItem = getService('HibachiUtilityService').precisionCalculate(extendedPriceAfterDiscount / getItemsToDeliver());
 		}
 		return priceEarnedPerItem;
 	}

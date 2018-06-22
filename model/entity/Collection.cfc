@@ -2348,7 +2348,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 		}else{
-			try{
+			//try{
 
 				if( !structKeyExists(variables, "pageRecords")) {
 
@@ -2421,12 +2421,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
-			}
+			/*}
 			catch(any e){
 				variables.pageRecords = [{'failedCollection'=e.message & ' HQL: ' & HQL}];
 				writelog(file="collection",text="Error:#e.message#");
 				writelog(file="collection",text="HQL:#HQL#");
-			}
+			}*/
 
 		}
 

@@ -70,6 +70,16 @@ Notes:
 	})/>
 	<!---check for report year and month to filter--->
 	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
+	    <cfset rc.subscriptionUsageCollectionList.addDisplayProperty(
+    		displayProperty='deferredRevenue',
+    		columnConfig={
+    			isVisible=true,
+    			isSearchable=true,
+    			isDeletable=true,
+    			persistent=false
+    		}
+    	)/>
+	    
 		<cfset months=[	
 				"January",
 				"February",
@@ -157,7 +167,7 @@ Notes:
                                 <span class="icon"><i class="fa fa-dollar"></i></span>
                                 <div class="right_side">
                                     <div class="heading">
-                                        <h2>Revenue</h2>
+                                        <h2>Deferred Revenue</h2>
                                         <span class="value">This Month</span>
                                     </div>
                                     <div class="detail">
@@ -168,7 +178,7 @@ Notes:
                             </div>
                         </div>
     
-                        <div class="col-xl-3 col-md-6">
+                        <!---<div class="col-xl-3 col-md-6">
                             <div class="inner red-bg">
                                 <span class="icon"><i class="fa fa-shopping-cart"></i></span>
                                 <div class="right_side">
@@ -181,7 +191,7 @@ Notes:
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>--->
                     </div><!-- end of .top_bar -->
                     
                 </div><!-- end of .dashboard_sec -->

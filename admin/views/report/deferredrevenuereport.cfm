@@ -13,7 +13,7 @@
 	<cfset diff = DateDiff('m',rc.minDate,rc.maxDate)/>
 	<cfset to = currentMonth + diff/>
 	<cfset currentYear = Year(rc.minDate)/>
-    
+	
     <cfinclude template="./revenuereportcontrols.cfm"/>
     
     <table class="table table-bordered s-detail-content-table">
