@@ -90,7 +90,7 @@ Notes:
 		<cfset filterDateMax = CreateDateTime(
 			INT(rc.reportYear),
 			INT(rc.reportMonth),
-			INT(daysInMonth(createDateTime(2000,rc.reportMonth,1,1,1,1))),
+			INT(daysInMonth(createDateTime(rc.reportYear,rc.reportMonth,1,1,1,1))),
 			23,59,59
 		)/>
 		<cfset filterDate = CreateDateTime(INT(rc.reportYear),rc.reportMonth,1,0,0,0)/>
@@ -126,9 +126,68 @@ Notes:
             <cfset rc.productID = ""/>
         </cfif> 
         <cfset deferredRevenueData = $.slatwall.getService('subscriptionService').getDeferredRevenueData(rc.subscriptionType,rc.productType,rc.productID,filterDate,filterDateMax)/>    
-        <cfdump var="#deferredRevenueData#"><cfabort>
+        <cfset yearMonthKey = "#rc.reportYear#-#months[reportMonth]#"/>
+        <cfset deferredRevenueDataForPeriod = deferredRevenueData[yearMonthKey]/>
+        
 	</cfif>
+	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false"  />
+	<cfif structKeyExists(rc,'reportYear') AND structKeyExists(rc,'reportMonth')>
+		<div class="container-fluid">
+            <div class="col-12">
+                <div class="dashboard_sec">
+                    <div class="row top_bar">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner orange-bg">
+                                <span class="icon"><i class="fa fa-shopping-cart"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Active Subscriptions</h2>
+                                        <span class="value">This Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="order">#deferredRevenueDataForPeriod['activeSubscriptions']#</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner blue-bg">
+                                <span class="icon"><i class="fa fa-dollar"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Revenue</h2>
+                                        <span class="value">This Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="amount">$<strong>#deferredRevenueDataForPeriod['deferredTotal']#</strong></span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-xl-3 col-md-6">
+                            <div class="inner red-bg">
+                                <span class="icon"><i class="fa fa-shopping-cart"></i></span>
+                                <div class="right_side">
+                                    <div class="heading">
+                                        <h2>Expiring Subscriptions</h2>
+                                        <span class="value">This Month</span>
+                                    </div>
+                                    <div class="detail">
+                                        <span class="order">#deferredRevenueDataForPeriod['expiringSubscriptions']#</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- end of .top_bar -->
+                    
+                </div><!-- end of .dashboard_sec -->
+            </div><!-- end of .col-12 -->
+        </div>
+    </cfif>
 	
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.subscriptionUsageCollectionList#"

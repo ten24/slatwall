@@ -316,7 +316,7 @@ Notes:
 			
 			<cfif !isNull(arguments.minDate) AND !isNull(arguments.maxDate)>
 				AND su.expirationDate >= <cfqueryparam value="#CreateDateTime(Year(arguments.minDate),Month(arguments.minDate),Day(arguments.minDate),0,0,0)#" cfsqltype="cf_sql_timestamp"/>
-				AND su.expirationDate <= <cfqueryparam value="#CreateDateTime(Year(arguments.maxDate),Month(arguments.maxDate),Day(arguments.maxDate),23,59,59)#" cfsqltype="cf_sql_timestamp"/>
+				
 			</cfif>
 			group by soi.subscriptionOrderItemID
 		</cfquery>
