@@ -449,7 +449,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 						// Update the property with the serverFile name
 						_setProperty(currentProperty.name, uploadData.serverFile);
 
-						// Call setXXUploadState() method if exists to store the upload status data
+						// Call setXXUploadStatus() method if exists to store the upload status data
 						if (structKeyExists(this, 'set#currentProperty.name#UploadStatus')) {
 							invokeMethod('set#currentProperty.name#UploadStatus', {1=uploadData});
 						}
