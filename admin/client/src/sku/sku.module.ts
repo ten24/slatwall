@@ -34,7 +34,8 @@ import {SWSkuThumbnail} from "./components/swskuthumbnail";
 @NgModule({
 	declarations : [],
 	providers : [
-		DefaultSkuService
+		DefaultSkuService,
+		SkuPriceService
 	],
 	imports : [
 		CoreModule,
@@ -55,7 +56,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 .constant('skuPartialsPath','sku/components/')
 //services
 .service('defaultSkuService',downgradeInjectable(DefaultSkuService))
-.service('skuPriceService',SkuPriceService)
+.service('skuPriceService',downgradeInjectable(SkuPriceService))
 //controllers
 
 //directives
