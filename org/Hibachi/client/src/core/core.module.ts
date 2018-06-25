@@ -149,7 +149,8 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         AccountService,
         SkuService,
         OrderPaymentService,
-        PublicService
+        PublicService,
+        HibachiInterceptor
     ],  
     imports: [
         AlertModule,
@@ -289,7 +290,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('typeaheadService', downgradeInjectable(TypeaheadService))
 .service('$hibachi',downgradeInjectable($Hibachi))
 //.decorator('$hibachi',HibachiServiceDecorator)
-.service('hibachiInterceptor', HibachiInterceptor.Factory())
+.service('hibachiInterceptor', downgradeInjectable(HibachiInterceptor))
 .service('hibachiScope',downgradeInjectable(HibachiScope))
 .service('scopeService',downgradeInjectable(ScopeService))
 .service('skuService',downgradeInjectable(SkuService))
