@@ -604,6 +604,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			arguments.subscriptionUsage.addError('renew', errorResponseMessage);
 		}
+		
+		if (order.hasErrors() ||  arguments.subscriptionUsage.hasErrors() ) {
+			
+			var currentStatus = arguments.subscriptionUsage.getCurrentStatus();
+			if(currentStatus.getSubscriptionStatusType().getSystemCode() == 'sstActive' && arguments.subscriptionUsage.getExpirationDate() <= now()) {
+				getDAO('SubscriptionDAO').updateSubscriptionStatus(arguments.subscriptionUsage.getSubscriptionUsageID());
+ 			}
+ 		}
 
 		return arguments.subscriptionUsage;
 	}
