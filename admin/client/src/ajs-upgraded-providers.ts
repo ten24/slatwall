@@ -44,6 +44,10 @@ export function resourceBundlesFactory(i:any) {
     return i.get("resourceBundles");    
 }
 
+export function attributeMetaDataFactory(i:any) {
+    return i.get("attributeMetaData");    
+}
+
 export function injectorFactory(i:any) {
     return i.get('$injector');    
 }
@@ -110,6 +114,12 @@ export const appConfigProvider = {
 export const resourceBundlesProvider = {
     provide    : "resourceBundles",
     useFactory : resourceBundlesFactory,
+    deps       : ["$injector"]    
+};
+
+export const attributeMetaDataProvider = {
+    provide    : "attributeMetaData",
+    useFactory : attributeMetaDataFactory,
     deps       : ["$injector"]    
 };
 

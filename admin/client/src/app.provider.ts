@@ -5,9 +5,16 @@ declare var hibachiConfig:any;
 var md5 = require('md5');
 @Injectable()
 export class AppConfig {
-  public debugFlag:boolean;
-  public modelConfig:any={};
+  public action: string= "";
   public applicationKey:string="";
+  public attributeCacheKey:string="";
+  public baseURL : string = "";
+  public dateFormat: string = "";
+  public debugFlag:boolean;
+  public instantiationKey: string ="";
+  public modelConfig:any={};
+  public rbLocale: string = "";
+  public timeFormat: string = "";
   constructor(){
   }
 }
