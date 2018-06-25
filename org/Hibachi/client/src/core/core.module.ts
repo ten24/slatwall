@@ -147,7 +147,12 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         CartService,
         OrderService,
         AccountService,
-        SkuService
+        SkuService,
+        { provide : Array, useValue : []},
+        { provide : Number, useValue : 0},
+        { provide : Boolean, useValue : false},
+        { provide : String, useValue:"stringValue"}
+        
     ],  
     imports: [
         AlertModule,

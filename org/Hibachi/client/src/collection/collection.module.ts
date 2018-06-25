@@ -48,7 +48,9 @@ import {AggregateFilter} from "./filters/aggregatefilter";
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+		CollectionConfig,
+	],
 	imports : [
 		CoreModule,
 		CommonModule,
@@ -76,7 +78,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .controller('createCollection',CreateCollection)
 .controller('entity_createcollection',CollectionCreateController)
 //services
-.factory('collectionConfigService', ['rbkeyService','$hibachi','utilityService','observerService', (rbkeyService,$hibachi: any,utilityService, observerService) => new CollectionConfig(rbkeyService,$hibachi,utilityService,observerService)])
+.factory('collectionConfigService', downgradeInjectable(CollectionConfig))
 .service('collectionService', CollectionService)
 //directives
 .directive('swRestrictionConfig',SWRestrictionConfig.Factory())

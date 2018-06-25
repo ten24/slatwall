@@ -1,6 +1,12 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class Column{
+import {Injectable,Inject} from "@angular/core";
+import {UtilityService} from "../../core/services/utilityservice";
+import {ObserverService} from "../../core/services/observerservice";
+import {$Hibachi} from "../../core/services/hibachiservice";
+import {RbKeyService} from "../../core/services/rbkeyservice";
+
+export class Column{
     constructor(
         public propertyIdentifier:string,
         public title:string,
@@ -30,7 +36,7 @@ interface IColumn{
     type?:string;
 }
 
-interface IFilter{
+export interface IFilter{
     propertyIdentifier:string;
     value:string;
     comparisonOperator:string;
@@ -39,7 +45,7 @@ interface IFilter{
     displayValue?:string;
 }
 
-class Filter{
+export class Filter{
     constructor(
         public propertyIdentifier:string,
         public value:string,
@@ -52,7 +58,7 @@ class Filter{
     ){}
 }
 
-class CollectionFilter{
+export class CollectionFilter{
     constructor(
         private propertyIdentifier:string,
         private displayPropertyIdentifier:string,
@@ -64,27 +70,27 @@ class CollectionFilter{
     ){}
 }
 
-class Join{
+export class Join{
     constructor(
         public associationName:string,
         public alias:string
     ){}
 }
 
-interface IOrderBy{
+export interface IOrderBy{
     propertyIdentifier:string;
     direction:string;
 }
 
-class OrderBy{
+export class OrderBy{
     constructor(
         public propertyIdentifier:string,
         public direction:string
     ){}
 }
 
-
-class CollectionConfig {
+@Injectable()
+export class CollectionConfig {
     public collection: any;
     private eventID:string;
 
@@ -93,12 +99,11 @@ class CollectionConfig {
         return angular.toJson(this.getCollectionConfig(false));
     }
 
-    // @ngInject
     constructor(
-        private rbkeyService:any,
-        private $hibachi:any,
-        private utilityService,
-        public  observerService,
+        private rbkeyService: RbKeyService,
+        private $hibachi: $Hibachi,
+        private utilityService : UtilityService,
+        public  observerService : ObserverService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
         public  columns?:Column[],
@@ -116,9 +121,7 @@ class CollectionConfig {
         private dirtyRead:boolean = false,
         private isDistinct:boolean = false
 
-    ){
-        this.$hibachi = $hibachi;
-        this.rbkeyService = rbkeyService;
+    ){  
         if(angular.isDefined(this.baseEntityName)){
             this.collection = this.$hibachi.getEntityExample(this.baseEntityName);
             if(angular.isUndefined(this.baseEntityAlias)){
@@ -127,17 +130,17 @@ class CollectionConfig {
         }
     }
 
-    public clearFilterGroups=():CollectionConfig=>{
+    public clearFilterGroups():CollectionConfig{      
         this.filterGroups = [{filterGroup: []}];
-        this.keywordFilterGroups = [{filterGroup: []}];
+        this.keywordFilterGroups = [{filterGroup: []}];        
         return this;
     };
 
-    public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
+    public newCollectionConfig (baseEntityName?:string,baseEntityAlias?:string):CollectionConfig {        
         return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, this.observerService, baseEntityName, baseEntityAlias);
     };
 
-    public loadJson= (jsonCollection):any =>{
+    public loadJson (jsonCollection):any {
         //if json then make a javascript object else use the javascript object
         //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
         while(angular.isString(jsonCollection)){
@@ -212,9 +215,7 @@ class CollectionConfig {
 
     public getOptions= (): Object =>{
         this.validateFilter(this.filterGroups);
-
         var columns = this.columns;
-
         if(this.keywords && this.keywords.length && this.keywordFilterGroups[0].filterGroup.length > 0){
             var filters = this.keywordFilterGroups;
         } else {
@@ -245,6 +246,7 @@ class CollectionConfig {
     };
 
     private formatPropertyIdentifier= (propertyIdentifier:string, addJoin:boolean=false):string =>{
+        
         //if already starts with alias, strip it out
         if(propertyIdentifier.lastIndexOf(this.baseEntityAlias, 0) === 0){
             propertyIdentifier = propertyIdentifier.slice(this.baseEntityAlias.length+1);
@@ -278,7 +280,6 @@ class CollectionConfig {
                 _propertyIdentifier += '.' + propertyIdentifierParts[i];
             }
         }
-
         return _propertyIdentifier;
     };
 
@@ -404,6 +405,7 @@ class CollectionConfig {
                 this.keywordColumns.push(columnObject);
             }
         }
+        
         return this;
     };
 
@@ -650,7 +652,6 @@ class CollectionConfig {
             propertyIdentifier:propertyIdentifier,
             direction:direction
         };
-
         this.orderBy.push(orderBy);
     };
 
@@ -830,14 +831,3 @@ class CollectionConfig {
     }
 
 }
-
-export {
-    Column,
-    Filter,
-    IFilter,
-    CollectionFilter,
-    Join,
-    OrderBy,
-    IOrderBy,
-    CollectionConfig
-};
