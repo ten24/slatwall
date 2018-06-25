@@ -1,18 +1,20 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {Injectable,Inject} from '@angular/core';
+import {$Hibachi} from '../../../../../org/Hibachi/client/src/core/services/hibachiservice';
+import {UtilityService} from '../../../../../org/Hibachi/client/src/core/services/utilityservice';
 
+@Injectable()
+export class ProductBundleService{
 
-class ProductBundleService{
-
-    //ngInject
-    constructor(private $log:ng.ILogService, private $hibachi, private utilityService){
+    constructor(@Inject("$log") private $log:ng.ILogService, private $hibachi :$Hibachi, private utilityService :UtilityService){
 
         this.$log = $log;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
     }
 
-    public decorateProductBundleGroup = (productBundleGroup):void =>{
+    public decorateProductBundleGroup(productBundleGroup):void {
         productBundleGroup.data.$$editing = true;
         var prototype = {
             $$setMinimumQuantity:function(quantity) {
@@ -45,11 +47,10 @@ class ProductBundleService{
                 }
             }
         };
-
         angular.extend(productBundleGroup.data,prototype);
     }
 
-    public formatProductBundleGroupFilters = (productBundleGroupFilters,filterTerm):any =>{
+    public formatProductBundleGroupFilters(productBundleGroupFilters,filterTerm):any {
         this.$log.debug('FORMATTING PRODUCT BUNDLE FILTERs');
         this.$log.debug(productBundleGroupFilters);
         this.$log.debug(filterTerm);
@@ -77,7 +78,4 @@ class ProductBundleService{
         this.$log.debug(productBundleGroupFilters);
         return productBundleGroupFilters;
     }
-}
-export{
-    ProductBundleService
 }
