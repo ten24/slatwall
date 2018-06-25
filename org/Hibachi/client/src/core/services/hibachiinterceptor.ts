@@ -7,6 +7,7 @@ import {DialogService} from "../../dialog/services/dialogservice";
 import {UtilityService} from "./utilityservice";
 import {HibachiPathBuilder} from './hibachipathbuilder';
 import {ObserverService} from './observerservice';
+import {AppConfig} from "../../../../../../admin/client/src/app.provider";
 
 export interface IHibachiConfig{
     baseURL;
@@ -105,7 +106,7 @@ export class HibachiInterceptor implements IInterceptor{
         @Inject("$injector") public $injector:ng.auto.IInjectorService,
         public localStorageService : LocalStorageService,
         public alertService : AlertService,
-        @Inject("appConfig") public appConfig:any,
+        public appConfig : AppConfig,
         public dialogService : DialogService,
         public utilityService : UtilityService,
         public hibachiPathBuilder : HibachiPathBuilder,
