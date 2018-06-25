@@ -43,6 +43,7 @@ class PublicService {
     public editingBillingAddress:any;
     public shippingAddressErrors:any;
     public billingAddressErrors:any;
+    public activePaymentMethod:string;
     public paymentMethods:any;
     public orderPlaced:boolean;
     public useShippingAsBilling:boolean;
@@ -1016,6 +1017,10 @@ class PublicService {
     public clearMessages = ()=>{
         this.successfulActions = [];
         this.failureActions = [];
+    }
+
+    public clearPaymentMethod = ()=>{
+        this.activePaymentMethod = null;
     }
 
     /**Hides shipping address form, clears shipping address errors*/
