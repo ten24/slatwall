@@ -1,5 +1,14 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {Injectable, Inject} from "@angular/core";
+import {$Hibachi} from "../../../../../org/Hibachi/client/src/core/services/hibachiservice";
+import {EntityService} from "../../../../../org/Hibachi/client/src/core/services/entityservice";
+import {CacheService} from "../../../../../org/Hibachi/client/src/core/services/cacheservice";
+import {CollectionConfig} from "../../../../../org/Hibachi/client/src/collection/services/collectionconfigservice";
+import {ObserverService} from "../../../../../org/Hibachi/client/src/core/services/observerservice";
+import {UtilityService} from "../../../../../org/Hibachi/client/src/core/services/utilityservice";
+
+@Injectable()
 export class SkuPriceService { 
 
     private currencies:{}; 
@@ -11,14 +20,14 @@ export class SkuPriceService {
     private skuPriceHasEntityPromises = {}; 
 
     //@ngInject
-    constructor(public $http,
-                public $q, 
-                public $hibachi,
-                public entityService,
-                public cacheService,
-                public collectionConfigService, 
-                public observerService,
-                public utilityService
+    constructor(@Inject("$http") public $http:any,
+                @Inject("$q") public $q:any, 
+                public $hibachi : $Hibachi,
+                public entityService : EntityService,
+                public cacheService : CacheService,
+                public collectionConfigService : CollectionConfig, 
+                public observerService : ObserverService,
+                public utilityService : UtilityService
     ){
          this.observerService.attach(this.updateSkuPrices,'skuPricesUpdate');
     }
