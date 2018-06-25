@@ -1,8 +1,11 @@
 
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {Injectable, Inject} from "@angular/core";
+import {$Hibachi} from "../../core/services/hibachiservice";
+import {AlertService} from "../../alert/service/alertservice";
 
-class WorkflowCondition{
+export class WorkflowCondition{
 	public propertyIdentifer:string = "";
 	public comparisonOperator:string = "";
 	public value:string = "";
@@ -12,20 +15,25 @@ class WorkflowCondition{
 	public $$isNew=true;
 }
 
- class WorkflowConditionGroupItem{
+export class WorkflowConditionGroupItem{
 	public workflowConditionGroup = [];
 
 }
 
- class WorkflowConditionService{
-	public static $inject = ["$log","$hibachi","alertService"];
-	public constructor(public $log:ng.ILogService,$hibachi,alertService){
+@Injectable()
+export class WorkflowConditionService{
+
+	public constructor(
+		@Inject("$log") public $log:ng.ILogService ,
+		$hibachi : $Hibachi ,
+		alertService : AlertService
+	){
 
 	}
-	public newWorkflowCondition = () =>{
+	public newWorkflowCondition () {
 		return new WorkflowCondition;
 	}
-	public addWorkflowCondition = (groupItem,condition) =>{
+	public addWorkflowCondition (groupItem,condition) {
 		this.$log.debug('addWorkflowCondition');
 		this.$log.debug(groupItem);
 		this.$log.debug(condition);
@@ -35,16 +43,11 @@ class WorkflowCondition{
 
 		groupItem.push(condition);
 	}
-	public newWorkflowConditionGroupItem = () =>{
+	public newWorkflowConditionGroupItem () {
 		return new WorkflowConditionGroupItem;
 	}
-	public addWorkflowConditionGroupItem = (group,groupItem) =>{
+	public addWorkflowConditionGroupItem (group,groupItem) {
 		group.push(groupItem);
 	}
 }
-export{
-	WorkflowCondition,
-	WorkflowConditionService,
-	WorkflowConditionGroupItem
-};
 
