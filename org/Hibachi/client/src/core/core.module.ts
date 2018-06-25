@@ -148,6 +148,7 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         OrderService,
         AccountService,
         SkuService,
+        HibachiPathBuilder,
         { provide : Array, useValue : []},
         { provide : Number, useValue : 0},
         { provide : Boolean, useValue : false},
