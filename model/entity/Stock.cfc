@@ -226,6 +226,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
 		return getDao('stockDao').getAveragePriceSold(this.getStockID(),arguments.currencyCode);
 	}
+	
+	public any function getQOQ() {
+		return getQuantity("QOQ");
+	}
 
 	public any function getQATS() {
 		return getQuantity("QATS");
