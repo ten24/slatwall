@@ -1688,7 +1688,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//check filter is a nested filterGroup or a filter itself
 				if (structKeyExists(filter, "filterGroup")) {
 
-					filterGroupHQL &= getFilterGroupsHQL([filter]);
+					filterGroupHQL &= " #logicalOperator# #getFilterGroupsHQL([filter])#" ;
 				} else {
 
 					if(structKeyExists(filter,'comparisonOperator') && len(filter.comparisonOperator)){
