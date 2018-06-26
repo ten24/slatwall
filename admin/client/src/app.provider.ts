@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+import {fromPromise} from 'rxjs/observable/fromPromise';
 
 declare var hibachiConfig:any;
 var md5 = require('md5');
@@ -32,14 +35,23 @@ export class AttributeMetaData {
 
 @Injectable()
 export class AppProvider {
+  public hasData$:Observable<boolean>;
+  public hasDataSubject:Subject<boolean>;
   public appConfig;
   public _resourceBundle = {};
   public attributeMetaData:any;
   public instantiationKey:string;
+  public _hasData:boolean;
 
   constructor(private http: HttpClient) {
+    this.hasDataSubject = new Subject<boolean>();
+    this.hasData$ = this.hasDataSubject.asObservable();
   }
 
+  set hasData(newValue) {
+    this._hasData = newValue;
+    this.hasDataSubject.next(newValue);
+  }
 
   public fetchData():Promise<any>{
       var baseURL = hibachiConfig.baseURL;
@@ -52,7 +64,7 @@ export class AppProvider {
 
      return this.getInstantiationKey(baseURL).then((instantiationKey:string)=>{
           this.instantiationKey = instantiationKey;
-          
+          console.log('test3');
           var invalidCache = [];
           try{
               var hashedData = localStorage.getItem('attributeChecksum');
@@ -67,11 +79,13 @@ export class AppProvider {
 
           try{
               this.appConfig = JSON.parse(localStorage.getItem('appConfig'));
+              console.log(hibachiConfig);
+              console.log(this.appConfig);
               if(hibachiConfig.instantiationKey === this.appConfig.instantiationKey){
-                  
-                  //coremodule.constant('appConfig', this.appConfig);
+                  console.log('test',this.appConfig);
                   return this.getResourceBundles();
               }else{
+                
                   invalidCache.push('instantiationKey');
               }
           }catch(e){
@@ -89,7 +103,7 @@ export class AppProvider {
               resolve(hibachiConfig.instantiationKey);
           }else{
               
-              this.http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey').subscribe((resp:any) => resolve(resp.data.instantiationKey));
+              return this.http.get(baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey').toPromise().then((resp:any) => resolve(resp.data.instantiationKey));
 
           }
       });
@@ -102,7 +116,7 @@ export class AppProvider {
           var invalidCacheName = invalidCache[i];
           var functionName = invalidCacheName.charAt(0).toUpperCase()+invalidCacheName.slice(1);
           promises[invalidCacheName] = this['get'+functionName+'Data']();
-
+          
       }
       return Promise.all(promises);
   };
@@ -125,7 +139,6 @@ export class AppProvider {
       return new Promise((resolve,reject)=>{
         return this.http.get(urlString+'?'+hibachiConfig.action+'=api:main.getAttributeModel')
         .subscribe( (resp:any)=> {
-            //coremodule.constant('attributeMetaData',resp.data.data);
             //for safari private mode which has no localStorage
             try{
                 localStorage.setItem('attributeMetaData',JSON.stringify(resp.data));
@@ -155,23 +168,21 @@ export class AppProvider {
       if(hibachiConfig.baseURL.length && hibachiConfig.baseURL.charAt(hibachiConfig.baseURL.length-1) != '/'){
           urlString+='/';
       }
-      return new Promise((resolve,reject)=>{
-        this.http.get(urlString+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
-        .subscribe( (resp:any)=> {
+      console.log('getINstan');
+      return this.http.get(urlString+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
+      .toPromise().then( (resp:any)=> {
+        
+      	var appConfig = resp.data;
+          if(hibachiConfig.baseURL.length){
+              appConfig.baseURL=urlString;    
+          }
+          try{
+              localStorage.setItem('appConfig',JSON.stringify(resp.data));
+          }catch(e){}
           
-        	var appConfig = resp.data;
-            if(hibachiConfig.baseURL.length){
-                appConfig.baseURL=urlString;    
-            }
-            //coremodule.constant('appConfig',resp.data.data);
-            try{
-                localStorage.setItem('appConfig',JSON.stringify(resp.data));
-            }catch(e){}
-            
-            this.appConfig = appConfig;
-            
-            return this.getResourceBundles();
-        });
+          this.appConfig = appConfig;
+          console.log('getINstan2');
+          return this.getResourceBundles();
       });
 
   };
@@ -185,7 +196,8 @@ export class AppProvider {
 
       var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
       return new Promise((resolve,reject)=>{
-        this.http.get(urlString).toPromise().then((response:any) => {
+        return this.http.get(urlString).toPromise().then((response:any) => {
+            
             this._resourceBundle[locale] = response;
             resolve(true);
         },(error:any) => {
@@ -200,7 +212,7 @@ export class AppProvider {
   };
 
   public getResourceBundles():Promise<any>{
-    
+    console.log('test4');
       var localeListArray = this.appConfig.rbLocale.split('_');
       var rbPromise;
       var rbPromises = [];
@@ -214,11 +226,11 @@ export class AppProvider {
           //this.getResourceBundle('en_us');
           this.getResourceBundle('en');
       }
+      console.log('test5');
       return Promise.all(rbPromises).then((data) => {
-          //coremodule.constant('resourceBundles',this._resourceBundle);
+        console.log('test',this._resourceBundle,data);
       },(error) =>{
           //can enter here due to 404
-          //coremodule.constant('resourceBundles',this._resourceBundle);
       });
 
   }

@@ -105,6 +105,7 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
             appConfig[key] = appProvider.appConfig[key];
         }
         for(var key in appProvider._resourceBundle){
+            console.log(appProvider._resourceBundle);
             resourceBundles[key] = appProvider._resourceBundle[key];
         }
         if(appProvider.attributeMetaData){
@@ -112,6 +113,10 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
                 attributeMetaData[key] = appProvider.attributeMetaData[key];
             }
         }
+        console.log(appProvider);
+        debugger;
+        appProvider.hasData=true;
+        
     })
     
   };

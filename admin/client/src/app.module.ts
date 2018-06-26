@@ -102,7 +102,22 @@ export class AppModule {
     private attributeMetaData:AttributeMetaData
   ) { }
   ngDoBootstrap() {
-    setTimeout( () => {
+    this.appProvider.hasData$.subscribe((hasData:boolean)=>{
+      console.log(hasData);
+      if(hasData){
+        console.log(this.appConfig);
+        console.log(this.resourceBundles);
+        console.log(this.attributeMetaData);
+        //debugger;
+        coremodule.constant('appConfig',this.appConfig)
+        coremodule.constant('resourceBundles',this.resourceBundles)
+        coremodule.constant('attributeMetaData',this.attributeMetaData)
+        this.upgrade.bootstrap(document.body,[slatwalladminmodule.name]);
+      }
+    })
+    
+    /*setTimeout( () => {
+    
     console.log('bootstrap',this.appProvider);
     console.log(this.appConfig);
     console.log(this.resourceBundles);
@@ -113,6 +128,6 @@ export class AppModule {
      
      
      this.upgrade.bootstrap(document.body,[slatwalladminmodule.name]);
-     }, 200 );
+     }, 200 );*/
   }
 }
