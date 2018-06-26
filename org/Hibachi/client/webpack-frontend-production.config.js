@@ -31,7 +31,7 @@ devConfig.plugins =  [
       threshold: 10240,
       minRatio: 0.8
     }),
-    new ngAnnotatePlugin({ add: true }),
+    
     new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
