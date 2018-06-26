@@ -165,18 +165,18 @@ Notes:
 		return result;
 	}
 	
-	public array function getProductSkus(required any product, required any fetchOptions) {
+	public array function getProductSkus(required any product, required any fetchOptions, required string joinType) {
 		
 		var hql = "SELECT sku FROM SlatwallSku sku ";
 		if(fetchOptions) {
 			if(arguments.product.getBaseProductType() eq "contentAccess") {
-				hql &= "INNER JOIN FETCH sku.accessContents contents ";	
+				hql &= "#arguments.joinType# JOIN FETCH sku.accessContents contents ";	
 			} else if (arguments.product.getBaseProductType() eq "merchandise") {
-				hql &= "INNER JOIN FETCH sku.options option ";
+				hql &= "#arguments.joinType# JOIN FETCH sku.options option ";
 			} else if (arguments.product.getBaseProductType() eq "subscription") {
-				hql &= "INNER JOIN sku.subscriptionTerm st ";
-				hql &= "INNER JOIN sku.orderItems oi ";
-				hql &= "INNER JOIN FETCH sku.subscriptionBenefits sb ";
+				hql &= "#arguments.joinType# JOIN sku.subscriptionTerm st ";
+				hql &= "#arguments.joinType# JOIN sku.orderItems oi ";
+				hql &= "#arguments.joinType# JOIN FETCH sku.subscriptionBenefits sb ";
 			}
 		}
 		var hql &= "WHERE sku.product.productID = :productID ";
