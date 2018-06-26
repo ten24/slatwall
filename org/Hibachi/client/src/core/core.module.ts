@@ -104,20 +104,27 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         for(var key in appProvider.appConfig){
             appConfig[key] = appProvider.appConfig[key];
         }
-        for(var key in appProvider._resourceBundle){
-            console.log(appProvider._resourceBundle);
-            resourceBundles[key] = appProvider._resourceBundle[key];
-        }
+       
+        
         if(appProvider.attributeMetaData){
             for(var key in appProvider.attributeMetaData){
                 attributeMetaData[key] = appProvider.attributeMetaData[key];
             }
         }
-        console.log(appProvider);
-        debugger;
-        appProvider.hasData=true;
         
-    })
+        appProvider.getResourceBundles().then((data)=>{
+            for(var key in appProvider._resourceBundle){
+                console.log(appProvider._resourceBundle);
+                resourceBundles[key] = appProvider._resourceBundle[key];
+            }
+            console.log(appProvider);
+            debugger;
+            appProvider.hasData=true;
+        });
+        
+        
+        
+    });
     
   };
 }

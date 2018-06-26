@@ -171,7 +171,7 @@ export class AppProvider {
       console.log('getINstan');
       return this.http.get(urlString+'/custom/config/config.json?instantiationKey='+this.instantiationKey)
       .toPromise().then( (resp:any)=> {
-        
+        console.log('testhere');
       	var appConfig = resp.data;
           if(hibachiConfig.baseURL.length){
               appConfig.baseURL=urlString;    
@@ -195,8 +195,9 @@ export class AppProvider {
       }
 
       var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
+      
       return new Promise((resolve,reject)=>{
-        return this.http.get(urlString).toPromise().then((response:any) => {
+        this.http.get(urlString).toPromise().then((response:any) => {
             
             this._resourceBundle[locale] = response;
             resolve(true);
@@ -227,11 +228,12 @@ export class AppProvider {
           this.getResourceBundle('en');
       }
       console.log('test5');
-      return Promise.all(rbPromises).then((data) => {
+      return Promise.all(rbPromises)
+      /*.then((data) => {
         console.log('test',this._resourceBundle,data);
       },(error) =>{
           //can enter here due to 404
-      });
+      });*/
 
   }
 }
