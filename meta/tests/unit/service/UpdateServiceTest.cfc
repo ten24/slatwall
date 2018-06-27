@@ -78,6 +78,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function allScriptsSucceededTest(){
 		var updateScripts = variables.service.listUpdateScript();
 		for(var updateScript in updateScripts){
+			if(updateScript.getSuccessfulExecutionCount() == 0){
+				addToDebug(serializeJson(updateScript.getUpdateScriptException()));
+			}
 			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed');
 		}
 	}
