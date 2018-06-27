@@ -696,7 +696,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
 	*/
-	public void function createSubscriptionOrderDeliveriestest(){
+	/*public void function createSubscriptionOrderDeliveriestest(){
 		var productData = {
 			productID="",
 			deferredRevenueFlag=true
@@ -705,7 +705,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 		//make sure the product has a deferredRevenueFlag as true
 		asset(product.getDeferredRevenueFlag());
-	}
+	}*/
 	
 	/**
 	* @test
