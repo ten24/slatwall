@@ -226,9 +226,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					if(!isFound){
 						calculatedErrors++;
 						addToDebug(entityName);
+						addToDebug(property);
 					}
 					isFound = false;
 					for(var property in properties) {
+						
 						if(property.name == nonPersistentPropertyName
 							&& structKeyExists(property,"persistent")
 							&& lcase(property.persistent) eq "false"
@@ -239,7 +241,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 					if(!isFound){
 						calculatedErrors++;
+						addToDebug(nonPersistentPropertyName);
 						addToDebug(entityName);
+						addToDebug(property);
 					}
 				}
 
