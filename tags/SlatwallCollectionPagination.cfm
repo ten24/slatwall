@@ -57,7 +57,7 @@ Notes:
 <cfimport prefix="swa" taglib="../tags" />
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.collection" type="any" />
-<cfparam name="attributes.template" type="any" default="./tagtemplates/SlatwallCollectionPagination.cfm"/>
+<cfparam name="attributes.template" type="any" default="./tagtemplates/slatwallcollectionpagination.cfm"/>
 <cfparam name="attributes.slatwallScope" type="any" />
 <cfparam name="attributes.first" type="string" default="&laquo;"/>
 <cfparam name="attributes.previous" type="string" default="&lsaquo; "/>
