@@ -1668,7 +1668,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
+		//reverse to preserve logicalOperator ordering when looping  by decrementing
 		var reverseFilterGroup = arguments.filterGroup.reverse();
+		//decrement looping to remove invalid filters in order to identify the which one is first
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
 			//add propertyKey and value to HQLParams
