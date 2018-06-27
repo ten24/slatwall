@@ -81,7 +81,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			if(updateScript.getSuccessfulExecutionCount() == 0){
 				addToDebug(serializeJson(updateScript.getUpdateScriptException()));
 			}
-			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed');
+			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed : #serializeJson(updateScript.getUpdateScriptException())#');
 		}
 	}
 
