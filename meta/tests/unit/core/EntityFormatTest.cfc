@@ -444,14 +444,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// Loops over all of the entities and tests entity smartlists using the search keyword
 		for(var entityName in allEntities){
 		
-			try{
+				addToDebug('here');
 				var entityService = variables.hibachiService.getServiceByEntityName( entityName );
+				
 				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
+				addToDebug(entityName);
 				smartList.getPageRecords();
-			} catch (any e) {
-				arrayAppend(exceptionErrorEntities, entityName);
-				arrayAppend(exceptionErrorEntities, e.message);
-			}
+				addToDebug('there');
 
 		}
 
