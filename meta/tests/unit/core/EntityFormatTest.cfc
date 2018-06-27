@@ -264,7 +264,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		for(var entityName in ormEntityNames) {
 			var entity = entityNew( entityName );
 			if(len(getMetaData(entity).table) > 30) {
-				debug("The table name for the #entityName# entity is longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
+				debug("The table name for the #entityName# entity is #len(getMetaData(entity).table)-30# longer than 30 characters in length which would break oracle support.  Table Name: #getMetaData(entity).table# Length:#len(getMetaData(entity).table)#");
 				pass = false;
 			}
 		}
@@ -449,6 +449,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				var smartList = entityService.invokeMethod("get#replace(entityName, 'Slatwall', '', 'all')#SmartList", {1=searchData});
 				smartList.getPageRecords();
 			} catch (any e) {
+				
 				arrayAppend(exceptionErrorEntities, entityName);
 				arrayAppend(exceptionErrorEntities, e.message);
 			}

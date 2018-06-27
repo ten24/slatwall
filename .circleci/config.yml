@@ -51,8 +51,8 @@ jobs:
       - run: git config --global user.email "info@slatwallcommerce.com"
       - run: git config --global user.name "Big Boy (Slatwall Robot)"
       - run: git config --global push.default current
-      - run: npm install -g webpack@1.13.3 gulp less
-      - run: npm install --dev
+      - run: npm install -g webpack gulp less
+      - run: npm install --only=dev
       - run: pip install awscli
       - run: cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
       - run: cd admin/client && gulp gen-ts-refs

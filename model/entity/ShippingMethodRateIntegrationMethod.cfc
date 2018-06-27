@@ -50,7 +50,7 @@ Notes:
     shipping integration functionalities such as getting tracking numbers, etc..
 
 */
-component entityname="SlatwallShippingMethodRateIntegrationMethod" table="SwShipMethodRateIntegrationMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="shippingService" {
+component entityname="SlatwallShippingMethodRateIntegrationMethod" table="SwShipMethodRateIntegrationMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="ShippingService" {
     property name="shipMethodRateIntegrationMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
     property name="shippingIntegrationMethod" ormtype="string";
     property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
