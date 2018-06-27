@@ -427,18 +427,23 @@ Notes:
 			//add properties
 
 			var propertyString = '';
-			if(!isNull(arguments.customEntityParser.getFilePath())){
+			if(
+				!isNull(arguments.customEntityParser.getFileContent())
+				|| !isNull(arguments.customEntityParser.getFilePath())
+			){
 				PropertyString = arguments.customEntityParser.getPropertyString();
 			}
 			if(!isNull(arguments.attributeDataQueryByEntity)){
 				propertyString = mergeAttributesIntoPropertyString(arguments.coreEntityParser,propertyString,entityName,arguments.attributeDataQueryByEntity);
 			}
 			if(len(PropertyString)){
+				
 				if(arguments.coreEntityParser.hasCustomProperties() && arguments.purgeCustomProperties){
 					arguments.coreEntityParser.setFileContent(replace(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getCustomPropertyContent(),''));
 				}
 				
 				if(arguments.coreEntityParser.hasCustomProperties()){
+				
 					var customPropertyStartPos = arguments.coreEntityParser.getCustomPropertyStartPosition();
 					var customPropertyEndPos = arguments.coreEntityParser.getCustomPropertyEndPosition();
 					
@@ -450,6 +455,7 @@ Notes:
 						arguments.coreEntityParser.setFileContent(customPropertyContent);	
 					}
 				}else{
+				
 					var customPropertyString = arguments.customEntityParser.getCustomPropertyStringByPropertyString(PropertyString);
 					newContent = 	left(arguments.coreEntityParser.getFileContent(),arguments.coreEntityParser.getPropertyEndPos()-variables.paddingCount) 
 									& conditionalLineBreak & chr(9) & customPropertyString & chr(9) & 
@@ -460,7 +466,10 @@ Notes:
 			}
 			//add functions
 			var functionString = '';
-			if(!isNull(arguments.customEntityParser.getFilePath())){
+			if(
+				!isNull(arguments.customEntityParser.getFileContent())
+				|| !isNull(arguments.customEntityParser.getFilePath())
+			){
 				functionString = arguments.customEntityParser.getFunctionString();
 			}
 			if(len(functionString)){

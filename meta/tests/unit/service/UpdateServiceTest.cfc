@@ -94,7 +94,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var customEntityParser = variables.mockService.getHibachiEntityParserTransientMock(); //request.slatwallScope.getTransient('hibachiEntityParser');
 		customEntityParser.setFileContent(variables.customFileContent);
 		variables.service.mergeEntityParsers(coreEntityParser,customEntityParser);
-
 		assert(len(coreEntityParser.getCustomPropertyContent()));
 		assertEquals(trim(coreEntityParser.getCustomPropertyContent()),trim(customEntityParser.getPropertyString()));
 		assertEquals(trim(coreEntityParser.getCustomFunctionContent()),trim(customEntityParser.getFunctionString()));
