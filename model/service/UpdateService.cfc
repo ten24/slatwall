@@ -232,7 +232,7 @@ Notes:
 				<cfcatch>
 					<!--- failed, let's log this execution count --->
 					<cfset arguments.script.setExecutionCount(arguments.script.getExecutionCount()+1) />
-					<cfset arguments.script.setUpdateScriptException(cfcatch.message)/>
+					<cfset arguments.script.setUpdateScriptException(cfcatch)/>
 				</cfcatch>
 			</cftry>
 			<cfset arguments.script.setLastExecutedDateTime(now()) />
