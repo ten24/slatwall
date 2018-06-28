@@ -159,7 +159,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		arguments.fullPath = super.customizeViewOrLayoutPath(argumentcollection=arguments);
 		
 		if(listFindNoCase("admin,public", arguments.pathInfo.subsystem)){
-			var customFullPath = replace(replace(replace(arguments.fullPath, "/admin/", "/custom/admin/"), "/public/", "/custom/public/");
+			var customFullPath = replace(replace(arguments.fullPath, "/admin/", "/custom/admin/"), "/public/", "/custom/public/");
 			if(fileExists(expandPath(customFullPath))) {
 				arguments.fullPath = customFullPath;
 			}
