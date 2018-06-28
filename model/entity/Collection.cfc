@@ -190,9 +190,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function isReport(){
-		return getReportFlag();
+		return getReportFlag() && structKeyExists(getCollectionConfigStruct(),'periordInterval');
 	}
-
+	
 	public boolean function getCheckDORPermissions(){
 		return variables.checkDORPermissions;
 	}
@@ -1176,14 +1176,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 		variables.collectionObject = HibachiBaseEntity;
 		if(variables.collectionConfig eq '{}' ){
-			var cacheKey = 'setCollectionObject' & arguments.collectionObject;
+			var cacheKey = 'setCollectionObject' & arguments.collectionObject & '#getReportFlag()#';
 			var defaultCollectionConfig = getCollectionCacheValue(cacheKey);
 
 			if(isNull(defaultCollectionConfig)){
 				//get default columns
 				var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-				var defaultProperties = newEntity.getDefaultCollectionProperties();
-
+				var defaultProperties = "";
+				if(getReportFlag()){
+					defaultProperties  = newEntity.getDefaultCollectionReportProperties();
+				}else{
+					defaultProperties = newEntity.getDefaultCollectionProperties();
+				}
 				var columnsArray = [];
 				//check to see if we are supposed to add default columns
 				if(addDefaultColumns){
