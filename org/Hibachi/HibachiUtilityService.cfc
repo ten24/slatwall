@@ -1172,6 +1172,9 @@
 			<!--- If the field has a dot or a bracket... --->
 			<cfif hasFormCollectionSyntax(local.thisField)>
 
+				<!--- NOTE: Edge case issue caused by Lucee automatically converting keys with array syntax and inflating new form scope variables to represent arrays (a Lucee hidden gem) --->
+				<cfset local.isLuceeTerminalCollectionFieldFlag = right(local.thisField, 1) eq ']' />
+
 				<!--- Add collection to list if not present. --->
 				<cfset local.tempStruct['formCollectionsList'] = addCollectionNameToCollectionList(local.tempStruct['formCollectionsList'], local.thisField) />
 
@@ -1205,7 +1208,7 @@
 
 						<cfif local.tempIndex eq 0>
 							<cfset local.currentElement[local.tempElement] = arguments.formScope[local.thisField] />
-						<cfelse>
+						<cfelseif not local.isLuceeTerminalCollectionFieldFlag>
 							<cfset local.currentElement[local.tempElement][local.tempIndex] = arguments.formScope[local.thisField] />
 						</cfif>
 
