@@ -50,6 +50,7 @@ Notes:
 <cfset local.scriptHasErrors = false />
 
 <cftry>
+	
 	<cfquery name="local.taskConditionsConfigs">
 		SELECT workflowtaskID, taskConditionsConfig FROM swWorkflowTask where taskConditionsConfig not like '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"%'
 	</cfquery>

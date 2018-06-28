@@ -76,9 +76,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	* @test
 	*/
 	public void function allScriptsSucceededTest(){
+		//these scripts should have already run when the system boots and we are just checking them in the db to see that they succeeded
 		var updateScripts = variables.service.listUpdateScript();
 		for(var updateScript in updateScripts){
 			if(updateScript.getSuccessfulExecutionCount() == 0){
+				variables.service.runScript(updateScript);
 				addToDebug(serializeJson(updateScript.getUpdateScriptException()));
 			}
 			assert(updateScript.getSuccessfulExecutionCount() > 0,'script: #updateScript.getscriptPath()# failed : #serializeJson(updateScript.getUpdateScriptException())#');
