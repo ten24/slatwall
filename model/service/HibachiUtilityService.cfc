@@ -122,9 +122,14 @@ Notes:
 	<cffunction name="arrayReverse">
 		<cfargument name="arrayValue">
 		<cfscript>
-			var list = createObject("java", "java.util.Arrays").asList(arguments.arrayValue);
-		   createObject("java", "java.util.Collections").reverse(list);
-		   return list.toArray();
+			var outArray = ArrayNew(1);
+		    var i=0;
+		    var j = 1;
+		    for (i=ArrayLen(inArray);i GT 0;i=i-1){
+		        outArray[j] = inArray[i];
+		        j = j + 1;
+		    }
+		    return outArray;
 		</cfscript>
 	</cffunction>
 	
