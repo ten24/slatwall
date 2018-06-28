@@ -1182,8 +1182,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
 	public any function getDefaultCollectionReportProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
-		var primaryIDName = getService('HibachiService').getPrimaryIDPropertyNameByEntityName(getClassName());
-		arguments.excludesList = listAppend(arguments.excludesList,primaryIDName);
+		arguments.includesList = "#getSimpleRepresentationPropertyName()#";
 		var defaultProperties = getDefaultCollectionProperties(argumentCollection=arguments);
 		
 		return defaultProperties;
