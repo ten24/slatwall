@@ -1690,7 +1690,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//check filter is a nested filterGroup or a filter itself
 				if (structKeyExists(filter, "filterGroup")) {
 
-					filterGroupHQL &= filter.logicalOperator & getFilterGroupsHQL([filter]);
+					filterGroupHQL &= " #logicalOperator# #getFilterGroupsHQL([filter])#" ;
 				} else {
 
 					if(structKeyExists(filter,'comparisonOperator') && len(filter.comparisonOperator)){
@@ -1747,14 +1747,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-<<<<<<< HEAD
-		var isFirst = true;
-		for(var filterGroup in arguments.FilterGroups){
-			var logicalOperator = '';
-
-			if(structKeyExists(filterGroup,'logicalOperator') && !isFirst){
-				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
-=======
 		var reverseFilterGroup = arguments.FilterGroups.reverse();
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filterGroup = reverseFilterGroup[i];
@@ -1765,19 +1757,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					logicalOperator = 'AND';
 				}
->>>>>>> origin/develop
 			}
 			
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
-<<<<<<< HEAD
-				isFirst = false; 
-=======
 			}else{
 				arrayDeleteAt(reverseFilterGroup,i);
->>>>>>> origin/develop
 			}
 		}
 
@@ -3716,21 +3703,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public void function setCollectionConfigStruct(required struct collectionConfigStruct){
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
-<<<<<<< HEAD
-		if(structKeyExists(arguments.collectionConfigStruct,'filterGroups')){
-			convertFilterGroupPropertyIdentifiers(arguments.collectionConfigStruct['filterGroups'][1]); 	
-		}
-	}
-
-	private void function convertFilterGroupPropertyIdentifiers(required struct filterGroupConfig){
-		if(structKeyExists(arguments.filterGroupConfig, 'filterGroup')){
-			for(var filter in filterGroupConfig.filterGroup){
-				if(structKeyExists(filter, 'propertyIdentifier')){ 
-					var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
-				} else if(structKeyExists(filter, 'filterGroup')) { 
-					convertFilterGroupPropertyIdentifiers(filter); 	
-				} 
-=======
 		if(structKeyExists(variables.collectionConfigStruct,'filterGroups')){
 			prepareAliasForFilterGroups(variables.collectionConfigStruct['filterGroups']);
 		}
@@ -3742,7 +3714,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
 			}else if(structKeyExists(filter,'filterGroup')){
 				prepareAliasForFilterGroups(filter.filterGroup);
->>>>>>> origin/develop
 			}
 		}
 	}
