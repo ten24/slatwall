@@ -118,6 +118,16 @@ Notes:
 		}
 
 	</cfscript>
+	
+	<cffunction name="arrayReverse">
+		<cfargument name="arrayValue">
+		<cfscript>
+			var list = createObject("java", "java.util.Arrays").asList(arguments.arrayValue);
+		   createObject("java", "java.util.Collections").reverse(list);
+		   return list.toArray();
+		</cfscript>
+	</cffunction>
+	
 	<!---
 	QueryTreeSort takes a query and efficiently (O(n)) resorts it hierarchically (parent-child), adding a Depth column that can then be used when displaying the data.
 
