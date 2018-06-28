@@ -107,6 +107,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="QATS" persistent="false";
 	property name="QOH" persistent="false";
 	property name="QNC" persistent="false";
+	property name="QOQ" persistent="false";
 
 	//Derived Properties
 	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
@@ -225,6 +226,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	public numeric function getAveragePriceSold(required string currencyCode="USD"){
 		return getDao('stockDao').getAveragePriceSold(this.getStockID(),arguments.currencyCode);
+	}
+	
+	public any function getQOQ() {
+		return getQuantity("QOQ");
 	}
 
 	public any function getQATS() {

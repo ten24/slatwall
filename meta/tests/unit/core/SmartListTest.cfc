@@ -183,7 +183,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function buildURL_2() {
 		var urlResponse = variables.smartList.buildURL(queryAddition="p:current=3", currentURL="?f:productName=hello&p:current=2");
 		
-		assert(urlResponse eq '?f:productname=hello&p:current=3');
+		assertEquals(urlResponse,'?f:productname=hello&amp;p:current=3');
 	}
 		
 	/**

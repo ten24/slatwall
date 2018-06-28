@@ -1060,12 +1060,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(structKeyExists(arguments.data,'keywords')){
 			collection1.setKeywords(arguments.data.keywords);
 		}
+		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
+		
+		//Because we need to be able to join the collections later, we need to force the primaryIDProperty to be exportable
+		collection1 = forcePrimaryIDExportable( collection1 );
+		collection2 = forcePrimaryIDExportable( collection2 );
+		
 		var collection1Headers = getHeadersListByCollection(collection1);
 		var collection2Headers = getHeadersListByCollection(collection2);
 		var collection1Data = this.transformArrayOfStructsToQuery(collection1.getRecords(forExport=true,formatRecords=false), ListToArray(collection1Headers));
 		var collection2Data = this.transformArrayOfStructsToQuery(collection2.getRecords(forExport=true,formatRecords=false), ListToArray(collection2Headers));
-
-		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(collection1.getCollectionObject());
 
 		if(collection2Data.recordCount > 0){
 			var rightIDQuery = new Query();
@@ -1159,6 +1163,21 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return headersList;
 	}
+	
+	public any function forcePrimaryIDExportable (required any collectionEntity){
+		var primaryIDPropertyName = getPrimaryIDPropertyNameByEntityName(arguments.collectionEntity.getCollectionObject());
+		
+		for (var column in arguments.collectionEntity.getCollectionConfigStruct().columns){
+			if (column.ormtype == 'id' && column.key == primaryIDPropertyName){
+				column.isExportable = true;
+				break;
+			}
+		}
+		arguments.collectionEntity.setCollectionConfig( serializeJson(arguments.collectionEntity.getCollectionConfigStruct()) );
+		
+		return arguments.collectionEntity;
+	}
+
 
 	// =====================  END: Logical Methods ============================
 
