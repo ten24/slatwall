@@ -76,6 +76,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="hibachiUtilityService" type="any" persistent="false";
 	property name="hibachiCollectionService" type="any" persistent="false";
 	property name="hibachiService" type="any" persistent="false";
+	property name="hibachiUtilityService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
