@@ -3541,7 +3541,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& column.ormtype neq 'big_decimal')
 				) continue;
 
-				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : '';
+				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer' || structKeyExists(column, 'aggregate') ) ? 'STR' : '';
 				if(formatter == '' && getHibachiScope().getApplicationValue('databaseType')=="Oracle10g"){
 					formatter = "LOWER";
 				}
