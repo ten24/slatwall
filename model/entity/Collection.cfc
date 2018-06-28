@@ -75,6 +75,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Non-Persistent Properties
 	property name="hibachiCollectionService" type="any" persistent="false";
 	property name="hibachiService" type="any" persistent="false";
+	property name="hibachiUtilityService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
 	property name="hqlParams" type="struct" persistent="false";
 	property name="hqlAliases" type="struct" persistent="false";
@@ -171,6 +172,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.applyOrderBysToGroupBys=true;
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 		setHibachiService(getService('HibachiService'));
+		setHibachiUtilityService(getService('HibachiUtilityService'));
 
 	}
 
