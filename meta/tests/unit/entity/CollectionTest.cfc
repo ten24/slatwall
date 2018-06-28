@@ -538,7 +538,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup");
 		var pageRecords = myProductCollection.getPageRecords();
-
+		debug(myProductCollection.getHQL());
+		debug(myProductCollection.getCollectionConfigStruct());
 		assertTrue(arrayLen(pageRecords) == 2, "Wrong amount of products returned! Expecting 2 record but returned #arrayLen(pageRecords)#");
 
 		myProductCollection = variables.entityService.getProductCollectionList();
@@ -556,7 +557,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myProductCollection.addFilter('productCode','FGP1', "=", "OR", "", "productCodeFilterGroup1");
 		myProductCollection.addFilter('productCode','FGP2', "=", "OR", "", "productCodeFilterGroup2");//AND is the default filter group comparison operator
 		var pageRecords = myProductCollection.getPageRecords();
-
+		
 		assertTrue(arrayLen(pageRecords) == 0, "Wrong amount of products returned! Expecting 0 record but returned #arrayLen(pageRecords)#");
 
 	}
@@ -594,36 +595,34 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			skus = [
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'aa'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ab'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ac'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID()
+					skuCode= 'ad'&createUUID()
 				},
 				{
 					skuID = '',
-					skuCode= createUUID(),
-					activeFlag = false
+					skuCode= 'ae'&createUUID(),
+					activeFlag = 'false'
 				}
 			]
 		};
 		//By default Active flag is true.
 		var SkusInActiveProducts = createPersistedTestEntity('product', productWithActiveSkusData);
 		
-		
-		
 		var myProductCollection = variables.entityService.getProductCollectionList();
 		myProductCollection.setDisplayProperties('productName,productDescription,activeFlag');
 		myProductCollection.addFilter('productName','ProductUnitTest');
-		myProductCollection.addFilter('productDescription',uniqueNumberForDescription);
+		myProductCollection.addFilter('productDescription',trim(uniqueNumberForDescription));
 		myProductCollection.addFilter('skus.activeFlag','YES');
 	
 		assertEquals(myProductCollection.getRecordsCount(),1);

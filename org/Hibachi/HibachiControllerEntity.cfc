@@ -599,7 +599,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.entityName );
 
-		entityService.invokeMethod("export#arguments.entityName#");
+		entityService.invokeMethod( "export#arguments.entityName#" , arguments.rc );
 	}
 
 	// ============================= PRIVATE HELPER METHODS

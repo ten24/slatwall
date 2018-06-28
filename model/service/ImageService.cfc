@@ -152,8 +152,10 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				arguments.imagePath = "#getApplicationValue('baseURL')##arguments.missingImagePath#";
 				
 		    //look if this has been supplied at the site level.
-			} else if (!isNull(getSiteService().getCurrentRequestSite()) && !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))) {
-                
+			} else if (
+				!isNull(getSiteService().getCurrentRequestSite()) 
+				&& !isNull(getSiteService().getCurrentRequestSite().setting('siteMissingImagePath'))
+			) {
                 arguments.imagePath = getSiteService().getCurrentRequestSite().setting('siteMissingImagePath');
 			
 			//check the custom location

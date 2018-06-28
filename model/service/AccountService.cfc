@@ -218,9 +218,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!newAccountPayment.hasErrors()) {
 			// Loop over all account payments and link them to the AccountPaymentApplied object
 			for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
-				
 				if(structKeyExists(appliedOrderPayment,'amount') && IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
-					var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+					var orderPayment = getOrderService().getOrderPayment( 
+						appliedOrderPayment.orderPaymentID 
+					);
 					
 					var newAccountPaymentApplied = this.newAccountPaymentApplied();
 					newAccountPaymentApplied.setAccountPayment( newAccountPayment );

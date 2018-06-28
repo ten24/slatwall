@@ -112,7 +112,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
+	/*public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
 		
 		//set up productBundle
 		var productData = {
@@ -261,12 +261,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//addToDebug(orderReturn.getOrderID());
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
-	}
+	}*/
 
 	/**
 	* @test
 	*/
-	public void function process_order_add_gift_card_order_item(){
+	/*public void function process_order_add_gift_card_order_item(){
 		var productData = {
 			productName="AGiftCardProductName",
 			productid="",
@@ -365,7 +365,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
 		assertEquals(0, numOfUnassignedGiftCards);
-	}
+	}*/
 
 	/**
 	* @test
@@ -442,7 +442,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function processOrder_placeOrder_TermPayment(){
+	/*public void function processOrder_placeOrder_TermPayment(){
 		//adding a test shippingMethod
 		var shippingMethodData ={
 			shippingMethodID="",
@@ -689,14 +689,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(arrayLen(orderDelivery.getOrderDeliveryItems()));
 
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
-	}
+	}*/
 	
 	
 	/**
 	* @test
 	* @description this function should look for all subscriptions that require a delivery based on the DeliverySchedule
 	*/
-	public void function createSubscriptionOrderDeliveriestest(){
+	/*public void function createSubscriptionOrderDeliveriestest(){
 		var productData = {
 			productID="",
 			deferredRevenueFlag=true
@@ -705,12 +705,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 		//make sure the product has a deferredRevenueFlag as true
 		asset(product.getDeferredRevenueFlag());
-	}
+	}*/
 	
 	/**
 	* @test
 	*/
-	public void function processOrder_placeOrder_TermPayment_QNDOOupdates(){
+	/*public void function processOrder_placeOrder_TermPayment_QNDOOupdates(){
 		//adding a test shippingMethod
 		var shippingMethodData ={
 			shippingMethodID="",
@@ -977,7 +977,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertEquals(orderDelivery.getOrderDeliveryItems()[1].getQuantity(),1);
 
-	}
+	}*/
 
 	private numeric function getQATSFake(){
 		return 0;
@@ -992,225 +992,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	/**
 	* @test
 	*/
-	public void function processOrder_placeOrder_QATS_salesOrder_test(){
-		//adding a test shippingMethod
-		var shippingMethodData ={
-			shippingMethodID="",
-			fulfillementMethod={
-				//shipping
-				fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953'
-			},
-			activeFlag=1,
-			shippingMethodName="testShippingMethod"&createUUID(),
-			shippingMethodCode="testShippingMethod"&createUUID()
-		};
-		var shippingMethod = createPersistedTestEntity('ShippingMethod',shippingMethodData);
-
-		var shippingMethodRateData={
-			shippingMethodRateID="",
-			shippingMethod={
-				shippingMethodID=shippingMethod.getShippingMethodID()
-			},
-			activeFlag=1
-		};
-		var shippingMethodRate = createPersistedTestEntity('ShippingMethodRate',shippingMethodRateData);
-
-		var accountData={
-			accountID="",
-			firstName="test",
-			lastName="test",
-			emailAddress="test@test.com"
-		};
-		var account = createPersistedTestEntity('account',accountData);
-
-
-		//create Payment Method
-		var termPaymentMethodData={
-			paymentMethodID="",
-			activeFlag=1,
-			paymentMethodName="testTermPaymentMethod"&createUUID(),
-			allowSaveFlag=1,
-			placeOrderChargeTransactionType="",
-			placeOrderCreditTransactionType="",
-			subscriptionRenewalTransactionType=""
-		};
-		var termPaymentMethod = createPersistedTestEntity('PaymentMethod',termPaymentMethodData);
-
-		var accountPaymentMethodData={
-			accountPaymentMethodID="",
-			activeFlag=1,
-			account={
-				accountID=account.getAccountID()
-			},
-			paymentMethod={
-				paymentMethodID=termPaymentMethod.getPaymentMethodID()
-			}
-
-		};
-		var accountPaymentMethod = createPersistedTestEntity('AccountPaymentMethod',accountPaymentMethodData);
-
-		//set up eligible sku payment methods
-		var settingData={
-			settingID="",
-			settingName="skuEligiblePaymentMethods",
-			settingValue=termPaymentMethod.getPaymentMethodID()
-		};
-		var settingEntity = createPersistedTestEntity('Setting',settingData);
-
-		//set up an orderable product
-		var productData = {
-			productID="",
-			activeFlag=1,
-			productCode="testProduct"&createUUID(),
-			productType={
-				//merchandise
-				productTypeID='444df2f7ea9c87e60051f3cd87b435a1'
-			}
-		};
-		var product = createPersistedTestEntity('Product',productData);
-
-		var skuData={
-			skuID="",
-			activeFlag=1,
-			skuCode="testSku"&createUUID(),
-			product={
-				productID=product.getProductID()
-			}
-		};
-		var sku = createPersistedTestEntity('sku',skuData);
-
-		settingData = {
-			settingID="",
-			settingName="skuTrackInventoryFlag",
-			settingValue="1",
-			sku={
-				skuID=sku.getSkuID()
-			}
-		};
-		var settingEntity = createPersistedTestEntity('setting',settingData);
-
-		settingData={
-			settingID="",
-			settingName="skuOrderMaximumQuantity",
-			settingValue=1000,
-			sku={
-				skuID=sku.getSkuID()
-			}
-		};
-		var settingEntity = createPersistedTestEntity('Setting',settingData);
-
-		assert(sku.setting('skuTrackInventoryFlag'));
-
-		injectMethod(sku, this, 'getQATSFakeWithQuantity', 'getQATS');
-		injectMethod(sku, this, 'getQATSFakeWithQuantity', 'getCalculatedQATS');
-
-
-		var orderData = {
-			orderID="",
-			accountID=account.getAccountID(),
-			currencyCode='USD',
-			orderType={
-				//sales order
-				typeID='444df2df9f923d6c6fd0942a466e84cc'
-			},
-			newAccountFlag=0
-
-		};
-		var order = createTestEntity('order',{});
-		order = variables.service.process(order,orderData,'create');
-
-		variables.service.getDao('hibachiDao').flushOrmSession();
-
-		var shippingAddressData={
-			addressID="",
-			firstName="test",
-			lastName="test",
-			streetAddress="test st",
-			company="",
-			city="test",
-			stateCode="MA",
-			countryCode="US",
-			postalCode="01757"
-		};
-		var shippingAddress = createPersistedTestEntity('Address',shippingAddressData);
-
-		var accountAddressData = {
-			accountAddressID="",
-			address={
-				addressID=shippingAddress.getAddressID()
-			},
-			account={
-				accountID=account.getAccountID()
-			}
-		};
-		var accountAddress = createPersistedTestEntity('AccountAddress',accountAddressData);
-
-		var addOrderItemData={
-			skuID=sku.getSkuID(),
-			orderItemTypeSystemCode="oitSale",
-			quantity=1,
-			price=1.00,
-			orderFulfillmentID="new",
-			//shipping
-			fulfillmentMethodID='444df2fb93d5fa960ba2966ba2017953',
-			//default location
-			pickupLocationID='88e6d435d3ac2e5947c81ab3da60eba2',
-
-			shippingAccountAddressID=accountAddress.getAccountAddressID(),
-			shippingAddress.countryCode='US',
-			saveShippingAccountAddressFlag=1,
-			preProcessDisplayedFlag=1
-		};
-
-		order = variables.service.process(order,addOrderItemData,'addOrderItem');
-		variables.service.getDao('hibachiDao').flushOrmSession();
-
-		assert(arraylen(order.getOrderFulfillments()));
-		assert(!order.hasErrors());
-		/* important part of the test! after we have added the item to the cart, its important that we simulate running out on QATS to test that we are not allowed to place order */
-		/**/
-
-		//empty the stock
-		injectMethod(sku, this, 'getQATSFake', 'getQATS');
-		sku.setCalculatedQATS(0);
-
-		var placeOrderData={
-			orderID=order.getOrderID(),
-			preProcessDisplayedFlag=1,
-			orderFulfillments={
-				orderFulfillmentID=order.getOrderFulfillments()[1].getOrderFulfillmentID(),
-				shippingMethod={
-					shippingMethodID=shippingMethod.getShippingMethodID()
-				}
-			},
-			newOrderPayment={
-				orderPaymentID="",
-				order={
-					orderID=order.getOrderID()
-				},
-				orderPaymentType={
-					//charge
-					typeID="444df2f0fed139ff94191de8fcd1f61b"
-				},
-				paymentMethod={
-					paymentMethodID=termPaymentMethod.getPaymentMethodID()
-				},
-				creditCardNumber="4111111111111111",
-				nameOnCreditCard="Ryan Marchand",
-				expirationMonth="01",
-				expirationYear="19",
-				securityCode="111",
-				companyPaymentMethodFlag="0"
-			},
-			copyFromType="",
-			saveGiftCardToAccountFlag=0,
-			accountAddressID=accountAddress.getAccountAddressID(),
-			saveAccountPaymentMethodFlag=0
-		};
-
-		order = variables.service.process(order,placeOrderData,'placeOrder');
-	}
-
+	
 	/**
 	* @test
 	* @description make sure that when we do an exchange that we can add return order items even if we track inventory

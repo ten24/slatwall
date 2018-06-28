@@ -1669,13 +1669,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
-		var isFirstFilter = true;
-		for(var filter in arguments.filterGroup){
+		//reverse to preserve logicalOperator ordering when looping  by decrementing
+		var reverseFilterGroup = arguments.filterGroup.reverse();
+		//decrement looping to remove invalid filters in order to identify the which one is first
+		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
+			var filter = reverseFilterGroup[i];
 			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
-			if(structKeyExists(filter,"logicalOperator") && len(filter.logicalOperator) && !isFirstFilter){
-				logicalOperator = filter.logicalOperator;
+			if(i != arrayLen(reverseFilterGroup)){
+				if(structKeyExists(filter,"logicalOperator") && len(filter.logicalOperator)){
+					logicalOperator = filter.logicalOperator;
+				}else{
+					logicalOperator = 'AND';
+				}
 			}
 			if(!isnull(filter.collectionID) || !isNull(filter.collection)){
 				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";
@@ -1684,7 +1691,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//check filter is a nested filterGroup or a filter itself
 				if (structKeyExists(filter, "filterGroup")) {
 
-					filterGroupHQL &= getFilterGroupsHQL([filter]);
+					filterGroupHQL &= " #logicalOperator# #getFilterGroupsHQL([filter])#" ;
 				} else {
 
 					if(structKeyExists(filter,'comparisonOperator') && len(filter.comparisonOperator)){
@@ -1693,6 +1700,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 						if (structKeyExists(filter, 'aggregate') && isnull(filter.attributeID)){
 							addAggregateFilter(filter);
+							arrayDeleteAt(reverseFilterGroup,i);
 							continue;
 						}
 
@@ -1716,7 +1724,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 
 			}
-			isFirstFilter = false;
 		}
 		return filterGroupHQL;
 	}
@@ -1740,19 +1747,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-
-		for(var i=1;i <= arraylen(arguments.FilterGroups);i++){
-			var filterGroup = arguments.FilterGroups[i];
+		var reverseFilterGroup = arguments.FilterGroups.reverse();
+		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
+			var filterGroup = reverseFilterGroup[i];
 			var logicalOperator = '';
-			//default if greater than 1
-			//override if explicitly defined
-			if(structKeyExists(filterGroup,'logicalOperator')){
-				logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
+			if(i != arraylen(reverseFilterGroup)){
+				if(structKeyExists(filterGroup,'logicalOperator') && len(filterGroup.logicalOperator)){
+					logicalOperator = getLogicalOperator(filterGroup.logicalOperator);
+				}else{
+					logicalOperator = 'AND';
+				}
 			}
+			
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
 				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+			}else{
+				arrayDeleteAt(reverseFilterGroup,i);
 			}
 		}
 
@@ -3597,7 +3609,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					&& column.ormtype neq 'big_decimal')
 				) continue;
 
-				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : '';
+				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer' || structKeyExists(column, 'aggregate') ) ? 'STR' : '';
 				if(formatter == '' && getHibachiScope().getApplicationValue('databaseType')=="Oracle10g"){
 					formatter = "LOWER";
 				}
@@ -3747,17 +3759,29 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public any function getCollectionConfigStruct(){
-		if(isNull(variables.collectionConfigStruct)){
+		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = deserializeCollectionConfig();
 		}
+		if(!structKeyExists(variables,'collectionConfigStruct')){
+			variables.collectionConfigStruct = {};
+		}
+		
 		return variables.collectionConfigStruct;
 	}
 
 	public void function setCollectionConfigStruct(required struct collectionConfigStruct){
 		variables.collectionConfigStruct = arguments.collectionConfigStruct;
-		if(structKeyExists(arguments.collectionConfigStruct,'filterGroups')){
-			for(var filter in variables.collectionConfigStruct['filterGroups'][1].filterGroup){
+		if(structKeyExists(variables.collectionConfigStruct,'filterGroups')){
+			prepareAliasForFilterGroups(variables.collectionConfigStruct['filterGroups']);
+		}
+	}
+	
+	public void function prepareAliasForFilterGroups(required array filterGroup){
+		for(var filter in arguments.filterGroup){
+			if(structKeyExists(filter,'propertyIdentifier')){
 				var propertyIdentifierAlias = getPropertyIdentifierAlias(convertAliasToPropertyIdentifier(filter.propertyIdentifier));
+			}else if(structKeyExists(filter,'filterGroup')){
+				prepareAliasForFilterGroups(filter.filterGroup);
 			}
 		}
 	}
@@ -3861,7 +3885,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function getUseElasticSearch(){
-		if(isNull(variables.useElasticSearch)){
+		if(!structKeyExists(variables,'useElasticSearch')){
 			variables.useElasticSearch = false;
 		}
 		return variables.useElasticSearch;
