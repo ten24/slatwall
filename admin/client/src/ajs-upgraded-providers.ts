@@ -68,6 +68,10 @@ export function anchorScrollFactory(i:any) {
     return i.get('$anchorScroll');
 }
 
+export function listingServiceFactory(i:any) {
+    return i.get('listingService');
+}
+
 // define angular factory provider 
 export const parseProvider = {
     provide    : '$parse',
@@ -151,4 +155,10 @@ export const anchorScrollProvider = {
     provide    : "$anchorScroll",
     useFactory : anchorScrollFactory,
     deps       : ["$injector"]    
+};
+
+export const listingServiceProvider = {
+    provide    : 'listingService',
+    useFactory : listingServiceFactory,
+    deps       : ['$injector']    
 };

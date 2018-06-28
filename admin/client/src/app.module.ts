@@ -28,7 +28,7 @@ import {OrderFulfillmentModule} from "./orderfulfillment/orderfulfillment.module
 import {OrderItemModule} from "./orderitem/orderitem.module";
 
 import {ProductModule} from "./product/product.module";
-import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider,attributeMetaDataProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider,attributeMetaDataProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider,listingServiceProvider } from "./ajs-upgraded-providers"; 
 
 import {ProductBundleModule} from "./productbundle/productbundle.module";
 import {SkuModule} from "./sku/sku.module";
@@ -55,7 +55,8 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
     windowProvider,
     rootScopeProvider,
     locationProvider,
-    anchorScrollProvider
+    anchorScrollProvider,
+    listingServiceProvider
   ],
   imports: [
     HttpClientModule,
