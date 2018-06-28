@@ -16,6 +16,7 @@
     	<div ng-show="key === 'swvalidatiomaxvalue'" class="px-2 mt-1 bg-danger text-white">The value entered is incorrect</div><br ng-show="key === 'swvalidationmaxvalue'">
     	<div ng-show="key === 'swvalidationminlength'" class="px-2 mt-1 bg-danger text-white">The value entered is incorrect</div><br ng-show="key === 'swvalidationminlength'">
     	<div ng-show="key === 'swvalidationmaxlength'" class="px-2 mt-1 bg-danger text-white">The value entered is incorrect</div><br ng-show="key === 'swvalidationmaxlength'">
+        <div ng-show="key === 'swvalidationeqproperty'" class="px-2 mt-1 bg-danger text-white">The values entered do not match.</div><br ng-show="key === 'swvalidationeqproperty'">
     </div>
     <!--server side validation-->
     <div class="px-2 mt-1 bg-danger text-white" ng-show="slatwall.requests[#attributes.formController#.method].errors.#attributes.propertyIdentifier#" ng-repeat="error in slatwall.requests[#attributes.formController#.method].errors.#listLast(attributes.propertyIdentifier,'.')#" ng-bind="error">

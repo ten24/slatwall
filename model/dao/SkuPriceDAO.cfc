@@ -68,26 +68,31 @@ component extends="HibachiDAO" accessors="true" output="false" {
 		return  ormExecuteQuery( "SELECT sp FROM SlatwallSkuPrice sp WHERE sp.sku.skuID = :skuID AND sp.minQuantity <= :quantity AND sp.maxQuantity >= :quantity", { skuID=arguments.skuID, quantity=arguments.quantity }, true );
 	}
 
-	public function getSkuPricesForSkuCurrencyCodeAndQuantity(required string skuID, required string currencyCode, required numeric quantity, array priceGroups=getHibachiScope().getAccount().getPriceGroups()){
+	public function getSkuPricesForSkuCurrencyCodeAndQuantity(
+		required string skuID, 
+		required string currencyCode, 
+		required numeric quantity, 
+		array priceGroups=getHibachiScope().getAccount().getPriceGroups()
+	){
 		var priceGroupString = "";
 		
 		if(arraylen(arguments.priceGroups)){
-			priceGroupString = "OR _skuPrice.priceGroup in :priceGroups";
+			priceGroupString = " OR _skuPrice.priceGroup.priceGroupID in (:priceGroupIDs) ";
 		}
 		
 		var hql = "
 			SELECT NEW MAP(_skuPrice.price as price, _skuPrice.skuPriceID as skuPriceID)
 			FROM SlatwallSkuPrice _skuPrice 
-			left join _skuPrice.sku as _sku
+			left join _skuPrice.sku as _sku 
 			WHERE _sku.skuID = :skuID 
 			AND _skuPrice.minQuantity <= :quantity 
 			AND _skuPrice.maxQuantity >= :quantity 
-			AND _skuPrice.currencyCode = :currencyCode
+			AND _skuPrice.currencyCode = :currencyCode 
 			AND (
-				_skuPrice.priceGroup IS NULL
-				#priceGroupString#
+				_skuPrice.priceGroup IS NULL 
+				#priceGroupString# 
 			)
-			GROUP BY _skuPrice.price,_skuPrice.skuPriceID
+			GROUP BY _skuPrice.price,_skuPrice.skuPriceID 
 			";
 			
 		var params = { 
@@ -97,9 +102,14 @@ component extends="HibachiDAO" accessors="true" output="false" {
 			
 		};
 		if(len(priceGroupString)){
-			params['priceGroups']=arguments.priceGroups;
+			var priceGroupIDs = "";
+			for(var priceGroup in arguments.priceGroups){
+				priceGroupIDs = listAppend(priceGroupIDs,priceGroup.getPriceGroupID());
+			}
+			params.priceGroupIDs=priceGroupIDs;
 		}
-		return  ormExecuteQuery( hql,
+		return  ormExecuteQuery( 
+			hql,
 			params
 		);
 	}
