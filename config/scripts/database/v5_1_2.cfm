@@ -48,9 +48,8 @@ Notes:
 --->
 
 <cfset local.scriptHasErrors = false />
-<cfset local.scriptException = ""/>
+
 <cftry>
-	
 	<cfquery name="local.taskConditionsConfigs">
 		SELECT workflowtaskID, taskConditionsConfig FROM swWorkflowTask where taskConditionsConfig not like '{"filterGroups":[{"filterGroup":[]}],"baseEntityAlias":"%'
 	</cfquery>
@@ -66,14 +65,13 @@ Notes:
 	</cfif>
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update workflowtask taskConditionsConfig">
-		<cfset local.scriptHasErrors = true />
-		<cfset local.scriptException = cfcatch/>
+		
 	</cfcatch>
 </cftry>
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v5_1.2 had errors when running">
-	<cfthrow detail="Part of Script v5_1.2 had errors when running #serializeJson(local.scriptException)#">
+	<cfthrow detail="Part of Script v5_1.2 had errors when running">
 <cfelse>
 	<cflog file="Slatwall" text="General Log - Script v5_1.2 has run with no errors">
 </cfif>
