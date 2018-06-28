@@ -20,7 +20,9 @@ import {SWOrderFulfillmentList} from "./components/sworderfulfillmentlist";
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+        OrderFulfillmentService
+    ],
 	imports : [
 		CoreModule,
 		CommonModule,
@@ -43,7 +45,7 @@ var orderfulfillmentmodule = angular.module('orderFulfillment',[coremodule.name]
 //constants
 .constant('orderFulfillmentPartialsPath','orderfulfillment/components/')
 //services
-.service('orderFulfillmentService', OrderFulfillmentService)
+.service('orderFulfillmentService', downgradeInjectable(OrderFulfillmentService))
 //controllers
 //directives
 .directive('swOrderFulfillmentList', SWOrderFulfillmentList.Factory());
