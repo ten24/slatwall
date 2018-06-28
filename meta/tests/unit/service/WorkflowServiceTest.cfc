@@ -261,6 +261,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		   "baseEntityAlias":"_product",
 		   "baseEntityName":"Product"
 		}';
+		addToDebug(workflowTasksConditionsConfig);
+
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
 			MakePublic(variables.service,'getWorkflowConditionGroupsString');
