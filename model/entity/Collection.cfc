@@ -72,6 +72,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="hibachiUtilityService" type="any" persistent="false";
 	property name="hibachiCollectionService" type="any" persistent="false";
 	property name="hibachiService" type="any" persistent="false";
 	property name="collectionConfigStruct" type="struct" persistent="false";
@@ -170,6 +171,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.applyOrderBysToGroupBys=true;
 		setHibachiCollectionService(getService('hibachiCollectionService'));
 		setHibachiService(getService('HibachiService'));
+		setHibachiUtilityService(getService('HibachiUtilityService'));
 
 	}
 	
@@ -1669,7 +1671,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
 		//reverse to preserve logicalOperator ordering when looping  by decrementing
-		var reverseFilterGroup = getHibachiScope().getService('hibachiUtilityService').arrayReverse(arguments.filterGroup);
+		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroup);
 		//decrement looping to remove invalid filters in order to identify the which one is first
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filter = reverseFilterGroup[i];
@@ -1747,7 +1749,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-		var reverseFilterGroup = getHibachiScope().getService('hibachiUtilityService').arrayReverse(arguments.FilterGroups);
+		var reverseFilterGroup = getHibachiUtilityService().arrayReverse(arguments.filterGroups);
 		for(var i=arraylen(reverseFilterGroup);i > 0;i--){
 			var filterGroup = reverseFilterGroup[i];
 			var logicalOperator = '';

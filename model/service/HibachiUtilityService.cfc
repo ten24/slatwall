@@ -120,13 +120,13 @@ Notes:
 	</cfscript>
 	
 	<cffunction name="arrayReverse">
-		<cfargument name="arrayValue">
+		<cfargument name="inArray">
 		<cfscript>
 			var outArray = ArrayNew(1);
 		    var i=0;
 		    var j = 1;
-		    for (i=ArrayLen(inArray);i GT 0;i=i-1){
-		        outArray[j] = inArray[i];
+		    for (i=ArrayLen(arguments.inArray);i GT 0;i=i-1){
+		        outArray[j] = arguments.inArray[i];
 		        j = j + 1;
 		    }
 		    return outArray;
