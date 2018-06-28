@@ -234,11 +234,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="rc.passwordConfirm" default="";
 
 		rc.account = getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "setupInitialAdmin");
-
 		if(!rc.account.getProcessObject("setupInitialAdmin").hasErrors() && !rc.account.hasErrors()) {
 			getFW().redirect(action='admin:main.default', queryString="s=1");
 		}
-
+		
 		login( rc );
 	}
 
