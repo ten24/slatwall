@@ -132,7 +132,6 @@ class SWListingDisplayController{
             this.showExport = true;
         }
         
-        
         if(angular.isUndefined(this.showFilters)){
            this.showFilters = true;
         }
@@ -185,7 +184,10 @@ class SWListingDisplayController{
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
             this.processCollection();
         }
-
+        
+        if(!this.reportAction){
+            this.reportAction = 'entity.reportlist'+this.baseEntityName.toLowerCase();
+        }
 
     }
     

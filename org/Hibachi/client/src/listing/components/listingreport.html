@@ -1,5 +1,6 @@
-		
+
 <div class="col-md-5">
+    <div class="alert alert-error" ng-show="swListingReport.hasMetric==false">You must have an aggregate column to render the report</div>
     <canvas id="myChart" width="1200" height="300" ng-show="swListingReport.reportingData"></canvas>
     <canvas id="myChartCompare" width="1200" height="300" ng-show="swListingReport.reportingData"></canvas>
 	<div class="" style="vertical-align:top; margin-bottom:5px;">

@@ -51,7 +51,7 @@ Notes:
 
 <cfparam name="rc['#rc.entityActionDetails.itemEntityName#SmartList']" type="any" />
 
-<hb:HibachiEntityActionBar type="listing" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#">
+<hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#">
 		
 	<!--- Create ---> 
 	<hb:HibachiEntityActionBarButtonGroup>

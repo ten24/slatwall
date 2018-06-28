@@ -1856,9 +1856,9 @@ exports.Observable = Observable;
 
             mom = createUTC([2000, 1]).day(i);
             if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
+                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
             }
             if (!this._weekdaysParse[i]) {
                 regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
@@ -2661,7 +2661,7 @@ exports.Observable = Observable;
 
     function preprocessRFC2822(s) {
         // Remove comments and folding whitespace and replace multiple-spaces with a single space
-        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').trim();
+        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 
     function checkWeekday(weekdayStr, parsedInput, config) {
@@ -4043,7 +4043,7 @@ exports.Observable = Observable;
 
     addUnitAlias('date', 'D');
 
-    // PRIOROITY
+    // PRIORITY
     addUnitPriority('date', 9);
 
     // PARSING
@@ -4840,7 +4840,7 @@ exports.Observable = Observable;
     // Side effect imports
 
 
-    hooks.version = '2.22.0';
+    hooks.version = '2.22.2';
 
     setHookCallback(createLocal);
 
@@ -13603,7 +13603,7 @@ module.exports = Color;
         relativeTime : {
             future : '%s sonra',
             past : '%s əvvəl',
-            s : 'birneçə saniyyə',
+            s : 'birneçə saniyə',
             ss : '%d saniyə',
             m : 'bir dəqiqə',
             mm : '%d dəqiqə',
@@ -13698,7 +13698,7 @@ module.exports = Color;
         weekdays : {
             format: 'нядзелю_панядзелак_аўторак_сераду_чацвер_пятніцу_суботу'.split('_'),
             standalone: 'нядзеля_панядзелак_аўторак_серада_чацвер_пятніца_субота'.split('_'),
-            isFormat: /\[ ?[Вв] ?(?:мінулую|наступную)? ?\] ?dddd/
+            isFormat: /\[ ?[Ууў] ?(?:мінулую|наступную)? ?\] ?dddd/
         },
         weekdaysShort : 'нд_пн_ат_ср_чц_пт_сб'.split('_'),
         weekdaysMin : 'нд_пн_ат_ср_чц_пт_сб'.split('_'),
@@ -20929,7 +20929,7 @@ module.exports = Color;
         calendar : {
             sameDay : '[ਅਜ] LT',
             nextDay : '[ਕਲ] LT',
-            nextWeek : 'dddd, LT',
+            nextWeek : '[ਅਗਲਾ] dddd, LT',
             lastDay : '[ਕਲ] LT',
             lastWeek : '[ਪਿਛਲੇ] dddd, LT',
             sameElse : 'L'
@@ -21423,28 +21423,28 @@ module.exports = Color;
             LLLL : 'dddd, D MMMM YYYY г., H:mm'
         },
         calendar : {
-            sameDay: '[Сегодня в] LT',
-            nextDay: '[Завтра в] LT',
-            lastDay: '[Вчера в] LT',
+            sameDay: '[Сегодня, в] LT',
+            nextDay: '[Завтра, в] LT',
+            lastDay: '[Вчера, в] LT',
             nextWeek: function (now) {
                 if (now.week() !== this.week()) {
                     switch (this.day()) {
                         case 0:
-                            return '[В следующее] dddd [в] LT';
+                            return '[В следующее] dddd, [в] LT';
                         case 1:
                         case 2:
                         case 4:
-                            return '[В следующий] dddd [в] LT';
+                            return '[В следующий] dddd, [в] LT';
                         case 3:
                         case 5:
                         case 6:
-                            return '[В следующую] dddd [в] LT';
+                            return '[В следующую] dddd, [в] LT';
                     }
                 } else {
                     if (this.day() === 2) {
-                        return '[Во] dddd [в] LT';
+                        return '[Во] dddd, [в] LT';
                     } else {
-                        return '[В] dddd [в] LT';
+                        return '[В] dddd, [в] LT';
                     }
                 }
             },
@@ -21452,21 +21452,21 @@ module.exports = Color;
                 if (now.week() !== this.week()) {
                     switch (this.day()) {
                         case 0:
-                            return '[В прошлое] dddd [в] LT';
+                            return '[В прошлое] dddd, [в] LT';
                         case 1:
                         case 2:
                         case 4:
-                            return '[В прошлый] dddd [в] LT';
+                            return '[В прошлый] dddd, [в] LT';
                         case 3:
                         case 5:
                         case 6:
-                            return '[В прошлую] dddd [в] LT';
+                            return '[В прошлую] dddd, [в] LT';
                     }
                 } else {
                     if (this.day() === 2) {
-                        return '[Во] dddd [в] LT';
+                        return '[Во] dddd, [в] LT';
                     } else {
-                        return '[В] dddd [в] LT';
+                        return '[В] dddd, [в] LT';
                     }
                 }
             },
@@ -27249,6 +27249,7 @@ var DelaySubscriber = (function (_super) {
             this.schedule(state, delay_1);
         }
         else {
+            this.unsubscribe();
             source.active = false;
         }
     };
@@ -86294,6 +86295,9 @@ var SWListingDisplayController = /** @class */ (function () {
             $rootScope.hibachiScope.selectedPersonalCollection = undefined;
             this.processCollection();
         }
+        if (!this.reportAction) {
+            this.reportAction = 'entity.reportlist' + this.baseEntityName.toLowerCase();
+        }
     }
     return SWListingDisplayController;
 }());
@@ -87016,37 +87020,41 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.selectedPeriodInterval
                 && _this.startDate
                 && _this.endDate) {
+                _this.hasMetric = false;
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
                 for (var i in _this.reportCollectionConfig.columns) {
                     var column = _this.reportCollectionConfig.columns[i];
                     if (column.aggregate) {
                         column.isMetric = true;
+                        _this.hasMetric = true;
                     }
                     else {
                         column.isVisible = false;
                     }
                 }
-                _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
-                _this.reportCollectionConfig.setReportFlag(true);
-                _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
-                _this.reportCollectionConfig.setAllRecords(true);
-                _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
-                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
-                _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
-                _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-                _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
-                _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
-                _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
-                _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
-                _this.reportCollectionConfig.getEntity().then(function (reportingData) {
-                    var ctx = $("#myChart");
-                    _this.renderReport(reportingData, ctx);
-                    if (_this.startDateCompare) {
-                        var diff = Math.abs(_this.endDate - _this.startDate);
-                        _this.endDateCompare = new Date(_this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
-                        _this.updateComparePeriod();
-                    }
-                });
+                if (_this.hasMetric) {
+                    _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
+                    _this.reportCollectionConfig.setReportFlag(true);
+                    _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
+                    _this.reportCollectionConfig.setAllRecords(true);
+                    _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
+                    _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
+                    _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
+                    _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                    _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
+                    _this.collectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
+                    _this.observerService.notifyById('getCollection', _this.tableId, { collectionConfig: _this.collectionConfig.collectionConfigString });
+                    _this.observerService.notifyById('swPaginationAction', _this.tableId, { type: 'setCurrentPage', payload: 1 });
+                    _this.reportCollectionConfig.getEntity().then(function (reportingData) {
+                        var ctx = $("#myChart");
+                        _this.renderReport(reportingData, ctx);
+                        if (_this.startDateCompare) {
+                            var diff = Math.abs(_this.endDate - _this.startDate);
+                            _this.endDateCompare = new Date(_this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
+                            _this.updateComparePeriod();
+                        }
+                    });
+                }
             }
         };
         this.renderReport = function (reportingData, ctx) {

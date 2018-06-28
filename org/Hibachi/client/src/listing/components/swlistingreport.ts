@@ -24,6 +24,7 @@ class SWListingReportController {
     public selectedReport:any;
     public collectionNameSaveIsOpen:boolean;
     public filterPropertiesList:any;
+    public hasMetric:boolean;
     
     //@ngInject
     constructor(
@@ -221,41 +222,44 @@ class SWListingReportController {
             && this.startDate
             && this.endDate
         ){
-            
+            this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
             for(var i in this.reportCollectionConfig.columns){
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate){
                     column.isMetric = true;
+                    this.hasMetric = true;
                 }else{
                     column.isVisible = false;
                 }
             }
-            this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
-            this.reportCollectionConfig.setReportFlag(true);
-            this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
-            this.reportCollectionConfig.setAllRecords(true);
-            this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
-            
-            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
-            this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+            if(this.hasMetric){
+                this.reportCollectionConfig.setPeriodInterval(this.selectedPeriodInterval.value);
+                this.reportCollectionConfig.setReportFlag(true);
+                this.reportCollectionConfig.addDisplayProperty(this.selectedPeriodColumn.propertyIdentifier,'',{isHidden:true,isPeriod:true,isVisible:false});
+                this.reportCollectionConfig.setAllRecords(true);
+                this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
                 
-            this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
-            this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
-            this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+                this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                    
+                this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
+                this.collectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
+                    
+                this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
+                this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
                 
-            this.observerService.notifyById('getCollection',this.tableId,{collectionConfig:this.collectionConfig.collectionConfigString});
-            this.observerService.notifyById('swPaginationAction',this.tableId,{type:'setCurrentPage', payload:1});
-            
-            this.reportCollectionConfig.getEntity().then((reportingData)=>{
-                var ctx = $("#myChart");
-    			this.renderReport(reportingData,ctx);
-    			if(this.startDateCompare){
-                    var diff = Math.abs(this.endDate - this.startDate);
-                    this.endDateCompare = new Date(this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
-                    this.updateComparePeriod();
-                }
-            });
+                this.reportCollectionConfig.getEntity().then((reportingData)=>{
+                    var ctx = $("#myChart");
+        			this.renderReport(reportingData,ctx);
+        			if(this.startDateCompare){
+                        var diff = Math.abs(this.endDate - this.startDate);
+                        this.endDateCompare = new Date(this.startDateCompare).addMilliseconds(diff).toString('MMM dd, yyyy hh:mm tt');
+                        this.updateComparePeriod();
+                    }
+                });
+            }
             
         }
     }

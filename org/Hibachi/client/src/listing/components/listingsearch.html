@@ -29,15 +29,12 @@
         <hr >
     </div>
     <!-- REPORT COLLECTIONS -->
-    <a class="input-group-btn s-action" ng-if="swListingSearch.swListingDisplay.reportAction" href="swListingSearch.swListingDisplay.reportAction"
-    >
-        <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm btn-default dropdown-toggle"
-            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        >
+    <span class="input-group-btn s-action">
+        <a class="btn btn-sm btn-default s-action" aria-haspopup="true" aria-expanded="false" ng-show="swListingSearch.swListingDisplay.reportAction" ng-href="{{$root.hibachiScope.appConfig.baseURL}}?{{$root.hibachiScope.appConfig.action}}={{swListingSearch.swListingDisplay.reportAction}}">
             <i class="fa fa-book"></i>
-        </button>
-        
-    </a>
+        </a>
+    </span>
+
     <!-- PERSONAL COLLECTIONS -->
     <span class="input-group-btn s-action" ng-click="swListingSearch.savePersonalCollection()"
         ng-show="swListingSearch.swListingDisplay.usingPersonalCollection && (swListingSearch.swListingControls.showToggleFilters || swListingSearch.swListingControls.showToggleDisplayOptions)">
