@@ -549,6 +549,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables,'content');
 	}
+	
+	// Option (many-to-one)
+	public void function setOption(required any option) {
+		variables.option = arguments.option;
+		if(isNew() or !arguments.option.hasAttributeValue( this )) {
+			arrayAppend(arguments.option.getAttributeValues(), this);
+		}
+	}
+	public void function removeOption(any option) {
+		if(!structKeyExists(arguments, "optionGroup")) {
+			arguments.option = variables.option;
+		}
+		var index = arrayFind(arguments.option.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.option.getAttributeValues(), index);
+		}
+		structDelete(variables, "option");
+	}
 
 	// Option Group (many-to-one)
 	public void function setOptionGroup(required any optionGroup) {
