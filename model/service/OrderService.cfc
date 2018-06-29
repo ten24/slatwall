@@ -3227,6 +3227,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		
+		// We need to get the thirdPartyShippingAccountIdentifier from the data struct and set it on the orderFulfillment
+		if(structKeyExists(arguments.data, 'thirdPartyShippingAccountIdentifier')){
+			var thirdPartyShippingAccountIdentifier = arguments.data.thirdPartyShippingAccountIdentifier;
+			arguments.orderfulfillment.setThirdPartyShippingAccountIdentifier(thirdPartyShippingAccountIdentifier);
+		}
 
 		// Call the generic save method to populate and validate
 		arguments.orderFulfillment = save(arguments.orderFulfillment, arguments.data, arguments.context);
