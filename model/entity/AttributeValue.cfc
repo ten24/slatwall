@@ -82,6 +82,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
+	property name="option" cfc="Option" fieldtype="many-to-one" fkcolumn="optionID";
 	property name="optionGroup" cfc="OptionGroup" fieldtype="many-to-one" fkcolumn="optionGroupID";
 	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
