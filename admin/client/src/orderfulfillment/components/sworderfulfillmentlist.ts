@@ -597,9 +597,11 @@ class SWOrderFulfillmentListController {
         if (result.data && result.data['fulfillmentBatchID']){
             //if url contains /Slatwall use that
             var slatwall = "";
-            if (this.$window.location.pathname.indexOf("Slatwall") != -1){
-                slatwall = this.$hibachi.appConfig.baseURL;
-            }
+            
+            slatwall = this.$hibachi.appConfig.baseURL;
+            
+            if (slatwall == "") slatwall = "/";
+            
             this.$window.location.href = slatwall + "?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
         }
     }
