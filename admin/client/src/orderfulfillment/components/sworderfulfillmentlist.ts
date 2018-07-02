@@ -663,7 +663,9 @@ class SWOrderFulfillmentListController {
                 }
                 else if (this.getProcessObject().data.orderItemIDList && this.getProcessObject().data.orderItemIDList.split(",").length > 0){
                     return this.getProcessObject().data.orderItemIDList.split(",").length;
-                }
+                }else{
+			return 0;
+		}
 
             } catch (error){
                 return 0; //default
