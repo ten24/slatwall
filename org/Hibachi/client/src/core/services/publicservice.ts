@@ -11,6 +11,7 @@ import {CartService} from "./cartservice";
 import {AccountService} from "./accountservice";
 import {OrderService} from "./orderservice";
 import {ObserverService} from "./observerservice";
+import {AppConfig} from "../../../../../../admin/client/src/app.provider";
 
 @Injectable()
 export class PublicService {
@@ -87,7 +88,7 @@ export class PublicService {
         public cartService : CartService,
         public orderService : OrderService,
         public observerService : ObserverService,
-        @Inject("appConfig") public appConfig,
+        public appConfig : AppConfig,
         @Inject("$timeout") public $timeout
     ) {
         this.orderService = orderService;

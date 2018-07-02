@@ -1,6 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 import { Injectable,Inject } from "@angular/core";
+import {AppConfig} from "../../../../../../admin/client/src/app.provider";
 
 @Injectable()
 export class RbKeyService{
@@ -15,7 +16,7 @@ export class RbKeyService{
     constructor(
         @Inject("$http") $http:any,
         @Inject("$q") $q:any,
-        @Inject("appConfig") public appConfig:any,
+        public appConfig : AppConfig,
         @Inject("resourceBundles") public resourceBundles:any
     ){
         this.$q = $q;

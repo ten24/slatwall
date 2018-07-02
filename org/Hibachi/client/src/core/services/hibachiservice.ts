@@ -10,6 +10,7 @@ import { FormService } from "./formservice";
 import { RbKeyService } from "./rbkeyservice";
 import { ObserverService } from "./observerservice";
 import { HibachiValidationService } from "./hibachivalidationservice";
+import {AppConfig} from "../../../../../../admin/client/src/app.provider";
 
 // interface ISlatwallRootScopeService extends ng.IRootScopeService{
 //     loadedResourceBundle:boolean;
@@ -513,7 +514,7 @@ export class $Hibachi extends HibachiService {
                 observerService : ObserverService,
                 hibachiValidationService:HibachiValidationService,
                 
-                @Inject("appConfig") appConfig:any,
+                appConfig : AppConfig,
                 @Inject("attributeMetaData") attributeMetaData:any
                  ){
 
@@ -533,6 +534,7 @@ export class $Hibachi extends HibachiService {
 
             appConfig);
 		this._config = appConfig;
+        
         
         ///////////////////////////////////////////////////// hibachiservicedecorator
         
