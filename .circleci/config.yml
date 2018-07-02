@@ -54,8 +54,8 @@ jobs:
       - run: npm install -g webpack gulp less
       - run: npm install --only=dev
       - run: pip install awscli
-      - run: cd org/Hibachi/client && gulp gen-ts-refs && webpack --config webpack-frontend-production.config.js -p --display-error-details
-      - run: cd admin/client && gulp gen-ts-refs
+      - run: cd org/Hibachi/client && webpack --config webpack-frontend-production.config.js -p --display-error-details
+      #- run: cd admin/client && gulp gen-ts-refs
       - run: cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
       - run: cd admin/client/css && lessc main.less main.css
       - run: meta/ci/version_merge.sh
