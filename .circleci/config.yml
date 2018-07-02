@@ -49,7 +49,7 @@ jobs:
     steps:
       - checkout
       - run: git config --global user.email "info@slatwallcommerce.com"
-      - run: git config --global user.name "Ten24 (Slatwall Robot)"
+      - run: git config --global user.name "ten24 (Slatwall Robot)"
       - run: git config --global push.default current
       - run: npm install -g webpack gulp less
       - run: npm install --only=dev
