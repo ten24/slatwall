@@ -55,13 +55,14 @@
 	
 	<div class="" style="margin-right:10px;">
 		<div style="margin-bottom:5px;">
+		    <a href="##" ng-click="swListingReport.popObjectPath()">back</a>
 			<select 
 			    ng-model="swListingReport.selectedPeriodColumn" 
 			    ng-options="periodColumn as periodColumn.displayPropertyIdentifier
                             for periodColumn in swListingReport.periodColumns
                              | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                 "
-                ng-change="swListingReport.updatePeriod()"
+                ng-change="swListingReport.selectPeriodColumn(swListingReport.selectedPeriodColumn)"
             >
 				
 			</select>

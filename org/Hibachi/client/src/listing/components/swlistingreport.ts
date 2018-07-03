@@ -25,6 +25,9 @@ class SWListingReportController {
     public collectionNameSaveIsOpen:boolean;
     public filterPropertiesList:any;
     public hasMetric:boolean;
+    public objectPath:string[]=[];
+    public selectedPeriodPropertyIdentifierArray:string[]=[];
+    public selectedPeriodPropertyIdentifier;
     
     //@ngInject
     constructor(
@@ -36,19 +39,11 @@ class SWListingReportController {
         public collectionConfigService
     ) {
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
+        this.selectedPeriodPropertyIdentifierArray=[this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
-        //get meta data we need for existing columns
-        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then((value)=> {
-            this.metadataService.setPropertiesList(value, this.collectionConfig.baseEntityAlias);
-            this.filterPropertiesList[this.collectionConfig.baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(this.collectionConfig.baseEntityAlias);
-            metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
-            
-            //figure out all the possible periods
-            this.getPeriodColumns()
-            
-            this.getPersistedReports();
-            
-        });
+        
+        this.getPeriodColumns()
+        this.getPersistedReports();
         this.observerService.attach(this.updateReportFromListing,'filterItemAction',this.tableId);
     }
     
@@ -328,15 +323,60 @@ class SWListingReportController {
         this.chart.draw();
     }
     
-    public getPeriodColumns=()=>{
-        var rootColumns = {};
-        rootColumns[this.collectionConfig.baseEntityAlias] = angular.copy(this.metadataService.getPropertiesListByBaseEntityAlias(this.collectionConfig.baseEntityAlias));
-        this.periodColumns = [];
-        for(var i in rootColumns[this.collectionConfig.baseEntityAlias].data){
-            var rootColumn = rootColumns[this.collectionConfig.baseEntityAlias].data[i];
-            if(rootColumn.ormtype && rootColumn.ormtype == 'timestamp'){
-                this.periodColumns.push(rootColumn);
+    public popObjectPath=()=>{
+        if(this.objectPath.length > 1){
+            this.objectPath.pop();
+            this.selectedPeriodPropertyIdentifierArray.pop();
+            this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false);
+            console.log('objectPath',this.objectPath);  
+            console.log('objectPath',this.selectedPeriodPropertyIdentifierArray); 
+        }
+    }
+    
+    public getPeriodColumns=(baseEntityAlias=this.collectionConfig.baseEntityAlias,adding=true)=>{
+        if(adding){
+            
+            this.objectPath.push(baseEntityAlias);
+        }
+        
+        console.log('objectPath',this.objectPath);
+        
+        //get meta data we need for existing columns
+        this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=> {
+            this.metadataService.setPropertiesList(value, baseEntityAlias);
+            this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
+            this.metadataService.formatPropertiesList(this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
+            
+            //figure out all the possible periods
+            var columns = {};
+            columns[baseEntityAlias] = angular.copy(this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias));
+            this.periodColumns = [];
+            for(var i in columns[baseEntityAlias].data){
+                var column = columns[baseEntityAlias].data[i];
+                if((column.ormtype && column.ormtype == 'timestamp') || (column.fieldtype && ['one-to-many','many-to-many','id'].indexOf(column.fieldtype) == -1 )){
+                    this.periodColumns.push(column);
+                }
             }
+            
+            
+            
+        });
+        
+    }
+    
+    public selectPeriodColumn=(column)=>{
+        if(column && column.cfc){
+            console.log('selectedPeriodColumn',column);
+            this.selectedPeriodPropertyIdentifierArray.push(column.name);
+            console.log('selectedPeriodPropertyIdentifierArray',this.selectedPeriodPropertyIdentifierArray);
+            this.getPeriodColumns(column.cfc);
+        }else if(column && column.name){
+            this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
+            column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
+            column.isPeriod = true;
+            this.selectedPeriodColumn = column;
+            console.log('selectedPeriodPropertyIdentifier',this.selectedPeriodPropertyIdentifier);
+            this.updatePeriod();
         }
     }
 

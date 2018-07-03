@@ -47445,10 +47445,7 @@ module.exports = convert;
 
 /***/ }),
 /* 358 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 module.exports = {
 	"aliceblue": [240, 248, 255],
@@ -47600,7 +47597,6 @@ module.exports = {
 	"yellow": [255, 255, 0],
 	"yellowgreen": [154, 205, 50]
 };
-
 
 /***/ }),
 /* 359 */
@@ -61951,7 +61947,12 @@ var SWOrderFulfillmentListController = /** @class */ (function () {
             //Redirect to the created fulfillmentBatch.
             _this.addingBatch = false;
             if (result.data && result.data['fulfillmentBatchID']) {
-                _this.$window.location.href = "/?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
+                //if url contains /Slatwall use that
+                var slatwall = "";
+                slatwall = _this.$hibachi.appConfig.baseURL;
+                if (slatwall == "")
+                    slatwall = "/";
+                _this.$window.location.href = slatwall + "?slataction=entity.detailfulfillmentbatch&fulfillmentBatchID=" + result.data['fulfillmentBatchID'];
             }
         };
         /**
@@ -62012,6 +62013,9 @@ var SWOrderFulfillmentListController = /** @class */ (function () {
                     }
                     else if (_this.getProcessObject().data.orderItemIDList && _this.getProcessObject().data.orderItemIDList.split(",").length > 0) {
                         return _this.getProcessObject().data.orderItemIDList.split(",").length;
+                    }
+                    else {
+                        return 0;
                     }
                 }
                 catch (error) {
@@ -86874,6 +86878,8 @@ var SWListingReportController = /** @class */ (function () {
         this.collectionConfigService = collectionConfigService;
         //key value for adding rbkeys later
         this.periodIntervals = [{ value: 'Hour' }, { value: 'Day' }, { value: 'Week' }, { value: 'Month' }, { value: 'Year' }];
+        this.objectPath = [];
+        this.selectedPeriodPropertyIdentifierArray = [];
         this.$onInit = function () {
         };
         this.updateReportFromListing = function (params) {
@@ -87115,15 +87121,53 @@ var SWListingReportController = /** @class */ (function () {
             });
             _this.chart.draw();
         };
-        this.getPeriodColumns = function () {
-            var rootColumns = {};
-            rootColumns[_this.collectionConfig.baseEntityAlias] = angular.copy(_this.metadataService.getPropertiesListByBaseEntityAlias(_this.collectionConfig.baseEntityAlias));
-            _this.periodColumns = [];
-            for (var i in rootColumns[_this.collectionConfig.baseEntityAlias].data) {
-                var rootColumn = rootColumns[_this.collectionConfig.baseEntityAlias].data[i];
-                if (rootColumn.ormtype && rootColumn.ormtype == 'timestamp') {
-                    _this.periodColumns.push(rootColumn);
+        this.popObjectPath = function () {
+            if (_this.objectPath.length > 1) {
+                _this.objectPath.pop();
+                _this.selectedPeriodPropertyIdentifierArray.pop();
+                _this.getPeriodColumns(_this.objectPath[_this.objectPath.length - 1], false);
+                console.log('objectPath', _this.objectPath);
+                console.log('objectPath', _this.selectedPeriodPropertyIdentifierArray);
+            }
+        };
+        this.getPeriodColumns = function (baseEntityAlias, adding) {
+            if (baseEntityAlias === void 0) { baseEntityAlias = _this.collectionConfig.baseEntityAlias; }
+            if (adding === void 0) { adding = true; }
+            if (adding) {
+                _this.objectPath.push(baseEntityAlias);
+            }
+            console.log('objectPath', _this.objectPath);
+            //get meta data we need for existing columns
+            _this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then(function (value) {
+                _this.metadataService.setPropertiesList(value, baseEntityAlias);
+                _this.filterPropertiesList[baseEntityAlias] = _this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
+                _this.metadataService.formatPropertiesList(_this.filterPropertiesList[baseEntityAlias], baseEntityAlias);
+                //figure out all the possible periods
+                var columns = {};
+                columns[baseEntityAlias] = angular.copy(_this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias));
+                _this.periodColumns = [];
+                for (var i in columns[baseEntityAlias].data) {
+                    var column = columns[baseEntityAlias].data[i];
+                    if ((column.ormtype && column.ormtype == 'timestamp') || (column.fieldtype && ['one-to-many', 'many-to-many', 'id'].indexOf(column.fieldtype) == -1)) {
+                        _this.periodColumns.push(column);
+                    }
                 }
+            });
+        };
+        this.selectPeriodColumn = function (column) {
+            if (column && column.cfc) {
+                console.log('selectedPeriodColumn', column);
+                _this.selectedPeriodPropertyIdentifierArray.push(column.name);
+                console.log('selectedPeriodPropertyIdentifierArray', _this.selectedPeriodPropertyIdentifierArray);
+                _this.getPeriodColumns(column.cfc);
+            }
+            else if (column && column.name) {
+                _this.selectedPeriodPropertyIdentifier = _this.selectedPeriodPropertyIdentifierArray.join('.') + '.' + column.name;
+                column.propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
+                column.isPeriod = true;
+                _this.selectedPeriodColumn = column;
+                console.log('selectedPeriodPropertyIdentifier', _this.selectedPeriodPropertyIdentifier);
+                _this.updatePeriod();
             }
         };
         this.getPersistedReports = function () {
@@ -87139,16 +87183,10 @@ var SWListingReportController = /** @class */ (function () {
             });
         };
         this.collectionConfig = this.collectionConfig.loadJson(this.collectionConfig.collectionConfigString);
+        this.selectedPeriodPropertyIdentifierArray = [this.collectionConfig.baseEntityAlias];
         this.filterPropertiesList = {};
-        //get meta data we need for existing columns
-        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then(function (value) {
-            _this.metadataService.setPropertiesList(value, _this.collectionConfig.baseEntityAlias);
-            _this.filterPropertiesList[_this.collectionConfig.baseEntityAlias] = _this.metadataService.getPropertiesListByBaseEntityAlias(_this.collectionConfig.baseEntityAlias);
-            metadataService.formatPropertiesList(_this.filterPropertiesList[_this.collectionConfig.baseEntityAlias], _this.collectionConfig.baseEntityAlias);
-            //figure out all the possible periods
-            _this.getPeriodColumns();
-            _this.getPersistedReports();
-        });
+        this.getPeriodColumns();
+        this.getPersistedReports();
         this.observerService.attach(this.updateReportFromListing, 'filterItemAction', this.tableId);
     }
     return SWListingReportController;
