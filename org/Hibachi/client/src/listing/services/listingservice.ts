@@ -4,24 +4,35 @@
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import * as Store from '../../../../../../org/Hibachi/client/src/core/prototypes/swstore';
+import {Injectable, Inject} from "@angular/core";
+import {CollectionConfig} from "../../collection/services/collectionconfigservice";
+import {FilterService} from "../../core/services/filterservice";
+import {HistoryService} from "../../core/services/historyservice";
+import {ObserverService} from "../../core/services/observerservice";
+import {RbKeyService} from "../../core/services/rbkeyservice";
+import {SelectionService} from "../../core/services/selectionservice";
+import {UtilityService} from "../../core/services/utilityservice";
+import {$Hibachi} from "../../core/services/hibachiservice";
 
-class ListingService{
+@Injectable()
+export class ListingService{
 
     private listingDisplays = {};
     private state = {};
     public listingDisplayStore: Store.IStore;
 
     //@ngInject
-    constructor(private $timeout,
-                private $q,
-                private collectionConfigService,
-                private filterService,
-                private historyService,
-                private observerService,
-                private rbkeyService,
-                private selectionService,
-                private utilityService,
-                private $hibachi){
+    constructor(@Inject("$timeout") private $timeout : any,
+                @Inject("$timeout") private $q :any,
+                private collectionConfigService : CollectionConfig,
+                private filterService : FilterService,
+                private historyService : HistoryService,
+                private observerService : ObserverService,
+                private rbkeyService : RbKeyService,
+                private selectionService : SelectionService,
+                private utilityService : UtilityService,
+                private $hibachi : $Hibachi
+            ){
         //Setup a store so that controllers can listing for state changes and fire action requests.
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
@@ -52,19 +63,19 @@ class ListingService{
     }
 
     //Event Functions
-    public getListingPageRecordsUpdateEventString = (listingID:string) => {
+    public getListingPageRecordsUpdateEventString(listingID:string) {
         return listingID + "pageRecordsUpdated";
     }
 
-    public getListingOrderByChangedEventString = (listingID:string) => {
+    public getListingOrderByChangedEventString(listingID:string) {
         return listingID + "orderByChanged";
     }
 
-    public getListingInitiatedEventString = (listingID:string) =>{
+    public getListingInitiatedEventString(listingID:string)  {
         return listingID + "initiated";
     }
 
-    public notifyListingPageRecordsUpdate = (listingID:string) =>{
+    public notifyListingPageRecordsUpdate(listingID:string) {
         //This is how we would dispatch so that controllers can get the updated state.
         this.listingDisplayStore.dispatch({
             type: "LISTING_PAGE_RECORDS_UPDATE",
@@ -74,15 +85,15 @@ class ListingService{
         this.observerService.notify(this.getListingPageRecordsUpdateEventString(listingID), listingID);
     }
 
-    public attachToListingPageRecordsUpdate = (listingID:string, callback, id:string) =>{
+    public attachToListingPageRecordsUpdate(listingID:string, callback, id:string) {
         this.observerService.attach(callback, this.getListingPageRecordsUpdateEventString(listingID), id);
     }
 
-    public attachToOrderByChangedUpdate = (listingID:string, callback, id:string) =>{
+    public attachToOrderByChangedUpdate(listingID:string, callback, id:string) {
         this.observerService.attach(callback, this.getListingOrderByChangedEventString(listingID), id);
     }
 
-    public attachToListingInitiated = (listingID:string, callback) =>{
+    public attachToListingInitiated(listingID:string, callback) {
         this.observerService.attach(callback, this.getListingInitiatedEventString(listingID));
         if(this.historyService.hasHistory(this.getListingInitiatedEventString(listingID))){
             callback();
@@ -91,26 +102,27 @@ class ListingService{
     //End Event Functions
 
     //core getters and setters
-    public setListingState = (listingID:string, state) =>{
+    public setListingState(listingID:string, state) {
+        var parameter;
         this.listingDisplays[listingID] = state;
-        this.observerService.notifyAndRecord(this.getListingInitiatedEventString(listingID));
+        this.observerService.notifyAndRecord(this.getListingInitiatedEventString(listingID), parameter = {});
     }
 
-    public getListing = (listingID:string) => {
+    public getListing(listingID:string) { 
         return this.listingDisplays[listingID];
     }
 
-    public getListingColumns = (listingID:string) =>{
+    public getListingColumns(listingID:string) {
         return this.getListing(listingID).columns || this.getListingCollectionConfigColumns(listingID);
     }
 
-    public getListingCollectionConfigColumns = (listingID:string) =>{
+    public getListingCollectionConfigColumns(listingID:string) { 
         if(this.getListing(listingID).collectionConfig != null){
             return this.getListing(listingID).collectionConfig.columns;
         }
     }
 
-    public getListingExampleEntity = (listingID:string) =>{
+    public getListingExampleEntity(listingID:string) {
         if(this.getListing(listingID).exampleEntity != null){
             return this.getListing(listingID).exampleEntity;
         } else {
@@ -118,17 +130,17 @@ class ListingService{
         }
     }
 
-    public getListingCollectionConfigColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+    public getListingCollectionConfigColumnIndexByPropertyIdentifier(listingID:string, propertyIdentifier){
         var columns = this.getListingCollectionConfigColumns(listingID);
         return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
     }
 
-    public getListingColumnIndexByPropertyIdentifier = (listingID:string, propertyIdentifier) =>{
+    public getListingColumnIndexByPropertyIdentifier(listingID:string, propertyIdentifier) {
         var columns = this.getListingColumns(listingID);
         return this.utilityService.ArrayFindByPropertyValue(columns,'propertyIdentifier',propertyIdentifier);
     }
 
-    public getListingBaseEntityName = (listingID:string) =>{
+    public getListingBaseEntityName(listingID:string) {
         var baseEntityName = this.getListing(listingID).baseEntityName || this.getListing(listingID).collectionObject
         if(baseEntityName == null &&  this.getListing(listingID).collectionConfig != null){
             baseEntityName = this.getListing(listingID).collectionConfig.baseEntityName;
@@ -139,23 +151,23 @@ class ListingService{
         return baseEntityName;
     }
 
-    public getListingBaseEntityPrimaryIDPropertyName = (listingID:string) =>{
+    public getListingBaseEntityPrimaryIDPropertyName(listingID:string) {
         if(this.getListingExampleEntity(listingID) != null){
             return this.getListingExampleEntity(listingID).$$getIDName();
         }
     }
 
-    public getListingPrimaryEntityName = (listingID:string) =>{
+    public getListingPrimaryEntityName (listingID:string) {
         return this.getListing(listingID).baseEntityName ||
                 this.getListing(listingID).collectionObject ||
                 this.getListing(listingID).collectionConfig.baseEntityName;
     }
 
-    public getListingEntityPrimaryIDPropertyName = (listingID:string) =>{
+    public getListingEntityPrimaryIDPropertyName(listingID:string) {
         return this.$hibachi.getPrimaryIDPropertyNameByEntityName(this.getListingPrimaryEntityName(listingID));
     }
 
-    public getListingPageRecords = (listingID:string) =>{
+    public getListingPageRecords(listingID:string) {
         if( angular.isDefined(this.getListing(listingID)) &&
             angular.isDefined(this.getListing(listingID).collectionData) &&
             angular.isDefined(this.getListing(listingID).collectionData.pageRecords)
@@ -164,11 +176,11 @@ class ListingService{
         }
     }
 
-    public getCollection = (listingID:string) =>{
+    public getCollection(listingID:string) {
         return this.getListing(listingID).getCollection();
     }
 
-    public getPageRecordsWithManualSortOrder = (listingID:string) =>{
+    public getPageRecordsWithManualSortOrder(listingID:string) {
         if( angular.isDefined(this.getListing(listingID)) && this.getListingPageRecords(listingID) != null ){
             var pageRecords = this.getListingPageRecords(listingID);
             var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
@@ -207,7 +219,7 @@ class ListingService{
     }
 
     //Begin Listing Page Record Functions
-    public getListingPageRecordIndexByPageRecord = (listingID:string, pageRecordToCompare:any) =>{
+    public getListingPageRecordIndexByPageRecord(listingID:string, pageRecordToCompare:any) {
         var pageRecords = this.getListingPageRecords(listingID);
         var primaryIDPropertyName = this.getListingEntityPrimaryIDPropertyName(listingID);
         for(var j = 0; j < pageRecords.length; j++){
@@ -219,7 +231,7 @@ class ListingService{
         return -1;
     }
 
-    public insertListingPageRecord = (listingID:string, pageRecord:any) =>{
+    public insertListingPageRecord(listingID:string, pageRecord:any) {
         pageRecord.newFlag = true;
         if( angular.isDefined(this.getListingPageRecords(listingID))){
             this.notifyListingPageRecordsUpdate(listingID);
@@ -227,7 +239,7 @@ class ListingService{
         }
     }
 
-    public removeListingPageRecord = (listingID:string, pageRecord) =>{
+    public removeListingPageRecord(listingID:string, pageRecord) {
         var pageRecords = this.getListingPageRecords(listingID);
         if(this.getListingPageRecordIndexByPageRecord(listingID, pageRecord) != -1){
             this.notifyListingPageRecordsUpdate(listingID);
@@ -235,7 +247,7 @@ class ListingService{
         }
     }
 
-    public getPageRecordKey = (propertyIdentifier)=>{
+    public getPageRecordKey(propertyIdentifier) {
         if(propertyIdentifier){
             var propertyIdentifierWithoutAlias = '';
             if(propertyIdentifier.indexOf('_') === 0){
@@ -254,7 +266,7 @@ class ListingService{
         return '';
     };
 
-    public getPageRecordValueByColumn = (pageRecord, column) =>{
+    public getPageRecordValueByColumn(pageRecord, column) {
         
         var pageRecordValue = pageRecord[this.getPageRecordKey(column.propertyIdentifier)] || "";
 
@@ -284,7 +296,7 @@ class ListingService{
         return pageRecordValue;
     }
 
-    public selectCurrentPageRecords=(listingID)=>{
+    public selectCurrentPageRecords(listingID) {
         if(!this.getListing(listingID).collectionData.pageRecords) return;
 
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
@@ -298,27 +310,27 @@ class ListingService{
     };
 
     /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
-    public getSelectedBy = (listingID, propertyName, value) => {
+    public getSelectedBy(listingID, propertyName, value) {
         if (!listingID || !propertyName || !value){ return -1;};
         return this.getListing(listingID).collectionData.pageRecords.findIndex((record)=>{return record[propertyName] == value});
     }
 
     /** returns the index of the item in the listing pageRecord by checking propertyName == recordID */
-    public getAllSelected = (listingID) => {
+    public getAllSelected(listingID) {
         if (!listingID) return -1;
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
-            this.selectionService.getSelections(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
+            this.selectionService.getSelections(this.getListing(listingID).tableID);
         }
     }
 
-    public clearAllSelections = (listingID) => {
+    public clearAllSelections(listingID) {
         if (!listingID) return -1;
         for(var i = 0; i < this.getListing(listingID).collectionData.pageRecords.length; i++){
             this.selectionService.removeSelection(this.getListing(listingID).tableID,  this.getListingPageRecords(listingID)[i][this.getListingBaseEntityPrimaryIDPropertyName(listingID)]);
         }
     }
 
-    public getNGClassObjectForPageRecordRow = (listingID:string, pageRecord)=>{
+    public getNGClassObjectForPageRecordRow(listingID:string, pageRecord){
         var classObjectString = "{";
         angular.forEach(this.getListing(listingID).colorFilters, (colorFilter, index)=>{
             classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
@@ -335,7 +347,7 @@ class ListingService{
         return classObjectString + "}";
     };
 
-    public getPageRecordIsChild = (listingID:string, pageRecord)=>{
+    public getPageRecordIsChild(listingID:string, pageRecord) {
         var isChild = false;
         //todo implement
         return isChild;
@@ -343,7 +355,7 @@ class ListingService{
     //End Listing Page Record Functions
 
     //Row Save Functionality
-    private determineRowEdited = (pageRecords, pageRecordIndex) =>{
+    private determineRowEdited(pageRecords, pageRecordIndex) {
         var fieldCount = 0;
         for(var key in pageRecords[pageRecordIndex].editedFields){
             fieldCount++;
@@ -356,7 +368,7 @@ class ListingService{
         return false;
     }
 
-    public markUnedited = (listingID:string, pageRecordIndex, propertyDisplayID) => {
+    public markUnedited(listingID:string, pageRecordIndex, propertyDisplayID) {
         var pageRecords = this.getListingPageRecords(listingID);
         if(angular.isDefined(pageRecords[pageRecordIndex].editedFields[propertyDisplayID])){
             delete pageRecords[pageRecordIndex].editedFields[propertyDisplayID];
@@ -364,7 +376,7 @@ class ListingService{
         return this.determineRowEdited(pageRecords,pageRecordIndex);
     }
 
-    public markEdited = (listingID:string, pageRecordIndex, propertyDisplayID, saveCallback) => {
+    public markEdited(listingID:string, pageRecordIndex, propertyDisplayID, saveCallback) {
         var pageRecords = this.getListingPageRecords(listingID);
         if(angular.isUndefined(pageRecords[pageRecordIndex].editedFields) && !angular.isObject(pageRecords[pageRecordIndex].editedFields)){
             pageRecords[pageRecordIndex].editedFields = {};
@@ -373,7 +385,7 @@ class ListingService{
         return this.determineRowEdited(pageRecords,pageRecordIndex);
     }
 
-    public markSaved = (listingID:string, pageRecordIndex) => {
+    public markSaved(listingID:string, pageRecordIndex) {
         var pageRecords = this.getListingPageRecords(listingID);
         var savePromises = [];
         for(var key in pageRecords[pageRecordIndex].editedFields){
@@ -391,7 +403,7 @@ class ListingService{
     //End Row Save Functionality
 
     //Setup Functions
-    public setupInSingleCollectionConfigMode = (listingID:string, listingDisplayScope) =>{
+    public setupInSingleCollectionConfigMode(listingID:string, listingDisplayScope) {
 
         if( this.getListing(listingID).collectionObject != null &&
             this.getListing(listingID).collectionConfig != null
@@ -429,13 +441,13 @@ class ListingService{
         });
     };
 
-    public setupInMultiCollectionConfigMode = (listingID:string) => {
+    public setupInMultiCollectionConfigMode(listingID:string) {
         angular.forEach(this.getListing(listingID).collectionConfigs,(value,key)=>{
             this.getListing(listingID).collectionObjects[key] = value.baseEntityName;
         });
     };
 
-    private setupDefaultCollectionInfo = (listingID:string) =>{
+    private setupDefaultCollectionInfo(listingID:string) {
         if(this.getListing(listingID).hasCollectionPromise
             && angular.isDefined(this.getListing(listingID).collection)
             && this.getListing(listingID).collectionConfig == null
@@ -462,7 +474,7 @@ class ListingService{
 
 
 
-    public addColumn = (listingID:string, column) =>{
+    public addColumn(listingID:string, column) {
         if(this.getListing(listingID).collectionConfig != null && this.getListing(listingID).collectionConfig.baseEntityAlias != null){
             column.propertyIdentifier = this.getListing(listingID).collectionConfig.baseEntityAlias + "." + column.propertyIdentifier;
         } else if (this.getListingBaseEntityName(listingID) != null) {
@@ -477,7 +489,7 @@ class ListingService{
         }
     }
 
-    public setupColumns = (listingID:string, collectionConfig, collectionObject) =>{
+    public setupColumns(listingID:string, collectionConfig, collectionObject) {
         //assumes no alias formatting
 
         if( this.getListing(listingID).columns.length == 0 &&
@@ -518,7 +530,7 @@ class ListingService{
         
     };
 
-    public setupColumn=(listingID:string,column:any, collectionConfig, collectionObject)=>{
+    public setupColumn(listingID:string,column:any, collectionConfig, collectionObject) {
         if(this.getListing(listingID).collectionConfig != null && !column.hasCellView){
             this.getListing(listingID).collectionConfig.addColumn(column.propertyIdentifier,undefined,column);
         }
@@ -604,7 +616,7 @@ class ListingService{
         this.columnOrderBy(listingID, column);
     }
 
-    public initCollectionConfigData = (listingID:string,collectionConfig) =>{
+    public initCollectionConfigData(listingID:string,collectionConfig) {
         //kick off other essential setup
         this.setupSelect(listingID);
         this.setupMultiselect(listingID);
@@ -683,11 +695,11 @@ class ListingService{
         this.updateColumnAndAdministrativeCount(listingID);
     };
 
-    public setupSortable = (listingID:string) =>{
+    public setupSortable(listingID:string) {
         this.attachToListingPageRecordsUpdate(listingID, this.getPageRecordsWithManualSortOrder, this.utilityService.createID(32));
     }
 
-    public setupSelect = (listingID:string) =>{
+    public setupSelect(listingID:string) {
         if(this.getListing(listingID).selectFieldName && this.getListing(listingID).selectFieldName.length){
             this.getListing(listingID).selectable = true;
             this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass,'table-select',' ');
@@ -695,7 +707,7 @@ class ListingService{
         }
     };
 
-    public setupMultiselect = (listingID:string) =>{
+    public setupMultiselect(listingID:string) {
         if(this.getListing(listingID).multiselectFieldName && this.getListing(listingID).multiselectFieldName.length){
             this.getListing(listingID).multiselectable = true;
             this.getListing(listingID).tableclass = this.utilityService.listAppend(this.getListing(listingID).tableclass, 'table-multiselect',' ');
@@ -726,7 +738,7 @@ class ListingService{
         }
     };
 
-    public setupExampleEntity = (listingID:string) =>{
+    public setupExampleEntity(listingID:string) {
         this.getListing(listingID).exampleEntity = this.$hibachi.getEntityExample(this.getListingBaseEntityName(listingID));
         if(this.getListing(listingID).exampleEntity != null){
             //Look for Hierarchy in example entity
@@ -743,7 +755,7 @@ class ListingService{
         }
     };
 
-    public setupHierarchicalExpandable = (listingID:string, collectionConfig) =>{
+    public setupHierarchicalExpandable(listingID:string, collectionConfig) {
         //Setup Hierachy Expandable
         if(this.getListing(listingID).parentPropertyName && this.getListing(listingID).parentPropertyName.length && this.getListing(listingID).expandable !=false){
             if(angular.isUndefined(this.getListing(listingID).expandable)){
@@ -774,7 +786,7 @@ class ListingService{
         }
     };
 
-    public updateColumnAndAdministrativeCount = (listingID:string) =>{
+    public updateColumnAndAdministrativeCount(listingID:string) {
         //Setup a variable for the number of columns so that the none can have a proper colspan
         this.getListing(listingID).columnCount = (this.getListing(listingID).columns) ? this.getListing(listingID).columns.length : 0;
 
@@ -792,7 +804,7 @@ class ListingService{
         }
     };
 
-    public setupDefaultGetCollection = (listingID:string) =>{
+    public setupDefaultGetCollection(listingID:string) {
 
         if(this.getListing(listingID).collectionConfigs.length == 0){
 
@@ -858,7 +870,7 @@ class ListingService{
 
     //Order By Functions
     //for multi order by
-    public columnOrderBy = (listingID:string, column) => {
+    public columnOrderBy(listingID:string, column) {
         var isfound = false;
         if(this.getListing(listingID).collectionConfigs != null){
             angular.forEach(this.getListing(listingID).collectionConfig.orderBy, (orderBy, index)=>{
@@ -875,7 +887,7 @@ class ListingService{
     };
 
     //for multi order by
-    public columnOrderByIndex = (listingID:string, column) =>{
+    public columnOrderByIndex(listingID:string, column) {
         var isfound = false;
         if(column.sorting && column.sorting.active && column.sorting.sortOrder){
             return column.sorting.sortOrder.toUpperCase();
@@ -896,7 +908,7 @@ class ListingService{
     };
 
     //for single column order by
-    public setSingleColumnOrderBy = (listingID:string, propertyIdentifier:string, direction:string, notify=true) =>{
+    public setSingleColumnOrderBy(listingID:string, propertyIdentifier:string, direction:string, notify=true) {
         if(direction.toUpperCase() === "ASC"){
             var oppositeDirection = "DESC";
         } else {
@@ -923,7 +935,7 @@ class ListingService{
     }
 
     //for manual sort
-    public setManualSort = (listingID:string, toggle:boolean) =>{
+    public setManualSort(listingID:string, toggle:boolean) {
         this.getListing(listingID).sortable = toggle;
         if(toggle){
             this.setSingleColumnOrderBy(listingID, "sortOrder", "ASC");
@@ -931,7 +943,7 @@ class ListingService{
     }
 
     //for single column order by
-    public toggleOrderBy = (listingID:string, column) => {
+    public toggleOrderBy(listingID:string, column) {
         if(this.getListing(listingID).hasSingleCollectionConfig()){
             this.getListing(listingID).collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
         }
@@ -941,7 +953,7 @@ class ListingService{
 
 
 
-    private getColorFilterConditionString = (colorFilter, pageRecord)=>{
+    private getColorFilterConditionString(colorFilter, pageRecord) {
        if(angular.isDefined(colorFilter.comparisonProperty)){
             return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + pageRecord[colorFilter.comparisonProperty.replace('.','_')];
        } else {
@@ -950,7 +962,7 @@ class ListingService{
     };
 
     //Disable Row Functions
-    public getKeyOfMatchedDisableRule = (listingID:string, pageRecord)=>{
+    public getKeyOfMatchedDisableRule(listingID:string, pageRecord) {
         var disableRuleMatchedKey = -1;
         if(angular.isDefined(this.getListing(listingID).disableRules)){
             angular.forEach(this.getListing(listingID).disableRules, (rule, key)=>{
@@ -975,19 +987,19 @@ class ListingService{
         return disableRuleMatchedKey;
     };
 
-    public getPageRecordMatchesDisableRule = (listingID:string, pageRecord)=>{
+    public getPageRecordMatchesDisableRule(listingID:string, pageRecord) {
         return this.getKeyOfMatchedDisableRule(listingID, pageRecord) != -1;
     };
     //End disable rule functions
 
     //Expandable Functions
-    public setExpandable = (listingID:string, value:boolean)=>{
+    public setExpandable(listingID:string, value:boolean) {
         if(angular.isDefined( this.getListing(listingID) )){
             this.getListing(listingID).expandable = value;
         }
     }
 
-    public getKeyOfMatchedExpandableRule = (listingID:string, pageRecord)=>{
+    public getKeyOfMatchedExpandableRule(listingID:string, pageRecord) {
         var expandableRuleMatchedKey = -1;
         if(angular.isDefined(this.getListing(listingID)) &&
            angular.isDefined(this.getListing(listingID).expandableRules)
@@ -1011,7 +1023,7 @@ class ListingService{
         return expandableRuleMatchedKey;
     };
 
-    public getExampleEntityForExpandableRecord = (listingID:string, pageRecord) =>{
+    public getExampleEntityForExpandableRecord(listingID:string, pageRecord) {
         var childCollectionConfig = this.getListing(listingID).getPageRecordChildCollectionConfigForExpandableRule(pageRecord);
         if(angular.isDefined(childCollectionConfig)){
             return this.$hibachi.getEntityExample(this.getListing(listingID).getPageRecordChildCollectionConfigForExpandableRule(pageRecord).baseEntityName);
@@ -1019,22 +1031,22 @@ class ListingService{
         return this.getListing(listingID).exampleEntity;
     }
 
-    public getPageRecordMatchesExpandableRule = (listingID:string, pageRecord)=>{
+    public getPageRecordMatchesExpandableRule(listingID:string, pageRecord) {
         return this.getKeyOfMatchedExpandableRule(listingID, pageRecord) != -1;
     };
 
-    public hasPageRecordRefreshChildrenEvent = (listingID:string, pageRecord)=>{
+    public hasPageRecordRefreshChildrenEvent(listingID:string, pageRecord) {
         return this.getPageRecordRefreshChildrenEvent(listingID,pageRecord) != null;
     };
 
-    public getPageRecordRefreshChildrenEvent = (listingID:string, pageRecord)=>{
+    public getPageRecordRefreshChildrenEvent(listingID:string, pageRecord){
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord);
         if(keyOfExpandableRuleMet != -1){
             return this.getListing(listingID).expandableRules[keyOfExpandableRuleMet].refreshChildrenEvent;
         }
     };
 
-    public getPageRecordChildCollectionConfigForExpandableRule = (listingID:string, pageRecord) => {
+    public getPageRecordChildCollectionConfigForExpandableRule(listingID:string, pageRecord) {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(listingID, pageRecord);
         if(this.getListing(listingID) != null &&
            angular.isFunction(this.getListing(listingID).exampleEntity.$$getIDName) &&
@@ -1062,4 +1074,3 @@ class ListingService{
     //End Expandable Functions
 
 }
-export{ListingService};
