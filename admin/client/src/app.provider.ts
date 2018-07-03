@@ -152,6 +152,9 @@ export class AppProvider {
   };
 
   public getInstantiationKeyData():Promise<any>{
+      if(this.appConfig) {
+          return Promise.resolve(this.appConfig);    
+      }
       if(!this.instantiationKey){
           var d = new Date();
           var n = d.getTime();
@@ -193,7 +196,7 @@ export class AppProvider {
       if(this._resourceBundle[locale]) {
           return this._resourceBundle[locale];
       }
-
+      
       var urlString = this.appConfig.baseURL+'/custom/config/resourceBundles/'+locale+'.json?instantiationKey='+this.appConfig.instantiationKey;
       
       return new Promise((resolve,reject)=>{

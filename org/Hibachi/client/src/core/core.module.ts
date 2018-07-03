@@ -101,6 +101,7 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "../../../
 export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConfig,resourceBundles:ResourceBundles,attributeMetaData:AttributeMetaData): Function {
   return () => {
     appProvider.fetchData().then(()=>{
+        appProvider.getInstantiationKeyData().then((data) => {
         for(var key in appProvider.appConfig){
             appConfig[key] = appProvider.appConfig[key];
         }
@@ -112,16 +113,15 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
             }
         }
         
-        appProvider.getResourceBundles().then((data)=>{
-            for(var key in appProvider._resourceBundle){
-                console.log(appProvider._resourceBundle);
-                resourceBundles[key] = appProvider._resourceBundle[key];
-            }
-            console.log(appProvider);
-            debugger;
-            appProvider.hasData=true;
+            appProvider.getResourceBundles().then((data)=>{
+                for(var key in appProvider._resourceBundle){
+                    console.log(appProvider._resourceBundle);
+                    resourceBundles[key] = appProvider._resourceBundle[key];
+                }
+                console.log(appProvider);
+                appProvider.hasData=true;
+            });
         });
-        
         
         
     });
