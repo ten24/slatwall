@@ -49,12 +49,12 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.email" type="any" />
 <cfparam name="rc.emailTemplate" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset primaryIDPropertyName = $.slatwall.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.emailTemplate.getEmailTemplateObject()) />
+
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.email#" edit="#rc.edit#" processActionQueryString="#primaryIDPropertyName#=#rc[primaryIDPropertyName]#">
@@ -95,7 +95,10 @@ Notes:
 		<hr />
 		<div style="width:100%;">
 			<div style="width:100%;">
-				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="false" fieldType="wysiwyg" displayType="plain">
+			</div>
+			<div style="display:none">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="text" displayType="plain">
 			</div>
 		</div>
 		
