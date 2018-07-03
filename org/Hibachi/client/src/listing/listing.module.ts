@@ -31,7 +31,9 @@ import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
 @NgModule({
 	declarations : [],
-	providers : [],
+	providers : [
+		ListingService
+	],
 	imports : [
 		CollectionModule,
 		CommonModule,
@@ -49,7 +51,7 @@ var listingmodule = angular.module('hibachi.listing', [collectionmodule.name])
 .run([function() {
 }])
 //services
-.service('listingService', ListingService)
+.service('listingService',downgradeInjectable(ListingService))
 //directives
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingControls',SWListingControls.Factory())
