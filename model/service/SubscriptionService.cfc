@@ -420,6 +420,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		setSubscriptionUsageStatus(arguments.subscriptionUsage, 'sstCancelled', processObject.getEffectiveDateTime());
 
+		//If there is an open order we'll need to cancel that as well to prevent the subscrpition frombeing re-opened.
+		var recentOrder = arguments.subscriptionUsage.getMostRecentOrder();
+		if ( !isNull(recentOrder) && !listFindNoCase('ostClosed,ostCanceled', recentOrder.getStatusCode()) ){
+			recentOrder = getService('OrderService').processOrder(recentOrder, 'cancelOrder');
+		}
+		
 		return arguments.subscriptionUsage;
 	}
 

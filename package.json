@@ -31,6 +31,7 @@
     "tsify": "*",
     "typescript": "*",
     "vinyl-source-stream": "^1.1.0",
+    "webpack-cli":"*",
     "webpack-dev-server": "^1.12.1",
     "webpack-stream": "*"
   },
@@ -58,6 +59,7 @@
     "typescript": "^2.9.2",
     "vinyl-source-stream": "^1.1.0",
     "webpack": "^2.7.0",
+    "webpack-cli":"*",
     "webpack-dev-server": "^1.12.1",
     "webpack-stream": "*"
   },

@@ -52,6 +52,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="minQuantity" ormtype="integer" default="0";
 	property name="maxQuantity" ormtype="integer" default="0";
+	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
+	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 
 	// Related Object Properties (many-to-one)
 	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
@@ -67,8 +69,6 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="calculatedQOH" ormtype="float";
 	property name="calculatedQNC" ormtype="float";
 	property name="calculatedQOQ" ormtype="float";
-	property name="averageCost" ormtype="big_decimal"  hb_formatType="currency";
-	property name="averageLandedCost" ormtype="big_decimal"  hb_formatType="currency";
 	property name="calculatedCurrentMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentLandedMargin" ormtype="big_decimal" hb_formatType="percentage";
 	property name="calculatedCurrentAssetValue" ormtype="big_decimal" hb_formatType="currency";
