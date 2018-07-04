@@ -6,6 +6,7 @@ import {ObserverService} from "../../../../../org/Hibachi/client/src/core/servic
 import {$Hibachi} from "../../../../../org/Hibachi/client/src/core/services/hibachiservice";
 import {CollectionConfig} from "../../../../../org/Hibachi/client/src/collection/services/collectionconfigservice";
 import {SelectionService} from "../../../../../org/Hibachi/client/src/core/services/selectionservice";
+import {ListingService} from   "../../../../../org/Hibachi/client/src/listing/services/listingservice";
 
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
@@ -160,7 +161,7 @@ export class OrderFulfillmentService {
                 public observerService : ObserverService,
                 public $hibachi : $Hibachi , 
                 private collectionConfigService : CollectionConfig, 
-                @Inject('listingService') private listingService ,
+                private listingService : ListingService ,
                 @Inject('$rootScope') public $rootScope, 
                 public selectionService : SelectionService){
 
@@ -172,7 +173,7 @@ export class OrderFulfillmentService {
     }
 
     /** When a row is selected, remove the other selections.  */
-    public swSelectionToggleSelectionfulfillmentBatchItemTable2 = (args) => {
+    public swSelectionToggleSelectionfulfillmentBatchItemTable2 (args) {
         if (args.action === "uncheck" || args.selectionid != "fulfillmentBatchItemTable2"){
             return;
         }
@@ -209,7 +210,7 @@ export class OrderFulfillmentService {
     }
 
     /** Sets up the batch detail page including responding to listing changes. */
-    public setupFulfillmentBatchDetail = () => {
+    public setupFulfillmentBatchDetail() {
         
         //Create the fulfillmentBatchItemCollection
         this.createLgOrderFulfillmentBatchItemCollection();
@@ -279,7 +280,7 @@ export class OrderFulfillmentService {
     }
 
     /** During key times when data changes, we would like to alert the client to those changes. This allows us to do that. */
-    public emitUpdateToClient = () => {
+    public emitUpdateToClient () {
         this.orderFulfillmentStore.dispatch({
             type: actions.UPDATE_BATCHDETAIL,
             payload: {noop:angular.noop()}
@@ -291,7 +292,7 @@ export class OrderFulfillmentService {
      * The process object should have orderItemIdList or orderFulfillmentIDList defined and should have
      * optionally an accountID, and or locationID (or locationIDList).
      */
-    public addBatch = (processObject) => {
+    public addBatch (processObject) {
         if (processObject) {
             processObject.data.entityName = "FulfillmentBatch";
             processObject.data['fulfillmentBatch'] = {};
@@ -305,7 +306,7 @@ export class OrderFulfillmentService {
     }
 
     /** Creates the orderDelivery - fulfilling the items quantity of items specified, capturing as needed. */
-    public fulfillItems = (state:any={}, ignoreCapture:boolean = false) => {
+    public fulfillItems (state:any={}, ignoreCapture:boolean = false) {
         
         let data:any = {};
         //Add the order information
@@ -410,7 +411,7 @@ export class OrderFulfillmentService {
     }
 
     /** Saves a comment. */
-    public saveComment = (comment, newCommentText) => {
+    public saveComment (comment, newCommentText) {
         //Editing
         if (angular.isDefined(comment) && angular.isDefined(comment.comment) && angular.isDefined(comment.commentID)) {
             comment.comment = newCommentText;
@@ -439,7 +440,7 @@ export class OrderFulfillmentService {
     }
 
     /** Deletes a comment. */
-    public deleteComment = (comment) => {
+    public deleteComment (comment) {
         if (comment != undefined) {
             this.$hibachi.saveEntity("comment", comment.commentID, comment, "delete").then((result) => {
                 return this.createCommentsCollectionForFulfillmentBatchItem(this.state.currentSelectedFulfillmentBatchItemID);
@@ -448,7 +449,7 @@ export class OrderFulfillmentService {
     }
 
     /** Deletes a fulfillment batch item. */
-    public deleteFulfillmentBatchItem = () => {
+    public deleteFulfillmentBatchItem () {
         if (this.state.currentSelectedFulfillmentBatchItemID){
             let fulfillmentBatchItem = {"fulfillmentBatchItemID" : this.state.currentSelectedFulfillmentBatchItemID};//get current fulfillmentBatchItem;
             if (fulfillmentBatchItem.fulfillmentBatchItemID != undefined) {
@@ -462,7 +463,7 @@ export class OrderFulfillmentService {
     /**
      * Returns the comments for the selectedFulfillmentBatchItem
      */
-    public createCommentsCollectionForFulfillmentBatchItem = (fulfillmentBatchItemID) => {
+    public createCommentsCollectionForFulfillmentBatchItem (fulfillmentBatchItemID) {
         this.state.commentsCollection = this.collectionConfigService.newCollectionConfig("Comment");
         this.state.commentsCollection.addDisplayProperty("createdDateTime");
         this.state.commentsCollection.addDisplayProperty("createdByAccountID");
@@ -488,7 +489,7 @@ export class OrderFulfillmentService {
      /**
       * Returns the comments for the selectedFulfillmentBatchItem
       */
-     public createCurrentRecordDetailCollection = (currentRecord) => {
+     public createCurrentRecordDetailCollection (currentRecord) {
         //Get a new collection using the orderFulfillment.
         this.state.currentRecordOrderDetail = this.collectionConfigService.newCollectionConfig("OrderFulfillment");
         this.state.currentRecordOrderDetail.addFilter("orderFulfillmentID", currentRecord['orderFulfillment_orderFulfillmentID'], "=");
@@ -534,7 +535,7 @@ export class OrderFulfillmentService {
      /**
       * Returns account information given an accountID
       */
-     public getAccountNameByAccountID= (accountID) => {
+     public getAccountNameByAccountID (accountID)  {
         let accountCollection = this.collectionConfigService.newCollectionConfig("Account");
         accountCollection.addFilter("accountID", accountID, "=");
         accountCollection.getEntity().then((account)=>{
@@ -548,7 +549,7 @@ export class OrderFulfillmentService {
      /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createLgOrderFulfillmentBatchItemCollection = ():void => {
+     private createLgOrderFulfillmentBatchItemCollection ():void {
         
         this.state.lgFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
         this.state.lgFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime", "Date");
@@ -564,7 +565,7 @@ export class OrderFulfillmentService {
      /**
      * Get a collection of orderFulfillment email templates.
      */
-     private getOrderFulfillmentEmailTemplates = ():void => {
+     private getOrderFulfillmentEmailTemplates ():void {
         let emailTemplates = this.collectionConfigService.newCollectionConfig("EmailTemplate");
         emailTemplates.addFilter("emailTemplateObject", "orderFulfillment", "=");
         emailTemplates.getEntity().then((emails)=>{
@@ -578,7 +579,7 @@ export class OrderFulfillmentService {
      /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createSmOrderFulfillmentBatchItemCollection = ():void => {
+     private createSmOrderFulfillmentBatchItemCollection ():void {
         this.state.smFulfillmentBatchItemCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchItem");
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.order.orderOpenDateTime");
         this.state.smFulfillmentBatchItemCollection.addDisplayProperty("orderFulfillment.shippingMethod.shippingMethodName");
@@ -591,7 +592,7 @@ export class OrderFulfillmentService {
      /**
      * Setup the initial orderFulfillment Collection.
      */
-     private createLocationCollection = () => {
+     private createLocationCollection () {
         this.state.locationCollection = this.collectionConfigService.newCollectionConfig("FulfillmentBatchLocation");
         this.state.locationCollection.addDisplayProperty("locationID");
         this.state.locationCollection.addDisplayProperty("fulfillmentBatchID");
@@ -602,7 +603,7 @@ export class OrderFulfillmentService {
     /**
      * Setup the initial print template -> orderFulfillment Collection.
      */
-     private getPrintList = () => {
+     private getPrintList () {
         this.state.printCollection = this.collectionConfigService.newCollectionConfig("PrintTemplate");
         this.state.printCollection.addDisplayProperty("printTemplateID");
         this.state.printCollection.addDisplayProperty("printTemplateName");
@@ -617,7 +618,7 @@ export class OrderFulfillmentService {
     /**
      * Setup the initial email template -> orderFulfillment Collection.
      */
-     private getEmailList = () => {
+     private getEmailList () {
         this.state.emailCollection = this.collectionConfigService.newCollectionConfig("EmailTemplate");
         this.state.emailCollection.addDisplayProperty("emailTemplateID");
         this.state.emailCollection.addDisplayProperty("emailTemplateName");
@@ -632,7 +633,7 @@ export class OrderFulfillmentService {
     /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
      */
-     private createOrderFulfillmentItemCollection = (orderFulfillmentID):void => {
+     private createOrderFulfillmentItemCollection (orderFulfillmentID):void {
         let collection = this.collectionConfigService.newCollectionConfig("OrderItem");
         collection.addDisplayProperty("orderFulfillment.orderFulfillmentID");
         collection.addDisplayProperty("sku.skuCode");
@@ -658,7 +659,7 @@ export class OrderFulfillmentService {
      /**
      * Returns  orderFulfillmentItem Collection given an orderFulfillmentID.
      */
-     private createOrderDeliveryAttributeCollection = ():void => {
+     private createOrderDeliveryAttributeCollection ():void {
         let orderDeliveryAttributes = [];
         //Get all the attributes from those sets where the set object is orderDelivery.
         let attributeCollection = this.collectionConfigService.newCollectionConfig("Attribute");
