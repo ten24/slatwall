@@ -223,7 +223,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		response.setStatusCode( responseData.responseCode );
 
 		// Check to see if it was successful
-		if(responseData.responseCode != 1) {
+		if(responseData.responseCode != 1 || responseData.responseReasonCode == '311') {
 			// Transaction did not go through
 			response.addError(responseData.responseReasonCode, responseData.responseReasonText);
 		} else {
