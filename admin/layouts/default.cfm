@@ -46,7 +46,8 @@
 Notes:
 
 --->
-
+<!---<cfset HQL = "SELECT new Map( COUNT(_order_orderItems) as orderItemsCount, DATE_FORMAT(_order_account_primaryAddress.createdDateTime,'%Y') as account_primaryAddress_createdDateTime) FROM SlatwallOrder as _order left join _order.account as _order_account left join _order_account.primaryAddress as _order_account_primaryAddress left join _order.orderItems as _order_orderItems where ( ( _order_account_primaryAddress.createdDateTime >= '2014-01-01' AND _order_account_primaryAddress.createdDateTime <= '2019-01-01' )) GROUP BY DATE_FORMAT(_order_account_primaryAddress.createdDateTime,'%Y')"/>
+<cfdump var="#ORMExecuteQuery(HQL)#" top=2><cfabort>--->
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>

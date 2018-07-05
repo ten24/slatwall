@@ -87028,14 +87028,14 @@ var SWListingReportController = /** @class */ (function () {
                 && _this.endDate) {
                 _this.hasMetric = false;
                 _this.reportCollectionConfig = _this.getReportCollectionConfig();
-                for (var i in _this.reportCollectionConfig.columns) {
+                for (var i = _this.reportCollectionConfig.columns.length - 1; i >= 0; i--) {
                     var column = _this.reportCollectionConfig.columns[i];
                     if (column.aggregate) {
                         column.isMetric = true;
                         _this.hasMetric = true;
                     }
                     else {
-                        column.isVisible = false;
+                        _this.reportCollectionConfig.columns.splice(i, 1);
                     }
                 }
                 if (_this.hasMetric) {
@@ -87044,6 +87044,7 @@ var SWListingReportController = /** @class */ (function () {
                     _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
                     _this.reportCollectionConfig.setAllRecords(true);
                     _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
+                    _this.reportCollectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                     _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.startDate, '>=', 'AND', true, true, false, 'dates');
                     _this.reportCollectionConfig.addFilter(_this.selectedPeriodColumn.propertyIdentifier, _this.endDate, '<=', 'AND', true, true, false, 'dates');
                     _this.collectionConfig.removeFilterGroupByFilterGroupAlias('dates');
@@ -87068,7 +87069,11 @@ var SWListingReportController = /** @class */ (function () {
             var dates = [];
             var datasets = [];
             _this.reportingData.records.forEach(function (element) {
-                dates.push(element[_this.selectedPeriodColumn.propertyIdentifier.split('.')[1]]);
+                console.log('word!', _this.selectedPeriodColumn.propertyIdentifier);
+                var pidAliasArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
+                pidAliasArray.shift();
+                var pidAlias = pidAliasArray.join('_');
+                dates.push(element[pidAlias]);
             });
             console.log('dates', dates);
             _this.reportCollectionConfig.columns.forEach(function (column) {

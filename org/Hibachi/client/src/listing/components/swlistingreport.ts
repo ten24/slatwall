@@ -219,13 +219,13 @@ class SWListingReportController {
         ){
             this.hasMetric = false;
             this.reportCollectionConfig = this.getReportCollectionConfig();
-            for(var i in this.reportCollectionConfig.columns){
+            for(var i=this.reportCollectionConfig.columns.length-1; i>=0; i-- ){
                 var column = this.reportCollectionConfig.columns[i];
                 if(column.aggregate){
                     column.isMetric = true;
                     this.hasMetric = true;
                 }else{
-                    column.isVisible = false;
+                    this.reportCollectionConfig.columns.splice(i,1);
                 }
             }
             if(this.hasMetric){
@@ -235,6 +235,7 @@ class SWListingReportController {
                 this.reportCollectionConfig.setAllRecords(true);
                 this.reportCollectionConfig.setOrderBy(this.selectedPeriodColumn.propertyIdentifier+'|ASC');
                 
+                this.reportCollectionConfig.removeFilterGroupByFilterGroupAlias('dates');
                 this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.startDate,'>=','AND',true,true,false,'dates');
                 this.reportCollectionConfig.addFilter(this.selectedPeriodColumn.propertyIdentifier,this.endDate,'<=','AND',true,true,false,'dates');
                     
@@ -264,7 +265,11 @@ class SWListingReportController {
 		var dates = [];
 		var datasets = [];
 		this.reportingData.records.forEach(element=>{
-		    dates.push(element[this.selectedPeriodColumn.propertyIdentifier.split('.')[1]]);
+		    console.log('word!',this.selectedPeriodColumn.propertyIdentifier);
+		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
+		    pidAliasArray.shift();
+		    var pidAlias = pidAliasArray.join('_');
+		    dates.push(element[pidAlias]);
 		});
 		console.log('dates',dates);
 		

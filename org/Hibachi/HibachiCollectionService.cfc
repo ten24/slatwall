@@ -364,7 +364,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	private void function addOrderBysToCollectionConfigStructByOrderBysList(required any collectionEntity, required string orderBysList){
 		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
 		if(structKeyExists(collectionConfigStruct,'orderBy')){
-			var orderByArray = collectionConfigStruct.orderBy;
+			var orderByArray = collectionConfigStruct['orderBy'];
 		}else{
 			var orderByArray = [];
 		}
@@ -411,13 +411,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!isnull(arguments.data.filterConfig)){
 			collectionConfigStruct['filterGroups'] = deserializeJson(arguments.data.filterConfig);
 		}
-
+		
 		if(!isNull(arguments.data.joinsConfig)){
 			collectionConfigStruct.joins = deserializeJson(arguments.data.joinsConfig);
 		}
 
 		if(!isNull(arguments.data.orderByConfig)){
-			collectionConfigStruct.orderBy = deserializeJson(arguments.data.orderByConfig);
+			collectionConfigStruct['orderBy'] = deserializeJson(arguments.data.orderByConfig);
 		}
 
 		if(!isNull(arguments.data.columnsConfig)){
@@ -436,7 +436,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		//this should handle sorting
 		//&orderBy=propertyIdentifier|direction
 		/*if(!isNull(arguments.data.orderBy)){
-			collectionConfig.orderBy = getOrderByArrayByURLParams(arguments.data.orderBy);
+			collectionConfig['orderBy'] = getOrderByArrayByURLParams(arguments.data.orderBy);
 		}*/
 
 		//this should be how we handle filterGroups
@@ -610,7 +610,8 @@ component output="false" accessors="true" extends="HibachiService" {
 			filterGroupsConfig = arguments.data['filterGroupsConfig'];
 		}
 		var joinsConfig = "";
-		if(structKeyExists(arguments.data,'joinsConfig')){
+		//by default don't use any generated joinsConfigs unless explicitly defined. 90% of joins should be handled on the backend
+		if((structKeyExists(arguments.data,'useJoinsConfig') && arguments.data.useJoinsConfig) && structKeyExists(arguments.data,'joinsConfig')){
 			joinsConfig = arguments.data['joinsConfig'];
 		}
 
@@ -833,7 +834,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			if(structKeyExists(collectionOptions,'orderByConfig') && len(collectionOptions.orderByConfig)){
-				collectionEntity.getCollectionConfigStruct().orderBy = deserializeJson(collectionOptions.orderByConfig);
+				collectionEntity.getCollectionConfigStruct()['orderBy'] = deserializeJson(collectionOptions.orderByConfig);
 			}
 			if(structKeyExists(collectionOptions,'groupBysConfig') && len(collectionOptions.groupBysConfig)){
 				collectionEntity.getCollectionConfigStruct().groupBys = deserializeJson(collectionOptions.groupBysConfig);
@@ -858,7 +859,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				collectionEntity.setReportFlag(collectionOptions.isReport);
 			}
 			if(structKeyExists(collectionOptions,'periodInterval')){
-				collectionEntity.getCollectionConfigStruct().periodInterval = collectionOptions.periodInterval;
+				collectionEntity.getCollectionConfigStruct()['periodInterval'] = collectionOptions['periodInterval'];
 			}
 			
 

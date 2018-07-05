@@ -189,7 +189,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public boolean function isReport(){
-		return getReportFlag() && structKeyExists(getCollectionConfigStruct(),'periordInterval');
+		return getReportFlag();
 	}
 	
 	public boolean function getCheckDORPermissions(){
@@ -1991,7 +1991,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		groupByHQL = ' GROUP BY ' & groupByList;
 
 		if(isReport()){
-			var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
+			var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 			if(len(groupByList)){
 				groupByHQL &= ",";
 			}
@@ -2586,8 +2586,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							if (getCacheable() && !isNull(getCacheName()) && getService("hibachiCacheService").hasCachedValue(getCacheName())){
 								variables.records =	getService("hibachiCacheService").hasCachedValue("records-"&getCacheName());
 							} else {
-								//Get the pageRecords
+								//Get the Records
+								
 								variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+								
 								//If this is cacheable but we don't have a cached value yet, then set one.
 								if (getCacheable() && !isNull(getCacheName()) && !getService("hibachiCacheService").hasCachedValue("records-" & getCacheName())){
 									getService("hibachiCacheService").setCachedValue("records-" & getCacheName(), variables.records);
@@ -2612,32 +2614,54 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		//backfill missing data intervals
 		if(isReport()){
+			
 			if(arraylen(variables.records)){
-				var pid = listRest(getPeriodColumn().propertyIdentifier,'.');
-				var minValue = variables.records[1][pid];
-				var maxValue = variables.records[arraylen(variables.records)][pid];
-				var diff = dateDiff(getPeriodIntervalDateDiffFormat(),minValue,maxValue);
+				var pidAlias = convertPropertyIdentifierToAlias(getPeriodColumn().propertyIdentifier,'.');
+				var minValue = variables.records[1][pidAlias];
+				var maxValue = variables.records[arraylen(variables.records)][pidAlias];
+				
+				var diff = getPeriodIntervalDateDiff(minValue,maxValue);
 				
 				var dateLookup = {};
+				
 				for(var i =1; i < arraylen(variables.records);i++){
 					var record = variables.records[i];
-					dateLookup[record[pid]] = i;
+					var dateLookupKey = record[pidAlias];
+					dateLookup[dateLookupKey] = i;
 				}
+				
 				var reportRecords = [];
+				var minValueArray = listToArray(minValue,'-');
+				switch(getCollectionConfigStruct()['periodInterval']){
+					case 'hour':
+						var formattedMinValue = createDateTime(minValueArray[1],minValueArray[2],minValueArray[3],minValueArray[4],0,0);
+					case 'day':
+						var formattedMinValue = createDateTime(minValueArray[1],minValueArray[2],minValueArray[3],0,0,0);
+					case 'week':
+						var formattedMinValue = getService('scheduleService').getDateByWeek(minValueArray[1],minValueArray[2]);
+					case 'month':
+						var formattedMinValue = createDateTime(minValueArray[1],minValueArray[2],1,0,0,0);
+					case 'year':
+						var formattedMinValue = createDateTime(minValueArray[1],1,1,0,0,0);
+				}
+				
 				for(var k = 0; k < diff;k++){
-					var currentDate = DateFormat(DateAdd(getPeriodIntervalDateDiffFormat(),k,minValue),'yyyy-mm-dd');
-					if(structKeyExists(dateLookup,currentDate)){
-						arrayAppend(reportRecords,variables.records[dateLookup[currentDate]]);
+					
+					
+					var currentInterval = DateFormat(DateAdd(getPeriodIntervalDateDiffFormat(),k,formattedMinValue),getPeriodIntervalDateFormat());
+					if(structKeyExists(dateLookup,currentInterval)){
+						arrayAppend(reportRecords,variables.records[dateLookup[currentInterval]]);
 					}else{
 						var reportRecord = {};
 						for(var key in variables.records[1]){
 							reportRecord[key] = 0;
 						}
-						reportRecord[pid] = currentDate;
+						reportRecord[pidAlias] = currentInterval;
 						arrayAppend(reportRecords,reportRecord);
 					}
 				
 				}
+				
 				return reportRecords;
 			}
 			
@@ -3060,8 +3084,34 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.totalSumAggregates;
 	}
 	
+	private numeric function getPeriodIntervalDateDiff(required minValue, required maxValue){
+		var minDateArray = listToArray(arguments.minValue,'-');
+		var maxDateArray = listToArray(arguments.maxValue,'-');
+		
+		switch(getCollectionConfigStruct()['periodInterval']){
+			case 'hour':
+				return dateDiff(
+					getPeriodIntervalDateDiffFormat(),
+					createDateTime(minDateArray[1],minDateArray[2],minDateArray[3],minDateArray[4],0,0),
+					createDateTime(maxDateArray[1],maxDateArray[2],maxDateArray[3],maxDateArray[4],59,59)
+				);
+			case 'day':
+				return dateDiff(getPeriodIntervalDateDiffFormat(),arguments.minValue,arguments.maxValue);
+			case 'week':
+				return dateDiff(
+					getPeriodIntervalDateDiffFormat(),
+					getService('scheduleService').getDateByWeek(minDateArray[1],minDateArray[2]),
+					getService('scheduleService').getDateByWeek(maxDateArray[1],maxDateArray[2])
+				);
+			case 'month':
+				return dateDiff(getPeriodIntervalDateDiffFormat(),arguments.minValue,arguments.maxValue);
+			case 'year':
+				return arguments.maxValue-arguments.minValue;
+		}
+	}
+	
 	private string function getPeriodIntervalDateDiffFormat(){
-		switch(getCollectionConfigStruct().periodInterval){
+		switch(getCollectionConfigStruct()['periodInterval']){
 			case 'hour':
 				return 'h';
 			case 'day':
@@ -3074,15 +3124,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				return 'yyyy';
 		}
 	}
+	
+	private string function getPeriodIntervalDateFormat(){
+		switch(getCollectionConfigStruct()['periodInterval']){
+			case 'hour':
+				return 'yyyy-mm-dd-hh';
+			case 'day':
+				return 'yyyy-mm-dd';
+			case 'week':
+				return 'yyyy-ww';
+			case 'month':
+				return 'yyyy-mm';
+			case 'year':
+				return 'yyyy';
+		}
+	}
 
-	private string function getPeriodIntervalFormat(required string periodInterval){
+	private string function getPeriodIntervalQueryFormat(required string periodInterval){
 		switch(lcase(arguments.periodInterval)){
 			case 'hour':
 				return '%Y-%m-%d-%H';
 			case 'day':
 				return '%Y-%m-%d';
 			case 'week':
-				return '%Y-%m-%u';
+				return '%Y-%u';
 			case 'month':
 				return '%Y-%m';
 			case 'year':
@@ -3138,10 +3203,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					addingColumn = true;
 				}else if(
 					structKeyExists(column,'isPeriod') && column.isPeriod
-					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct().periodInterval)
+					&& structKeyExists(getCollectionConfigStruct(),'periodInterval') && len(getCollectionConfigStruct()['periodInterval'])
 				){
 					variables.periodColumn = column;
-					var periodIntervalFormat = getPeriodIntervalFormat(getCollectionConfigStruct().periodInterval);
+					var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 					columnsHQL &= " DATE_FORMAT(#column.propertyIdentifier#,'#periodIntervalFormat#') as #columnAlias#";
 					addingColumn = true;
 					
