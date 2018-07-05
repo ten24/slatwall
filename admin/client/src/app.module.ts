@@ -8,9 +8,8 @@ import {slatwalladminmodule} from './slatwall/slatwalladmin.module';
 
 import {CoreModule,coremodule}  from  "../../../org/Hibachi/client/src/core/core.module";
 import {LoggerModule} from "../../../org/Hibachi/client/src/logger/logger.module";
-import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider,attributeMetaDataProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider } from "./ajs-upgraded-providers"; 
+import { parseProvider,logProvider,filterProvider,timeoutProvider,qProvider,httpProvider,appConfigProvider,resourceBundlesProvider,attributeMetaDataProvider,injectorProvider,windowProvider,rootScopeProvider,locationProvider,anchorScrollProvider } from "./ajs-upgraded-providers";  
 import {SlatwallAdminModule} from "./slatwall/slatwalladmin.module";
-
 import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.provider";
 
 
@@ -26,13 +25,11 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
     timeoutProvider,
     qProvider,
     httpProvider,
-    appConfigProvider,
-    resourceBundlesProvider,
-    attributeMetaDataProvider,
     windowProvider,
     rootScopeProvider,
     locationProvider,
-    anchorScrollProvider
+    anchorScrollProvider,
+    listingServiceProvider
   ],
   imports: [
     HttpClientModule,

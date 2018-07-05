@@ -1,6 +1,11 @@
 /// <reference path="../../../../../node_modules/typescript/lib/lib.es6.d.ts" />
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import { Injectable,Inject } from "@angular/core";
+import {ObserverService} from "../../../../../org/Hibachi/client/src/core/services/observerservice";
+import {$Hibachi} from "../../../../../org/Hibachi/client/src/core/services/hibachiservice";
+import {CollectionConfig} from "../../../../../org/Hibachi/client/src/collection/services/collectionconfigservice";
+import {SelectionService} from "../../../../../org/Hibachi/client/src/core/services/selectionservice";
 
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
@@ -10,7 +15,8 @@ import * as actions from '../../../../../admin/client/src/fulfillmentbatch/actio
 /**
  * Fulfillment List Controller
  */
-class OrderFulfillmentService {
+@Injectable()
+export class OrderFulfillmentService {
     //This is the single object that contains all state for the component.
     private state:any = {
         //boolean
@@ -150,7 +156,13 @@ class OrderFulfillmentService {
     public orderFulfillmentStore:FluxStore.IStore;
 
     //@ngInject
-    constructor(public $timeout, public observerService, public $hibachi, private collectionConfigService, private listingService, public $rootScope, public selectionService){
+    constructor(@Inject('$timeout') public $timeout, 
+                public observerService : ObserverService,
+                public $hibachi : $Hibachi , 
+                private collectionConfigService : CollectionConfig, 
+                @Inject('listingService') private listingService ,
+                @Inject('$rootScope') public $rootScope, 
+                public selectionService : SelectionService){
 
         //To create a store, we instantiate it using the object that holds the state variables,
         //and the reducer. We can also add a middleware to the end if you need.
@@ -348,7 +360,7 @@ class OrderFulfillmentService {
         }
 
         //Create the process object.
-        let processObject = this.$hibachi.newOrderDelivery_Create();
+        let processObject = this.$hibachi['newOrderDelivery_Create']();
         processObject.data = data;
         processObject.data.entityName = "OrderDelivery";
         
@@ -673,6 +685,3 @@ class OrderFulfillmentService {
         this.emitUpdateToClient(); //alert the client that we have new data to give.
      }
     }
-export {
-    OrderFulfillmentService
-}

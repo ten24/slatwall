@@ -1,10 +1,15 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 /*collection service is used to maintain the state of the ui*/
+import {Injectable,Inject} from "@angular/core";
+import {$Hibachi} from "../../core/services/hibachiservice";
+import {UtilityService} from "../../core/services/utilityservice";
 import {PageDialog} from "../../dialog/model/pagedialog";
 import {IFilter} from "./collectionconfigservice";
 import {BaseEntityService} from "../../core/services/baseentityservice";
-class CollectionService extends BaseEntityService{
+
+@Injectable()
+export class CollectionService extends BaseEntityService{
     private _pageDialogs;
     private _collection;
     private _collectionConfig;
@@ -13,13 +18,12 @@ class CollectionService extends BaseEntityService{
     private _orderBy;
 
 
-    //@ngInject
     constructor(
-        public $injector:ng.auto.IInjectorService,
-        public $hibachi,
-        public utilityService,
-        private $filter:ng.IFilterService,
-        private $log:ng.ILogService
+        @Inject("$injector") public $injector:ng.auto.IInjectorService,
+        public $hibachi : $Hibachi,
+        public utilityService : UtilityService,
+        @Inject("$filter") private $filter:ng.IFilterService,
+        @Inject("$log") private $log:ng.ILogService
     ){
         super($injector,$hibachi,utilityService,'Collection');
         this.$filter = $filter;
@@ -31,48 +35,48 @@ class CollectionService extends BaseEntityService{
         this._orderBy = $filter('orderBy');
     }
 
-    get = (): PageDialog[] =>{
+    get (): PageDialog[] {
         return this._pageDialogs || [];
     }
 
     //test
-    setFilterCount = (count:number):void =>{
+    setFilterCount (count:number):void {
         this.$log.debug('incrementFilterCount');
         this._filterCount = count;
     }
 
-    getFilterCount = ():number =>{
+    getFilterCount ():number {
         return this._filterCount;
     }
 
-    getColumns = ():any =>{
+    getColumns ():any {
         return this._collection.collectionConfig.columns;
     }
 
-    getFilterPropertiesList = ():any =>{
+    getFilterPropertiesList ():any {
         return this._filterPropertiesList;
     }
 
-    getFilterPropertiesListByBaseEntityAlias = (baseEntityAlias:string):any =>{
+    getFilterPropertiesListByBaseEntityAlias (baseEntityAlias:string):any {
         return this._filterPropertiesList[baseEntityAlias];
     }
 
-    setFilterPropertiesList = (value:any,key:string):void =>{
+    setFilterPropertiesList (value:any,key:string):void {
         if(angular.isUndefined(this._filterPropertiesList[key])){
             this._filterPropertiesList[key] = value;
         }
     }
 
-    stringifyJSON = (jsonObject:any):string =>{
+    stringifyJSON (jsonObject:any):string {
         var jsonString = angular.toJson(jsonObject);
         return jsonString;
     }
 
-    removeFilterItem = (filterItem:any,filterGroup:any):void =>{
+    removeFilterItem  (filterItem:any,filterGroup:any):void {
         filterGroup.pop(filterGroup.indexOf(filterItem));
     }
 
-    selectFilterItem = (filterItem:any):void =>{
+    selectFilterItem (filterItem:any):void {
         if(filterItem.$$isClosed){
             for(var i in filterItem.$$siblingItems){
                 filterItem.$$siblingItems[i].$$isClosed = true;
@@ -91,7 +95,7 @@ class CollectionService extends BaseEntityService{
 
     }
 
-    selectFilterGroupItem = (filterGroupItem:any):void =>{
+    selectFilterGroupItem (filterGroupItem:any):void {
         if(filterGroupItem.$$isClosed){
             for(var i in filterGroupItem.$$siblingItems){
                 filterGroupItem.$$siblingItems[i].$$disabled = true;
@@ -107,7 +111,7 @@ class CollectionService extends BaseEntityService{
         filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
     }
 
-    newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any) =>{
+    newFilterItem (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any) {
         if(angular.isUndefined(prepareForFilterGroup)){
             prepareForFilterGroup = false;
         }
@@ -138,7 +142,7 @@ class CollectionService extends BaseEntityService{
         return (filterItemGroup.length - 1);
     };
 
-    newFilterGroupItem = (filterItemGroup:any,setItemInUse:any):void =>{
+    newFilterGroupItem (filterItemGroup:any,setItemInUse:any):void{
         var filterGroupItem:any = {
             filterGroup:[],
             $$disabled:"false",
@@ -156,7 +160,7 @@ class CollectionService extends BaseEntityService{
         this.newFilterItem(filterGroupItem.filterGroup,setItemInUse,undefined);
     }
 
-    transplantFilterItemIntoFilterGroup = (filterGroup:any,filterItem:any):void =>{
+    transplantFilterItemIntoFilterGroup (filterGroup:any,filterItem:any):void {
         var filterGroupItem:any = {
             filterGroup:[],
             $$disabled:"false",
@@ -178,7 +182,7 @@ class CollectionService extends BaseEntityService{
         filterGroup.push(filterGroupItem);
     }
 
-    formatFilterPropertiesList = (filterPropertiesList:any,propertyIdentifier:string):void =>{
+    formatFilterPropertiesList (filterPropertiesList:any,propertyIdentifier:string):void {
         this.$log.debug('format Filter Properties List arguments 2');
         this.$log.debug(filterPropertiesList);
         this.$log.debug(propertyIdentifier);
@@ -234,12 +238,9 @@ class CollectionService extends BaseEntityService{
         filterPropertiesList.data = this._orderBy(filterPropertiesList.data,['-$$group','propertyIdentifier'],false);
     }
 
-    orderBy = (propertiesList:string,predicate:string,reverse:boolean):any =>{
+    orderBy (propertiesList:string,predicate:string,reverse:boolean):any {
         return this._orderBy(propertiesList,predicate,reverse);
     }
-}
-export{
-    CollectionService
 }
 
 
