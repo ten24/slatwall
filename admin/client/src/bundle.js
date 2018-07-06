@@ -86997,7 +86997,6 @@ var SWListingReportController = /** @class */ (function () {
                     var datesFilterGroup = filterGroup;
                     for (var j in datesFilterGroup.filterGroup) {
                         var filter = datesFilterGroup.filterGroup[j];
-                        console.log('filter', filter);
                         if (filter.comparisonOperator == '>=') {
                             _this.startDate = filter.value;
                         }
@@ -87070,13 +87069,11 @@ var SWListingReportController = /** @class */ (function () {
             var dates = [];
             var datasets = [];
             _this.reportingData.records.forEach(function (element) {
-                console.log('word!', _this.selectedPeriodColumn.propertyIdentifier);
                 var pidAliasArray = _this.selectedPeriodColumn.propertyIdentifier.split('.');
                 pidAliasArray.shift();
                 var pidAlias = pidAliasArray.join('_');
                 dates.push(element[pidAlias]);
             });
-            console.log('dates', dates);
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
                     var color = _this.random_rgba();
@@ -87098,7 +87095,10 @@ var SWListingReportController = /** @class */ (function () {
                     });
                 }
             });
-            console.log(datasets);
+            //used to clear old rendered charts before adding new ones
+            if (_this.chart != null) {
+                _this.chart.destroy();
+            }
             _this.chart = new chart_js_1.Chart(ctx, {
                 type: 'line',
                 data: {
@@ -87148,8 +87148,6 @@ var SWListingReportController = /** @class */ (function () {
                 _this.objectPath.pop();
                 _this.selectedPeriodPropertyIdentifierArray.pop();
                 _this.getPeriodColumns(_this.objectPath[_this.objectPath.length - 1], false);
-                console.log('objectPath', _this.objectPath);
-                console.log('objectPath', _this.selectedPeriodPropertyIdentifierArray);
             }
         };
         this.getPeriodColumns = function (baseEntityAlias, adding) {
@@ -87158,7 +87156,6 @@ var SWListingReportController = /** @class */ (function () {
             if (adding) {
                 _this.objectPath.push(baseEntityAlias);
             }
-            console.log('objectPath', _this.objectPath);
             //get meta data we need for existing columns
             _this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then(function (value) {
                 _this.metadataService.setPropertiesList(value, baseEntityAlias);
@@ -87178,9 +87175,7 @@ var SWListingReportController = /** @class */ (function () {
         };
         this.selectPeriodColumn = function (column) {
             if (column && column.cfc) {
-                console.log('selectedPeriodColumn', column);
                 _this.selectedPeriodPropertyIdentifierArray.push(column.name);
-                console.log('selectedPeriodPropertyIdentifierArray', _this.selectedPeriodPropertyIdentifierArray);
                 _this.getPeriodColumns(column.cfc);
             }
             else if (column && column.name) {
@@ -87188,7 +87183,6 @@ var SWListingReportController = /** @class */ (function () {
                 column.propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
                 column.isPeriod = true;
                 _this.selectedPeriodColumn = column;
-                console.log('selectedPeriodPropertyIdentifier', _this.selectedPeriodPropertyIdentifier);
                 _this.updatePeriod();
             }
         };

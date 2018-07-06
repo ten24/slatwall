@@ -180,7 +180,6 @@ class SWListingReportController {
                 var datesFilterGroup = filterGroup;
                 for(var j in datesFilterGroup.filterGroup){
                     var filter = datesFilterGroup.filterGroup[j];
-                    console.log('filter',filter);
                     if(filter.comparisonOperator == '>='){
                         this.startDate = filter.value;
                     }else if(filter.comparisonOperator == '<='){
@@ -266,13 +265,11 @@ class SWListingReportController {
 		var dates = [];
 		var datasets = [];
 		this.reportingData.records.forEach(element=>{
-		    console.log('word!',this.selectedPeriodColumn.propertyIdentifier);
 		    var pidAliasArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
 		    pidAliasArray.shift();
 		    var pidAlias = pidAliasArray.join('_');
 		    dates.push(element[pidAlias]);
 		});
-		console.log('dates',dates);
 		
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
@@ -299,7 +296,11 @@ class SWListingReportController {
 		        );
 		    }
 		});
-		console.log(datasets);
+		//used to clear old rendered charts before adding new ones
+		if(this.chart!=null){
+            this.chart.destroy();
+        }
+		
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -342,6 +343,7 @@ class SWListingReportController {
                 }
             }
         });
+        
         this.chart.draw();
     }
     
@@ -350,8 +352,6 @@ class SWListingReportController {
             this.objectPath.pop();
             this.selectedPeriodPropertyIdentifierArray.pop();
             this.getPeriodColumns(this.objectPath[this.objectPath.length-1],false);
-            console.log('objectPath',this.objectPath);  
-            console.log('objectPath',this.selectedPeriodPropertyIdentifierArray); 
         }
     }
     
@@ -361,7 +361,6 @@ class SWListingReportController {
             this.objectPath.push(baseEntityAlias);
         }
         
-        console.log('objectPath',this.objectPath);
         
         //get meta data we need for existing columns
         this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=> {
@@ -388,16 +387,13 @@ class SWListingReportController {
     
     public selectPeriodColumn=(column)=>{
         if(column && column.cfc){
-            console.log('selectedPeriodColumn',column);
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
-            console.log('selectedPeriodPropertyIdentifierArray',this.selectedPeriodPropertyIdentifierArray);
             this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
             column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
             column.isPeriod = true;
             this.selectedPeriodColumn = column;
-            console.log('selectedPeriodPropertyIdentifier',this.selectedPeriodPropertyIdentifier);
             this.updatePeriod();
         }
     }
