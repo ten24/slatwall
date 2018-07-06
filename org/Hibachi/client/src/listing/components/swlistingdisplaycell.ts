@@ -46,7 +46,6 @@ class SWListingDisplayCellController{
         }
 
         if(this.cellView){
-            console.log("Cellview?", this.cellView);
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
             this.template = htmlCellView;
             
@@ -84,8 +83,9 @@ class SWListingDisplayCellController{
             if(this.column.ormtype === 'timestamp'){
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
             }else if(this.column.type==='currency'){
-                if(this.column.aggregate){
-                    this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
+                if(this.column.aggregate && this.pageRecord){
+                    var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
+                    this.value = this.pageRecord[pageRecordKey];
                 }
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
             }else if([

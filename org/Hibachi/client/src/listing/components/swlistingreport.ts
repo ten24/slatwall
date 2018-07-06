@@ -226,6 +226,7 @@ class SWListingReportController {
                     this.hasMetric = true;
                 }else{
                     this.reportCollectionConfig.columns.splice(i,1);
+                    //column.isVisible = false;
                 }
             }
             if(this.hasMetric){

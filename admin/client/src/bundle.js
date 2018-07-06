@@ -70688,7 +70688,7 @@ var SWDisplayItemAggregate = /** @class */ (function () {
                     { id: 'max', value: 'Max' }
                 ];
                 scope.selectAggregate = function (aggregate) {
-                    if (aggregate == 'count') {
+                    if (aggregate == 'count' || scope.selectedProperty.ormtype) {
                         scope.selectedProperty.aggregate = aggregate;
                         scope.selectedPropertyChanged({ selectedProperty: scope.selectedProperty });
                     }
@@ -70702,7 +70702,6 @@ var SWDisplayItemAggregate = /** @class */ (function () {
                     scope.selectedPropertyChanged({ selectedProperty: selectedDisplayOption });
                 };
                 scope.$watch('selectedProperty', function (selectedProperty) {
-                    console.log(selectedProperty, 'test');
                     if (angular.isDefined(selectedProperty) && !selectedProperty.ormtype) {
                         if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
                             var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
@@ -86486,8 +86485,9 @@ var SWListingDisplayCellController = /** @class */ (function () {
                     templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycelldate.html';
                 }
                 else if (_this.column.type === 'currency') {
-                    if (_this.column.aggregate) {
-                        _this.value = _this.pageRecord[_this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias)];
+                    if (_this.column.aggregate && _this.pageRecord) {
+                        var pageRecordKey = _this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias);
+                        _this.value = _this.pageRecord[pageRecordKey];
                     }
                     templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.listingPartialPath) + 'listingdisplaycellcurrency.html';
                 }
@@ -86526,7 +86526,6 @@ var SWListingDisplayCellController = /** @class */ (function () {
             }
         }
         if (this.cellView) {
-            console.log("Cellview?", this.cellView);
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
             this.template = htmlCellView;
             //convert the page records into attrs
@@ -87036,6 +87035,7 @@ var SWListingReportController = /** @class */ (function () {
                     }
                     else {
                         _this.reportCollectionConfig.columns.splice(i, 1);
+                        //column.isVisible = false;
                     }
                 }
                 if (_this.hasMetric) {
