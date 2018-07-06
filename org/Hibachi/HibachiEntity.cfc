@@ -1184,7 +1184,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	public any function getDefaultCollectionReportProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
 		arguments.includesList = "#getSimpleRepresentationPropertyName()#";
 		var defaultProperties = getDefaultCollectionProperties(argumentCollection=arguments);
-		
 		return defaultProperties;
 	}
 

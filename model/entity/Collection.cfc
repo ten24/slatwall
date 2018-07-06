@@ -1197,7 +1197,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 						columnStruct['title'] = newEntity.getTitleByPropertyIdentifier(defaultProperty.name);
 						//if propertyKey is a primary id, hide it and make it so it can't be deleted
-						if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
+						if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id' && !isReport()){
 							columnStruct['isDeletable'] = false;
 							columnStruct['isVisible'] = false;
 						//if propertyKey is a config of json hide it
@@ -2652,6 +2652,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 				for(var k = 0; k < diff;k++){
 					var currentInterval = DateFormat(DateAdd(getPeriodIntervalDateDiffFormat(),k,formattedMinValue),getPeriodIntervalDateFormat());
+					
 					if(structKeyExists(dateLookup,currentInterval)){
 						arrayAppend(reportRecords,variables.records[dateLookup[currentInterval]]);
 					}else{
@@ -3395,7 +3396,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public any function getGroupBys(){
 		if(!structKeyExists(variables,'groupBys')){
 			if(isReport()){
-
+				
 				var groupBys =[];
 				//add a group by for all selects that are not aggregates
 				for(var column in getCollectionConfigStruct().columns){

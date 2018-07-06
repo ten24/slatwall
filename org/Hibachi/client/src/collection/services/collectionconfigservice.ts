@@ -153,7 +153,6 @@ class CollectionConfig {
     }
     
     public loadJson= (jsonCollection):any =>{
-        console.log(jsonCollection);
         //if json then make a javascript object else use the javascript object
         //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
         while(angular.isString(jsonCollection)){
@@ -182,6 +181,7 @@ class CollectionConfig {
         }
         this.isDistinct = jsonCollection.isDistinct;
         this.reportFlag = jsonCollection.reportFlag;
+        console.log(jsonCollection.reportFlag);
         this.periodInterval = jsonCollection.periodInterval;
         this.currentPage = jsonCollection.currentPage || 1;
         this.pageShow = jsonCollection.pageShow || 10;
