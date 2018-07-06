@@ -72197,6 +72197,7 @@ var CollectionConfig = /** @class */ (function () {
             _this.periodInterval = periodInterval;
         };
         this.loadJson = function (jsonCollection) {
+            console.log(jsonCollection);
             //if json then make a javascript object else use the javascript object
             //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
             while (angular.isString(jsonCollection)) {
@@ -86935,7 +86936,7 @@ var SWListingReportController = /** @class */ (function () {
                 }
             }
             _this.compareReportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
-            _this.compareReportCollectionConfig.setReportFlag(true);
+            _this.compareReportCollectionConfig.setReportFlag(1);
             _this.compareReportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
             _this.compareReportCollectionConfig.setAllRecords(true);
             _this.compareReportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');
@@ -87040,7 +87041,7 @@ var SWListingReportController = /** @class */ (function () {
                 }
                 if (_this.hasMetric) {
                     _this.reportCollectionConfig.setPeriodInterval(_this.selectedPeriodInterval.value);
-                    _this.reportCollectionConfig.setReportFlag(true);
+                    _this.reportCollectionConfig.setReportFlag(1);
                     _this.reportCollectionConfig.addDisplayProperty(_this.selectedPeriodColumn.propertyIdentifier, '', { isHidden: true, isPeriod: true, isVisible: false });
                     _this.reportCollectionConfig.setAllRecords(true);
                     _this.reportCollectionConfig.setOrderBy(_this.selectedPeriodColumn.propertyIdentifier + '|ASC');

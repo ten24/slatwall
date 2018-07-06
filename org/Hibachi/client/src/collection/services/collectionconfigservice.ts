@@ -153,6 +153,7 @@ class CollectionConfig {
     }
     
     public loadJson= (jsonCollection):any =>{
+        console.log(jsonCollection);
         //if json then make a javascript object else use the javascript object
         //if coldfusion has double encoded the json keep calling fromJson until it becomes an object
         while(angular.isString(jsonCollection)){

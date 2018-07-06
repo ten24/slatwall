@@ -52,14 +52,13 @@ Notes:
 <cfparam name="rc['#rc.entityActionDetails.itemEntityName#SmartList']" type="any" />
 
 <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollectionReportList('#rc.entityActionDetails.itemEntityName#')/>
-
+<cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setReportFlag(1)/>
 <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#">
 		
 	<!--- Create ---> 
 	<hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBarButtonGroup>
 </hb:HibachiEntityActionBar>
-
 <hb:HibachiListingDisplay 
 	collectionList="#rc['#rc.entityActionDetails.itemEntityName#CollectionList']#"
 	usingPersonalCollection="true"

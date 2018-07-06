@@ -1912,7 +1912,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 
 		var HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport, arguments.excludeOrderBy,arguments.excludeGroupBy);
-
 		return HQL;
 	}
 
@@ -1984,13 +1983,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			groupByList = variables.groupBys;
 		}
 
-		if(!len(trim(groupByList)) && !isReport()){
+		if(!len(trim(groupByList)) && (!isReport() || !hasPeriodColumn())){
 			return '';
 		}
 
 		groupByHQL = ' GROUP BY ' & groupByList;
 
-		if(isReport()){
+		if(isReport() && hasPeriodColumn()){
 			var periodIntervalFormat = getPeriodIntervalQueryFormat(getCollectionConfigStruct()['periodInterval']);
 			if(len(groupByList)){
 				groupByHQL &= ",";
@@ -2613,11 +2612,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}*/
 		}
 		//backfill missing data intervals
-		if(isReport()){
+		if(isReport() && hasPeriodColumn()){
 			
 			if(arraylen(variables.records)){
 				var pidAlias = convertPropertyIdentifierToAlias(getPeriodColumn().propertyIdentifier,'.');
 				var minValue = variables.records[1][pidAlias];
+				
 				var maxValue = variables.records[arraylen(variables.records)][pidAlias];
 				
 				var diff = getPeriodIntervalDateDiff(minValue,maxValue);
@@ -2635,19 +2635,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				switch(getCollectionConfigStruct()['periodInterval']){
 					case 'hour':
 						var formattedMinValue = createDateTime(minValueArray[1],minValueArray[2],minValueArray[3],minValueArray[4],0,0);
+						break;
 					case 'day':
 						var formattedMinValue = createDateTime(minValueArray[1],minValueArray[2],minValueArray[3],0,0,0);
+						break;
 					case 'week':
 						var formattedMinValue = getService('scheduleService').getDateByWeek(minValueArray[1],minValueArray[2]);
+						break;
 					case 'month':
 						var formattedMinValue = createDateTime(minValueArray[1],minValueArray[2],1,0,0,0);
+						break;
 					case 'year':
 						var formattedMinValue = createDateTime(minValueArray[1],1,1,0,0,0);
+						break;
 				}
 				
 				for(var k = 0; k < diff;k++){
-					
-					
 					var currentInterval = DateFormat(DateAdd(getPeriodIntervalDateDiffFormat(),k,formattedMinValue),getPeriodIntervalDateFormat());
 					if(structKeyExists(dateLookup,currentInterval)){
 						arrayAppend(reportRecords,variables.records[dateLookup[currentInterval]]);
@@ -3154,6 +3157,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				return '%Y';
 		}
 	}
+	
+	public boolean function hasPeriodColumn(){
+		return !isNull(getPeriodColumn());
+	}
 
 	public any function getPeriodColumn(){
 		if(!structKeyExists(variables,'periodColumn')){
@@ -3164,7 +3171,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}
 		}
-		return variables.periodColumn;
+		
+		if(structKeyExists(variables,'periodColumn')){
+			return variables.periodColumn;
+		}
 	}
 
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
@@ -3190,7 +3200,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var columnsHQL = '';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
-			if(isReport()){
+			if(isReport() && hasPeriodColumn()){
 
 				getPropertyIdentifierAlias(column.propertyIdentifier);
 				var columnAlias = getColumnAlias(column);
@@ -3397,7 +3407,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						&& hasPropertyByPropertyIdentifier(propertyIdentifier)
 						&& getService('HibachiService').getPropertyIsPersistentByEntityNameAndPropertyIdentifier(getCollectionObject(),propertyIdentifier)
 					){
-						if(!isReport() || (isReport() && structKeyExists(column,'isVisible') && column['isVisible'])){
+						if(structKeyExists(column,'isVisible') && column['isVisible']){
 							if(
 								(
 									!structKeyExists(column,'isMetric') || !column['isMetric']
@@ -3493,7 +3503,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 
-		if(arguments.excludeOrderBy || isReport()){
+		if(arguments.excludeOrderBy || (isReport() && hasPeriodColumn())){
 			this.setExcludeOrderBy(true);
 		}
 
@@ -3836,6 +3846,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(variables,'collectionConfigStruct')){
 			variables.collectionConfigStruct = {};
 		}
+		variables.collectionConfigStruct['reportFlag']=isReport();
 		
 		return variables.collectionConfigStruct;
 	}

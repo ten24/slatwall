@@ -84,7 +84,7 @@ class SWListingDisplayCellController{
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycelldate.html';
             }else if(this.column.type==='currency'){
                 if(this.column.aggregate && this.pageRecord){
-                    var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias)];
+                    var pageRecordKey = this.swListingDisplay.getPageRecordKey(this.column.aggregate.aggregateAlias);
                     this.value = this.pageRecord[pageRecordKey];
                 }
                 templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.listingPartialPath)+'listingdisplaycellcurrency.html';
