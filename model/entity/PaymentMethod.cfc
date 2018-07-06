@@ -136,6 +136,12 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 				arrayAppend(variables.saveOrderPaymentTransactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});
 			}
 		}
+		if (!isNull(getPaymentMethodType()) && (getPaymentMethodType() eq "external" || getPaymentMethodType() eq "creditCard") && !isNull(getPaymentIntegration())) {
+			var integrationSaveOrderPaymentTransactionTypes = getPaymentIntegration().getIntegrationCFC( "payment" ).getSupportedSaveOrderPaymentTransactionTypes();
+			for(var i=1; i<=listLen(integrationSaveOrderPaymentTransactionTypes); i++) {
+				arrayAppend(variables.saveOrderPaymentTransactionTypeOptions, {name=rbKey('define.#listGetAt(integrationSaveOrderPaymentTransactionTypes, i)#'), value="#listGetAt(integrationSaveOrderPaymentTransactionTypes, i)#"});	
+			}
+		}
 		return variables.saveOrderPaymentTransactionTypeOptions;
 	}
 	

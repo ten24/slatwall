@@ -2911,7 +2911,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(paymentTransaction.hasError('runTransaction')) {
 					arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 				} else {
-					val(getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived()));
+					totalAmountCharged = val(getService('HibachiUtilityService').precisionCalculate(totalAmountCharged + paymentTransaction.getAmountReceived()));
 				}
 
 			}
@@ -2956,6 +2956,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     }
                     arguments.orderPayment = this.saveOrderPayment(arguments.OrderPayment);
                 }
+                if(arguments.orderPayment.getDynamicAmountFlag()){
+                	var amount = paymentTransaction.getAmountReceived() - paymentTransaction.getAmountCredited();
+                    if(arguments.orderPayment.getOrderPaymentType() == 'optCredit'){
+                    	amount *= -1;
+                    }
+                    arguments.orderPayment.setAmount(amount);
+                    arguments.orderPayment = this.saveOrderPayment(arguments.OrderPayment);
+            	}
             }
 		}
 
