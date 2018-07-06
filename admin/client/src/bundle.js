@@ -87080,7 +87080,7 @@ var SWListingReportController = /** @class */ (function () {
             _this.reportCollectionConfig.columns.forEach(function (column) {
                 if (column.isMetric) {
                     var color = _this.random_rgba();
-                    var title = column.title + " (" + (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate) + ")";
+                    var title = "" + column.title;
                     var metrics_1 = [];
                     _this.reportingData.records.forEach(function (element) {
                         metrics_1.push({
@@ -87107,16 +87107,32 @@ var SWListingReportController = /** @class */ (function () {
                     spanGaps: true
                 },
                 options: {
-                    events: [],
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: "(" + (_this.startDate.toDateString ? _this.startDate.toDateString() : _this.startDate) + " - " + (_this.endDate.toDateString ? _this.endDate.toDateString() : _this.endDate) + ")"
+                    },
                     scales: {
                         yAxes: [{
                                 ticks: {
                                     beginAtZero: true
                                 }
+                            }],
+                        xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    labelString: _this.selectedPeriodInterval.value,
+                                    display: true,
+                                },
                             }]
                     },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     hover: {
-                        animationDuration: 0
+                        intersect: true,
+                        mode: 'nearest',
                     },
                     elements: {
                         line: {

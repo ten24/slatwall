@@ -277,7 +277,7 @@ class SWListingReportController {
 		this.reportCollectionConfig.columns.forEach(column=>{
 		    if(column.isMetric){
 		        let color = this.random_rgba();
-		        let title = `${column.title} (${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate})`;
+		        let title = `${column.title}`;
 		        let metrics = [];
 		        this.reportingData.records.forEach(element=>{
 		            metrics.push(
@@ -308,16 +308,32 @@ class SWListingReportController {
                 spanGaps:true
             },
             options: {
-                events:[],
+                responsive: true,
+                title:{
+                  display:true,
+                  text:`(${this.startDate.toDateString ? this.startDate.toDateString():this.startDate} - ${this.endDate.toDateString?this.endDate.toDateString():this.endDate})`
+                },
                 scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero:true
                         }
+                    }],
+                    xAxes: [{
+                      display: true,
+                      scaleLabel: {
+                        labelString:this.selectedPeriodInterval.value,
+                        display: true,
+                      },
                     }]
                 },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 hover: {
-                    animationDuration: 0
+                    intersect: true,
+                    mode:'nearest',
                 },
                 elements:{
                     line:{
