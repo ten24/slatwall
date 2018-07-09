@@ -28,8 +28,7 @@ import {AppProvider,AppConfig,ResourceBundles,AttributeMetaData} from "./app.pro
     windowProvider,
     rootScopeProvider,
     locationProvider,
-    anchorScrollProvider,
-    listingServiceProvider
+    anchorScrollProvider
   ],
   imports: [
     HttpClientModule,
