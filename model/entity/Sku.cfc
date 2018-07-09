@@ -620,9 +620,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				if(!isNull(baseSkuPrice)){
 					variables[cacheKey] = baseSkuPrice.getPrice(); 
 				}
-				if(structKeyExists(variables,cacheKey)){
-					return variables[cacheKey];
-				}
+				
+			}
+			
+			if(structKeyExists(variables,cacheKey)){
+				return variables[cacheKey];
 			}
 			
 		}
