@@ -960,15 +960,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 
-					if (comparison == 'like'){
+					if (comparison == 'like' || comparison == 'likeAll'){
 						var dataToFilterOnArray = listToArray(dataToFilterOn,'|');
 
 						for(var i=1; i <= arraylen(dataToFilterOnArray);i++){
 							var item = dataToFilterOnArray[i];
+							
+							if(comparison == 'like'){
+								var formattedValue = '#item#%';
+							} 
+							
+							else if(comparison == 'likeAll'){
+								var formattedValue = '%#item#%';
+							}
+							
 							var filterData = {
 								propertyIdentifier=prop,
-								value='#item#%',
-								comparisonOperator=comparison
+								value=formattedValue,
+								comparisonOperator='like'
 							};
 
 							if(i > 1){
