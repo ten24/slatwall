@@ -31,6 +31,7 @@ class SWListingReportController {
     
     //@ngInject
     constructor(
+        public $timeout,
         public $rootScope,
         public $hibachi,
         public metadataService,
@@ -391,8 +392,17 @@ class SWListingReportController {
             this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
+            //update the option so it remains selected
+            for(var i in this.periodColumns){
+                if(column.name === this.periodColumns[i].name){
+                    this.periodColumns[i].isPeriod = true;
+                    this.periodColumns[i].propertyIdentifier = this.selectedPeriodPropertyIdentifier;
+                }
+            }
+            
             column.propertyIdentifier = this.selectedPeriodPropertyIdentifier;
             column.isPeriod = true;
+            
             this.selectedPeriodColumn = column;
             this.updatePeriod();
         }

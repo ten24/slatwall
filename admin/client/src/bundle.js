@@ -86868,8 +86868,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chart_js_1 = __webpack_require__(313);
 var SWListingReportController = /** @class */ (function () {
     //@ngInject
-    function SWListingReportController($rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
+    function SWListingReportController($timeout, $rootScope, $hibachi, metadataService, listingService, observerService, collectionConfigService) {
         var _this = this;
+        this.$timeout = $timeout;
         this.$rootScope = $rootScope;
         this.$hibachi = $hibachi;
         this.metadataService = metadataService;
@@ -87180,6 +87181,13 @@ var SWListingReportController = /** @class */ (function () {
             }
             else if (column && column.name) {
                 _this.selectedPeriodPropertyIdentifier = _this.selectedPeriodPropertyIdentifierArray.join('.') + '.' + column.name;
+                //update the option so it remains selected
+                for (var i in _this.periodColumns) {
+                    if (column.name === _this.periodColumns[i].name) {
+                        _this.periodColumns[i].isPeriod = true;
+                        _this.periodColumns[i].propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
+                    }
+                }
                 column.propertyIdentifier = _this.selectedPeriodPropertyIdentifier;
                 column.isPeriod = true;
                 _this.selectedPeriodColumn = column;

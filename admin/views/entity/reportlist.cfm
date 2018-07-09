@@ -53,6 +53,7 @@ Notes:
 
 <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'] = $.slatwall.getService('HibachiCollectionService').getCollectionReportList('#rc.entityActionDetails.itemEntityName#')/>
 <cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setReportFlag(1)/>
+<cfset rc['#rc.entityActionDetails.itemEntityName#CollectionList'].setDistinct(1)/>
 <hb:HibachiEntityActionBar type="reportlisting" object="#rc['#rc.entityActionDetails.itemEntityName#SmartList']#">
 		
 	<!--- Create ---> 
