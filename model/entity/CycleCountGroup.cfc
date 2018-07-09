@@ -119,12 +119,12 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 		for(var sku in this.getSkuCollection().getRecords()) {
 			inList = listAppend(inList, sku.skuID);
 		}
-			cycleCountGroupCollection.addFilter(propertyIdentifier='sku.skuID', value='#inList#', comparisonOperator='IN', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+			cycleCountGroupCollection.addFilter(propertyIdentifier='sku.skuID', value='#inList#', comparisonOperator='IN', logicalOperator='AND', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 
 		// Add selected location Collections filters
 		for(var locationCollection in this.getLocationCollections()) {
 			for(var locationEntity in locationCollection.getRecords()) {
-				cycleCountGroupCollection.addFilter(propertyIdentifier='location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='locationCollectionFilters', filterGroupLogicalOperator='AND');
+				cycleCountGroupCollection.addFilter(propertyIdentifier='location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='AND', aggregate= '', filterGroupAlias='locationCollectionFilters', filterGroupLogicalOperator='AND');
 			}
 		}
 		
