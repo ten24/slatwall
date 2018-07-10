@@ -84,7 +84,7 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 	 public string function getSkuCollectionConfig(){
     	if(isNull(variables.skuCollectionConfig)){
     		var defaultSkuCollectionList = getService('skuService').getSkuCollectionList();
-    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true});
+    		defaultSkuCollectionList.setDisplayProperties('activeFlag,publishedFlag,skuName,skuDescription,skuCode,listPrice,price,renewalPrice',{isVisible=true,isSearchabl=true});
     		defaultSkuCollectionList.addDisplayProperty(displayProperty='skuID',columnconfig={isVisible=false});
     		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionList.getCollectionConfigStruct());
     		
@@ -93,12 +93,10 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
     }
     
     public any function getSkuCollection(){
-    	if(!structKeyExists(variables,'skuColletiton')){
-    		var skuCollectionList = getService('skuService').getSkuCollectionList();
-    		skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
-    		variables.skuCollection = skuCollectionList;
-    	}
-    	return variables.skuCollection;
+	var skuCollectionList = getService('skuService').getSkuCollectionList();
+	skuCollectionList.setCollectionConfig(getSkuCollectionConfig());
+	skuCollection = skuCollectionList;
+    	return skuCollection;
     }
     
 	public any function getCycleCountGroupsStockCollection() {
@@ -111,7 +109,7 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 		
 		// Add selected locations filters
 		for(var locationEntity in this.getLocations()) {
-			cycleCountGroupCollection.addFilter(propertyIdentifier='location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='OR', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
+			cycleCountGroupCollection.addFilter(propertyIdentifier='location.locationIDPath', value='%#locationEntity.getLocationID()#%', comparisonOperator='LIKE', logicalOperator='AND', aggregate= '', filterGroupAlias='skuFilters', filterGroupLogicalOperator='AND');
 		}
 
 		var inlist="";
