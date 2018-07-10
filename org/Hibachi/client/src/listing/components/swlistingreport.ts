@@ -192,6 +192,37 @@ class SWListingReportController {
         }
         
         this.selectedPeriodColumn = this.collectionConfigService.getPeriodColumnFromColumns(collectionData.columns);
+        console.log('test',this.selectedPeriodColumn);
+        //navigate propertyIdentifier to populate drop down
+        var pidArray = this.selectedPeriodColumn.propertyIdentifier.split('.');
+        console.log(pidArray)
+        /*for(var i=1; i <= pidArray.length-1;i++){
+            var propertyName = pidArray[i];
+            for(var j in this.periodColumns){
+                var periodColumn = this.periodColumns[j];
+                if(periodColumn.name===propertyName){
+                    if(periodColumn.cfc){
+                        
+                        setTimeout(()=>{
+                            console.log(periodColumn.cfc);
+                            this.getPeriodColumns(periodColumn.cfc,true);
+                            console.log(this.objectPath,'ss');
+                        },500);
+                        break;
+                    }else{
+                        setTimeout(()=>{
+                            this.selectPeriodColumn(periodColumn);
+                        },500);
+                        break;
+                    }
+                    
+                    
+                }
+                
+            }
+            
+        }*/
+        
         this.clearPeriodColumn(collectionData);
         this.reportCollectionConfig = this.collectionConfig.loadJson(angular.toJson(collectionData));
         
@@ -364,6 +395,7 @@ class SWListingReportController {
         
         
         //get meta data we need for existing columns
+
         this.$hibachi.getFilterPropertiesByBaseEntityName(baseEntityAlias).then((value)=> {
             this.metadataService.setPropertiesList(value, baseEntityAlias);
             this.filterPropertiesList[baseEntityAlias] = this.metadataService.getPropertiesListByBaseEntityAlias(baseEntityAlias);
@@ -379,9 +411,6 @@ class SWListingReportController {
                     this.periodColumns.push(column);
                 }
             }
-            
-            
-            
         });
         
     }
@@ -391,6 +420,7 @@ class SWListingReportController {
             this.selectedPeriodPropertyIdentifierArray.push(column.name);
             this.getPeriodColumns(column.cfc);
         }else if(column && column.name){
+            console.log('testhre');
             this.selectedPeriodPropertyIdentifier = this.selectedPeriodPropertyIdentifierArray.join('.')+'.'+column.name;
             //update the option so it remains selected
             for(var i in this.periodColumns){
