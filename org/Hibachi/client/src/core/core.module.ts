@@ -9,6 +9,7 @@ import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 import {CacheService} from "./services/cacheservice";
 import {PublicService} from "./services/publicservice";
 import {AccountService} from "./services/accountservice";
+import {AccountAddressService} from "./services/accountaddressservice";
 import {CartService} from "./services/cartservice";
 import {DraggableService} from "./services/draggableservice";
 import {UtilityService} from "./services/utilityservice";
@@ -302,12 +303,14 @@ var coremodule = angular.module('hibachi.core',[
 .service('skuService',downgradeInjectable(SkuService))
 .service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',downgradeInjectable(RequestService))
-.service('orderService',downgradeInjectable(OrderService))
+.service('accountAddressService',AccountAddressService)
 .service('accountService',downgradeInjectable(AccountService))
+.service('orderService',downgradeInjectable(OrderService))
 .service('orderPaymentService',downgradeInjectable(OrderPaymentService))
 .service('cartService',downgradeInjectable(CartService))
 .service('hibachiValidationService',downgradeInjectable(HibachiValidationService))
 .service('entityService',downgradeInjectable(EntityService))
+
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

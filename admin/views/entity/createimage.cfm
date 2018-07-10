@@ -51,15 +51,15 @@ Notes:
 
 
 <cfparam name="rc.image" type="any">
-<cfparam name="objectName" type="string" />
+<cfparam name="rc.objectName" type="string" />
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#objectName#ID=#rc[ '#objectName#ID' ]#">
+	<hb:HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#rc.objectName#ID=#rc[ '#rc.objectName#ID' ]#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" />
 		
-		<input type="hidden" name="#objectName#.#objectName#ID" value="#rc[ '#objectName#ID' ]#" />
-		<input type="hidden" name="directory" value="#lcase(objectName)#" />
+		<input type="hidden" name="#rc.objectName#.#rc.objectName#ID" value="#rc[ '#rc.objectName#ID' ]#" />
+		<input type="hidden" name="directory" value="#lcase(rc.objectName)#" />
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
@@ -68,6 +68,30 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
+		
+		<cfset collectionPossibleSkus = $.slatwall.getService('SkuService').getSkuCollectionList()  >
+		<cfset collectionPossibleSkus.addFilter("product.productID","#rc.product.getProductID()#") >
+		<cfset collectionPossibleSkus.setDisplayProperties(
+		displayPropertiesList='skuCode,activeFlag,publishedFlag', columnConfig={
+			isVisible=true,
+			isSearchable=true,
+			isDeletable=true
+		}) />
+		<cfset collectionPossibleSkus.addDisplayProperty(displayProperty='skuID',columnConfig={
+				isVisible=false,
+				isSearchable=false,
+				isDeletable=false
+		})/>
 
+        <hb:HibachiFieldDisplay 
+            valueOptionsCollectionList="#collectionPossibleSkus#"
+            fieldType="listingMultiselect" 
+            title="Possible Skus" 
+            fieldName="assignedSkus" 
+            edit="true" 
+            displaytype="plainTitle" 
+		    hideMoreActions="true"
+        />
+	
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

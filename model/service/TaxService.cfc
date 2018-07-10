@@ -764,6 +764,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					appliedTax.removeOrderItem( orderItem );
 				}
 			}
+			orderItem.clearVariablesKey('taxAmount');
 
 		}
 
@@ -776,7 +777,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					appliedTax.removeOrderFulfillment( orderFulfillment );
 				}
 			}
-
+			orderItem.clearVariablesKey('taxAmount');
 		}
 
 	}

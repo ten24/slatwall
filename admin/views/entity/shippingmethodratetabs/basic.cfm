@@ -8,10 +8,18 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="activeFlag" edit="#rc.edit#">
+			
 			<cfif isObject(rc.integration)>
 				<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="shippingIntegration" edit="false" value="#rc.integration.getIntegrationName()#">
 				<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="shippingIntegrationMethod" edit="#rc.edit#" fieldtype="select" valueOptions="#rc.integration.getShippingMethodOptions(rc.integration.getIntegrationID())#">
+			
+			<cfelse>
+				
+				<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="rateType" edit="#rc.edit#" valueOptions="#rc.shippingMethodRate.getRateTypeOptions()#">
+				<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="ratePercentage" edit="#rc.edit#">
+
 			</cfif>
+
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="addressZone" edit="#rc.edit#">
 			
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="minimumShipmentQuantity" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.minimumShipmentQuantity' ng-init=""shippingMethodRate.minimumShipmentQuantity='#rc.shippingMethodRate.getMinimumShipmentQuantity()#'""">
@@ -21,6 +29,8 @@
         	<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentWeight" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.maximumShipmentWeight' ng-init=""shippingMethodRate.maximumShipmentWeight='#rc.shippingMethodRate.getMaximumShipmentWeight()#'""">
 		
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="minimumShipmentItemPrice" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentItemPrice" edit="#rc.edit#">
+
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="splitShipmentWeight" edit="#rc.edit#"> 
 			
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="defaultAmount" edit="#rc.edit#" fieldAttributes="ng-model='shippingMethodRate.defaultAmount' ng-init=""shippingMethodRate.defaultAmount='#rc.shippingMethodRate.getDefaultAmount()#'""">

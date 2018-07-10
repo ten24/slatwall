@@ -4,6 +4,8 @@ class SWAddSkuPriceModalLauncherController{
     
     public pageRecord:any; 
     public sku:any;
+    public priceGroup:any;
+    public priceGroupId;String;
     public skuId:string; 
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
@@ -51,7 +53,7 @@ class SWAddSkuPriceModalLauncherController{
         //these are populated in the link function initially
         this.skuPrice = this.entityService.newEntity('SkuPrice'); 
         this.skuPrice.$$setSku(this.sku);
-        
+        this.skuPrice.$$setPriceGroup(this.priceGroup);
         if(angular.isUndefined(this.disableAllFieldsButPrice)){
             this.disableAllFieldsButPrice = false; 
         }
@@ -80,11 +82,13 @@ class SWAddSkuPriceModalLauncherController{
     public save = () => {
         this.observerService.notify("updateBindings");
         var firstSkuPriceForSku = !this.skuPriceService.hasSkuPrices(this.sku.data.skuID);
-
         var savePromise = this.skuPrice.$$save();
       
         savePromise.then(
-            (response)=>{ 
+            (response)=>{
+               if(firstSkuPriceForSku){
+                    this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
+               }
                this.saveSuccess = true; 
                this.observerService.notify('skuPricesUpdate',{skuID:this.sku.data.skuID,refresh:true});
                 
@@ -143,9 +147,9 @@ class SWAddSkuPriceModalLauncherController{
                 this.formService.resetForm(this.formName);
                 this.initData();
 
-                if(firstSkuPriceForSku){
-                    this.listingService.getCollection(this.listingID); 
-                }
+                // if(firstSkuPriceForSku){
+                //     this.listingService.getCollection(this.listingID); 
+                // }
                 this.listingService.notifyListingPageRecordsUpdate(this.listingID);
             }
         });
@@ -236,6 +240,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                         
                         $scope.swAddSkuPriceModalLauncher.currencyCodeOptions = currentScope.pageRecord.eligibleCurrencyCodeList.split(",");
                         $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku',skuData);
+                        $scope.swAddSkuPriceModalLauncher.priceGroup = this.$hibachi.newEntity('PriceGroup');
                         $scope.swAddSkuPriceModalLauncher.skuPrice = this.entityService.newEntity('SkuPrice');
                         $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
                     

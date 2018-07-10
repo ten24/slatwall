@@ -1376,68 +1376,52 @@
 		}
 		
 		public array function getSelectedOptionsByApplyData(required string entityName, required string propertyIdentifier){
-			var applyData = {};
-			for(var key in url){
-				if(key contains arguments.propertyIdentifier){
-					if(left(key,2)=='r:'){
-						var options = [];
-						
-						return options;
-					}
-					
-					var optionValues = url[key];
-					var entityCollectionList = getService('HibachiService').getCollectionList(arguments.entityName);
-					applyData[key] = url[key];
-					entityCollectionList.applyData(applyData);
-					entityCollectionList.setDistinct(true);
-					var displayProperties = '';
-					var propertyMetaData = {};
-					var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
-					var propsStruct = getPropertiesStructByEntityName(lastEntityName);
-					var relatedEntity = listLast(arguments.propertyIdentifier,'.');
-					propertyMetaData = propsStruct[relatedEntity];
-					if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
-						var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
-						var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
-					}
-					
-					var displayProperties = "";
-					if(structKeyExists(propertyMetaData,'fieldtype')){
-						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
-						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
-						switch(propertyMetaData.fieldtype){
-							case 'many-to-one':
-								break;
-							case 'one-to-many':
-								
-								break;
-							case 'many-to-many':
-								break;
-						}
-						entityCollectionList.setDisplayProperties(displayProperties);
-						entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
-						
-					}else if(structKeyExists(propertyMetaData,'ormtype')) {
-						
-						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
-						displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
-						switch(propertyMetaData.ormtype){
-							case 'big_decimal':
-								break;
-							case 'string':
-								break;
-							case 'integer':
-								break;
-						}
-						entityCollectionList.setDisplayProperties(displayProperties);
-						entityCollectionList.setOrderBy(arguments.propertyIdentifier);
-						entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
-					}
-					
-					return entityCollectionList.getRecords();
-				}
+			var entityCollectionList = getService('HibachiService').getCollectionList(arguments.entityName);
+			entityCollectionList.setDistinct(true);
+			var displayProperties = '';
+			var propertyMetaData = {};
+			var lastEntityName = getLastEntityNameInPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier);
+			var propsStruct = getPropertiesStructByEntityName(lastEntityName);
+			var relatedEntity = listLast(arguments.propertyIdentifier,'.');
+			propertyMetaData = propsStruct[relatedEntity];
+			if(getPropertyIsObjectByEntityNameAndPropertyIdentifier(arguments.entityName,arguments.propertyIdentifier,true)){
+				var primaryIDName = getPrimaryIDPropertyNameByEntityName(propertyMetaData.cfc);
+				var simpleRepresentationName = getSimpleRepresentationPropertyNameByEntityName(propertyMetaData.cfc);
 			}
-			return [];
+			
+			var displayProperties = "";
+			if(structKeyExists(propertyMetaData,'fieldtype')){
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&primaryIDName&'|value');
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'.'&simpleRepresentationName&'|name');
+				switch(propertyMetaData.fieldtype){
+					case 'many-to-one':
+						break;
+					case 'one-to-many':
+						
+						break;
+					case 'many-to-many':
+						break;
+				}
+				entityCollectionList.setDisplayProperties(displayProperties);
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier&'.'&simpleRepresentationName);
+				
+			}else if(structKeyExists(propertyMetaData,'ormtype')) {
+				
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|value');
+				displayProperties = listAppend(displayProperties,arguments.propertyIdentifier&'|name');
+				switch(propertyMetaData.ormtype){
+					case 'big_decimal':
+						break;
+					case 'string':
+						break;
+					case 'integer':
+						break;
+				}
+				entityCollectionList.setDisplayProperties(displayProperties);
+				entityCollectionList.setOrderBy(arguments.propertyIdentifier);
+			}
+			entityCollectionList.applyData(data=url,excludesList=arguments.propertyIdentifier);
+			return entityCollectionList.getRecords();
 		}
 		
 		public void function updateCalculatedPropertiesByEntityName(required any entity){

@@ -123,7 +123,7 @@ component entityname="SlatwallCycleCountGroup" table="SwCycleCountGroup" output=
 		}
 		
 		// set page records to show required number of Skus based on count and frequency
-		cycleCountGroupCollection.setPageRecordsShow((ceiling(arrayLen(cycleCountGroupCollection.getRecords()) * this.getFrequencyToCount()) / this.getDaysInCycle()));
+		cycleCountGroupCollection.setPageRecordsShow((ceiling( cycleCountGroupCollection.getRecordsCount() * this.getFrequencyToCount()) / this.getDaysInCycle()));
 		return cycleCountGroupCollection;
 	}
 

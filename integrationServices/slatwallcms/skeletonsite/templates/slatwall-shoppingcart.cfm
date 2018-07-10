@@ -111,7 +111,7 @@ Notes:
         </div>
 
     </div>
-    <div ng-if="!slatwall.getRequestByAction('getCart').loading && !slatwall.cart.orderItems.length">
+    <div ng-if="slatwall.cart.orderItems && !slatwall.cart.orderItems.length" ng-cloak>
         <div class="alert alert-danger">There are no items in your cart.</div>
     </div>
 </cfoutput>

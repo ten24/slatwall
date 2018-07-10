@@ -263,11 +263,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     	return variables.subscriptionSkuSmartList;
     }
 
-	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
+	public array function getSkus(boolean sorted=false, boolean fetchOptions=false, string joinType="inner") {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
         }
-        return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
+        return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions, joinType=arguments.joinType);
     }
 
 	public any function getSkuByID(required string skuID) {
@@ -432,7 +432,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		// Add all alternate image paths
 		var productImagesCollection = this.getProductImagesCollectionList();
-		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory');
+		productImagesCollection.setDisplayProperties('imageID,imageFile,imageName,imageDescription,directory,calculatedAssignedSkuCodeList,calculatedAssignedSkuIDList');
 		
 		var productImagesRecords = productImagesCollectionList.getRecords();
 		var productImagesRecordsCount = arrayLen(productImagesRecords);
@@ -445,6 +445,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				thisImage.originalFilename = productImageData['imageFile'];
 				thisImage.originalPath = getService('imageService').getImagePathByImageFileAndDirectory(productImageData['imageFile'],productImageData['directory']);
 				thisImage.type = "productAlternateImage";
+				thisImage.assignedSkuCodeList = productImageData['calculatedAssignedSkuCodeList'];
+				thisImage.assignedSkuIDList = productImageData['calculatedAssignedSkuIDList'];
 				thisImage.skuID = "";
 				thisImage.productID = getProductID();
 				thisImage.name = "";

@@ -487,6 +487,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			super.genericEditMethod(entityName="StockAdjustment", rc=arguments.rc);
 		}
 	}
+	
+	public void function saveShippingMethodRate(required struct rc){
+		if(structKeyExists(rc,'manualRateIntegrationIDs') &&  structKeyExists(rc,'shippingIntegrationMethods')){
+			getService("ShippingService").associateManualRateAndIntegrations(rc.shippingMethodRateID,rc.manualRateIntegrationIDs,rc.shippingIntegrationMethods);
+		}
+		super.genericSaveMethod('ShippingMethodRate',rc);
+	}
 
 	// Task
 	public void function saveTask(required struct rc){
@@ -539,5 +546,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			FileDelete(filePath);
 		}
 		renderOrRedirectSuccess( defaultAction="admin:entity.detailstate", maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	public void function deleteImage(required struct rc){
+		if(structKeyExists(rc,"optionID") && !isNull(rc.optionID) && len(rc.optionID)){
+			getOptionService().removeDefaultImageFromOption(rc.optionID,rc.imageID);
+		}
+		genericDeleteMethod(entityName="image", rc=arguments.rc);
 	}
 }

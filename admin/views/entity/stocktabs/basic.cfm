@@ -15,6 +15,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="userDefinedPriceFlag" >
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="price">
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" >
+			<hb:HibachiPropertyDisplay object="#rc.stock#" property="averageCost" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.stock#" property="minQuantity" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.stock#" property="maxQuantity" edit="#rc.edit#" >
 		</hb:HibachiPropertyList>

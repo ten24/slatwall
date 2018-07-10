@@ -127,6 +127,11 @@ class SWListingDisplayController{
         if(angular.isUndefined(this.showExport)){
             this.showExport = true;
         }
+        
+        
+        if(angular.isUndefined(this.showFilters)){
+           this.showFilters = true;
+        }
 
         //promises to determine which set of logic will run
         this.multipleCollectionDeffered = $q.defer();
@@ -477,7 +482,11 @@ class SWListingDisplayController{
         $(`.sw-${show}`).show();
     }
     public hasNumerical=()=>{
+        
         // Iterate over columns, find out if we have any numericals and return
+        if (!Array.isArray(this.columns) || this.columns.length == 0){
+            return false;
+        }
         return this.columns.reduce((totalNumericalCols, col) => {
             return totalNumericalCols + (col.ormtype && 'big_decimal,integer,float,double'.indexOf(col.ormtype) >= 0) ? 1 : 0;
         });
@@ -729,6 +738,7 @@ class SWListingDisplay implements ng.IDirective{
             showToggleDisplayOptions:"<?",
             showSearch:"<?",
             showSearchFilters:"<?",
+            showFilters:"<?",
             showSimpleListingControls:"<?",
             showPrintOptions:"<?",
 

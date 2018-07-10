@@ -927,9 +927,16 @@ component extends="HibachiService" accessors="true" {
 
 	public any function processProduct_deleteDefaultImage(required any product, required struct data) {
 		if(structKeyExists(arguments.data, "imageFile")) {
-			if(fileExists(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#')) {
-				fileDelete(getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/#imageFile#');
+			var imageBasePath = getHibachiScope().setting('globalAssetsImageFolderPath') & '/product/default/';
+
+			if(getHibachiUtilityService().isS3Path(imageBasePath)){
+				imageBasePath = getHibachiUtilityService().formatS3Path(imageBasePath);
 			}
+
+			if(fileExists(imageBasePath&arguments.data.imageFile)) {
+				fileDelete(imageBasePath&arguments.data.imageFile);
+			}
+			getImageService().clearImageCache(imageBasePath, arguments.data.imageFile);
 		}
 
 		return arguments.product;
@@ -1028,6 +1035,11 @@ component extends="HibachiService" accessors="true" {
 			var maxFileSizeString = getHibachiScope().setting('imageMaxSize');
 			var maxFileSize = val(maxFileSizeString) * 1000000;
 			var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
+
+			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
+				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
+			}
+
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
 			// If the directory where this file is going doesn't exists, then create it
@@ -1041,7 +1053,11 @@ component extends="HibachiService" accessors="true" {
  			if(len(maxFileSizeString) > 0 && fileSize > maxFileSize){
  				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.maxFileSize'));
  			} else {
+ 				getImageService().clearImageCache(uploadDirectory, arguments.processObject.getImageFile());
  				 fileMove("#getHibachiTempDirectory()#/#uploadData.serverFile#", fullFilePath);
+ 				if(getHibachiUtilityService().isS3Path(fullFilePath)){
+ 					StoreSetACL(fullFilePath, [{group="all", permission="read"}]);
+ 				}
  			}
 
 		} catch(any e) {
