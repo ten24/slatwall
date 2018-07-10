@@ -529,6 +529,7 @@ export class $Hibachi extends HibachiService {
             $rootScope,
             $location,
             $anchorScroll,
+            $injector,
             requestService,
             utilityService,
             formService,
