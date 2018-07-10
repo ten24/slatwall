@@ -175,5 +175,33 @@ Notes:
 
 		<cfreturn ormExecuteQuery(hql, {productID=arguments.productID}) />
 	</cffunction>
+	
+	<!--- This is so that we can update subsction statues when there are errors on the order --->
+	<cffunction name="updateSubscriptionStatus">
+		<cfargument name="subscriptionUsageID" required="true" type="string" />
+		
+		<cfset var subscriptionStatusID = replace(lcase(createUUID()), '-', '', 'all') />
+		<cfset var currentDate = now() />
+		
+		<cfquery name="createNewSubscriptionStatus">
+			INSERT INTO swsubscriptionstatus (subscriptionStatusID, changeDateTime, effectiveDateTime, subscriptionUsageID, subscriptionStatusTypeID, createdDateTime, createdByAccountID)
+			VALUES (<cfqueryparam cfsqltype="cf_sql_varchar" value="#subscriptionStatusID#"/>,
+					<cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#currentDate#"/>,
+					<cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#currentDate#"/>,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.subscriptionUsageID#" />,
+					'444df321eb57a31846c4fdda918f55ec',
+					<cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#currentDate#"/>,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#getHibachiScope().getAccount().getAccountID()#" />
+			)
+		</cfquery>
+		
+		<cfquery name="updateSubscriptionStatus">
+			UPDATE swsubsusage
+			SET expirationDate = NULL,
+				currentSubscriptionStatusID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#subscriptionStatusID#"/>
+			WHERE subscriptionUsageID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.subscriptionUsageID#" />
+		</cfquery>
+		
+	</cffunction>
 
 </cfcomponent>
