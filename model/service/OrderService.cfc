@@ -2958,7 +2958,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 }
                 if(arguments.orderPayment.getDynamicAmountFlag()){
                 	var amount = paymentTransaction.getAmountReceived() - paymentTransaction.getAmountCredited();
-                    if(arguments.orderPayment.getOrderPaymentType() == 'optCredit'){
+                    if(arguments.orderPayment.getOrderPaymentType().getSystemCode() == 'optCredit'){
                     	amount *= -1;
                     }
                     arguments.orderPayment.setAmount(amount);
