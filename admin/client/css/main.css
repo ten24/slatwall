@@ -352,7 +352,7 @@ input[type="file"] {
   width: 100%;
   text-align: center;
   font-size: 40px;
-  opacity: .6;
+  opacity: 0.6;
 }
 /*Global*/
 body {
@@ -549,7 +549,7 @@ table th {
   opacity: 1;
 }
 .table-responsive tr.s-disabled td {
-  opacity: .4;
+  opacity: 0.4;
 }
 .table-responsive tr.s-disabled td.s-actions {
   opacity: 1;
@@ -975,7 +975,7 @@ label {
   color: #bbbbbb !important;
 }
 .s-disabled {
-  opacity: .4;
+  opacity: 0.4;
   pointer-events: none;
 }
 .s-dotted-border-bottom {
@@ -1221,10 +1221,10 @@ select.error {
   margin-top: 11px;
   text-align: right !important;
   min-width: 150px;
-  -webkit-transition: all .3s;
-  -moz-transition: all .3s;
-  -o-transition: all .3s;
-  transition: all .3s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
   opacity: 0;
   width: 200px;
 }
@@ -1738,7 +1738,7 @@ table tr th .glyphicon {
   font-size: 11px;
 }
 .openall {
-  border-right: 1px solid ##999;
+  border-right: 1px solid #999;
   padding-right: 4px;
 }
 .panel-heading .fa {
@@ -2298,7 +2298,7 @@ table .s-edit-elements a:hover {
 }
 .s-filters-selected .s-filter-item .btn-group-vertical .btn {
   font-size: 10px;
-  opacity: .6;
+  opacity: 0.6;
 }
 .s-filters-selected .s-filter-item .btn-group-vertical .btn:first-child {
   border-top-left-radius: 4px;
@@ -2360,7 +2360,7 @@ table .s-edit-elements a:hover {
   color: #DA5757;
 }
 .s-add-filter-secondary-layout.s-add-filter .s-option-group {
-  opacity: .4;
+  opacity: 0.4;
 }
 .s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected {
   opacity: 1;
@@ -2484,7 +2484,7 @@ content.s-body-box.s-status-active .s-filter-header:after {
   color: #ffffff;
 }
 content.s-body-box .s-filter-header ul {
-  opacity: .5;
+  opacity: 0.5;
   font-size: 12px;
   margin-left: 15px;
   display: inline-block;
@@ -3013,7 +3013,7 @@ table .s-table-header .table-section a.s-hint {
   width: 100% !important;
 }
 .s-add-filter .s-criteria h4.disabled {
-  opacity: .3;
+  opacity: 0.3;
 }
 .s-add-filter .s-button-select-group {
   text-align: center;
@@ -3021,7 +3021,7 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-button-select-group.disabled {
   pointer-events: none;
-  opacity: .3;
+  opacity: 0.3;
 }
 .s-add-filter .s-or-box {
   margin-bottom: 10px;
@@ -3155,7 +3155,7 @@ table .s-table-header .table-section a.s-hint {
   pointer-events: none;
 }
 .s-titled-select-wrapper.s-disabled {
-  opacity: .5;
+  opacity: 0.5;
   pointer-events: none;
 }
 .btn-group.s-option-toggles .btn.s-selected {
@@ -3841,7 +3841,7 @@ table .s-table-header .table-section a.s-hint {
 }
 .s-search-results-wrapper.s-selectable .dropdown-menu li.s-loading {
   pointer-events: none;
-  opacity: .4;
+  opacity: 0.4;
 }
 .s-search-results-wrapper.s-selectable .dropdown-menu li.s-loading a:before {
   content: "\f021";
@@ -4196,7 +4196,7 @@ table .s-table-header .table-section a.s-hint {
 .s-bundle-group-items .s-search-button:hover,
 .s-bundle-group-items .s-search-button:active,
 .s-bundle-group-items .s-search-button:focus {
-  color: #333!important;
+  color: #333 !important;
   border-color: #cccccc !important;
   background-color: #cccccc;
 }
@@ -4970,7 +4970,7 @@ a[data-toggle="collapse"] {
   vertical-align: middle;
 }
 .s-create-window .s-dialog-footer .s-loading a {
-  opacity: .4;
+  opacity: 0.4;
   pointer-events: none;
   cursor: default;
 }
@@ -5101,7 +5101,7 @@ a[data-toggle="collapse"] {
   position: absolute;
   top: 8px;
   left: 8px;
-  opacity: .5;
+  opacity: 0.5;
   z-index: 1000;
 }
 .s-search-filter .dropdown-menu {
@@ -5279,11 +5279,11 @@ a[data-toggle="collapse"] {
 }
 .s-gift-card-table .s-save-row .btn-save {
   color: #FFF;
-  background: #3C763D!important;
+  background: #3C763D !important;
 }
 .s-gift-card-table .s-save-row .btn-save:hover {
   color: #FFF;
-  background: #4E884F!important;
+  background: #4E884F !important;
 }
 .s-gift-card-table .s-save-row:hover {
   background-color: #DFF0D8 !important;
@@ -5484,7 +5484,7 @@ a[data-toggle="collapse"] {
   vertical-align: text-top;
   background-image: url("../../../org/Hibachi/HibachiAssets/images/ui-sprite.png");
   background-repeat: no-repeat;
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 [class^="hibachi-ui-"]:last-child,
 [class*=" hibachi-ui-"]:last-child {
@@ -5736,7 +5736,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   display: inline-block;
 }
 .s-product-image .s-default-image {
-  border-color: ##08C;
+  border-color: #08C;
   max-width: 282px;
   max-height: 317px;
 }
@@ -6607,7 +6607,7 @@ sw-sku-thumbnail .thumbnail .caption {
   font-size: 11px;
 }
 .s-toggle-switch input:focus + div {
-  outline: thin dotted ##333;
+  outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
@@ -6753,7 +6753,7 @@ sw-sku-thumbnail .thumbnail .caption {
   background: #eee;
 }
 .s-datepicker table thead tr:first-child th button:hover {
-  border-color: #eee ;
+  border-color: #eee;
   border-radius: none;
 }
 .s-datepicker table tbody button {
@@ -6993,7 +6993,7 @@ sw-sku-thumbnail .thumbnail .caption {
   position: relative;
   display: inline-block;
   width: 100%;
-  height: 33.33333333333%;
+  height: 33.33333333%;
   margin-bottom: 3px;
   border: 1px solid rgba(0, 0, 0, 0);
   border-radius: 4px;
@@ -7677,7 +7677,7 @@ table tr td .s-loading-icon {
   padding: 4px;
 }
 .s-detail-content-wrapper .s-detail-body .s-body .s-content-wrapper .s-add-box-wrapper table .s-new-box td:nth-child(n+3) {
-  opacity: .3;
+  opacity: 0.3;
   pointer-events: none;
 }
 .s-detail-content-wrapper .s-detail-body .s-body .s-content-wrapper .s-title {
@@ -7703,7 +7703,7 @@ table tr td .s-loading-icon {
   line-height: 22px;
 }
 .s-results-listing {
-  transition: all .4s ease;
+  transition: all 0.4s ease;
 }
 .s-results-listing .table-responsive {
   border-top: 1px solid #E9E9E9;
@@ -7772,11 +7772,11 @@ table tr td .s-loading-icon {
   cursor: default;
 }
 table.s-detail-content-table tbody tr.s-removed {
-  opacity: .4;
+  opacity: 0.4;
   pointer-events: none;
 }
 table.s-detail-content-table tbody tr.s-done {
-  opacity: .4;
+  opacity: 0.4;
   pointer-events: none;
 }
 .s-detail-content-wrapper.s-shrink-view .s-detail-body table tr td a {
@@ -7825,7 +7825,7 @@ table.s-detail-content-table tbody tr.s-done {
 }
 .s-detail-content-wrapper .s-detail-body.s-remove-manual-fulfill .s-body table input {
   pointer-events: none;
-  opacity: .6;
+  opacity: 0.6;
 }
 .s-detail-content-wrapper .s-detail-body .s-detail-content-table thead i.fa-sort {
   cursor: pointer;
