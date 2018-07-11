@@ -936,7 +936,7 @@
 			}
 		}
 		
-		public boolean function hasPropertyByEntityNameAndSinuglarName( required string entityName, required string singularName){
+		public boolean function hasPropertyByEntityNameAndSingularName( required string entityName, required string singularName){
 			return !isNull(getPropertyByEntityNameAndSingularName(arguments.entityName,arguments.singularName));
 		}
 		
