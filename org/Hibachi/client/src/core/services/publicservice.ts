@@ -11,6 +11,7 @@ import {CartService} from "./cartservice";
 import {AccountService} from "./accountservice";
 import {OrderService} from "./orderservice";
 import {ObserverService} from "./observerservice";
+import {AccountAddressService} from "./accountaddressservice";
 import {AppConfig} from "../../../../../../admin/client/src/app.provider";
 
 @Injectable()
@@ -86,7 +87,7 @@ export class PublicService {
         @Inject("$injector") public $injector:ng.auto.IInjectorService,
         public requestService : RequestService,
         public accountService : AccountService,
-        public accountAddressService,
+        public accountAddressService : AccountAddressService,
         public cartService : CartService,
         public orderService : OrderService,
         public observerService : ObserverService,

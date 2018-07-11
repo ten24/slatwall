@@ -145,8 +145,8 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         $Hibachi,
         TypeaheadService,
         EntityService,
-        CartService,
-        OrderService,
+        CartService,        
+        AccountAddressService,
         AccountService,
         SkuService,
         HibachiPathBuilder,
@@ -154,7 +154,7 @@ export function startupServiceFactory(appProvider: AppProvider,appConfig:AppConf
         { provide : Number, useValue : 0},
         { provide : Boolean, useValue : false},
         { provide : String, useValue:"stringValue"},
-        OrderPaymentService,
+        OrderService,
         OrderPaymentService,
         PublicService,
         HibachiInterceptor
@@ -303,7 +303,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('skuService',downgradeInjectable(SkuService))
 .service('localStorageService',downgradeInjectable(LocalStorageService))
 .service('requestService',downgradeInjectable(RequestService))
-.service('accountAddressService',AccountAddressService)
+.service('accountAddressService',downgradeInjectable(AccountAddressService))
 .service('accountService',downgradeInjectable(AccountService))
 .service('orderService',downgradeInjectable(OrderService))
 .service('orderPaymentService',downgradeInjectable(OrderPaymentService))
