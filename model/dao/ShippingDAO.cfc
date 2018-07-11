@@ -52,11 +52,11 @@ Notes:
 		<cfargument name="shippingMethodRateID" required="true"  >
 
 		<cfquery name="local.query">
-			SELECT shipMethodRateIntegrationMethodID FROM SwShipMethodRateIntegrationMethod
+			SELECT shipMethRateIntegrationMethID FROM SwShipMethRateIntegrationMeth
 			WHERE shippingIntegrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingIntegrationID#">
 			AND shippingMethodRateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingMethodRateID#">
 		</cfquery>	
-		<cfreturn local.query.shipMethodRateIntegrationMethodID/>
+		<cfreturn local.query.shipMethRateIntegrationMethID/>
 	</cffunction>
 	
 	<cffunction name='hasShippingMethodRateIntegrationMethod'>
@@ -65,7 +65,7 @@ Notes:
 		<cfargument name="integrationID" required="true"  >
 
 		<cfquery name="local.query">
-			SELECT COALESCE(COUNT(shipMethodRateIntegrationMethodID),0) as hasShippingMethodRateIntegrationMethod FROM SwShipMethodRateIntegrationMethod
+			SELECT COALESCE(COUNT(shipMethRateIntegrationMethID),0) as hasShippingMethodRateIntegrationMethod FROM SwShipMethRateIntegrationMeth
 			WHERE shippingIntegrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.integrationID#">
 			AND shippingIntegrationMethod = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.method#">
 			AND shippingMethodRateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.shippingMethodRateID#">
