@@ -1175,17 +1175,17 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public void function applyDataForStandardFilter(required any collection, required any data, string excludesList="", string key){
-		var prop = listToArray(key,':')[2];
+		var prop = listToArray(arguments.key,':')[2];
 		if(
 			arguments.collection.hasPropertyByPropertyIdentifier(prop) 
 			&& arguments.collection.getPropertyIdentifierIsPersistent(prop) 
 			&& listFind(trim(arguments.excludesList),trim(prop)) == 0 
 		){
-			var dataToFilterOn = data[key]; //value of the filter.
+			var dataToFilterOn = data[arguments.key]; //value of the filter.
 
 			var comparison = "=";
 			try{
-				comparison = listToArray(key,':')[3];
+				comparison = listToArray(arguments.key,':')[3];
 			}catch(any e){
 				comparison = "=";
 			}
@@ -1271,17 +1271,17 @@ component output="false" accessors="true" extends="HibachiService" {
 	public void function applyDataForFilters(required any collection, required any data, string excludesList="", string key){
 		//handle filters.
 		
-		if(isValid('string',arguments.data[key])){
-			if (left(key, 3) == "fr:"){
+		if(isValid('string',arguments.data[arguments.key])){
+			if (left(arguments.key, 3) == "fr:"){
 
-				var prop = listToArray(key,':')[2];
+				var prop = listToArray(arguments.key,':')[2];
 
 				if(arguments.collection.hasPropertyByPropertyIdentifier(prop) && arguments.collection.getPropertyIdentifierIsPersistent(prop)){
-					var dataToFilterOn = arguments.data[key]; //value of the filter.
+					var dataToFilterOn = arguments.data[arguments.key]; //value of the filter.
 
 					var comparison = "=";
 					try{
-						comparison = listToArray(key,':')[3];
+						comparison = listToArray(arguments.key,':')[3];
 					}catch(any e){
 						comparison = "=";
 					}
@@ -1316,15 +1316,15 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 			//handle filters.
-			if (left(key, 2) == "f:"){
+			if (left(arguments.key, 2) == "f:"){
 				applyDataForStandardFilter(argumentCollection=arguments);
 			}
 
 			//Handle Range
-			if (left(key, 2) == "r:"){
-				var value = arguments.data[key];
+			if (left(arguments.key, 2) == "r:"){
+				var value = arguments.data[arguments.key];
 				var ranges = listToArray(value);
-				var filterParts = "#listToArray(key, ':')#";
+				var filterParts = "#listToArray(arguments.key, ':')#";
 				var prop = filterParts[2];//property
 				if(
 					arguments.collection.hasPropertyByPropertyIdentifier(prop) 
@@ -1332,7 +1332,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					&& listFind(trim(arguments.excludesList),trim(prop)) == 0
 				){
 					var ormtype = arguments.collection.getOrmTypeByPropertyIdentifier(prop);
-					var rangeValues = listToArray(data[key]);//value 20^40,100^ for example.
+					var rangeValues = listToArray(data[arguments.key]);//value 20^40,100^ for example.
 
 					for(var i=1; i <= arraylen(rangeValues);i++){
 						var rangeValue = rangeValues[i];
